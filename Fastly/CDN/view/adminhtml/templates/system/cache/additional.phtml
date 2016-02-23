@@ -1,0 +1,95 @@
+<?php
+/**
+ * Fastly CDN for Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Fastly CDN for Magento End User License Agreement
+ * that is bundled with this package in the file LICENSE_FASTLY_CDN.txt.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Fastly CDN to newer
+ * versions in the future. If you wish to customize this module for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    Fastly
+ * @package     Fastly_CDN
+ * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @license     BSD, see LICENSE_FASTLY_CDN.txt
+ */
+
+// @codingStandardsIgnoreFile
+
+// @TODO use Magento2 UI components for this
+
+/** @var $block \Fastly\CDN\Block\Cache\Additional */
+?>
+<?php if ($block->canShowBlock()): ?>
+
+    <form action="<?php echo $block->getCleanByContentTypeUrl() ?>" method="post" id="fastlycdn_clean_content_type_form">
+        <?php echo $block->getBlockHtml('formkey')?>
+        <table class="form-list" style="margin-bottom:10px">
+            <tr>
+                <td class="scope-label">
+                    <button type="submit" class="scalable"><span><?php /* @escapeNotVerified */ echo __('Clean Fastly CDN by content type') ?></span></button>
+                </td>
+                <td>
+                    <select name="content_types" class="required-entry admin__control-select local-validation" style="margin:0 10px; width:150px">
+                        <?php foreach ($block->getContentTypeOptions() as $contentType => $label): ?>
+                            <option value="<?php echo $contentType ?>"><?php echo $label ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+                <td class="scope-label">
+                    <span><?php /* @escapeNotVerified */ echo __('Remove selected cache items in Fastly CDN by content type. This removes the selected content type for all stores.')?></span>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <form action="<?php echo $block->getCleanByStoreUrl() ?>" method="post" id="fastlycdn_clean_form">
+        <?php echo $block->getBlockHtml('formkey')?>
+        <table class="form-list" style="margin-bottom:10px">
+            <tr>
+                <td class="scope-label">
+                    <button type="submit" class="scalable"><span><?php /* @escapeNotVerified */ echo __('Clean Fastly CDN by store') ?></span></button>
+                </td>
+                <td>
+                    <select name="stores" class="required-entry admin__control-select local-validation" style="margin:0 10px; width:250px">
+                        <?php foreach ($block->getStoreOptions() as $store): ?>
+                            <option value="<?php echo $store->getId() ?>"><?php echo $block->escapeHtml($store->getName(),true) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+                <td class="scope-label">
+                    <span><?php /* @escapeNotVerified */ echo __('Remove Magento generated content from selected store in Fastly CDN. This only removes store related information, not images, css or js.')?></span>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <form id="quick_purge_form" action="<?php echo $block->getQuickPurgeUrl() ?>" method="post" id="fastlycdn_clean_form">
+        <?php echo $block->getBlockHtml('formkey')?>
+        <table class="form-list" style="margin-bottom:10px">
+            <tr>
+                <td class="scope-label">
+                    <button type="submit" class="scalable"><span><?php /* @escapeNotVerified */ echo __('Quick Purge') ?></span></button>
+                </td>
+                <td>
+                    <input type="text" name="quick_purge_url" class="input-text required-entry" style="margin:0 10px; width:250px" />
+                </td>
+                <td class="scope-label">
+                    <span><?php /* @escapeNotVerified */ echo __('Purge URL in Fastly CDN.')?></span>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <script>
+        require(["jquery","mage/mage"],function($){
+            $('#quick_purge_form').mage('form').mage('validation');
+        });
+    </script>
+    
+<?php endif; ?>

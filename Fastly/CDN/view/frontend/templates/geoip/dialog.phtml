@@ -1,0 +1,71 @@
+<?php
+/**
+ * Fastly CDN for Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Fastly CDN for Magento End User License Agreement
+ * that is bundled with this package in the file LICENSE_FASTLY_CDN.txt.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Fastly CDN to newer
+ * versions in the future. If you wish to customize this module for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    Fastly
+ * @package     Fastly_CDN
+ * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @license     BSD, see LICENSE_FASTLY_CDN.txt
+ */
+?>
+<?php
+/**
+ * Store switcher template
+ *
+ * @see Mage_Core_Block_Store_Switcher
+ */
+?>
+<?php $dialogHtml = trim($this->getChildHtml('esiPopup')); ?>
+<?php if (!empty($dialogHtml)): ?>
+    <div id="fastly_cdn_store_switcher_content" style="display: none;">
+        <?php echo $dialogHtml; ?>
+    </div>
+
+    <style type="text/css">
+        .overlay_fastlycdn {
+            background-color: rgba(0,0,0,0.8);
+            z-index: 9001;
+        }
+
+        .fastlycdn_content {
+            z-index: 9002;
+            overflow: auto;
+            color: #000;
+            background: #FFF;
+            box-shadow: 0 0 10px #000;
+        }
+    </style>
+
+    <script type="text/javascript">
+        //<![CDATA[
+        document.observe('dom:loaded', function() {
+            var directStore = (location.search.indexOf('___store=') >= 0);
+            if ((!geoIpActionProcessed) || directStore) {
+                document.cookie = geoIpActionCookie;
+                if (!directStore) {
+                    var html = $('fastly_cdn_store_switcher_content').innerHTML;
+                    if (html != '') {
+                        Dialog.info(html,{
+                            className : 'fastlycdn',
+                            zIndex    : 9000,
+                            width     : 400,
+                            height    : 300
+                        });
+                    }
+                }
+            }
+        });
+        //]]>
+    </script>
+<?php endif; ?>

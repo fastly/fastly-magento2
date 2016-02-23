@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Fastly CDN for Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Fastly CDN for Magento End User License Agreement
+ * that is bundled with this package in the file LICENSE_FASTLY_CDN.txt.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Fastly CDN to newer
+ * versions in the future. If you wish to customize this module for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    Fastly
+ * @package     Fastly_CDN
+ * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @license     BSD, see LICENSE_FASTLY_CDN.txt
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="system">
+            <group id="full_page_cache">
+                <group id="fastly" translate="label" showInDefault="1" showInWebsite="0" showInStore="0" sortOrder="615">
+                    <label>Fastly Configuration</label>
+                    <field id="fastly_service_id" type="text" translate="label comment" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>Fastly Service ID</label>
+                        <comment>Your Service ID appears as an alphanumeric string immediately below the name of your service on the fastly configure tab.</comment>
+                        <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
+                    </field>
+                    <field id="fastly_api_key" type="text" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>Fastly API key</label>
+                        <comment>Your API Key is located on the account tab to the left of the Account Settings area.</comment>
+                        <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
+                    </field>
+                    <field id="stale_ttl" type="text" translate="label comment" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Stale content delivery time</label>
+                        <comment>Time in seconds for that stale content will be served. Set to 0 to disable this feature.</comment>
+                        <backend_model>Magento\PageCache\Model\System\Config\Backend\Ttl</backend_model>
+                    </field>
+                    <field id="stale_error_ttl" type="text" translate="label comment" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Stale content delivery time in case of backend error</label>
+                        <comment>Time in seconds for that stale content will be served. Set to 0 to disable this feature.</comment>
+                        <backend_model>Magento\PageCache\Model\System\Config\Backend\Ttl</backend_model>
+                    </field>
+                    <field id="purge_catalog_category" translate="label comment" type="select" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>Purge category</label>
+                        <comment>Purge category's cache items on save</comment>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    </field>
+                    <field id="purge_catalog_product" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>Purge product</label>
+                        <comment>Purge product's cache items on save</comment>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    </field>
+                    <field id="purge_cms_page" translate="label comment" type="select" sortOrder="45" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>Purge CMS page</label>
+                        <comment>Purge CMS page's cache item on save</comment>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    </field>
+                    <field id="soft_purge" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>Use Soft Purge</label>
+                        <comment>Use Soft Purge in conjunction with stale content delivery times, to serve stale content.</comment>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    </field>
+                    <field id="enable_geoip" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Enable GeoIP</label>
+                        <comment>Enable GeoIP for country/language lookup.</comment>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    </field>
+                    <field id="geoip_action" translate="label comment" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>GeoIP Action</label>
+                        <comment><![CDATA["Dialog" shows a modal dialog to select target store. "Redirect" redirects the client directly to the target store.]]></comment>
+                        <source_model>Fastly\CDN\Model\System\Config\Source\GeoIP\Action</source_model>
+                        <depends>
+                            <field id="enable_geoip">1</field>
+                        </depends>
+                    </field>
+                    <field id="geoip_redirect_mapping" translate="label comment tooltip" sortOrder="71" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>GeoIP Redirect Mapping</label>
+                        <frontend_model>Fastly\CDN\Block\System\Config\Form\Field\Mapping\Redirect</frontend_model>
+                        <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                        <comment>
+                            <![CDATA[Mapping of countries/stores to redirect to.]]>
+                        </comment>
+                        <tooltip><![CDATA[Countries will have ISO-2 code with capital letters. Use * to define a default fallback.]]></tooltip>
+                        <depends>
+                            <field id="enable_geoip">1</field>
+                            <field id="geoip_action">redirect</field>
+                        </depends>
+                    </field>
+                    <field id="geoip_dialog_mapping" translate="label comment tooltip" sortOrder="72" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>GeoIP Dialog Mapping</label>
+                        <frontend_model>Fastly\CDN\Block\System\Config\Form\Field\Mapping\Dialog</frontend_model>
+                        <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                        <comment>
+                            <![CDATA[Mapping of countries/static CMS blocks to display.]]>
+                        </comment>
+                        <tooltip><![CDATA[Countries will have ISO-2 code with capital letters. Use * to define a default fallback.]]></tooltip>
+                        <depends>
+                            <field id="enable_geoip">1</field>
+                            <field id="geoip_action">dialog</field>
+                        </depends>
+                    </field>
+                    <field id="export_button_fastly" translate="label comment" type="button" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>Export Configuration</label>
+                        <frontend_model>Fastly\CDN\Block\System\Config\Form\Field\Export\Fastly</frontend_model>
+                    </field>
+                    <depends>
+                        <field id="caching_application">fastly</field>
+                    </depends>
+                </group>
+            </group>
+        </section>
+    </system>
+</config>

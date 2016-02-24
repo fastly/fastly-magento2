@@ -1,0 +1,53 @@
+<?php
+/**
+ * Fastly CDN for Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Fastly CDN for Magento End User License Agreement
+ * that is bundled with this package in the file LICENSE_FASTLY_CDN.txt.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Fastly CDN to newer
+ * versions in the future. If you wish to customize this module for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    Fastly
+ * @package     Fastly_CDN
+ * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @license     BSD, see LICENSE_FASTLY_CDN.txt
+ */
+?>
+<?php
+/**
+ * Shows modal dialog to confirm store redirection.
+ *
+ * @var $block \Magento\Framework\View\Element\Template
+ */
+?>
+<script type="text/javascript">
+    require(
+        [
+            'jquery',
+            'Magento_Ui/js/modal/confirm'
+        ],
+        function($, modal) {
+            var redirectUrl = '<?php echo $block->getRedirectUrl() ?>';
+            var message = '<?php echo $block->escapeJsQuote($this->getMessage()) ?>';
+
+            if (redirectUrl.length > 0 && message.length > 0) {
+                var options = {
+                    responsive: true,
+                    content: message,
+                    actions: {
+                        confirm: function () {
+                            location.href = redirectUrl;
+                        }
+                    }
+                };
+                modal(options);
+            }
+        }
+    );
+</script>

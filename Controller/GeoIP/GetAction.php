@@ -39,7 +39,7 @@ class GetAction extends \Magento\Framework\App\Action\Action
     /**
      * Request parameter for the country code.
      */
-    const HEADER_PARAM_COUNTRY = 'X-GeoIP-Country-Code';
+    const REQUEST_PARAM_COUNTRY = 'country_code';
 
     /**
      * @var Config
@@ -107,7 +107,7 @@ class GetAction extends \Magento\Framework\App\Action\Action
 
         try {
             // get target store from country code
-            $countryCode = $this->getRequest()->getHeader(self::HEADER_PARAM_COUNTRY);
+            $countryCode = $this->getRequest()->getParam(self::REQUEST_PARAM_COUNTRY);
             $storeId = $this->config->getGeoIpMappingForCountry($countryCode);
 
             if (!is_null($storeId)) {

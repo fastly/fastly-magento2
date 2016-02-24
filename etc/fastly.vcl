@@ -12,7 +12,7 @@
 #
 ###############################################################################
 
-# This is a basic VCL configuration file for fastly CDN for Magento 2 module.
+# This is a basic VCL configuration file for Fastly CDN for Magento 2 module.
 
 sub vcl_recv {
 #FASTLY recv
@@ -85,8 +85,8 @@ sub vcl_recv {
         if (req.http.cookie ~ "(X-Magento-Vary|form_key)=") {
             error 200 "";
         } else {
-            # set http header with country code
-            set req.http.X-GeoIP-Country-Code = geoip.country_code;
+            # append parameter with country code
+            set req.url = req.url "?country_code=" geoip.country_code;
         }
     }
 

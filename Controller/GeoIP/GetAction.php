@@ -14,25 +14,27 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\CDN\Controller\GeoIP;
+namespace Fastly\Cdn\Controller\GeoIP;
 
-use Fastly\CDN\Model\Config;
+use Fastly\Cdn\Model\Config;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Locale\ResolverInterface as LocaleResolverInterface;
+use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Result\LayoutFactory;
 use Magento\Store\Api\StoreRepositoryInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Store\Model\StoreResolver;
 use Magento\Store\Api\Data\StoreInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class GetAction
  *
- * @package Fastly\CDN\Controller\GeoIP
+ * @package Fastly\Cdn\Controller\GeoIP
  */
 class GetAction extends \Magento\Framework\App\Action\Action
 {
@@ -47,9 +49,9 @@ class GetAction extends \Magento\Framework\App\Action\Action
     protected $config;
 
     /**
-     * @var Context
+     * @var UrlInterface
      */
-    protected $context;
+    protected $url;
 
     /**
      * @var StoreRepositoryInterface
@@ -72,12 +74,19 @@ class GetAction extends \Magento\Framework\App\Action\Action
     protected $localeResolver;
 
     /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * @param Context $context
      * @param Config $config
      * @param StoreRepositoryInterface $storeRepository
      * @param StoreManagerInterface $storeManager
      * @param LayoutFactory $resultLayoutFactory
      * @param LocaleResolverInterface $localeResolver
+     * @param UrlInterface $url
+     * @param LoggerInterface $logger
      */
     public function __construct(
         Context $context,
@@ -85,15 +94,18 @@ class GetAction extends \Magento\Framework\App\Action\Action
         StoreRepositoryInterface $storeRepository,
         StoreManagerInterface $storeManager,
         LayoutFactory $resultLayoutFactory,
-        LocaleResolverInterface $localeResolver
+        LocaleResolverInterface $localeResolver,
+        UrlInterface $url,
+        LoggerInterface $logger
     ) {
         parent::__construct($context);
         $this->config = $config;
-        $this->context = $context;
         $this->storeRepository = $storeRepository;
         $this->storeManager = $storeManager;
         $this->resultLayoutFactory = $resultLayoutFactory;
         $this->localeResolver = $localeResolver;
+        $this->url = $url;
+        $this->logger = $logger;
     }
 
     /**
@@ -117,7 +129,7 @@ class GetAction extends \Magento\Framework\App\Action\Action
                 $currentStore = $this->storeManager->getStore();
                 // only generate a redirect URL if current and new store are different
                 if ($currentStore->getId() != $targetStore->getId()) {
-                    $redirectUrl = $this->context->getUrl()->getUrl(
+                    $redirectUrl = $this->url->getUrl(
                         'stores/store/switch',
                         [StoreResolver::PARAM_NAME => $targetStore->getCode()]
                     );
@@ -143,8 +155,9 @@ class GetAction extends \Magento\Framework\App\Action\Action
                     $resultLayout->getLayout()->getBlock('geoip_getaction')->setRedirectUrl($redirectUrl);
                 }
             }
-        } catch (Exception $e) {
-            // do nothing
+        } catch (\Exception $e) {
+            $this->logger->critical($e->getMessage());
+            // do not generate output on errors. this is similar to an empty GeoIP mapping for the country.
         }
 
         return $resultLayout;
@@ -158,10 +171,6 @@ class GetAction extends \Magento\Framework\App\Action\Action
      */
     protected function getMessageInStoreLocale(StoreInterface $emulatedStore)
     {
-        /**
-         * @todo the code doesn't seem to do what it should. refactor it to make it right.
-         */
-
         $currentStore = $this->storeManager->getStore();
 
         // emulate locale and store of new store to fetch message translation

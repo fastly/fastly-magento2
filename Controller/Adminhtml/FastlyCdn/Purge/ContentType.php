@@ -14,14 +14,14 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\CDN\Controller\Adminhtml\FastlyCdn\Purge;
+namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Purge;
 
-use Fastly\CDN\Model\PurgeCache;
-use Fastly\CDN\Model\Config;
+use Fastly\Cdn\Model\PurgeCache;
+use Fastly\Cdn\Model\Config;
 use Magento\Framework\App\ResponseInterface;
 
 class ContentType extends \Magento\Backend\App\Action

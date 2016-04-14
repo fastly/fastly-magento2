@@ -14,14 +14,14 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\CDN\Controller\Adminhtml\FastlyCdn\Purge;
+namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Purge;
 
-use Fastly\CDN\Model\PurgeCache;
-use Fastly\CDN\Model\Config;
+use Fastly\Cdn\Model\PurgeCache;
+use Fastly\Cdn\Model\Config;
 use Magento\Framework\UrlInterface;
 
 class Quick extends \Magento\Backend\App\Action
@@ -71,15 +71,17 @@ class Quick extends \Magento\Backend\App\Action
             if ($this->config->getType() == Config::FASTLY && $this->config->isEnabled()) {
                 // check if url is given
                 $url = $this->getRequest()->getParam('quick_purge_url', false);
-                if (!$url) {
+                $urlFragments = parse_url($url);
+
+                if (!$url || $urlFragments === false) {
                     throw new \Exception(__('Invalid URL "'.$url.'".'));
                 }
 
-                // get url parts
-                extract(parse_url($url));
+                // get url fragments
+                extract($urlFragments);
 
                 // check if host is set
-                if (!isset($host)) {
+                if (!isset($host) || !isset($scheme)) {
                     throw new \Exception(__('Invalid URL "'.$url.'".'));
                 }
 

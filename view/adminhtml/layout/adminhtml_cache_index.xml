@@ -15,17 +15,15 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <update handle="formkey"/>
-    <update handle="adminhtml_cache_block"/>
     <body>
         <referenceContainer name="cache.additional">
-            <block class="Fastly\CDN\Block\Cache\Additional" name="fastly_cdn.cache.additional" template="Fastly_CDN::system/cache/additional.phtml"/>
+            <block class="Fastly\Cdn\Block\Cache\Additional" name="fastly_cdn.cache.additional" template="Fastly_Cdn::system/cache/additional.phtml"/>
         </referenceContainer>
     </body>
 </page>

@@ -1,5 +1,7 @@
 "Fastly CDN","Fastly CDN"
 "Fastly Configuration","Fastly Configuration"
+"Fastly API Endpoint","Fastly API Endpoint"
+"Default https://api.fastly.com/ should not be changed.","Default https://api.fastly.com/ should not be changed."
 "Fastly Service ID","Fastly Service ID"
 "Your Service ID appears as an alphanumeric string immediately below the name of your service on the fastly configure tab.","Your Service ID appears as an alphanumeric string immediately below the name of your service on the fastly configure tab."
 "Fastly API key","Fastly API key"

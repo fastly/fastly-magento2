@@ -15,7 +15,7 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
@@ -26,6 +26,11 @@
             <group id="full_page_cache">
                 <group id="fastly" translate="label" showInDefault="1" showInWebsite="0" showInStore="0" sortOrder="615">
                     <label>Fastly Configuration</label>
+                    <field id="api_endpoint" type="text" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>Fastly API Endpoint</label>
+                        <comment>Default https://api.fastly.com/ should not be changed.</comment>
+                        <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
+                    </field>
                     <field id="fastly_service_id" type="text" translate="label comment" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Fastly Service ID</label>
                         <comment>Your Service ID appears as an alphanumeric string immediately below the name of your service on the fastly configure tab.</comment>
@@ -74,14 +79,14 @@
                     <field id="geoip_action" translate="label comment" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>GeoIP Action</label>
                         <comment><![CDATA["Dialog" shows a modal dialog to select target store. "Redirect" redirects the client directly to the target store.]]></comment>
-                        <source_model>Fastly\CDN\Model\System\Config\Source\GeoIP\Action</source_model>
+                        <source_model>Fastly\Cdn\Model\System\Config\Source\GeoIP\Action</source_model>
                         <depends>
                             <field id="enable_geoip">1</field>
                         </depends>
                     </field>
                     <field id="geoip_country_mapping" translate="label comment tooltip" sortOrder="71" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>GeoIP Country Mapping</label>
-                        <frontend_model>Fastly\CDN\Block\System\Config\Form\Field\CountryMapping</frontend_model>
+                        <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\CountryMapping</frontend_model>
                         <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
                         <comment>
                             <![CDATA[Mapping of countries ot stores views.]]>
@@ -93,7 +98,7 @@
                     </field>
                     <field id="export_button_fastly" translate="label comment" type="button" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Export Configuration</label>
-                        <frontend_model>Fastly\CDN\Block\System\Config\Form\Field\Export\Fastly</frontend_model>
+                        <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Export\Fastly</frontend_model>
                     </field>
                     <depends>
                         <field id="caching_application">fastly</field>

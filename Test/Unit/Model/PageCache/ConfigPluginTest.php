@@ -14,18 +14,18 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\CDN\Test\Unit\Model\PageCache;
+namespace Fastly\Cdn\Test\Unit\Model\PageCache;
 
-use \Fastly\CDN\Model\Config;
+use \Fastly\Cdn\Model\Config;
 
 class ConfigPluginTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Fastly\CDN\Model\Layout\LayoutPlugin
+     * @var \Fastly\Cdn\Model\Layout\LayoutPlugin
      */
     protected $model;
 
@@ -46,7 +46,7 @@ class ConfigPluginTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->model = new \Fastly\CDN\Model\PageCache\ConfigPlugin;
+        $this->model = new \Fastly\Cdn\Model\PageCache\ConfigPlugin;
     }
 
     /**
@@ -64,7 +64,7 @@ class ConfigPluginTest extends \PHPUnit_Framework_TestCase
     public function afterGetTypeDataProvider()
     {
         $pageCacheConfigMock = $this->getMock('Magento\PageCache\Model\Config', [], [], '', false);
-        $fastlyConfigMock = $this->getMock('Fastly\CDN\Model\Config', [], [], '', false);
+        $fastlyConfigMock = $this->getMock('Fastly\Cdn\Model\Config', [], [], '', false);
 
         return [
             'Config: Fastly, Cache Type: Fastly, Expected: Fastly' => [$fastlyConfigMock, Config::FASTLY, Config::FASTLY],

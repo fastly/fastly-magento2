@@ -15,18 +15,18 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\PageCache\Model\System\Config\Source\Application">
-        <plugin name="fastly-add-application-option" type="Fastly\CDN\Model\System\Config\Source\ApplicationPlugin"/>
+        <plugin name="fastly-add-application-option" type="Fastly\Cdn\Model\System\Config\Source\ApplicationPlugin"/>
     </type>
-    <type name="Fastly\CDN\Controller\Adminhtml\FastlyCdn\ExportVarnishConfig">
+    <type name="Fastly\Cdn\Controller\Adminhtml\FastlyCdn\ExportVarnishConfig">
         <arguments>
-            <argument name="config" xsi:type="object">Fastly\CDN\Model\Config</argument>
+            <argument name="config" xsi:type="object">Fastly\Cdn\Model\Config</argument>
         </arguments>
     </type>
 </config>

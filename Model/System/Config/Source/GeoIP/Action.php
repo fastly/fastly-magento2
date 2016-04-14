@@ -14,13 +14,13 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\CDN\Model\System\Config\Source\GeoIP;
+namespace Fastly\Cdn\Model\System\Config\Source\GeoIP;
 
-class Action implements \Magento\Framework\Option\ArrayInterface
+class Action implements \Magento\Framework\Data\OptionSourceInterface
 {
     /**
      * Options getter
@@ -31,11 +31,11 @@ class Action implements \Magento\Framework\Option\ArrayInterface
     {
         return [
             [
-                'value' => \Fastly\CDN\Model\Config::GEOIP_ACTION_DIALOG,
+                'value' => \Fastly\Cdn\Model\Config::GEOIP_ACTION_DIALOG,
                 'label' => __('Dialog'),
             ],
             [
-                'value' => \Fastly\CDN\Model\Config::GEOIP_ACTION_REDIRECT,
+                'value' => \Fastly\Cdn\Model\Config::GEOIP_ACTION_REDIRECT,
                 'label' => __('Redirect')
             ]
         ];

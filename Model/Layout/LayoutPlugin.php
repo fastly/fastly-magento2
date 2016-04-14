@@ -14,13 +14,13 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\CDN\Model\Layout;
+namespace Fastly\Cdn\Model\Layout;
 
-use \Fastly\CDN\Model\Config;
+use \Fastly\Cdn\Model\Config;
 
 /**
  * Class LayoutPlugin
@@ -41,7 +41,7 @@ class LayoutPlugin
      * Constructor
      *
      * @param \Magento\Framework\App\ResponseInterface $response
-     * @param \Fastly\CDN\Model\Config $config
+     * @param \Fastly\Cdn\Model\Config $config
      */
     public function __construct(
         \Magento\Framework\App\ResponseInterface $response,

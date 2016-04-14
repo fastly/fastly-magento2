@@ -14,11 +14,11 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\CDN\Model;
+namespace Fastly\Cdn\Model;
 
 use Magento\Framework\HTTP\Adapter\CurlFactory;
 use Magento\Framework\Cache\InvalidateLogger;
@@ -27,7 +27,6 @@ class Api
 {
     const FASTLY_HEADER_AUTH   = 'Fastly-Key';
     const FASTLY_HEADER_TOKEN  = 'X-Purge-Token';
-    const FASTLY_API_ENDPOINT  = 'https://api.fastly.com/';
     const PURGE_TIMEOUT        = 10;
     const PURGE_TOKEN_LIFETIME = 30;
 
@@ -70,7 +69,7 @@ class Api
      */
     protected function _getApiServiceUri()
     {
-        $uri = self::FASTLY_API_ENDPOINT
+        $uri = $this->config->getApiEndpoint()
             . 'service/'
             . $this->config->getServiceId()
             . '/';
@@ -145,7 +144,7 @@ class Api
         ];
 
         // soft purge if needed
-        if ($this->config->getUseSoftPurge()) {
+        if ($this->config->canUseSoftPurge()) {
             $headers['Fastly-Soft-Purge'] = 1;
         }
 

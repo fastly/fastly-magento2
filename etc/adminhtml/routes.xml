@@ -15,7 +15,7 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
@@ -23,7 +23,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
     <router id="admin">
         <route id="adminhtml">
-            <module name="Fastly_CDN" before="Magento_Backend" />
+            <module name="Fastly_Cdn" before="Magento_Backend" />
         </route>
     </router>
 </config>

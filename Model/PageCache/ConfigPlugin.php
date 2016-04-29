@@ -14,11 +14,11 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\CDN\Model\PageCache;
+namespace Fastly\Cdn\Model\PageCache;
 
 use \Magento\PageCache\Model\Config;
 
@@ -45,8 +45,8 @@ class ConfigPlugin
      */
     public function afterGetType(Config $config, $result)
     {
-        if (!($config instanceof \Fastly\CDN\Model\Config)) {
-            if ($result == \Fastly\CDN\Model\Config::FASTLY) {
+        if (!($config instanceof \Fastly\Cdn\Model\Config)) {
+            if ($result == \Fastly\Cdn\Model\Config::FASTLY) {
                 return Config::VARNISH;
             }
         }

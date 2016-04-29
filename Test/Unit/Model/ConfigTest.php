@@ -14,18 +14,18 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\CDN\Test\Unit\Model;
+namespace Fastly\Cdn\Test\Unit\Model;
 
-use Fastly\CDN\Model\Config;
+use Fastly\Cdn\Model\Config;
 
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Fastly\CDN\Model\Config
+     * @var \Fastly\Cdn\Model\Config
      */
     protected $_model;
 
@@ -110,7 +110,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->moduleReader = $this->getMock('Magento\Framework\Module\Dir\Reader', [], [], '', false);
-        $this->_model = new \Fastly\CDN\Model\Config(
+        $this->_model = new \Fastly\Cdn\Model\Config(
             $readFactoryMock,
             $this->_coreConfigMock,
             $this->_cacheState,

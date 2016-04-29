@@ -14,11 +14,11 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\CDN\Model;
+namespace Fastly\Cdn\Model;
 
 use Magento\Framework\Filesystem;
 use Magento\Framework\Module\Dir;
@@ -60,6 +60,11 @@ class Config extends \Magento\PageCache\Model\Config
      * XML path to Fastly config template path
      */
     const FASTLY_CONFIGURATION_PATH = 'system/full_page_cache/fastly/path';
+
+    /**
+     * XML path to Fastly service ID
+     */
+    const XML_FASTLY_API_ENDPOINT = 'system/full_page_cache/fastly/api_endpoint';
 
     /**
      * XML path to Fastly service ID
@@ -118,6 +123,16 @@ class Config extends \Magento\PageCache\Model\Config
 
 
     /**
+     * Return Fastly API endpoint
+     *
+     * @return string
+     */
+    public function getApiEndpoint()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_API_ENDPOINT);
+    }
+
+    /**
      * Return Fastly service IP
      *
      * @return int
@@ -168,41 +183,41 @@ class Config extends \Magento\PageCache\Model\Config
     }
 
     /**
-     * Return purge catalog category.
+     * Returns can purge catalog category.
      *
      * @return bool
      */
-    public function getPurgeCatalogCategory()
+    public function canPurgeCatalogCategory()
     {
         return $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PURGE_CATALOG_CATEGORY);
     }
 
     /**
-     * Return purge catalog product.
+     * Returns can purge catalog product.
      *
      * @return bool
      */
-    public function getPurgeCatalogProduct()
+    public function canPurgeCatalogProduct()
     {
         return $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PURGE_CATALOG_PRODUCT);
     }
 
     /**
-     * Return purge CMS page.
+     * Returns can purge CMS page.
      *
      * @return bool
      */
-    public function getPurgeCmsPage()
+    public function canPurgeCmsPage()
     {
         return $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PURGE_CMS_PAGE);
     }
 
     /**
-     * Return use soft purge
+     * Returns can use soft purge
      *
      * @return bool
      */
-    public function getUseSoftPurge()
+    public function canUseSoftPurge()
     {
         return $this->_scopeConfig->isSetFlag(self::XML_FASTLY_SOFT_PURGE);
     }
@@ -235,16 +250,6 @@ class Config extends \Magento\PageCache\Model\Config
     public function getGeoIpRedirectMapping()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_GEOIP_COUNTRY_MAPPING);
-    }
-
-    /**
-     * Return GeoIP dialog mapping
-     *
-     * @return array
-     */
-    public function getGeoIpDialogMapping()
-    {
-        return $this->_scopeConfig->getValue(self::XML_FASTLY_GEOIP_MAPPING_DIALOG);
     }
 
     /**
@@ -295,7 +300,7 @@ class Config extends \Magento\PageCache\Model\Config
      */
     public function getVclFile($vclTemplatePath)
     {
-        $moduleEtcPath = $this->reader->getModuleDir(Dir::MODULE_ETC_DIR, 'Fastly_CDN');
+        $moduleEtcPath = $this->reader->getModuleDir(Dir::MODULE_ETC_DIR, 'Fastly_Cdn');
         $configFilePath = $moduleEtcPath . '/' . $this->_scopeConfig->getValue(self::FASTLY_CONFIGURATION_PATH);
         $directoryRead = $this->readFactory->create($moduleEtcPath);
         $configFilePath = $directoryRead->getRelativePath($configFilePath);

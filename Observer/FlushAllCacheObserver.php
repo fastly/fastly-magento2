@@ -14,14 +14,14 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\CDN\Observer;
+namespace Fastly\Cdn\Observer;
 
-use Fastly\CDN\Model\Config;
-use Fastly\CDN\Model\PurgeCache;
+use Fastly\Cdn\Model\Config;
+use Fastly\Cdn\Model\PurgeCache;
 use Magento\Framework\Event\ObserverInterface;
 
 class FlushAllCacheObserver implements ObserverInterface

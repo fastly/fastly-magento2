@@ -55,7 +55,7 @@ The installation of the Magento module is pretty easy:
 6. Open the command line to enable the module: "bin/magento module:enable Fastly_CDN".
 7. Due to Magento2's caching and deployment mechanisms additional steps for cache cleaning and compiling might be necessary.
 
-If any critical issue occurs you can't easily solve, call "bin/magento module:disable Fastly_CDN"
+If any critical issue occurs you can't easily solve, call "bin/magento module:disable Fastly_Cdn"
 to disable the FastlyCDN module. If necessary clear Magento's cache again.
 
 Upload the VCL file bundled with the FastlyCDN module to your Fastly service.
@@ -110,7 +110,7 @@ Enter the service id of the Fastly service that is connected to the current scop
 ### Fastly API key
 Enter your Fastly API key.
 
-(Details of how to find these are documented (here)[https://docs.fastly.com/guides/account-management-and-security/finding-and-managing-your-account-info])
+(Details of how to find these are documented [here](https://docs.fastly.com/guides/account-management-and-security/finding-and-managing-your-account-info)).
 
 ### Stale content delivery time
 Fastly can serve stale content even if the TTL has expired. During the time it takes

@@ -15,7 +15,7 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
@@ -25,6 +25,7 @@
         <system>
             <full_page_cache>
                 <fastly>
+                    <api_endpoint>https://api.fastly.com/</api_endpoint>
                     <path>fastly.vcl</path>
                     <stale_ttl>0</stale_ttl>
                     <stale_error_ttl>0</stale_error_ttl>

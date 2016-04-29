@@ -14,14 +14,14 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\CDN\Observer;
+namespace Fastly\Cdn\Observer;
 
-use Fastly\CDN\Model\Config;
-use Fastly\CDN\Model\PurgeCache;
+use Fastly\Cdn\Model\Config;
+use Fastly\Cdn\Model\PurgeCache;
 use Magento\Framework\Event\ObserverInterface;
 
 class InvalidateVarnishObserver implements ObserverInterface
@@ -60,7 +60,7 @@ class InvalidateVarnishObserver implements ObserverInterface
             $object = $observer->getEvent()->getObject();
             if ($object instanceof \Magento\Framework\DataObject\IdentityInterface && $this->canPurgeObject($object)) {
                 foreach ($object->getIdentities() as $tag) {
-                    $result = $this->purgeCache->sendPurgeRequest($tag);
+                    $this->purgeCache->sendPurgeRequest($tag);
                 }
             }
         }
@@ -76,13 +76,13 @@ class InvalidateVarnishObserver implements ObserverInterface
      */
     protected function canPurgeObject(\Magento\Framework\DataObject\IdentityInterface $object)
     {
-        if ($object instanceof \Magento\Catalog\Model\Category && !$this->config->getPurgeCatalogCategory()) {
+        if ($object instanceof \Magento\Catalog\Model\Category && !$this->config->canPurgeCatalogCategory()) {
             return false;
         }
-        if ($object instanceof \Magento\Catalog\Model\Product && !$this->config->getPurgeCatalogProduct()) {
+        if ($object instanceof \Magento\Catalog\Model\Product && !$this->config->canPurgeCatalogProduct()) {
             return false;
         }
-        if ($object instanceof \Magento\Cms\Model\Page && !$this->config->getPurgeCmsPage()) {
+        if ($object instanceof \Magento\Cms\Model\Page && !$this->config->canPurgeCmsPage()) {
             return false;
         }
         return true;

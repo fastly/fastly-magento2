@@ -14,7 +14,7 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
@@ -22,7 +22,7 @@
 /**
  * Test class for \Magento\PageCache\Controller\Adminhtml/PageCache
  */
-namespace Fastly\CDN\Test\Unit\Controller\Adminhtml\PageCache;
+namespace Fastly\Cdn\Test\Unit\Controller\Adminhtml\PageCache;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
 
@@ -48,7 +48,7 @@ class ExportVarnishConfigTest extends \PHPUnit_Framework_TestCase
     protected $viewMock;
 
     /**
-     * @var \Fastly\CDN\Controller\Adminhtml\FastlyCdn\ExportVarnishConfig
+     * @var \Fastly\Cdn\Controller\Adminhtml\FastlyCdn\ExportVarnishConfig
      */
     protected $action;
 
@@ -58,7 +58,7 @@ class ExportVarnishConfigTest extends \PHPUnit_Framework_TestCase
     protected $fileFactoryMock;
 
     /**
-     * @var \Fastly\CDN\Model\Config|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Fastly\Cdn\Model\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $configMock;
 
@@ -71,7 +71,7 @@ class ExportVarnishConfigTest extends \PHPUnit_Framework_TestCase
             'Magento\Framework\App\Response\Http\FileFactory'
         )->disableOriginalConstructor()->getMock();
         $this->configMock = $this->getMockBuilder   (
-            'Fastly\CDN\Model\Config'
+            'Fastly\Cdn\Model\Config'
         )->disableOriginalConstructor()->getMock();
         $contextMock = $this->getMockBuilder(
             'Magento\Backend\App\Action\Context'
@@ -89,7 +89,7 @@ class ExportVarnishConfigTest extends \PHPUnit_Framework_TestCase
         $contextMock->expects($this->any())->method('getResponse')->will($this->returnValue($this->responseMock));
         $contextMock->expects($this->any())->method('getView')->will($this->returnValue($this->viewMock));
 
-        $this->action = new \Fastly\CDN\Controller\Adminhtml\FastlyCdn\ExportVarnishConfig(
+        $this->action = new \Fastly\Cdn\Controller\Adminhtml\FastlyCdn\ExportVarnishConfig(
             $contextMock,
             $this->fileFactoryMock,
             $this->configMock

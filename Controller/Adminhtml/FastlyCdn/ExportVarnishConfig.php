@@ -14,13 +14,15 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\CDN\Controller\Adminhtml\FastlyCdn;
+namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn;
 
 class ExportVarnishConfig extends \Magento\PageCache\Controller\Adminhtml\PageCache\ExportVarnishConfig
 {
-
+    /**
+     * This empty controller is necessary to inject \Fastly\Cdn\Model\Config to the parent controller using DI.
+     */
 }

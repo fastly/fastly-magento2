@@ -15,7 +15,7 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2015 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
@@ -24,7 +24,7 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="after.body.start">
-            <block class="Fastly\CDN\Block\GeoIp\GetAction" name="fastlycdn.geoip.getaction" />
+            <block class="Fastly\Cdn\Block\GeoIp\GetAction" name="fastlycdn.geoip.getaction" />
         </referenceContainer>
     </body>
 </page>

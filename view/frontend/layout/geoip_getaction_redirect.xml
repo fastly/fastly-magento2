@@ -7,6 +7,6 @@
 -->
 <layout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/layout_generic.xsd">
     <container name="root" label="Root">
-        <block class="Magento\Framework\View\Element\Template" name="geoip_getaction" template="Fastly_CDN::geoip/redirect.phtml"/>
+        <block class="Magento\Framework\View\Element\Template" name="geoip_getaction" template="Fastly_Cdn::geoip/redirect.phtml"/>
     </container>
 </layout>

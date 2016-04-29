@@ -1,15 +1,16 @@
 {
-    "name": "fastly/module-cdn",
+    "name": "fastly/magento2",
     "description": "N/A",
     "require": {
         "php": "~5.5.0|~5.6.0|~7.0.0",
-        "magento/module-store": "1.0.0-beta",
-        "magento/module-page-cache": "1.0.0-beta",
-        "magento/module-cache-invalidate": "1.0.0-beta",
-        "magento/framework": "1.0.0-beta"
+        "magento/module-config": "100.0.*",
+        "magento/module-store": "100.0.*",
+        "magento/module-page-cache": "100.0.*",
+        "magento/module-cache-invalidate": "100.0.*",
+        "magento/framework": "100.0.*"
     },
     "type": "magento2-module",
-    "version": "1.0.0-beta",
+    "version": "1.0.0",
     "license": [
         "BSD"
     ],

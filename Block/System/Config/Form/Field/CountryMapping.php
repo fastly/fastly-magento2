@@ -14,11 +14,11 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\CDN\Block\System\Config\Form\Field;
+namespace Fastly\Cdn\Block\System\Config\Form\Field;
 
 /**
  * Backend system config array field renderer
@@ -31,9 +31,13 @@ class CountryMapping extends \Magento\Config\Block\System\Config\Form\Field\Fiel
     protected $_elementFactory;
 
     /**
+     * Currently necessary for work around a missing feature in the M2 core.
+     *
+     * @see https://github.com/magento/magento2/pull/3469
+     *
      * @var string
      */
-    protected $_template = 'Fastly_CDN::system/config/form/field/array.phtml';
+    protected $_template = 'Fastly_Cdn::system/config/form/field/array.phtml';
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context

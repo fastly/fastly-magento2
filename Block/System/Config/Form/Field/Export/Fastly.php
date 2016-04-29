@@ -14,13 +14,13 @@
  * needs please refer to http://www.magento.com for more information.
  *
  * @category    Fastly
- * @package     Fastly_CDN
+ * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\CDN\Block\System\Config\Form\Field\Export;
+namespace Fastly\Cdn\Block\System\Config\Form\Field\Export;
 
-use \Fastly\CDN\Model\Config;
+use \Fastly\Cdn\Model\Config;
 
 /**
  * Class Export

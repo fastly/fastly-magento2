@@ -48,12 +48,18 @@ The installation of the Magento module is pretty easy:
 
 1. Login (or switch user) as the Magento filesystem owner.
 2. Ensure that the files in 'app/etc' under the Magento root are write enabled by the Magento Filesystem owner.
-3. Create a directory under your Magento root called 'app/code/Fastly/Fastly_CDN'.
-4. Download the zip archive of this repository to a temporary location on your server and extract it. 
-5. Copy the contents of the app directory in the archive to the app/code directory of your
-   Magento2 instance.
-6. Open the command line to enable the module: "bin/magento module:enable Fastly_CDN".
-7. Due to Magento2's caching and deployment mechanisms additional steps for cache cleaning and compiling might be necessary.
+3. Ensure that git and composer are installed.
+4. Inside the Magento Home directory add the composer repository for the module. 
+    ```composer config respositories.fastly-magento2 git "https://[your-github-username]:[your-github-passwd]@github.com/fastly/fastly-magento2.git"```
+5. Next fetch the module with:
+    ```composer require fastly/magento2``
+6. Once the module fetch has completed enable it by:
+    ```bin/magento module:enable Fastly_CDN```
+7. Then finally the clean up tasks:
+    ```bin/magento setup:upgrade```
+   followed by:
+    ```bin/magento cache:clean```
+8. Once this has completed log in to the Magento Admin panel. Go to Stores > Configuration. Then to System > Advanced. Expand the section 'Full Page Cache'. From the 'Caching Application' select 'Fastly CDN'. You can then add the credentials and choose the caching options.
 
 If any critical issue occurs you can't easily solve, call "bin/magento module:disable Fastly_Cdn"
 to disable the FastlyCDN module. If necessary clear Magento's cache again.

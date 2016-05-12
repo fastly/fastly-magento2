@@ -42,7 +42,7 @@ class Fastly extends \Magento\PageCache\Block\System\Config\Form\Field\Export
      */
     public function getUrl($route = '', $params = [])
     {
-        if (strpos($route, 'PageCache/exportVarnishConfig')) {
+        if (strpos($route, 'PageCache/exportVarnishConfig') !== false) {
             $route = '*/FastlyCdn/exportVarnishConfig';
         }
         return parent::getUrl($route, $params);

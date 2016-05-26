@@ -21,13 +21,39 @@
 
 namespace Fastly\Cdn\Block\GeoIp;
 
+use Fastly\Cdn\Model\Config;
+
 /**
  * This is a just a place holder to insert the ESI tag for GeoIP lookup.
  */
 class GetAction extends \Magento\Framework\View\Element\AbstractBlock
 {
+    /**
+     * @var Config
+     */
+    protected $_config;
+
+    /**
+     * GetAction constructor.
+     *
+     * @param \Magento\Framework\View\Element\Context $context
+     * @param Config $config
+     * @param array $data
+     */
+    public function __construct(\Magento\Framework\View\Element\Context $context, Config $config, array $data = [])
+    {
+        $this->_config = $config;
+        parent::__construct($context, $data);
+    }
+
+    /**
+     * @return string
+     */
     protected function _toHtml()
     {
-        return sprintf('<esi:include src="%s" />', $this->getUrl('fastlyCdn/geoip/getaction'));
+        if ($this->_config->isGeoIpEnabled()) {
+            return sprintf('<esi:include src="%s" />', $this->getUrl('fastlyCdn/geoip/getaction'));
+        }
+        return parent::_toHtml();
     }
 }

@@ -118,6 +118,9 @@ class GetAction extends \Magento\Framework\App\Action\Action
         $resultLayout = null;
 
         try {
+            $resultLayout = $this->resultLayoutFactory->create();
+            $resultLayout->addDefaultHandle();
+
             // get target store from country code
             $countryCode = $this->getRequest()->getParam(self::REQUEST_PARAM_COUNTRY);
             $storeId = $this->config->getGeoIpMappingForCountry($countryCode);
@@ -135,11 +138,8 @@ class GetAction extends \Magento\Framework\App\Action\Action
                     );
                 }
 
-                // prepare layout only if a store redirect should be performed
+                // generate output only if redirect should be performed
                 if ($redirectUrl) {
-                    $resultLayout = $this->resultLayoutFactory->create();
-                    $resultLayout->addDefaultHandle();
-
                     switch ($this->config->getGeoIpAction()) {
                         case Config::GEOIP_ACTION_DIALOG:
                             $resultLayout->getLayout()->getUpdate()->load(['geoip_getaction_dialog']);

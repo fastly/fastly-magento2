@@ -24,4 +24,11 @@
     <type name="Magento\PageCache\Model\Config">
         <plugin name="fastly-emulate-varnish-cache-type" type="Fastly\Cdn\Model\PageCache\ConfigPlugin"/>
     </type>
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="generateFastlyVclCommand" xsi:type="object">Fastly\Cdn\Console\Command\GenerateVclCommand</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

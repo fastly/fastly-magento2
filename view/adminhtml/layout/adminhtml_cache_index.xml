@@ -22,8 +22,8 @@
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-        <referenceContainer name="cache.additional">
-            <block class="Fastly\Cdn\Block\Cache\Additional" name="fastly_cdn.cache.additional" template="Fastly_Cdn::system/cache/additional.phtml"/>
+        <referenceContainer name="content">
+            <block class="Fastly\Cdn\Block\Cache\Additional" name="fastly_cdn.cache.additional" template="Fastly_Cdn::system/cache/additional.phtml" after="cache.additional"/>
         </referenceContainer>
     </body>
 </page>

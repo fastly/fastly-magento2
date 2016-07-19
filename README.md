@@ -50,7 +50,7 @@ The installation of the Magento module is pretty easy:
 2. Ensure that the files in 'app/etc' under the Magento root are write enabled by the Magento Filesystem owner.
 3. Ensure that git and composer are installed.
 4. Inside the Magento Home directory add the composer repository for the module. 
-    ```composer config respositories.fastly-magento2 git "https://[your-github-username]:[your-github-passwd]@github.com/fastly/fastly-magento2.git"```
+    ```composer config repositories.fastly-magento2 git "https://[your-github-username]:[your-github-passwd]@github.com/fastly/fastly-magento2.git"```
 5. Next fetch the module with:
     ```composer require fastly/magento2``
 6. Once the module fetch has completed enable it by:

@@ -145,7 +145,7 @@ class Api
 
         // soft purge if needed
         if ($this->config->canUseSoftPurge()) {
-            $headers['Fastly-Soft-Purge'] = 1;
+            array_push( $headers, 'Fastly-Soft-Purge: 1');
         }
 
         try {

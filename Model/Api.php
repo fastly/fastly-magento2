@@ -27,6 +27,7 @@ class Api
 {
     const FASTLY_HEADER_AUTH   = 'Fastly-Key';
     const FASTLY_HEADER_TOKEN  = 'X-Purge-Token';
+    const FASTLY_HEADER_SOFT_PURGE = 'Fastly-Soft-Purge';
     const PURGE_TIMEOUT        = 10;
     const PURGE_TOKEN_LIFETIME = 30;
 
@@ -145,7 +146,7 @@ class Api
 
         // soft purge if needed
         if ($this->config->canUseSoftPurge()) {
-            array_push( $headers, 'Fastly-Soft-Purge: 1');
+            array_push( $headers, self::FASTLY_HEADER_SOFT_PURGE.': 1');
         }
 
         try {

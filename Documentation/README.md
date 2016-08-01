@@ -10,4 +10,4 @@ This folder contains the collected documentation for the Fastly_Cdn module.
 * [Troubleshooting instructions](TROUBLESHOOTING.md)
 * [How to report bugs](OPENING-ISSUES.md)
 
-Please report any errors or problems with these documents as github issues.
+Please report any errors or problems with these documents as GitHub issues.

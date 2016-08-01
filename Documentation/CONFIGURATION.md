@@ -29,7 +29,7 @@ You will need to email Fastly's support team to
 upload VCL to your account.
 Once this is enabled refresh the Fastly application and navigate to the VCL
 page in the latest unlocked version of the service. Once there upload the
-[Fastly_Cdn VCL](../etc/fastl.vcl) as the main VCL. Review the generated VCL
+[Fastly_Cdn VCL](../etc/fastly.vcl) as the main VCL. Review the generated VCL
 to ensure that it is correctly implemented. Then activate the new version.
 
 ## Configure the Module
@@ -39,8 +39,8 @@ Fastly_Cdn module. It assumes that the module has already been installed
 without error. If not please see [installing the module](INSTALLATION.md) for
 details of how to do this.
 
-To enter the credentials for the Fastly_Cdn module to use open a browser and
-log in to the admin section of the Magento server. Navigate to:
+To enter the credentials for the Fastly_Cdn module, open a browser and log in
+to the admin section of the Magento server. Navigate to:
 
 ```
 Stores > Configuration > Advanced > System
@@ -82,21 +82,19 @@ case the backend is down or cannot respond properly.
 
 ### Purge category
 
-This option binds automatic purge of category (Fastly) cache with is update
-event. If you always want up-to-date category information on  front-end set the
-option value to "Yes" and category cache will be invalidated each time a
-category update occurs.
+When enabled, this configures the module to listen for events which clear generated content for a 'category' and ties a cache purge to Fastly with these. Once cleared new content can be fetched and cached thus updating the content.
 
 ### Purge product
 
-This option binds purge of product (Fastly) cache with product and product's
-stock update. If set to "Yes" product pages cache is invalidated each time
-product update or product's stock update occurs.
+When enabled, this configures the module to listen for events which clear
+generated content for a 'product' and ties a cache purge to Fastly with these.
+Once cleared new content can be fetched and cached thus updating the content.
 
-Additionally, if "Purge Category" option is set to "Yes" this triggers
-product's categories cache purge on product/product stock update. This option
-is useful to keep product pages and categories up-to-date when product becomes
-out of stock (i.e. when the last item purchased by a customer).
+Additionally, if the "Purge Category" option is set to "Yes" this also
+triggers the product's categories to be purged on product/product stock
+update. This option is useful to keep product pages and categories up-to-date
+when a product becomes out of stock (i.e. when the last item purchased by a
+customer).
 
 ### Purge CMS page
 
@@ -108,15 +106,15 @@ event occurs (i.e. CMS page content update via Magento admin).
 
 Using soft purge will not remove the content immediately from Fastly's cache
 but mark it as stale. In combination with the stale timings your customers will
-be serverd stale content very fast while Fastly is updating the content in the
+be served stale content very fast while Fastly is updating the content in the
 background.
 
 ### GeoIP handling
 
-GeoIP handling will get the country of a web client
-based on it's IP address. This feature can be used to either automatically
-redirect visitors to the store matching their country or to show them a dialog
-to select the desired store themselves.
+GeoIP handling will get the country of a web client based on its IP address.
+This feature can be used to either automatically redirect visitors to the
+store matching their country or to show them a dialog to select the desired
+store themselves.
 
 #### Configuration
 
@@ -128,15 +126,15 @@ GeoIP". Make sure to be on store configuration scope.
 
 The Fastly module supports two options to serve the store view based on GeoIP
 country code: It can show the visitor a modal dialog to give him the option to
-switch to a frontend that fits to his country or he can be redirect
+switch to a frontend that fits to his country or he can be redirected
 automatically. Both actions are performed using JavaScript and can be adjusted
 if necessary.
 
-In the VCL the cookie headers are examined. If either the X-Magento-Vary or
-form_key cookie are present this Fastly will not take any action as it presumes
-the customer either saw (and maybe interacted with) the modal dialog or was
-automatically redirected to the matching store. If the form_key cookies is
-present the visitor has been browsing around so he shouldn't be disturbed by
+In the VCL the cookie headers are examined. If either the `X-Magento-Vary` or
+`form_key` cookie are present this Fastly will not take any action as it
+presumes the customer either saw (and maybe interacted with) the modal dialog
+or was automatically redirected to the matching store. If the form_key cookies
+is present the visitor has been browsing around so he shouldn't be disturbed by
 dialogs or redirects.
 
 ##### GeoIP Action

@@ -10,9 +10,9 @@
 
 Before installing the Fastly_Cdn module you should setup a
 test environment as you will need to put Fastly in front which will certainly
-take a while for configuring and testing. If you directly rollout this solution
-to your production server you might experience issues that could affect your
-normal eBusiness.
+take a while for configuring and testing. If you directly roll out this
+solution to your production server you might experience issues that could
+affect your normal business.
 
 Ensure that your Magento2 store is running without any
 problems in your environment as debugging Magento2 issues with Fastly in front
@@ -24,7 +24,7 @@ onwards.
 You need an account with [fastly.com](https://www.fastly.com/signup) which allows
 [uploading of custom VCL](https://docs.fastly.com/guides/vcl/uploading-custom-vcl).
 If you need professional services for assistance with setting up your
-environment please contact fastly.com.
+environment please contact magento@fastly.com.
 
 ## Installation
 
@@ -45,18 +45,19 @@ a few ways.
 
 #### Installing from the Magento Marketplace using Web Setup Wizard
 
-This will require an account with Magento Commerce and the api keys will be
-used to sync with the marketplace.
+This will require an account with Magento Commerce and the associated
+[API keys](http://devdocs.magento.com/guides/v2.0/install-gde/prereq/connect-auth.html)
+will be used to sync with the marketplace.
 
 1. Open a browser to the [Magento Marketplace](https://marketplace.magento.com/fastly-magento2.html)
-    and add the module to the cart. Check out and ensure that this is added to
-    your account.
+   and add the module to the cart. Check out and ensure that this is added to
+   your account.
 1. Log into the admin section of the Magento system in which to install the
-    module as an administrator.
+   module as an administrator.
 1. Start the Web Setup Wizard by navigating to 'System > Web Setup Wizard'.
 1. Click 'Component Manager' to synchronise with Magento Marketplace.
 1. Click to 'Enable' the Fastly_Cdn module. This will start the wizard.
-1. Follow the on screen instructions ensuring to create backups.
+1. Follow the on screen instructions, being sure to create backups.
 1. Proceed to [Configuring the Module](CONFIGURATION.md).
 
 #### Installing using Composer
@@ -80,7 +81,7 @@ used to sync with the marketplace.
 1. Once the module fetch has completed enable it by:
 
     ```
-    bin/magento module:enable Fastly_CDN
+    bin/magento module:enable Fastly_Cdn
     ```
 
 1. Then finally the clean up tasks:
@@ -100,7 +101,7 @@ used to sync with the marketplace.
 
 #### Installing from zip file
 
-1. Open a browser to [Github](https://github.com/fastly/fastly-magento2/releases)
+1. Open a browser to [GitHub](https://github.com/fastly/fastly-magento2/releases)
     note/copy the URL of the version to install.
 1. Log in to the Magento server as the Magento filesystem owner and navigate to
     the Magento Home directory.

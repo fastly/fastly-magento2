@@ -9,7 +9,7 @@ or Fastly in general please use the [support infomation](../README.md#support).
 This describes what content should be added to a issue to help with an
 expedient resolution.
 
-What to post...
+## What to post...
 
 A good bug report contains the data necessary to reproduce, identify, locate
 and address a problem in code. Where possible it should also indicate what

@@ -7,11 +7,11 @@
 
 ## Purging
 
-Fastly caches objects for a certain period of time according to their TTL.
+Fastly caches objects for a certain period of time up to their TTL.
 After that the object will not be requested from the web server or Magento
 again. Until the TTL expires Fastly will deliver the cached object no matter
 what will change within Magento or the webserver's file system. To force Fastly
-to cleanup its' cache and to retrieve the information again from the backend
+to cleanup its cache and to retrieve the information again from the backend
 you can trigger a purge request right from Magento.
 
 In the Magento2 backend go to System -> Cache Management. If you have enabled
@@ -32,11 +32,11 @@ You can purge objects in Fastly's Cache based on the store by just clicking
 "Clean Fastly CDN Cache by store". This will only remove content that is
 generated from Magento. Images, CSS files or JavaScripts will not be purged.
 
-### Purge a URI
+### Purge a URL
 
-It is also possible to purge a single url (e.g. page) using "Quick Purge".
-Enter desired URL in input field next to "Quick Purge" button and press it. If
-URL is valid you'll see a success message for purged page.
+It is also possible to purge a single URL (e.g. page) using "Quick Purge".
+Enter the desired URL in input field next to "Quick Purge" button and press
+it. If URL is valid you'll see a success message for purged page.
 
 ### Purge all
 

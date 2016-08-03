@@ -53,16 +53,6 @@ sub vcl_recv {
     set req.http.X-Orig-Accept-Encoding = req.http.Accept-Encoding;
     unset req.http.Accept-Encoding;
 
-    # We only deal with GET and HEAD by default
-    if (req.request != "GET" && req.request != "HEAD") {
-        return (pass);
-    }
-
-    # Bypass shopping cart and checkout requests
-    if (req.url ~ "/checkout") {
-        return (pass);
-    }
-
     # set HTTPS header for offloaded TLS
     if (req.http.Fastly-SSL) {
         set req.http.Https = "on";
@@ -71,6 +61,16 @@ sub vcl_recv {
     # disable ESI processing on Origin Shield
     if (req.http.Fastly-FF) {
         set req.esi = false;
+    }
+
+    # We only deal with GET and HEAD by default
+    if (req.request != "GET" && req.request != "HEAD") {
+        return (pass);
+    }
+
+    # Bypass shopping cart and checkout requests
+    if (req.url ~ "/checkout") {
+        return (pass);
     }
 
     # static files are always cacheable. remove SSL flag and cookie
@@ -91,43 +91,6 @@ sub vcl_recv {
     }
 
     return(lookup);
-}
-
-sub vcl_pass {
-#FASTLY pass
-}
-
-sub vcl_hash {
-    set req.hash += req.http.Https;
-    set req.hash += req.http.host;
-    set req.hash += req.url;
-
-    if (req.http.cookie ~ "X-Magento-Vary=") {
-        set req.http.X-Magento-Vary = regsub(req.http.cookie, "^.*?X-Magento-Vary=([^;]+);*.*$", "\1");
-        set req.hash += req.http.X-Magento-Vary;
-        unset req.http.X-Magento-Vary;
-    }
-    
-    set req.hash += "#####GENERATION#####";
-
-    ### {{ design_exceptions_code }} ###
-
-    return (hash);
-}
-
-sub vcl_hit {
-#FASTLY hit
-
-    if (!obj.cacheable) {
-        return(pass);
-    }
-    return(deliver);
-}
-
-sub vcl_miss {
-#FASTLY miss
-
-    return(fetch);
 }
 
 sub vcl_fetch {
@@ -217,6 +180,23 @@ sub vcl_fetch {
     return (deliver);
 }
 
+
+sub vcl_hit {
+#FASTLY hit
+
+    if (!obj.cacheable) {
+        return(pass);
+    }
+    return(deliver);
+}
+
+
+sub vcl_miss {
+#FASTLY miss
+
+    return(fetch);
+}
+
 sub vcl_deliver {
     # debug info
     if (resp.http.X-Magento-Debug) {
@@ -246,6 +226,7 @@ sub vcl_deliver {
 
     return (deliver);
 }
+
 
 sub vcl_error {
     # workaround for possible security issue
@@ -283,3 +264,26 @@ sub vcl_error {
 
 #FASTLY error
 }
+
+sub vcl_pass {
+#FASTLY pass
+}
+
+sub vcl_hash {
+    set req.hash += req.http.Https;
+    set req.hash += req.http.host;
+    set req.hash += req.url;
+
+    if (req.http.cookie ~ "X-Magento-Vary=") {
+        set req.http.X-Magento-Vary = regsub(req.http.cookie, "^.*?X-Magento-Vary=([^;]+);*.*$", "\1");
+        set req.hash += req.http.X-Magento-Vary;
+        unset req.http.X-Magento-Vary;
+    }
+    
+    set req.hash += "#####GENERATION#####";
+
+    ### {{ design_exceptions_code }} ###
+
+    return (hash);
+}
+

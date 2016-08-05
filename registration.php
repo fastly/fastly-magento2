@@ -24,3 +24,5 @@
     'Fastly_Cdn',
     __DIR__
 );
+
+Magento\Framework\Module\Registrar::registerModule('Fastly_Cdn', __DIR__);

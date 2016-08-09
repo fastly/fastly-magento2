@@ -1,5 +1,13 @@
 # Fastly_Cdn Release Notes
 
+## 1.0.7
+
+- bumped version.
+
+## 1.0.6
+
+- Corrected autoload typo.
+
 ## 1.0.5
 
 - Corrected spelling mistake in README.

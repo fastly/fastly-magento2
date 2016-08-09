@@ -43,13 +43,16 @@ class ConfigPlugin
      *
      * @return int
      */
-    public function afterGetType(Config $config, $result)
+    public function aroundGetType(Config $config, \Closure $proceed)
     {
+        $result = $proceed();
+
         if (!($config instanceof \Fastly\Cdn\Model\Config)) {
             if ($result == \Fastly\Cdn\Model\Config::FASTLY) {
-                return Config::VARNISH;
+                $result = Config::VARNISH;
             }
         }
+
         return $result;
     }
 }

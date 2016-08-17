@@ -9,6 +9,7 @@ capabilities for a blazing fast eCommerce site.
 ## Contents
 
 - [Description](#description)
+- [Documentation](#documentation)
 - [Support](#support)
 - [Features](#features)
 - [Contributing](#contributing)
@@ -29,11 +30,20 @@ The second component, the VCL, configures Fastly's Varnish to process the
 client requests and Magento's HTML responses according to the Cache-Control
 headers the Fastly_Cdn module adds to every response.
 
-## Support
+## Documentation
 
 Documentation for this module can be found in the
 [Documentation](Documentation/)
 folder.
+
+- [Installation instructions](Documentation/INSTALLATION.md)
+- [Configuration instructions](Documentation/CONFIGURATION.md)
+- [TLS configuration instructions](Documentation/TLS.md)
+- [Purging and Other Functions](Documentation/OTHER-FUNCTIONS.md)
+- [Troubleshooting instructions](Documentation/TROUBLESHOOTING.md)
+- [How to report bugs](Documentation/OPENING-ISSUES.md)
+
+## Support
 
 Help using this module can be found by posting to
 [Fastly's community forum](https://community.fastly.com/).
@@ -68,5 +78,5 @@ for a fast site.
 
 ## Contributing
 
-We welcome pull requests for issues and new functionality. Please see 
+We welcome pull requests for issues and new functionality. Please see
 [Contributing](Documentation/CONTRIBUTING.md) for more details.

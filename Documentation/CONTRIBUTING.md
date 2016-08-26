@@ -1,6 +1,7 @@
 # Contributing
 
- We welcome community contribution to this repository. To help add functionality or address issued please take the following steps:
+ We welcome community contribution to this repository. To help add
+ functionality or address issued please take the following steps:
 
 - Fork the repository from the master branch.
 - Create a new branch for your features / fixes.

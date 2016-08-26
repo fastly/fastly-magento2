@@ -82,7 +82,10 @@ case the backend is down or cannot respond properly.
 
 ### Purge category
 
-When enabled, this configures the module to listen for events which clear generated content for a 'category' and ties a cache purge to Fastly with these. Once cleared new content can be fetched and cached thus updating the content.
+When enabled, this configures the module to listen for events which clear
+generated content for a 'category' and ties a cache purge to Fastly with
+these. Once cleared new content can be fetched and cached thus updating the
+content.
 
 ### Purge product
 
@@ -157,3 +160,8 @@ country of your visitor matches the current store. To prevent redirects you
 have to add a mapping using the country code of that store and leave the other
 field empty. This way, if your customer is in the "right" store (based on the
 country), no GeoIP based action will be triggered.
+
+## Next Steps
+
+For production ecommerce sites TLS (SSL) is most certainly needed. The options
+for deploying this are documented in [TLS configuration](TLS.md).

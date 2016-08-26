@@ -5,6 +5,7 @@ This folder contains the collected documentation for the Fastly_Cdn module.
 ## Contents
 
 * [Installation instructions](INSTALLATION.md)
+* [TLS Deployment instructions](TLS.md)
 * [Configuration instructions](CONFIGURATION.md)
 * [Purging and Other Functions](OTHER-FUNCTIONS.md)
 * [Troubleshooting instructions](TROUBLESHOOTING.md)

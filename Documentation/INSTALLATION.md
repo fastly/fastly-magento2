@@ -26,13 +26,16 @@ You need an account with [fastly.com](https://www.fastly.com/signup) which allow
 If you need professional services for assistance with setting up your
 environment please contact magento@fastly.com.
 
+To use the module make sure that your server does not compress text content. This
+would prevent the ESI functionality.
+
 ## Installation
 
 The tasks involved in this are:
 
 - Add the Fastly_Cdn module to the Magento server. [(Instructions)](#magento-module)
 - Configure the Fastly_Cdn module on the Magento server. [(Instructions)](#configure-the-module)
-- Configure Fastly's service with the VCL. [(Instructions)](#configure-fastly-service)
+- Configure Fastly's service with the VCL. [(Instructions)](CONFIGURATION.md)
 
 ### Magento module
 
@@ -140,6 +143,8 @@ will be used to sync with the marketplace.
   Magento Filesystem Owner and the Web Server user.
 
 - Ensure that the cache's are cleaned and disable / re-enable the module.
+
+- Ensure that text content is not being compressed.
 
 If any critical issue occurs you can't easily solve, execute
 `bin/magento module:disable Fastly_Cdn` as the Magento Filesystem Owner to

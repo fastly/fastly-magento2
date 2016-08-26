@@ -96,9 +96,13 @@ in over TLS and the non-TLS for insecure requests.
 
 ## All TLS All the Time
 
-This configuration uses only TLS for all requests between the client and CDN (Fastly). The benefits of this are that all communications between client and server are encrypted. If a request lands at the CDN and is not encrypted it will be redirected to the secure URL. This helps avoid mixed content on pages.
+This configuration uses only TLS for all requests between the client and CDN
+(Fastly). The benefits of this are that all communications between client and
+server are encrypted. If a request lands at the CDN and is not encrypted it
+will be redirected to the secure URL. This helps avoid mixed content on pages.
 
-To set this up, configure the URLs in Magento to be secure. This can be done on the command line by:
+To set this up, configure the URLs in Magento to be secure. This can be done on
+the command line by:
 
 ```
 /usr/bin/php bin/magento setup:store-config:set \
@@ -107,6 +111,9 @@ To set this up, configure the URLs in Magento to be secure. This can be done on 
     --use-secure-admin='1'
 ```
 
-Make sure that the webserver shows that a request has had TLS offloaded by setting the environment variable 'Https' to 'On' as described above.
+Make sure that the webserver shows that a request has had TLS offloaded by
+setting the environment variable 'Https' to 'On' as described above.
 
-As a failsafe backup for any URLs which may not have the correct protocol prefixed to them add a rule to 'Force TLS' in Fastly. The rule is described in [Fastly's Documentation](https://docs.fastly.com/guides/securing-communications/allowing-only-tls-connections-to-your-site).
+As a failsafe for any URLs which may not have the correct protocol prefixed to
+them add a rule to 'Force TLS' in Fastly. The rule is described in
+[Fastly's Documentation](https://docs.fastly.com/guides/securing-communications/allowing-only-tls-connections-to-your-site).

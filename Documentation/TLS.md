@@ -44,7 +44,7 @@ Fastly provides. For testing it is possible to use
 option. If doing so, make sure to set the base-urls in Magento to the same name.
 
 In Fastly's Configure page set the origin port to 80 (or the listening port of
-the magento server). In the TLS options for the origin make sure that 'Connect
+the Magento server). In the TLS options for the origin make sure that 'Connect
 to backend using TLS' is set to 'No'. This tells Fastly to send requests to the
 origin unencrypted.
 

@@ -7,9 +7,8 @@ are detailed in their [documentation](https://docs.fastly.com/guides/securing-co
 
 - [Deployment Methods](#deployment-methods)
 - [Terminating TLS at the Edge](#tls-terminated-at-fastly)
-- [Encrypting from CDN to origin](#tls-all-the-way)
-- [Using TLS for all requests](#all-tls-all-the-time)
-- [Further TLS considerations](#further-tls-considerations)
+- [Encrypting from CDN to origin](#end-to-end-tls)
+- [Using TLS for all requests](#using-tls-for-all-requests)
 
 ## Deployment Methods
 
@@ -28,7 +27,7 @@ The most common deployment options are:
 
 - [TLS terminated at Fastly](#tls-terminated-at-fastly). All communication from
   Fastly to Magento is in the clear.
-- [TLS all the way](#tls-all-the-way). Communication is encrypted from the
+- [End to End TLS](#end-to-end-tls). Communication is encrypted from the
   client to Fastly and from Fastly to Magento.
 
 ## TLS Terminated at Fastly
@@ -60,7 +59,7 @@ achieved in Apache in a vhost:
 SetEnvIf HTTPS "on" HTTPS="on"
 ```
 
-## TLS All The Way
+## End to End TLS
 
 This configuration uses TLS connections between the user and the CDN (Fastly)
 and separately between Fastly and the Magento server. The advantage of this is
@@ -94,7 +93,7 @@ req.http.Fastly-SSL
 This will make sure that Fastly uses the secure origin for requests that came
 in over TLS and the non-TLS for insecure requests.
 
-## All TLS All the Time
+## Using TLS for All Requests
 
 This configuration uses only TLS for all requests between the client and CDN
 (Fastly). The benefits of this are that all communications between client and

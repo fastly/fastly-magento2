@@ -4,7 +4,7 @@ Thank you for using the "Fastly CDN module for Magento2" (Fastly_Cdn).
 
 This package contains everything you need to connect fastly.com (Fastly) with
 your Magento commerce shop and to get the most out of Fastly's powerful caching
-capabilities for a blazing fast eCommerce site.
+capabilities for a blazing fast e-commerce site.
 
 ## Contents
 
@@ -24,7 +24,7 @@ The Fastly_Cdn module consists of two main components:
 
 The Fastly_Cdn module relies on Magento2's page cache functionality and extends
 its Varnish capabilities to leverage Fastly's enhanced caching technology and
-GeoIP support.
+Geo-IP support.
 
 The second component, the VCL, configures Fastly's Varnish to process the
 client requests and Magento's HTML responses according to the Cache-Control

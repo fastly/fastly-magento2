@@ -94,6 +94,11 @@ sub vcl_recv {
 }
 
 sub vcl_fetch {
+
+    if (req.url ~ "^/(pub/)?(media|static)/.*") {
+        unset beresp.http.set-cookie;
+    }
+
 #FASTLY fetch
 
     if (beresp.status >= 500) {

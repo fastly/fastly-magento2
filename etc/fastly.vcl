@@ -94,6 +94,11 @@ sub vcl_recv {
 }
 
 sub vcl_fetch {
+
+    if (req.url ~ "^/(pub/)?(media|static)/.*") {
+        unset beresp.http.set-cookie;
+    }
+
 #FASTLY fetch
 
     if (beresp.status >= 500) {
@@ -175,6 +180,11 @@ sub vcl_fetch {
 
         set beresp.http.X-Surrogate-Key = beresp.http.Surrogate-Key;
         return (deliver);
+    }
+
+    # Cache 404's for only 1 minute
+    if (beresp.status == 404) {
+        set beresp.ttl = 60s;
     }
 
     return (deliver);

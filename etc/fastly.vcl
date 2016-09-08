@@ -182,6 +182,11 @@ sub vcl_fetch {
         return (deliver);
     }
 
+    # Cache 404's for only 1 minute
+    if (beresp.status == 404) {
+        set beresp.ttl = 60s;
+    }
+
     return (deliver);
 }
 

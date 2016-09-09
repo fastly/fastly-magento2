@@ -190,11 +190,6 @@ sub vcl_fetch {
         return (deliver);
     }
 
-    # Cache 404's for 1 minute.
-    if (beresp.status == 404 && req.url ~ "^/(pub/)?(media|static)/.*") {
-        set beresp.ttl = 60s;
-    }
-
     return (deliver);
 }
 

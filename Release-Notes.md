@@ -1,5 +1,14 @@
 # Fastly_Cdn Release Notes
 
+## 1.0.9
+
+- Updated etc/fastly.vcl to remove set-cookies on static content. Also to
+cache static 404's for 5 minutes.
+
+## 1.0.8
+
+- Some styling changes to better match Magento's style
+
 ## 1.0.7
 
 - bumped version.

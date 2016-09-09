@@ -97,7 +97,7 @@ sub vcl_fetch {
 
     # Remove Set-Cookies from responses for static content
     # to match the cookie removal in recv.
-    if (req.url ~ "^/(pub/)?(media|static)/.*") {
+    if (req.url ~ "^/(pub/)?(media|static)/") {
         unset beresp.http.set-cookie;
 
         # Set a short TTL for 404's

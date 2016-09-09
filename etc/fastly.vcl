@@ -95,8 +95,16 @@ sub vcl_recv {
 
 sub vcl_fetch {
 
+    # Remove Set-Cookies from responses for static content
+    # to match the cookie removal in recv.
     if (req.url ~ "^/(pub/)?(media|static)/.*") {
         unset beresp.http.set-cookie;
+
+        # Set a short TTL for 404's
+        if (beresp.status == 404) {
+            set beresp.ttl = 300s;
+        }
+
     }
 
 #FASTLY fetch
@@ -180,11 +188,6 @@ sub vcl_fetch {
 
         set beresp.http.X-Surrogate-Key = beresp.http.Surrogate-Key;
         return (deliver);
-    }
-
-    # Cache 404's for 1 minute.
-    if (beresp.status == 404 && req.url ~ "^/(pub/)?(media|static)/.*") {
-        set beresp.ttl = 60s;
     }
 
     return (deliver);

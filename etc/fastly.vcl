@@ -94,19 +94,6 @@ sub vcl_recv {
 }
 
 sub vcl_fetch {
-
-    # Remove Set-Cookies from responses for static content
-    # to match the cookie removal in recv.
-    if (req.url ~ "^/(pub/)?(media|static)/") {
-        unset beresp.http.set-cookie;
-
-        # Set a short TTL for 404's
-        if (beresp.status == 404) {
-            set beresp.ttl = 300s;
-        }
-
-    }
-
 #FASTLY fetch
 
     if (beresp.status >= 500) {
@@ -171,8 +158,8 @@ sub vcl_fetch {
         }
 
         # init surrogate keys
-        if (beresp.http.X-Magento-Tags) {
-            set beresp.http.Surrogate-Key = beresp.http.X-Magento-Tags " text";
+        if (beresp.http.X-Fastly-Tags) {
+            set beresp.http.Surrogate-Key = beresp.http.X-Fastly-Tags " text";
         } else {
             set beresp.http.Surrogate-Key = "text";
         }
@@ -223,7 +210,7 @@ sub vcl_deliver {
         # remove Varnish/proxy header
         remove resp.http.Age;
         remove resp.http.X-Magento-Debug;
-        remove resp.http.X-Magento-Tags;
+        remove resp.http.X-Fastly-Tags;
         remove resp.http.X-Surrogate-Key;
         remove resp.http.X-Magento-Cache-Control;
         remove resp.http.X-Powered-By;

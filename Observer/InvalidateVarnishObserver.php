@@ -20,6 +20,7 @@
  */
 namespace Fastly\Cdn\Observer;
 
+use Fastly\Cdn\Helper\CacheTags;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\PurgeCache;
 use Magento\Framework\Event\ObserverInterface;
@@ -39,13 +40,20 @@ class InvalidateVarnishObserver implements ObserverInterface
     protected $purgeCache;
 
     /**
+     * @var CacheTags
+     */
+    protected $cacheTags;
+
+    /**
      * @param Config $config
      * @param PurgeCache $purgeCache
+     * @param CacheTags $cacheTags
      */
-    public function __construct(Config $config, PurgeCache $purgeCache)
+    public function __construct(Config $config, PurgeCache $purgeCache, CacheTags $cacheTags)
     {
         $this->config = $config;
         $this->purgeCache = $purgeCache;
+        $this->cacheTags = $cacheTags;
     }
 
     /**
@@ -60,6 +68,7 @@ class InvalidateVarnishObserver implements ObserverInterface
             $object = $observer->getEvent()->getObject();
             if ($object instanceof \Magento\Framework\DataObject\IdentityInterface && $this->canPurgeObject($object)) {
                 foreach ($object->getIdentities() as $tag) {
+                    $tag = $this->cacheTags->convertCacheTags($tag);
                     $this->purgeCache->sendPurgeRequest($tag);
                 }
             }

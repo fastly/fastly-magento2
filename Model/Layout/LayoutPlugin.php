@@ -38,17 +38,25 @@ class LayoutPlugin
     protected $response;
 
     /**
+     * @var \Fastly\Cdn\Helper\CacheTags
+     */
+    protected $cacheTags;
+
+    /**
      * Constructor
      *
      * @param \Magento\Framework\App\ResponseInterface $response
      * @param \Fastly\Cdn\Model\Config $config
+     * @param \Fastly\Cdn\Helper\CacheTags $cacheTags
      */
     public function __construct(
         \Magento\Framework\App\ResponseInterface $response,
-        Config $config
+        Config $config,
+        \Fastly\Cdn\Helper\CacheTags $cacheTags
     ) {
         $this->response = $response;
         $this->config = $config;
+        $this->cacheTags = $cacheTags;
     }
 
     /**
@@ -94,7 +102,7 @@ class LayoutPlugin
             // Fastly expects surrogate keys separated by space. replace existing header.
             $header = $this->response->getHeader('X-Magento-Tags');
             if ($header instanceof \Zend\Http\Header\HeaderInterface) {
-                $this->response->setHeader($header->getFieldName(), str_replace(',', ' ', $header->getFieldValue()), true);
+                $this->response->setHeader($header->getFieldName(),  $this->cacheTags->convertCacheTags(str_replace(',', ' ', $header->getFieldValue())), true);
             }
         }
         return $result;

@@ -121,7 +121,7 @@ will be used to sync with the marketplace.
     `<magento home>/app/code/Fastly/Cdn/`.
 4. At this point, it is possible to install with either the: 
    
-   **Web Setup Wizard's Component Manager (only Magento **2.0.x** versions, for 2.1.x use command line)**
+   **Web Setup Wizard's Component Manager (only Magento 2.0.x versions, for 2.1.x use command line)**
    1. To install in the Web Setup Wizard. Open a browser and log in to the Magento
        admin section with administrative privileges.
    1. Navigate to 'System > Web Setup Wizard'.
@@ -130,14 +130,14 @@ will be used to sync with the marketplace.
    1. Follow the on screen instructions ensuring to create backups.
    
    **Command line**
-   1. To enable the module on the command line change directory to the Magento
+      1. To enable the module on the command line change directory to the Magento
        Home directory. Ensure you are logged in as the Magento filesystem owner.
-   1. Verify that 'Fastly_Cdn' is listed and shows as disabled: `bin/magento
+      1. Verify that 'Fastly_Cdn' is listed and shows as disabled: `bin/magento
        module:status`.
-   1. Enable the module with: `bin/magento module:enable Fastly_Cdn`.
-   1. Then we need to ensure the configuration tasks are run: `bin/magento
+      1. Enable the module with: `bin/magento module:enable Fastly_Cdn`.
+      1. Then we need to ensure the configuration tasks are run: `bin/magento
        setup:upgrade`.
-   1. Finally on the command line to clear Magento's cache run: `bin/magento
+      1. Finally on the command line to clear Magento's cache run: `bin/magento
        cache:clean`.
 
 1. Once this has been completed log in to the Magento Admin panel and proceed

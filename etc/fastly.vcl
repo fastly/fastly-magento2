@@ -94,7 +94,9 @@ sub vcl_recv {
 }
 
 sub vcl_fetch {
-
+    if (req.url ~ "^/(pub/)?(media|static)/.*") {
+        unset beresp.http.set-cookie;
+    }
     # Remove Set-Cookies from responses for static content
     # to match the cookie removal in recv.
     if (req.url ~ "^/(pub/)?(media|static)/") {

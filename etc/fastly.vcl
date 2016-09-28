@@ -17,6 +17,10 @@
 sub vcl_recv {
 #FASTLY recv
 
+    if (req.url ~ "^/static/version(\d*/)?(.*)$") {
+       set req.url = "/static/" + re.group.2 + "?" + re.group.1;
+    }   
+
     # auth for purging
     if (req.request == "FASTLYPURGE") {
         # extract token signature and expiration

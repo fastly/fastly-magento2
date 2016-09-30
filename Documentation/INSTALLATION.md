@@ -73,52 +73,52 @@ will be used to sync with the marketplace.
 
 1. You will first need to SSH into the machine that is running Magento. This will look something like this.
 
-```
-ssh username@123.456.78.90
-```
+    ```
+    ssh username@123.456.78.90
+    ```
 
-1. If the user that you logged in as is not the Magento filesystem owner, you may need to switch users. Depending on your installation this could be the ecommerce user, e.g. `su - ecommerce`.
+2. If the user that you logged in as is not the Magento filesystem owner, you may need to switch users. Depending on your installation this could be the ecommerce user, e.g. `su - ecommerce`.
 
-1. Go to the Magento home directory. You should see an `index.html` and an `index.php` in this directory. Depending on your Magento installation this could be at `/var/www/html`.
+3. Go to the Magento home directory. You should see an `index.html` and an `index.php` in this directory. Depending on your Magento installation this could be at `/var/www/html`.
 
-1. Ensure that the files in `app/etc` inside the Magento home directory are write enabled for the Magento filesystem owner that you are logged in as:
+4. Ensure that the files in `app/etc` inside the Magento home directory are write enabled for the Magento filesystem owner that you are logged in as:
 
-```
-ls app/etc -l
-```
+    ```
+    ls app/etc -l
+    ```
 
-You are looking for a `w` in the third position from the left for each file, e.g. `-rw-rw-r--`. If you have something like `-r--rw-r--` you will need to use the [chmod](https://en.wikipedia.org/wiki/Chmod) command to change permissions on the directory.
+    You are looking for a `w` in the third position from the left for each file, e.g. `-rw-rw-r--`. If you have something like `-r--rw-r--` you will need to use the [chmod](https://en.wikipedia.org/wiki/Chmod) command to change permissions on the directory.
 
-1. Ensure that Git and Composer are installed, by checking which version you have:
+5. Ensure that Git and Composer are installed, by checking which version you have:
 
-```
-git --version
-composer --version
-```
+    ```
+    git --version
+    composer --version
+    ```
 
-If they are not present, [here](https://git-scm.com/download/linux) are instructions for installing Git, and [here](https://getcomposer.org/download/) are instructions for installing Composer.
+    If they are not present, [here](https://git-scm.com/download/linux) are instructions for installing Git, and [here](https://getcomposer.org/download/) are instructions for installing Composer.
 
-1. Inside the Magento Home directory add the Composer repository for the Fastly module:
+6. Inside the Magento Home directory add the Composer repository for the Fastly module:
 
     ```
     composer config repositories.fastly-magento2 git "https://github.com/fastly/fastly-magento2.git"
     ```
 
-1. Next, fetch the Fastly module:
+7. Next, fetch the Fastly module:
 
     ```
     composer require fastly/magento2
     ```
 
-You may receive an alert that a package is missing or has been abandoned. Provided the alert is green you are fine to proceed.
+    You may receive an alert that a package is missing or has been abandoned. Provided the alert is green you are fine to proceed.
 
-1. Once the installation process has completed, enable the Fastly module:
+8. Once the installation process has completed, enable the Fastly module:
 
     ```
     bin/magento module:enable Fastly_Cdn
     ```
 
-1. Finally clean up tasks:
+9. Finally clean up tasks:
 
     ```
     bin/magento setup:upgrade
@@ -130,7 +130,7 @@ You may receive an alert that a package is missing or has been abandoned. Provid
     bin/magento cache:clean
     ```
 
-1. Once this has completed log in to the Magento Admin panel and proceed to
+10. Once this has completed log in to the Magento Admin panel and proceed to
     [Configuring the Module](CONFIGURATION.md).
 
 #### Installing from zip file

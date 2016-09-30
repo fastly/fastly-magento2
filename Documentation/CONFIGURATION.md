@@ -46,6 +46,8 @@ to the admin section of the Magento server. Navigate to:
 Stores > Configuration > Advanced > System
 ```
 
+![Fastly Configuration](/images/fastly_config.jpg "Fastly Configuration Page")
+
 Expand the 'Full Page Cache' section then choose 'Fastly CDN' in the 'Caching
 Application' dropdown.
 

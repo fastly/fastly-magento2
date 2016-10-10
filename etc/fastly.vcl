@@ -53,10 +53,6 @@ sub vcl_recv {
         unset req.http.X-Exp;
     }
 
-    # Deactivate gzip
-    set req.http.X-Orig-Accept-Encoding = req.http.Accept-Encoding;
-    unset req.http.Accept-Encoding;
-
     # set HTTPS header for offloaded TLS
     if (req.http.Fastly-SSL) {
         set req.http.Https = "on";
@@ -133,7 +129,7 @@ sub vcl_fetch {
         esi;
     } else {
         # enable gzip for all static content
-        if ((beresp.status == 200 || beresp.status == 404) && (beresp.http.content-type ~ "^(text\/html|application\/x\-javascript|text\/css|application\/javascript|text\/javascript|application\/json|application\/vnd\.ms\-fontobject|application\/x\-font\-opentype|application\/x\-font\-truetype|application\/x\-font\-ttf|application\/xml|font\/eot|font\/opentype|font\/otf|image\/svg\+xml|image\/vnd\.microsoft\.icon|text\/plain|text\/xml)\s*($|;)" || req.url ~ "\.(css|js|html|eot|ico|otf|ttf|json)($|\?)" ) ) {
+        if ((beresp.status == 200 || beresp.status == 404) && (beresp.http.content-type ~ "^(application\/x\-javascript|text\/css|application\/javascript|text\/javascript|application\/json|application\/vnd\.ms\-fontobject|application\/x\-font\-opentype|application\/x\-font\-truetype|application\/x\-font\-ttf|application\/xml|font\/eot|font\/opentype|font\/otf|image\/svg\+xml|image\/vnd\.microsoft\.icon|text\/plain)\s*($|;)" || req.url ~ "\.(css|js|html|eot|ico|otf|ttf|json)($|\?)" ) ) {
             # always set vary to make sure uncompressed versions dont always win
             if (!beresp.http.Vary ~ "Accept-Encoding") {
                 if (beresp.http.Vary) {
@@ -142,7 +138,7 @@ sub vcl_fetch {
                     set beresp.http.Vary = "Accept-Encoding";
                 }
             }
-            if (req.http.X-Orig-Accept-Encoding == "gzip") {
+            if (req.http.Accept-Encoding == "gzip") {
                 set beresp.gzip = true;
             }
         }
@@ -209,6 +205,9 @@ sub vcl_hit {
 
 
 sub vcl_miss {
+    # Deactivate gzip on origin
+    unset bereq.http.Accept-Encoding;
+
 #FASTLY miss
 
     return(fetch);

@@ -290,10 +290,8 @@ sub vcl_hash {
     set req.hash += req.http.host;
     set req.hash += req.url;
 
-    if (req.http.cookie ~ "X-Magento-Vary=") {
-        set req.http.X-Magento-Vary = regsub(req.http.cookie, "^.*?X-Magento-Vary=([^;]+);*.*$", "\1");
-        set req.hash += req.http.X-Magento-Vary;
-        unset req.http.X-Magento-Vary;
+    if (req.http.cookie:X-Magento-Vary ) {
+        set req.hash += req.http.cookie:X-Magento-Vary;
     }
     
     set req.hash += "#####GENERATION#####";

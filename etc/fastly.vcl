@@ -68,15 +68,16 @@ sub vcl_recv {
         return (pass);
     }
 
-    # Bypass shopping cart and checkout requests
-    if (req.url ~ "/checkout") {
-        return (pass);
-    }
-
     # static files are always cacheable. remove SSL flag and cookie
     if (req.url ~ "^/(pub/)?(media|static)/.*") {
         unset req.http.Https;
         unset req.http.Cookie;
+        return (lookup);
+    }
+
+    # Bypass shopping cart and checkout requests
+    if (req.url ~ "/checkout") {
+        return (pass);
     }
 
     # geoip lookup

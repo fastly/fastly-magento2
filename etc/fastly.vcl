@@ -17,6 +17,11 @@
 sub vcl_recv {
 #FASTLY recv
 
+    # Per suggestions in https://github.com/sdinteractive/SomethingDigital_PageCacheParams
+    # we'll strip out query parameters used in Google AdWords, Mailchimp tracking
+    set req.http.Fastly-Original-URL = req.url;
+    set req.url = querystring.regfilter(req.url, "^(utm_.*|gclid|gdftrk|_ga|mc_.*)");
+
     if (req.url ~ "^/static/version(\d*/)?(.*)$") {
        set req.url = "/static/" + re.group.2 + "?" + re.group.1;
     }   

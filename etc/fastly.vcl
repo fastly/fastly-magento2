@@ -15,6 +15,13 @@
 # This is a basic VCL configuration file for Fastly CDN for Magento 2 module.
 
 sub vcl_recv {
+
+    # ESI includes that are HTTPs links are incorrectly handled so we need to make
+    # sure we strip hostname and protocol parts from them
+    if (req.url ~ "^https://([^/]+)(/.*)$") {
+       set req.http.Host = re.group.1;
+       set req.url = re.group.2;
+    }
 #FASTLY recv
 
     # Per suggestions in https://github.com/sdinteractive/SomethingDigital_PageCacheParams

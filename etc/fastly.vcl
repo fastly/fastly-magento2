@@ -97,8 +97,10 @@ sub vcl_recv {
         if (req.http.cookie ~ "(X-Magento-Vary|form_key)=") {
             error 200 "";
         } else {
-            # append parameter with country code
-            set req.url = req.url "?country_code=" geoip.country_code;
+            # append parameter with country code only if it doesn't exist already
+            if ( req.url !~ "country_code=" ) {
+                set req.url = req.url "?country_code=" if ( req.http.geo_override, req.http.geo_override, geoip.country_code);
+            }
         }
     }
 

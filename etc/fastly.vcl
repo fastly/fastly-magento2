@@ -23,11 +23,6 @@ sub vcl_recv {
         set req.url = re.group.2;
     }
 
-    # Per suggestions in https://github.com/sdinteractive/SomethingDigital_PageCacheParams
-    # we'll strip out query parameters used in Google AdWords, Mailchimp tracking
-    set req.http.Fastly-Original-URL = req.url;
-    set req.url = querystring.regfilter(req.url, "^(utm_.*|gclid|gdftrk|_ga|mc_.*)");
-
     if (req.url ~ "^/static/version(\d*/)?(.*)$") {
        set req.url = "/static/" + re.group.2 + "?" + re.group.1;
     }   
@@ -78,19 +73,7 @@ sub vcl_recv {
     if (req.request != "GET" && req.request != "HEAD") {
         return (pass);
     }
-
-    # static files are always cacheable. remove SSL flag and cookie
-    if (req.url ~ "^/(pub/)?(media|static)/.*") {
-        unset req.http.Https;
-        unset req.http.Cookie;
-        return (lookup);
-    }
-
-    # Bypass shopping cart and checkout requests
-    if (req.url ~ "/checkout") {
-        return (pass);
-    }
-
+    
     # geoip lookup
     if (req.url ~ "fastlyCdn/geoip/getaction/") {
         # check if GeoIP has been already processed by client. this normally happens before essential cookies are set.
@@ -102,6 +85,24 @@ sub vcl_recv {
                 set req.url = req.url "?country_code=" if ( req.http.geo_override, req.http.geo_override, geoip.country_code);
             }
         }
+    } else {
+        # Per suggestions in https://github.com/sdinteractive/SomethingDigital_PageCacheParams
+        # we'll strip out query parameters used in Google AdWords, Mailchimp tracking
+        set req.http.Fastly-Original-URL = req.url;
+        set req.url = querystring.regfilter(req.url, "^(utm_.*|gclid|gdftrk|_ga|mc_.*)");
+    }
+    
+
+    # static files are always cacheable. remove SSL flag and cookie
+    if (req.url ~ "^/(pub/)?(media|static)/.*") {
+        unset req.http.Https;
+        unset req.http.Cookie;
+        return (lookup);
+    }
+
+    # Bypass shopping cart and checkout requests
+    if (req.url ~ "/checkout") {
+        return (pass);
     }
 
     return(lookup);

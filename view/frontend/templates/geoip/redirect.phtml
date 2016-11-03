@@ -28,12 +28,9 @@
 ?>
 <script type="text/javascript">
     //<![CDATA[
-    if ((!geoIpActionProcessed)) {
-        document.cookie = geoIpActionCookie;
-        var redirectUrl = "<?php echo $block->escapeUrl($block->getRedirectUrl()) ?>";
+        var redirectUrl = '<?php echo $block->escapeJsQuote($block->getRedirectUrl()) ?>';
         if (redirectUrl.length > 0) {
             document.location.href = redirectUrl;
         }
-    };
     //]]>
 </script>

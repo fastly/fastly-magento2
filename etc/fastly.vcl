@@ -17,6 +17,12 @@
 sub vcl_recv {
 #FASTLY recv
 
+    # Fixup for Varnish ESI not dealing with https:// absolute URLs well
+    if (req.is_esi_subreq && req.url ~ "/https://([^/]+)(/.*)$") {
+        set req.http.Host = re.group.1;
+        set req.url = re.group.2;
+    }
+
     # Per suggestions in https://github.com/sdinteractive/SomethingDigital_PageCacheParams
     # we'll strip out query parameters used in Google AdWords, Mailchimp tracking
     set req.http.Fastly-Original-URL = req.url;

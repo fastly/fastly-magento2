@@ -13,9 +13,11 @@
 ###############################################################################
 
 # This is a basic VCL configuration file for Fastly CDN for Magento 2 module.
+import querystring;
 
 sub vcl_recv {
 #FASTLY recv
+
 
     # Fixup for Varnish ESI not dealing with https:// absolute URLs well
     if (req.is_esi_subreq && req.url ~ "/https://([^/]+)(/.*)$") {

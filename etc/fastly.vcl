@@ -17,12 +17,14 @@
 sub vcl_recv {
 #FASTLY recv
 
-
     # Fixup for Varnish ESI not dealing with https:// absolute URLs well
     if (req.is_esi_subreq && req.url ~ "/https://([^/]+)(/.*)$") {
         set req.http.Host = re.group.1;
         set req.url = re.group.2;
     }
+
+    # Sort the query arguments
+    set req.url = boltsort.sort(req.url);
 
     if (req.url ~ "^/static/version(\d*/)?(.*)$") {
        set req.url = "/static/" + re.group.2 + "?" + re.group.1;

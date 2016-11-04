@@ -13,7 +13,6 @@
 ###############################################################################
 
 # This is a basic VCL configuration file for Fastly CDN for Magento 2 module.
-import querystring;
 
 sub vcl_recv {
 #FASTLY recv
@@ -184,10 +183,7 @@ sub vcl_fetch {
     if (beresp.ttl > 0s && (req.request == "GET" || req.request == "HEAD")) {
         unset beresp.http.set-cookie;
         if (req.url !~ "^/(pub/)?(media|static)/.*") {
-            set beresp.http.Pragma = "no-cache";
-            set beresp.http.Expires = "-1";
-            set beresp.http.Cache-Control = "no-store, no-cache, must-revalidate, max-age=0";
-            set beresp.grace = 1m;
+            set beresp.grace = 86400m;
         }
 
         # init surrogate keys
@@ -234,6 +230,13 @@ sub vcl_miss {
 }
 
 sub vcl_deliver {
+
+    # Send no cache headers to end users for non-static content. Also make sure
+    # we only set this on the edge nodes and not on shields
+    if (req.url !~ "^/(pub/)?(media|static)/.*" && !req.http.Fastly-FF ) {
+        set resp.http.Pragma = "no-cache";
+        set resp.http.Cache-Control = "no-store, no-cache, must-revalidate, max-age=0";
+    }
 
     # Add an easy way to see whether custom Fastly VCL has been uploaded
     if ( req.http.Fastly-Debug ) {

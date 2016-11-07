@@ -326,10 +326,12 @@ sub vcl_hash {
         set req.hash += req.http.cookie:X-Magento-Vary;
     }
     
-    set req.hash += "#####GENERATION#####";
-
     ### {{ design_exceptions_code }} ###
 
+# Please do not remove below. It's required for purge all functionality
+#FASTLY hash
+
     return (hash);
+
 }
 

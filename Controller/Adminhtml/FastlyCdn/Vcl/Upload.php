@@ -116,13 +116,13 @@ class Upload extends \Magento\Backend\App\Action
                 return $result->setData(array('status' => false, 'msg' => 'Failed to upload the VCL file.'));
             }
 
+            $this->api->setVclAsMain($clone->number, $vclName);
+
             $validate = $this->api->validateServiceVersion($clone->number);
 
-            if(!$validate) {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to validate service version.'));
+            if($validate->status == 'error') {
+                return $result->setData(array('status' => false, 'msg' => 'Failed to validate service version: '.$validate->msg));
             }
-
-            $this->api->setVclAsMain($clone->number, $vclName);
 
             if($activateVcl === 'true') {
                 $this->api->activateVersion($clone->number);

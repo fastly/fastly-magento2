@@ -28,7 +28,11 @@ sub vcl_recv {
 
     if (req.url ~ "^/static/version(\d*/)?(.*)$") {
        set req.url = "/static/" + re.group.2 + "?" + re.group.1;
-    }   
+    }
+
+    if (req.http.cookie:X-Magento-Vary ) {
+        set req.http.X-Magento-Vary = req.http.cookie:X-Magento-Vary;
+    }
 
     # auth for purging
     if (req.request == "FASTLYPURGE") {
@@ -145,6 +149,13 @@ sub vcl_fetch {
     if (beresp.http.Content-Type ~ "text/html" || beresp.http.Content-Type ~ "text/xml") {
         # enable ESI feature for Magento response by default
         esi;
+        if (!beresp.http.Vary ~ "X-Magento-Vary, Https") {
+            if (beresp.http.Vary) {
+                    set beresp.http.Vary = beresp.http.Vary ", X-Magento-Vary, Https";
+                } else {
+                    set beresp.http.Vary = "X-Magento-Vary, Https";
+                }
+        }
         # Since varnish doesn't compress ESIs we need to hint to the HTTP/2 terminators to
         # compress it
         set beresp.http.x-compress-hint = "on";
@@ -318,13 +329,8 @@ sub vcl_pass {
 }
 
 sub vcl_hash {
-    set req.hash += req.http.Https;
     set req.hash += req.http.host;
     set req.hash += req.url;
-
-    if (req.http.cookie:X-Magento-Vary ) {
-        set req.hash += req.http.cookie:X-Magento-Vary;
-    }
     
     ### {{ design_exceptions_code }} ###
 

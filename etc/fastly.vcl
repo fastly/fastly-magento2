@@ -29,9 +29,12 @@ sub vcl_recv {
     if (req.url ~ "^/static/version(\d*/)?(.*)$") {
        set req.url = "/static/" + re.group.2 + "?" + re.group.1;
     }
-
+    
+    # User's Cookie may contain some Magento Vary items we should vary on
     if (req.http.cookie:X-Magento-Vary ) {
         set req.http.X-Magento-Vary = req.http.cookie:X-Magento-Vary;
+    } else {
+        unset req.http.X-Magento-Vary;
     }
 
     # auth for purging
@@ -149,11 +152,11 @@ sub vcl_fetch {
     if (beresp.http.Content-Type ~ "text/html" || beresp.http.Content-Type ~ "text/xml") {
         # enable ESI feature for Magento response by default
         esi;
-        if (!beresp.http.Vary ~ "X-Magento-Vary, Https") {
+        if (!beresp.http.Vary ~ "X-Magento-Vary,Https") {
             if (beresp.http.Vary) {
-                    set beresp.http.Vary = beresp.http.Vary ", X-Magento-Vary, Https";
+                    set beresp.http.Vary = beresp.http.Vary ",X-Magento-Vary,Https";
                 } else {
-                    set beresp.http.Vary = "X-Magento-Vary, Https";
+                    set beresp.http.Vary = "X-Magento-Vary,Https";
                 }
         }
         # Since varnish doesn't compress ESIs we need to hint to the HTTP/2 terminators to
@@ -244,11 +247,17 @@ sub vcl_miss {
 
 sub vcl_deliver {
 
+
     # Send no cache headers to end users for non-static content. Also make sure
     # we only set this on the edge nodes and not on shields
     if (req.url !~ "^/(pub/)?(media|static)/.*" && !req.http.Fastly-FF ) {
         set resp.http.Pragma = "no-cache";
         set resp.http.Cache-Control = "no-store, no-cache, must-revalidate, max-age=0";
+    }
+
+    # Remove X-Magento-Vary and HTTPs Vary served to the user
+    if ( !req.http.Fastly-FF ) {
+        set resp.http.Vary = regsub(resp.http.Vary, "X-Magento-Vary,Https", "Cookie");
     }
 
     # Add an easy way to see whether custom Fastly VCL has been uploaded

@@ -25,7 +25,6 @@
         <section id="system">
             <group id="full_page_cache">
                 <group id="fastly" translate="label" showInDefault="1" showInWebsite="0" showInStore="0" sortOrder="615">
-                    <expanded>1</expanded>
                     <label>Fastly Configuration</label>
                     <comment><![CDATA[To use this plugin you need a Fastly account that can upload VCL.
                     <a href="https://www.fastly.com/signup">Create a free account</a> and email <a href="mailto:support@fastly.com?subject=Please%20Turn%20on%20custom%20VCL%20for%20Magento”">support@fastly.com</a> with a

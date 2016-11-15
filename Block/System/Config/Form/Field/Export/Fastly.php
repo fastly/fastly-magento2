@@ -63,7 +63,7 @@ class Fastly extends Field
         )->setData(
             [
                 'id' => 'fastly_vcl_export_button',
-                'label' => __('Download VCL to my computer'),
+                'label' => __('Download Fastly VCL'),
                 'onclick' => "setLocation('{$this->getExportUrl()}')"
             ]
         );

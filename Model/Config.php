@@ -64,7 +64,7 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * XML path to Fastly service ID
      */
-    const XML_FASTLY_API_ENDPOINT = 'system/full_page_cache/fastly/api_endpoint';
+    const FASTLY_API_ENDPOINT = 'https://api.fastly.com/';
 
     /**
      * XML path to Fastly service ID
@@ -129,7 +129,7 @@ class Config extends \Magento\PageCache\Model\Config
      */
     public function getApiEndpoint()
     {
-        return $this->_scopeConfig->getValue(self::XML_FASTLY_API_ENDPOINT);
+        return self::FASTLY_API_ENDPOINT;
     }
 
     /**

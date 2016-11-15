@@ -1,12 +1,14 @@
 <?php
-namespace Fastly\Cdn\Block\System\Config\Form\Field\Export;
+namespace Fastly\Cdn\Block\System\Config\Form\Field;
 
 use Magento\Backend\Block\Template\Context;
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 
-class Fastly extends Field
+class UploadVclBtn extends Field
 {
+    protected $_template = 'Fastly_Cdn::system/config/form/field/uploadVclBtn.phtml';
+
     /**
      * @param Context $context
      * @param array $data
@@ -38,17 +40,17 @@ class Fastly extends Field
      */
     protected function _getElementHtml(AbstractElement $element)
     {
-        return $this->getButtonHtml();
+        return $this->_toHtml();
     }
 
     /**
-     * Return Fastly VCL export URL
+     * Return ajax url for collect button
      *
      * @return string
      */
-    public function getExportUrl()
+    public function getAjaxUrl()
     {
-       return $this->getUrl('adminhtml/fastlyCdn/exportVarnishConfig');
+       return $this->getUrl('adminhtml/fastlyCdn/vcl/serviceinfo');
     }
 
     /**
@@ -62,9 +64,8 @@ class Fastly extends Field
             'Magento\Backend\Block\Widget\Button'
         )->setData(
             [
-                'id' => 'fastly_vcl_export_button',
-                'label' => __('Download Fastly VCL'),
-                'onclick' => "setLocation('{$this->getExportUrl()}')"
+                'id' => 'fastly_vcl_upload_button',
+                'label' => __('Upload VCL to Fastly'),
             ]
         );
 

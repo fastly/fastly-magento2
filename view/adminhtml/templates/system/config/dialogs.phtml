@@ -1,0 +1,63 @@
+<?php
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+?>
+<script type="text/x-magento-template" id="fastly-uploadvcl-template">
+    <div class="messages">
+        <div class="message message-warning fastly-message-warning" style="display: none">
+            <?php /* @escapeNotVerified */ echo __("You are about to clone version #x.")?>
+            <?php /* @escapeNotVerified */ echo __("We'll upload your VCL to version #y.")?>
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="vcl-upload-form" class="form-inline" enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field maintenance-checkbox-container">
+                <label for="fastly_activate_vcl" class="admin__field-label"><span><?php /* @escapeNotVerified */ echo __('Activate VCL after upload')?></span></label>
+                <div class="admin__field-control">
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox" type="checkbox" name="fastly_activate_vcl" id="fastly_activate_vcl"/>
+                        <label class="admin__field-label" for="fastly_activate_vcl"></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field maintenance-checkbox-container" id="exclude-media-checkbox-container" style="display: none;">
+                <label for="exclude_media" class="admin__field-label"><span><?php /* @escapeNotVerified */ echo __('Exclude')?></span></label>
+                <div class="admin__field-control">
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox" type="checkbox" name="exclude_media" value="1" id="exclude_media"/>
+                        <label class="admin__field-label" for="exclude_media"><?php /* @escapeNotVerified */ echo __('Exclude media folder from backup') ?></label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</script>
+
+<?php
+$serviceInfoUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/serviceInfo');
+$vclUploadUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/upload');
+$customerInfo = $block->getUrl('adminhtml/fastlyCdn_Vcl/customerInfo');
+?>
+
+
+<script type="text/x-magento-init">
+        {
+            "*": {
+                "Fastly_Cdn/js/uploadvcl": {
+                    "serviceInfoUrl": "<?php echo $block->escapeJsQuote($serviceInfoUrl);?>",
+                    "vclUploadUrl": "<?php echo $block->escapeJsQuote($vclUploadUrl);?>",
+                    "customerInfoUrl": "<?php echo $block->escapeJsQuote($customerInfo);?>"
+                }
+            }
+        }
+</script>
+
+

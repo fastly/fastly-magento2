@@ -168,4 +168,141 @@ class Api
 
         return true;
     }
+
+
+    /**
+     * Get the logged in customer details
+     *
+     * @return bool|mixed
+     */
+    public function getCustomerInfo()
+    {
+        $uri = $this->config->getApiEndpoint() . 'current_customer';
+        $result = $this->_fetch($uri);
+
+        return $result;
+    }
+
+    /**
+     * List detailed information on a specified service
+     *
+     * @return bool|mixed
+     */
+    public function checkServiceDetails()
+    {
+        $uri = rtrim($this->_getApiServiceUri(), '/');
+        $result = $this->_fetch($uri);
+
+        return $result;
+    }
+
+    /**
+     * Clone the current configuration into a new version.
+     *
+     * @param $curVersion
+     * @return bool|mixed
+     */
+    public function cloneVersion($curVersion)
+    {
+        $url = $this->_getApiServiceUri() . 'version/'.$curVersion.'/clone';
+        $result = $this->_fetch($url, \Zend_Http_Client::PUT);
+
+        return $result;
+    }
+
+    /**
+     * Upload a VCL for a particular service and version
+     *
+     * @param array $vcl
+     * @param $version
+     * @return bool|mixed
+     */
+    public function uploadVcl($version, $vcl)
+    {
+        $url = $this->_getApiServiceUri() . 'version/' .$version. '/vcl';
+        $result = $this->_fetch($url, 'POST', $vcl);
+
+        return $result;
+    }
+
+    /**
+     * Set the specified VCL as the main
+     *
+     * @param $version
+     * @param string $name
+     * @return bool|mixed
+     */
+    public function setVclAsMain($version, $name)
+    {
+        $url = $this->_getApiServiceUri() . 'version/' .$version. '/vcl/' .$name. '/main';
+        $result = $this->_fetch($url, 'PUT');
+
+        return $result;
+    }
+
+    /**
+     * Validate the version for a particular service and version.
+     *
+     * @param $version
+     * @return bool|mixed
+     */
+    public function validateServiceVersion($version)
+    {
+        $url = $this->_getApiServiceUri() . 'version/' .$version. '/validate';
+        $result = $this->_fetch($url, 'GET');
+
+        return $result;
+    }
+
+    /**
+     * Activate the current version.
+     *
+     * @param $version
+     * @return bool|mixed
+     */
+    public function activateVersion($version)
+    {
+        $url = $this->_getApiServiceUri() . 'version/' .$version. '/activate';
+        $result = $this->_fetch($url, 'PUT');
+
+        return $result;
+    }
+
+    /**
+     * @param $uri
+     * @param string $method
+     * @param string $body
+     * @return bool|mixed
+     */
+    protected function _fetch($uri, $method = \Zend_Http_Client::GET, $body = '')
+    {
+        // set headers
+        $headers = [
+            self::FASTLY_HEADER_AUTH  . ': ' . $this->config->getApiKey(),
+            'Accept: application/json'
+        ];
+
+        try {
+            $client = $this->curlFactory->create();
+            if($method == \Zend_Http_Client::PUT) {
+                $client->addOption(CURLOPT_CUSTOMREQUEST, 'PUT');
+            }
+            $client->write($method, $uri, '1.1', $headers, $body);
+            $response = $client->read();
+            $responseBody = \Zend_Http_Response::extractBody($response);
+            $responseCode = \Zend_Http_Response::extractCode($response);
+            $client->close();
+
+            // check response
+            if ($responseCode != '200') {
+                throw new \Exception('Return status ' . $responseCode);
+            }
+
+        } catch (\Exception $e) {
+            $this->logger->critical($e->getMessage(), $uri);
+            return false;
+        }
+
+        return json_decode($responseBody);
+    }
 }

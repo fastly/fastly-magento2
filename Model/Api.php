@@ -152,6 +152,9 @@ class Api
         try {
             $client = $this->curlFactory->create();
             $client->setConfig(['timeout' => self::PURGE_TIMEOUT]);
+            if($method == 'PURGE') {
+                $client->addOption(CURLOPT_CUSTOMREQUEST, 'PURGE');
+            }
             $client->write($method, $uri, '1.1', $headers);
             $responseBody = $client->read();
             $responseCode = \Zend_Http_Response::extractCode($responseBody);

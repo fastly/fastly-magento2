@@ -74,9 +74,11 @@ sub vcl_recv {
         set req.http.Https = "on";
     }
 
-    # disable ESI processing on Origin Shield
     if (req.http.Fastly-FF) {
+        # disable ESI processing on Origin Shield
         set req.esi = false;
+        # Needed for proper handling of stale while revalidated when shielding is involved
+        set req.max_stale_while_revalidate = 0s;
     }
 
     # We only deal with GET and HEAD by default
@@ -119,6 +121,22 @@ sub vcl_recv {
 }
 
 sub vcl_fetch {
+
+    /* handle 5XX (or any other unwanted status code) */
+    if (beresp.status >= 500 && beresp.status < 600) {
+
+        /* deliver stale if the object is available */
+        if (stale.exists) {
+        return(deliver_stale);
+        }
+
+        if (req.restarts < 1 && (req.request == "GET" || req.request == "HEAD")) {
+        restart;
+        }
+
+        /* else go to vcl_error to deliver a synthetic */
+        error 503;
+    }
 
     # Remove Set-Cookies from responses for static content
     # to match the cookie removal in recv.
@@ -247,6 +265,12 @@ sub vcl_miss {
 
 sub vcl_deliver {
 
+    if (resp.status >= 500 && resp.status < 600) {
+        /* restart if the stale object is available */
+        if (stale.exists) {
+            restart;
+        }
+    }
 
     # Send no cache headers to end users for non-static content. Also make sure
     # we only set this on the edge nodes and not on shields
@@ -303,6 +327,20 @@ sub vcl_error {
         set obj.response = "Malformed request";
         synthetic "";
         return (deliver);
+    }
+
+    /* handle 503s */
+    if (obj.status >= 500 && obj.status < 600) {
+
+        /* deliver stale object if it is available */
+        if (stale.exists) {
+            return(deliver_stale);
+        }
+
+        /* otherwise, return a synthetic */
+        /* include your HTML response here */
+        synthetic {"<!DOCTYPE html><html>Trouble connecting to origin</html>"};
+        return(deliver);
     }
 
     # error 200

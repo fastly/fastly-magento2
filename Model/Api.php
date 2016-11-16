@@ -132,17 +132,25 @@ class Api
      */
     protected function _purge($uri, $method = \Zend_Http_Client::POST)
     {
-        // create purge token
-        $expiration   = time() + self::PURGE_TOKEN_LIFETIME;
-        $stringToSign = parse_url($uri, PHP_URL_PATH) . $expiration;
-        $signature    = hash_hmac('sha1', $stringToSign, $this->config->getServiceId());
-        $token        = $expiration . '_' . urlencode($signature);
 
-        // set headers
-        $headers = [
-            self::FASTLY_HEADER_AUTH  . ': ' . $this->config->getApiKey(),
-            self::FASTLY_HEADER_TOKEN . ': ' . $token
-        ];
+        if($method == 'PURGE') {
+            // create purge token
+            $expiration   = time() + self::PURGE_TOKEN_LIFETIME;
+            $stringToSign = parse_url($uri, PHP_URL_PATH) . $expiration;
+            $signature    = hash_hmac('sha1', $stringToSign, $this->config->getServiceId());
+            $token        = $expiration . '_' . urlencode($signature);
+            $headers = [
+                self::FASTLY_HEADER_TOKEN . ': ' . $token
+            ];
+
+        } else {
+
+            // set headers
+            $headers = [
+                self::FASTLY_HEADER_AUTH  . ': ' . $this->config->getApiKey()
+            ];
+
+        }
 
         // soft purge if needed
         if ($this->config->canUseSoftPurge()) {

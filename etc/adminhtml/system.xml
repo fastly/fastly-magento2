@@ -26,20 +26,26 @@
             <group id="full_page_cache">
                 <group id="fastly" translate="label" showInDefault="1" showInWebsite="0" showInStore="0" sortOrder="615">
                     <label>Fastly Configuration</label>
-                    <comment><![CDATA[To use this plugin you need a Fastly account that can upload VCL.
-                    <a href="https://www.fastly.com/signup" target="_blank">Create a free account</a> and email <a href="mailto:support@fastly.com?subject=Please%20Turn%20on%20custom%20VCL%20for%20Magento”">support@fastly.com</a> with a
+                    <comment>
+                        <![CDATA[To use this plugin you need a Fastly account that can upload VCL.
+                        <a href="https://www.fastly.com/signup" target="_blank">Create a free account</a> and email <a href="mailto:support@fastly.com?subject=Please%20Turn%20on%20custom%20VCL%20for%20Magento”">support@fastly.com</a> with a
                         request to turn on Custom VCL for Magento. Once configured, you will need to <a href="https://docs.fastly.com/guides/basic-setup/adding-cname-records" target="_blank">add a CNAME to your domain.</a><br /><br />
-                        For setting up TLS/SSL and additional documentation please refer to <a href="https://github.com/fastly/fastly-magento2/tree/master/Documentation" target="_blank">the full plugin guide.</a>]]></comment>
+                        For setting up TLS/SSL and additional documentation please refer to <a href="https://github.com/fastly/fastly-magento2/tree/master/Documentation" target="_blank">the full plugin guide.</a>]]>
+                    </comment>
                     <field id="fastly_service_id" type="text" translate="label comment" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Fastly Service ID</label>
-                        <comment><![CDATA[Learn more about <a href="https://docs-next.fastly.com/guides/basic-setup/working-with-services#creating-a-new-service" target="_blank">creating a Fastly Service</a>
-                        and <a href="https://docs-next.fastly.com/guides/account-management-and-security/finding-and-managing-your-account-info" target="_blank">finding your Service ID.</a>]]></comment>
+                        <comment>
+                            <![CDATA[Learn more about <a href="https://docs-next.fastly.com/guides/basic-setup/working-with-services#creating-a-new-service" target="_blank">creating a Fastly Service</a>
+                            and <a href="https://docs-next.fastly.com/guides/account-management-and-security/finding-and-managing-your-account-info" target="_blank">finding your Service ID.</a>]]>
+                        </comment>
                         <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
                     </field>
                     <field id="fastly_api_key" type="text" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Fastly API key</label>
-                        <comment><![CDATA[Your API Key is located under API Clients on your <a href="https://manage.fastly.com/account" target="_blank">Fastly Accout settings page.</a><br /><br />
-                        After making any changes to Fastly Service ID or API Key, please Save Config first before uploading VCL.]]></comment>
+                        <comment>
+                            <![CDATA[Your API Key is located under API Clients on your <a href="https://manage.fastly.com/account" target="_blank">Fastly Accout settings page.</a><br /><br />
+                            After making any changes to Fastly Service ID or API Key, please Save Config first before uploading VCL.]]>
+                        </comment>
                         <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
                     </field>
                     <field id="upload_vcl" translate="label comment" sortOrder="25" showInDefault="1" showInStore="0" showInWebsite="0">
@@ -58,32 +64,36 @@
                         </field>
                         <field id="stale_ttl" type="text" translate="label comment" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Stale content delivery time</label>
-                            <comment>Time in seconds for that stale content will be served. Set to 0 to disable this feature.</comment>
+                            <comment><![CDATA[Time in seconds that Fastly will serve <a href="https://docs.fastly.com/guides/performance-tuning/serving-stale-content" target="_blank">stale content</a> while fresh content is being requested. Set to 0 to disable this feature.]]></comment>
                             <backend_model>Magento\PageCache\Model\System\Config\Backend\Ttl</backend_model>
                         </field>
                         <field id="stale_error_ttl" type="text" translate="label comment" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Stale content delivery time in case of backend error</label>
-                            <comment>Time in seconds for that stale content will be served. Set to 0 to disable this feature.</comment>
+                            <comment>
+                                <![CDATA[Time in seconds that Fastly will continue to serve <a href="https://docs.fastly.com/guides/performance-tuning/serving-stale-content#serving-stale-content-on-errors" target="_blank">stale content​</a> if your origin is unavailable. Set to 0 to disable this feature.]]>
+                            </comment>
                             <backend_model>Magento\PageCache\Model\System\Config\Backend\Ttl</backend_model>
                         </field>
                         <field id="purge_catalog_category" translate="label comment" type="select" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Purge category</label>
-                            <comment>Purge category's cache items on save</comment>
+                            <comment>Choose to purge the whole product category when updating or modifying a single product.</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="purge_catalog_product" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Purge product</label>
-                            <comment>Purge product's cache items on save</comment>
+                            <comment>Choose to purge all the product’s assets when saving a change to that product.</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="purge_cms_page" translate="label comment" type="select" sortOrder="45" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Purge CMS page</label>
-                            <comment>Purge CMS page's cache item on save</comment>
+                            <comment>Choose to purge page content when updating or adding a new page in the Magento CMS.</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="soft_purge" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Use Soft Purge</label>
-                            <comment>Use Soft Purge in conjunction with stale content delivery times, to serve stale content.</comment>
+                            <comment>
+                                <![CDATA[<a href="https://docs.fastly.com/guides/purging/soft-purges" target="_blank">Soft Purge</a>​ needs to be turned on in order to serve stale content.]]>
+                            </comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="enable_geoip" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -94,7 +104,7 @@
                         <field id="geoip_action" translate="label comment" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>GeoIP Action</label>
                             <comment>
-                                <![CDATA["Dialog" shows a modal dialog to select target store. "Redirect" redirects the client directly to the target store.]]>
+                                <![CDATA["Dialog" shows a modal dialog to select target store.<br /> "Redirect" redirects the client directly to the target store.]]>
                             </comment>
                             <source_model>Fastly\Cdn\Model\System\Config\Source\GeoIP\Action</source_model>
                             <depends>
@@ -106,9 +116,8 @@
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\CountryMapping</frontend_model>
                             <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
                             <comment>
-                                <![CDATA[Mapping of countries ot stores views.]]>
+                                <![CDATA[Use capitalized <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2" target="_blank">two-letter country codes</a> to map countries to store views. Use * to define a default fallback.]]>
                             </comment>
-                            <tooltip><![CDATA[Countries will have ISO-2 code with capital letters. Use * to define a default fallback.]]></tooltip>
                             <depends>
                                 <field id="enable_geoip">1</field>
                             </depends>

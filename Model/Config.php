@@ -79,47 +79,47 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * XML path to stale ttl path
      */
-    const XML_FASTLY_STALE_TTL = 'system/full_page_cache/fastly/fastly_advanced_configuration/stale_ttl';
+    const XML_FASTLY_STALE_TTL = 'system/full_page_cache/fastly/stale_ttl';
 
     /**
      * XML path to stale error ttl path
      */
-    const XML_FASTLY_STALE_ERROR_TTL = 'system/full_page_cache/fastly/fastly_advanced_configuration/stale_error_ttl';
+    const XML_FASTLY_STALE_ERROR_TTL = 'system/full_page_cache/fastly/stale_error_ttl';
 
     /**
      * XML path to purge catalog category
      */
-    const XML_FASTLY_PURGE_CATALOG_CATEGORY = 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_catalog_category';
+    const XML_FASTLY_PURGE_CATALOG_CATEGORY = 'system/full_page_cache/fastly/purge_catalog_category';
 
     /**
      * XML path to purge catalog product
      */
-    const XML_FASTLY_PURGE_CATALOG_PRODUCT = 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_catalog_product';
+    const XML_FASTLY_PURGE_CATALOG_PRODUCT = 'system/full_page_cache/fastly/purge_catalog_product';
 
     /**
      * XML path to purge CMS page
      */
-    const XML_FASTLY_PURGE_CMS_PAGE = 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_cms_page';
+    const XML_FASTLY_PURGE_CMS_PAGE = 'system/full_page_cache/fastly/purge_cms_page';
 
     /**
      * XML path to soft purge
      */
-    const XML_FASTLY_SOFT_PURGE = 'system/full_page_cache/fastly/fastly_advanced_configuration/soft_purge';
+    const XML_FASTLY_SOFT_PURGE = 'system/full_page_cache/fastly/soft_purge';
 
     /**
      * XML path to enable GeoIP
      */
-    const XML_FASTLY_GEOIP_ENABLED = 'system/full_page_cache/fastly/fastly_advanced_configuration/enable_geoip';
+    const XML_FASTLY_GEOIP_ENABLED = 'system/full_page_cache/fastly/enable_geoip';
 
     /**
      * XML path to GeoIP action
      */
-    const XML_FASTLY_GEOIP_ACTION = 'system/full_page_cache/fastly/fastly_advanced_configuration/geoip_action';
+    const XML_FASTLY_GEOIP_ACTION = 'system/full_page_cache/fastly/geoip_action';
 
     /**
      * XML path to GeoIP redirect mapping
      */
-    const XML_FASTLY_GEOIP_COUNTRY_MAPPING = 'system/full_page_cache/fastly/fastly_advanced_configuration/geoip_country_mapping';
+    const XML_FASTLY_GEOIP_COUNTRY_MAPPING = 'system/full_page_cache/fastly/geoip_country_mapping';
 
 
     /**

@@ -32,26 +32,33 @@ class UpgradeData implements UpgradeDataInterface
         $this->_configWriter = $configWriter;
     }
 
+    /**
+     * If old configuration values exist, they're fetched and saved to new config paths.
+     * This script will only execute on module version <= 1.0.8
+     *
+     *
+     * @param ModuleDataSetupInterface $setup
+     * @param ModuleContextInterface $context*
+     */
     public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
 
         $oldConfigPaths = [
             'stale_ttl' => 'system/full_page_cache/fastly/stale_ttl',
             'stale_error_ttl' => 'system/full_page_cache/fastly/stale_error_ttl',
-            'purge_catalog_category' => 'system/full_page_cache/fastly/purge_cms_page',
+            'purge_catalog_category' => 'system/full_page_cache/fastly/purge_catalog_category',
             'purge_catalog_product' => 'system/full_page_cache/fastly/purge_catalog_product',
             'purge_cms_page' => 'system/full_page_cache/fastly/purge_cms_page',
             'soft_purge' => 'system/full_page_cache/fastly/soft_purge',
             'enable_geoip' => 'system/full_page_cache/fastly/enable_geoip',
             'geoip_action' => 'system/full_page_cache/fastly/geoip_action',
             'geoip_country_mapping' => 'system/full_page_cache/fastly/geoip_country_mapping',
-            'jfisdjfsdijf' => 'fddfgdfg/dfdsfsdfs',
         ];
 
         $newConfigPaths = [
             'stale_ttl' => 'system/full_page_cache/fastly/fastly_advanced_configuration/stale_ttl',
             'stale_error_ttl' => 'system/full_page_cache/fastly/fastly_advanced_configuration/stale_error_ttl',
-            'purge_catalog_category' => 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_cms_page',
+            'purge_catalog_category' => 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_catalog_category',
             'purge_catalog_product' => 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_catalog_product',
             'purge_cms_page' => 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_cms_page',
             'soft_purge' => 'system/full_page_cache/fastly/fastly_advanced_configuration/soft_purge',

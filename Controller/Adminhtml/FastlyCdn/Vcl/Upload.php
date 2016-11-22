@@ -80,6 +80,8 @@ class Upload extends \Magento\Backend\App\Action
     }
 
     /**
+     * Upload VCL snippets
+     *
      * @return $resultJsonFactory
      */
     public function execute()
@@ -106,17 +108,39 @@ class Upload extends \Magento\Backend\App\Action
                 return $result->setData(array('status' => false, 'msg' => 'Failed to clone active version.'));
             }
 
-            $vclFile = $this->config->getVclFile(\Magento\PageCache\Model\Config::VARNISH_4_CONFIGURATION_PATH);
-            $vclName = 'Vcl_File_' . $this->timezone->date()->format('Y_m_d_H_i_s');
-            $vclPostData = array('name' => $vclName, 'content' => $vclFile);
+            $snippets = $this->config->getVclSnippets();
 
-            $vcl = $this->api->uploadVcl($clone->number, $vclPostData);
+            foreach($snippets as $key => $value)
+            {
+                $snippetData = array('name' => Config::FASTLY_MAGENTO_MODULE.'_'.$key, 'type' => $key, 'dynamic' => "0", 'priority' => 50, 'content' => $value);
+                $status = $this->api->uploadSnippet($clone->number, $snippetData);
 
-            if(!$vcl) {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to upload the VCL file.'));
+                if(!$status) {
+                    return $result->setData(array('status' => false, 'msg' => 'Failed to upload the Snippet file.'));
+                }
             }
 
-            $this->api->setVclAsMain($clone->number, $vclName);
+            $condition = array('name' => Config::FASTLY_MAGENTO_MODULE.'_checkout', 'statement' => 'req.url ~ "/checkout"', 'type' => 'REQUEST', 'priority' => 90);
+            $createCondition = $this->api->createCondition($clone->number, $condition);
+
+            if(!$createCondition) {
+                return $result->setData(array('status' => false, 'msg' => 'Failed to create a REQUEST condition.'));
+            }
+
+            $request = array(
+                'action' => 'pass',
+                'max_stale_age' => 3600,
+                'name' => Config::FASTLY_MAGENTO_MODULE.'_request',
+                'request_condition' => $createCondition->name,
+                'service_id' => $service->id,
+                'version' => $currActiveVersion['active_version']
+            );
+
+            $createReq = $this->api->createRequest($clone->number, $request);
+
+            if(!$createReq) {
+                return $result->setData(array('status' => false, 'msg' => 'Failed to create a REQUEST object.'));
+            }
 
             $validate = $this->api->validateServiceVersion($clone->number);
 

@@ -42,6 +42,11 @@ class Config extends \Magento\PageCache\Model\Config
     const FASTLY = 'fastly';
 
     /**
+     * Magento module prefix used for naming vcl snippets, condition and request
+     */
+    const FASTLY_MAGENTO_MODULE = 'magentomodule';
+
+    /**
      * GeoIP action "dialog"
      */
     const GEOIP_ACTION_DIALOG = 'dialog';
@@ -62,7 +67,7 @@ class Config extends \Magento\PageCache\Model\Config
     const FASTLY_CONFIGURATION_PATH = 'system/full_page_cache/fastly/path';
 
     /**
-     * XML path to Fastly service ID
+     * Path to Fastly service ID
      */
     const FASTLY_API_ENDPOINT = 'https://api.fastly.com/';
 
@@ -306,6 +311,30 @@ class Config extends \Magento\PageCache\Model\Config
         $configFilePath = $directoryRead->getRelativePath($configFilePath);
         $data = $directoryRead->readFile($configFilePath);
         return strtr($data, $this->getReplacements());
+    }
+
+    public function getVclSnippets()
+    {
+        $snippets = array(
+            'deliver'   =>  'deliver.vcl',
+            'error'     =>  'error.vcl',
+            'fetch'     =>  'fetch.vcl',
+            'miss'      =>  'miss.vcl',
+            'recv'      =>  'recv.vcl'
+        );
+
+        $snippetsData = array();
+
+        $moduleEtcPath = $this->reader->getModuleDir(Dir::MODULE_ETC_DIR, 'Fastly_Cdn') . '/vcl_snippets';
+        $directoryRead = $this->readFactory->create($moduleEtcPath);
+        foreach($snippets as $key => $value)
+        {
+            $snippetFilePath = $moduleEtcPath . '/' . $value;
+            $snippetFilePath = $directoryRead->getRelativePath($snippetFilePath);
+            $snippetsData[$key] = $directoryRead->readFile($snippetFilePath);
+        }
+
+        return $snippetsData;
     }
 
     /**

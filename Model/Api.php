@@ -408,7 +408,7 @@ class Api
         // set headers
         $headers = [
             self::FASTLY_HEADER_AUTH  . ': ' . $this->config->getApiKey(),
-            'Accept: application/json',
+            'Accept: application/json'
         ];
 
         try {

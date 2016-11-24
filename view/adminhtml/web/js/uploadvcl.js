@@ -28,7 +28,7 @@ define([
                 vcl.setActiveServiceLabel(active_version, next_version);
 
             }).fail(function (msg) {
-                alert($.mage.__('Your session has timed out, please sign in again.'));
+                return errorBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
             })
         });
 

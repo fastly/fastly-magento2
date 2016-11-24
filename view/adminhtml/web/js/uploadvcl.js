@@ -14,33 +14,21 @@ define([
                 $.ajax({
                     type: "GET",
                     url: config.serviceInfoUrl,
-                    showLoader: true,
-                }),
-
-                $.ajax({
-                    type: "GET",
-                    url: config.customerInfoUrl,
-                    showLoader: true,
+                    showLoader: true
                 })
+            ).done(function (service) {
 
-            ).done(function (service, customer) {
-
-                if(service[0].status == false || customer[0].status == false) {
+                if(service.status == false) {
                     return errorBtnMsg.text($.mage.__('Please check your Service ID and API key and try again.')).show();
                 }
 
-                if(customer[0].customer.can_upload_vcl == false)
-                {
-                    return warningBtnMsg.text($.mage.__('You don\'t have a permission to upload VCL. Please, send us an email.')).show();
-                }
-
-                active_version = service[0].active_version;
-                next_version = service[0].next_version;
+                active_version = service.active_version;
+                next_version = service.next_version;
                 vcl.showPopup('fastly-uploadvcl-options');
                 vcl.setActiveServiceLabel(active_version, next_version);
 
             }).fail(function (msg) {
-                alert('Fail.');
+                alert($.mage.__('Your session has timed out, please sign in again.'));
             })
         });
 

@@ -296,6 +296,7 @@ class Api
         } else {
             $verb = \Zend_Http_Client::PUT;
             $url .= '/'.$snippet['name'];
+            unset($snippet['name'], $snippet['type'], $snippet['dynamic'], $snippet['priority']);
         }
 
         $result = $this->_fetch($url, $verb, $snippet);

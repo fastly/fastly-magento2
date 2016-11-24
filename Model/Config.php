@@ -315,23 +315,23 @@ class Config extends \Magento\PageCache\Model\Config
 
     public function getVclSnippets()
     {
-        $snippets = array(
-            'deliver'   =>  'deliver.vcl',
-            'error'     =>  'error.vcl',
-            'fetch'     =>  'fetch.vcl',
-            'miss'      =>  'miss.vcl',
-            'recv'      =>  'recv.vcl'
-        );
-
         $snippetsData = array();
 
         $moduleEtcPath = $this->reader->getModuleDir(Dir::MODULE_ETC_DIR, 'Fastly_Cdn') . '/vcl_snippets';
         $directoryRead = $this->readFactory->create($moduleEtcPath);
-        foreach($snippets as $key => $value)
+        $files = $directoryRead->read();
+
+        if(is_array($files))
         {
-            $snippetFilePath = $moduleEtcPath . '/' . $value;
-            $snippetFilePath = $directoryRead->getRelativePath($snippetFilePath);
-            $snippetsData[$key] = $directoryRead->readFile($snippetFilePath);
+            foreach ($files as $file) {
+                if (substr($file, strpos($file, ".") + 1) != 'vcl') {
+                    continue;
+                }
+                $snippetFilePath = $moduleEtcPath . '/' . $file;
+                $snippetFilePath = $directoryRead->getRelativePath($snippetFilePath);
+                $type = explode('.', $file)[0];
+                $snippetsData[$type] = $directoryRead->readFile($snippetFilePath);
+            }
         }
 
         return $snippetsData;

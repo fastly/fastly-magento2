@@ -408,13 +408,21 @@ class Api
         // set headers
         $headers = [
             self::FASTLY_HEADER_AUTH  . ': ' . $this->config->getApiKey(),
-            'Accept: application/json'
+            'Accept: application/json',
         ];
+
+        if($method == \Zend_Http_Client::POST || $method == \Zend_Http_Client::PUT) {
+            array_push($headers, 'Content-Type: application/x-www-form-urlencoded');
+        }
 
         try {
             $client = $this->curlFactory->create();
             if($method == \Zend_Http_Client::PUT) {
                 $client->addOption(CURLOPT_CUSTOMREQUEST, 'PUT');
+                if($body != '')
+                {
+                    $client->addOption(CURLOPT_POSTFIELDS, http_build_query($body));
+                }
             }
             $client->write($method, $uri, '1.1', $headers, $body);
             $response = $client->read();

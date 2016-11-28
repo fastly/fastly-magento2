@@ -197,12 +197,20 @@ class Api
     /**
      * List detailed information on a specified service
      *
+     * @param bool $test
+     * @param $serviceId
+     * @param $apiKey
      * @return bool|mixed
      */
-    public function checkServiceDetails()
+    public function checkServiceDetails($test = false, $serviceId = null, $apiKey = null)
     {
-        $uri = rtrim($this->_getApiServiceUri(), '/');
-        $result = $this->_fetch($uri);
+        if(!$test) {
+            $uri = rtrim($this->_getApiServiceUri(), '/');
+            $result = $this->_fetch($uri);
+        } else {
+            $uri = $this->config->getApiEndpoint() . 'service/' . $serviceId;
+            $result = $this->_fetch($uri, \Zend_Http_Client::GET, null, true, $apiKey);
+        }
 
         return $result;
     }
@@ -401,14 +409,23 @@ class Api
      * @param $uri
      * @param string $method
      * @param string $body
+     * @param bool $test
+     * @param $testApiKey
      * @return bool|mixed
      */
-    protected function _fetch($uri, $method = \Zend_Http_Client::GET, $body = '')
+    protected function _fetch($uri, $method = \Zend_Http_Client::GET, $body = '', $test = false, $testApiKey = null)
     {
+
+        if($test) {
+            $apiKey = $testApiKey;
+        } else {
+            $apiKey = $this->config->getApiKey();
+        }
+
         // set headers
         $headers = [
-            self::FASTLY_HEADER_AUTH  . ': ' . $this->config->getApiKey(),
-            'Accept: application/json',
+            self::FASTLY_HEADER_AUTH  . ': ' . $apiKey,
+            'Accept: application/json'
         ];
 
         if($method == \Zend_Http_Client::POST || $method == \Zend_Http_Client::PUT) {

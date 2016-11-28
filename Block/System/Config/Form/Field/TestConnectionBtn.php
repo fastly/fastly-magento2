@@ -65,7 +65,7 @@ class TestConnectionBtn extends Field
         )->setData(
             [
                 'id' => 'fastly_test_connection_button',
-                'label' => __('Test connection'),
+                'label' => __('Test credentials'),
             ]
         );
 

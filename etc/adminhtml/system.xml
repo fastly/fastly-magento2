@@ -48,7 +48,7 @@
                         <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
                     </field>
                     <field id="test_connection" translate="label comment" sortOrder="25" showInDefault="1" showInStore="0" showInWebsite="0">
-                        <label><![CDATA[Test connection]]></label>
+                        <label><![CDATA[Test credentials]]></label>
                         <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\TestConnectionBtn</frontend_model>
                     </field>
                     <field id="upload_vcl" translate="label comment" sortOrder="30" showInDefault="1" showInStore="0" showInWebsite="0">

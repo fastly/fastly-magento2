@@ -45,6 +45,7 @@
 $serviceInfoUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/serviceInfo');
 $vclUploadUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/upload');
 $customerInfo = $block->getUrl('adminhtml/fastlyCdn_Vcl/customerInfo');
+$testServiceUrl = $block->getUrl('adminhtml/fastlyCdn/testConnection')
 ?>
 
 
@@ -54,7 +55,8 @@ $customerInfo = $block->getUrl('adminhtml/fastlyCdn_Vcl/customerInfo');
                 "Fastly_Cdn/js/uploadvcl": {
                     "serviceInfoUrl": "<?php echo $block->escapeJsQuote($serviceInfoUrl);?>",
                     "vclUploadUrl": "<?php echo $block->escapeJsQuote($vclUploadUrl);?>",
-                    "customerInfoUrl": "<?php echo $block->escapeJsQuote($customerInfo);?>"
+                    "customerInfoUrl": "<?php echo $block->escapeJsQuote($customerInfo);?>",
+                    "testServiceUrl": "<?php echo $block->escapeJsQuote($testServiceUrl);?>"
                 }
             }
         }

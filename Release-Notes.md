@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.0
+
+- Convert to using VCL snippets https://docs.fastly.com/guides/vcl-snippets/. This will provide for better maintainability since it breaks
+down functionality into separate files instead of one large file. Also it avoids the need for having VCL upload functionality enabled
+- Button to Test Credentials
+
 ## 1.0.9
 
 - Updated etc/fastly.vcl to remove set-cookies on static content. Also to

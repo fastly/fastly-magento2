@@ -27,16 +27,15 @@
                 <group id="fastly" translate="label" showInDefault="1" showInWebsite="0" showInStore="0" sortOrder="615">
                     <label>Fastly Configuration</label>
                     <comment>
-                        <![CDATA[To use this plugin you need a Fastly account that can upload VCL.
-                        <a href="https://www.fastly.com/signup" target="_blank">Create a free account</a> and email <a href="mailto:support@fastly.com?subject=Please%20Turn%20on%20custom%20VCL%20for%20Magento”">support@fastly.com</a> with a
-                        request to turn on Custom VCL for Magento. Once configured, you will need to <a href="https://docs.fastly.com/guides/basic-setup/adding-cname-records" target="_blank">add a CNAME to your domain.</a><br /><br />
+                        <![CDATA[To use this plugin you need a Fastly account (
+                        <a href="https://www.fastly.com/signup" target="_blank">Create a free account</a>). Once configured, you will need to <a href="https://docs.fastly.com/guides/basic-setup/adding-cname-records" target="_blank">add a CNAME to your domain.</a><br /><br />
                         For setting up TLS/SSL and additional documentation please refer to <a href="https://github.com/fastly/fastly-magento2/tree/master/Documentation" target="_blank">the full plugin guide.</a>]]>
                     </comment>
                     <field id="fastly_service_id" type="text" translate="label comment" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Fastly Service ID</label>
                         <comment>
-                            <![CDATA[Learn more about <a href="https://docs-next.fastly.com/guides/basic-setup/working-with-services#creating-a-new-service" target="_blank">creating a Fastly Service</a>
-                            and <a href="https://docs-next.fastly.com/guides/account-management-and-security/finding-and-managing-your-account-info" target="_blank">finding your Service ID.</a>]]>
+                            <![CDATA[Learn more about <a href="https://docs.fastly.com/guides/basic-setup/working-with-services#creating-a-new-service" target="_blank">creating a Fastly Service</a>
+                            and <a href="https://docs.fastly.com/guides/account-management-and-security/finding-and-managing-your-account-info" target="_blank">finding your Service ID.</a>]]>
                         </comment>
                         <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
                     </field>
@@ -62,7 +61,7 @@
                             <label>Review VCL for manual upload</label>
                             <comment>
                                 <![CDATA[Use this option to download the boilerplate VCL file for Magento.
-                                You may then edit this file and <a href="https://docs-next.fastly.com/guides/vcl/uploading-custom-vcl" target="_blank">upload the VCL to your Fastly service.</a>]]>
+                                You may then edit this file and <a href="https://docs.fastly.com/guides/vcl/uploading-custom-vcl" target="_blank">upload the VCL to your Fastly service.</a>]]>
                             </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Export\Fastly</frontend_model>
                         </field>

@@ -2,6 +2,6 @@
 # we can debug easier
 VERSION=`cat VERSION`
 
-sed -i "s/resp.http.Fastly-Magento-VCL-Uploaded = \".*\"/resp.http.Fastly-Magento-VCL-Uploaded = \"$VERSION\"/g" etc/fastly.vcl
+sed -i "s/resp.http.Fastly-Magento-VCL-Uploaded = \".*\"/resp.http.Fastly-Magento-VCL-Uploaded = \"$VERSION\"/g" etc/fastly.vcl etc/vcl_snippets/*.vcl
 sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION\"/g" composer.json
 sed -i "s/\"Fastly-Module-Enabled\", \".*\"/\"Fastly-Module-Enabled\", \"$VERSION\"/g" Model/Layout/LayoutPlugin.php

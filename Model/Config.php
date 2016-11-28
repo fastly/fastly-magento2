@@ -324,7 +324,7 @@ class Config extends \Magento\PageCache\Model\Config
         if(is_array($files))
         {
             foreach ($files as $file) {
-                if (substr($file, strpos($file, ".") + 1) != 'vcl') {
+                if (substr($file, strpos($file, ".") + 1) !== 'vcl') {
                     continue;
                 }
                 $snippetFilePath = $moduleEtcPath . '/' . $file;

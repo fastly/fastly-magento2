@@ -338,9 +338,9 @@ sub vcl_error {
         }
 
         /* otherwise, return a synthetic */
-        /* include your HTML response here */
-        synthetic {"<!DOCTYPE html><html>Trouble connecting to origin</html>"};
-        return(deliver);
+        /* uncomment below and include your HTML response here */
+        /* synthetic {"<!DOCTYPE html><html>Trouble connecting to origin</html>"};
+        return(deliver); */
     }
 
     # error 200

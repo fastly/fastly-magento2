@@ -1,6 +1,11 @@
     /* handle 5XX (or any other unwanted status code) */
     if (beresp.status >= 500 && beresp.status < 600) {
 
+        # let SOAP errors pass - better debugging
+        if (beresp.http.Content-Type ~ "text/xml") {
+            return (deliver);
+        }
+
         /* deliver stale if the object is available */
         if (stale.exists) {
         return(deliver_stale);
@@ -19,22 +24,11 @@
     if (req.url ~ "^/(pub/)?(media|static)/") {
         unset beresp.http.set-cookie;
 
-        # Set a short TTL for 404's
+        # Set a short TTL for 404's since those can be temporary during the site build/index
         if (beresp.status == 404) {
             set beresp.ttl = 300s;
         }
 
-    }
-
-    if (beresp.status >= 500) {
-        # let SOAP errors pass - better debugging
-        if (beresp.http.Content-Type ~ "text/xml") {
-            return (deliver);
-        }
-
-        if (req.restarts < 1 && (req.request == "GET" || req.request == "HEAD")) {
-            restart;
-        }
     }
 
     if (req.restarts > 0 ) {

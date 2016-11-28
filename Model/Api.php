@@ -288,6 +288,124 @@ class Api
     }
 
     /**
+     * Creating and updating a regular VCL Snippet
+     *
+     * @param $version
+     * @param array $snippet
+     * @return bool|mixed*
+     */
+    public function uploadSnippet($version, array $snippet)
+    {
+        $checkIfExists = $this->getSnippet($version, $snippet['name']);
+        $url = $this->_getApiServiceUri(). 'version/' .$version. '/snippet';
+        if(!$checkIfExists)
+        {
+            $verb = \Zend_Http_Client::POST;
+        } else {
+            $verb = \Zend_Http_Client::PUT;
+            $url .= '/'.$snippet['name'];
+            unset($snippet['name'], $snippet['type'], $snippet['dynamic'], $snippet['priority']);
+        }
+
+        $result = $this->_fetch($url, $verb, $snippet);
+
+        return $result;
+    }
+
+    /**
+     * Fetching an individual regular VCL Snippet
+     *
+     * @param $version
+     * @param $name
+     * @return bool|mixed
+     */
+    public function getSnippet($version, $name)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version. '/snippet/' . $name;
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    /**
+     * Creates a new condition
+     *
+     * @param $version
+     * @param $condition
+     * @return bool|mixed
+     */
+    public function createCondition($version, array $condition)
+    {
+        $checkIfExists = $this->getCondition($version, $condition['name']);
+        $url = $this->_getApiServiceUri(). 'version/' .$version. '/condition';
+        if(!$checkIfExists)
+        {
+            $verb = \Zend_Http_Client::POST;
+        } else {
+            $verb = \Zend_Http_Client::PUT;
+            $url .= '/'.$condition['name'];
+        }
+
+        $result = $this->_fetch($url, $verb, $condition);
+
+        return $result;
+    }
+
+    /**
+     * Gets the specified condition.
+     *
+     * @param $version
+     * @param $name
+     * @return bool|mixed
+     */
+    public function getCondition($version, $name)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version. '/condition/' . $name;
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    /**
+     * Creates a new Request Settings object.
+     *
+     * @param $version
+     * @param $request
+     * @return bool|mixed
+     */
+    public function createRequest($version, $request)
+    {
+        $checkIfExists = $this->getRequest($version, $request['name']);
+        $url = $this->_getApiServiceUri(). 'version/' .$version. '/request_settings';
+        if(!$checkIfExists)
+        {
+            $verb = \Zend_Http_Client::POST;
+        } else {
+            $verb = \Zend_Http_Client::PUT;
+            $url .= '/'.$request['name'];
+        }
+
+        $result = $this->_fetch($url, $verb, $request);
+
+        return $result;
+    }
+
+    /**
+     * Gets the specified Request Settings object.
+     *
+     * @param $version
+     * @param $name
+     * @return bool|mixed
+     */
+    public function getRequest($version, $name)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version. '/request_settings/' . $name;
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    /**
      * @param $uri
      * @param string $method
      * @param string $body
@@ -310,10 +428,18 @@ class Api
             'Accept: application/json'
         ];
 
+        if($method == \Zend_Http_Client::POST || $method == \Zend_Http_Client::PUT) {
+            array_push($headers, 'Content-Type: application/x-www-form-urlencoded');
+        }
+
         try {
             $client = $this->curlFactory->create();
             if($method == \Zend_Http_Client::PUT) {
                 $client->addOption(CURLOPT_CUSTOMREQUEST, 'PUT');
+                if($body != '')
+                {
+                    $client->addOption(CURLOPT_POSTFIELDS, http_build_query($body));
+                }
             }
             $client->write($method, $uri, '1.1', $headers, $body);
             $response = $client->read();

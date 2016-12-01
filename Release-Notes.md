@@ -1,5 +1,13 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.2
+
+- Minor VCL optimizations
+
+## 1.2.1
+
+- Fix for VCL Snippet upload when no snippets exist
+
 ## 1.2.0
 
 - Convert to using VCL snippets https://docs.fastly.com/guides/vcl-snippets/. This will provide for better maintainability since it breaks

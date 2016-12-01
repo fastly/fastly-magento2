@@ -1,4 +1,3 @@
-
     if (resp.status >= 500 && resp.status < 600) {
         /* restart if the stale object is available */
         if (stale.exists) {
@@ -20,7 +19,7 @@
 
     # Add an easy way to see whether custom Fastly VCL has been uploaded
     if ( req.http.Fastly-Debug ) {
-        set resp.http.Fastly-Magento-VCL-Uploaded = "1.2.1";
+        set resp.http.Fastly-Magento-VCL-Uploaded = "1.2.2";
     } else {
         remove resp.http.Fastly-Module-Enabled;
     }
@@ -37,13 +36,11 @@
         remove resp.http.Age;
         remove resp.http.X-Magento-Debug;
         remove resp.http.X-Magento-Tags;
-        remove resp.http.X-Surrogate-Key;
         remove resp.http.X-Magento-Cache-Control;
         remove resp.http.X-Powered-By;
         remove resp.http.Server;
         remove resp.http.X-Varnish;
         remove resp.http.Via;
-        remove resp.http.Link;
         remove resp.http.X-Purge-URL;
         remove resp.http.X-Purge-Host;
     }

@@ -103,7 +103,5 @@
         } elsif (beresp.http.Content-Type ~ "css") {
             set beresp.http.Surrogate-Key = "css";
         }
-
-        set beresp.http.X-Surrogate-Key = beresp.http.Surrogate-Key;
         return (deliver);
     }

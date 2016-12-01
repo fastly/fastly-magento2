@@ -428,7 +428,7 @@ class Api
             'Accept: application/json'
         ];
 
-        if($method == \Zend_Http_Client::POST || $method == \Zend_Http_Client::PUT) {
+        if($method == \Zend_Http_Client::PUT) {
             array_push($headers, 'Content-Type: application/x-www-form-urlencoded');
         }
 

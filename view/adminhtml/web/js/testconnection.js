@@ -34,7 +34,7 @@ define([
                 }
             });
         });
-    }
+    };
 
     function resetAllMessages() {
         successBtnMsg.text();

@@ -167,7 +167,7 @@ sub vcl_fetch {
         set beresp.http.Fastly-Restarts = req.restarts;
     }
 
-    if (beresp.http.Content-Type ~ "text/html" || beresp.http.Content-Type ~ "text/xml") {
+    if (beresp.http.Content-Type ~ "text/(html|xml)" ) {
         # enable ESI feature for Magento response by default
         esi;
         if (!beresp.http.Vary ~ "X-Magento-Vary,Https") {

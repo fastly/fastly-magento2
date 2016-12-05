@@ -100,7 +100,7 @@ sub vcl_recv {
     } else {
         # Per suggestions in https://github.com/sdinteractive/SomethingDigital_PageCacheParams
         # we'll strip out query parameters used in Google AdWords, Mailchimp tracking
-        set req.http.Fastly-Original-URL = req.url;
+        set req.http.Magento-Original-URL = req.url;
         set req.url = querystring.regfilter(req.url, "^(utm_.*|gclid|gdftrk|_ga|mc_.*)");
     }
     

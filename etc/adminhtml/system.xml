@@ -65,6 +65,10 @@
                             </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Export\Fastly</frontend_model>
                         </field>
+                        <field id="force_tls" translate="label comment" sortOrder="10" showInDefault="1" showInStore="0" showInWebsite="0">
+                            <label><![CDATA[Force TLS]]></label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\TlsBtn</frontend_model>
+                        </field>
                         <field id="stale_ttl" type="text" translate="label comment" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Stale content delivery time</label>
                             <comment><![CDATA[Time in seconds that Fastly will serve <a href="https://docs.fastly.com/guides/performance-tuning/serving-stale-content" target="_blank">stale content</a> while fresh content is being requested. Set to 0 to disable this feature.]]></comment>

@@ -19,7 +19,7 @@ define([
             ).done(function (service) {
 
                 if(service.status == false) {
-                    return errorBtnMsg.text($.mage.__('Please check your Service ID and API key and try again.')).show();
+                    return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API key and try again.')).show();
                 }
 
                 active_version = service.active_version;
@@ -28,19 +28,49 @@ define([
                 vcl.setActiveServiceLabel(active_version, next_version);
 
             }).fail(function (msg) {
-                return errorBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-            })
+                return errorVclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+            });
+        });
+
+        $('#fastly_force_tls_button').on('click', function () {
+            $.ajax({
+                type: "GET",
+                url: config.serviceInfoUrl,
+                showLoader: true
+            }).done(function (service) {
+
+                if(service.status == false) {
+                    return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API key and try again.')).show();
+                }
+
+                active_version = service.active_version;
+                next_version = service.next_version;
+                vcl.getTlsSetting();
+                console.log(forceTls);
+                vcl.showPopup('fastly-tls-options');
+                vcl.setActiveServiceLabel(active_version, next_version);
+
+            }).fail(function (msg) {
+                return errorTlsBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+            });
         });
 
         var active_version = '';
         var next_version = '';
-        var successBtnMsg = $('#fastly-success-button-msg');
-        var errorBtnMsg = $('#fastly-error-button-msg');
-        var warningBtnMsg = $('#fastly-warning-button-msg');
+        var forceTls = true;
+        /* VCL button messages */
+        var successVclBtnMsg = $('#fastly-success-vcl-button-msg');
+        var errorVclBtnMsg = $('#fastly-error-vcl-button-msg');
+        var warningVclBtnMsg = $('#fastly-warning-vcl-button-msg');
+
+        /* TLS button messages */
+        var successTlsBtnMsg = $('#fastly-success-tls-button-msg');
+        var errorTlsBtnMsg = $('#fastly-error-tls-button-msg');
+        var warningTlsBtnMsg = $('#fastly-warning-tls-button-msg');
 
         var vcl = {
 
-        showPopup: function(divId) {
+            showPopup: function(divId) {
                 var self = this;
 
                 this.modal = jQuery('<div/>').attr({id: divId}).html(this.uploadVclConfig[divId].content()).modal({
@@ -91,6 +121,30 @@ define([
                 });
             },
 
+            // Queries Fastly API to retrive Tls setting
+            getTlsSetting: function() {
+                $.ajax({
+                    type: "POST",
+                    url: config.checkTlsSettingUrl,
+                    showLoader: true,
+                    data: {'active_version': active_version},
+                    success: function(response)
+                    {
+                        if(response.status == false) {
+                            forceTls = response.status;
+                            $('.modal-title').text($.mage.__('We are about to turn on TLS'));
+                        } else {
+                            $('.modal-title').text($.mage.__('We are about to turn off TLS'));
+                        }
+                    },
+                    error: function(msg)
+                    {
+                        // TODO: error handling
+                    }
+                });
+            },
+
+            // Setting up label text
             setActiveServiceLabel: function (active_version, next_version) {
                 var msgWarning = $('.fastly-message-warning');
                 msgWarning.text($.mage.__('You are about to clone version') + ' ' + active_version + '. '
@@ -98,6 +152,7 @@ define([
                 msgWarning.show();
             },
 
+            // Upload process
             submitVcl: function (active_version) {
                 var activate_vcl_flag = false;
 
@@ -118,7 +173,45 @@ define([
                         if(response.status == true)
                         {
                             vcl.modal.modal('closeModal');
-                            successBtnMsg.text($.mage.__('VCL file is successfully uploaded to the Fastly service.')).show();
+                            successVclBtnMsg.text($.mage.__('VCL file is successfully uploaded to the Fastly service.')).show();
+                        } else {
+                            vcl.resetAllMessages();
+                            vcl.showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function(msg)
+                    {
+                        // TODO: error handling
+                    }
+                });
+            },
+
+            // Toggle Tls process
+            toggleTls: function (active_version) {
+                var activate_tls_flag = false;
+
+                if($('#fastly_activate_tls').is(':checked')) {
+                    activate_tls_flag = true;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: config.toggleTlsSettingUrl,
+                    data: {
+                        'activate_flag': activate_tls_flag,
+                        'active_version': active_version
+                    },
+                    showLoader: true,
+                    success: function(response)
+                    {
+                        if(response.status == true)
+                        {
+                            vcl.modal.modal('closeModal');
+                            var onOrOff = 'off';
+                            if(forceTls == false) {
+                                onOrOff = 'on';
+                            }
+                            successTlsBtnMsg.text($.mage.__('The Force TLS request setting is successfully turned ' + onOrOff + '.')).show();
                         } else {
                             vcl.resetAllMessages();
                             vcl.showErrorMessage(response.msg);
@@ -144,8 +237,8 @@ define([
                 msgWarning.hide();
                 msgError.text();
                 msgError.hide();
-                successBtnMsg.hide();
-                errorBtnMsg.hide();
+                successVclBtnMsg.hide();
+                errorVclBtnMsg.hide();
             },
 
             uploadVclConfig: {
@@ -156,6 +249,15 @@ define([
                     },
                     actionOk: function () {
                         vcl.submitVcl(active_version);
+                    }
+                },
+                'fastly-tls-options': {
+                    title: jQuery.mage.__(''),
+                    content: function () {
+                        return document.getElementById('fastly-tls-template').textContent;
+                    },
+                    actionOk: function () {
+                        vcl.toggleTls(active_version);
                     }
                 }
             }

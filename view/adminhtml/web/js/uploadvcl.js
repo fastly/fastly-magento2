@@ -7,6 +7,43 @@ define([
 
     return function (config) {
 
+        var requestStateSpan = '';
+        var requestStateMsgSpan = '';
+
+        $(document).ready(function () {
+            // Checking service status & presence of force_tls request setting
+            requestStateSpan = $('#request_state_span');
+            requestStateMsgSpan = $('#fastly_request_state_message_span');
+            $.ajax({
+                type: "GET",
+                url: config.serviceInfoUrl,
+                beforeSend: function (xhr) {
+                    requestStateSpan.find('.processing').show();
+                }
+            }).done(function (checkService) {
+                if(checkService.status != false) {
+                    var tls = vcl.getTlsSetting(checkService.active_version, false);
+                    tls.done(function (checkReqSetting) {
+                            requestStateSpan.find('.processing').hide();
+                            if(checkReqSetting.status != false) {
+                                requestStateMsgSpan.find('#force_tls_state_enabled').show();
+                            } else {
+                                requestStateMsgSpan.find('#force_tls_state_disabled').show();
+                            }
+                        }
+                    ).fail(function () {
+                        requestStateSpan.find('.processing').hide();
+                        requestStateMsgSpan.find('#force_tls_state_unknown').show();
+                    });
+                } else {
+                    requestStateSpan.find('.processing').hide();
+                    requestStateMsgSpan.find('#force_tls_state_unknown').show();
+                }
+            }).fail(function () {
+                requestStateMsgSpan.find('#force_tls_state_unknown').show();
+            });
+        });
+
         $('#fastly_vcl_upload_button').on('click', function () {
             vcl.resetAllMessages();
 
@@ -27,12 +64,14 @@ define([
                 vcl.showPopup('fastly-uploadvcl-options');
                 vcl.setActiveServiceLabel(active_version, next_version);
 
-            }).fail(function (msg) {
+            }).fail(function () {
                 return errorVclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
             });
         });
 
         $('#fastly_force_tls_button').on('click', function () {
+            vcl.resetAllMessages();
+
             $.ajax({
                 type: "GET",
                 url: config.serviceInfoUrl,
@@ -45,8 +84,18 @@ define([
 
                 active_version = service.active_version;
                 next_version = service.next_version;
-                vcl.getTlsSetting();
-                console.log(forceTls);
+                vcl.getTlsSetting(active_version, true).done(function (response) {
+                        if(response.status == false) {
+                            forceTls = response.status;
+                            $('.modal-title').text($.mage.__('We are about to turn on TLS'));
+                        } else {
+                            $('.modal-title').text($.mage.__('We are about to turn off TLS'));
+                        }
+                    }
+                ).fail(function () {
+
+                    }
+                );
                 vcl.showPopup('fastly-tls-options');
                 vcl.setActiveServiceLabel(active_version, next_version);
 
@@ -122,25 +171,12 @@ define([
             },
 
             // Queries Fastly API to retrive Tls setting
-            getTlsSetting: function() {
-                $.ajax({
+            getTlsSetting: function(active_version, loaderVisibility) {
+                return $.ajax({
                     type: "POST",
                     url: config.checkTlsSettingUrl,
-                    showLoader: true,
-                    data: {'active_version': active_version},
-                    success: function(response)
-                    {
-                        if(response.status == false) {
-                            forceTls = response.status;
-                            $('.modal-title').text($.mage.__('We are about to turn on TLS'));
-                        } else {
-                            $('.modal-title').text($.mage.__('We are about to turn off TLS'));
-                        }
-                    },
-                    error: function(msg)
-                    {
-                        // TODO: error handling
-                    }
+                    showLoader: loaderVisibility,
+                    data: {'active_version': active_version}
                 });
             },
 
@@ -208,10 +244,18 @@ define([
                         {
                             vcl.modal.modal('closeModal');
                             var onOrOff = 'off';
+                            var disabledOrEnabled = 'disabled';
                             if(forceTls == false) {
                                 onOrOff = 'on';
+                                disabledOrEnabled = 'enabled';
                             }
                             successTlsBtnMsg.text($.mage.__('The Force TLS request setting is successfully turned ' + onOrOff + '.')).show();
+                            $('.request_tls_state_span').hide();
+                            if(disabledOrEnabled == 'enabled') {
+                                requestStateMsgSpan.find('#force_tls_state_enabled').show();
+                            } else {
+                                requestStateMsgSpan.find('#force_tls_state_disabled').show();
+                            }
                         } else {
                             vcl.resetAllMessages();
                             vcl.showErrorMessage(response.msg);
@@ -233,12 +277,24 @@ define([
             resetAllMessages: function () {
                 var msgWarning = $('.fastly-message-warning');
                 var msgError = $('.fastly-message-error');
+
+                // Modal window warning messages
                 msgWarning.text();
                 msgWarning.hide();
+
+                // Modal windows error messages
                 msgError.text();
                 msgError.hide();
+
+                // Vcl button messages
                 successVclBtnMsg.hide();
                 errorVclBtnMsg.hide();
+                warningTlsBtnMsg.hide();
+
+                // Tls button messages
+                successTlsBtnMsg.hide();
+                errorTlsBtnMsg.hide();
+                warningTlsBtnMsg.hide();
             },
 
             uploadVclConfig: {

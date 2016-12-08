@@ -406,6 +406,21 @@ class Api
     }
 
     /**
+     * Removes the specified Request Settings object.
+     *
+     * @param $version
+     * @param $name
+     * @return bool|mixed
+     */
+    public function deleteRequest($version, $name)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version. '/request_settings/' . $name;
+        $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
+
+        return $result;
+    }
+
+    /**
      * @param $uri
      * @param string $method
      * @param string $body
@@ -440,6 +455,8 @@ class Api
                 {
                     $client->addOption(CURLOPT_POSTFIELDS, http_build_query($body));
                 }
+            } elseif($method == \Zend_Http_Client::DELETE) {
+                $client->addOption(CURLOPT_CUSTOMREQUEST, 'DELETE');
             }
             $client->write($method, $uri, '1.1', $headers, $body);
             $response = $client->read();

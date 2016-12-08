@@ -1,0 +1,42 @@
+<?php echo $block->getButtonHtml() ?>
+
+<span class="collect-indicator" id="request_state_span">
+    <span id="fastly_request_state_message_span"><b>Current state:</b>
+        <img class="processing" hidden="hidden" alt="Collecting" style="margin:0 5px" src="<?php echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/>
+        <span style="display:none;" class="request_tls_state_span" id="force_tls_state_enabled"> enabled</span>
+        <span style="display:none;" class="request_tls_state_span" id="force_tls_state_disabled"> disabled</span>
+        <span style="display:none;" class="request_tls_state_span" id="force_tls_state_unknown"> unknown</span>
+    </span>
+</span>
+
+<div class="message message-error fastly-button-messages" id="fastly-error-tls-button-msg" style="display: none">
+</div>
+
+<div class="message message-success fastly-button-messages" id="fastly-success-tls-button-msg" style="display: none">
+</div>
+
+<div class="message message-warning fastly-button-messages" id="fastly-warning-tls-button-msg" style="display: none">
+</div>
+
+<style type="text/css">
+    .fastly-button-messages {
+        font-size: 1.2rem;
+        margin-top: 5px;
+        padding: 1.4rem 4rem 1.4rem 5.5rem;
+    }
+
+    #force_tls_state_enabled {
+        color: #008000;
+    }
+
+    #force_tls_state_disabled {
+        color: #808080;
+    }
+
+    #force_tls_state_unknown {
+        color: #ff0000;
+    }
+</style>
+
+
+

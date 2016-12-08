@@ -1,5 +1,13 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.4
+
+- Add Force TLS button in advanced settings - it enables/disables it in the Fastly service
+
+## 1.2.3
+
+- Fix VCL if user has uploaded custom VCL and changed req.url
+
 ## 1.2.2
 
 - Minor VCL optimizations

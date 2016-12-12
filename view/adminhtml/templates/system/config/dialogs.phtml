@@ -55,12 +55,54 @@
     </form>
 </script>
 
+<script type="text/x-magento-template" id="fastly-backend-template">
+    <div class="messages">
+        <div class="message message-warning fastly-message-warning" style="display: none">
+            <?php /* @escapeNotVerified */ echo __("You are about to clone version #x.")?>
+            <?php /* @escapeNotVerified */ echo __("We'll upload your VCL to version #y.")?>
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="vcl-upload-form" class="form-inline" enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field _required">
+                <label for="backup_name" class="admin__field-label"><span>Backup Name</span></label>
+                <div class="admin__field-control">
+                    <input name="backup_name" id="backup_name" class="admin__control-text required-entry validate-alphanum-with-spaces validate-length maximum-length-50" maxlength="50" type="text">
+                    <div class="admin__field-note">
+                        Please use only letters (a-z or A-Z), numbers (0-9) or spaces in this field.                    </div>
+                </div>
+            </div>
+            <div class="admin__field field maintenance-checkbox-container">
+                <label for="fastly_activate_vcl" class="admin__field-label"><span><?php /* @escapeNotVerified */ echo __('Activate after the change')?></span></label>
+                <div class="admin__field-control">
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox" type="checkbox" name="fastly_activate_tls" id="fastly_activate_tls" checked/>
+                        <label class="admin__field-label" for="fastly_activate_tls"></label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</script>
+
 <?php
+
+/**
+ * AJAX urls passed to uploadvcl.js file
+ */
+
 $serviceInfoUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/serviceInfo');
 $vclUploadUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/upload');
 $testServiceUrl = $block->getUrl('adminhtml/fastlyCdn/testConnection');
 $checkTlsSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkTlsSetting');
 $toggleTlsSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/forceTls');
+$fetchBackendsUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/getBackends');
+
+
+/* This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application  */
+$isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
 ?>
 
 
@@ -72,7 +114,9 @@ $toggleTlsSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/forceTls');
                     "vclUploadUrl": "<?php echo $block->escapeJsQuote($vclUploadUrl);?>",
                     "testServiceUrl": "<?php echo $block->escapeJsQuote($testServiceUrl);?>",
                     "checkTlsSettingUrl": "<?php echo $block->escapeJsQuote($checkTlsSettingUrl);?>",
-                    "toggleTlsSettingUrl": "<?php echo $block->escapeJsQuote($toggleTlsSettingUrl);?>"
+                    "toggleTlsSettingUrl": "<?php echo $block->escapeJsQuote($toggleTlsSettingUrl);?>",
+                    "isFastlyEnabled": "<?php echo $block->escapeJsQuote($isFastlyEnabled);?>",
+                    "fetchBackendsUrl": "<?php echo $block->escapeJsQuote($fetchBackendsUrl);?>"
                 }
             }
         }

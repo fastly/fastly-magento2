@@ -11,37 +11,71 @@ define([
         var requestStateMsgSpan = '';
 
         $(document).ready(function () {
-            // Checking service status & presence of force_tls request setting
-            requestStateSpan = $('#request_state_span');
-            requestStateMsgSpan = $('#fastly_request_state_message_span');
-            $.ajax({
-                type: "GET",
-                url: config.serviceInfoUrl,
-                beforeSend: function (xhr) {
-                    requestStateSpan.find('.processing').show();
-                }
-            }).done(function (checkService) {
-                if(checkService.status != false) {
-                    var tls = vcl.getTlsSetting(checkService.active_version, false);
-                    tls.done(function (checkReqSetting) {
-                            requestStateSpan.find('.processing').hide();
-                            if(checkReqSetting.status != false) {
-                                requestStateMsgSpan.find('#force_tls_state_enabled').show();
-                            } else {
-                                requestStateMsgSpan.find('#force_tls_state_disabled').show();
+            if (config.isFastlyEnabled) {
+
+                // Checking service status & presence of force_tls request setting
+                requestStateSpan = $('#request_state_span');
+                requestStateMsgSpan = $('#fastly_request_state_message_span');
+                $.ajax({
+                    type: "GET",
+                    url: config.serviceInfoUrl,
+                    beforeSend: function (xhr) {
+                        requestStateSpan.find('.processing').show();
+                    }
+                }).done(function (checkService) {
+                    if (checkService.status != false) {
+                        console.log(checkService);
+                        // Fetch force tls req setting status
+                        var tls = vcl.getTlsSetting(checkService.active_version, false);
+                        tls.done(function (checkReqSetting) {
+                                requestStateSpan.find('.processing').hide();
+                                if (checkReqSetting.status != false) {
+                                    requestStateMsgSpan.find('#force_tls_state_enabled').show();
+                                } else {
+                                    requestStateMsgSpan.find('#force_tls_state_disabled').show();
+                                }
                             }
-                        }
-                    ).fail(function () {
+                        ).fail(function () {
+                            requestStateSpan.find('.processing').hide();
+                            requestStateMsgSpan.find('#force_tls_state_unknown').show();
+                        });
+
+                        // Fetch backends
+                        $.ajax({
+                            type: "GET",
+                            url: config.fetchBackendsUrl,
+                            data: {'active_version': checkService.active_version}
+                            /*beforeSend: function (xhr) {
+                             requestStateSpan.find('.processing').show();
+                             }*/
+                        }).done(function (backendsResp) {
+                            if(backendsResp.status != false) {
+                                if(backendsResp.backends.length > 0) {
+                                    console.log(backendsResp.backends);
+                                    $.each(backendsResp.backends, function (index, backend) {
+                                        var html = "<tr id='fastly_" + index + "'>";
+                                        html += "<td><input data-backendId='"+ index + "' id='backend_" + index + "' name='test' value='"+ backend.name +"' disabled='disabled' class='input-text' type='text'></td>";
+                                        html += "<td class='col-actions'><button class='action-delete fastly-edit-backend-icon' id='fastly-edit-backend' title='Edit backend' type='button'></td></tr>";
+                                        $('#fastly-backends-list').append(html);
+                                    });
+                                }
+                            }
+
+                        }).fail(function () {
+                            // TO DO: implement
+                        });
+                    } else {
                         requestStateSpan.find('.processing').hide();
                         requestStateMsgSpan.find('#force_tls_state_unknown').show();
-                    });
-                } else {
-                    requestStateSpan.find('.processing').hide();
+                    }
+                }).fail(function () {
                     requestStateMsgSpan.find('#force_tls_state_unknown').show();
-                }
-            }).fail(function () {
-                requestStateMsgSpan.find('#force_tls_state_unknown').show();
-            });
+                });
+            }
+        });
+
+        $('.fastly-edit-backend-icon').on('click', function () {
+
         });
 
         $('#fastly_vcl_upload_button').on('click', function () {

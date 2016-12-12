@@ -80,6 +80,11 @@
         set req.url = querystring.regfilter(req.url, "^(utm_.*|gclid|gdftrk|_ga|mc_.*)");
     }
     
+    # Pass on checkout URLs. Because it's a snippet we want to execute this after backend selection so we handle it
+    # in the request condition
+    if (req.url ~ "/(catalogsearch|checkout)") {
+        set req.http.x-pass = "1";
+    }
 
     # static files are always cacheable. remove SSL flag and cookie
     if (req.url ~ "^/(pub/)?(media|static)/.*") {

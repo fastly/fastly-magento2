@@ -41,23 +41,11 @@ define([
                         });
 
                         // Fetch backends
-                        $.ajax({
-                            type: "GET",
-                            url: config.fetchBackendsUrl,
-                            data: {'active_version': checkService.active_version}
-                            /*beforeSend: function (xhr) {
-                             requestStateSpan.find('.processing').show();
-                             }*/
-                        }).done(function (backendsResp) {
+                        vcl.getBackends(active_version).done(function (backendsResp) {
                             if(backendsResp.status != false) {
                                 if(backendsResp.backends.length > 0) {
                                     backends = backendsResp.backends;
-                                    $.each(backendsResp.backends, function (index, backend) {
-                                        var html = "<tr id='fastly_" + index + "'>";
-                                        html += "<td><input data-backendId='"+ index + "' id='backend_" + index + "' name='test' value='"+ backend.name +"' disabled='disabled' class='input-text' type='text'></td>";
-                                        html += "<td class='col-actions'><button class='action-delete fastly-edit-backend-icon' data-backend-id='" + index + "' id='fastly-edit-backend_"+ index + "' title='Edit backend' type='button'></td></tr>";
-                                        $('#fastly-backends-list').append(html);
-                                    });
+                                    vcl.processBackends(backendsResp.backends);
                                 }
                             }
 
@@ -228,10 +216,20 @@ define([
             // Queries Fastly API to retrive Backends
             getBackends: function(active_version, loaderVisibility) {
                 return $.ajax({
-                    type: "POST",
-                    url: config.checkTlsSettingUrl,
+                    type: "GET",
+                    url: config.fetchBackendsUrl,
                     showLoader: loaderVisibility,
                     data: {'active_version': active_version}
+                });
+            },
+
+            // Process backends
+            processBackends: function(backends) {
+                $.each(backends, function (index, backend) {
+                    var html = "<tr id='fastly_" + index + "'>";
+                    html += "<td><input data-backendId='"+ index + "' id='backend_" + index + "' name='test' value='"+ backend.name +"' disabled='disabled' class='input-text' type='text'></td>";
+                    html += "<td class='col-actions'><button class='action-delete fastly-edit-backend-icon' data-backend-id='" + index + "' id='fastly-edit-backend_"+ index + "' title='Edit backend' type='button'></td></tr>";
+                    $('#fastly-backends-list').append(html);
                 });
             },
 
@@ -349,6 +347,17 @@ define([
                         if(response.status == true)
                         {
                             vcl.modal.modal('closeModal');
+                            $('#fastly-backends-list').html('');
+                            vcl.getBackends(response.active_version).done(function (backendsResp) {
+                                if(backendsResp.status != false) {
+                                    if(backendsResp.backends.length > 0) {
+                                        backends = backendsResp.backends;
+                                        vcl.processBackends(backendsResp.backends);
+                                    }
+                                }
+                            }).fail(function () {
+                                // TO DO: implement
+                            });
                         } else {
                             vcl.resetAllMessages();
                             vcl.showErrorMessage(response.msg);

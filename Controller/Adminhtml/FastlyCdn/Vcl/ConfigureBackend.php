@@ -106,7 +106,7 @@ class ConfigureBackend extends \Magento\Backend\App\Action
                 $this->api->activateVersion($clone->number);
             }
 
-            return $result->setData(array('status' => true));
+            return $result->setData(array('status' => true, 'active_version' => $clone->number));
         } catch (\Exception $e) {
             return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
         }

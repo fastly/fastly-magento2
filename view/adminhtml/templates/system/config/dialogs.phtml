@@ -71,7 +71,7 @@
                 <label for="shield" class="admin__field-label"><span><?php echo __("Shield") ?></span></label>
                 <div class="admin__field-control">
                     <select name="shield" id="backend_shield" class="admin__control-text">
-                        <option value="null">---</option>
+                        <option value="">(none)</option>
                         <option value="amsterdam-nl">Amsterdam</option>
                         <option value="iad-va-us">Ashburn</option>
                         <option value="atl-ga-us">Atlanta</option>
@@ -108,10 +108,10 @@
                 </div>
             </div>
 
-            <div class="admin__field field">
+            <div class="admin__field field _required">
                 <label for="connect_timeout" class="admin__field-label"><span><?php echo __("Connect timeout") ?></span></label>
                 <div class="admin__field-control">
-                    <input name="connect_timeout" id="backend_connect_timeout" class="admin__control-text">
+                    <input name="connect_timeout" id="backend_connect_timeout" class="admin__control-text required-entry validate-alphanum-with-spaces validate-length maximum-length-50 mage-error">
                     <div class="admin__field-note">How long to wait for a timeout in milliseconds.</div>
                 </div>
             </div>

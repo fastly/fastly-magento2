@@ -434,6 +434,14 @@ class Api
         return $result;
     }
 
+    public function configureBackend($params, $version, $old_name)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/backend/' . str_replace ( ' ', '%20', $old_name);
+        $result = $this->_fetch($url, \Zend_Http_Client::PUT, $params);
+
+        return $result;
+    }
+
     /**
      * @param $uri
      * @param string $method

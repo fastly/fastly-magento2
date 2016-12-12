@@ -66,20 +66,78 @@
     </div>
     <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="vcl-upload-form" class="form-inline" enctype="multipart/form-data">
         <fieldset class="admin__fieldset form-list question">
-            <div class="admin__field field _required">
-                <label for="backup_name" class="admin__field-label"><span>Backup Name</span></label>
+            <input hidden="hidden" name="backend_name" id="backend_name" class="admin__control-text">
+            <div class="admin__field field">
+                <label for="shield" class="admin__field-label"><span><?php echo __("Shield") ?></span></label>
                 <div class="admin__field-control">
-                    <input name="backup_name" id="backup_name" class="admin__control-text required-entry validate-alphanum-with-spaces validate-length maximum-length-50" maxlength="50" type="text">
+                    <select name="shield" id="backend_shield" class="admin__control-text">
+                        <option value="null">---</option>
+                        <option value="amsterdam-nl">Amsterdam</option>
+                        <option value="iad-va-us">Ashburn</option>
+                        <option value="atl-ga-us">Atlanta</option>
+                        <option value="auckland-akl">Auckland</option>
+                        <option value="brisbane-au">Brisbane</option>
+                        <option value="bos-ma-us">Boston</option>
+                        <option value="ord-il-us">Chicago</option>
+                        <option value="dallas-tx-us">Dallas</option>
+                        <option value="den-co-us">Denver</option>
+                        <option value="fjr-ae">Fujairah Al Mahta</option>
+                        <option value="frankfurt-de">Frankfurt</option>
+                        <option value="hongkong-hk">Hong Kong</option>
+                        <option value="london_city-uk">London - LCY</option>
+                        <option value="lax-ca-us">Los Angeles</option>
+                        <option value="yyz-on-ca">Toronto</option>
+                        <option value="melbourne-au">Melbourne</option>
+                        <option value="miami-fl-us">Miami</option>
+                        <option value="jfk-ny-us">New York City</option>
+                        <option value="osaka-jp">Osaka</option>
+                        <option value="cdg-par-fr">Paris</option>
+                        <option value="perth-au">Perth</option>
+                        <option value="sjc-ca-us">San Jose</option>
+                        <option value="sea-wa-us">Seattle</option>
+                        <option value="singapore-sg">Singapore</option>
+                        <option value="stockholm-bma">Stockholm</option>
+                        <option value="sydney-au">Sydney</option>
+                        <option value="tokyo-jp2">Tokyo</option>
+                        <option value="wellington-wlg">Wellington</option>
+                        <option value="hhn-frankfurt-de">Frankfurt - Interxion</option>
+                        <option value="gru-br-sa">Sao Paulo</option>
+                    </select>
                     <div class="admin__field-note">
-                        Please use only letters (a-z or A-Z), numbers (0-9) or spaces in this field.                    </div>
+                        The shield POP designated to reduce inbound load on this origin by serving the cached data to the rest of the network.</div>
                 </div>
             </div>
+
+            <div class="admin__field field">
+                <label for="connect_timeout" class="admin__field-label"><span><?php echo __("Connect timeout") ?></span></label>
+                <div class="admin__field-control">
+                    <input name="connect_timeout" id="backend_connect_timeout" class="admin__control-text">
+                    <div class="admin__field-note">How long to wait for a timeout in milliseconds.</div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label for="between_bytes_timeout" class="admin__field-label"><span><?php echo __("Between bytes timeout") ?></span></label>
+                <div class="admin__field-control">
+                    <input name="between_bytes_timeout" id="backend_between_bytes_timeout" class="admin__control-text">
+                    <div class="admin__field-note">How long to wait between bytes in milliseconds.</div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label for="first_byte_timeout " class="admin__field-label"><span><?php echo __("First byte timeout ") ?></span></label>
+                <div class="admin__field-control">
+                    <input name="first_byte_timeout " id="backend_first_byte_timeout" class="admin__control-text">
+                    <div class="admin__field-note">How long to wait for the first bytes in milliseconds.</div>
+                </div>
+            </div>
+
             <div class="admin__field field maintenance-checkbox-container">
-                <label for="fastly_activate_vcl" class="admin__field-label"><span><?php /* @escapeNotVerified */ echo __('Activate after the change')?></span></label>
+                <label for="fastly_activate_backend" class="admin__field-label"><span><?php /* @escapeNotVerified */ echo __('Activate after the change')?></span></label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
-                        <input class="admin__control-checkbox" type="checkbox" name="fastly_activate_tls" id="fastly_activate_tls" checked/>
-                        <label class="admin__field-label" for="fastly_activate_tls"></label>
+                        <input class="admin__control-checkbox" type="checkbox" name="fastly_activate_backend" id="fastly_activate_backend" checked/>
+                        <label class="admin__field-label" for="fastly_activate_backend"></label>
                     </div>
                 </div>
             </div>
@@ -99,7 +157,7 @@ $testServiceUrl = $block->getUrl('adminhtml/fastlyCdn/testConnection');
 $checkTlsSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkTlsSetting');
 $toggleTlsSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/forceTls');
 $fetchBackendsUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/getBackends');
-
+$configureBackendUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/configureBackend');
 
 /* This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application  */
 $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
@@ -116,7 +174,8 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "checkTlsSettingUrl": "<?php echo $block->escapeJsQuote($checkTlsSettingUrl);?>",
                     "toggleTlsSettingUrl": "<?php echo $block->escapeJsQuote($toggleTlsSettingUrl);?>",
                     "isFastlyEnabled": "<?php echo $block->escapeJsQuote($isFastlyEnabled);?>",
-                    "fetchBackendsUrl": "<?php echo $block->escapeJsQuote($fetchBackendsUrl);?>"
+                    "fetchBackendsUrl": "<?php echo $block->escapeJsQuote($fetchBackendsUrl);?>",
+                    "configureBackendUrl": "<?php echo $block->escapeJsQuote($configureBackendUrl);?>"
                 }
             }
         }

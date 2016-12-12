@@ -4,9 +4,7 @@ namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
 
 use \Magento\Framework\App\Request\Http;
 use \Magento\Framework\Controller\Result\JsonFactory;
-use \Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
-use Fastly\Cdn\Helper\Vcl;
 
 class GetBackends extends \Magento\Backend\App\Action
 {
@@ -21,49 +19,32 @@ class GetBackends extends \Magento\Backend\App\Action
     protected $resultJson;
 
     /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
      * @var \Fastly\Cdn\Model\Api
      */
     protected $api;
 
     /**
-     * @var Vcl
-     */
-    protected $vcl;
-
-    /**
-     * ForceTls constructor.
-     *
+     * GetBackends constructor.
      * @param \Magento\Backend\App\Action\Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
-     * @param Config $config
      * @param Api $api
-     * @param Vcl $vcl
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
-        Config $config,
-        Api $api,
-        Vcl $vcl
+        Api $api
     )
     {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
-        $this->config = $config;
         $this->api = $api;
-        $this->vcl = $vcl;
         parent::__construct($context);
     }
 
     /**
-     * Upload VCL snippets
+     * Get all backends for active version
      *
      * @return $resultJsonFactory
      */

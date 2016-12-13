@@ -14,6 +14,15 @@ define([
         $(document).ready(function () {
             if (config.isFastlyEnabled) {
 
+                $.ajax({
+                    type: "GET",
+                    url: config.isAlreadyConfiguredUrl
+                }).done(function (response) {
+                    if(response.status == true) {
+                        isAlreadyConfigured = response.flag;
+                    }
+                });
+
                 // Checking service status & presence of force_tls request setting
                 requestStateSpan = $('#request_state_span');
                 requestStateMsgSpan = $('#fastly_request_state_message_span');
@@ -91,6 +100,12 @@ define([
         });
 
         $('#fastly_vcl_upload_button').on('click', function () {
+
+            if(isAlreadyConfigured != true) {
+                $(this).attr('disabled', true);
+                return alert($.mage.__('Please, save configuration and clear cache.'));
+            }
+
             vcl.resetAllMessages();
 
             $.when(
@@ -116,6 +131,12 @@ define([
         });
 
         $('#fastly_force_tls_button').on('click', function () {
+
+            if(isAlreadyConfigured != true) {
+                $(this).attr('disabled', true);
+                return alert($.mage.__('Please, save configuration and clear cache.'));
+            }
+
             vcl.resetAllMessages();
 
             $.ajax({
@@ -154,6 +175,7 @@ define([
         var active_version = '';
         var next_version = '';
         var forceTls = true;
+        var isAlreadyConfigured = true;
         /* VCL button messages */
         var successVclBtnMsg = $('#fastly-success-vcl-button-msg');
         var errorVclBtnMsg = $('#fastly-error-vcl-button-msg');
@@ -237,6 +259,13 @@ define([
                     beforeSend: function (xhr) {
                         $('.loading-backends').show();
                     }
+                });
+            },
+
+            isAlreadyConfigured: function () {
+                return $.ajax({
+                    type: "GET",
+                    url: config.isAlreadyConfiguredUrl
                 });
             },
 

@@ -55,7 +55,17 @@
                         <label><![CDATA[Automatic upload & service activation]]></label>
                         <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\UploadVclBtn</frontend_model>
                     </field>
-                    <group id="fastly_advanced_configuration" sortOrder="200" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <group id="fastly_backend_settings" sortOrder="200" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Backend settings</label>
+                        <field id="backends" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Backends</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Backend</frontend_model>
+                            <comment>
+                                <![CDATA[]]>
+                            </comment>
+                        </field>
+                    </group>
+                    <group id="fastly_advanced_configuration" sortOrder="300" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Advanced Configuration</label>
                         <field id="export_button_fastly" translate="label comment" type="button" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Review VCL for manual upload</label>

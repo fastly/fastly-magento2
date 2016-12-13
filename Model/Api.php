@@ -421,6 +421,28 @@ class Api
     }
 
     /**
+     * List all backends for a particular service and version.
+     *
+     * @param $version
+     * @return bool|mixed
+     */
+    public function getBackends($version)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version. '/backend';
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    public function configureBackend($params, $version, $old_name)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/backend/' . str_replace ( ' ', '%20', $old_name);
+        $result = $this->_fetch($url, \Zend_Http_Client::PUT, $params);
+
+        return $result;
+    }
+
+    /**
      * @param $uri
      * @param string $method
      * @param string $body

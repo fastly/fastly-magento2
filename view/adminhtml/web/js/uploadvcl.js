@@ -2,46 +2,92 @@ define([
     "jquery",
     'mage/template',
     "Magento_Ui/js/modal/modal",
-    'mage/translate'
+    'mage/translate',
+    'mage/validation'
 ], function($){
 
-    return function (config) {
+    return function (config) {0
 
         var requestStateSpan = '';
         var requestStateMsgSpan = '';
 
         $(document).ready(function () {
-            // Checking service status & presence of force_tls request setting
-            requestStateSpan = $('#request_state_span');
-            requestStateMsgSpan = $('#fastly_request_state_message_span');
-            $.ajax({
-                type: "GET",
-                url: config.serviceInfoUrl,
-                beforeSend: function (xhr) {
-                    requestStateSpan.find('.processing').show();
-                }
-            }).done(function (checkService) {
-                if(checkService.status != false) {
-                    var tls = vcl.getTlsSetting(checkService.active_version, false);
-                    tls.done(function (checkReqSetting) {
-                            requestStateSpan.find('.processing').hide();
-                            if(checkReqSetting.status != false) {
-                                requestStateMsgSpan.find('#force_tls_state_enabled').show();
-                            } else {
-                                requestStateMsgSpan.find('#force_tls_state_disabled').show();
+            if (config.isFastlyEnabled) {
+
+                // Checking service status & presence of force_tls request setting
+                requestStateSpan = $('#request_state_span');
+                requestStateMsgSpan = $('#fastly_request_state_message_span');
+                $.ajax({
+                    type: "GET",
+                    url: config.serviceInfoUrl,
+                    beforeSend: function (xhr) {
+                        requestStateSpan.find('.processing').show();
+                    }
+                }).done(function (checkService) {
+                    if (checkService.status != false) {
+                        active_version = checkService.active_version;
+                        next_version = checkService.next_version;
+                        // Fetch force tls req setting status
+                        var tls = vcl.getTlsSetting(checkService.active_version, false);
+                        tls.done(function (checkReqSetting) {
+                                requestStateSpan.find('.processing').hide();
+                                if (checkReqSetting.status != false) {
+                                    requestStateMsgSpan.find('#force_tls_state_enabled').show();
+                                } else {
+                                    requestStateMsgSpan.find('#force_tls_state_disabled').show();
+                                }
                             }
-                        }
-                    ).fail(function () {
+                        ).fail(function () {
+                            requestStateSpan.find('.processing').hide();
+                            requestStateMsgSpan.find('#force_tls_state_unknown').show();
+                        });
+
+                        // Fetch backends
+                        vcl.getBackends(active_version, false).done(function (backendsResp) {
+                            $('.loading-backends').hide();
+                            if(backendsResp.status != false) {
+                                if(backendsResp.backends.length > 0) {
+                                    backends = backendsResp.backends;
+                                    vcl.processBackends(backendsResp.backends);
+                                } else {
+                                    $('.no-backends').show();
+                                }
+                            }
+
+                        }).fail(function () {
+                            // TO DO: implement
+                        });
+                    } else {
                         requestStateSpan.find('.processing').hide();
                         requestStateMsgSpan.find('#force_tls_state_unknown').show();
-                    });
-                } else {
-                    requestStateSpan.find('.processing').hide();
+                    }
+                }).fail(function () {
                     requestStateMsgSpan.find('#force_tls_state_unknown').show();
-                }
-            }).fail(function () {
-                requestStateMsgSpan.find('#force_tls_state_unknown').show();
+                });
+            }
+        });
+
+        $('body').on('click', 'button.fastly-edit-backend-icon', function() {
+            $.ajax({
+                type: "GET",
+                url: config.serviceInfoUrl
+            }).done(function (checkService) {
+                active_version = checkService.active_version;
+                next_version = checkService.next_version;
+                vcl.setActiveServiceLabel(active_version, next_version);
             });
+
+            var backend_id = $(this).data('backend-id');
+            if(backends != null && backend_id != null) {
+                vcl.showPopup('fastly-backend-options');
+                var backend_name = backends[backend_id].name;
+                $('.modal-title').text($.mage.__(backend_name));
+                $('#backend_name').val(backends[backend_id].name);
+                $('#backend_shield option[value=' + backends[backend_id].shield +']').attr('selected','selected');
+                $('#backend_connect_timeout').val(backends[backend_id].connect_timeout);
+                $('#backend_between_bytes_timeout').val(backends[backend_id].between_bytes_timeout);
+                $('#backend_first_byte_timeout').val(backends[backend_id].first_byte_timeout);
+            }
         });
 
         $('#fastly_vcl_upload_button').on('click', function () {
@@ -104,6 +150,7 @@ define([
             });
         });
 
+        var backends = null;
         var active_version = '';
         var next_version = '';
         var forceTls = true;
@@ -180,6 +227,29 @@ define([
                 });
             },
 
+            // Queries Fastly API to retrive Backends
+            getBackends: function(active_version, loaderVisibility) {
+                return $.ajax({
+                    type: "GET",
+                    url: config.fetchBackendsUrl,
+                    showLoader: loaderVisibility,
+                    data: {'active_version': active_version},
+                    beforeSend: function (xhr) {
+                        $('.loading-backends').show();
+                    }
+                });
+            },
+
+            // Process backends
+            processBackends: function(backends) {
+                $.each(backends, function (index, backend) {
+                    var html = "<tr id='fastly_" + index + "'>";
+                    html += "<td><input data-backendId='"+ index + "' id='backend_" + index + "' name='test' value='"+ backend.name +"' disabled='disabled' class='input-text' type='text'></td>";
+                    html += "<td class='col-actions'><button class='action-delete fastly-edit-backend-icon' data-backend-id='" + index + "' id='fastly-edit-backend_"+ index + "' title='Edit backend' type='button'></td></tr>";
+                    $('#fastly-backends-list').append(html);
+                });
+            },
+
             // Setting up label text
             setActiveServiceLabel: function (active_version, next_version) {
                 var msgWarning = $('.fastly-message-warning');
@@ -189,7 +259,7 @@ define([
             },
 
             // Upload process
-            submitVcl: function (active_version) {
+            submitVcl: function () {
                 var activate_vcl_flag = false;
 
                 if($('#fastly_activate_vcl').is(':checked')) {
@@ -208,6 +278,7 @@ define([
                     {
                         if(response.status == true)
                         {
+                            active_version = response.active_version;
                             vcl.modal.modal('closeModal');
                             successVclBtnMsg.text($.mage.__('VCL file is successfully uploaded to the Fastly service.')).show();
                         } else {
@@ -248,14 +319,73 @@ define([
                             if(forceTls == false) {
                                 onOrOff = 'on';
                                 disabledOrEnabled = 'enabled';
+                            } else {
+                                onOrOff = 'off';
+                                disabledOrEnabled = 'disabled';
                             }
                             successTlsBtnMsg.text($.mage.__('The Force TLS request setting is successfully turned ' + onOrOff + '.')).show();
                             $('.request_tls_state_span').hide();
+                            console.log(forceTls);
+                            console.log(disabledOrEnabled);
                             if(disabledOrEnabled == 'enabled') {
+                                requestStateMsgSpan.find('#force_tls_state_disabled').hide();
                                 requestStateMsgSpan.find('#force_tls_state_enabled').show();
                             } else {
+                                requestStateMsgSpan.find('#force_tls_state_enabled').hide();
                                 requestStateMsgSpan.find('#force_tls_state_disabled').show();
                             }
+                        } else {
+                            vcl.resetAllMessages();
+                            vcl.showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function(msg)
+                    {
+                        // TODO: error handling
+                    }
+                });
+            },
+
+            // Reconfigure backend
+            configureBackend: function () {
+                var activate_backend = false;
+
+                if($('#fastly_activate_backend').is(':checked')) {
+                    activate_backend = true;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: config.configureBackendUrl,
+                    data: {
+                        'active_version': active_version,
+                        'activate_flag': activate_backend,
+                        'name': $('#backend_name').val(),
+                        'shield': $('#backend_shield').val(),
+                        'connect_timeout': $('#backend_connect_timeout').val(),
+                        'between_bytes_timeout': $('#backend_between_bytes_timeout').val(),
+                        'first_byte_timeout': $('#backend_first_byte_timeout').val()
+                    },
+                    showLoader: true,
+                    success: function(response)
+                    {
+                        if(response.status == true)
+                        {
+                            $('#fastly-success-backend-button-msg').text($.mage.__('Backend is successfully updated.')).show();
+                            active_version = response.active_version;
+                            vcl.modal.modal('closeModal');
+                            $('#fastly-backends-list').html('');
+                            vcl.getBackends(response.active_version, false).done(function (backendsResp) {
+                                $('.loading-backends').hide();
+                                if(backendsResp.status != false) {
+                                    if(backendsResp.backends.length > 0) {
+                                        backends = backendsResp.backends;
+                                        vcl.processBackends(backendsResp.backends);
+                                    }
+                                }
+                            }).fail(function () {
+                                $('#fastly-error-backend-button-msg').text($.mage.__('Error while updating the backend. Please, try again.')).show();
+                            });
                         } else {
                             vcl.resetAllMessages();
                             vcl.showErrorMessage(response.msg);
@@ -314,6 +444,17 @@ define([
                     },
                     actionOk: function () {
                         vcl.toggleTls(active_version);
+                    }
+                },
+                'fastly-backend-options': {
+                    title: jQuery.mage.__(''),
+                    content: function () {
+                        return document.getElementById('fastly-backend-template').textContent;
+                    },
+                    actionOk: function () {
+                        if ($('#backend-upload-form').valid()) {
+                            vcl.configureBackend(active_version);
+                        }
                     }
                 }
             }

@@ -128,6 +128,21 @@ class Config extends \Magento\PageCache\Model\Config
 
 
     /**
+     * Check if Fastly is selected for Caching Application
+     *
+     * @return bool
+     */
+    public function isFastlyEnabled()
+    {
+        if($this->getType() == Config::FASTLY) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /**
      * Return Fastly API endpoint
      *
      * @return string

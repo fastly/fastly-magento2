@@ -4,13 +4,10 @@ namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
 
 use \Magento\Framework\App\Request\Http;
 use \Magento\Framework\Controller\Result\JsonFactory;
-use \Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
-use \Magento\Framework\Stdlib\DateTime\DateTime;
-use \Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 
-class Upload extends \Magento\Backend\App\Action
+class ConfigureBackend extends \Magento\Backend\App\Action
 {
     /**
      * @var Http
@@ -23,11 +20,6 @@ class Upload extends \Magento\Backend\App\Action
     protected $resultJson;
 
     /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
      * @var \Fastly\Cdn\Model\Api
      */
     protected $api;
@@ -37,45 +29,27 @@ class Upload extends \Magento\Backend\App\Action
      */
     protected $vcl;
 
-    /**
-     * @var DateTime
-     */
-    protected $time;
 
     /**
-     * @var TimezoneInterface
-     */
-    protected $timezone;
-
-    /**
-     * Upload constructor.
+     * ConfigureBackend constructor.
      * @param \Magento\Backend\App\Action\Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
-     * @param Config $config
      * @param Api $api
      * @param Vcl $vcl
-     * @param DateTime $time
-     * @param TimezoneInterface $timezone
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
-        Config $config,
         Api $api,
-        Vcl $vcl,
-        DateTime $time,
-        TimezoneInterface $timezone
+        Vcl $vcl
     )
     {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
-        $this->config = $config;
         $this->api = $api;
         $this->vcl = $vcl;
-        $this->time = $time;
-        $this->timezone = $timezone;
         parent::__construct($context);
     }
 
@@ -88,8 +62,16 @@ class Upload extends \Magento\Backend\App\Action
     {
         try {
             $result = $this->resultJson->create();
+            $activate_flag = $this->getRequest()->getParam('activate_flag');
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $activateVcl = $this->getRequest()->getParam('activate_flag');
+            $oldName = $this->getRequest()->getParam('name');
+            $params = [
+                'name' => $this->getRequest()->getParam('name'),
+                'shield' => $this->getRequest()->getParam('shield'),
+                'connect_timeout' => $this->getRequest()->getParam('connect_timeout'),
+                'between_bytes_timeout' => $this->getRequest()->getParam('between_bytes_timeout'),
+                'first_byte_timeout' => $this->getRequest()->getParam('first_byte_timeout'),
+            ];
             $service = $this->api->checkServiceDetails();
 
             if(!$service) {
@@ -108,38 +90,10 @@ class Upload extends \Magento\Backend\App\Action
                 return $result->setData(array('status' => false, 'msg' => 'Failed to clone active version.'));
             }
 
-            $snippets = $this->config->getVclSnippets();
+            $configureBackend = $this->api->configureBackend($params, $clone->number, $oldName);
 
-            foreach($snippets as $key => $value)
-            {
-                $snippetData = array('name' => Config::FASTLY_MAGENTO_MODULE.'_'.$key, 'type' => $key, 'dynamic' => "0", 'priority' => 50, 'content' => $value);
-                $status = $this->api->uploadSnippet($clone->number, $snippetData);
-
-                if(!$status) {
-                    return $result->setData(array('status' => false, 'msg' => 'Failed to upload the Snippet file.'));
-                }
-            }
-
-            $condition = array('name' => Config::FASTLY_MAGENTO_MODULE.'_pass', 'statement' => 'req.http.x-pass', 'type' => 'REQUEST', 'priority' => 90);
-            $createCondition = $this->api->createCondition($clone->number, $condition);
-
-            if(!$createCondition) {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to create a REQUEST condition.'));
-            }
-
-            $request = array(
-                'action' => 'pass',
-                'max_stale_age' => 3600,
-                'name' => Config::FASTLY_MAGENTO_MODULE.'_request',
-                'request_condition' => $createCondition->name,
-                'service_id' => $service->id,
-                'version' => $currActiveVersion['active_version']
-            );
-
-            $createReq = $this->api->createRequest($clone->number, $request);
-
-            if(!$createReq) {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to create a REQUEST object.'));
+            if(!$configureBackend) {
+                return $result->setData(array('status' => false, 'msg' => 'Failed to update Backend configuration.'));
             }
 
             $validate = $this->api->validateServiceVersion($clone->number);
@@ -148,7 +102,7 @@ class Upload extends \Magento\Backend\App\Action
                 return $result->setData(array('status' => false, 'msg' => 'Failed to validate service version: '.$validate->msg));
             }
 
-            if($activateVcl === 'true') {
+            if($activate_flag === 'true') {
                 $this->api->activateVersion($clone->number);
             }
 

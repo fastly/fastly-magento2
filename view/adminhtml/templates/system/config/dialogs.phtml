@@ -64,7 +64,7 @@
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="vcl-upload-form" class="form-inline" enctype="multipart/form-data">
+    <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="backend-upload-form" class="form-inline" enctype="multipart/form-data">
         <fieldset class="admin__fieldset form-list question">
             <input hidden="hidden" name="backend_name" id="backend_name" class="admin__control-text">
             <div class="admin__field field">
@@ -111,23 +111,23 @@
             <div class="admin__field field _required">
                 <label for="connect_timeout" class="admin__field-label"><span><?php echo __("Connect timeout") ?></span></label>
                 <div class="admin__field-control">
-                    <input name="connect_timeout" id="backend_connect_timeout" class="admin__control-text required-entry validate-alphanum-with-spaces validate-length maximum-length-50 mage-error">
+                    <input name="connect_timeout" type="number" required="required" id="backend_connect_timeout" class="admin__control-text required-entry validate-alphanum-with-spaces validate-length maximum-length-50">
                     <div class="admin__field-note">How long to wait for a timeout in milliseconds.</div>
                 </div>
             </div>
 
-            <div class="admin__field field">
+            <div class="admin__field field _required">
                 <label for="between_bytes_timeout" class="admin__field-label"><span><?php echo __("Between bytes timeout") ?></span></label>
                 <div class="admin__field-control">
-                    <input name="between_bytes_timeout" id="backend_between_bytes_timeout" class="admin__control-text">
+                    <input name="between_bytes_timeout" type="number" required="required" id="backend_between_bytes_timeout" class="admin__control-text">
                     <div class="admin__field-note">How long to wait between bytes in milliseconds.</div>
                 </div>
             </div>
 
-            <div class="admin__field field">
+            <div class="admin__field field _required">
                 <label for="first_byte_timeout " class="admin__field-label"><span><?php echo __("First byte timeout ") ?></span></label>
                 <div class="admin__field-control">
-                    <input name="first_byte_timeout " id="backend_first_byte_timeout" class="admin__control-text">
+                    <input name="first_byte_timeout" type="number" required="required" id="backend_first_byte_timeout" class="admin__control-text">
                     <div class="admin__field-note">How long to wait for the first bytes in milliseconds.</div>
                 </div>
             </div>
@@ -180,5 +180,15 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
             }
         }
 </script>
+
+<style type="text/css">
+    .error {
+        color: red;
+    }
+
+    #backend-upload-form {
+        margin-top: 25px;
+    }
+</style>
 
 

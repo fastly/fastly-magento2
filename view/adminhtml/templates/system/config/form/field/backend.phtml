@@ -34,12 +34,23 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
             <tbody id="fastly-backends-list"></tbody>
         </table>
     </div>
-    <input type="hidden" name="<?php /* @escapeNotVerified */ echo $block->getElement()->getName(); ?>[__empty]" value="" />
+    <p class="loading-backends" style="display: none;"><img class="processing" alt="Collecting" style="margin:0 5px" src="<?php echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/> <?php echo __('Loading backends...'); ?></p>
+    <p class="no-backends" style="display: none;"><?php echo __('There are no backends configured yet.'); ?></p>
 </div>
+
+<div class="message message-error fastly-button-messages" id="fastly-error-backend-button-msg" style="display: none"></div>
+
+<div class="message message-success fastly-button-messages" id="fastly-success-backend-button-msg" style="display: none"></div>
+
+<div class="message message-warning fastly-button-messages" id="fastly-warning-backend-button-msg" style="display: none"></div>
 
 <style type="text/css">
     .admin__control-table .fastly-edit-backend-icon::before {
         content: '\e610';
         font-size: 2rem;
+    }
+
+    .no-backends, .loading-backends {
+        text-align: center;
     }
 </style>

@@ -120,7 +120,7 @@ class Upload extends \Magento\Backend\App\Action
                 }
             }
 
-            $condition = array('name' => Config::FASTLY_MAGENTO_MODULE.'_checkout', 'statement' => 'req.url ~ "/checkout"', 'type' => 'REQUEST', 'priority' => 90);
+            $condition = array('name' => Config::FASTLY_MAGENTO_MODULE.'_pass', 'statement' => 'req.http.x-pass', 'type' => 'REQUEST', 'priority' => 90);
             $createCondition = $this->api->createCondition($clone->number, $condition);
 
             if(!$createCondition) {

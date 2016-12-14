@@ -91,13 +91,13 @@
                         <option value="stockholm-bma">SE, Stockholm</option>
                         <option value="singapore-sg">SG, Singapore</option>
                         <option value="london_city-uk">UK, London - LCY</option>
-                        <option value="london-uk">UK, London LHR - Preferred for AWS eu-west1</option>
+                        <option value="london-uk">UK, London - LHR - Recommended for AWS eu-west1/2 origins</option>
                         <option value="atl-ga-us">US, Atlanta, GA</option>
                         <option value="bos-ma-us">US, Boston, MA</option>
                         <option value="ord-il-us">US, Chicago, IL</option>
                         <option value="den-co-us">US, Denver, CO</option>
                         <option value="dallas-tx-us">US, Dallas, TX</option>
-                        <option value="iad-va-us">US, Washington, DC - Preferred for AWS us-east1</option>
+                        <option value="iad-va-us">US, Washington, DC - Recommended for AWS us-east1 origins</option>
                         <option value="lax-ca-us">US, Los Angeles, CA</option>
                         <option value="miami-fl-us">US, Miami, FL</option>
                         <option value="jfk-ny-us">US, New York City, NY</option>
@@ -105,7 +105,8 @@
                         <option value="sea-wa-us">US, Seattle, WA</option>
                     </select>
                     <div class="admin__field-note">
-                        The shield POP designated to reduce inbound load on this origin by serving the cached data to the rest of the network.</div>
+                        The shield POP designated to reduce inbound load on this origin by serving the cached data to the rest of the network. 
+                        <a href="https://docs.fastly.com/guides/performance-tuning/shielding" target="_blank">Click for more details.</a></div>
                 </div>
             </div>
 

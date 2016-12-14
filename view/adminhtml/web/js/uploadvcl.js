@@ -262,13 +262,6 @@ define([
                 });
             },
 
-            isAlreadyConfigured: function () {
-                return $.ajax({
-                    type: "GET",
-                    url: config.isAlreadyConfiguredUrl
-                });
-            },
-
             // Process backends
             processBackends: function(backends) {
                 $.each(backends, function (index, backend) {

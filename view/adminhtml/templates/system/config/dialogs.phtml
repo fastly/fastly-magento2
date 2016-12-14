@@ -159,6 +159,7 @@ $checkTlsSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkTlsSetting');
 $toggleTlsSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/forceTls');
 $fetchBackendsUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/getBackends');
 $configureBackendUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/configureBackend');
+$isAlreadyConfiguredUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/isAlreadyConfigured');
 
 /* This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application  */
 $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
@@ -176,7 +177,8 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "toggleTlsSettingUrl": "<?php echo $block->escapeJsQuote($toggleTlsSettingUrl);?>",
                     "isFastlyEnabled": "<?php echo $block->escapeJsQuote($isFastlyEnabled);?>",
                     "fetchBackendsUrl": "<?php echo $block->escapeJsQuote($fetchBackendsUrl);?>",
-                    "configureBackendUrl": "<?php echo $block->escapeJsQuote($configureBackendUrl);?>"
+                    "configureBackendUrl": "<?php echo $block->escapeJsQuote($configureBackendUrl);?>",
+                    "isAlreadyConfiguredUrl": "<?php echo $block->escapeJsQuote($isAlreadyConfiguredUrl);?>"
                 }
             }
         }

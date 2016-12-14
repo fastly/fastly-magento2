@@ -6,13 +6,22 @@ define([
     'mage/validation'
 ], function($){
 
-    return function (config) {0
+    return function (config) {
 
         var requestStateSpan = '';
         var requestStateMsgSpan = '';
 
         $(document).ready(function () {
             if (config.isFastlyEnabled) {
+
+                $.ajax({
+                    type: "GET",
+                    url: config.isAlreadyConfiguredUrl
+                }).done(function (response) {
+                    if(response.status == true) {
+                        isAlreadyConfigured = response.flag;
+                    }
+                });
 
                 // Checking service status & presence of force_tls request setting
                 requestStateSpan = $('#request_state_span');
@@ -91,6 +100,12 @@ define([
         });
 
         $('#fastly_vcl_upload_button').on('click', function () {
+
+            if(isAlreadyConfigured != true) {
+                $(this).attr('disabled', true);
+                return alert($.mage.__('Please save config prior to continuing.'));
+            }
+
             vcl.resetAllMessages();
 
             $.when(
@@ -116,6 +131,12 @@ define([
         });
 
         $('#fastly_force_tls_button').on('click', function () {
+
+            if(isAlreadyConfigured != true) {
+                $(this).attr('disabled', true);
+                return alert($.mage.__('Please save config prior to continuing.'));
+            }
+
             vcl.resetAllMessages();
 
             $.ajax({
@@ -154,6 +175,7 @@ define([
         var active_version = '';
         var next_version = '';
         var forceTls = true;
+        var isAlreadyConfigured = true;
         /* VCL button messages */
         var successVclBtnMsg = $('#fastly-success-vcl-button-msg');
         var errorVclBtnMsg = $('#fastly-error-vcl-button-msg');

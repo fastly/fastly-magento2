@@ -6,7 +6,7 @@ define([
     'mage/validation'
 ], function($){
 
-    return function (config) {0
+    return function (config) {
 
         var requestStateSpan = '';
         var requestStateMsgSpan = '';
@@ -103,7 +103,7 @@ define([
 
             if(isAlreadyConfigured != true) {
                 $(this).attr('disabled', true);
-                return alert($.mage.__('Please, save configuration and clear cache.'));
+                return alert($.mage.__('Please save config prior to continuing.'));
             }
 
             vcl.resetAllMessages();
@@ -134,7 +134,7 @@ define([
 
             if(isAlreadyConfigured != true) {
                 $(this).attr('disabled', true);
-                return alert($.mage.__('Please, save configuration and clear cache.'));
+                return alert($.mage.__('Please save config prior to continuing.'));
             }
 
             vcl.resetAllMessages();

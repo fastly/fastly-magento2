@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.6
+
+- Add a check to make sure user has saved config before attempting upload
+
 ## 1.2.5
 
 - Add Backend Settings configuration - allows reconfiguration of existing backends

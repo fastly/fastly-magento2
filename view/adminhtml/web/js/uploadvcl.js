@@ -89,7 +89,7 @@ define([
             var backend_id = $(this).data('backend-id');
             if(backends != null && backend_id != null) {
                 vcl.showPopup('fastly-backend-options');
-                var backend_name = backends[backend_id].name;
+                var backend_name = "Backend " + backends[backend_id].name;
                 $('.modal-title').text($.mage.__(backend_name));
                 $('#backend_name').val(backends[backend_id].name);
                 $('#backend_shield option[value=' + backends[backend_id].shield +']').attr('selected','selected');
@@ -282,8 +282,8 @@ define([
             // Setting up label text
             setActiveServiceLabel: function (active_version, next_version) {
                 var msgWarning = $('.fastly-message-warning');
-                msgWarning.text($.mage.__('You are about to clone version') + ' ' + active_version + '. '
-                    + $.mage.__('We\'ll upload your VCL to version ') + ' ' + next_version + '.');
+                msgWarning.text($.mage.__('You are about to clone active version') + ' ' + active_version + '. '
+                    + $.mage.__('We\'ll make changes to version ') + ' ' + next_version + '.');
                 msgWarning.show();
             },
 

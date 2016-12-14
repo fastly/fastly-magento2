@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.5
+
+- Add Backend Settings configuration - allows reconfiguration of existing backends
+- Minor bug fixes
+
 ## 1.2.4
 
 - Add Force TLS button in advanced settings - it enables/disables it in the Fastly service

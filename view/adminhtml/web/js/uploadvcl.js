@@ -11,70 +11,79 @@ define([
         var requestStateSpan = '';
         var requestStateMsgSpan = '';
 
-        $(document).ready(function () {
-            if (config.isFastlyEnabled) {
-
-                $.ajax({
-                    type: "GET",
-                    url: config.isAlreadyConfiguredUrl
-                }).done(function (response) {
-                    if(response.status == true) {
-                        isAlreadyConfigured = response.flag;
-                    }
-                });
-
-                // Checking service status & presence of force_tls request setting
-                requestStateSpan = $('#request_state_span');
-                requestStateMsgSpan = $('#fastly_request_state_message_span');
-                $.ajax({
-                    type: "GET",
-                    url: config.serviceInfoUrl,
-                    beforeSend: function (xhr) {
-                        requestStateSpan.find('.processing').show();
-                    }
-                }).done(function (checkService) {
-                    if (checkService.status != false) {
-                        active_version = checkService.active_version;
-                        next_version = checkService.next_version;
-                        // Fetch force tls req setting status
-                        var tls = vcl.getTlsSetting(checkService.active_version, false);
-                        tls.done(function (checkReqSetting) {
-                                requestStateSpan.find('.processing').hide();
-                                if (checkReqSetting.status != false) {
-                                    requestStateMsgSpan.find('#force_tls_state_enabled').show();
-                                } else {
-                                    requestStateMsgSpan.find('#force_tls_state_disabled').show();
-                                }
-                            }
-                        ).fail(function () {
-                            requestStateSpan.find('.processing').hide();
-                            requestStateMsgSpan.find('#force_tls_state_unknown').show();
-                        });
-
-                        // Fetch backends
-                        vcl.getBackends(active_version, false).done(function (backendsResp) {
-                            $('.loading-backends').hide();
-                            if(backendsResp.status != false) {
-                                if(backendsResp.backends.length > 0) {
-                                    backends = backendsResp.backends;
-                                    vcl.processBackends(backendsResp.backends);
-                                } else {
-                                    $('.no-backends').show();
-                                }
-                            }
-
-                        }).fail(function () {
-                            // TO DO: implement
-                        });
-                    } else {
-                        requestStateSpan.find('.processing').hide();
-                        requestStateMsgSpan.find('#force_tls_state_unknown').show();
-                    }
-                }).fail(function () {
-                    requestStateMsgSpan.find('#force_tls_state_unknown').show();
-                });
+        $('#system_full_page_cache_caching_application').on('change', function () {
+            if($(this).val() == 'fastly') {
+                init();
             }
         });
+
+        $(document).ready(function () {
+            if (config.isFastlyEnabled) {
+                init();
+            }
+        });
+
+        function init() {
+            $.ajax({
+                type: "GET",
+                url: config.isAlreadyConfiguredUrl
+            }).done(function (response) {
+                if(response.status == true) {
+                    isAlreadyConfigured = response.flag;
+                }
+            });
+
+            // Checking service status & presence of force_tls request setting
+            requestStateSpan = $('#request_state_span');
+            requestStateMsgSpan = $('#fastly_request_state_message_span');
+            $.ajax({
+                type: "GET",
+                url: config.serviceInfoUrl,
+                beforeSend: function (xhr) {
+                    requestStateSpan.find('.processing').show();
+                }
+            }).done(function (checkService) {
+                if (checkService.status != false) {
+                    active_version = checkService.active_version;
+                    next_version = checkService.next_version;
+                    // Fetch force tls req setting status
+                    var tls = vcl.getTlsSetting(checkService.active_version, false);
+                    tls.done(function (checkReqSetting) {
+                            requestStateSpan.find('.processing').hide();
+                            if (checkReqSetting.status != false) {
+                                requestStateMsgSpan.find('#force_tls_state_enabled').show();
+                            } else {
+                                requestStateMsgSpan.find('#force_tls_state_disabled').show();
+                            }
+                        }
+                    ).fail(function () {
+                        requestStateSpan.find('.processing').hide();
+                        requestStateMsgSpan.find('#force_tls_state_unknown').show();
+                    });
+
+                    // Fetch backends
+                    vcl.getBackends(active_version, false).done(function (backendsResp) {
+                        $('.loading-backends').hide();
+                        if(backendsResp.status != false) {
+                            if(backendsResp.backends.length > 0) {
+                                backends = backendsResp.backends;
+                                vcl.processBackends(backendsResp.backends);
+                            } else {
+                                $('.no-backends').show();
+                            }
+                        }
+
+                    }).fail(function () {
+                        // TO DO: implement
+                    });
+                } else {
+                    requestStateSpan.find('.processing').hide();
+                    requestStateMsgSpan.find('#force_tls_state_unknown').show();
+                }
+            }).fail(function () {
+                requestStateMsgSpan.find('#force_tls_state_unknown').show();
+            });
+        }
 
         $('body').on('click', 'button.fastly-edit-backend-icon', function() {
             $.ajax({
@@ -153,11 +162,11 @@ define([
                 next_version = service.next_version;
                 vcl.getTlsSetting(active_version, true).done(function (response) {
                         if(response.status == false) {
-                            forceTls = response.status;
                             $('.modal-title').text($.mage.__('We are about to turn on TLS'));
                         } else {
                             $('.modal-title').text($.mage.__('We are about to turn off TLS'));
                         }
+                    forceTls = response.status;
                     }
                 ).fail(function () {
 

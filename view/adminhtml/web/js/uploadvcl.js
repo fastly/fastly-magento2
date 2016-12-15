@@ -162,11 +162,11 @@ define([
                 next_version = service.next_version;
                 vcl.getTlsSetting(active_version, true).done(function (response) {
                         if(response.status == false) {
-                            forceTls = response.status;
                             $('.modal-title').text($.mage.__('We are about to turn on TLS'));
                         } else {
                             $('.modal-title').text($.mage.__('We are about to turn off TLS'));
                         }
+                    forceTls = response.status;
                     }
                 ).fail(function () {
 

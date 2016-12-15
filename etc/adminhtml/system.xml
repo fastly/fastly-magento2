@@ -38,6 +38,7 @@
                             and <a href="https://docs.fastly.com/guides/account-management-and-security/finding-and-managing-your-account-info" target="_blank">finding your Service ID.</a>]]>
                         </comment>
                         <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
+                        <validate>required-entry</validate>
                     </field>
                     <field id="fastly_api_key" type="text" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Fastly API key</label>
@@ -46,6 +47,7 @@
                             After making any changes to Fastly Service ID or API Key, please Save Config first before uploading VCL.]]>
                         </comment>
                         <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
+                        <validate>required-entry</validate>
                     </field>
                     <field id="test_connection" translate="label comment" sortOrder="25" showInDefault="1" showInStore="0" showInWebsite="0">
                         <label><![CDATA[Test credentials]]></label>

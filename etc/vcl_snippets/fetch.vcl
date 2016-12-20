@@ -50,7 +50,7 @@
         set beresp.http.x-compress-hint = "on";
     } else {
         # enable gzip for all static content
-        if ((beresp.status == 200 || beresp.status == 404) && (beresp.http.content-type ~ "^(application\/x\-javascript|text\/css|application\/javascript|text\/javascript|application\/json|application\/vnd\.ms\-fontobject|application\/x\-font\-opentype|application\/x\-font\-truetype|application\/x\-font\-ttf|application\/xml|font\/eot|font\/opentype|font\/otf|image\/svg\+xml|image\/vnd\.microsoft\.icon|text\/plain)\s*($|;)" || req.url ~ "\.(css|js|html|eot|ico|otf|ttf|json)($|\?)" ) ) {
+        if (http_status_matches(beresp.status, "200,404") && (beresp.http.content-type ~ "^(application\/x\-javascript|text\/css|application\/javascript|text\/javascript|application\/json|application\/vnd\.ms\-fontobject|application\/x\-font\-opentype|application\/x\-font\-truetype|application\/x\-font\-ttf|application\/xml|font\/eot|font\/opentype|font\/otf|image\/svg\+xml|image\/vnd\.microsoft\.icon|text\/plain)\s*($|;)" || req.url.ext ~ "(?i)(css|js|html|eot|ico|otf|ttf|json)" ) ) {
             # always set vary to make sure uncompressed versions dont always win
             if (!beresp.http.Vary ~ "Accept-Encoding") {
                 if (beresp.http.Vary) {
@@ -66,7 +66,7 @@
     }
 
     # cache only successfully responses and 404s
-    if (beresp.status != 200 && beresp.status != 301 && beresp.status != 404) {
+    if ( !http_status_matches(beresp.status, "200,301,404")) {
         set req.http.Fastly-Cachetype = "ERROR";
         set beresp.ttl = 1s;
         set beresp.grace = 5s;

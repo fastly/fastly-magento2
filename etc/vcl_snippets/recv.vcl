@@ -21,7 +21,7 @@
     # auth for purging
     if (req.request == "FASTLYPURGE") {
       # extract token signature and expiration
-      if (req.http.X-Purge-Token ~ "^([^_]+)_(.*)" ) {
+      if (!req.http.X-Purge-Token ~ "^([^_]+)_(.*)" ) {
         error 403;
       }
 

@@ -26,7 +26,8 @@ class UpgradeData implements UpgradeDataInterface
      */
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Framework\App\Config\Storage\WriterInterface $configWriter)
+        \Magento\Framework\App\Config\Storage\WriterInterface $configWriter
+    )
     {
         $this->_scopeConfig = $scopeConfig;
         $this->_configWriter = $configWriter;

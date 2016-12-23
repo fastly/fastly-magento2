@@ -21,10 +21,7 @@ might be difficult.
 Fastly_Cdn supports Magento2 Community and Enterprise Edition from version 2.0
 onwards.
 
-You need an account with [fastly.com](https://www.fastly.com/signup) which allows
-[uploading of custom VCL](https://docs.fastly.com/guides/vcl/uploading-custom-vcl).
-If you need professional services for assistance with setting up your
-environment please contact magento@fastly.com.
+You will need to signup for a free account with [fastly.com](https://www.fastly.com/signup) in order to use the module. If you need professional services for assistance with setting up your environment please contact magento@fastly.com.
 
 To use the module make sure that your server does not compress text content. This
 would prevent the ESI functionality.
@@ -35,7 +32,6 @@ The tasks involved in this are:
 
 - Add the Fastly_Cdn module to the Magento server. [(Instructions)](#magento-module)
 - Configure the Fastly_Cdn module on the Magento server. [(Instructions)](#configure-the-module)
-- Configure Fastly's service with the VCL. [(Instructions)](CONFIGURATION.md)
 
 ### Magento module
 

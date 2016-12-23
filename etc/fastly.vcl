@@ -17,9 +17,25 @@
 sub vcl_recv {
 #FASTLY recv
 
+    # Fixup for Varnish ESI not dealing with https:// absolute URLs well
+    if (req.is_esi_subreq && req.url ~ "/https://([^/]+)(/.*)$") {
+        set req.http.Host = re.group.1;
+        set req.url = re.group.2;
+    }
+
+    # Sort the query arguments
+    set req.url = boltsort.sort(req.url);
+
     if (req.url ~ "^/static/version(\d*/)?(.*)$") {
        set req.url = "/static/" + re.group.2 + "?" + re.group.1;
-    }   
+    }
+    
+    # User's Cookie may contain some Magento Vary items we should vary on
+    if (req.http.cookie:X-Magento-Vary ) {
+        set req.http.X-Magento-Vary = req.http.cookie:X-Magento-Vary;
+    } else {
+        unset req.http.X-Magento-Vary;
+    }
 
     # auth for purging
     if (req.request == "FASTLYPURGE") {
@@ -53,23 +69,47 @@ sub vcl_recv {
         unset req.http.X-Exp;
     }
 
-    # Deactivate gzip
-    set req.http.X-Orig-Accept-Encoding = req.http.Accept-Encoding;
-    unset req.http.Accept-Encoding;
-
     # set HTTPS header for offloaded TLS
     if (req.http.Fastly-SSL) {
         set req.http.Https = "on";
     }
 
-    # disable ESI processing on Origin Shield
     if (req.http.Fastly-FF) {
+        # disable ESI processing on Origin Shield
         set req.esi = false;
+        # Needed for proper handling of stale while revalidated when shielding is involved
+        set req.max_stale_while_revalidate = 0s;
     }
 
     # We only deal with GET and HEAD by default
     if (req.request != "GET" && req.request != "HEAD") {
         return (pass);
+    }
+    
+    # geoip lookup
+    if (req.url ~ "fastlyCdn/geoip/getaction/") {
+        # check if GeoIP has been already processed by client. this normally happens before essential cookies are set.
+        if (req.http.cookie ~ "(X-Magento-Vary|form_key)=") {
+            error 200 "";
+        } else {
+            # append parameter with country code only if it doesn't exist already
+            if ( req.url !~ "country_code=" ) {
+                set req.url = req.url "?country_code=" if ( req.http.geo_override, req.http.geo_override, geoip.country_code);
+            }
+        }
+    } else {
+        # Per suggestions in https://github.com/sdinteractive/SomethingDigital_PageCacheParams
+        # we'll strip out query parameters used in Google AdWords, Mailchimp tracking
+        set req.http.Magento-Original-URL = req.url;
+        set req.url = querystring.regfilter(req.url, "^(utm_.*|gclid|gdftrk|_ga|mc_.*)");
+    }
+    
+
+    # static files are always cacheable. remove SSL flag and cookie
+    if (req.url ~ "^/(pub/)?(media|static)/.*") {
+        unset req.http.Https;
+        unset req.http.Cookie;
+        return (lookup);
     }
 
     # Bypass shopping cart and checkout requests
@@ -77,27 +117,26 @@ sub vcl_recv {
         return (pass);
     }
 
-    # static files are always cacheable. remove SSL flag and cookie
-    if (req.url ~ "^/(pub/)?(media|static)/.*") {
-        unset req.http.Https;
-        unset req.http.Cookie;
-    }
-
-    # geoip lookup
-    if (req.url ~ "fastlyCdn/geoip/getaction/") {
-        # check if GeoIP has been already processed by client. this normally happens before essential cookies are set.
-        if (req.http.cookie ~ "(X-Magento-Vary|form_key)=") {
-            error 200 "";
-        } else {
-            # append parameter with country code
-            set req.url = req.url "?country_code=" geoip.country_code;
-        }
-    }
-
     return(lookup);
 }
 
 sub vcl_fetch {
+
+    /* handle 5XX (or any other unwanted status code) */
+    if (beresp.status >= 500 && beresp.status < 600) {
+
+        /* deliver stale if the object is available */
+        if (stale.exists) {
+        return(deliver_stale);
+        }
+
+        if (req.restarts < 1 && (req.request == "GET" || req.request == "HEAD")) {
+        restart;
+        }
+
+        /* else go to vcl_error to deliver a synthetic */
+        error 503;
+    }
 
     # Remove Set-Cookies from responses for static content
     # to match the cookie removal in recv.
@@ -128,12 +167,22 @@ sub vcl_fetch {
         set beresp.http.Fastly-Restarts = req.restarts;
     }
 
-    if (beresp.http.Content-Type ~ "text/html" || beresp.http.Content-Type ~ "text/xml") {
+    if (beresp.http.Content-Type ~ "text/(html|xml)" ) {
         # enable ESI feature for Magento response by default
         esi;
+        if (!beresp.http.Vary ~ "X-Magento-Vary,Https") {
+            if (beresp.http.Vary) {
+                    set beresp.http.Vary = beresp.http.Vary ",X-Magento-Vary,Https";
+                } else {
+                    set beresp.http.Vary = "X-Magento-Vary,Https";
+                }
+        }
+        # Since varnish doesn't compress ESIs we need to hint to the HTTP/2 terminators to
+        # compress it
+        set beresp.http.x-compress-hint = "on";
     } else {
         # enable gzip for all static content
-        if ((beresp.status == 200 || beresp.status == 404) && (beresp.http.content-type ~ "^(text\/html|application\/x\-javascript|text\/css|application\/javascript|text\/javascript|application\/json|application\/vnd\.ms\-fontobject|application\/x\-font\-opentype|application\/x\-font\-truetype|application\/x\-font\-ttf|application\/xml|font\/eot|font\/opentype|font\/otf|image\/svg\+xml|image\/vnd\.microsoft\.icon|text\/plain|text\/xml)\s*($|;)" || req.url ~ "\.(css|js|html|eot|ico|otf|ttf|json)($|\?)" ) ) {
+        if ((beresp.status == 200 || beresp.status == 404) && (beresp.http.content-type ~ "^(application\/x\-javascript|text\/css|application\/javascript|text\/javascript|application\/json|application\/vnd\.ms\-fontobject|application\/x\-font\-opentype|application\/x\-font\-truetype|application\/x\-font\-ttf|application\/xml|font\/eot|font\/opentype|font\/otf|image\/svg\+xml|image\/vnd\.microsoft\.icon|text\/plain)\s*($|;)" || req.url ~ "\.(css|js|html|eot|ico|otf|ttf|json)($|\?)" ) ) {
             # always set vary to make sure uncompressed versions dont always win
             if (!beresp.http.Vary ~ "Accept-Encoding") {
                 if (beresp.http.Vary) {
@@ -142,7 +191,7 @@ sub vcl_fetch {
                     set beresp.http.Vary = "Accept-Encoding";
                 }
             }
-            if (req.http.X-Orig-Accept-Encoding == "gzip") {
+            if (req.http.Accept-Encoding == "gzip") {
                 set beresp.gzip = true;
             }
         }
@@ -168,10 +217,7 @@ sub vcl_fetch {
     if (beresp.ttl > 0s && (req.request == "GET" || req.request == "HEAD")) {
         unset beresp.http.set-cookie;
         if (req.url !~ "^/(pub/)?(media|static)/.*") {
-            set beresp.http.Pragma = "no-cache";
-            set beresp.http.Expires = "-1";
-            set beresp.http.Cache-Control = "no-store, no-cache, must-revalidate, max-age=0";
-            set beresp.grace = 1m;
+            set beresp.grace = 86400m;
         }
 
         # init surrogate keys
@@ -209,12 +255,41 @@ sub vcl_hit {
 
 
 sub vcl_miss {
+    # Deactivate gzip on origin
+    unset bereq.http.Accept-Encoding;
+
 #FASTLY miss
 
     return(fetch);
 }
 
 sub vcl_deliver {
+
+    if (resp.status >= 500 && resp.status < 600) {
+        /* restart if the stale object is available */
+        if (stale.exists) {
+            restart;
+        }
+    }
+
+    # Send no cache headers to end users for non-static content. Also make sure
+    # we only set this on the edge nodes and not on shields
+    if (req.url !~ "^/(pub/)?(media|static)/.*" && !req.http.Fastly-FF ) {
+        set resp.http.Pragma = "no-cache";
+        set resp.http.Cache-Control = "no-store, no-cache, must-revalidate, max-age=0";
+    }
+
+    # Remove X-Magento-Vary and HTTPs Vary served to the user
+    if ( !req.http.Fastly-FF ) {
+        set resp.http.Vary = regsub(resp.http.Vary, "X-Magento-Vary,Https", "Cookie");
+    }
+
+    # Add an easy way to see whether custom Fastly VCL has been uploaded
+    if ( req.http.Fastly-Debug ) {
+        set resp.http.Fastly-Magento-VCL-Uploaded = "1.2.6";
+    } else {
+        remove resp.http.Fastly-Module-Enabled;
+    }
     # debug info
     if (resp.http.X-Magento-Debug) {
         if (obj.hits > 0) {
@@ -254,6 +329,20 @@ sub vcl_error {
         return (deliver);
     }
 
+    /* handle 503s */
+    if (obj.status >= 500 && obj.status < 600) {
+
+        /* deliver stale object if it is available */
+        if (stale.exists) {
+            return(deliver_stale);
+        }
+
+        /* otherwise, return a synthetic */
+        /* uncomment below and include your HTML response here */
+        /* synthetic {"<!DOCTYPE html><html>Trouble connecting to origin</html>"};
+        return(deliver); */
+    }
+
     # error 200
     if (obj.status == 200) {
         return (deliver);
@@ -287,20 +376,15 @@ sub vcl_pass {
 }
 
 sub vcl_hash {
-    set req.hash += req.http.Https;
     set req.hash += req.http.host;
     set req.hash += req.url;
-
-    if (req.http.cookie ~ "X-Magento-Vary=") {
-        set req.http.X-Magento-Vary = regsub(req.http.cookie, "^.*?X-Magento-Vary=([^;]+);*.*$", "\1");
-        set req.hash += req.http.X-Magento-Vary;
-        unset req.http.X-Magento-Vary;
-    }
     
-    set req.hash += "#####GENERATION#####";
-
     ### {{ design_exceptions_code }} ###
 
+# Please do not remove below. It's required for purge all functionality
+#FASTLY hash
+
     return (hash);
+
 }
 

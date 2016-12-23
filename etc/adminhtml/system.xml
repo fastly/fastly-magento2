@@ -26,80 +26,125 @@
             <group id="full_page_cache">
                 <group id="fastly" translate="label" showInDefault="1" showInWebsite="0" showInStore="0" sortOrder="615">
                     <label>Fastly Configuration</label>
-                    <field id="api_endpoint" type="text" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
-                        <label>Fastly API Endpoint</label>
-                        <comment>Default https://api.fastly.com/ should not be changed.</comment>
-                        <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
-                    </field>
+                    <comment>
+                        <![CDATA[To use this plugin you need a Fastly account (
+                        <a href="https://www.fastly.com/signup" target="_blank">Create a free account</a>). Once configured, you will need to <a href="https://docs.fastly.com/guides/basic-setup/adding-cname-records" target="_blank">add a CNAME to your domain.</a><br /><br />
+                        For setting up TLS/SSL and additional documentation please refer to <a href="https://github.com/fastly/fastly-magento2/tree/master/Documentation" target="_blank">the full plugin guide.</a>]]>
+                    </comment>
                     <field id="fastly_service_id" type="text" translate="label comment" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Fastly Service ID</label>
-                        <comment>Your Service ID appears as an alphanumeric string immediately below the name of your service on the fastly configure tab.</comment>
+                        <comment>
+                            <![CDATA[Learn more about <a href="https://docs.fastly.com/guides/basic-setup/working-with-services#creating-a-new-service" target="_blank">creating a Fastly Service</a>
+                            and <a href="https://docs.fastly.com/guides/account-management-and-security/finding-and-managing-your-account-info" target="_blank">finding your Service ID.</a>]]>
+                        </comment>
                         <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
+                        <validate>required-entry</validate>
                     </field>
                     <field id="fastly_api_key" type="text" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Fastly API key</label>
-                        <comment>Your API Key is located on the account tab to the left of the Account Settings area.</comment>
-                        <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
-                    </field>
-                    <field id="stale_ttl" type="text" translate="label comment" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Stale content delivery time</label>
-                        <comment>Time in seconds for that stale content will be served. Set to 0 to disable this feature.</comment>
-                        <backend_model>Magento\PageCache\Model\System\Config\Backend\Ttl</backend_model>
-                    </field>
-                    <field id="stale_error_ttl" type="text" translate="label comment" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Stale content delivery time in case of backend error</label>
-                        <comment>Time in seconds for that stale content will be served. Set to 0 to disable this feature.</comment>
-                        <backend_model>Magento\PageCache\Model\System\Config\Backend\Ttl</backend_model>
-                    </field>
-                    <field id="purge_catalog_category" translate="label comment" type="select" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
-                        <label>Purge category</label>
-                        <comment>Purge category's cache items on save</comment>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    </field>
-                    <field id="purge_catalog_product" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
-                        <label>Purge product</label>
-                        <comment>Purge product's cache items on save</comment>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    </field>
-                    <field id="purge_cms_page" translate="label comment" type="select" sortOrder="45" showInDefault="1" showInWebsite="0" showInStore="0">
-                        <label>Purge CMS page</label>
-                        <comment>Purge CMS page's cache item on save</comment>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    </field>
-                    <field id="soft_purge" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
-                        <label>Use Soft Purge</label>
-                        <comment>Use Soft Purge in conjunction with stale content delivery times, to serve stale content.</comment>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    </field>
-                    <field id="enable_geoip" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Enable GeoIP</label>
-                        <comment>Enable GeoIP for country/language lookup.</comment>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    </field>
-                    <field id="geoip_action" translate="label comment" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>GeoIP Action</label>
-                        <comment><![CDATA["Dialog" shows a modal dialog to select target store. "Redirect" redirects the client directly to the target store.]]></comment>
-                        <source_model>Fastly\Cdn\Model\System\Config\Source\GeoIP\Action</source_model>
-                        <depends>
-                            <field id="enable_geoip">1</field>
-                        </depends>
-                    </field>
-                    <field id="geoip_country_mapping" translate="label comment tooltip" sortOrder="71" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>GeoIP Country Mapping</label>
-                        <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\CountryMapping</frontend_model>
-                        <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
                         <comment>
-                            <![CDATA[Mapping of countries ot stores views.]]>
+                            <![CDATA[Your API Key is located under API Clients on your <a href="https://manage.fastly.com/account" target="_blank">Fastly Accout settings page.</a><br /><br />
+                            After making any changes to Fastly Service ID or API Key, please Save Config first before uploading VCL.]]>
                         </comment>
-                        <tooltip><![CDATA[Countries will have ISO-2 code with capital letters. Use * to define a default fallback.]]></tooltip>
-                        <depends>
-                            <field id="enable_geoip">1</field>
-                        </depends>
+                        <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
+                        <validate>required-entry</validate>
                     </field>
-                    <field id="export_button_fastly" translate="label comment" type="button" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="0">
-                        <label>Export Configuration</label>
-                        <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Export\Fastly</frontend_model>
+                    <field id="test_connection" translate="label comment" sortOrder="25" showInDefault="1" showInStore="0" showInWebsite="0">
+                        <label><![CDATA[Test credentials]]></label>
+                        <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\TestConnectionBtn</frontend_model>
                     </field>
+                    <field id="upload_vcl" translate="label comment" sortOrder="30" showInDefault="1" showInStore="0" showInWebsite="0">
+                        <label><![CDATA[Automatic upload & service activation]]></label>
+                        <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\UploadVclBtn</frontend_model>
+                    </field>
+                    <group id="fastly_backend_settings" sortOrder="200" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Backend settings</label>
+                        <field id="backends" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Backends</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Backend</frontend_model>
+                            <comment>
+                                <![CDATA[]]>
+                            </comment>
+                        </field>
+                    </group>
+                    <group id="fastly_advanced_configuration" sortOrder="300" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Advanced Configuration</label>
+                        <field id="export_button_fastly" translate="label comment" type="button" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Review VCL for manual upload</label>
+                            <comment>
+                                <![CDATA[Use this option to download the boilerplate VCL file for Magento.
+                                You may then edit this file and <a href="https://docs.fastly.com/guides/vcl/uploading-custom-vcl" target="_blank">upload the VCL to your Fastly service.</a>]]>
+                            </comment>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Export\Fastly</frontend_model>
+                        </field>
+                        <field id="force_tls" translate="label comment" sortOrder="10" showInDefault="1" showInStore="0" showInWebsite="0">
+                            <label><![CDATA[Force TLS]]></label>
+                            <comment>
+                                <![CDATA[Force unencrypted requests over to TLS, return a <strong>301
+                                Moved Permanently</strong> response to any unencrypted request, and redirect to the TLS equivalent.]]></comment>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\TlsBtn</frontend_model>
+                        </field>
+                        <field id="stale_ttl" type="text" translate="label comment" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Stale content delivery time</label>
+                            <comment><![CDATA[Time in seconds that Fastly will serve <a href="https://docs.fastly.com/guides/performance-tuning/serving-stale-content" target="_blank">stale content</a> while fresh content is being requested. Set to 0 to disable this feature.]]></comment>
+                            <backend_model>Magento\PageCache\Model\System\Config\Backend\Ttl</backend_model>
+                        </field>
+                        <field id="stale_error_ttl" type="text" translate="label comment" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Stale content delivery time in case of backend error</label>
+                            <comment>
+                                <![CDATA[Time in seconds that Fastly will continue to serve <a href="https://docs.fastly.com/guides/performance-tuning/serving-stale-content#serving-stale-content-on-errors" target="_blank">stale content​</a> if your origin is unavailable. Set to 0 to disable this feature.]]>
+                            </comment>
+                            <backend_model>Magento\PageCache\Model\System\Config\Backend\Ttl</backend_model>
+                        </field>
+                        <field id="purge_catalog_category" translate="label comment" type="select" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Purge category</label>
+                            <comment>Choose to purge the whole product category when updating or modifying a single product.</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="purge_catalog_product" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Purge product</label>
+                            <comment>Choose to purge all the product’s assets when saving a change to that product.</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="purge_cms_page" translate="label comment" type="select" sortOrder="45" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Purge CMS page</label>
+                            <comment>Choose to purge page content when updating or adding a new page in the Magento CMS.</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="soft_purge" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Use Soft Purge</label>
+                            <comment>
+                                <![CDATA[<a href="https://docs.fastly.com/guides/purging/soft-purges" target="_blank">Soft Purge</a>​ needs to be turned on in order to serve stale content.]]>
+                            </comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="enable_geoip" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Enable GeoIP</label>
+                            <comment>Enable GeoIP for country/language lookup.</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="geoip_action" translate="label comment" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>GeoIP Action</label>
+                            <comment>
+                                <![CDATA["Dialog" shows a modal dialog to select target store.<br /> "Redirect" redirects the client directly to the target store.]]>
+                            </comment>
+                            <source_model>Fastly\Cdn\Model\System\Config\Source\GeoIP\Action</source_model>
+                            <depends>
+                                <field id="enable_geoip">1</field>
+                            </depends>
+                        </field>
+                        <field id="geoip_country_mapping" translate="label comment tooltip" sortOrder="71" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>GeoIP Country Mapping</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\CountryMapping</frontend_model>
+                            <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                            <comment>
+                                <![CDATA[Use capitalized <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2" target="_blank">two-letter country codes</a> to map countries to store views. Use * to define a default fallback.]]>
+                            </comment>
+                            <depends>
+                                <field id="enable_geoip">1</field>
+                            </depends>
+                        </field>
+                    </group>
                     <depends>
                         <field id="caching_application">fastly</field>
                     </depends>

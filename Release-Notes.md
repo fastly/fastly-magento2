@@ -1,5 +1,36 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.6
+
+- Add a check to make sure user has saved config before attempting upload
+
+## 1.2.5
+
+- Add Backend Settings configuration - allows reconfiguration of existing backends
+- Minor bug fixes
+
+## 1.2.4
+
+- Add Force TLS button in advanced settings - it enables/disables it in the Fastly service
+
+## 1.2.3
+
+- Fix VCL if user has uploaded custom VCL and changed req.url
+
+## 1.2.2
+
+- Minor VCL optimizations
+
+## 1.2.1
+
+- Fix for VCL Snippet upload when no snippets exist
+
+## 1.2.0
+
+- Convert to using VCL snippets https://docs.fastly.com/guides/vcl-snippets/. This will provide for better maintainability since it breaks
+down functionality into separate files instead of one large file. Also it avoids the need for having VCL upload functionality enabled
+- Button to Test Credentials
+
 ## 1.0.9
 
 - Updated etc/fastly.vcl to remove set-cookies on static content. Also to

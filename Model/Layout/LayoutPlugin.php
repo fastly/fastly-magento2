@@ -104,6 +104,9 @@ class LayoutPlugin
             if ($header instanceof \Zend\Http\Header\HeaderInterface) {
                 $this->response->setHeader($header->getFieldName(),  $this->cacheTags->convertCacheTags(str_replace(',', ' ', $header->getFieldValue())), true);
             }
+            # Add a debug header to indicate this request has passed through the Fastly Module. This is
+            # for ease of debugging
+            $this->response->setHeader("Fastly-Module-Enabled", "1.2.6", true);
         }
         return $result;
     }

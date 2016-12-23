@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<page>
+    <body>
+        <referenceContainer name="content">
+            <block class="Fastly\Cdn\Block\System\Config\Form\Modal\UploadVcl" name="adminhtml.system.backup.container"/>
+        </referenceContainer>
+    </body>
+</page>

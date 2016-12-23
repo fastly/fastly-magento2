@@ -25,13 +25,16 @@
         <system>
             <full_page_cache>
                 <fastly>
-                    <api_endpoint>https://api.fastly.com/</api_endpoint>
                     <path>fastly.vcl</path>
-                    <stale_ttl>0</stale_ttl>
-                    <stale_error_ttl>0</stale_error_ttl>
-                    <purge_catalog_category>1</purge_catalog_category>
-                    <purge_catalog_product>1</purge_catalog_product>
-                    <purge_cms_page>1</purge_cms_page>
+                    <fastly_advanced_configuration>
+                        <stale_ttl>86400</stale_ttl>
+                        <stale_error_ttl>86400</stale_error_ttl>
+                        <soft_purge>1</soft_purge>
+                        <purge_catalog_category>0</purge_catalog_category>
+                        <purge_catalog_product>1</purge_catalog_product>
+                        <purge_cms_page>0</purge_cms_page>
+                        <enable_geoip>0</enable_geoip>
+                    </fastly_advanced_configuration>
                 </fastly>
             </full_page_cache>
         </system>

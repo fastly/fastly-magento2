@@ -42,13 +42,7 @@ a few ways depending on your Magento version.
 - [Install using Composer](#installing-using-composer)
 - [Install from Zip file](#installing-from-zip-file)
 
-#### Installing from the Magento Marketplace using Web Setup Wizard (only Magento 2.0.x version)
-
-##### Note:
-
-_This installation method works only on **2.0.x** versions of Magento. If you're using a newer,
-**2.1.x** version of Magento, please install Fastly Cdn extension [using Composer](#installing-using-composer) or
-[install from Zip file.](#installing-from-zip-file)_
+#### Installing from the Magento Marketplace using Web Setup Wizard
 
 This will require an account with Magento Commerce and the associated
 [API keys](http://devdocs.magento.com/guides/v2.0/install-gde/prereq/connect-auth.html)

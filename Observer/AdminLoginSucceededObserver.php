@@ -43,14 +43,11 @@ class AdminLoginSucceededObserver implements ObserverInterface
 
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        $data = $this->_statistic->getGAReqData();
-
-
         if($this->_moduleManager->isEnabled(Statistic::FASTLY_MODULE_NAME)) {
             $stat = $this->_statisticRepo->getStatByAction(Statistic::FASTLY_INSTALLED_FLAG);
             if(!is_null($stat)) {
                 if($stat->getStatus() == false) {
-                    $this->_statistic->sendInstalledReq();
+                  $this->_statistic->sendInstalledReq();
                 }
             } else {
                 $this->_statisticRepo->create();

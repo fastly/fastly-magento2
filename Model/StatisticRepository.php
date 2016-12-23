@@ -35,7 +35,13 @@ class StatisticRepository
      */
     private $storeManager;
 
-
+    /**
+     * StatisticRepository constructor.
+     * @param ResourceStatistic $resource
+     * @param StatisticFactory $statisticFactory
+     * @param StatisticCollectionFactory $statisticCollectionFactory
+     * @param StoreManagerInterface $storeManager
+     */
     public function __construct(
         ResourceStatistic $resource,
         StatisticFactory $statisticFactory,
@@ -54,6 +60,11 @@ class StatisticRepository
         $collection->addFieldToFilter('action', $action);
 
         return $collection->getFirstItem();
+    }
+
+    public function save()
+    {
+
     }
 
 }

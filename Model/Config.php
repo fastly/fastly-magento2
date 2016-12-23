@@ -312,7 +312,7 @@ class Config extends \Magento\PageCache\Model\Config
     }
 
     /**
-     * Return generated varnish.vcl configuration file
+     * Return generated magento2_fastly_varnish.vcl configuration file
      *
      * @param string $vclTemplatePath
      * @return string

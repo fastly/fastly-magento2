@@ -82,7 +82,7 @@
 
     # validate if we need to cache it and prevent from setting cookie
     # images, css and js are cacheable by default so we have to remove cookie also
-    if (beresp.ttl > 0s && (req.request == "GET" || req.request == "HEAD")) {
+    if (beresp.ttl > 0s && (req.request == "GET" || req.request == "HEAD") && !req.http.x-pass ) {
         unset beresp.http.set-cookie;
         if (req.url !~ "^/(pub/)?(media|static)/.*") {
             set beresp.grace = 86400m;

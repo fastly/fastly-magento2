@@ -286,7 +286,7 @@ sub vcl_deliver {
 
     # Add an easy way to see whether custom Fastly VCL has been uploaded
     if ( req.http.Fastly-Debug ) {
-        set resp.http.Fastly-Magento-VCL-Uploaded = "1.2.6";
+        set resp.http.Fastly-Magento-VCL-Uploaded = "1.2.7";
     } else {
         remove resp.http.Fastly-Module-Enabled;
     }

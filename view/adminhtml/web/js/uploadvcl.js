@@ -180,6 +180,37 @@ define([
             });
         });
 
+        $('#fastly_error_page_button').on('click', function () {
+
+            if(isAlreadyConfigured != true) {
+                $(this).attr('disabled', true);
+                return alert($.mage.__('Please save config prior to continuing.'));
+            }
+
+            vcl.resetAllMessages();
+
+            $.when(
+                $.ajax({
+                    type: "GET",
+                    url: config.serviceInfoUrl,
+                    showLoader: true
+                })
+            ).done(function (service) {
+
+                if(service.status == false) {
+                    return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API key and try again.')).show();
+                }
+
+                active_version = service.active_version;
+                next_version = service.next_version;
+                vcl.showPopup('fastly-error-page-options');
+                vcl.setActiveServiceLabel(active_version, next_version);
+
+            }).fail(function () {
+                return errorVclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+            });
+        });
+
         var backends = null;
         var active_version = '';
         var next_version = '';
@@ -189,7 +220,6 @@ define([
         var successVclBtnMsg = $('#fastly-success-vcl-button-msg');
         var errorVclBtnMsg = $('#fastly-error-vcl-button-msg');
         var warningVclBtnMsg = $('#fastly-warning-vcl-button-msg');
-
         /* TLS button messages */
         var successTlsBtnMsg = $('#fastly-success-tls-button-msg');
         var errorTlsBtnMsg = $('#fastly-error-tls-button-msg');
@@ -429,6 +459,42 @@ define([
                 });
             },
 
+            // Reconfigure backend
+            saveErrorHtml: function () {
+                var activate_backend = false;
+
+                if($('#fastly_activate_backend').is(':checked')) {
+                    activate_backend = true;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: config.saveErrorPageHtmlUrl,
+                    data: {
+                        'active_version': active_version,
+                        'activate_flag': activate_backend,
+                        'html': $('#error_page_html').val()
+                    },
+                    showLoader: true,
+                    success: function(response)
+                    {
+                        if(response.status == true)
+                        {
+                            $('#fastly-success-backend-button-msg').text($.mage.__('Backend is successfully updated.')).show();
+                            active_version = response.active_version;
+                            vcl.modal.modal('closeModal');
+                        } else {
+                            vcl.resetAllMessages();
+                            vcl.showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function(msg)
+                    {
+                        // TODO: error handling
+                    }
+                });
+            },
+
             showErrorMessage: function (msg) {
                 var msgError = $('.fastly-message-error');
                 msgError.text($.mage.__(msg));
@@ -486,6 +552,15 @@ define([
                         if ($('#backend-upload-form').valid()) {
                             vcl.configureBackend(active_version);
                         }
+                    }
+                },
+                'fastly-error-page-options': {
+                    title: jQuery.mage.__(''),
+                    content: function () {
+                        return document.getElementById('fastly-error-page-template').textContent;
+                    },
+                    actionOk: function () {
+                        vcl.saveErrorHtml(active_version);
                     }
                 }
             }

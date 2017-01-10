@@ -367,6 +367,45 @@ class Api
     }
 
     /**
+     * Creates a new Response Object.
+     *
+     * @param $version
+     * @param array $response
+     * @return bool $result
+     */
+    public function createResponse($version, array $response)
+    {
+        $checkIfExists = $this->getResponse($version, $response['name']);
+        $url = $this->_getApiServiceUri(). 'version/' .$version. '/response_object';
+        if(!$checkIfExists)
+        {
+            $verb = \Zend_Http_Client::POST;
+        } else {
+            $verb = \Zend_Http_Client::PUT;
+            $url .= '/'.$response['name'];
+        }
+
+        $result = $this->_fetch($url, $verb, $response);
+
+        return $result;
+    }
+
+    /**
+     * Gets the specified Response Object.
+     *
+     * @param string $version
+     * @param string $name
+     * @return bool|mixed $result
+     */
+    public function getResponse($version, $name)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version. '/response_object/' . $name;
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    /**
      * Creates a new Request Settings object.
      *
      * @param $version

@@ -198,16 +198,27 @@ define([
             ).done(function (service) {
 
                 if(service.status == false) {
-                    return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API key and try again.')).show();
+                    return errorHtmlBtnMsg.text($.mage.__('Please check your Service ID and API key and try again.')).show();
                 }
 
                 active_version = service.active_version;
                 next_version = service.next_version;
+
+                vcl.getErrorPageRespObj(active_version, true).done(function (response) {
+                    if(response.status == true) {
+                        $('#error_page_html').html(response.errorPageResp.content);
+                    } else {
+                        vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
+                    }
+                }).fail(
+                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
+                );
+
                 vcl.showPopup('fastly-error-page-options');
                 vcl.setActiveServiceLabel(active_version, next_version);
 
             }).fail(function () {
-                return errorVclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
             });
         });
 
@@ -224,6 +235,10 @@ define([
         var successTlsBtnMsg = $('#fastly-success-tls-button-msg');
         var errorTlsBtnMsg = $('#fastly-error-tls-button-msg');
         var warningTlsBtnMsg = $('#fastly-warning-tls-button-msg');
+        /*Error page HTML button */
+        var successHtmlBtnMsg = $('#fastly-success-html-page-button-msg');
+        var errorHtmlBtnMsg = $('#fastly-error-html-page-button-msg');
+        var warningHtmlBtnMsg = $('#fastly-warning-html-page-button-msg');
 
         var vcl = {
 
@@ -298,6 +313,16 @@ define([
                     beforeSend: function (xhr) {
                         $('.loading-backends').show();
                     }
+                });
+            },
+
+            // Queries Fastly API to retrive Backends
+            getErrorPageRespObj: function(active_version, loaderVisibility) {
+                return $.ajax({
+                    type: "GET",
+                    url: config.getErrorPageRespObj,
+                    showLoader: loaderVisibility,
+                    data: {'active_version': active_version}
                 });
             },
 
@@ -459,12 +484,12 @@ define([
                 });
             },
 
-            // Reconfigure backend
+            // Save Error Page Html
             saveErrorHtml: function () {
-                var activate_backend = false;
+                var activate_vcl = false;
 
-                if($('#fastly_activate_backend').is(':checked')) {
-                    activate_backend = true;
+                if($('#fastly_activate_vcl').is(':checked')) {
+                    activate_vcl = true;
                 }
 
                 $.ajax({
@@ -472,7 +497,7 @@ define([
                     url: config.saveErrorPageHtmlUrl,
                     data: {
                         'active_version': active_version,
-                        'activate_flag': activate_backend,
+                        'activate_flag': activate_vcl,
                         'html': $('#error_page_html').val()
                     },
                     showLoader: true,
@@ -480,7 +505,7 @@ define([
                     {
                         if(response.status == true)
                         {
-                            $('#fastly-success-backend-button-msg').text($.mage.__('Backend is successfully updated.')).show();
+                            successHtmlBtnMsg.text($.mage.__('Error page HTML is successfully updated.')).show();
                             active_version = response.active_version;
                             vcl.modal.modal('closeModal');
                         } else {
@@ -490,7 +515,7 @@ define([
                     },
                     error: function(msg)
                     {
-                        // TODO: error handling
+                        return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                     }
                 });
             },
@@ -522,6 +547,12 @@ define([
                 successTlsBtnMsg.hide();
                 errorTlsBtnMsg.hide();
                 warningTlsBtnMsg.hide();
+
+                // Error page button messages
+
+                successHtmlBtnMsg.hide();
+                errorHtmlBtnMsg.hide();
+                warningHtmlBtnMsg.hide();
             },
 
             uploadVclConfig: {
@@ -555,7 +586,7 @@ define([
                     }
                 },
                 'fastly-error-page-options': {
-                    title: jQuery.mage.__(''),
+                    title: jQuery.mage.__('Update Error Page Content'),
                     content: function () {
                         return document.getElementById('fastly-error-page-template').textContent;
                     },

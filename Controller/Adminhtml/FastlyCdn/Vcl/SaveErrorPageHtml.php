@@ -7,11 +7,15 @@ use \Magento\Framework\Controller\Result\JsonFactory;
 use \Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
-use \Magento\Framework\Stdlib\DateTime\DateTime;
-use \Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 
-class saveErrorPageHtml extends \Magento\Backend\App\Action
+class SaveErrorPageHtml extends \Magento\Backend\App\Action
 {
+    /**
+     * VCL error snippet path
+     */
+    const VCL_ERROR_SNIPPET_PATH = '/vcl_snippets_error_page';
+    const VCL_ERROR_SNIPPET = 'deliver.vcl';
+
     /**
      * @var Http
      */
@@ -38,25 +42,13 @@ class saveErrorPageHtml extends \Magento\Backend\App\Action
     protected $vcl;
 
     /**
-     * @var DateTime
-     */
-    protected $time;
-
-    /**
-     * @var TimezoneInterface
-     */
-    protected $timezone;
-
-    /**
-     * Upload constructor.
+     * SaveErrorPageHtml constructor.
      * @param \Magento\Backend\App\Action\Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
      * @param Config $config
      * @param Api $api
      * @param Vcl $vcl
-     * @param DateTime $time
-     * @param TimezoneInterface $timezone
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
@@ -64,9 +56,7 @@ class saveErrorPageHtml extends \Magento\Backend\App\Action
         JsonFactory $resultJsonFactory,
         Config $config,
         Api $api,
-        Vcl $vcl,
-        DateTime $time,
-        TimezoneInterface $timezone
+        Vcl $vcl
     )
     {
         $this->request = $request;
@@ -74,8 +64,6 @@ class saveErrorPageHtml extends \Magento\Backend\App\Action
         $this->config = $config;
         $this->api = $api;
         $this->vcl = $vcl;
-        $this->time = $time;
-        $this->timezone = $timezone;
         parent::__construct($context);
     }
 
@@ -109,38 +97,42 @@ class saveErrorPageHtml extends \Magento\Backend\App\Action
                 return $result->setData(array('status' => false, 'msg' => 'Failed to clone active version.'));
             }
 
-            /*$snippets = $this->config->getVclSnippets();
+            $snippets = $this->config->getVclSnippets(self::VCL_ERROR_SNIPPET_PATH, self::VCL_ERROR_SNIPPET);
+
 
             foreach($snippets as $key => $value)
             {
-                $snippetData = array('name' => Config::FASTLY_MAGENTO_MODULE.'_'.$key, 'type' => $key, 'dynamic' => "0", 'priority' => 50, 'content' => $value);
+                $snippetData = array('name' => Config::FASTLY_MAGENTO_MODULE.'_error_page_'.$key, 'type' => $key, 'dynamic' => "0", 'content' => $value);
                 $status = $this->api->uploadSnippet($clone->number, $snippetData);
 
                 if(!$status) {
                     return $result->setData(array('status' => false, 'msg' => 'Failed to upload the Snippet file.'));
                 }
-            }*/
+            }
 
-            $condition = array('name' => Config::FASTLY_MAGENTO_MODULE.'_pass', 'statement' => 'req.http.x-pass', 'type' => 'REQUEST', 'priority' => 90);
+            $condition = array(
+                'name' => Config::FASTLY_MAGENTO_MODULE.'_error_page_condition',
+                'statement' => 'req.http.ResponseObject == "970"',
+                'type' => 'REQUEST',
+            );
+
             $createCondition = $this->api->createCondition($clone->number, $condition);
 
             if(!$createCondition) {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to create a REQUEST condition.'));
+                return $result->setData(array('status' => false, 'msg' => 'Failed to create a RESPONSE condition.'));
             }
 
-            $request = array(
-                'action' => 'pass',
-                'max_stale_age' => 3600,
-                'name' => Config::FASTLY_MAGENTO_MODULE.'_request',
+            $response = array(
+                'name' => Config::ERROR_PAGE_RESPONSE_OBJECT,
                 'request_condition' => $createCondition->name,
-                'service_id' => $service->id,
-                'version' => $currActiveVersion['active_version']
+                'content'   =>  $html
+
             );
 
-            $createReq = $this->api->createRequest($clone->number, $request);
+            $createResponse = $this->api->createResponse($clone->number, $response);
 
-            if(!$createReq) {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to create a REQUEST object.'));
+            if(!$createResponse) {
+                return $result->setData(array('status' => false, 'msg' => 'Failed to create a RESPONSE object.'));
             }
 
             $validate = $this->api->validateServiceVersion($clone->number);

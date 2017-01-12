@@ -18,7 +18,7 @@ class StatisticRepository
     /**
      * @var ResourceStatistic
      */
-    protected $resource;
+    protected $statisticResource;
 
     /**
      * @var StatisticFactory
@@ -37,18 +37,18 @@ class StatisticRepository
 
     /**
      * StatisticRepository constructor.
-     * @param ResourceStatistic $resource
+     * @param ResourceStatistic $statisticResource
      * @param StatisticFactory $statisticFactory
      * @param StatisticCollectionFactory $statisticCollectionFactory
      * @param StoreManagerInterface $storeManager
      */
     public function __construct(
-        ResourceStatistic $resource,
+        ResourceStatistic $statisticResource,
         StatisticFactory $statisticFactory,
         StatisticCollectionFactory $statisticCollectionFactory,
         StoreManagerInterface $storeManager
     ) {
-        $this->resource = $resource;
+        $this->statisticResource = $statisticResource;
         $this->statisticFactory = $statisticFactory;
         $this->statisticCollectionFactory = $statisticCollectionFactory;
         $this->storeManager = $storeManager;
@@ -62,9 +62,19 @@ class StatisticRepository
         return $collection->getFirstItem();
     }
 
-    public function save()
+    public function getValidatedNonValidated()
     {
+        $collection = $this->statisticCollectionFactory->create();
+        $collection->addFieldToFilter('action', [['eq' => Statistic::FASTLY_VALIDATED_FLAG],
+                                            ['eq' => Statistic::FASTLY_NON_VALIDATED_FLAG]]);
 
+        return $collection->getData();
+    }
+
+    public function save(\Fastly\Cdn\Model\Statistic $statistic)
+    {
+        $this->statisticResource->save($statistic);
+        return $statistic;
     }
 
 }

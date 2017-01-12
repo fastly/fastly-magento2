@@ -24,6 +24,8 @@ use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Module\Manager;
 use Fastly\Cdn\Model\StatisticRepository;
 use Fastly\Cdn\Model\Statistic;
+use Fastly\Cdn\Model\StatisticFactory;
+
 
 class AdminLoginSucceededObserver implements ObserverInterface
 {
@@ -34,23 +36,29 @@ class AdminLoginSucceededObserver implements ObserverInterface
 
     protected $_statistic;
 
-    public function __construct(Manager $manager, StatisticRepository $statisticRepository, Statistic $statistic)
+    protected $_statisticFactory;
+
+    public function __construct(Manager $manager, StatisticRepository $statisticRepository, Statistic $statistic,
+                                StatisticFactory $statisticFactory)
     {
         $this->_moduleManager = $manager;
         $this->_statisticRepo = $statisticRepository;
         $this->_statistic = $statistic;
+        $this->_statisticFactory = $statisticFactory;
     }
 
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
         if($this->_moduleManager->isEnabled(Statistic::FASTLY_MODULE_NAME)) {
+            $proba = $this->_statisticRepo->getValidatedNonValidated();
             $stat = $this->_statisticRepo->getStatByAction(Statistic::FASTLY_INSTALLED_FLAG);
-            if(!is_null($stat)) {
-                if($stat->getStatus() == false) {
-                  $this->_statistic->sendInstalledReq();
+            if($stat->getStatus() == false) {
+                $sendGAReq = $this->_statistic->sendInstalledReq();
+                if($sendGAReq) {
+                    $stat->setStatus(true);
+                    $stat->setAction(Statistic::FASTLY_INSTALLED_FLAG);
+                    $this->_statisticRepo->save($stat);
                 }
-            } else {
-                $this->_statisticRepo->create();
             }
         }
     }

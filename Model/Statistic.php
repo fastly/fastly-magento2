@@ -11,6 +11,8 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
 {
     const FASTLY_INSTALLED_FLAG = 'installed';
     const FASTLY_CONFIGURED_FLAG = 'configured';
+    const FASTLY_VALIDATED_FLAG = 'validated';
+    const FASTLY_NON_VALIDATED_FLAG = 'non_validated';
     const FASTLY_TEST_FLAG = 'test';
     const FASTLY_MODULE_NAME = 'Fastly_Cdn';
     const CACHE_TAG = 'fastly_cdn_statistic';
@@ -119,11 +121,21 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
         return [self::CACHE_TAG. '_' .$this->getId()];
     }
 
+    /**
+     * Returns GA API Endpoint
+     *
+     * @return string
+     */
     public function getApiEndpoint()
     {
         return self::GA_API_ENDPOINT;
     }
 
+    /**
+     * Returns GA Tracking ID
+     *
+     * @return string
+     */
     public function getGATrackingId()
     {
         return self::FASTLY_GA_TRACKING_ID;
@@ -165,6 +177,11 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
         return $this->_GAReqData;
     }
 
+    /**
+     * Returns Website name
+     *
+     * @return string $websiteName
+     */
     public function getWebsiteName()
     {
         $websites = $this->_storeManager->getWebsites();
@@ -181,6 +198,11 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
         return $websiteName;
     }
 
+    /**
+     * Checks if API key is valid
+     *
+     * @return bool $isApiKeyValid
+     */
     public function isApiKeyValid()
     {
         $apiKey = $this->_scopeConfig->getValue(Config::XML_FASTLY_API_KEY);
@@ -190,6 +212,11 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
         return (bool)$isApiKeyValid;
     }
 
+    /**
+     * Prepares GA custom variables
+     *
+     * @return array
+     */
     protected function _prepareCustomVariables()
     {
         $customVars =  [
@@ -239,6 +266,11 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
         return $this->_prepareGAReqData();
     }
 
+    /**
+     * Sends request to GA that the Fastly module is installed
+     *
+     * @return bool|string $result
+     */
     public function sendInstalledReq()
     {
         $pageViewParams = [
@@ -257,7 +289,44 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
             'ev'    =>  0
         ];
 
-        $this->_sendReqToGA(array_merge($pageViewParams, $eventParams));
+        $result = $this->_sendReqToGA(array_merge($pageViewParams, $eventParams));
+
+        return $result;
+    }
+
+    /**
+     * Sends request to GA every time the Test connection button is pressed
+     *
+     * @param $validated
+     * @return bool|string
+     */
+    public function sendTestConnRequest($validated)
+    {
+        if($validated) {
+            $validationFlag = self::FASTLY_VALIDATED_FLAG;
+        } else {
+            $validationFlag = self::FASTLY_NON_VALIDATED_FLAG;
+        }
+
+        $pageViewParams = [
+            'dl'    =>  self::GA_PAGEVIEW_URL . $validationFlag,
+            'dh'    =>  preg_replace('#^https?://#', '', rtrim(self::GA_PAGEVIEW_URL,'/')),
+            'dp'    =>  '/'.$validationFlag,
+            'dt'    =>  ucfirst($validationFlag)
+        ];
+
+        $this->_sendReqToGA($pageViewParams);
+
+        $eventParams = [
+            'ec'    =>  'Fastly Setup',
+            'ea'    =>  'Fastly '.$validationFlag,
+            'el'    =>  $this->getWebsiteName(),
+            'ev'    =>  0
+        ];
+
+        $result = $this->_sendReqToGA(array_merge($pageViewParams, $eventParams));
+
+        return $result;
     }
 
     protected function _sendReqToGA($body = '', $method = \Zend_Http_Client::POST, $uri = self::GA_API_ENDPOINT)

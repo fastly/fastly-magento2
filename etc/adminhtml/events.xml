@@ -3,5 +3,8 @@
     <event name="backend_auth_user_login_success">
         <observer name="fastly_admin_login_observer" instance="Fastly\Cdn\Observer\AdminLoginSucceededObserver" />
     </event>
+    <event name="admin_system_config_changed_section_system">
+        <observer name="fastly_admin_configuration_save" instance="Fastly\Cdn\Observer\ConfigurationSave" />
+    </event>
 </config>
 

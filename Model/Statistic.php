@@ -11,8 +11,13 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
 {
     const FASTLY_INSTALLED_FLAG = 'installed';
     const FASTLY_CONFIGURED_FLAG = 'configured';
+    const FASTLY_NOT_CONFIGURED_FLAG = 'not_configured';
     const FASTLY_VALIDATED_FLAG = 'validated';
     const FASTLY_NON_VALIDATED_FLAG = 'non_validated';
+
+    const FASTLY_CONFIGURATION_FLAG = 'configuration';
+    const FASTLY_VALIDATION_FLAG = 'validation';
+
     const FASTLY_TEST_FLAG = 'test';
     const FASTLY_MODULE_NAME = 'Fastly_Cdn';
     const CACHE_TAG = 'fastly_cdn_statistic';
@@ -21,6 +26,7 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
     const GA_HITTYPE_PAGEVIEW = 'pageview';
     const GA_HITTYPE_EVENT = 'event';
     const GA_PAGEVIEW_URL = 'http://fastly.com/';
+    const GA_FASTLY_SETUP = 'Fastly Setup';
 
     protected $_GAReqData = [];
 
@@ -69,6 +75,16 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
     protected $_curlFactory;
 
     /**
+     * @var StatisticRepository
+     */
+    protected $_statisticRepository;
+
+    /**
+     * @var \Magento\Framework\Stdlib\DateTime\DateTime
+     */
+    protected $_dateTime;
+
+    /**
      * Statistic constructor.
      * @param Context $context
      * @param \Magento\Framework\Registry $registry
@@ -79,6 +95,8 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
      * @param \Magento\Directory\Api\Data\RegionInformationInterface $regionInformation
      * @param Api $api
      * @param CurlFactory $curlFactory
+     * @param StatisticRepository $statisticRepository
+     * @param \Magento\Framework\Stdlib\DateTime\DateTime $dateTime
      * @param \Magento\Framework\App\ProductMetadataInterface $productMetadata
      * @param AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
@@ -94,6 +112,8 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
         \Magento\Directory\Api\Data\RegionInformationInterface $regionInformation,
         \Fastly\Cdn\Model\Api $api,
         CurlFactory $curlFactory,
+        \Fastly\Cdn\Model\StatisticRepository $statisticRepository,
+        \Magento\Framework\Stdlib\DateTime\DateTime $dateTime,
         \Magento\Framework\App\ProductMetadataInterface $productMetadata,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
@@ -108,6 +128,9 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
         $this->_regionInformation = $regionInformation;
         $this->_api = $api;
         $this->_curlFactory = $curlFactory;
+        $this->_statisticRepository = $statisticRepository;
+        $this->_dateTime = $dateTime;
+
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
 
@@ -283,7 +306,7 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
         $this->_sendReqToGA($pageViewParams);
 
         $eventParams = [
-            'ec'    =>  'Fastly Setup',
+            'ec'    =>  self::GA_FASTLY_SETUP,
             'ea'    =>  'Fastly '.self::FASTLY_INSTALLED_FLAG,
             'el'    =>  $this->getWebsiteName(),
             'ev'    =>  0
@@ -297,29 +320,29 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
     /**
      * Sends request to GA every time the Test connection button is pressed
      *
-     * @param $validated
+     * @param $validatedFlag
      * @return bool|string
      */
-    public function sendTestConnRequest($validated)
+    public function sendValidationRequest($validatedFlag)
     {
-        if($validated) {
-            $validationFlag = self::FASTLY_VALIDATED_FLAG;
+        if($validatedFlag) {
+            $validationState = self::FASTLY_VALIDATED_FLAG;
         } else {
-            $validationFlag = self::FASTLY_NON_VALIDATED_FLAG;
+            $validationState = self::FASTLY_NON_VALIDATED_FLAG;
         }
 
         $pageViewParams = [
-            'dl'    =>  self::GA_PAGEVIEW_URL . $validationFlag,
+            'dl'    =>  self::GA_PAGEVIEW_URL . $validationState,
             'dh'    =>  preg_replace('#^https?://#', '', rtrim(self::GA_PAGEVIEW_URL,'/')),
-            'dp'    =>  '/'.$validationFlag,
-            'dt'    =>  ucfirst($validationFlag)
+            'dp'    =>  '/'.$validationState,
+            'dt'    =>  ucfirst($validationState)
         ];
 
         $this->_sendReqToGA($pageViewParams);
 
         $eventParams = [
-            'ec'    =>  'Fastly Setup',
-            'ea'    =>  'Fastly '.$validationFlag,
+            'ec'    =>  self::GA_FASTLY_SETUP,
+            'ea'    =>  'Fastly '.$validationState,
             'el'    =>  $this->getWebsiteName(),
             'ev'    =>  0
         ];
@@ -327,6 +350,56 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
         $result = $this->_sendReqToGA(array_merge($pageViewParams, $eventParams));
 
         return $result;
+    }
+
+    /**
+     * Sends Fastly configured\not_configured request to GA
+     *
+     * @param $configuredFlag
+     * @return bool
+     */
+    public function sendConfigurationRequest($configuredFlag)
+    {
+        if($configuredFlag) {
+            $configuredState = self::FASTLY_CONFIGURED_FLAG;
+        } else {
+            $configuredState = self::FASTLY_NOT_CONFIGURED_FLAG;
+        }
+
+        $pageViewParams = [
+            'dl'    =>  self::GA_PAGEVIEW_URL . $configuredState,
+            'dh'    =>  preg_replace('#^https?://#', '', rtrim(self::GA_PAGEVIEW_URL,'/')),
+            'dp'    =>  '/'.$configuredState,
+            'dt'    =>  ucfirst($configuredState)
+        ];
+
+        $this->_sendReqToGA($pageViewParams);
+
+        $eventParams = [
+            'ec'    =>  self::GA_FASTLY_SETUP,
+            'ea'    =>  'Fastly '.$configuredState,
+            'el'    =>  $this->getWebsiteName(),
+            'ev'    =>  $this->daysFromInstallation()
+        ];
+
+        $result = $this->_sendReqToGA(array_merge($pageViewParams, $eventParams));
+
+        return $result;
+    }
+
+    public function daysFromInstallation()
+    {
+        $stat = $this->_statisticRepository->getStatByAction(self::FASTLY_INSTALLED_FLAG);
+
+        if(!$stat->getCreatedAt()) {
+            return null;
+        }
+        $installDate = date_create($stat->getCreatedAt());
+        $currentDate = date_create($this->_dateTime->gmtDate());
+
+        $dateDiff = date_diff($installDate, $currentDate);
+
+        return $dateDiff->days;
     }
 
     protected function _sendReqToGA($body = '', $method = \Zend_Http_Client::POST, $uri = self::GA_API_ENDPOINT)
@@ -339,6 +412,7 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
 
         try {
             $client = $this->_curlFactory->create();
+            $client->addOption(CURLOPT_TIMEOUT, 10);
             $client->write($method, $uri, '1.1', null, http_build_query($body));
             $response = $client->read();
             $responseBody = \Zend_Http_Response::extractBody($response);
@@ -351,7 +425,7 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
 
             return true;
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return false;
         }
     }
 

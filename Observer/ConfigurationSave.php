@@ -27,7 +27,7 @@ use Fastly\Cdn\Model\Statistic;
 use Fastly\Cdn\Model\StatisticFactory;
 
 
-class AdminLoginSucceededObserver implements ObserverInterface
+class ConfigurationSave implements ObserverInterface
 {
 
     /**
@@ -51,7 +51,7 @@ class AdminLoginSucceededObserver implements ObserverInterface
     protected $_statisticFactory;
 
     /**
-     * AdminLoginSucceededObserver constructor.
+     * ConfigurationSave constructor.
      * @param Manager $manager
      * @param StatisticRepository $statisticRepository
      * @param Statistic $statistic
@@ -66,21 +66,21 @@ class AdminLoginSucceededObserver implements ObserverInterface
         $this->_statisticFactory = $statisticFactory;
     }
 
-    /**
-     * @param \Magento\Framework\Event\Observer $observer
-     */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
         if($this->_moduleManager->isEnabled(Statistic::FASTLY_MODULE_NAME)) {
-            $stat = $this->_statisticRepo->getStatByAction(Statistic::FASTLY_INSTALLED_FLAG);
-            if($stat->getState() == false) {
-                $sendGAReq = $this->_statistic->sendInstalledReq();
-                if($sendGAReq) {
-                    $stat->setState(true);
-                    $stat->setAction(Statistic::FASTLY_INSTALLED_FLAG);
-                    $stat->setSent($sendGAReq);
-                    $this->_statisticRepo->save($stat);
-                }
+
+            $isServiceValid = $this->_statistic->isApiKeyValid();
+            $stat = $this->_statisticRepo->getStatByAction(Statistic::FASTLY_CONFIGURATION_FLAG);
+
+            if((!$stat->getId()) || ($stat->getState() == false && $isServiceValid == true) || ($stat->getState() == true
+                    && $isServiceValid == false) || ($stat->getState() == false && $isServiceValid == false)) {
+                $GAreq = $this->_statistic->sendConfigurationRequest($isServiceValid);
+                $newConfigured = $this->_statisticFactory->create();
+                $newConfigured->setAction(Statistic::FASTLY_CONFIGURATION_FLAG);
+                $newConfigured->setState($isServiceValid);
+                $newConfigured->setSent($GAreq);
+                $this->_statisticRepo->save($newConfigured);
             }
         }
     }

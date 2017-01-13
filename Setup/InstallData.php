@@ -26,6 +26,9 @@ class InstallData implements InstallDataInterface
      */
     protected $_configWriter;
 
+    /**
+     * @var Statistic
+     */
     protected $_statistic;
 
     /**
@@ -45,6 +48,10 @@ class InstallData implements InstallDataInterface
         $this->_statistic = $statistic;
     }
 
+    /**
+     * @param ModuleDataSetupInterface $setup
+     * @param ModuleContextInterface $context
+     */
     public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
         $setup->startSetup();

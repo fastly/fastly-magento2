@@ -58,6 +58,7 @@ class StatisticRepository
     {
         $collection = $this->statisticCollectionFactory->create();
         $collection->addFieldToFilter('action', $action);
+        $collection->setOrder('created_at', 'DESC');
 
         return $collection->getFirstItem();
     }

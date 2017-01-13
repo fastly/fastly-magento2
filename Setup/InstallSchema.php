@@ -42,17 +42,23 @@ class InstallSchema implements InstallSchemaInterface
             ['nullable' => false],
             'Fastly action'
         )->addColumn(
-            'status',
+            'sent',
             \Magento\Framework\DB\Ddl\Table::TYPE_BOOLEAN,
             null,
             ['nullable' => false, 'default' => 0],
             '1 = Curl req. sent | 0 = Curl req. not sent'
         )->addColumn(
+            'state',
+            \Magento\Framework\DB\Ddl\Table::TYPE_BOOLEAN,
+            null,
+            ['nullable' => false, 'default' => 0],
+            '1 = configured | 0 = not_configured'
+        )->addColumn(
             'created_at',
             \Magento\Framework\DB\Ddl\Table::TYPE_DATETIME,
             null,
             [],
-            'Date of action activity'
+            'Action date'
         );
         $connection->createTable($table);
         $installer->endSetup();

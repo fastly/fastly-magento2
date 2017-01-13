@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.7
+
+- Add a UI to add a custom error/maintenance page
+
 ## 1.2.6
 
 - Add a check to make sure user has saved config before attempting upload

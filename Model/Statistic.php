@@ -9,8 +9,17 @@ use Magento\Framework\Model\ResourceModel\AbstractResource;
 
 class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magento\Framework\DataObject\IdentityInterface
 {
+    /**
+     * Fastly INSTALLED Flag
+     */
     const FASTLY_INSTALLED_FLAG = 'installed';
+    /**
+     * Fastly CONFIGURED Flag
+     */
     const FASTLY_CONFIGURED_FLAG = 'configured';
+    /**
+     * Fastly NOT_CONFIGURED Flag
+     */
     const FASTLY_NOT_CONFIGURED_FLAG = 'not_configured';
     const FASTLY_VALIDATED_FLAG = 'validated';
     const FASTLY_NON_VALIDATED_FLAG = 'non_validated';
@@ -18,7 +27,6 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
     const FASTLY_CONFIGURATION_FLAG = 'configuration';
     const FASTLY_VALIDATION_FLAG = 'validation';
 
-    const FASTLY_TEST_FLAG = 'test';
     const FASTLY_MODULE_NAME = 'Fastly_Cdn';
     const CACHE_TAG = 'fastly_cdn_statistic';
     const FASTLY_GA_TRACKING_ID = 'UA-89025888-2';
@@ -60,9 +68,9 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
     protected $_countryInformation;
 
     /**
-     * @var \Magento\Directory\Api\Data\RegionInformationInterface
+     * @var \Magento\Directory\Model\RegionFactory
      */
-    protected $_regionInformation;
+    protected $_regionFactory;
 
     /**
      * @var Api
@@ -92,7 +100,7 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Directory\Api\CountryInformationAcquirerInterface $countryInformation
-     * @param \Magento\Directory\Api\Data\RegionInformationInterface $regionInformation
+     * @param \Magento\Directory\Model\RegionFactory $regionFactory
      * @param Api $api
      * @param CurlFactory $curlFactory
      * @param StatisticRepository $statisticRepository
@@ -109,7 +117,7 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Directory\Api\CountryInformationAcquirerInterface $countryInformation,
-        \Magento\Directory\Api\Data\RegionInformationInterface $regionInformation,
+        \Magento\Directory\Model\RegionFactory $regionFactory,
         \Fastly\Cdn\Model\Api $api,
         CurlFactory $curlFactory,
         \Fastly\Cdn\Model\StatisticRepository $statisticRepository,
@@ -125,7 +133,7 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
         $this->_metaData = $productMetadata;
         $this->_scopeConfig = $scopeConfig;
         $this->_countryInformation = $countryInformation;
-        $this->_regionInformation = $regionInformation;
+        $this->_regionFactory = $regionFactory;
         $this->_api = $api;
         $this->_curlFactory = $curlFactory;
         $this->_statisticRepository = $statisticRepository;
@@ -246,14 +254,44 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
             // Service ID
             'cd1'   =>  $this->_scopeConfig->getValue(Config::XML_FASTLY_SERVICE_ID),
             // isAPIKeyValid
-            'cd2'   =>  $this->isApiKeyValid(),
+            'cd2'   =>  ($this->isApiKeyValid()) ? 'yes' : 'no',
             // Website name
             'cd3'   =>  $this->getWebsiteName(),
             // Site domain
-            'cd4'   =>  $_SERVER['HTTP_HOST']
+            'cd4'   =>  $_SERVER['HTTP_HOST'],
+            //
+            'cd5'   =>  $this->getSiteLocation()
         ];
 
         return $customVars;
+    }
+
+    public function getSiteLocation()
+    {
+        $countryId = $this->_scopeConfig->getValue('general/store_information/country_id');
+        if($countryId) {
+            $country = $this->_countryInformation->getCountryInfo($countryId);
+            $countryName = $country->getFullNameEnglish();
+        } else {
+            $countryName = 'Unknown country';
+        }
+
+        $regionId = $this->_scopeConfig->getValue('general/store_information/region_id');
+        $regionName = 'Unknown region';
+        if($regionId) {
+            $region = $this->_regionFactory->create();
+            $region = $region->load($regionId);
+            if($region->getId()) {
+                $regionName = $region->getName();
+            }
+        }
+
+        $postCode = $this->_scopeConfig->getValue('general/store_information/postcode');
+        if(!$postCode) {
+            $postCode = 'Unknown zip code';
+        }
+
+        return $countryName .' | '.$regionName.' | '.$postCode;
     }
 
     /**
@@ -300,16 +338,18 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
             'dl'    =>  self::GA_PAGEVIEW_URL . self::FASTLY_INSTALLED_FLAG,
             'dh'    =>  preg_replace('#^https?://#', '', rtrim(self::GA_PAGEVIEW_URL,'/')),
             'dp'    =>  '/'.self::FASTLY_INSTALLED_FLAG,
-            'dt'    =>  ucfirst(self::FASTLY_INSTALLED_FLAG)
+            'dt'    =>  ucfirst(self::FASTLY_INSTALLED_FLAG),
+            't'     =>  self::GA_HITTYPE_PAGEVIEW
         ];
 
-        $this->_sendReqToGA($pageViewParams);
+        $this->_sendReqToGA($pageViewParams, self::GA_HITTYPE_PAGEVIEW);
 
         $eventParams = [
             'ec'    =>  self::GA_FASTLY_SETUP,
             'ea'    =>  'Fastly '.self::FASTLY_INSTALLED_FLAG,
             'el'    =>  $this->getWebsiteName(),
-            'ev'    =>  0
+            'ev'    =>  0,
+            't'     =>  self::GA_HITTYPE_EVENT
         ];
 
         $result = $this->_sendReqToGA(array_merge($pageViewParams, $eventParams));
@@ -335,7 +375,8 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
             'dl'    =>  self::GA_PAGEVIEW_URL . $validationState,
             'dh'    =>  preg_replace('#^https?://#', '', rtrim(self::GA_PAGEVIEW_URL,'/')),
             'dp'    =>  '/'.$validationState,
-            'dt'    =>  ucfirst($validationState)
+            'dt'    =>  ucfirst($validationState),
+            't'     =>  self::GA_HITTYPE_PAGEVIEW
         ];
 
         $this->_sendReqToGA($pageViewParams);
@@ -344,7 +385,8 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
             'ec'    =>  self::GA_FASTLY_SETUP,
             'ea'    =>  'Fastly '.$validationState,
             'el'    =>  $this->getWebsiteName(),
-            'ev'    =>  0
+            'ev'    =>  $this->daysFromInstallation(),
+            't'     =>  self::GA_HITTYPE_EVENT
         ];
 
         $result = $this->_sendReqToGA(array_merge($pageViewParams, $eventParams));
@@ -370,7 +412,8 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
             'dl'    =>  self::GA_PAGEVIEW_URL . $configuredState,
             'dh'    =>  preg_replace('#^https?://#', '', rtrim(self::GA_PAGEVIEW_URL,'/')),
             'dp'    =>  '/'.$configuredState,
-            'dt'    =>  ucfirst($configuredState)
+            'dt'    =>  ucfirst($configuredState),
+            't'     =>  self::GA_HITTYPE_PAGEVIEW
         ];
 
         $this->_sendReqToGA($pageViewParams);
@@ -379,7 +422,8 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
             'ec'    =>  self::GA_FASTLY_SETUP,
             'ea'    =>  'Fastly '.$configuredState,
             'el'    =>  $this->getWebsiteName(),
-            'ev'    =>  $this->daysFromInstallation()
+            'ev'    =>  $this->daysFromInstallation(),
+            't'     =>  self::GA_HITTYPE_EVENT
         ];
 
         $result = $this->_sendReqToGA(array_merge($pageViewParams, $eventParams));

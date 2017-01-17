@@ -73,8 +73,7 @@ class ConfigurationSave implements ObserverInterface
             $isServiceValid = $this->_statistic->isApiKeyValid();
             $stat = $this->_statisticRepo->getStatByAction(Statistic::FASTLY_CONFIGURATION_FLAG);
 
-            if((!$stat->getId()) || ($stat->getState() == false && $isServiceValid == true) || ($stat->getState() == true
-                    && $isServiceValid == false) || ($stat->getState() == false && $isServiceValid == false)) {
+            if((!$stat->getId()) || !($stat->getState() == true && $isServiceValid == true) ) {
                 $GAreq = $this->_statistic->sendConfigurationRequest($isServiceValid);
                 $newConfigured = $this->_statisticFactory->create();
                 $newConfigured->setAction(Statistic::FASTLY_CONFIGURATION_FLAG);

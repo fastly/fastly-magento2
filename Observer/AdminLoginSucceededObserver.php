@@ -73,10 +73,10 @@ class AdminLoginSucceededObserver implements ObserverInterface
     {
         if($this->_moduleManager->isEnabled(Statistic::FASTLY_MODULE_NAME)) {
             $stat = $this->_statisticRepo->getStatByAction(Statistic::FASTLY_INSTALLED_FLAG);
-            if($stat->getState() == false) {
+            if($stat->getSent() == false) {
                 $sendGAReq = $this->_statistic->sendInstalledReq();
                 if($sendGAReq) {
-                    $stat->setState(true);
+                    $stat->setState(false);
                     $stat->setAction(Statistic::FASTLY_INSTALLED_FLAG);
                     $stat->setSent($sendGAReq);
                     $this->_statisticRepo->save($stat);

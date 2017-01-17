@@ -153,7 +153,7 @@ class Config extends \Magento\PageCache\Model\Config
      */
     public function getCID()
     {
-        return $this->_scopeConfig->getValue(self::XML_FASTLY_API_KEY);
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_GA_CID);
     }
 
     /**

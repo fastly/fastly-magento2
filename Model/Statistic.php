@@ -203,18 +203,9 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
         $mandatoryReqData['uid'] = $cid;
         // Magento version
         $mandatoryReqData['ua'] = $this->_metaData->getVersion();
-
-        $countryId = $this->_scopeConfig->getValue('general/store_information/country_id');
-        if($countryId) {
-            $country = $this->_countryInformation->getCountryInfo($countryId);
-            //$countryname = $country->getFullNameLocale();
-            $countryCode = $country->getTwoLetterAbbreviation();
-            // Country code
-            $mandatoryReqData['geoid'] = $countryCode;
-        }
-
+        // Get Default Country
+        $mandatoryReqData['geoid'] = $this->getCountry();
         $customVars = $this->_prepareCustomVariables();
-
         $this->_GAReqData = array_merge($mandatoryReqData, $customVars);
 
         return $this->_GAReqData;
@@ -378,7 +369,6 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
             'dp'    =>  '/'.self::FASTLY_INSTALLED_FLAG,
             'dt'    =>  ucfirst(self::FASTLY_INSTALLED_FLAG),
             't'     =>  self::GA_HITTYPE_PAGEVIEW,
-            'geoid' =>  $this->getCountry()
         ];
 
         $this->_sendReqToGA($pageViewParams, self::GA_HITTYPE_PAGEVIEW);
@@ -416,7 +406,6 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
             'dp'    =>  '/'.$validationState,
             'dt'    =>  ucfirst($validationState),
             't'     =>  self::GA_HITTYPE_PAGEVIEW,
-            'geoid' =>  $this->getCountry()
         ];
 
         $this->_sendReqToGA($pageViewParams);
@@ -454,7 +443,6 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
             'dp'    =>  '/'.$configuredState,
             'dt'    =>  ucfirst($configuredState),
             't'     =>  self::GA_HITTYPE_PAGEVIEW,
-            'geoid' =>  $this->getCountry()
         ];
 
         $this->_sendReqToGA($pageViewParams);

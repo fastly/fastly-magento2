@@ -93,6 +93,14 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
     protected $_dateTime;
 
     /**
+     * @var \Magento\Directory\Model\CountryFactory
+     */
+    protected $_countryFactory;
+
+
+    protected $_helper;
+
+    /**
      * Statistic constructor.
      * @param Context $context
      * @param \Magento\Framework\Registry $registry
@@ -120,8 +128,10 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
         \Magento\Directory\Model\RegionFactory $regionFactory,
         \Fastly\Cdn\Model\Api $api,
         CurlFactory $curlFactory,
+        \Magento\Directory\Model\CountryFactory $countryFactory,
         \Fastly\Cdn\Model\StatisticRepository $statisticRepository,
         \Magento\Framework\Stdlib\DateTime\DateTime $dateTime,
+        \Fastly\Cdn\Helper\Data $helper,
         \Magento\Framework\App\ProductMetadataInterface $productMetadata,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
@@ -138,6 +148,8 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
         $this->_curlFactory = $curlFactory;
         $this->_statisticRepository = $statisticRepository;
         $this->_dateTime = $dateTime;
+        $this->_countryFactory = $countryFactory;
+        $this->_helper = $helper;
 
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
@@ -259,13 +271,39 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
             'cd3'   =>  $this->getWebsiteName(),
             // Site domain
             'cd4'   =>  $_SERVER['HTTP_HOST'],
-            //
-            'cd5'   =>  $this->getSiteLocation()
+            // Site location
+            'cd5'   =>  $this->getSiteLocation(),
+            // Fastly module version
+            'cd6'   =>  $this->_helper->getModuleVersion()
+
         ];
 
         return $customVars;
     }
 
+    /**
+     * Returns default Country
+     *
+     * @return string
+     */
+    public function getCountry()
+    {
+        $countryCode = $this->_scopeConfig->getValue('general/country/default');
+        if(!$countryCode)
+        {
+            return null;
+        }
+
+        $country = $this->_countryFactory->create()->loadByCode($countryCode);
+
+        return $country->getName();
+    }
+
+    /**
+     * Get Default Site Location
+     *
+     * @return string
+     */
     public function getSiteLocation()
     {
         $countryId = $this->_scopeConfig->getValue('general/store_information/country_id');
@@ -339,7 +377,8 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
             'dh'    =>  preg_replace('#^https?://#', '', rtrim(self::GA_PAGEVIEW_URL,'/')),
             'dp'    =>  '/'.self::FASTLY_INSTALLED_FLAG,
             'dt'    =>  ucfirst(self::FASTLY_INSTALLED_FLAG),
-            't'     =>  self::GA_HITTYPE_PAGEVIEW
+            't'     =>  self::GA_HITTYPE_PAGEVIEW,
+            'geoid' =>  $this->getCountry()
         ];
 
         $this->_sendReqToGA($pageViewParams, self::GA_HITTYPE_PAGEVIEW);
@@ -376,7 +415,8 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
             'dh'    =>  preg_replace('#^https?://#', '', rtrim(self::GA_PAGEVIEW_URL,'/')),
             'dp'    =>  '/'.$validationState,
             'dt'    =>  ucfirst($validationState),
-            't'     =>  self::GA_HITTYPE_PAGEVIEW
+            't'     =>  self::GA_HITTYPE_PAGEVIEW,
+            'geoid' =>  $this->getCountry()
         ];
 
         $this->_sendReqToGA($pageViewParams);
@@ -413,7 +453,8 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
             'dh'    =>  preg_replace('#^https?://#', '', rtrim(self::GA_PAGEVIEW_URL,'/')),
             'dp'    =>  '/'.$configuredState,
             'dt'    =>  ucfirst($configuredState),
-            't'     =>  self::GA_HITTYPE_PAGEVIEW
+            't'     =>  self::GA_HITTYPE_PAGEVIEW,
+            'geoid' =>  $this->getCountry()
         ];
 
         $this->_sendReqToGA($pageViewParams);
@@ -431,6 +472,11 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
         return $result;
     }
 
+    /**
+     * Calculates number of days since Fastly module installation
+     *
+     * @return mixed|null
+     */
     public function daysFromInstallation()
     {
         $stat = $this->_statisticRepository->getStatByAction(self::FASTLY_INSTALLED_FLAG);
@@ -446,6 +492,14 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
         return $dateDiff->days;
     }
 
+    /**
+     * Sends CURL request to GA
+     *
+     * @param string $body
+     * @param string $method
+     * @param string $uri
+     * @return bool
+     */
     protected function _sendReqToGA($body = '', $method = \Zend_Http_Client::POST, $uri = self::GA_API_ENDPOINT)
     {
         $reqGAData = (array)$this->getGAReqData();

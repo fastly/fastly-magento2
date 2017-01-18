@@ -166,7 +166,7 @@ define([
                         } else {
                             $('.modal-title').text($.mage.__('We are about to turn off TLS'));
                         }
-                    forceTls = response.status;
+                        forceTls = response.status;
                     }
                 ).fail(function () {
 
@@ -207,12 +207,10 @@ define([
                 vcl.getErrorPageRespObj(active_version, true).done(function (response) {
                     if(response.status == true) {
                         $('#error_page_html').html(response.errorPageResp.content);
-                    } else {
-                        vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
                     }
-                }).fail(
+                }).fail(function() {
                     vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
-                );
+                });
 
                 vcl.showPopup('fastly-error-page-options');
                 vcl.setActiveServiceLabel(active_version, next_version);

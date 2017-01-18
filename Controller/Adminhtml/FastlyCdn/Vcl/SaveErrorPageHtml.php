@@ -125,7 +125,8 @@ class SaveErrorPageHtml extends \Magento\Backend\App\Action
             $response = array(
                 'name' => Config::ERROR_PAGE_RESPONSE_OBJECT,
                 'request_condition' => $createCondition->name,
-                'content'   =>  $html
+                'content'   =>  $html,
+                'status' => "503"
 
             );
 

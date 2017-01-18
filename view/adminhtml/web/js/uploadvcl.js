@@ -169,7 +169,7 @@ define([
                         forceTls = response.status;
                     }
                 ).fail(function () {
-
+                        vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
                     }
                 );
                 vcl.showPopup('fastly-tls-options');
@@ -209,7 +209,7 @@ define([
                         $('#error_page_html').html(response.errorPageResp.content);
                     }
                 }).fail(function() {
-                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
+                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
                 });
 
                 vcl.showPopup('fastly-error-page-options');

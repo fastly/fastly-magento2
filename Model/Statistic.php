@@ -197,6 +197,7 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
 
         $mandatoryReqData = [];
         $mandatoryReqData['v'] = 1;
+        // Tracking ID
         $mandatoryReqData['tid'] = $this->getGATrackingId();
         $cid = $this->_config->getCID();
         $mandatoryReqData['cid'] = $cid;
@@ -205,6 +206,9 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
         $mandatoryReqData['ua'] = $this->_metaData->getVersion();
         // Get Default Country
         $mandatoryReqData['geoid'] = $this->getCountry();
+        // Data Source parameter is used to filter spam hits
+        $mandatoryReqData['ds'] = 'Fastly';
+
         $customVars = $this->_prepareCustomVariables();
         $this->_GAReqData = array_merge($mandatoryReqData, $customVars);
 

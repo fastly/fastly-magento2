@@ -18,10 +18,10 @@ class UpgradeSchema implements UpgradeSchemaInterface
         $connection = $installer->getConnection();
 
         $installer->startSetup();
+        if (version_compare($context->getVersion(), '1.0.9', '<=')) {
+            $tableName = $installer->getTable('fastly_statistics');
 
-        $tableName = $installer->getTable('fastly_statistics');
-
-        if ($installer->getConnection()->isTableExists($tableName) != true) {
+            if ($installer->getConnection()->isTableExists($tableName) != true) {
                 /**
                  * Create table 'fastly_statistics'
                  */
@@ -62,4 +62,5 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 $installer->endSetup();
             }
         }
+    }
 }

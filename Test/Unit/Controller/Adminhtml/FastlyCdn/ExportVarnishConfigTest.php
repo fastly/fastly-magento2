@@ -99,7 +99,7 @@ class ExportVarnishConfigTest extends \PHPUnit_Framework_TestCase
     public function testExportVarnishConfigAction()
     {
         $fileContent = 'some content';
-        $filename = 'varnish.vcl';
+        $filename = 'fastly_magento2_varnish.vcl';
         $responseMock = $this->getMockBuilder(
             'Magento\Framework\App\ResponseInterface'
         )->disableOriginalConstructor()->getMock();

@@ -145,6 +145,13 @@
                             </depends>
                         </field>
                     </group>
+                    <group id="fastly_error_maintenance_page" sortOrder="400" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Error/Maintenance page</label>
+                        <field id="force_tls" translate="label comment" sortOrder="10" showInDefault="1" showInStore="0" showInWebsite="0">
+                            <label><![CDATA[Error Page HTML]]></label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ErrorPageBtn</frontend_model>
+                        </field>
+                    </group>
                     <depends>
                         <field id="caching_application">fastly</field>
                     </depends>

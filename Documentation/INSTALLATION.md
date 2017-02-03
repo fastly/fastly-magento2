@@ -21,10 +21,7 @@ might be difficult.
 Fastly_Cdn supports Magento2 Community and Enterprise Edition from version 2.0
 onwards.
 
-You need an account with [fastly.com](https://www.fastly.com/signup) which allows
-[uploading of custom VCL](https://docs.fastly.com/guides/vcl/uploading-custom-vcl).
-If you need professional services for assistance with setting up your
-environment please contact magento@fastly.com.
+You will need to signup for a free account with [fastly.com](https://www.fastly.com/signup) in order to use the module. If you need professional services for assistance with setting up your environment please contact magento@fastly.com.
 
 To use the module make sure that your server does not compress text content. This
 would prevent the ESI functionality.
@@ -35,7 +32,6 @@ The tasks involved in this are:
 
 - Add the Fastly_Cdn module to the Magento server. [(Instructions)](#magento-module)
 - Configure the Fastly_Cdn module on the Magento server. [(Instructions)](#configure-the-module)
-- Configure Fastly's service with the VCL. [(Instructions)](CONFIGURATION.md)
 
 ### Magento module
 
@@ -46,13 +42,7 @@ a few ways depending on your Magento version.
 - [Install using Composer](#installing-using-composer)
 - [Install from Zip file](#installing-from-zip-file)
 
-#### Installing from the Magento Marketplace using Web Setup Wizard (only Magento 2.0.x version)
-
-##### Note:
-
-_This installation method works only on **2.0.x** versions of Magento. If you're using a newer, 
-**2.1.x** version of Magento, please install Fastly Cdn extension [using Composer](#installing-using-composer) or
-[install from Zip file.](#installing-from-zip-file)_
+#### Installing from the Magento Marketplace using Web Setup Wizard
 
 This will require an account with Magento Commerce and the associated
 [API keys](http://devdocs.magento.com/guides/v2.0/install-gde/prereq/connect-auth.html)
@@ -71,41 +61,66 @@ will be used to sync with the marketplace.
 
 #### Installing using Composer
 
-1. Login (or switch user) as the Magento filesystem owner.
-1. Ensure that the files in 'app/etc' under the Magento root are write enabled
-    by the Magento Filesystem owner.
-1. Ensure that Git and Composer are installed.
-1. Inside the Magento Home directory add the composer repository for the module.
+1. You will first need to SSH into the machine that is running Magento. This will look something like this.
+
+    ```
+    ssh username@123.456.78.90
+    ```
+
+2. If the user that you logged in as is not the Magento filesystem owner, you may need to switch users. Depending on your installation this could be the ecommerce user, e.g. `su - ecommerce`.
+
+3. Go to the Magento home directory. You should see an `index.html` and an `index.php` in this directory. Depending on your Magento installation this could be at `/var/www/html`.
+
+4. Ensure that the files in `app/etc` inside the Magento home directory are write enabled for the Magento filesystem owner that you are logged in as:
+
+    ```
+    ls app/etc -l
+    ```
+
+    You are looking for a `w` in the third position from the left for each file, e.g. `-rw-rw-r--`. If you have something like `-r--rw-r--` you will need to use the [chmod](https://en.wikipedia.org/wiki/Chmod) command to change permissions on the directory.
+
+5. Ensure that Git and Composer are installed, by checking which version you have:
+
+    ```
+    git --version
+    composer --version
+    ```
+
+    If they are not present, [here](https://git-scm.com/download/linux) are instructions for installing Git, and [here](https://getcomposer.org/download/) are instructions for installing Composer.
+
+6. Inside the Magento Home directory add the Composer repository for the Fastly module:
 
     ```
     composer config repositories.fastly-magento2 git "https://github.com/fastly/fastly-magento2.git"
     ```
 
-1. Next fetch the module with:
+7. Next, fetch the Fastly module:
 
     ```
     composer require fastly/magento2
     ```
 
-1. Once the module fetch has completed enable it by:
+    You may receive an alert that a package is missing or has been abandoned. Provided the alert is green you are fine to proceed.
+
+8. Once the installation process has completed, enable the Fastly module:
 
     ```
     bin/magento module:enable Fastly_Cdn
     ```
 
-1. Then finally the clean up tasks:
+9. Finally clean up tasks:
 
     ```
     bin/magento setup:upgrade
     ```
 
-    followed by:
+    You can ignore the prompt to re-run the Magento compile command, and complete the installation with:
 
     ```
     bin/magento cache:clean
     ```
 
-1. Once this has completed log in to the Magento Admin panel and proceed to
+10. Once this has completed log in to the Magento Admin panel and proceed to
     [Configuring the Module](CONFIGURATION.md).
 
 #### Installing from zip file
@@ -119,8 +134,8 @@ will be used to sync with the marketplace.
 1. Download the zip/tarball and decompress it.
 1. Move the files out of the `fastly-magento2` into
     `<magento home>/app/code/Fastly/Cdn/`.
-4. At this point, it is possible to install with either the: 
-   
+4. At this point, it is possible to install with either the:
+
    **Web Setup Wizard's Component Manager (only Magento 2.0.x versions, for 2.1.x use command line)**
    1. To install in the Web Setup Wizard. Open a browser and log in to the Magento
        admin section with administrative privileges.
@@ -128,7 +143,7 @@ will be used to sync with the marketplace.
    1. Click 'Component Manager' scroll down and locate 'Fastly_Cdn'. Click enable
        on the actions.
    1. Follow the on screen instructions ensuring to create backups.
-   
+
    **Command line**
       1. To enable the module on the command line change directory to the Magento
        Home directory. Ensure you are logged in as the Magento filesystem owner.

@@ -47,6 +47,11 @@ class Config extends \Magento\PageCache\Model\Config
     const FASTLY_MAGENTO_MODULE = 'magentomodule';
 
     /**
+     * Magento Error Page Response Object Name
+     */
+    const ERROR_PAGE_RESPONSE_OBJECT = self::FASTLY_MAGENTO_MODULE.'_error_page_response_object';
+
+    /**
      * GeoIP action "dialog"
      */
     const GEOIP_ACTION_DIALOG = 'dialog';
@@ -326,7 +331,7 @@ class Config extends \Magento\PageCache\Model\Config
     }
 
     /**
-     * Return generated varnish.vcl configuration file
+     * Return generated magento2_fastly_varnish.vcl configuration file
      *
      * @param string $vclTemplatePath
      * @return string
@@ -342,25 +347,32 @@ class Config extends \Magento\PageCache\Model\Config
         return strtr($data, $this->getReplacements());
     }
 
-    public function getVclSnippets()
+    public function getVclSnippets($path = '/vcl_snippets', $specificFile = null)
     {
         $snippetsData = array();
 
-        $moduleEtcPath = $this->reader->getModuleDir(Dir::MODULE_ETC_DIR, 'Fastly_Cdn') . '/vcl_snippets';
+        $moduleEtcPath = $this->reader->getModuleDir(Dir::MODULE_ETC_DIR, 'Fastly_Cdn') . $path;
         $directoryRead = $this->readFactory->create($moduleEtcPath);
-        $files = $directoryRead->read();
+        if(!$specificFile) {
+            $files = $directoryRead->read();
 
-        if(is_array($files))
-        {
-            foreach ($files as $file) {
-                if (substr($file, strpos($file, ".") + 1) !== 'vcl') {
-                    continue;
+            if(is_array($files))
+            {
+                foreach ($files as $file) {
+                    if (substr($file, strpos($file, ".") + 1) !== 'vcl') {
+                        continue;
+                    }
+                    $snippetFilePath = $moduleEtcPath . '/' . $file;
+                    $snippetFilePath = $directoryRead->getRelativePath($snippetFilePath);
+                    $type = explode('.', $file)[0];
+                    $snippetsData[$type] = $directoryRead->readFile($snippetFilePath);
                 }
-                $snippetFilePath = $moduleEtcPath . '/' . $file;
-                $snippetFilePath = $directoryRead->getRelativePath($snippetFilePath);
-                $type = explode('.', $file)[0];
-                $snippetsData[$type] = $directoryRead->readFile($snippetFilePath);
             }
+        } else {
+            $snippetFilePath = $moduleEtcPath . '/' . $specificFile;
+            $snippetFilePath = $directoryRead->getRelativePath($snippetFilePath);
+            $type = explode('.', $specificFile)[0];
+            $snippetsData[$type] = $directoryRead->readFile($snippetFilePath);
         }
 
         return $snippetsData;

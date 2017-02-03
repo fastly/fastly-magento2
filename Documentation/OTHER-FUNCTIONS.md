@@ -59,5 +59,5 @@ User-Agent string of a request when building its cache object. Magento Design
 Exceptions use regular expressions to match different design configurations to
 User-Agent strings. In order to make Design Exceptions work with Varnish you
 will have to renew Varnish VCL each time Design Exceptions are updated.
-To do this use the button "Export VCL for Varnish fastly" button in the
-configuration section and upload the new VCL to the Fastly service.
+To do this use the button in the plugin to automatically upload VCL to Fastly in the
+configuration section. This will upload the correct VCL to your Fastly service.

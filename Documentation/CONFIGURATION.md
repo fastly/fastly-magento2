@@ -24,14 +24,6 @@ have [signed up](https://www.fastly.com/signup) for the service. Once you have
 confirmed the account and logged in the Fastly application will take you to a
 wizard to configure your first service. This is further documented on [Fastly's documentation](https://docs.fastly.com/guides/basic-setup/sign-up-and-create-your-first-service).
 
-You will need to email Fastly's support team to
-[request access](https://docs.fastly.com/guides/vcl/uploading-custom-vcl) to
-upload VCL to your account.
-Once this is enabled refresh the Fastly application and navigate to the VCL
-page in the latest unlocked version of the service. Once there upload the
-[Fastly_Cdn VCL](../etc/fastly.vcl) as the main VCL. Review the generated VCL
-to ensure that it is correctly implemented. Then activate the new version.
-
 ## Configure the Module
 
 This section will describe how to input the API key and service ID into the
@@ -46,6 +38,8 @@ to the admin section of the Magento server. Navigate to:
 Stores > Configuration > Advanced > System
 ```
 
+![Fastly Configuration](images/fastly_config.jpg "Fastly Configuration Page")
+
 Expand the 'Full Page Cache' section then choose 'Fastly CDN' in the 'Caching
 Application' dropdown.
 
@@ -55,16 +49,13 @@ is in seconds.)
 Expand the 'Fastly Configuration' section to enter the remaining necessary
 details.
 
-Leave the 'Fastly API Endpoint' set as the default value.
-
 In the 'Fastly Service ID' enter the service ID that was configured when
-signing up for Fastly's services [above](#configure-the-fastly-service). Then
-in 'Fastly API key' enter the key.
+signing up for Fastly's services [above](#configure-the-fastly-service) and
+in 'Fastly API key' enter the key. Test your API Key and Service ID pair using the button. If your credentials are valid, you may then automatically upload the Magento VCL to your Fastly service and should activate the version. Make sure to click 'Save Config' at the top of the page and then clear the Magento cache for the changes to take effect.
 
-This is enough for a 'good first test', but proceed to
+This is enough to start testing Fastly, but proceed to
 [further configuration](#further-configuration-options) to change other
-settings, otherwise click 'Save Config' at the top of the page and proceed to
-testing.
+settings.
 
 ## Further Configuration Options
 

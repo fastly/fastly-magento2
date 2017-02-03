@@ -20,34 +20,27 @@
 
     # auth for purging
     if (req.request == "FASTLYPURGE") {
-        # extract token signature and expiration
-        set req.http.X-Sig = regsub(req.http.X-Purge-Token, "^[^_]+_(.*)", "\1");
-        set req.http.X-Exp = regsub(req.http.X-Purge-Token, "^([^_]+)_.*", "\1");
+      # extract token signature and expiration
+      if (!req.http.X-Purge-Token ~ "^([^_]+)_(.*)" ) {
+        error 403;
+      }
 
-        # validate signature
-        if (req.http.X-Sig == regsub(digest.hmac_sha1(req.service_id, req.url.path req.http.X-Exp), "^0x", "")) {
+      declare local var.X-Exp STRING;
+      declare local var.X-Sig STRING;
+      /* extract token expiration and signature */
+      set var.X-Exp = re.group.1;
+      set var.X-Sig = re.group.2;
 
-            # use vcl time math to check expiration timestamp
-            set req.http.X-Original-Grace = req.grace;
-            set req.grace = std.atoi(strftime({"%s"}, now));
-            set req.grace -= std.atoi(req.http.X-Exp);
-
-            if (std.atoi(req.grace) > 0) {
-                error 410;
-            }
-
-            # clean up grace since we used it for time math
-            set req.grace = std.atoi(req.http.X-Original-Grace);
-            unset req.http.X-Original-Grace;
-
-        } else {
-            error 403;
+      /* validate signature */
+      if (var.X-Sig == regsub(digest.hmac_sha1(req.service_id, req.url.path var.X-Exp), "^0x", "")) {
+        /* check that expiration time has not elapsed */
+        if (time.is_after(now, std.integer2time(std.atoi(var.X-Exp)))) {
+          error 410;
         }
 
-        # cleanup variables
-        unset req.http.X-Purge-Token;
-        unset req.http.X-Sig;
-        unset req.http.X-Exp;
+      } else {
+        error 403;
+      }
     }
 
     # set HTTPS header for offloaded TLS

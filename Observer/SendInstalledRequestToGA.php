@@ -26,8 +26,7 @@ use Fastly\Cdn\Model\StatisticRepository;
 use Fastly\Cdn\Model\Statistic;
 use Fastly\Cdn\Model\StatisticFactory;
 
-
-class AdminLoginSucceededObserver implements ObserverInterface
+class SendInstalledRequestToGA implements ObserverInterface
 {
 
     /**

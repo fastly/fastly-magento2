@@ -95,24 +95,24 @@ class UpgradeData implements UpgradeDataInterface
                 }
             }
         }
-        if (version_compare($context->getVersion(), '1.0.9', '<=')) {
-            $tableName = $setup->getTable('fastly_statistics');
-            if($setup->getConnection()->isTableExists($tableName) == true) {
 
+        if($context->getVersion()) {
+            if (version_compare($context->getVersion(), '1.0.9', '<=')) {
+                $tableName = $setup->getTable('fastly_statistics');
+                if ($setup->getConnection()->isTableExists($tableName) == true) {
+
+                    $data = [
+                        'action' => Statistic::FASTLY_INSTALLED_FLAG,
+                        'created_at' => $this->_date->date()
+                    ];
+
+                    $setup->getConnection()->insert($tableName, $data);
+                }
                 // Generate GA cid and store it for further use
                 $this->_configWriter->save('system/full_page_cache/fastly/fastly_ga_cid', $this->_statistic->generateCid());
-                $sendInstalledReq = $this->_statistic->sendInstalledReq();
 
-                $data = [
-                    'action' => Statistic::FASTLY_INSTALLED_FLAG,
-                    'send'  => $sendInstalledReq,
-                    'created_at' => $this->_date->date()
-                ];
-
-                $setup->getConnection()->insert($tableName, $data);
+                $setup->endSetup();
             }
-
-            $setup->endSetup();
         }
     }
 }

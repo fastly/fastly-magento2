@@ -36,7 +36,6 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
     const GA_PAGEVIEW_URL = 'http://fastly.com/';
     const GA_FASTLY_SETUP = 'Fastly Setup';
 
-    protected $_cid;
     protected $_GAReqData = [];
 
     /**
@@ -200,13 +199,9 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
         $mandatoryReqData['v'] = 1;
         // Tracking ID
         $mandatoryReqData['tid'] = $this->getGATrackingId();
-        // CID
-        if(!$this->_cid) {
-            $this->_cid = $this->_config->getCID();
-        }
-
-        $mandatoryReqData['cid'] = $this->_cid;
-        $mandatoryReqData['uid'] = $this->_cid;
+        $cid = $this->_config->getCID();
+        $mandatoryReqData['cid'] = $cid;
+        $mandatoryReqData['uid'] = $cid;
         // Magento version
         $mandatoryReqData['ua'] = $this->_metaData->getVersion();
         // Get Default Country

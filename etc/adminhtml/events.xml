@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
-    <event name="backend_auth_user_login_success">
-        <observer name="fastly_admin_login_observer" instance="Fastly\Cdn\Observer\AdminLoginSucceededObserver" />
+    <event name="controller_action_postdispatch_adminhtml_system_config_edit">
+        <observer name="fastly_send_installed_request_to_GA" instance="Fastly\Cdn\Observer\SendInstalledRequestToGA" />
     </event>
     <event name="admin_system_config_changed_section_system">
         <observer name="fastly_admin_configuration_save" instance="Fastly\Cdn\Observer\ConfigurationSave" />

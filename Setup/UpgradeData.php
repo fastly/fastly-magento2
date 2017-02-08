@@ -33,15 +33,24 @@ class UpgradeData implements UpgradeDataInterface
     protected $_statistic;
 
     /**
+     * @var \Magento\Framework\App\Cache\Manager
+     */
+    protected $_cacheManager;
+
+    /**
      * UpgradeData constructor.
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\App\Config\Storage\WriterInterface $configWriter
+     * @param Statistic $statistic
+     * @param \Magento\Framework\Stdlib\DateTime\DateTime $date
+     * @param \Magento\Framework\App\Cache\Manager $cacheManager
      */
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\App\Config\Storage\WriterInterface $configWriter,
         Statistic $statistic,
-        \Magento\Framework\Stdlib\DateTime\DateTime $date
+        \Magento\Framework\Stdlib\DateTime\DateTime $date,
+        \Magento\Framework\App\Cache\Manager $cacheManager
     )
     {
         $this->_date = $date;
@@ -110,7 +119,7 @@ class UpgradeData implements UpgradeDataInterface
                 }
                 // Generate GA cid and store it for further use
                 $this->_configWriter->save('system/full_page_cache/fastly/fastly_ga_cid', $this->_statistic->generateCid());
-
+                $this->_cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
                 $setup->endSetup();
             }
         }

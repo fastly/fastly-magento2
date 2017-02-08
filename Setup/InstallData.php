@@ -32,20 +32,32 @@ class InstallData implements InstallDataInterface
     protected $_statistic;
 
     /**
-     * InstallData constructor.
+     * @var \Magento\Framework\App\Cache\Manager
+     */
+    protected $_cacheManager;
+
+    /**
+     * InstallData constructor
+     *
      * @param \Magento\Framework\Stdlib\DateTime\DateTime $date
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param \Magento\Framework\App\Config\Storage\WriterInterface $configWriter
+     * @param Statistic $statistic
+     * @param \Magento\Framework\App\Cache\Manager $cacheManager
      */
     public function __construct(
         \Magento\Framework\Stdlib\DateTime\DateTime $date,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\App\Config\Storage\WriterInterface $configWriter,
-        Statistic $statistic
+        Statistic $statistic,
+        \Magento\Framework\App\Cache\Manager $cacheManager
     )
     {
         $this->_date = $date;
         $this->_scopeConfig = $scopeConfig;
         $this->_configWriter = $configWriter;
         $this->_statistic = $statistic;
+        $this->_cacheManager = $cacheManager;
     }
 
     /**
@@ -67,6 +79,7 @@ class InstallData implements InstallDataInterface
         }
         // Generate GA cid and store it for further use
         $this->_configWriter->save('system/full_page_cache/fastly/fastly_ga_cid', $this->_statistic->generateCid());
+        $this->_cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
         $setup->endSetup();
     }
 }

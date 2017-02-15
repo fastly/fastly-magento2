@@ -84,7 +84,7 @@ class TestConnection extends \Magento\Backend\App\Action
                 return $result->setData(array('status' => false));
             }
 
-            return $result->setData(array('status' => true));
+            return $result->setData(array('status' => true, 'service_name' => $service->name));
         } catch (\Exception $e) {
             return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
         }

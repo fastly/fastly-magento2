@@ -38,6 +38,11 @@ class UpgradeData implements UpgradeDataInterface
     protected $_cacheManager;
 
     /**
+     * @var \Fastly\Cdn\Helper\Data
+     */
+    protected $_helper;
+
+    /**
      * UpgradeData constructor.
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\App\Config\Storage\WriterInterface $configWriter
@@ -50,13 +55,15 @@ class UpgradeData implements UpgradeDataInterface
         \Magento\Framework\App\Config\Storage\WriterInterface $configWriter,
         Statistic $statistic,
         \Magento\Framework\Stdlib\DateTime\DateTime $date,
-        \Magento\Framework\App\Cache\Manager $cacheManager
+        \Magento\Framework\App\Cache\Manager $cacheManager,
+        \Fastly\Cdn\Helper\Data $helper
     )
     {
         $this->_date = $date;
         $this->_scopeConfig = $scopeConfig;
         $this->_configWriter = $configWriter;
         $this->_statistic = $statistic;
+        $this->_helper = $helper;
     }
 
     /**
@@ -117,6 +124,10 @@ class UpgradeData implements UpgradeDataInterface
 
                     $setup->getConnection()->insert($tableName, $data);
                 }
+
+                // Save current Fastly module version
+                $this->_configWriter->save('system/full_page_cache/fastly/current_version', $this->_helper->getModuleVersion());
+
                 // Generate GA cid and store it for further use
                 $this->_configWriter->save('system/full_page_cache/fastly/fastly_ga_cid', $this->_statistic->generateCid());
                 $this->_cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);

@@ -14,7 +14,7 @@ to Fastly's CDN services.
 
 To proceed with configuration you will need to have
 [signed up for Fastly's service](https://www.fastly.com/signup). You will need
-the API key (or a user key with purge access). Details of how to find these
+the API key/token (https://manage.fastly.com/tokens). Details of how to find these
 are kept in [Fastly's documentation](https://docs.fastly.com/guides/account-management-and-security/finding-and-managing-your-account-info).
 
 ## Configure the Fastly Service

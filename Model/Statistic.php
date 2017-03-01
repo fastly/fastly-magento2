@@ -211,7 +211,7 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
         $mandatoryReqData['cid'] = $cid;
         $mandatoryReqData['uid'] = $cid;
         // Magento version
-        $mandatoryReqData['ua'] = $this->_helper->getModuleVersion();
+        $mandatoryReqData['ua'] = $this->_metaData->getVersion();
         // Get Default Country
         $mandatoryReqData['geoid'] = $this->getCountry();
         // Data Source parameter is used to filter spam hits

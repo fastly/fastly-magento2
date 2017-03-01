@@ -113,11 +113,11 @@ class TestConnection extends \Magento\Backend\App\Action
                 $this->_saveValidationState(false, $sendValidationReq);
                 return $result->setData(array('status' => false));
             }
-
+            
             $sendValidationReq = $this->_statistic->sendValidationRequest(true);
             $this->_saveValidationState(true, $sendValidationReq);
 
-            return $result->setData(array('status' => true));
+            return $result->setData(array('status' => true, 'service_name' => $service->name));
         } catch (\Exception $e) {
             return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
         }

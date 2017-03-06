@@ -5,9 +5,17 @@ namespace Fastly\Cdn\Setup;
 use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
+use Fastly\Cdn\Model\Statistic;
 
 class UpgradeData implements UpgradeDataInterface
 {
+
+    /**
+     * Date model
+     *
+     * @var \Magento\Framework\Stdlib\DateTime\DateTime
+     */
+    protected $_date;
 
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
@@ -20,16 +28,42 @@ class UpgradeData implements UpgradeDataInterface
     protected $_configWriter;
 
     /**
-     * UpgradeSchema constructor.
+     * @var Statistic
+     */
+    protected $_statistic;
+
+    /**
+     * @var \Magento\Framework\App\Cache\Manager
+     */
+    protected $_cacheManager;
+
+    /**
+     * @var \Fastly\Cdn\Helper\Data
+     */
+    protected $_helper;
+
+    /**
+     * UpgradeData constructor.
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\App\Config\Storage\WriterInterface $configWriter
+     * @param Statistic $statistic
+     * @param \Magento\Framework\Stdlib\DateTime\DateTime $date
+     * @param \Magento\Framework\App\Cache\Manager $cacheManager
      */
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Framework\App\Config\Storage\WriterInterface $configWriter)
+        \Magento\Framework\App\Config\Storage\WriterInterface $configWriter,
+        Statistic $statistic,
+        \Magento\Framework\Stdlib\DateTime\DateTime $date,
+        \Magento\Framework\App\Cache\Manager $cacheManager,
+        \Fastly\Cdn\Helper\Data $helper
+    )
     {
+        $this->_date = $date;
         $this->_scopeConfig = $scopeConfig;
         $this->_configWriter = $configWriter;
+        $this->_statistic = $statistic;
+        $this->_helper = $helper;
     }
 
     /**
@@ -72,13 +106,33 @@ class UpgradeData implements UpgradeDataInterface
         if (version_compare($context->getVersion(), '1.0.8', '<=')) {
             foreach ($oldConfigPaths as $key => $value) {
                 $oldValue = $this->_scopeConfig->getValue($value);
-                if($oldValue != null)
-                {
+                if ($oldValue != null) {
                     $this->_configWriter->save($newConfigPaths[$key], $oldValue);
                 }
             }
         }
 
-        $setup->endSetup();
+        if($context->getVersion()) {
+            if (version_compare($context->getVersion(), '1.0.9', '<=')) {
+                $tableName = $setup->getTable('fastly_statistics');
+                if ($setup->getConnection()->isTableExists($tableName) == true) {
+
+                    $data = [
+                        'action' => Statistic::FASTLY_INSTALLED_FLAG,
+                        'created_at' => $this->_date->date()
+                    ];
+
+                    $setup->getConnection()->insert($tableName, $data);
+                }
+
+                // Save current Fastly module version
+                $this->_configWriter->save('system/full_page_cache/fastly/current_version', $this->_helper->getModuleVersion());
+
+                // Generate GA cid and store it for further use
+                $this->_configWriter->save('system/full_page_cache/fastly/fastly_ga_cid', $this->_statistic->generateCid());
+                $this->_cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
+                $setup->endSetup();
+            }
+        }
     }
 }

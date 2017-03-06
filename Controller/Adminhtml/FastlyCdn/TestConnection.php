@@ -24,6 +24,9 @@ use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use \Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Helper\Vcl;
+use Fastly\Cdn\Model\Statistic;
+use Fastly\Cdn\Model\StatisticFactory;
+use Fastly\Cdn\Model\StatisticRepository;
 
 class TestConnection extends \Magento\Backend\App\Action
 {
@@ -48,27 +51,52 @@ class TestConnection extends \Magento\Backend\App\Action
     protected $resultJsonFactory;
 
     /**
-     * ServiceInfo constructor.
+     * @var Statistic
+     */
+    protected $_statistic;
+
+    /**
+     * @var StatisticFactory
+     */
+    protected $_statisticFactory;
+
+    /**
+     * @var StatisticRepository
+     */
+    protected $_statisticRepository;
+
+    /**
+     * TestConnection constructor.
+     *
      * @param \Magento\Backend\App\Action\Context $context
      * @param Config $config
      * @param Api $api
      * @param JsonFactory $resultJsonFactory
+     * @param Statistic $statistic
+     * @param StatisticFactory $statisticFactory
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         Config $config,
         Api $api,
-        \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
+        \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
+        Statistic $statistic,
+        StatisticFactory $statisticFactory,
+        StatisticRepository $statisticRepository
     ) {
         $this->api = $api;
         $this->config = $config;
         $this->resultJsonFactory = $resultJsonFactory;
+        $this->_statistic = $statistic;
+        $this->_statisticFactory = $statisticFactory;
+        $this->_statisticRepository = $statisticRepository;
 
         parent::__construct($context);
     }
 
     /**
      * Checking service details
+     *
      * @return \Magento\Framework\Controller\Result\Json
      */
     public function execute()
@@ -81,12 +109,26 @@ class TestConnection extends \Magento\Backend\App\Action
             $service = $this->api->checkServiceDetails(true, $serviceId, $apiKey);
 
             if(!$service) {
+                $sendValidationReq = $this->_statistic->sendValidationRequest(false);
+                $this->_saveValidationState(false, $sendValidationReq);
                 return $result->setData(array('status' => false));
             }
+            
+            $sendValidationReq = $this->_statistic->sendValidationRequest(true);
+            $this->_saveValidationState(true, $sendValidationReq);
 
             return $result->setData(array('status' => true, 'service_name' => $service->name));
         } catch (\Exception $e) {
             return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
         }
+    }
+
+    protected function _saveValidationState($serviceStatus, $gaRequestStatus)
+    {
+        $validationStat = $this->_statisticFactory->create();
+        $validationStat->setAction(Statistic::FASTLY_VALIDATION_FLAG);
+        $validationStat->setSent($gaRequestStatus);
+        $validationStat->setState($serviceStatus);
+        $this->_statisticRepository->save($validationStat);
     }
 }

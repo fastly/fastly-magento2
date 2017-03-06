@@ -131,6 +131,16 @@ class Config extends \Magento\PageCache\Model\Config
      */
     const XML_FASTLY_GEOIP_COUNTRY_MAPPING = 'system/full_page_cache/fastly/fastly_advanced_configuration/geoip_country_mapping';
 
+    /**
+     * XML path to Google analytics CID
+     */
+    const XML_FASTLY_GA_CID = 'system/full_page_cache/fastly/fastly_ga_cid';
+
+    /**
+     * XML path to Fastly module version
+     */
+    const XML_FASTLY_MODULE_VERSION = 'system/full_page_cache/fastly/current_version';
+
 
     /**
      * Check if Fastly is selected for Caching Application
@@ -146,6 +156,25 @@ class Config extends \Magento\PageCache\Model\Config
         return false;
     }
 
+    /**
+     * Return Fastly module version from core resource
+     *
+     * @return string
+     */
+    public function getFastlyVersion()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_MODULE_VERSION);
+    }
+
+    /**
+     * Return Google Analytics CID
+     *
+     * @return string
+     */
+    public function getCID()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_GA_CID);
+    }
 
     /**
      * Return Fastly API endpoint

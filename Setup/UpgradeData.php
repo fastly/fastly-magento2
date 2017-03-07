@@ -64,6 +64,7 @@ class UpgradeData implements UpgradeDataInterface
         $this->_configWriter = $configWriter;
         $this->_statistic = $statistic;
         $this->_helper = $helper;
+        $this->_cacheManager = $cacheManager;
     }
 
     /**

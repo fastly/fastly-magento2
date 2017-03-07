@@ -92,7 +92,8 @@ define([
             }).done(function (checkService) {
                 active_version = checkService.active_version;
                 next_version = checkService.next_version;
-                vcl.setActiveServiceLabel(active_version, next_version);
+                service_name = checkService.service.name;
+                vcl.setActiveServiceLabel(active_version, next_version, service_name);
             });
 
             var backend_id = $(this).data('backend-id');
@@ -131,8 +132,9 @@ define([
 
                 active_version = service.active_version;
                 next_version = service.next_version;
+                service_name = service.service.name;
                 vcl.showPopup('fastly-uploadvcl-options');
-                vcl.setActiveServiceLabel(active_version, next_version);
+                vcl.setActiveServiceLabel(active_version, next_version, service_name);
 
             }).fail(function () {
                 return errorVclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
@@ -160,6 +162,7 @@ define([
 
                 active_version = service.active_version;
                 next_version = service.next_version;
+                service_name = service.service.name;
                 vcl.getTlsSetting(active_version, true).done(function (response) {
                         if(response.status == false) {
                             $('.modal-title').text($.mage.__('We are about to turn on TLS'));
@@ -173,7 +176,7 @@ define([
                     }
                 );
                 vcl.showPopup('fastly-tls-options');
-                vcl.setActiveServiceLabel(active_version, next_version);
+                vcl.setActiveServiceLabel(active_version, next_version, service_name);
 
             }).fail(function (msg) {
                 return errorTlsBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
@@ -203,17 +206,18 @@ define([
 
                 active_version = service.active_version;
                 next_version = service.next_version;
+                service_name = service.service.name;
 
                 vcl.getErrorPageRespObj(active_version, true).done(function (response) {
                     if(response.status == true) {
-                        $('#error_page_html').html(response.errorPageResp.content);
+                        $('#error_page_html').text(response.errorPageResp.content).html();
                     }
                 }).fail(function() {
                     vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
                 });
 
                 vcl.showPopup('fastly-error-page-options');
-                vcl.setActiveServiceLabel(active_version, next_version);
+                vcl.setActiveServiceLabel(active_version, next_version, service_name);
 
             }).fail(function () {
                 return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
@@ -223,6 +227,7 @@ define([
         var backends = null;
         var active_version = '';
         var next_version = '';
+        var service_name;
         var forceTls = true;
         var isAlreadyConfigured = true;
         /* VCL button messages */
@@ -335,10 +340,10 @@ define([
             },
 
             // Setting up label text
-            setActiveServiceLabel: function (active_version, next_version) {
+            setActiveServiceLabel: function (active_version, next_version, service_name) {
                 var msgWarning = $('.fastly-message-warning');
-                msgWarning.text($.mage.__('You are about to clone active version') + ' ' + active_version + '. '
-                    + $.mage.__('We\'ll make changes to version ') + ' ' + next_version + '.');
+                msgWarning.text($.mage.__('You are about to clone ' + service_name + ' active version') + ' ' + active_version + '. '
+                    + $.mage.__('We\'ll make changes to ' + service_name + ' version ') + ' ' + next_version + '.');
                 msgWarning.show();
             },
 

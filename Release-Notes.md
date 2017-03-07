@@ -1,5 +1,20 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.11
+
+- Remove Download VCL button and custom VCL as it's deprecated
+- Fix an issue with error/maintenance page where contents were not being escaped causing some elements to be invisible while editing
+- Add usage statistics tracking
+
+## 1.2.10
+
+- Mark custom VCL separately
+
+## 1.2.9
+
+- Add new shield locations
+- Error page fixes
+
 ## 1.2.7
 
 - Add a UI to add a custom error/maintenance page

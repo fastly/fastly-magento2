@@ -69,14 +69,6 @@
                     </group>
                     <group id="fastly_advanced_configuration" sortOrder="300" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Advanced Configuration</label>
-                        <field id="export_button_fastly" translate="label comment" type="button" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
-                            <label>Review VCL for manual upload</label>
-                            <comment>
-                                <![CDATA[Use this option to download the boilerplate VCL file for Magento.
-                                You may then edit this file and <a href="https://docs.fastly.com/guides/vcl/uploading-custom-vcl" target="_blank">upload the VCL to your Fastly service.</a>]]>
-                            </comment>
-                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Export\Fastly</frontend_model>
-                        </field>
                         <field id="force_tls" translate="label comment" sortOrder="10" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Force TLS]]></label>
                             <comment>

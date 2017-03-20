@@ -79,6 +79,18 @@ class Api
     }
 
     /**
+     * Historical API stats
+     *
+     * @return string
+     */
+    protected function _getHistoricalEndpoint()
+    {
+        $uri = $this->config->getApiEndpoint() . 'stats/service/' . $this->config->getServiceId();
+
+        return $uri;
+    }
+
+    /**
      * Purge a single URL
      *
      * @param string $url

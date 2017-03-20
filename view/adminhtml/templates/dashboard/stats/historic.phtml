@@ -1,0 +1,41 @@
+<div id="historic-toolbar">
+    <div id="time-range">
+        <div id="historic-from">
+            <input name="from" id="from-picker" class="from-picker"/>
+            <button type="button" style="display:none;" class="ui-datepicker-trigger '
+            .'v-middle"><span>Select Date</span></button>
+        </div>
+        <div id="historic-to">
+            <input name="to" id="to-picker" class="to-picker"/>
+            <button type="button" style="display:none;" class="ui-datepicker-trigger '
+            .'v-middle"><span>Select Date</span></button>
+        </div>
+    </div>
+    <div id="options">
+
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    require(["jquery", "jquery/ui"], function ($) {
+        $(document).ready(function () {
+
+            // From picker init
+            $('#from-picker').datetimepicker( { dateFormat: "dd/mm/yy" } );
+            $(".ui-datepicker-trigger").removeAttr("style");
+            $(".ui-datepicker-trigger").click(function(){
+                $('#from-picker').focus();
+            });
+
+            // To picker init
+            $('#to-picker').datetimepicker( { dateFormat: "dd/mm/yy" } );
+            $(".ui-datepicker-trigger").removeAttr("style");
+            $(".ui-datepicker-trigger").click(function(){
+                $('#to-picker').focus();
+            });
+
+        });
+    });
+</script>

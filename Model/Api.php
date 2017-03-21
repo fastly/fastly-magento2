@@ -108,7 +108,7 @@ class Api
         }
 
         if ($this->config->areWebHooksEnabled() && $this->config->canPublishKeyUrlChanges()) {
-            $this->sendWebHook('*initiated clean by URL action*');
+            $this->sendWebHook('*clean by URL on*' . $url);
         }
 
         return $result;
@@ -129,7 +129,7 @@ class Api
         }
 
         if ($this->config->areWebHooksEnabled() && $this->config->canPublishKeyUrlChanges()) {
-            $this->sendWebHook('*initiated clean by surrogate key action*');
+            $this->sendWebHook('*clean by key on ' . $key . '*');
         }
 
         return $result;
@@ -531,8 +531,8 @@ class Api
         ));
 
         $client = $this->curlFactory->create();
-        $client->addOption(CURLOPT_CONNECTTIMEOUT, 5);
-        $client->addOption(CURLOPT_TIMEOUT, 8);
+        $client->addOption(CURLOPT_CONNECTTIMEOUT, 2);
+        $client->addOption(CURLOPT_TIMEOUT, 3);
         $client->write(\Zend_Http_Client::POST, $url, '1.1', $headers, $body);
         $response = $client->read();
         $responseCode = \Zend_Http_Response::extractCode($response);

@@ -40,7 +40,7 @@
                         <publish_key_url_purge_events>1</publish_key_url_purge_events>
                         <publish_purge_all_items_events>1</publish_purge_all_items_events>
                         <publish_config_change_events>1</publish_config_change_events>
-                        <webhook_message_format>Example user ###MESSAGE###</webhook_message_format>
+                        <webhook_message_format>REPLACE_THIS_MESSAGE_PREFIX ###MESSAGE###</webhook_message_format>
                     </fastly_web_hooks>
                 </fastly>
             </full_page_cache>

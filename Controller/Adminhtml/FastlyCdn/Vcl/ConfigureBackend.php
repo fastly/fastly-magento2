@@ -71,10 +71,6 @@ class ConfigureBackend extends \Magento\Backend\App\Action
     public function execute()
     {
         try {
-            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-                $this->api->sendWebHook('*initiated backend configuration action*');
-            }
-
             $result = $this->resultJson->create();
             $activate_flag = $this->getRequest()->getParam('activate_flag');
             $activeVersion = $this->getRequest()->getParam('active_version');
@@ -118,6 +114,9 @@ class ConfigureBackend extends \Magento\Backend\App\Action
 
             if($activate_flag === 'true') {
                 $this->api->activateVersion($clone->number);
+            }
+            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+                $this->api->sendWebHook('*Backend ' . $this->getRequest()->getParam('name') . ' has been changed in Fastly version ' . $clone->number . '*');
             }
 
             return $result->setData(array('status' => true, 'active_version' => $clone->number));

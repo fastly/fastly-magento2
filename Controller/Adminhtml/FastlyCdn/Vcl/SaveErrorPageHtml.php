@@ -75,10 +75,6 @@ class SaveErrorPageHtml extends \Magento\Backend\App\Action
     public function execute()
     {
         try {
-            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-                $this->api->sendWebHook('*initiated save Error page HTML action*');
-            }
-
             $result = $this->resultJson->create();
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
@@ -148,6 +144,10 @@ class SaveErrorPageHtml extends \Magento\Backend\App\Action
 
             if($activateVcl === 'true') {
                 $this->api->activateVersion($clone->number);
+            }
+
+            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+                $this->api->sendWebHook('*New Error/Maintenance page has updated and activated under config version ' . $clone->number . '*');
             }
 
             return $result->setData(array('status' => true, 'active_version' => $clone->number));

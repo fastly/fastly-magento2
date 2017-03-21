@@ -87,10 +87,6 @@ class Upload extends \Magento\Backend\App\Action
     public function execute()
     {
         try {
-            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-                $this->api->sendWebHook('*initiated upload VCL snippets action*');
-            }
-
             $result = $this->resultJson->create();
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
@@ -154,6 +150,10 @@ class Upload extends \Magento\Backend\App\Action
 
             if($activateVcl === 'true') {
                 $this->api->activateVersion($clone->number);
+            }
+
+            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+                $this->api->sendWebHook('*Upload VCL has been initiated and activated in version ' . $clone->number . '*');
             }
 
             return $result->setData(array('status' => true, 'active_version' => $clone->number));

@@ -93,14 +93,6 @@ class ForceTls extends \Magento\Backend\App\Action
             $reqName = Config::FASTLY_MAGENTO_MODULE.'_force_tls';
             $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);
 
-            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-                if($checkIfReqExist) {
-                    $this->api->sendWebHook('*initiated turn OFF TLS action*');
-                } else {
-                    $this->api->sendWebHook('*initiated turn ON TLS action*');
-                }
-            }
-
             if(!$checkIfReqExist) {
                 $request = array(
                     'name' => $reqName,
@@ -131,6 +123,14 @@ class ForceTls extends \Magento\Backend\App\Action
 
             if($activateVcl === 'true') {
                 $this->api->activateVersion($clone->number);
+            }
+
+            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+                if($checkIfReqExist) {
+                    $this->api->sendWebHook('*Force TLS has been turned OFF in Fastly version '. $clone->number . '*');
+                } else {
+                    $this->api->sendWebHook('*Force TLS has been turned ON in Fastly version '. $clone->number . '*');
+                }
             }
 
             return $result->setData(array('status' => true));

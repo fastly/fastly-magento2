@@ -66,47 +66,6 @@
                                 <![CDATA[]]>
                             </comment>
                         </field>
-                        <group id="fastly_web_hooks" sortOrder="200" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
-                            <label>Webhook notifications</label>
-                            <field id="enable_webhooks" translate="label comment" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
-                                <label>Enabled</label>
-                                <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                            </field>
-                            <field id="incoming_webhook_url" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                                <label>Incoming webhook URL</label>
-                                <depends>
-                                    <field id="enable_webhooks">1</field>
-                                </depends>
-                                <validate>required-entry</validate>
-                            </field>
-                            <field id="publish_key_url_purge_events" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-                                <label>Publish Key and URL Purge Events</label>
-                                <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                                <depends>
-                                    <field id="enable_webhooks">1</field>
-                                </depends>
-                            </field>
-                            <field id="publish_purge_all_items_events" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
-                                <label>Publish Purge All/Clean All Items Events</label>
-                                <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                                <depends>
-                                    <field id="enable_webhooks">1</field>
-                                </depends>
-                            </field>
-                            <field id="publish_config_change_events" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
-                                <label>Publish Config change events</label>
-                                <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                                <depends>
-                                    <field id="enable_webhooks">1</field>
-                                </depends>
-                            </field>
-                            <field id="webhook_message_format" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
-                                <label>Message format</label>
-                                <depends>
-                                    <field id="enable_webhooks">1</field>
-                                </depends>
-                            </field>
-                        </group>
                     </group>
                     <group id="fastly_advanced_configuration" sortOrder="300" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Advanced Configuration</label>
@@ -183,6 +142,47 @@
                         <field id="force_tls" translate="label comment" sortOrder="10" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Error Page HTML]]></label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ErrorPageBtn</frontend_model>
+                        </field>
+                    </group>
+                    <group id="fastly_web_hooks" sortOrder="500" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Webhook notifications</label>
+                        <field id="enable_webhooks" translate="label comment" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Enabled</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="incoming_webhook_url" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Incoming webhook URL</label>
+                            <depends>
+                                <field id="enable_webhooks">1</field>
+                            </depends>
+                            <validate>required-entry</validate>
+                        </field>
+                        <field id="publish_key_url_purge_events" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Publish Key and URL Purge Events</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="enable_webhooks">1</field>
+                            </depends>
+                        </field>
+                        <field id="publish_purge_all_items_events" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Publish Purge All/Clean All Items Events</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="enable_webhooks">1</field>
+                            </depends>
+                        </field>
+                        <field id="publish_config_change_events" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Publish Config change events</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="enable_webhooks">1</field>
+                            </depends>
+                        </field>
+                        <field id="webhook_message_format" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Message format</label>
+                            <depends>
+                                <field id="enable_webhooks">1</field>
+                            </depends>
                         </field>
                     </group>
                     <depends>

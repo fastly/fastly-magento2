@@ -148,7 +148,7 @@ class Api
         }
 
         if ($this->config->areWebHooksEnabled() && $this->config->canPublishPurgeAllChanges()) {
-            $this->sendWebHook('*initiated clean \ purge all action*');
+            $this->sendWebHook('*initiated clean/purge all action*');
         }
 
         return $result;
@@ -518,7 +518,7 @@ class Api
     {
         $url = $this->config->getIncomingWebhookURL();
         $text = str_replace("###MESSAGE###", $message, $this->config->getWebhookMessageFormat());
-        $text .= ' on '.$this->helper->getStoreUrl().' | '.$this->helper->getStoreName();
+        $text .= ' on <'.$this->helper->getStoreUrl().'|Store URL> | '.$this->helper->getStoreName();
 
         $headers = [
             'Content-type: application/json'

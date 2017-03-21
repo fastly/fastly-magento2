@@ -22,6 +22,8 @@ namespace Fastly\Cdn\Model;
 
 use Magento\Framework\HTTP\Adapter\CurlFactory;
 use Magento\Framework\Cache\InvalidateLogger;
+use Fastly\Cdn\Helper\Data;
+use Psr\Log\LoggerInterface;
 
 class Api
 {
@@ -47,20 +49,35 @@ class Api
     protected $logger;
 
     /**
-     * Constructor
-     *
-     * @param Config $config, $config
+     * @var Data
+     */
+    protected $helper;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $log;
+
+    /**
+     * Api constructor.
+     * @param Config $config
      * @param CurlFactory $curlFactory
      * @param InvalidateLogger $logger
+     * @param Data $helper
+     * @param LoggerInterface $log
      */
     public function __construct(
         Config $config,
         CurlFactory $curlFactory,
-        InvalidateLogger $logger
+        InvalidateLogger $logger,
+        Data $helper,
+        LoggerInterface $log
     ) {
         $this->config = $config;
         $this->curlFactory = $curlFactory;
         $this->logger = $logger;
+        $this->helper = $helper;
+        $this->log = $log;
     }
 
     /**
@@ -89,6 +106,11 @@ class Api
         if ($result = $this->_purge($url, 'PURGE')) {
             $this->logger->execute($url);
         }
+
+        if ($this->config->areWebHooksEnabled() && $this->config->canPublishKeyUrlChanges()) {
+            $this->sendWebHook('*initiated clean by URL action*');
+        }
+
         return $result;
     }
 
@@ -101,9 +123,15 @@ class Api
     public function cleanBySurrogateKey($key)
     {
         $uri = $this->_getApiServiceUri() . 'purge/' . $key;
+
         if ($result = $this->_purge($uri)) {
             $this->logger->execute('surrogate key: ' . $key);
         }
+
+        if ($this->config->areWebHooksEnabled() && $this->config->canPublishKeyUrlChanges()) {
+            $this->sendWebHook('*initiated clean by surrogate key action*');
+        }
+
         return $result;
     }
 
@@ -118,6 +146,11 @@ class Api
         if ($result = $this->_purge($uri)) {
             $this->logger->execute('clean all items');
         }
+
+        if ($this->config->areWebHooksEnabled() && $this->config->canPublishPurgeAllChanges()) {
+            $this->sendWebHook('*initiated clean \ purge all action*');
+        }
+
         return $result;
     }
 
@@ -479,6 +512,36 @@ class Api
         $result = $this->_fetch($url, \Zend_Http_Client::PUT, $params);
 
         return $result;
+    }
+
+    public function sendWebHook($message)
+    {
+        $url = $this->config->getIncomingWebhookURL();
+        $text = str_replace("###MESSAGE###", $message, $this->config->getWebhookMessageFormat());
+        $text .= ' on '.$this->helper->getStoreUrl().' | '.$this->helper->getStoreName();
+
+        $headers = [
+            'Content-type: application/json'
+        ];
+
+        $body = json_encode(array(
+            "text"  =>  $text,
+            "username" => "fastly-magento-bot",
+            "icon_emoji"=> ":airplane:"
+        ));
+
+        $client = $this->curlFactory->create();
+        $client->addOption(CURLOPT_CONNECTTIMEOUT, 5);
+        $client->addOption(CURLOPT_TIMEOUT, 8);
+        $client->write(\Zend_Http_Client::POST, $url, '1.1', $headers, $body);
+        $response = $client->read();
+        $responseCode = \Zend_Http_Response::extractCode($response);
+
+        if ($responseCode == 200) {
+            $this->log->log(100, 'Failed to send message to the following Webhook: '.$url);
+        }
+
+        $client->close();
     }
 
     /**

@@ -141,6 +141,36 @@ class Config extends \Magento\PageCache\Model\Config
      */
     const XML_FASTLY_MODULE_VERSION = 'system/full_page_cache/fastly/current_version';
 
+    /**
+     * XML path to enable Webhooks
+     */
+    const XML_FASTLY_WEBHOOKS_ENABLED = 'system/full_page_cache/fastly/fastly_backend_settings/fastly_web_hooks/enable_webhooks';
+
+    /**
+     * XML path to Incoming webhook URL
+     */
+    const XML_FASTLY_INCOMING_WEBHOOK_URL = 'system/full_page_cache/fastly/fastly_backend_settings/fastly_web_hooks/incoming_webhook_url';
+
+    /**
+     * XML path to enable Publish Key and URL Purge Events
+     */
+    const XML_FASTLY_PUBLISH_KEY_URL_PURGE_EVENTS = 'system/full_page_cache/fastly/fastly_backend_settings/fastly_web_hooks/publish_key_url_purge_events';
+
+    /**
+     * XML path to enable Publish Purge All/Clean All Items Events
+     */
+    const XML_FASTLY_PUBLISH_PURGE_ALL_EVENTS = 'system/full_page_cache/fastly/fastly_backend_settings/fastly_web_hooks/publish_purge_all_items_events';
+
+    /**
+     * XML path to enable Publish Config change events
+     */
+    const XML_FASTLY_PUBLISH_CONFIG_CHANGE_EVENTS = 'system/full_page_cache/fastly/fastly_backend_settings/fastly_web_hooks/publish_config_change_events';
+
+    /**
+     * XML path to enable Publish Config change events
+     */
+    const XML_FASTLY_WEBHOOK_MESSAGE_FORMAT = 'system/full_page_cache/fastly/fastly_backend_settings/fastly_web_hooks/webhook_message_format';
+
 
     /**
      * Check if Fastly is selected for Caching Application
@@ -304,6 +334,61 @@ class Config extends \Magento\PageCache\Model\Config
     public function getGeoIpRedirectMapping()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_GEOIP_COUNTRY_MAPPING);
+    }
+
+    /**
+     * Return are Webhooks enabled
+     *
+     * @return bool
+     */
+    public function areWebHooksEnabled()
+    {
+        return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_WEBHOOKS_ENABLED));
+    }
+
+    public function getIncomingWebhookURL()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_INCOMING_WEBHOOK_URL);
+    }
+
+    /**
+     * Return is Publish Key and URL Purge Events enabled
+     *
+     * @return bool
+     */
+    public function canPublishKeyUrlChanges()
+    {
+        return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PUBLISH_KEY_URL_PURGE_EVENTS));
+    }
+
+    /**
+     * return is Publish Purge All/Clean All Items Events enabled
+     *
+     * @return bool
+     */
+    public function canPublishPurgeAllChanges()
+    {
+        return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PUBLISH_PURGE_ALL_EVENTS));
+    }
+
+    /**
+     * return is Publish Config change events enabled
+     *
+     * @return bool
+     */
+    public function canPublishConfigChanges()
+    {
+        return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PUBLISH_CONFIG_CHANGE_EVENTS));
+    }
+
+    /**
+     * return Webhook message format
+     *
+     * @return mixed
+     */
+    public function getWebhookMessageFormat()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_WEBHOOK_MESSAGE_FORMAT);
     }
 
     /**

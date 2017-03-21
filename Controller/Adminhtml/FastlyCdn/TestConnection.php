@@ -102,6 +102,10 @@ class TestConnection extends \Magento\Backend\App\Action
     public function execute()
     {
         try {
+            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+                $this->api->sendWebHook('*initiated test connection action*');
+            }
+
             $result = $this->resultJsonFactory->create();
             $serviceId = $this->getRequest()->getParam('service_id');
             $apiKey = $this->getRequest()->getParam('api_key');

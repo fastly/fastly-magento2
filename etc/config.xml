@@ -35,15 +35,13 @@
                         <purge_cms_page>0</purge_cms_page>
                         <enable_geoip>0</enable_geoip>
                     </fastly_advanced_configuration>
-                    <fastly_backend_settings>
-                        <fastly_web_hooks>
-                            <enable_webhooks>0</enable_webhooks>
-                            <publish_key_url_purge_events>1</publish_key_url_purge_events>
-                            <publish_purge_all_items_events>1</publish_purge_all_items_events>
-                            <publish_config_change_events>1</publish_config_change_events>
-                            <webhook_message_format>Example user ###MESSAGE###</webhook_message_format>
-                        </fastly_web_hooks>
-                    </fastly_backend_settings>
+                    <fastly_web_hooks>
+                        <enable_webhooks>0</enable_webhooks>
+                        <publish_key_url_purge_events>1</publish_key_url_purge_events>
+                        <publish_purge_all_items_events>1</publish_purge_all_items_events>
+                        <publish_config_change_events>1</publish_config_change_events>
+                        <webhook_message_format>Example user ###MESSAGE###</webhook_message_format>
+                    </fastly_web_hooks>
                 </fastly>
             </full_page_cache>
         </system>

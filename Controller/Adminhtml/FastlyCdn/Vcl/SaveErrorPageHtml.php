@@ -75,6 +75,10 @@ class SaveErrorPageHtml extends \Magento\Backend\App\Action
     public function execute()
     {
         try {
+            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+                $this->api->sendWebHook('*initiated save Error page HTML action*');
+            }
+
             $result = $this->resultJson->create();
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');

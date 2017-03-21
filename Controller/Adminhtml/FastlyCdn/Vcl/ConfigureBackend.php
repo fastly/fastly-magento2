@@ -6,6 +6,7 @@ use \Magento\Framework\App\Request\Http;
 use \Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
+use \Fastly\Cdn\Model\Config;
 
 class ConfigureBackend extends \Magento\Backend\App\Action
 {
@@ -29,27 +30,36 @@ class ConfigureBackend extends \Magento\Backend\App\Action
      */
     protected $vcl;
 
+    /**
+     * @var Config
+     */
+    protected $config;
+
 
     /**
-     * ConfigureBackend constructor.
+     * ConfigureBackend constructor
+     *
      * @param \Magento\Backend\App\Action\Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
      * @param Api $api
      * @param Vcl $vcl
+     * @param Config $config
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
         Api $api,
-        Vcl $vcl
+        Vcl $vcl,
+        Config $config
     )
     {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
         $this->api = $api;
         $this->vcl = $vcl;
+        $this->config = $config;
         parent::__construct($context);
     }
 
@@ -61,6 +71,10 @@ class ConfigureBackend extends \Magento\Backend\App\Action
     public function execute()
     {
         try {
+            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+                $this->api->sendWebHook('*initiated backend configuration action*');
+            }
+
             $result = $this->resultJson->create();
             $activate_flag = $this->getRequest()->getParam('activate_flag');
             $activeVersion = $this->getRequest()->getParam('active_version');

@@ -146,6 +146,9 @@
                     </group>
                     <group id="fastly_web_hooks" sortOrder="500" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Webhook notifications</label>
+                        <comment>
+                            <![CDATA[Webhooks are a simple way to post messages to external sources. This integration is geared for Slack however you can use it for anything else. <br /> To create Slack Incoming webhooks <a href="https://api.slack.com/incoming-webhooks">https://api.slack.com/incoming-webhooks</a>]]>
+                        </comment>
                         <field id="enable_webhooks" translate="label comment" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enabled</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -178,8 +181,8 @@
                                 <field id="enable_webhooks">1</field>
                             </depends>
                         </field>
-                        <field id="webhook_message_format" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
-                            <label>Message format</label>
+                        <field id="webhook_message_prefix" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Message prefix</label>
                             <depends>
                                 <field id="enable_webhooks">1</field>
                             </depends>

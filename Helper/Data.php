@@ -22,19 +22,39 @@ class Data extends AbstractHelper
     protected $_storeManager;
 
     /**
+     * @var \Magento\Backend\Model\Auth\Session
+     */
+    protected $_authSession;
+
+    /**
+     * @var \Magento\Framework\App\State
+     */
+    protected $_appState;
+
+    /**
      * Data constructor.
      * @param Context $context
      * @param ModuleListInterface $moduleList
      * @param StoreManagerInterface $storeManager
+     * @param \Magento\Framework\App\State $state
      */
     public function __construct(
         Context $context,
         ModuleListInterface $moduleList,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        \Magento\Framework\App\State $state
     )
     {
         $this->_moduleList = $moduleList;
         $this->_storeManager = $storeManager;
+        $this->_appState = $state;
+
+        try {
+            $this->_appState->setAreaCode('admin');
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
+            // intentionally left empty
+        }
+
         parent::__construct($context);
     }
 

@@ -144,32 +144,32 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * XML path to enable Webhooks
      */
-    const XML_FASTLY_WEBHOOKS_ENABLED = 'system/full_page_cache/fastly/fastly_backend_settings/fastly_web_hooks/enable_webhooks';
+    const XML_FASTLY_WEBHOOKS_ENABLED = 'system/full_page_cache/fastly/fastly_web_hooks/enable_webhooks';
 
     /**
      * XML path to Incoming webhook URL
      */
-    const XML_FASTLY_INCOMING_WEBHOOK_URL = 'system/full_page_cache/fastly/fastly_backend_settings/fastly_web_hooks/incoming_webhook_url';
+    const XML_FASTLY_INCOMING_WEBHOOK_URL = 'system/full_page_cache/fastly/fastly_web_hooks/incoming_webhook_url';
 
     /**
      * XML path to enable Publish Key and URL Purge Events
      */
-    const XML_FASTLY_PUBLISH_KEY_URL_PURGE_EVENTS = 'system/full_page_cache/fastly/fastly_backend_settings/fastly_web_hooks/publish_key_url_purge_events';
+    const XML_FASTLY_PUBLISH_KEY_URL_PURGE_EVENTS = 'system/full_page_cache/fastly/fastly_web_hooks/publish_key_url_purge_events';
 
     /**
      * XML path to enable Publish Purge All/Clean All Items Events
      */
-    const XML_FASTLY_PUBLISH_PURGE_ALL_EVENTS = 'system/full_page_cache/fastly/fastly_backend_settings/fastly_web_hooks/publish_purge_all_items_events';
+    const XML_FASTLY_PUBLISH_PURGE_ALL_EVENTS = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_all_items_events';
 
     /**
      * XML path to enable Publish Config change events
      */
-    const XML_FASTLY_PUBLISH_CONFIG_CHANGE_EVENTS = 'system/full_page_cache/fastly/fastly_backend_settings/fastly_web_hooks/publish_config_change_events';
+    const XML_FASTLY_PUBLISH_CONFIG_CHANGE_EVENTS = 'system/full_page_cache/fastly/fastly_web_hooks/publish_config_change_events';
 
     /**
      * XML path to enable Publish Config change events
      */
-    const XML_FASTLY_WEBHOOK_MESSAGE_FORMAT = 'system/full_page_cache/fastly/fastly_backend_settings/fastly_web_hooks/webhook_message_format';
+    const XML_FASTLY_WEBHOOK_MESSAGE_PREFIX = 'system/full_page_cache/fastly/fastly_web_hooks/webhook_message_prefix';
 
 
     /**
@@ -386,9 +386,9 @@ class Config extends \Magento\PageCache\Model\Config
      *
      * @return mixed
      */
-    public function getWebhookMessageFormat()
+    public function getWebhookMessagePrefix()
     {
-        return $this->_scopeConfig->getValue(self::XML_FASTLY_WEBHOOK_MESSAGE_FORMAT);
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_WEBHOOK_MESSAGE_PREFIX);
     }
 
     /**

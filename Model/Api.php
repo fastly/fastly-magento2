@@ -59,25 +59,33 @@ class Api
     protected $log;
 
     /**
+     * @var \Magento\Backend\Model\Auth\Session
+     */
+    protected $_authSession;
+
+    /**
      * Api constructor.
      * @param Config $config
      * @param CurlFactory $curlFactory
      * @param InvalidateLogger $logger
      * @param Data $helper
      * @param LoggerInterface $log
+     * @param \Magento\Backend\Model\Auth\Session $authSession
      */
     public function __construct(
         Config $config,
         CurlFactory $curlFactory,
         InvalidateLogger $logger,
         Data $helper,
-        LoggerInterface $log
+        LoggerInterface $log,
+        \Magento\Backend\Model\Auth\Session $authSession
     ) {
         $this->config = $config;
         $this->curlFactory = $curlFactory;
         $this->logger = $logger;
         $this->helper = $helper;
         $this->log = $log;
+        $this->_authSession = $authSession;
     }
 
     /**
@@ -517,8 +525,12 @@ class Api
     public function sendWebHook($message)
     {
         $url = $this->config->getIncomingWebhookURL();
-        $text = str_replace("###MESSAGE###", $message, $this->config->getWebhookMessageFormat());
-        $text .= ' on <'.$this->helper->getStoreUrl().'|Store URL> | '.$this->helper->getStoreName();
+        $messagePrefix = $this->config->getWebhookMessagePrefix();
+        $currentUsername = ($this->_authSession->getUser()) ? $this->_authSession->getUser()->getUserName() : 'System';
+        $storeName = $this->helper->getStoreName();
+        $storeUrl = $this->helper->getStoreUrl();
+
+        $text =  $messagePrefix.' '.$currentUsername.' '.$message.' on <'.$storeUrl.'|Store URL> | '.$storeName;
 
         $headers = [
             'Content-type: application/json'

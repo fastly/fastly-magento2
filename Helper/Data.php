@@ -26,16 +26,17 @@ class Data extends AbstractHelper
      */
     protected $_authSession;
 
+    /**
+     * @var \Magento\Framework\App\State
+     */
     protected $_appState;
 
     /**
-     * Data constructor
-     *
+     * Data constructor.
      * @param Context $context
      * @param ModuleListInterface $moduleList
      * @param StoreManagerInterface $storeManager
-     * @param \Magento\Framework\App\State $appState
-     * @param \Magento\Backend\Model\Auth\Session $authSession
+     * @param \Magento\Framework\App\State $state
      */
     public function __construct(
         Context $context,
@@ -46,9 +47,10 @@ class Data extends AbstractHelper
     {
         $this->_moduleList = $moduleList;
         $this->_storeManager = $storeManager;
+        $this->_appState = $state;
 
         try {
-            $state->setAreaCode('admin');
+            $this->_appState->setAreaCode('admin');
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
             // intentionally left empty
         }

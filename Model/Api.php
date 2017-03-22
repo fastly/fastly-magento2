@@ -526,7 +526,7 @@ class Api
     {
         $url = $this->config->getIncomingWebhookURL();
         $messagePrefix = $this->config->getWebhookMessagePrefix();
-        $currentUsername = ($this->_authSession->getUser()->getUserName()) ? $this->_authSession->getUser()->getUserName() : 'System';
+        $currentUsername = ($this->_authSession->getUser()) ? $this->_authSession->getUser()->getUserName() : 'System';
         $storeName = $this->helper->getStoreName();
         $storeUrl = $this->helper->getStoreUrl();
 

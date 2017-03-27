@@ -127,7 +127,7 @@ define([
             ).done(function (service) {
 
                 if(service.status == false) {
-                    return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API key and try again.')).show();
+                    return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
 
                 active_version = service.active_version;
@@ -157,7 +157,7 @@ define([
             }).done(function (service) {
 
                 if(service.status == false) {
-                    return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API key and try again.')).show();
+                    return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
 
                 active_version = service.active_version;
@@ -201,7 +201,7 @@ define([
             ).done(function (service) {
 
                 if(service.status == false) {
-                    return errorHtmlBtnMsg.text($.mage.__('Please check your Service ID and API key and try again.')).show();
+                    return errorHtmlBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
 
                 active_version = service.active_version;

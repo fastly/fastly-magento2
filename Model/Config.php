@@ -82,7 +82,7 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_SERVICE_ID = 'system/full_page_cache/fastly/fastly_service_id';
 
     /**
-     * XML path to Fastly API key
+     * XML path to Fastly API token
      */
     const XML_FASTLY_API_KEY = 'system/full_page_cache/fastly/fastly_api_key';
 
@@ -227,7 +227,7 @@ class Config extends \Magento\PageCache\Model\Config
     }
 
     /**
-     * Return Fastly API key
+     * Return Fastly API token
      *
      * @return int
      */

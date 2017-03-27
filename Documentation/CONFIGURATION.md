@@ -14,7 +14,7 @@ to Fastly's CDN services.
 
 To proceed with configuration you will need to have
 [signed up for Fastly's service](https://www.fastly.com/signup). You will need
-the API key/token (https://manage.fastly.com/tokens). Details of how to find these
+the API token (https://manage.fastly.com/tokens). Details of how to find these
 are kept in [Fastly's documentation](https://docs.fastly.com/guides/account-management-and-security/finding-and-managing-your-account-info).
 
 ## Configure the Fastly Service
@@ -26,7 +26,7 @@ wizard to configure your first service. This is further documented on [Fastly's 
 
 ## Configure the Module
 
-This section will describe how to input the API key and service ID into the
+This section will describe how to input the API token and service ID into the
 Fastly_Cdn module. It assumes that the module has already been installed
 without error. If not please see [installing the module](INSTALLATION.md) for
 details of how to do this.
@@ -51,7 +51,7 @@ details.
 
 In the 'Fastly Service ID' enter the service ID that was configured when
 signing up for Fastly's services [above](#configure-the-fastly-service) and
-in 'Fastly API key' enter the key. Test your API Key and Service ID pair using the button. If your credentials are valid, you may then automatically upload the Magento VCL to your Fastly service and should activate the version. Make sure to click 'Save Config' at the top of the page and then clear the Magento cache for the changes to take effect.
+in 'Fastly API token' enter the token. Test your API Token and Service ID pair using the button. If your credentials are valid, you may then automatically upload the Magento VCL to your Fastly service and should activate the version. Make sure to click 'Save Config' at the top of the page and then clear the Magento cache for the changes to take effect.
 
 This is enough to start testing Fastly, but proceed to
 [further configuration](#further-configuration-options) to change other

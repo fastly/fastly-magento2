@@ -245,7 +245,7 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
     }
 
     /**
-     * Checks if API key is valid
+     * Checks if API token is valid
      *
      * @return bool $isApiKeyValid
      */

@@ -43,7 +43,7 @@
                     <field id="fastly_api_key" type="text" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Fastly API token</label>
                         <comment>
-                            <![CDATA[Your API token is located under API Clients on your <a href="https://manage.fastly.com/account" target="_blank">Fastly Accout settings page.</a><br /><br />
+                            <![CDATA[Please create a <a href="https://manage.fastly.com/tokens/personal" target="_blank">Fastly API token</a> with a global scope.<br /><br />
                             After making any changes to Fastly Service ID or API token, please Save Config first before uploading VCL.]]>
                         </comment>
                         <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>

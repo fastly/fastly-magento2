@@ -49,7 +49,7 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Magento Error Page Response Object Name
      */
-    const ERROR_PAGE_RESPONSE_OBJECT = self::FASTLY_MAGENTO_MODULE.'_error_page_response_object';
+    const ERROR_PAGE_RESPONSE_OBJECT = 'magentomodule_error_page_response_object';
 
     /**
      * GeoIP action "dialog"

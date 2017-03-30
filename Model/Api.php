@@ -59,33 +59,25 @@ class Api
     protected $log;
 
     /**
-     * @var \Magento\Backend\Model\Auth\Session
-     */
-    protected $_authSession;
-
-    /**
      * Api constructor.
      * @param Config $config
      * @param CurlFactory $curlFactory
      * @param InvalidateLogger $logger
      * @param Data $helper
      * @param LoggerInterface $log
-     * @param \Magento\Backend\Model\Auth\Session $authSession
      */
     public function __construct(
         Config $config,
         CurlFactory $curlFactory,
         InvalidateLogger $logger,
         Data $helper,
-        LoggerInterface $log,
-        \Magento\Backend\Model\Auth\Session $authSession
+        LoggerInterface $log
     ) {
         $this->config = $config;
         $this->curlFactory = $curlFactory;
         $this->logger = $logger;
         $this->helper = $helper;
         $this->log = $log;
-        $this->_authSession = $authSession;
     }
 
     /**
@@ -526,7 +518,7 @@ class Api
     {
         $url = $this->config->getIncomingWebhookURL();
         $messagePrefix = $this->config->getWebhookMessagePrefix();
-        $currentUsername = ($this->_authSession->getUser()) ? $this->_authSession->getUser()->getUserName() : 'System';
+        $currentUsername = 'System'; // TO DO: Fetch current admin username
         $storeName = $this->helper->getStoreName();
         $storeUrl = $this->helper->getStoreUrl();
 

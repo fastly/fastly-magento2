@@ -158,7 +158,6 @@
                             <depends>
                                 <field id="enable_webhooks">1</field>
                             </depends>
-                            <validate>required-entry</validate>
                         </field>
                         <field id="publish_key_url_purge_events" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Publish Key and URL Purge Events</label>

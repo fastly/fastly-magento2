@@ -86,14 +86,14 @@ class InvalidateVarnishObserver implements ObserverInterface
     protected function canPurgeObject(\Magento\Framework\DataObject\IdentityInterface $object)
     {
         if ($object instanceof \Magento\Catalog\Model\Category && !$this->config->canPurgeCatalogCategory()) {
-            return false;
+            return true;
         }
         if ($object instanceof \Magento\Catalog\Model\Product && !$this->config->canPurgeCatalogProduct()) {
-            return false;
+            return true;
         }
         if ($object instanceof \Magento\Cms\Model\Page && !$this->config->canPurgeCmsPage()) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 }

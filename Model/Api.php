@@ -108,7 +108,7 @@ class Api
         }
 
         if ($this->config->areWebHooksEnabled() && $this->config->canPublishKeyUrlChanges()) {
-            $this->sendWebHook('*clean by URL on*' . $url);
+            $this->sendWebHook('*clean by URL for* ' . $url);
         }
 
         return $result;
@@ -148,7 +148,7 @@ class Api
         }
 
         if ($this->config->areWebHooksEnabled() && $this->config->canPublishPurgeAllChanges()) {
-            $this->sendWebHook('*initiated clean/purge all action*');
+            $this->sendWebHook('*initiated clean/purge all*');
         }
 
         return $result;
@@ -522,7 +522,7 @@ class Api
         $storeName = $this->helper->getStoreName();
         $storeUrl = $this->helper->getStoreUrl();
 
-        $text =  $messagePrefix.' user='.$currentUsername.' '.$message.' on <'.$storeUrl.'|Store URL> | '.$storeName;
+        $text =  $messagePrefix.' user='.$currentUsername.' '.$message.' on <'.$storeUrl.'|Store> | '.$storeName;
 
         $headers = [
             'Content-type: application/json'

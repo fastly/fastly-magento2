@@ -541,7 +541,7 @@ class Api
         $response = $client->read();
         $responseCode = \Zend_Http_Response::extractCode($response);
 
-        if ($responseCode == 200) {
+        if ($responseCode != 200) {
             $this->log->log(100, 'Failed to send message to the following Webhook: '.$url);
         }
 

@@ -24,7 +24,7 @@ define([
                 cache: false,
                 success: function (response) {
                     if (response.status == false) {
-                        return errorBtnMsg.text($.mage.__('Please check your Service ID and API key and try again.')).show();
+                        return errorBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                     } else {
                         return successBtnMsg.text($.mage.__('Connection to service name ' + response.service_name + ' has been succesfully established. Please, save configuration and clear cache.')).show();
                     }

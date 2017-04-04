@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.12
+
+- Add ability to add WebHooks for purges and configuration changes
+
 ## 1.2.11
 
 - Remove Download VCL button and custom VCL as it's deprecated

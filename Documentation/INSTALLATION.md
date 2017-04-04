@@ -45,7 +45,7 @@ a few ways depending on your Magento version.
 #### Installing from the Magento Marketplace using Web Setup Wizard
 
 This will require an account with Magento Commerce and the associated
-[API keys](http://devdocs.magento.com/guides/v2.0/install-gde/prereq/connect-auth.html)
+[API tokens](http://devdocs.magento.com/guides/v2.0/install-gde/prereq/connect-auth.html)
 will be used to sync with the marketplace.
 
 1. Open a browser to the [Magento Marketplace](https://marketplace.magento.com/fastly-magento2.html)

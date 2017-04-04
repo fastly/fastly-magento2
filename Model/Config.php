@@ -49,7 +49,7 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Magento Error Page Response Object Name
      */
-    const ERROR_PAGE_RESPONSE_OBJECT = self::FASTLY_MAGENTO_MODULE.'_error_page_response_object';
+    const ERROR_PAGE_RESPONSE_OBJECT = 'magentomodule_error_page_response_object';
 
     /**
      * GeoIP action "dialog"
@@ -82,7 +82,7 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_SERVICE_ID = 'system/full_page_cache/fastly/fastly_service_id';
 
     /**
-     * XML path to Fastly API key
+     * XML path to Fastly API token
      */
     const XML_FASTLY_API_KEY = 'system/full_page_cache/fastly/fastly_api_key';
 
@@ -141,6 +141,36 @@ class Config extends \Magento\PageCache\Model\Config
      */
     const XML_FASTLY_MODULE_VERSION = 'system/full_page_cache/fastly/current_version';
 
+    /**
+     * XML path to enable Webhooks
+     */
+    const XML_FASTLY_WEBHOOKS_ENABLED = 'system/full_page_cache/fastly/fastly_web_hooks/enable_webhooks';
+
+    /**
+     * XML path to Incoming webhook URL
+     */
+    const XML_FASTLY_INCOMING_WEBHOOK_URL = 'system/full_page_cache/fastly/fastly_web_hooks/incoming_webhook_url';
+
+    /**
+     * XML path to enable Publish Key and URL Purge Events
+     */
+    const XML_FASTLY_PUBLISH_KEY_URL_PURGE_EVENTS = 'system/full_page_cache/fastly/fastly_web_hooks/publish_key_url_purge_events';
+
+    /**
+     * XML path to enable Publish Purge All/Clean All Items Events
+     */
+    const XML_FASTLY_PUBLISH_PURGE_ALL_EVENTS = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_all_items_events';
+
+    /**
+     * XML path to enable Publish Config change events
+     */
+    const XML_FASTLY_PUBLISH_CONFIG_CHANGE_EVENTS = 'system/full_page_cache/fastly/fastly_web_hooks/publish_config_change_events';
+
+    /**
+     * XML path to enable Publish Config change events
+     */
+    const XML_FASTLY_WEBHOOK_MESSAGE_PREFIX = 'system/full_page_cache/fastly/fastly_web_hooks/webhook_message_prefix';
+
 
     /**
      * Check if Fastly is selected for Caching Application
@@ -197,7 +227,7 @@ class Config extends \Magento\PageCache\Model\Config
     }
 
     /**
-     * Return Fastly API key
+     * Return Fastly API token
      *
      * @return int
      */
@@ -304,6 +334,61 @@ class Config extends \Magento\PageCache\Model\Config
     public function getGeoIpRedirectMapping()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_GEOIP_COUNTRY_MAPPING);
+    }
+
+    /**
+     * Return are Webhooks enabled
+     *
+     * @return bool
+     */
+    public function areWebHooksEnabled()
+    {
+        return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_WEBHOOKS_ENABLED));
+    }
+
+    public function getIncomingWebhookURL()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_INCOMING_WEBHOOK_URL);
+    }
+
+    /**
+     * Return is Publish Key and URL Purge Events enabled
+     *
+     * @return bool
+     */
+    public function canPublishKeyUrlChanges()
+    {
+        return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PUBLISH_KEY_URL_PURGE_EVENTS));
+    }
+
+    /**
+     * return is Publish Purge All/Clean All Items Events enabled
+     *
+     * @return bool
+     */
+    public function canPublishPurgeAllChanges()
+    {
+        return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PUBLISH_PURGE_ALL_EVENTS));
+    }
+
+    /**
+     * return is Publish Config change events enabled
+     *
+     * @return bool
+     */
+    public function canPublishConfigChanges()
+    {
+        return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PUBLISH_CONFIG_CHANGE_EVENTS));
+    }
+
+    /**
+     * return Webhook message format
+     *
+     * @return mixed
+     */
+    public function getWebhookMessagePrefix()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_WEBHOOK_MESSAGE_PREFIX);
     }
 
     /**

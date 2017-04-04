@@ -152,6 +152,10 @@ class Upload extends \Magento\Backend\App\Action
                 $this->api->activateVersion($clone->number);
             }
 
+            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+                $this->api->sendWebHook('*Upload VCL has been initiated and activated in version ' . $clone->number . '*');
+            }
+
             return $result->setData(array('status' => true, 'active_version' => $clone->number));
         } catch (\Exception $e) {
             return $result->setData(array('status' => false, 'msg' => $e->getMessage()));

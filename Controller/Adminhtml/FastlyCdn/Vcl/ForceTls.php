@@ -125,6 +125,14 @@ class ForceTls extends \Magento\Backend\App\Action
                 $this->api->activateVersion($clone->number);
             }
 
+            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+                if($checkIfReqExist) {
+                    $this->api->sendWebHook('*Force TLS has been turned OFF in Fastly version '. $clone->number . '*');
+                } else {
+                    $this->api->sendWebHook('*Force TLS has been turned ON in Fastly version '. $clone->number . '*');
+                }
+            }
+
             return $result->setData(array('status' => true));
         } catch (\Exception $e) {
             return $result->setData(array('status' => false, 'msg' => $e->getMessage()));

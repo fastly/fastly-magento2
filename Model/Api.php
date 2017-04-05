@@ -202,9 +202,7 @@ class Api
             $responseBody = $client->read();
             $responseCode = \Zend_Http_Response::extractCode($responseBody);
             $client->close();
-            $this->log->log(100, $payload);
-            $this->log->log(100, $responseCode);
-            $this->log->log(100, $responseBody);
+            
             // check response
             if ($responseCode != '200') {
                 throw new \Exception('Return status ' . $responseCode);

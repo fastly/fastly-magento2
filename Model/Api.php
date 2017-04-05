@@ -120,16 +120,18 @@ class Api
      * @param string $key
      * @return bool
      */
-    public function cleanBySurrogateKey($key)
+    public function cleanBySurrogateKey($keys)
     {
-        $uri = $this->_getApiServiceUri() . 'purge/' . $key;
-
-        if ($result = $this->_purge($uri)) {
-            $this->logger->execute('surrogate key: ' . $key);
+        $uri = $this->_getApiServiceUri() . 'purge';
+        $payload = json_encode(['surrogate_keys' => [$keys]]);
+        if ($result = $this->_purge($uri, \Zend_Http_Client::POST, $payload)) {
+            foreach (explode(',', $keys) as $key) {
+                $this->logger->execute('surrogate key: ' . $key);
+            }
         }
 
         if ($this->config->areWebHooksEnabled() && $this->config->canPublishKeyUrlChanges()) {
-            $this->sendWebHook('*clean by key on ' . $key . '*');
+            $this->sendWebHook('*clean by key on ' . $keys . '*');
         }
 
         return $result;
@@ -163,7 +165,7 @@ class Api
      * @return bool
      * @throws \Exception
      */
-    protected function _purge($uri, $method = \Zend_Http_Client::POST)
+    protected function _purge($uri, $method = \Zend_Http_Client::POST, $payload = null)
     {
 
         if($method == 'PURGE') {
@@ -196,11 +198,13 @@ class Api
             if($method == 'PURGE') {
                 $client->addOption(CURLOPT_CUSTOMREQUEST, 'PURGE');
             }
-            $client->write($method, $uri, '1.1', $headers);
+            $client->write($method, $uri, '1.1', $headers, $payload);
             $responseBody = $client->read();
             $responseCode = \Zend_Http_Response::extractCode($responseBody);
             $client->close();
-
+            $this->log->log(100, $payload);
+            $this->log->log(100, $responseCode);
+            $this->log->log(100, $responseBody);
             // check response
             if ($responseCode != '200') {
                 throw new \Exception('Return status ' . $responseCode);

@@ -14,28 +14,18 @@
     <div id="options">
 
     </div>
+    <button type="submit" id="apply-historic-stats">Apply</button>
 </div>
+<?php
+    $applyHistoricStatsURL = $block->getUrl('adminhtml/dashboard/apply');
+?>
 
-
-
-<script type="text/javascript">
-    require(["jquery", "jquery/ui"], function ($) {
-        $(document).ready(function () {
-
-            // From picker init
-            $('#from-picker').datetimepicker( { dateFormat: "dd/mm/yy" } );
-            $(".ui-datepicker-trigger").removeAttr("style");
-            $(".ui-datepicker-trigger").click(function(){
-                $('#from-picker').focus();
-            });
-
-            // To picker init
-            $('#to-picker').datetimepicker( { dateFormat: "dd/mm/yy" } );
-            $(".ui-datepicker-trigger").removeAttr("style");
-            $(".ui-datepicker-trigger").click(function(){
-                $('#to-picker').focus();
-            });
-
-        });
-    });
+<script type="text/x-magento-init">
+        {
+            "*": {
+                "historicStats": {
+                    "applyHistoricStatsURL": "<?php echo $block->escapeJsQuote($applyHistoricStatsURL);?>"
+                }
+            }
+        }
 </script>

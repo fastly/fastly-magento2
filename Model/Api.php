@@ -117,7 +117,7 @@ class Api
     /**
      * Purge Fastly by a given surrogate key
      *
-     * @param string $key
+     * @param $keys
      * @return bool
      */
     public function cleanBySurrogateKey($keys)
@@ -159,11 +159,10 @@ class Api
     /**
      * Send purge request via Fastly API
      *
-     * @param string $uri
+     * @param $uri
      * @param string $method
-     *
+     * @param null $payload
      * @return bool
-     * @throws \Exception
      */
     protected function _purge($uri, $method = \Zend_Http_Client::POST, $payload = null)
     {
@@ -202,7 +201,7 @@ class Api
             $responseBody = $client->read();
             $responseCode = \Zend_Http_Response::extractCode($responseBody);
             $client->close();
-            
+
             // check response
             if ($responseCode != '200') {
                 throw new \Exception('Return status ' . $responseCode);

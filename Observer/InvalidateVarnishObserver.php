@@ -76,8 +76,6 @@ class InvalidateVarnishObserver implements ObserverInterface
                     if (!in_array($tag, $this->alreadyPurged)) {
                         $tags[] = $tag;
                         $this->alreadyPurged[] = $tag;
-                        $this->alreadyPurged[] = 'fdsfdsfds';
-                        $this->alreadyPurged[] = 'gfdjsgfhsh';
                     }
                 }
 

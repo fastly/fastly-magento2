@@ -65,15 +65,17 @@
         }
     }
 
+    if (beresp.http.Cache-Control ~ "private") {
+        set req.http.Fastly-Cachetype = "PRIVATE";
+        return (pass);
+    }
+
     # cache only successfully responses and 404s
     if ( !http_status_matches(beresp.status, "200,301,404")) {
         set req.http.Fastly-Cachetype = "ERROR";
         set beresp.ttl = 1s;
         set beresp.grace = 5s;
         return (deliver);
-    } elsif (beresp.http.Cache-Control ~ "private") {
-        set req.http.Fastly-Cachetype = "PRIVATE";
-        return (pass);
     }
 
     if (beresp.http.X-Magento-Debug) {

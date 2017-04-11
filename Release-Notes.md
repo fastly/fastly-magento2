@@ -1,5 +1,20 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.15 
+
+- Convert multiple single surrogate key purges to the new single multiple key purges request
+- Migrate geo location variables to the new namespace
+- Minor bug fixes and clean ups
+
+## 1.2.14 
+
+- Fix multiple purges being sent for a single product/category change
+
+
+## 1.2.13
+
+- Webhooks code inadvertently broke ability to do setup and upgrades. This fixes it.
+
 ## 1.2.12
 
 - Add ability to add WebHooks for purges and configuration changes

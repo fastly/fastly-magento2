@@ -1,12 +1,12 @@
 <div id="historic-toolbar">
     <div id="time-range">
         <div id="historic-from">
-            <input name="from" id="from-picker" class="from-picker"/>
+            <input name="from" id="from-picker" class="from-picker" value="04/03/2017 06:50"/>
             <button type="button" style="display:none;" class="ui-datepicker-trigger '
             .'v-middle"><span>Select Date</span></button>
         </div>
         <div id="historic-to">
-            <input name="to" id="to-picker" class="to-picker"/>
+            <input name="to" id="to-picker" class="to-picker" value="04/12/2017 06:49"/>
             <button type="button" style="display:none;" class="ui-datepicker-trigger '
             .'v-middle"><span>Select Date</span></button>
         </div>
@@ -16,8 +16,13 @@
     </div>
     <button type="submit" id="apply-historic-stats">Apply</button>
 </div>
+<div id="charts">
+    <h1>Requests</h1>
+    <div id="chart_div" style="width: 100%; height: 500px;"></div>
+</div>
 <?php
-    $applyHistoricStatsURL = $block->getUrl('adminhtml/dashboard/apply');
+$applyHistoricStatsURL = $block->getUrl('adminhtml/fastlyCdn/apply', ['form_key' => $block->getFormKey()]);
+
 ?>
 
 <script type="text/x-magento-init">

@@ -561,6 +561,20 @@ class Api
     }
 
     /**
+     * @param array $parameters
+     * @return bool|mixed
+     */
+    public function queryHistoricStats(array $parameters)
+    {
+        $uri = $this->_getHistoricalEndpoint()
+                        .'?region=all&from='.$parameters['from'].'&to='.$parameters['to'].'&by=hour';
+
+        $result = $this->_fetch($uri);
+
+        return $result;
+    }
+
+    /**
      * @param $uri
      * @param string $method
      * @param string $body

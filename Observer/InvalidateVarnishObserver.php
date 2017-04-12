@@ -44,6 +44,8 @@ class InvalidateVarnishObserver implements ObserverInterface
      */
     protected $cacheTags;
 
+    protected $alreadyPurged = [];
+
     /**
      * @param Config $config
      * @param PurgeCache $purgeCache
@@ -66,10 +68,20 @@ class InvalidateVarnishObserver implements ObserverInterface
     {
         if ($this->config->getType() == Config::FASTLY && $this->config->isEnabled()) {
             $object = $observer->getEvent()->getObject();
+
             if ($object instanceof \Magento\Framework\DataObject\IdentityInterface && $this->canPurgeObject($object)) {
+                $tags = [];
                 foreach ($object->getIdentities() as $tag) {
                     $tag = $this->cacheTags->convertCacheTags($tag);
-                    $this->purgeCache->sendPurgeRequest($tag);
+                    if (!in_array($tag, $this->alreadyPurged)) {
+                        $tags[] = $tag;
+                        $this->alreadyPurged[] = $tag;
+                    }
+                }
+
+                if(!empty($tags)) {
+                    $tags = implode(',', array_unique($tags));
+                    $this->purgeCache->sendPurgeRequest($tags);
                 }
             }
         }

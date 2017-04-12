@@ -129,19 +129,21 @@ class Api
     /**
      * Purge Fastly by a given surrogate key
      *
-     * @param string $key
+     * @param $keys
      * @return bool
      */
-    public function cleanBySurrogateKey($key)
+    public function cleanBySurrogateKey($keys)
     {
-        $uri = $this->_getApiServiceUri() . 'purge/' . $key;
-
-        if ($result = $this->_purge($uri)) {
-            $this->logger->execute('surrogate key: ' . $key);
+        $uri = $this->_getApiServiceUri() . 'purge';
+        $payload = json_encode(['surrogate_keys' => [$keys]]);
+        if ($result = $this->_purge($uri, \Zend_Http_Client::POST, $payload)) {
+            foreach (explode(',', $keys) as $key) {
+                $this->logger->execute('surrogate key: ' . $key);
+            }
         }
 
         if ($this->config->areWebHooksEnabled() && $this->config->canPublishKeyUrlChanges()) {
-            $this->sendWebHook('*clean by key on ' . $key . '*');
+            $this->sendWebHook('*clean by key on ' . $keys . '*');
         }
 
         return $result;
@@ -169,13 +171,12 @@ class Api
     /**
      * Send purge request via Fastly API
      *
-     * @param string $uri
+     * @param $uri
      * @param string $method
-     *
+     * @param null $payload
      * @return bool
-     * @throws \Exception
      */
-    protected function _purge($uri, $method = \Zend_Http_Client::POST)
+    protected function _purge($uri, $method = \Zend_Http_Client::POST, $payload = null)
     {
 
         if($method == 'PURGE') {
@@ -208,7 +209,7 @@ class Api
             if($method == 'PURGE') {
                 $client->addOption(CURLOPT_CUSTOMREQUEST, 'PURGE');
             }
-            $client->write($method, $uri, '1.1', $headers);
+            $client->write($method, $uri, '1.1', $headers, $payload);
             $responseBody = $client->read();
             $responseCode = \Zend_Http_Response::extractCode($responseBody);
             $client->close();
@@ -553,7 +554,7 @@ class Api
         $response = $client->read();
         $responseCode = \Zend_Http_Response::extractCode($response);
 
-        if ($responseCode == 200) {
+        if ($responseCode != 200) {
             $this->log->log(100, 'Failed to send message to the following Webhook: '.$url);
         }
 

@@ -63,7 +63,7 @@
         } else {
             # append parameter with country code only if it doesn't exist already
             if ( req.url !~ "country_code=" ) {
-                set req.url = req.url "?country_code=" if ( req.http.geo_override, req.http.geo_override, geoip.country_code);
+                set req.url = req.url "?country_code=" if ( req.http.geo_override, req.http.geo_override, client.geo.country_code);
             }
         }
     } else {

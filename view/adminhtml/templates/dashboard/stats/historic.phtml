@@ -1,29 +1,80 @@
-<div id="historic-toolbar">
-    <div id="time-range">
-        <div id="historic-from">
+<div class="clearfix">
+    <ul id="filters">
+        <li id="historic-from">
             <input name="from" id="from-picker" class="from-picker" value="04/03/2017 06:50"/>
-            <button type="button" style="display:none;" class="ui-datepicker-trigger '
-            .'v-middle"><span>Select Date</span></button>
-        </div>
-        <div id="historic-to">
+            <button type="button" style="display:none;" class="ui-datepicker-trigger v-middle"><span>Select Date</span></button>
+        </li>
+        <li id="historic-to">
             <input name="to" id="to-picker" class="to-picker" value="04/12/2017 06:49"/>
-            <button type="button" style="display:none;" class="ui-datepicker-trigger '
-            .'v-middle"><span>Select Date</span></button>
-        </div>
-    </div>
-    <div id="options">
-
-    </div>
-    <button type="submit" id="apply-historic-stats">Apply</button>
+            <button type="button" style="display:none;" class="ui-datepicker-trigger v-middle"><span>Select Date</span></button>
+        </li>
+        <li>
+            <select name="sample_rate" id="sample-rate">
+                <option value="day">Day</option>
+                <option value="hour" selected="selected">Hour</option>
+                <option value="minute">Minute</option>
+            </select>
+        </li>
+        <li>
+            <select name="region" id="region">
+                <option value="all" selected="selected">Global</option>
+                <option value="namer">North America</option>
+                <option value="europe">Europe</option>
+                <option value="asia">Asia</option>
+                <option value="anzac">Aus/NZ</option>
+                <option value="latam">Latin America</option>
+                <option value="soafr">South Africa</option>
+            </select>
+        </li>
+        <li>
+            <button class="action-primary" style="border-radius: 4px;" type="submit" id="apply-historic-stats">Apply</button>
+        </li>
+    </ul>
 </div>
-<div id="charts">
-    <h1>Requests</h1>
-    <div id="chart_div" style="width: 100%; height: 500px;"></div>
+<div class="charts" style="display:none;">
+    <div class="chart">
+        <h3 class="chart-title">Bandwith</h3>
+        <div id="bandwith" style="width: 100%;"></div>
+    </div>
+    <div class="chart">
+        <h3 class="chart-title">Requests</h3>
+        <div id="requests" style="width: 100%;"></div>
+    </div>
+    <div class="chart">
+        <h3 class="chart-title">Hit ratio</h3>
+        <div id="hitratio" style="width: 100%;"></div>
+    </div>
 </div>
 <?php
 $applyHistoricStatsURL = $block->getUrl('adminhtml/fastlyCdn/apply', ['form_key' => $block->getFormKey()]);
 
 ?>
+
+<style type="text/css">
+    ul#filters {
+        list-style: none;
+        border-bottom: 1px solid #e3e3e3;
+        padding-bottom: 10px;
+        float: left;
+        width: 100%;
+    }
+    ul#filters li {
+        float:left;
+        margin-right: 5px;
+    }
+    .clearfix:after {
+        content:"";
+        display:block;
+        clear:both;
+    }
+    .chart-title {
+        text-align: center;
+    }
+
+    #Fastly {
+        padding: 20px 0px;
+    }
+</style>
 
 <script type="text/x-magento-init">
         {

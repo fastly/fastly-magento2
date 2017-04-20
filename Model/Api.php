@@ -568,7 +568,7 @@ class Api
     public function queryHistoricStats(array $parameters)
     {
         $uri = $this->_getHistoricalEndpoint()
-                        .'?region=all&from='.$parameters['from'].'&to='.$parameters['to'].'&by=hour';
+                        .'?region='.$parameters['region'].'&from='.$parameters['from'].'&to='.$parameters['to'].'&by='.$parameters['sample_rate'];
 
         $result = $this->_fetch($uri);
 

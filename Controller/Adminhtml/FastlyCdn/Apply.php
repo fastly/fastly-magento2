@@ -41,6 +41,8 @@ class Apply extends \Magento\Backend\App\Action
         $result = $this->resultJson->create();
         $from = $this->getRequest()->getParam('from');
         $to = $this->getRequest()->getParam('to');
+        $sampleRate = $this->getRequest()->getParam('sample_rate');
+        $region = $this->getRequest()->getParam('region');
 
         if (!$from || !$to) {
             return $result->setData(array('status' => false, 'msg' => 'Please enter dates.'));
@@ -54,6 +56,8 @@ class Apply extends \Magento\Backend\App\Action
         $parameters = [];
         $parameters['from'] = $fromTimestamp;
         $parameters['to'] = $toTimestamp;
+        $parameters['sample_rate'] = $sampleRate;
+        $parameters['region'] = $region;
 
         $queryResult = $this->api->queryHistoricStats($parameters);
 

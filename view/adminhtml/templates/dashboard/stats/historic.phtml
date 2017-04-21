@@ -34,11 +34,16 @@
 <div class="charts" style="display:none;">
     <div class="chart">
         <h3 class="chart-title">Bandwith</h3>
+        <p class="stat-number" id="requests-number"></p>
         <div id="bandwith" style="width: 100%;"></div>
     </div>
     <div class="chart">
         <h3 class="chart-title">Requests</h3>
         <div id="requests" style="width: 100%;"></div>
+    </div>
+    <div class="chart">
+        <h3 class="chart-title">HTTP Client and Server Errors (500s)</h3>
+        <div id="errorschart" style="width: 100%;"></div>
     </div>
     <div class="chart">
         <h3 class="chart-title">Hit ratio</h3>
@@ -73,6 +78,13 @@ $applyHistoricStatsURL = $block->getUrl('adminhtml/fastlyCdn/apply', ['form_key'
 
     #Fastly {
         padding: 20px 0px;
+    }
+
+    .stat-number {
+        text-align: center;
+        font-weight: bold;
+        color: #41362f;
+        font-size: 16px;
     }
 </style>
 

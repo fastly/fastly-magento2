@@ -10,6 +10,7 @@ define([
         var requests = [];
         var bandwith = [];
         var hitRatio = [];
+        var errors = [];
 
         $(document).ready(function () {
             // From picker init
@@ -53,20 +54,32 @@ define([
                     requests = [];
                     bandwith = [];
                     hitRatio = [];
+                    var averageRequests = 0;
                     /* Parse Fastly Historic stats */
                     $.each(data, function (key, value) {
                         var d = new Date();
                         d.setTime(value.start_time*1000);
+                        /* Requests */
                         requests.push([d, value.requests]);
+                        averageRequests += value.requests;
+                        /* Bandwidth */
                         bandwith.push([d, value.bandwidth]);
+                        /* Hit / Miss ratio */
                         var ratio = (value.hits / (value.hits + value.miss)) * 100;
                         hitRatio.push([d, ratio]);
+                        /* 500s errors */
+                        errors.push([d, value.status_5xx, value.status_503]);
                     });
+
+                    averageRequests = averageRequests / data.length;
+                    averageRequests = round(averageRequests, 2);
+                    $('#requests-number').html(averageRequests);
 
                     google.charts.load('current', {'packages':['corechart']});
                     google.charts.setOnLoadCallback(requestsChart);
                     google.charts.setOnLoadCallback(bandwithChart);
                     google.charts.setOnLoadCallback(hitRatioChart);
+                    google.charts.setOnLoadCallback(errorsChart);
 
                     $('.charts').show();
                 }
@@ -74,6 +87,25 @@ define([
 
             });
         });
+
+        function errorsChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('datetime', 'Date');
+            data.addColumn('number', '5xx');
+            data.addColumn('number', '503');
+            data.addRows(errors);
+
+            var options = {
+                hAxis:{
+                    format: 'MMMM d',
+                    gridlines: {color: 'transparent'}
+                },
+                vAxis:{
+                    gridlines: {color: 'transparent'}
+                }};
+            var chart = new google.visualization.AreaChart(document.getElementById('errorschart'));
+            chart.draw(data,options);
+        }
 
         function hitRatioChart() {
             var data = new google.visualization.DataTable();
@@ -134,7 +166,25 @@ define([
                 }};
             var chart = new google.visualization.AreaChart(document.getElementById('requests'));
             chart.draw(data,options);
+        }
 
+        function round(value, exp) {
+            if (typeof exp === 'undefined' || +exp === 0)
+                return Math.round(value);
+
+            value = +value;
+            exp = +exp;
+
+            if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0))
+                return NaN;
+
+            // Shift
+            value = value.toString().split('e');
+            value = Math.round(+(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp)));
+
+            // Shift back
+            value = value.toString().split('e');
+            return +(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp));
         }
 
         function formatBytes(bytes,decimals) {

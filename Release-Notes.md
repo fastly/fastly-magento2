@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.16
+
+- Fix for multiple surrogate key purges being incorrectly serialized
+
 ## 1.2.15 
 
 - Convert multiple single surrogate key purges to the new single multiple key purges request

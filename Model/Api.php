@@ -123,7 +123,7 @@ class Api
     public function cleanBySurrogateKey($keys)
     {
         $uri = $this->_getApiServiceUri() . 'purge';
-        $payload = json_encode(['surrogate_keys' => [$keys]]);
+        $payload = json_encode(['surrogate_keys' => $keys]);
         if ($result = $this->_purge($uri, \Zend_Http_Client::POST, $payload)) {
             foreach (explode(',', $keys) as $key) {
                 $this->logger->execute('surrogate key: ' . $key);

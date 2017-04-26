@@ -80,8 +80,7 @@ class InvalidateVarnishObserver implements ObserverInterface
                 }
 
                 if(!empty($tags)) {
-                    $tags = implode(',', array_unique($tags));
-                    $this->purgeCache->sendPurgeRequest($tags);
+                    $this->purgeCache->sendPurgeRequest(array_unique($tags));
                 }
             }
         }

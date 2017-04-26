@@ -40,17 +40,19 @@ class PurgeCache
     /**
      * Send API purge request to invalidate cache by pattern
      *
-     * @param string $pattern
+     * @param string or array $pattern
      * @return bool Return true if successful; otherwise return false
      */
     public function sendPurgeRequest($pattern = '')
     {
         if (empty($pattern)) {
             $result = $this->api->cleanAll();
-        } elseif (strpos($pattern, 'http') === 0) {
+        } elseif (!is_array($pattern) && strpos($pattern, 'http') === 0) {
             $result = $this->api->cleanUrl($pattern);
-        } else {
+        } else if (is_array($pattern)) {
             $result = $this->api->cleanBySurrogateKey($pattern);
+        } else {
+            return false;
         }
         return $result;
     }

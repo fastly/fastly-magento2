@@ -125,13 +125,13 @@ class Api
         $uri = $this->_getApiServiceUri() . 'purge';
         $payload = json_encode(['surrogate_keys' => $keys]);
         if ($result = $this->_purge($uri, \Zend_Http_Client::POST, $payload)) {
-            foreach (explode(',', $keys) as $key) {
+            foreach ($keys as $key) {
                 $this->logger->execute('surrogate key: ' . $key);
             }
         }
 
         if ($this->config->areWebHooksEnabled() && $this->config->canPublishKeyUrlChanges()) {
-            $this->sendWebHook('*clean by key on ' . $keys . '*');
+            $this->sendWebHook('*clean by key on ' . join(" ", $keys) . '*');
         }
 
         return $result;

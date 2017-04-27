@@ -85,6 +85,10 @@ define([
             });
         }
 
+        /**
+         * Backend Edit icon
+         */
+
         $('body').on('click', 'button.fastly-edit-backend-icon', function() {
             $.ajax({
                 type: "GET",
@@ -108,6 +112,10 @@ define([
                 $('#backend_first_byte_timeout').val(backends[backend_id].first_byte_timeout);
             }
         });
+
+        /**
+         * VCL Upload button
+         */
 
         $('#fastly_vcl_upload_button').on('click', function () {
 
@@ -140,6 +148,10 @@ define([
                 return errorVclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
             });
         });
+
+        /**
+         * Force TLS button
+         */
 
         $('#fastly_force_tls_button').on('click', function () {
 
@@ -183,6 +195,10 @@ define([
             });
         });
 
+        /**
+         * Set Error Page HTML button
+         */
+
         $('#fastly_error_page_button').on('click', function () {
 
             if(isAlreadyConfigured != true) {
@@ -217,6 +233,51 @@ define([
                 });
 
                 vcl.showPopup('fastly-error-page-options');
+                vcl.setActiveServiceLabel(active_version, next_version, service_name);
+
+            }).fail(function () {
+                return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+            });
+        });
+
+        /**
+         * Add dictionary container button
+         */
+
+        $('#add-dictionary-container-button').on('click', function () {
+
+            if(isAlreadyConfigured != true) {
+                $(this).attr('disabled', true);
+                return alert($.mage.__('Please save config prior to continuing.'));
+            }
+
+            vcl.resetAllMessages();
+
+            $.when(
+                $.ajax({
+                    type: "GET",
+                    url: config.serviceInfoUrl,
+                    showLoader: true
+                })
+            ).done(function (service) {
+
+                if(service.status == false) {
+                    return errorHtmlBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
+                }
+
+                active_version = service.active_version;
+                next_version = service.next_version;
+                service_name = service.service.name;
+
+                vcl.getErrorPageRespObj(active_version, true).done(function (response) {
+                    if(response.status == true) {
+                        $('#error_page_html').text(response.errorPageResp.content).html();
+                    }
+                }).fail(function() {
+                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
+                });
+
+                vcl.showPopup('fastly-dictionary-container-options');
                 vcl.setActiveServiceLabel(active_version, next_version, service_name);
 
             }).fail(function () {
@@ -523,6 +584,42 @@ define([
                 });
             },
 
+            // CreateDictionary
+            createDictionary: function () {
+                var activate_vcl = false;
+
+                if($('#fastly_activate_vcl').is(':checked')) {
+                    activate_vcl = true;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: config.createDictionary,
+                    data: {
+                        'active_version': active_version,
+                        'activate_flag': activate_vcl,
+                        'dictionary_name': $('#dictionary_name').val()
+                    },
+                    showLoader: true,
+                    success: function(response)
+                    {
+                        if(response.status == true)
+                        {
+                            successHtmlBtnMsg.text($.mage.__('Dictionary is successfully created.')).show();
+                            active_version = response.active_version;
+                            vcl.modal.modal('closeModal');
+                        } else {
+                            vcl.resetAllMessages();
+                            vcl.showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function(msg)
+                    {
+                        return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                    }
+                });
+            },
+
             showErrorMessage: function (msg) {
                 var msgError = $('.fastly-message-error');
                 msgError.text($.mage.__(msg));
@@ -595,6 +692,15 @@ define([
                     },
                     actionOk: function () {
                         vcl.saveErrorHtml(active_version);
+                    }
+                },
+                'fastly-dictionary-container-options': {
+                    title: jQuery.mage.__('Dictionary container'),
+                    content: function () {
+                        return document.getElementById('fastly-dictionary-container-template').textContent;
+                    },
+                    actionOk: function () {
+                        vcl.createDictionary(active_version);
                     }
                 }
             }

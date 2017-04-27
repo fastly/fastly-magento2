@@ -507,6 +507,14 @@ class Api
         return $result;
     }
 
+    /**
+     * Configure Backend settings
+     *
+     * @param $params
+     * @param $version
+     * @param $old_name
+     * @return bool|mixed
+     */
     public function configureBackend($params, $version, $old_name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version . '/backend/' . str_replace ( ' ', '%20', $old_name);
@@ -515,6 +523,11 @@ class Api
         return $result;
     }
 
+    /**
+     * Send message to Slack channel
+     *
+     * @param $message
+     */
     public function sendWebHook($message)
     {
         $url = $this->config->getIncomingWebhookURL();
@@ -547,6 +560,14 @@ class Api
         }
 
         $client->close();
+    }
+
+    public function createDictionary($version, $params)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/dictionary';
+        $result = $this->_fetch($url, \Zend_Http_Client::POST, $params);
+
+        return $result;
     }
 
     /**

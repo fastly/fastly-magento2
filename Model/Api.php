@@ -562,10 +562,31 @@ class Api
         $client->close();
     }
 
+    /**
+     * Create named dictionary for a particular service and version.
+     *
+     * @param $version
+     * @param $params
+     * @return bool|mixed
+     */
     public function createDictionary($version, $params)
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version . '/dictionary';
         $result = $this->_fetch($url, \Zend_Http_Client::POST, $params);
+
+        return $result;
+    }
+
+    /**
+     * List all dictionaries for the version of the service.
+     *
+     * @param $version
+     * @return bool|mixed
+     */
+    public function getDictionaries($version)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/dictionary';
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
 
         return $result;
     }

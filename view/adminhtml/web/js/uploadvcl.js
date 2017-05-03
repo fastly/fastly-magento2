@@ -72,7 +72,23 @@ define([
                                 $('.no-backends').show();
                             }
                         }
+                    }).fail(function () {
+                        // TO DO: implement
+                    });
 
+                    // Fetch dictionaries
+                    vcl.listDictionaries(active_version, false).done(function (dictResp) {
+                        $('.loading-dictionaries').hide();
+                        if(dictResp.status != false) {
+                            if(dictResp.status != false) {
+                                if(dictResp.dictionaries.length > 0) {
+                                    dictionaries = dictResp.dictionaries;
+                                    vcl.processDictionaries(dictResp.dictionaries);
+                                } else {
+                                    $('.no-dictionaries').show();
+                                }
+                            }
+                        }
                     }).fail(function () {
                         // TO DO: implement
                     });
@@ -112,6 +128,33 @@ define([
                 $('#backend_first_byte_timeout').val(backends[backend_id].first_byte_timeout);
             }
         });
+
+        /**
+         * Dictionary Edit icon
+         */
+
+        $('body').on('click', 'button.fastly-edit-dictionary-icon', function() {
+            $.ajax({
+                type: "GET",
+                url: config.serviceInfoUrl
+            }).done(function (checkService) {
+                active_version = checkService.active_version;
+                next_version = checkService.next_version;
+                service_name = checkService.service.name;
+                vcl.setActiveServiceLabel(active_version, next_version, service_name);
+            });
+
+            var dictionary_id = $(this).data('dictionary-id');
+            console.log(dictionary_id);
+            console.log(dictionaries);
+            if(dictionaries != null && dictionary_id != null) {
+                vcl.showPopup('fastly-edge-items');
+                var dictionary_name = "Dictionary " + dictionaries[dictionary_id].name;
+                $('.modal-title').text($.mage.__(dictionary_name));
+                //$('#backend_name').val(dictionaries[dictionary_id].name);
+            }
+        });
+
 
         /**
          * VCL Upload button
@@ -286,6 +329,7 @@ define([
         });
 
         var backends = null;
+        var dictionaries = null;
         var active_version = '';
         var next_version = '';
         var service_name;
@@ -394,9 +438,32 @@ define([
             processBackends: function(backends) {
                 $.each(backends, function (index, backend) {
                     var html = "<tr id='fastly_" + index + "'>";
-                    html += "<td><input data-backendId='"+ index + "' id='backend_" + index + "' name='test' value='"+ backend.name +"' disabled='disabled' class='input-text' type='text'></td>";
+                    html += "<td><input data-backendId='"+ index + "' id='backend_" + index + "' value='"+ backend.name +"' disabled='disabled' class='input-text' type='text'></td>";
                     html += "<td class='col-actions'><button class='action-delete fastly-edit-backend-icon' data-backend-id='" + index + "' id='fastly-edit-backend_"+ index + "' title='Edit backend' type='button'></td></tr>";
                     $('#fastly-backends-list').append(html);
+                });
+            },
+
+            // Process dictionaries
+            processDictionaries: function(dictionaries) {
+                $.each(dictionaries, function (index, dictionary) {
+                    var html = "<tr id='fastly_dict_" + index + "'>";
+                    html += "<td><input data-dictionaryId='"+ index + "' id='dict_" + index + "' value='"+ dictionary.name +"' disabled='disabled' class='input-text' type='text'></td>";
+                    html += "<td class='col-actions'><button class='action-delete fastly-edit-dictionary-icon' data-dictionary-id='" + index + "' id='fastly-edit-dictionary_"+ index + "' title='Edit dictionary' type='button'></td></tr>";
+                    $('#fastly-dictionaries-list').append(html);
+                });
+            },
+
+            // Queries Fastly API to retrive Dictionaries
+            listDictionaries: function(active_version, loaderVisibility) {
+                return $.ajax({
+                    type: "GET",
+                    url: config.getDictionaries,
+                    showLoader: loaderVisibility,
+                    data: {'active_version': active_version},
+                    beforeSend: function (xhr) {
+                        $('.loading-backends').show();
+                    }
                 });
             },
 
@@ -698,6 +765,15 @@ define([
                     title: jQuery.mage.__('Dictionary container'),
                     content: function () {
                         return document.getElementById('fastly-dictionary-container-template').textContent;
+                    },
+                    actionOk: function () {
+                        vcl.createDictionary(active_version);
+                    }
+                },
+                'fastly-edge-items': {
+                    title: jQuery.mage.__('Dictionary container'),
+                    content: function () {
+                        return document.getElementById('fastly-edge-items-template').textContent;
                     },
                     actionOk: function () {
                         vcl.createDictionary(active_version);

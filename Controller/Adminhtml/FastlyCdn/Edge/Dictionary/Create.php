@@ -1,6 +1,6 @@
 <?php
 
-namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
+namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Dictionary;
 
 use \Magento\Framework\App\Request\Http;
 use \Magento\Framework\Controller\Result\JsonFactory;
@@ -8,7 +8,7 @@ use \Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
 
-class CreateDictionary extends \Magento\Backend\App\Action
+class Create extends \Magento\Backend\App\Action
 {
     /**
      * @var Http

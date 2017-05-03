@@ -20,7 +20,7 @@ $_htmlId = $block->getHtmlId() ? $block->getHtmlId() : '_' . uniqid();
 $_colspan = $block->isAddAfter() ? 2 : 1;
 ?>
 
-<button type="button" class="primary" id="add-dictionary-container-button"><?php echo __('Add container') ?></button>
+<button type="button" style="margin-bottom: 10px;" class="primary" id="add-dictionary-container-button"><?php echo __('Add container') ?></button>
 <div class="design_theme_ua_regexp" id="grid<?php /* @escapeNotVerified */ echo $_htmlId; ?>">
     <div class="admin__control-table-wrapper">
         <table class="admin__control-table" id="<?php /* @escapeNotVerified */ echo $block->getElement()->getId(); ?>">
@@ -29,14 +29,14 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
                 <?php foreach ($block->getColumns() as $columnName => $column): ?>
                     <th><?php /* @escapeNotVerified */ echo $column['label']; ?></th>
                 <?php endforeach;?>
-                <th class="col-actions" colspan="<?php /* @escapeNotVerified */ echo $_colspan; ?>">Action</th>
+                <th class="col-actions" colspan="<?php /* @escapeNotVerified */ echo $_colspan; ?>"><?php echo __('Actions') ?></th>
             </tr>
             </thead>
-            <tbody id="fastly-backends-list"></tbody>
+            <tbody id="fastly-dictionaries-list"></tbody>
         </table>
     </div>
-    <p class="loading-backends" style="display: none;"><img class="processing" alt="Collecting" style="margin:0 5px" src="<?php echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/> <?php echo __('Loading backends...'); ?></p>
-    <p class="no-backends" style="display: none;"><?php echo __('There are no backends configured yet.'); ?></p>
+    <p class="loading-dictionaries" style="display: none;"><img class="processing" alt="Collecting" style="margin:0 5px" src="<?php echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/> <?php echo __('Loading backends...'); ?></p>
+    <p class="no-dictionaries" style="display: none;"><?php echo __('There are no dictionaries configured yet.'); ?></p>
 </div>
 
 <div class="message message-error fastly-button-messages" id="fastly-error-backend-button-msg" style="display: none"></div>
@@ -46,12 +46,12 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
 <div class="message message-warning fastly-button-messages" id="fastly-warning-backend-button-msg" style="display: none"></div>
 
 <style type="text/css">
-    .admin__control-table .fastly-edit-backend-icon::before {
+    .admin__control-table .fastly-edit-dictionary-icon::before {
         content: '\e610';
         font-size: 2rem;
     }
 
-    .no-backends, .loading-backends {
+    .no-dictionaries, .loading-dictionaries {
         text-align: center;
     }
 </style>

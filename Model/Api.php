@@ -577,6 +577,22 @@ class Api
         return $result;
     }
 
+    public function dictionaryItemsList($dictionaryId)
+    {
+        $url = $this->_getApiServiceUri(). 'dictionary/'.$dictionaryId.'/items';
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    public function createDictionaryItems($dictionaryId, $params)
+    {
+        $url = $this->_getApiServiceUri().'dictionary/'.$dictionaryId.'/items';
+        $result = $this->_fetch($url, \Zend_Http_Client::PATCH, $params);
+
+        return $result;
+    }
+
     /**
      * List all dictionaries for the version of the service.
      *
@@ -618,6 +634,10 @@ class Api
             array_push($headers, 'Content-Type: application/x-www-form-urlencoded');
         }
 
+        if($method == \Zend_Http_Client::PATCH) {
+            array_push($headers, 'Content-Type: text/json');
+        }
+
         try {
             $client = $this->curlFactory->create();
             if($method == \Zend_Http_Client::PUT) {
@@ -628,6 +648,12 @@ class Api
                 }
             } elseif($method == \Zend_Http_Client::DELETE) {
                 $client->addOption(CURLOPT_CUSTOMREQUEST, 'DELETE');
+            } elseif($method == \Zend_Http_Client::PATCH) {
+                $client->addOption(CURLOPT_CUSTOMREQUEST, 'PATCH');
+                if($body != '')
+                {
+                    $client->addOption(CURLOPT_POSTFIELDS, $body);
+                }
             }
             $client->write($method, $uri, '1.1', $headers, $body);
             $response = $client->read();

@@ -21,6 +21,17 @@ define([
             if (config.isFastlyEnabled) {
                 init();
             }
+
+            $('body').on('click', '#add-dictionary-item', function(e) {
+                    $('#dictionary-items-table > tbody').append('<tr><td><input name="key" required="required" class="input-text dictionary-items-field" type="text"></td>' +
+                    '<td><input name="value" required="required" class="input-text dictionary-items-field" type="text"></td>' +
+                    '<td class="col-actions"><button class="action-delete remove_item" type="button"><span>Delete</span></button></td></tr>');
+            });
+
+            $('body').on('click', '.remove_item', function(e) {
+                e.preventDefault();
+                $(this).closest('tr').remove();
+            })
         });
 
         function init() {
@@ -144,14 +155,34 @@ define([
                 vcl.setActiveServiceLabel(active_version, next_version, service_name);
             });
 
-            var dictionary_id = $(this).data('dictionary-id');
-            console.log(dictionary_id);
-            console.log(dictionaries);
+            dictionary_id = $(this).data('dictionary-id');
+
             if(dictionaries != null && dictionary_id != null) {
-                vcl.showPopup('fastly-edge-items');
-                var dictionary_name = "Dictionary " + dictionaries[dictionary_id].name;
-                $('.modal-title').text($.mage.__(dictionary_name));
-                //$('#backend_name').val(dictionaries[dictionary_id].name);
+                $.ajax({
+                    type: "POST",
+                    url: config.getDictionaryItems,
+                    showLoader: true,
+                    data: {'dictionary_id': dictionary_id}
+                }).done(function (response) {
+                    if (response.status == true) {
+                        dictionaryItems = response.dictionaryItems;
+                        var itemsHtml = '';
+                        if (response.dictionaryItems.length > 0) {
+                            $.each(response.dictionaryItems, function (index, item) {
+                                itemsHtml += '<tr><td><input name="key" value="'+ item.item_key +'" required="required" class="input-text dictionary-items-field" type="text"></td>' +
+                                    '<td><input name="value" value="'+ item.item_value +'" required="required" class="input-text dictionary-items-field" type="text"></td>' +
+                                    '<td class="col-actions"><button class="action-delete remove_item" type="button"><span>Delete</span></button></td></tr>';
+                            });
+                        }
+                    } else {
+                        dictionaryItems = [];
+                    }
+                    vcl.showPopup('fastly-edge-items');
+                    if (itemsHtml != '')
+                    {
+                        $('#dictionary-items-table > tbody').html(itemsHtml);
+                    }
+                });
             }
         });
 
@@ -330,6 +361,8 @@ define([
 
         var backends = null;
         var dictionaries = null;
+        var dictionary_id = null;
+        var dictionaryItems = null;
         var active_version = '';
         var next_version = '';
         var service_name;
@@ -347,6 +380,9 @@ define([
         var successHtmlBtnMsg = $('#fastly-success-html-page-button-msg');
         var errorHtmlBtnMsg = $('#fastly-error-html-page-button-msg');
         var warningHtmlBtnMsg = $('#fastly-warning-html-page-button-msg');
+        /*Dictionary button */
+        var successDictionaryBtnMsg = $('#fastly-success-edge-button-msg');
+        var errorDictionaryBtnMsg = $('#fastly-error-edge-button-msg');
 
         var vcl = {
 
@@ -448,8 +484,8 @@ define([
             processDictionaries: function(dictionaries) {
                 $.each(dictionaries, function (index, dictionary) {
                     var html = "<tr id='fastly_dict_" + index + "'>";
-                    html += "<td><input data-dictionaryId='"+ index + "' id='dict_" + index + "' value='"+ dictionary.name +"' disabled='disabled' class='input-text' type='text'></td>";
-                    html += "<td class='col-actions'><button class='action-delete fastly-edit-dictionary-icon' data-dictionary-id='" + index + "' id='fastly-edit-dictionary_"+ index + "' title='Edit dictionary' type='button'></td></tr>";
+                    html += "<td><input data-dictionaryId='"+ dictionary.id + "' id='dict_" + index + "' value='"+ dictionary.name +"' disabled='disabled' class='input-text' type='text'></td>";
+                    html += "<td class='col-actions'><button class='action-delete fastly-edit-dictionary-icon' data-dictionary-id='" + dictionary.id + "' id='fastly-edit-dictionary_"+ index + "' title='Edit dictionary' type='button'></td></tr>";
                     $('#fastly-dictionaries-list').append(html);
                 });
             },
@@ -462,7 +498,7 @@ define([
                     showLoader: loaderVisibility,
                     data: {'active_version': active_version},
                     beforeSend: function (xhr) {
-                        $('.loading-backends').show();
+                        $('.loading-dictionaries').show();
                     }
                 });
             },
@@ -542,8 +578,6 @@ define([
                             }
                             successTlsBtnMsg.text($.mage.__('The Force TLS request setting is successfully turned ' + onOrOff + '.')).show();
                             $('.request_tls_state_span').hide();
-                            console.log(forceTls);
-                            console.log(disabledOrEnabled);
                             if(disabledOrEnabled == 'enabled') {
                                 requestStateMsgSpan.find('#force_tls_state_disabled').hide();
                                 requestStateMsgSpan.find('#force_tls_state_enabled').show();
@@ -672,7 +706,7 @@ define([
                     {
                         if(response.status == true)
                         {
-                            successHtmlBtnMsg.text($.mage.__('Dictionary is successfully created.')).show();
+                            successDictionaryBtnMsg.text($.mage.__('Dictionary is successfully created.')).show();
                             active_version = response.active_version;
                             vcl.modal.modal('closeModal');
                         } else {
@@ -682,7 +716,56 @@ define([
                     },
                     error: function(msg)
                     {
-                        return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                        return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                    }
+                });
+            },
+
+            // CreateDictionaryItems
+            createDictionaryItems: function () {
+                var activate_vcl = false;
+
+                if($('#fastly_activate_vcl').is(':checked')) {
+                    activate_vcl = true;
+                }
+
+                var keys = [];
+                $("input[type='text'][name^='key']").each(function () {
+                    keys.push(this.value);
+                });
+
+                var values = [];
+                $("input[type='text'][name^='value']").each(function () {
+                    values.push(this.value);
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: config.createDictionaryItems,
+                    data: {
+                        'active_version': active_version,
+                        'activate_flag': activate_vcl,
+                        'dictionary_id': dictionary_id,
+                        'values': values,
+                        'keys': keys,
+                        'old_items': dictionaryItems
+                    },
+                    showLoader: true,
+                    success: function(response)
+                    {
+                        if(response.status == true)
+                        {
+                            successDictionaryBtnMsg.text($.mage.__('Dictionary items are successfully saved.')).show();
+                            active_version = response.active_version;
+                            vcl.modal.modal('closeModal');
+                        } else {
+                            vcl.resetAllMessages();
+                            vcl.showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function(msg)
+                    {
+                        return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                     }
                 });
             },
@@ -716,10 +799,14 @@ define([
                 warningTlsBtnMsg.hide();
 
                 // Error page button messages
-
                 successHtmlBtnMsg.hide();
                 errorHtmlBtnMsg.hide();
                 warningHtmlBtnMsg.hide();
+
+
+                // Edge button messages
+                successDictionaryBtnMsg.hide();
+                errorDictionaryBtnMsg.hide();
             },
 
             uploadVclConfig: {
@@ -776,7 +863,11 @@ define([
                         return document.getElementById('fastly-edge-items-template').textContent;
                     },
                     actionOk: function () {
-                        vcl.createDictionary(active_version);
+                        $('#fastly-dictionary-form').data('validator', null);
+                        $.validator.unobtrusive.parse($('#fastly-dictionary-form'));
+                        if ($('#fastly-dictionary-form').valid()) {
+                            vcl.createDictionaryItems();
+                        }
                     }
                 }
             }

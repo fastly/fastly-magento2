@@ -67,7 +67,9 @@ class ContentType extends \Magento\Backend\App\Action
                     throw new \Exception(__('Invalid content type "'.$contentType.'".'));
                 }
 
-                if ($result = $this->purgeCache->sendPurgeRequest($contentType)) {
+                $result = $this->purgeCache->sendPurgeRequest([$contentType]);
+
+                if ($result) {
                     $this->getMessageManager()->addSuccessMessage(__('The Fastly CDN has been cleaned.'));
                 } else {
                     $this->getMessageManager()->addErrorMessage(

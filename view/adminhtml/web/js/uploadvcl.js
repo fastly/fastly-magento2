@@ -92,6 +92,7 @@ define([
                         $('.loading-dictionaries').hide();
                         if(dictResp.status != false) {
                             if(dictResp.status != false) {
+                                console.log(dictResp);
                                 if(dictResp.dictionaries.length > 0) {
                                     dictionaries = dictResp.dictionaries;
                                     vcl.processDictionaries(dictResp.dictionaries);
@@ -477,17 +478,22 @@ define([
                     html += "<td><input data-backendId='"+ index + "' id='backend_" + index + "' value='"+ backend.name +"' disabled='disabled' class='input-text' type='text'></td>";
                     html += "<td class='col-actions'><button class='action-delete fastly-edit-backend-icon' data-backend-id='" + index + "' id='fastly-edit-backend_"+ index + "' title='Edit backend' type='button'></td></tr>";
                     $('#fastly-backends-list').append(html);
+
                 });
             },
 
             // Process dictionaries
             processDictionaries: function(dictionaries) {
+                var html = '';
                 $.each(dictionaries, function (index, dictionary) {
-                    var html = "<tr id='fastly_dict_" + index + "'>";
+                    html += "<tr id='fastly_dict_" + index + "'>";
                     html += "<td><input data-dictionaryId='"+ dictionary.id + "' id='dict_" + index + "' value='"+ dictionary.name +"' disabled='disabled' class='input-text' type='text'></td>";
                     html += "<td class='col-actions'><button class='action-delete fastly-edit-dictionary-icon' data-dictionary-id='" + dictionary.id + "' id='fastly-edit-dictionary_"+ index + "' title='Edit dictionary' type='button'></td></tr>";
-                    $('#fastly-dictionaries-list').append(html);
                 });
+                if (html != '') {
+                    $('.no-dictionaries').hide();
+                }
+                $('#fastly-dictionaries-list').html(html);
             },
 
             // Queries Fastly API to retrive Dictionaries

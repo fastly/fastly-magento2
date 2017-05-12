@@ -56,6 +56,11 @@ class ListAll extends \Magento\Backend\App\Action
             $activeVersion = $this->getRequest()->getParam('active_version');
             $dictionaries = $this->api->getDictionaries($activeVersion);
 
+            if(is_array($dictionaries) && empty($dictionaries))
+            {
+                return $result->setData(array('status' => true, 'dictionaries' => []));
+            }
+
             if(!$dictionaries) {
                 return $result->setData(array('status' => false, 'msg' => 'Failed to fetch dictionaries.'));
             }

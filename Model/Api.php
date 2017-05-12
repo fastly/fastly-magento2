@@ -507,6 +507,14 @@ class Api
         return $result;
     }
 
+    /**
+     * Configure Backend settings
+     *
+     * @param $params
+     * @param $version
+     * @param $old_name
+     * @return bool|mixed
+     */
     public function configureBackend($params, $version, $old_name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version . '/backend/' . str_replace ( ' ', '%20', $old_name);
@@ -515,6 +523,11 @@ class Api
         return $result;
     }
 
+    /**
+     * Send message to Slack channel
+     *
+     * @param $message
+     */
     public function sendWebHook($message)
     {
         $url = $this->config->getIncomingWebhookURL();
@@ -550,6 +563,51 @@ class Api
     }
 
     /**
+     * Create named dictionary for a particular service and version.
+     *
+     * @param $version
+     * @param $params
+     * @return bool|mixed
+     */
+    public function createDictionary($version, $params)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/dictionary';
+        $result = $this->_fetch($url, \Zend_Http_Client::POST, $params);
+
+        return $result;
+    }
+
+    public function dictionaryItemsList($dictionaryId)
+    {
+        $url = $this->_getApiServiceUri(). 'dictionary/'.$dictionaryId.'/items';
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    public function createDictionaryItems($dictionaryId, $params)
+    {
+        $url = $this->_getApiServiceUri().'dictionary/'.$dictionaryId.'/items';
+        $result = $this->_fetch($url, \Zend_Http_Client::PATCH, $params);
+
+        return $result;
+    }
+
+    /**
+     * List all dictionaries for the version of the service.
+     *
+     * @param $version
+     * @return bool|mixed
+     */
+    public function getDictionaries($version)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/dictionary';
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    /**
      * @param $uri
      * @param string $method
      * @param string $body
@@ -576,6 +634,10 @@ class Api
             array_push($headers, 'Content-Type: application/x-www-form-urlencoded');
         }
 
+        if($method == \Zend_Http_Client::PATCH) {
+            array_push($headers, 'Content-Type: text/json');
+        }
+
         try {
             $client = $this->curlFactory->create();
             if($method == \Zend_Http_Client::PUT) {
@@ -586,6 +648,12 @@ class Api
                 }
             } elseif($method == \Zend_Http_Client::DELETE) {
                 $client->addOption(CURLOPT_CUSTOMREQUEST, 'DELETE');
+            } elseif($method == \Zend_Http_Client::PATCH) {
+                $client->addOption(CURLOPT_CUSTOMREQUEST, 'PATCH');
+                if($body != '')
+                {
+                    $client->addOption(CURLOPT_POSTFIELDS, $body);
+                }
             }
             $client->write($method, $uri, '1.1', $headers, $body);
             $response = $client->read();

@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.17
+
+- Purge by content type and store was not working due to fallout from the multiple surrogate key purge bug.
+
+
 ## 1.2.16
 
 - Fix for multiple surrogate key purges being incorrectly serialized

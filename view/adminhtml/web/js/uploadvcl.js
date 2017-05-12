@@ -101,7 +101,7 @@ define([
                             }
                         }
                     }).fail(function () {
-                        // TO DO: implement
+                        return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                     });
                 } else {
                     requestStateSpan.find('.processing').hide();
@@ -708,6 +708,22 @@ define([
                         {
                             successDictionaryBtnMsg.text($.mage.__('Dictionary is successfully created.')).show();
                             active_version = response.active_version;
+                            // Fetch dictionaries
+                            vcl.listDictionaries(active_version, false).done(function (dictResp) {
+                                $('.loading-dictionaries').hide();
+                                if(dictResp.status != false) {
+                                    if(dictResp.status != false) {
+                                        if(dictResp.dictionaries.length > 0) {
+                                            dictionaries = dictResp.dictionaries;
+                                            vcl.processDictionaries(dictResp.dictionaries);
+                                        } else {
+                                            $('.no-dictionaries').show();
+                                        }
+                                    }
+                                }
+                            }).fail(function () {
+                                return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                            });
                             vcl.modal.modal('closeModal');
                         } else {
                             vcl.resetAllMessages();
@@ -864,7 +880,6 @@ define([
                     },
                     actionOk: function () {
                         $('#fastly-dictionary-form').data('validator', null);
-                        $.validator.unobtrusive.parse($('#fastly-dictionary-form'));
                         if ($('#fastly-dictionary-form').valid()) {
                             vcl.createDictionaryItems();
                         }

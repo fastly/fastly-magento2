@@ -34,19 +34,58 @@
 <div class="charts" style="display:none;">
     <div class="chart">
         <h3 class="chart-title">Bandwith</h3>
-        <p class="stat-number" id="requests-number"></p>
+        <div class="stat-container">
+            <span class="stat-number" id="bandwidth-number-average"></span>
+            <span class="stat-number" id="bandwidth-number-minimum" style="display: none"></span>
+            <span class="stat-number" id="bandwidth-number-total" style="display: none"></span>
+            <select name="bandwidth" class="graph-options">
+                <option value="average" selected="selected">Average</option>
+                <option value="minimum">Minimum</option>
+                <option value="total">Total</option>
+            </select>
+        </div>
         <div id="bandwith" style="width: 100%;"></div>
     </div>
     <div class="chart">
         <h3 class="chart-title">Requests</h3>
+        <div class="stat-container">
+            <span class="stat-number" id="requests-number-average"></span>
+            <span class="stat-number" id="requests-number-minimum" style="display: none"></span>
+            <span class="stat-number" id="requests-number-total" style="display: none"></span>
+            <select name="requests" class="graph-options">
+                <option value="average" selected="selected">Average</option>
+                <option value="minimum">Minimum</option>
+                <option value="total">Total</option>
+            </select>
+        </div>
         <div id="requests" style="width: 100%;"></div>
     </div>
     <div class="chart">
         <h3 class="chart-title">HTTP Client and Server Errors (500s)</h3>
+        <div class="stat-container">
+            <span class="stat-number" id="errors-number-average"></span>
+            <span class="stat-number" id="errors-number-minimum" style="display: none"></span>
+            <span class="stat-number" id="errors-number-total" style="display: none"></span>
+            <select name="errors" class="graph-options">
+                <option value="average" selected="selected">Average</option>
+                <option value="minimum">Minimum</option>
+                <option value="total">Total</option>
+            </select>
+        </div>
         <div id="errorschart" style="width: 100%;"></div>
     </div>
     <div class="chart">
         <h3 class="chart-title">Hit ratio</h3>
+        <div class="stat-container">
+            <span class="stat-number" id="hitratio-number-average"></span>
+            <span class="stat-number" id="hitratio-number-minimum" style="display: none"></span>
+            <span class="stat-number" id="hitratio-number-maximum" style="display: none"></span>
+            <select name="hitratio" class="graph-options">
+                <option value="average" selected="selected">Average</option>
+                <option value="minimum">Minimum</option>
+                <option value="maximum">Maximum</option>
+            </select>
+        </div>
         <div id="hitratio" style="width: 100%;"></div>
     </div>
 </div>
@@ -63,28 +102,46 @@ $applyHistoricStatsURL = $block->getUrl('adminhtml/fastlyCdn/apply', ['form_key'
         float: left;
         width: 100%;
     }
+
     ul#filters li {
         float:left;
         margin-right: 5px;
     }
+
     .clearfix:after {
         content:"";
         display:block;
         clear:both;
     }
+
     .chart-title {
         text-align: center;
+        font-weight: 300;
+        text-transform: uppercase;
     }
 
     #Fastly {
         padding: 20px 0px;
     }
+    .stat-container {
+        text-align: center;
+        position: relative;
+        margin: 10px auto;
+    }
 
     .stat-number {
         text-align: center;
-        font-weight: bold;
+        font-weight: 600;
         color: #41362f;
-        font-size: 16px;
+        font-size: 20px;
+        display: inline-block;
+        margin: 0px 10px;
+        width: auto;
+    }
+    .graph-options{
+        position: absolute;
+        top: -2px;
+        left: auto;
     }
 </style>
 

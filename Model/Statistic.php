@@ -43,6 +43,7 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
     const GA_FASTLY_SETUP = 'Fastly Setup';
 
     protected $_GAReqData = [];
+    protected $_validationServiceId = null;
 
     /**
      * @var \Fastly\Cdn\Model\Config
@@ -107,6 +108,7 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
      * @var \Fastly\Cdn\Helper\Data
      */
     protected $_helper;
+
 
     /**
      * Statistic constructor.
@@ -195,6 +197,7 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
     /**
      * Prepares GA data for request
      *
+     * @param array $additionalParams
      * @return array
      */
     protected function _prepareGAReqData(array $additionalParams = [])
@@ -265,9 +268,15 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
      */
     protected function _prepareCustomVariables()
     {
+        if ($this->_validationServiceId != null) {
+            $serviceId = $this->_validationServiceId;
+        } else {
+            $serviceId = $this->_scopeConfig->getValue(Config::XML_FASTLY_SERVICE_ID);
+        }
+
         $customVars =  [
             // Service ID
-            'cd1'   =>  $this->_scopeConfig->getValue(Config::XML_FASTLY_SERVICE_ID),
+            'cd1'   =>  $serviceId,
             // isAPIKeyValid
             'cd2'   =>  ($this->isApiKeyValid()) ? 'yes' : 'no',
             // Website name
@@ -405,10 +414,15 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
      * Sends request to GA every time the Test connection button is pressed
      *
      * @param $validatedFlag
-     * @return bool|string
+     * @param null $serviceId
+     * @return bool
      */
-    public function sendValidationRequest($validatedFlag)
+    public function sendValidationRequest($validatedFlag, $serviceId = null)
     {
+        if ($serviceId != null) {
+            $this->_validationServiceId = $serviceId;
+        }
+
         if($validatedFlag) {
             $validationState = self::FASTLY_VALIDATED_FLAG;
         } else {

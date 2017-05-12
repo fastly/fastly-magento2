@@ -113,12 +113,12 @@ class TestConnection extends \Magento\Backend\App\Action
             $service = $this->api->checkServiceDetails(true, $serviceId, $apiKey);
 
             if(!$service) {
-                $sendValidationReq = $this->_statistic->sendValidationRequest(false);
+                $sendValidationReq = $this->_statistic->sendValidationRequest(false, $serviceId);
                 $this->_saveValidationState(false, $sendValidationReq);
                 return $result->setData(array('status' => false));
             }
             
-            $sendValidationReq = $this->_statistic->sendValidationRequest(true);
+            $sendValidationReq = $this->_statistic->sendValidationRequest(true, $serviceId);
             $this->_saveValidationState(true, $sendValidationReq);
 
             return $result->setData(array('status' => true, 'service_name' => $service->name));

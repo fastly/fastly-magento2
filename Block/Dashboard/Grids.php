@@ -12,7 +12,8 @@ class Grids extends \Magento\Backend\Block\Dashboard\Grids
             [
                 'label' => __('Fastly'),
                 'url' => $this->getUrl('adminhtml/dashboard/historic', ['_current' => true]),
-                'class' => 'ajax'
+                'class' => 'ajax',
+                'active' => false
             ]
         );
     }

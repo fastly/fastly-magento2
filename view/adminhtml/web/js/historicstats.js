@@ -1,8 +1,9 @@
 define([
     'jquery',
     'mage/translate',
-    'https://www.gstatic.com/charts/loader.js'
-], function($) {
+    'https://www.gstatic.com/charts/loader.js',
+    'moment'
+], function($, t, g, moment) {
     "use strict";
 
     return function (config) {
@@ -11,21 +12,34 @@ define([
         var bandwith = [];
         var hitRatio = [];
         var errors = [];
+        var fromPicker = $('#from-picker')
+        var toPicker = $('#to-picker');
 
         $(document).ready(function () {
+
+            $('#Fastly').removeClass('ui-tabs-panel');
             // From picker init
-            $('#from-picker').datetimepicker( { dateFormat: "mm/dd/yy" } );
+            fromPicker.datetimepicker( { dateFormat: "mm/dd/yy" } );
             $(".ui-datepicker-trigger").removeAttr("style");
             $(".ui-datepicker-trigger").click(function(){
-                $('#from-picker').focus();
+                fromPicker.focus();
             });
 
             // To picker init
-            $('#to-picker').datetimepicker( { dateFormat: "mm/dd/yy" } );
+            toPicker.datetimepicker( { dateFormat: "mm/dd/yy" } );
             $(".ui-datepicker-trigger").removeAttr("style");
             $(".ui-datepicker-trigger").click(function(){
-                $('#to-picker').focus();
+                toPicker.focus();
             });
+
+            /* Default picker values */
+            var from = moment().utc().subtract(7, 'days').format('M/D/YYYY h:mm');
+            var to = moment().utc().format('M/D/YYYY h:mm');
+            fromPicker.val(from);
+            toPicker.val(to);
+
+            /* Init charts */
+            applyCharts();
 
             $('.graph-options').on('change', function () {
                 var option = $(this).find(":selected").val();
@@ -33,11 +47,79 @@ define([
                 $(this).parent().find('span').hide();
                 $('#' +optionName+ '-number-' + option).show();
             });
+            /* Last hour */
+            $('#last-hour').on('click', function (e) {
+                e.preventDefault();
+                var from = moment().utc().subtract(1, 'hours').format('M/D/YYYY h:mm');
+                var to = moment().utc().format('M/D/YYYY h:mm');
+                fromPicker.val(from);
+                toPicker.val(to);
+            });
+            /* Last 2 hours */
+            $('#last-2hr').on('click', function (e) {
+                e.preventDefault();
+                var from = moment().utc().subtract(2, 'hours').format('M/D/YYYY h:mm');
+                var to = moment().utc().format('M/D/YYYY h:mm');
+                fromPicker.val(from);
+                toPicker.val(to);
+            });
+
+            $('#last-4hr').on('click', function (e) {
+                e.preventDefault();
+                var from = moment().utc().subtract(4, 'hours').format('M/D/YYYY h:mm');
+                var to = moment().utc().format('M/D/YYYY h:mm');
+                fromPicker.val(from);
+                toPicker.val(to);
+            });
+
+            $('#last-8hr').on('click', function (e) {
+                e.preventDefault();
+                var from = moment().utc().subtract(8, 'hours').format('M/D/YYYY h:mm');
+                var to = moment().utc().format('M/D/YYYY h:mm');
+                fromPicker.val(from);
+                toPicker.val(to);
+            });
+
+            $('#last-day').on('click', function (e) {
+                e.preventDefault();
+                var from = moment().utc().subtract(1, 'days').format('M/D/YYYY h:mm');
+                var to = moment().utc().format('M/D/YYYY h:mm');
+                fromPicker.val(from);
+                toPicker.val(to);
+            });
+
+            $('#last-week').on('click', function (e) {
+                e.preventDefault();
+                var from = moment().utc().subtract(7, 'days').format('M/D/YYYY h:mm');
+                var to = moment().utc().format('M/D/YYYY h:mm');
+                fromPicker.val(from);
+                toPicker.val(to);
+            });
+
+            $('#last-month').on('click', function (e) {
+                e.preventDefault();
+                var from = moment().utc().subtract(1, 'months').format('M/D/YYYY h:mm');
+                var to = moment().utc().format('M/D/YYYY h:mm');
+                fromPicker.val(from);
+                toPicker.val(to);
+            });
+
+            $('#last-year').on('click', function (e) {
+                e.preventDefault();
+                var from = moment().utc().subtract(1, 'years').format('M/D/YYYY h:mm');
+                var to = moment().utc().format('M/D/YYYY h:mm');
+                fromPicker.val(from);
+                toPicker.val(to);
+            });
         });
 
         $('#apply-historic-stats').on('click', function () {
-            var from = $('#from-picker').val();
-            var to = $('#to-picker').val();
+           applyCharts();
+        });
+
+        function applyCharts() {
+            var from = fromPicker.val();
+            var to = toPicker.val();
             var sample_rate = $('#sample-rate').val();
             var region = $('#region').val();
 
@@ -56,120 +138,124 @@ define([
                 }
             }).done(function (response) {
                 if (response.status == true) {
-                    var data = response.stats.data;
-                    /* Empty charts arrays */
-                    requests = [];
-                    bandwith = [];
-                    hitRatio = [];
-                    errors = [];
-                    var averageBandwidth = 0;
-                    var minimumBandwidth = 0;
+                    if (response.stats.data.length > 0) {
+                        var data = response.stats.data;
+                        /* Empty charts arrays */
+                        requests = [];
+                        bandwith = [];
+                        hitRatio = [];
+                        errors = [];
+                        var averageBandwidth = 0;
+                        var minimumBandwidth = 0;
 
-                    var averageRequests = 0;
-                    var minimumRequests = 0;
+                        var averageRequests = 0;
+                        var minimumRequests = 0;
 
-                    var averageHitRatio = 0;
-                    var minimumHitRatio = 0;
-                    var maximumHitRatio = 0;
+                        var averageHitRatio = 0;
+                        var minimumHitRatio = 0;
+                        var maximumHitRatio = 0;
 
-                    var averageError503 = 0;
-                    var minimumError503 = 0;
+                        var averageError503 = 0;
+                        var minimumError503 = 0;
 
-                    /* Parse Fastly Historic stats */
-                    $.each(data, function (key, value) {
-                        var d = new Date();
-                        d.setTime(value.start_time*1000);
-                        /* Requests */
-                        requests.push([d, value.requests]);
-                        averageRequests += value.requests;
-                        averageBandwidth += value.bandwidth;
-                        averageError503 += value.status_503;
+                        /* Parse Fastly Historic stats */
+                        $.each(data, function (key, value) {
+                            var d = new Date();
+                            d.setTime(value.start_time*1000);
+                            /* Requests */
+                            requests.push([d, value.requests]);
+                            averageRequests += value.requests;
+                            averageBandwidth += value.bandwidth;
+                            averageError503 += value.status_503;
 
-                        if (value.miss != 0 && value.hits != 0) {
-                            averageHitRatio += (value.hits / (value.hits + value.miss)) * 100;
-                        }
+                            if (value.miss != 0 && value.hits != 0) {
+                                averageHitRatio += (value.hits / (value.hits + value.miss)) * 100;
+                            }
 
-                        if (key == 0) {
-                            minimumRequests = value.requests;
-                            minimumBandwidth = value.bandwidth;
-                            var initHitRatio = (value.hits / (value.hits + value.miss)) * 100;
-                            minimumHitRatio = initHitRatio;
-                            maximumHitRatio = initHitRatio;
-                            minimumError503 = 0;
+                            if (key == 0) {
+                                minimumRequests = value.requests;
+                                minimumBandwidth = value.bandwidth;
+                                var initHitRatio = (value.hits / (value.hits + value.miss)) * 100;
+                                minimumHitRatio = initHitRatio;
+                                maximumHitRatio = initHitRatio;
+                                minimumError503 = 0;
+                            }
 
-                        }
+                            if (minimumRequests > value.requests) {
+                                minimumRequests = value.requests;
+                            }
 
-                        if (minimumRequests > value.requests) {
-                            minimumRequests = value.requests;
-                        }
+                            if (minimumBandwidth > value.bandwidth) {
+                                minimumBandwidth = value.bandwidth;
+                            }
 
-                        if (minimumBandwidth > value.bandwidth) {
-                            minimumBandwidth = value.bandwidth;
-                        }
+                            if (minimumHitRatio > (value.hits / (value.hits + value.miss)) * 100) {
+                                minimumHitRatio = (value.hits / (value.hits + value.miss)) * 100;
+                            }
 
-                        if (minimumHitRatio > (value.hits / (value.hits + value.miss)) * 100) {
-                            minimumHitRatio = (value.hits / (value.hits + value.miss)) * 100;
-                        }
+                            if (maximumHitRatio < (value.hits / (value.hits + value.miss)) * 100) {
+                                maximumHitRatio = (value.hits / (value.hits + value.miss)) * 100;
+                            }
 
-                        if (maximumHitRatio < (value.hits / (value.hits + value.miss)) * 100) {
-                            maximumHitRatio = (value.hits / (value.hits + value.miss)) * 100;
-                        }
+                            if (minimumError503 > value.status_503) {
+                                minimumError503 = value.status_503;
+                            }
 
-                        if (minimumError503 > value.status_503) {
-                            minimumError503 = value.status_503;
-                        }
+                            /* Bandwidth */
+                            bandwith.push([d, value.bandwidth]);
+                            /* Hit / Miss ratio */
+                            var ratio = (value.hits / (value.hits + value.miss)) * 100;
+                            hitRatio.push([d, ratio]);
+                            /* 500s errors */
+                            errors.push([d, value.status_5xx, value.status_503]);
+                        });
 
-                        /* Bandwidth */
-                        bandwith.push([d, value.bandwidth]);
-                        /* Hit / Miss ratio */
-                        var ratio = (value.hits / (value.hits + value.miss)) * 100;
-                        hitRatio.push([d, ratio]);
-                        /* 500s errors */
-                        errors.push([d, value.status_5xx, value.status_503]);
-                    });
+                        /* Bandwith stats */
+                        $('#bandwidth-number-total').html(formatBytes(averageBandwidth, 1));
+                        averageBandwidth = averageBandwidth / data.length;
+                        averageBandwidth = round(averageBandwidth, 2);
+                        $('#bandwidth-number-average').html(formatBytes(averageBandwidth, 1));
+                        $('#bandwidth-number-minimum').html(formatBytes(minimumBandwidth, 1));
 
-                    /* Bandwith stats */
-                    $('#bandwidth-number-total').html(formatBytes(averageBandwidth, 1));
-                    averageBandwidth = averageBandwidth / data.length;
-                    averageBandwidth = round(averageBandwidth, 2);
-                    $('#bandwidth-number-average').html(formatBytes(averageBandwidth, 1));
-                    $('#bandwidth-number-minimum').html(formatBytes(minimumBandwidth, 1));
+                        /* Requests stats */
+                        var totalRequests = nFormatter(averageRequests, 1);
+                        $('#requests-number-total').html(totalRequests);
+                        averageRequests = averageRequests / data.length;
+                        averageRequests = round(averageRequests, 2);
+                        averageRequests = nFormatter(averageRequests, 1);
+                        $('#requests-number-average').html(averageRequests);
+                        $('#requests-number-minimum').html(nFormatter(minimumRequests, 1));
 
-                    /* Requests stats */
-                    var totalRequests = nFormatter(averageRequests, 1);
-                    $('#requests-number-total').html(totalRequests);
-                    averageRequests = averageRequests / data.length;
-                    averageRequests = round(averageRequests, 2);
-                    averageRequests = nFormatter(averageRequests, 1);
-                    $('#requests-number-average').html(averageRequests);
-                    $('#requests-number-minimum').html(nFormatter(minimumRequests, 1));
+                        /* HitRatio stats*/
+                        averageHitRatio = averageHitRatio / data.length;
+                        averageHitRatio = round(averageHitRatio, 2);
+                        $('#hitratio-number-average').html(averageHitRatio + '%');
+                        $('#hitratio-number-minimum').html(minimumHitRatio + '%');
+                        $('#hitratio-number-maximum').html(round(maximumHitRatio, 2) + '%');
 
-                    /* HitRatio stats*/
-                    averageHitRatio = averageHitRatio / data.length;
-                    averageHitRatio = round(averageHitRatio, 2);
-                    $('#hitratio-number-average').html(averageHitRatio + '%');
-                    $('#hitratio-number-minimum').html(minimumHitRatio + '%');
-                    $('#hitratio-number-maximum').html(round(maximumHitRatio, 2) + '%');
+                        /* Requests stats */
+                        $('#errors-number-total').html(averageError503);
+                        averageError503 = averageError503 / data.length;
+                        averageError503 = round(averageError503, 2);
+                        $('#errors-number-average').html(averageError503);
+                        $('#errors-number-minimum').html(minimumError503);
 
-                    /* Requests stats */
-                    $('#errors-number-total').html(averageError503);
-                    averageError503 = averageError503 / data.length;
-                    averageError503 = round(averageError503, 2);
-                    $('#errors-number-average').html(averageError503);
-                    $('#errors-number-minimum').html(minimumError503);
+                        google.charts.load('current', {'packages':['corechart']});
+                        google.charts.setOnLoadCallback(requestsChart);
+                        google.charts.setOnLoadCallback(bandwithChart);
+                        google.charts.setOnLoadCallback(hitRatioChart);
+                        google.charts.setOnLoadCallback(errorsChart);
 
-                    google.charts.load('current', {'packages':['corechart']});
-                    google.charts.setOnLoadCallback(requestsChart);
-                    google.charts.setOnLoadCallback(bandwithChart);
-                    google.charts.setOnLoadCallback(hitRatioChart);
-                    google.charts.setOnLoadCallback(errorsChart);
-
-                    $('.charts').show();
+                        $('.charts').show();
+                    } else {
+                        $('.charts').hide();
+                        $('.no-data').show();
+                    }
                 }
             }.bind(this)).fail(function () {
 
             });
-        });
+        }
 
         function errorsChart() {
             var data = new google.visualization.DataTable();

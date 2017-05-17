@@ -23,14 +23,17 @@ define([
             }
 
             $('body').on('click', '#add-dictionary-item', function(e) {
-                    $('#dictionary-items-table > tbody').append('<tr><td><input name="key" required="required" class="input-text dictionary-items-field" type="text"></td>' +
+                $('#dictionary-items-table > tbody').append('<tr><td><input name="key" required="required" class="input-text dictionary-items-field" type="text"></td>' +
                     '<td><input name="value" required="required" class="input-text dictionary-items-field" type="text"></td>' +
-                    '<td class="col-actions"><button class="action-delete remove_item" type="button"><span>Delete</span></button></td></tr>');
+                    '<td class="col-actions"><button class="action-save save_item" type="button"><span>Save</span></button>' +
+                    '<button class="action-delete remove_item" type="button"><span>Delete</span></button></td></tr>');
             });
 
             $('body').on('click', '.remove_item', function(e) {
                 e.preventDefault();
-                $(this).closest('tr').remove();
+                if (confirm("fdfhdufhsduf")) {
+                    $(this).closest('tr').remove();
+                }
             })
         });
 

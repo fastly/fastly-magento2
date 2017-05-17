@@ -607,6 +607,14 @@ class Api
         return $result;
     }
 
+    public function deleteDictionaryItem($dictionaryId, $itemKey)
+    {
+        $url = $this->_getApiServiceUri(). 'dictionary/'. $dictionaryId . '/item/' . $itemKey;
+        $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
+
+        return $result;
+    }
+
     /**
      * @param $uri
      * @param string $method

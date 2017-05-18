@@ -8,7 +8,7 @@ use \Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
 
-class Create extends \Magento\Backend\App\Action
+class Delete extends \Magento\Backend\App\Action
 {
     /**
      * @var Http
@@ -67,13 +67,17 @@ class Create extends \Magento\Backend\App\Action
         try {
             $result = $this->resultJson->create();
             $dictionaryId = $this->getRequest()->getParam('dictionary_id');
-            $value = $this->getRequest()->getParam('item_value');
             $key = $this->getRequest()->getParam('item_key');
 
-            $createDictionaryItem = $this->api->upsertDictionaryItem($dictionaryId, $key, $value);
+            if ($key == '')
+            {
+                return $result->setData(array('status' => true));
+            }
 
-            if(!$createDictionaryItem) {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to create Dictionary item.'));
+            $deleteItem = $this->api->deleteDictionaryItem($dictionaryId, $key);
+
+            if (!$deleteItem) {
+                return $result->setData(array('status' => false));
             }
 
             return $result->setData(array('status' => true));

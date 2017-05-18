@@ -607,10 +607,34 @@ class Api
         return $result;
     }
 
+    /**
+     * Delete single Dictionary item
+     *
+     * @param $dictionaryId
+     * @param $itemKey
+     * @return bool|mixed
+     */
     public function deleteDictionaryItem($dictionaryId, $itemKey)
     {
         $url = $this->_getApiServiceUri(). 'dictionary/'. $dictionaryId . '/item/' . $itemKey;
         $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
+
+        return $result;
+    }
+
+    /**
+     * Upsert single Dictionary item
+     *
+     * @param $dictionaryId
+     * @param $itemKey
+     * @param $itemValue
+     * @return bool|mixed
+     */
+    public function upsertDictionaryItem($dictionaryId, $itemKey, $itemValue)
+    {
+        $body = ['item_value' => $itemValue];
+        $url = $this->_getApiServiceUri(). 'dictionary/'. $dictionaryId . '/item/' . $itemKey;
+        $result = $this->_fetch($url, \Zend_Http_Client::PUT, $body);
 
         return $result;
     }

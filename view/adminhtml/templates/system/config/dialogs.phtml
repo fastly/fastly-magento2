@@ -211,7 +211,8 @@
 
 <script type="text/x-magento-template" id="fastly-edge-items-template">
     <div class="messages">
-        <div class="message message-error fastly-message-error" style="display: none"></div>
+        <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
+        <div class="message message-success fastly-message-success" style="display: none;"></div>
     </div>
     <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="fastly-dictionary-form" class="form-inline" enctype="multipart/form-data">
 
@@ -226,19 +227,19 @@
                 </thead>
                 <tbody class="item-container">
                 <tr>
-                    <td><input name="key" required="required" class="input-text dictionary-items-field" type="text"></td>
-                    <td><input name="value" required="required" class="input-text dictionary-items-field" type="text"></td>
+                    <td><input name="key" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>
+                    <td><input name="value" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>
                     <td class="col-actions">
-                        <button class="action-delete remove_item" type="button">
-                            <span>Delete</span></button>
+                        <button class="action-delete fastly-save-action save_item" title="Save" type="button"><span>Save</span></button>
+                        <button class="action-delete remove_item"  title="Delete" type="button"><span>Delete</span></button>
                     </td>
                 </tr>
                 </tbody>
                 <tfoot>
                 <tr>
                     <td colspan="3" class="col-actions-add">
-                        <button id="add-dictionary-item" class="action-add" title="Add" type="button">
-                            <span>Add</span>
+                        <button id="add-dictionary-item" class="action-add" title="Add new item" type="button">
+                            <span><?php echo __('Add new item') ?></span>
                         </button>
                     </td>
                 </tr>
@@ -267,7 +268,8 @@ $getErrorPageRespObjUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/GetErrorPageRe
 $createDictionary = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary/Create');
 $listDictionaries = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary/ListAll');
 $dictionaryItems = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item/ListAll');
-$createDictionaryItems = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item/Create');
+$createDictionaryItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item/Create');
+$deleteDictionaryItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item/Delete');
 
 /* This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application  */
 $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
@@ -292,7 +294,8 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "createDictionary": "<?php echo $block->escapeJsQuote($createDictionary);?>",
                     "getDictionaries": "<?php echo $block->escapeJsQuote($listDictionaries);?>",
                     "getDictionaryItems": "<?php echo $block->escapeJsQuote($dictionaryItems);?>",
-                    "createDictionaryItems": "<?php echo $block->escapeJsQuote($createDictionaryItems);?>"
+                    "createDictionaryItem": "<?php echo $block->escapeJsQuote($createDictionaryItem);?>",
+                    "deleteDictionaryItem": "<?php echo $block->escapeJsQuote($deleteDictionaryItem);?>"
                 }
             }
         }
@@ -306,6 +309,12 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
     .dictionary-items-field {
         width: 100%;
     }
+
+    .admin__control-table .fastly-save-action::before {
+        content: '\e636';
+        font-size: 2rem;
+    }
+
 </style>
 
 

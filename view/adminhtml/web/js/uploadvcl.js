@@ -23,15 +23,72 @@ define([
             }
 
             $('body').on('click', '#add-dictionary-item', function(e) {
-                    $('#dictionary-items-table > tbody').append('<tr><td><input name="key" required="required" class="input-text dictionary-items-field" type="text"></td>' +
-                    '<td><input name="value" required="required" class="input-text dictionary-items-field" type="text"></td>' +
-                    '<td class="col-actions"><button class="action-delete remove_item" type="button"><span>Delete</span></button></td></tr>');
+                $('#dictionary-items-table > tbody').append('<tr><td><input name="key" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
+                    '<td><input name="value" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
+                    '<td class="col-actions">' +
+                    '<button class="action-delete fastly-save-action save_item" title="Save" type="button"><span>Save</span></button>' +
+                    '<button class="action-delete remove_item"  title="Delete" type="button"><span>Delete</span></button>' +
+                    '</td></tr>');
             });
 
             $('body').on('click', '.remove_item', function(e) {
                 e.preventDefault();
-                $(this).closest('tr').remove();
-            })
+                var item_key = $(this).closest('tr').find("input[name='key']").val();
+                var self = this;
+                if (confirm("Are you sure you want to delete this item?")) {
+                    vcl.deleteEdgeDictionaryItem(dictionary_id, item_key, true).done(function (response) {
+                        if (response.status == true) {
+                            $(self).closest('tr').remove();
+                            vcl.showSuccessMessage($.mage.__('Dictionary item is successfully deleted.'));
+                        }
+                    }).fail(function () {
+                        vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
+                    });
+                }
+            });
+
+            $('body').on('click', '.save_item', function(e) {
+                e.preventDefault();
+                var keyField = $(this).closest('tr').find("input[name='key']");
+                var valueField = $(this).closest('tr').find("input[name='value']");
+                var item_key = keyField.val();
+                var item_value = valueField.val();
+                var errors = false;
+
+                if (item_key == '')
+                {
+                    errors = true;
+                    keyField.css('border-color', '#e22626');
+                } else {
+                    keyField.css('border-color', '#878787');
+                }
+
+                if (item_value == '')
+                {
+                    errors = true;
+                    valueField.css('border-color', '#e22626');
+                } else {
+                    valueField.css('border-color', '#878787');
+                }
+
+                if (errors)
+                {
+                    vcl.resetAllMessages();
+                    return vcl.showErrorMessage($.mage.__('Please enter all required fields.'));
+                }
+
+                var self = this;
+                    vcl.saveEdgeDictionaryItem(dictionary_id, item_key, item_value, true).done(function (response) {
+                        if (response.status == true) {
+                            $(self).closest('tr').find("input[name='key']").prop('disabled', true);
+                            vcl.showSuccessMessage($.mage.__('Dictionary item is successfully saved.'));
+                        } else {
+                            vcl.showErrorMessage(response.msg);
+                        }
+                    }).fail(function () {
+                        vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
+                    });
+            });
         });
 
         function init() {
@@ -92,7 +149,6 @@ define([
                         $('.loading-dictionaries').hide();
                         if(dictResp.status != false) {
                             if(dictResp.status != false) {
-                                console.log(dictResp);
                                 if(dictResp.dictionaries.length > 0) {
                                     dictionaries = dictResp.dictionaries;
                                     vcl.processDictionaries(dictResp.dictionaries);
@@ -170,15 +226,21 @@ define([
                         var itemsHtml = '';
                         if (response.dictionaryItems.length > 0) {
                             $.each(response.dictionaryItems, function (index, item) {
-                                itemsHtml += '<tr><td><input name="key" value="'+ item.item_key +'" required="required" class="input-text dictionary-items-field" type="text"></td>' +
-                                    '<td><input name="value" value="'+ item.item_value +'" required="required" class="input-text dictionary-items-field" type="text"></td>' +
-                                    '<td class="col-actions"><button class="action-delete remove_item" type="button"><span>Delete</span></button></td></tr>';
+                                itemsHtml += '<tr><td>' +
+                                    '<input name="key" value="'+ item.item_key +'" class="input-text admin__control-text dictionary-items-field" type="text" disabled></td>' +
+                                    '<td><input name="value" value="'+ item.item_value +'" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
+                                    '<td class="col-actions">' +
+                                    '<button class="action-delete fastly-save-action save_item" title="Save" type="button"><span>Save</span></button>' +
+                                    '<button class="action-delete remove_item"  title="Delete" type="button"><span>Delete</span></button>' +
+                                    '</td></tr>';
                             });
                         }
                     } else {
                         dictionaryItems = [];
                     }
                     vcl.showPopup('fastly-edge-items');
+                    $('.upload-button').remove();
+
                     if (itemsHtml != '')
                     {
                         $('#dictionary-items-table > tbody').html(itemsHtml);
@@ -410,7 +472,7 @@ define([
                         }
                     }, {
                         text: jQuery.mage.__('Upload'),
-                        'class': 'action primary',
+                        'class': 'action primary upload-button',
                         click: function () {
                             self.uploadVclConfig[divId].actionOk.call(self);
                         }
@@ -505,6 +567,32 @@ define([
                     data: {'active_version': active_version},
                     beforeSend: function (xhr) {
                         $('.loading-dictionaries').show();
+                    }
+                });
+            },
+
+            // Delete Edge Dictionary item
+            deleteEdgeDictionaryItem: function(dictionary_id, item_key, loaderVisibility) {
+                return $.ajax({
+                    type: "GET",
+                    url: config.deleteDictionaryItem,
+                    showLoader: loaderVisibility,
+                    data: {'dictionary_id': dictionary_id, 'item_key': item_key},
+                    beforeSend: function (xhr) {
+                        vcl.resetAllMessages();
+                    }
+                });
+            },
+
+            // Delete Edge Dictionary item
+            saveEdgeDictionaryItem: function(dictionary_id, item_key, item_value, loaderVisibility) {
+                return $.ajax({
+                    type: "GET",
+                    url: config.createDictionaryItem,
+                    showLoader: loaderVisibility,
+                    data: {'dictionary_id': dictionary_id, 'item_key': item_key, 'item_value': item_value},
+                    beforeSend: function (xhr) {
+                        vcl.resetAllMessages();
                     }
                 });
             },
@@ -798,9 +886,16 @@ define([
                 msgError.show();
             },
 
+            showSuccessMessage: function (msg) {
+                var msgSuccess = $('.fastly-message-success');
+                msgSuccess.text($.mage.__(msg));
+                msgSuccess.show();
+            },
+
             resetAllMessages: function () {
                 var msgWarning = $('.fastly-message-warning');
                 var msgError = $('.fastly-message-error');
+                var msgSuccess = $('.fastly-message-success');
 
                 // Modal window warning messages
                 msgWarning.text();
@@ -809,6 +904,10 @@ define([
                 // Modal windows error messages
                 msgError.text();
                 msgError.hide();
+
+                // Modal windows success messages
+                msgSuccess.text();
+                msgSuccess.hide();
 
                 // Vcl button messages
                 successVclBtnMsg.hide();
@@ -880,15 +979,11 @@ define([
                     }
                 },
                 'fastly-edge-items': {
-                    title: jQuery.mage.__('Dictionary container'),
+                    title: jQuery.mage.__('Dictionary items'),
                     content: function () {
                         return document.getElementById('fastly-edge-items-template').textContent;
                     },
                     actionOk: function () {
-                        $('#fastly-dictionary-form').data('validator', null);
-                        if ($('#fastly-dictionary-form').valid()) {
-                            vcl.createDictionaryItems();
-                        }
                     }
                 }
             }

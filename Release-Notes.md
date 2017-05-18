@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.19
+
+- Redesign the edge dictionaries interface to use individual actions/calls when adding/removing entries instead
+of bulk calls as bulk
+
 ## 1.2.18
 
 - Add Edge Dictionaries management interface directly into the Magento Plugin admin

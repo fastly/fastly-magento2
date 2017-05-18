@@ -616,7 +616,7 @@ class Api
      */
     public function deleteDictionaryItem($dictionaryId, $itemKey)
     {
-        $url = $this->_getApiServiceUri(). 'dictionary/'. $dictionaryId . '/item/' . $itemKey;
+        $url = $this->_getApiServiceUri(). 'dictionary/'. $dictionaryId . '/item/' . urlencode($itemKey);
         $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
 
         return $result;
@@ -633,7 +633,7 @@ class Api
     public function upsertDictionaryItem($dictionaryId, $itemKey, $itemValue)
     {
         $body = ['item_value' => $itemValue];
-        $url = $this->_getApiServiceUri(). 'dictionary/'. $dictionaryId . '/item/' . $itemKey;
+        $url = $this->_getApiServiceUri(). 'dictionary/'. $dictionaryId . '/item/' . urlencode($itemKey);
         $result = $this->_fetch($url, \Zend_Http_Client::PUT, $body);
 
         return $result;

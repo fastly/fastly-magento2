@@ -96,6 +96,18 @@ class Api
     }
 
     /**
+     * Historical API stats
+     *
+     * @return string
+     */
+    protected function _getHistoricalEndpoint()
+    {
+        $uri = $this->config->getApiEndpoint() . 'stats/service/' . $this->config->getServiceId();
+
+        return $uri;
+    }
+
+    /**
      * Purge a single URL
      *
      * @param string $url
@@ -635,6 +647,20 @@ class Api
         $body = ['item_value' => $itemValue];
         $url = $this->_getApiServiceUri(). 'dictionary/'. $dictionaryId . '/item/' . urlencode($itemKey);
         $result = $this->_fetch($url, \Zend_Http_Client::PUT, $body);
+
+        return $result;
+    }
+
+    /**
+     * @param array $parameters
+     * @return bool|mixed
+     */
+    public function queryHistoricStats(array $parameters)
+    {
+        $uri = $this->_getHistoricalEndpoint()
+                        .'?region='.$parameters['region'].'&from='.$parameters['from'].'&to='.$parameters['to'].'&by='.$parameters['sample_rate'];
+
+        $result = $this->_fetch($uri);
 
         return $result;
     }

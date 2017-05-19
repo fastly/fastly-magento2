@@ -1,0 +1,201 @@
+<div class="clearfix">
+    <ul id="filters">
+        <li id="historic-from">
+            <input name="from" id="from-picker" class="from-picker admin__control-text" value="04/03/2017 06:50"/>
+            <button type="button" style="display:none;" class="ui-datepicker-trigger v-middle"><span>Select Date</span></button>
+        </li>
+        <li id="historic-to">
+            <input name="to" id="to-picker" class="to-picker admin__control-text" value="04/12/2017 06:49"/>
+            <button type="button" style="display:none;" class="ui-datepicker-trigger v-middle"><span>Select Date</span></button>
+        </li>
+        <li>
+            <select name="sample_rate" class="admin__control-select" id="sample-rate">
+                <option value="day">Day</option>
+                <option value="hour" selected="selected">Hour</option>
+                <option value="minute">Minute</option>
+            </select>
+        </li>
+        <li>
+            <select name="region" class="admin__control-select" id="region">
+                <option value="all" selected="selected">Global</option>
+                <option value="namer">North America</option>
+                <option value="europe">Europe</option>
+                <option value="asia">Asia</option>
+                <option value="anzac">Aus/NZ</option>
+                <option value="latam">Latin America</option>
+                <option value="soafr">South Africa</option>
+            </select>
+        </li>
+        <li>
+            <button class="action-primary" type="submit" id="apply-historic-stats">Apply</button>
+        </li>
+        <ul id="presets">
+            <li><?php echo __("Last"); ?></li>
+            <li><a href="#" id="last-hour"><?php echo __('hour') ?></a></li>
+            <li>/</li>
+            <li><a href="#" id="last-2hr"><?php echo __('2hr') ?></a></li>
+            <li>/</li>
+            <li><a href="#" id="last-4hr"><?php echo __('4hr') ?></a></li>
+            <li>/</li>
+            <li><a href="#" id="last-8hr"><?php echo __('8hr') ?></a></li>
+            <li>/</li>
+            <li><a href="#" id="last-day"><?php echo __('day') ?></a></li>
+            <li>/</li>
+            <li><a href="#" id="last-week"><?php echo __('week') ?></a></li>
+            <li>/</li>
+            <li><a href="#" id="last-month"><?php echo __('month') ?></a></li>
+            <li>/</li>
+            <li><a href="#" id="last-year"><?php echo __('year') ?></a></li>
+            <li><?php echo __('<em>UTC</em>') ?></li>
+        </ul>
+    </ul>
+</div>
+<div class="charts" style="display:none;">
+    <div class="chart">
+        <h3 class="chart-title">Bandwith</h3>
+        <div class="stat-container">
+            <span class="stat-number" id="bandwidth-number-average"></span>
+            <span class="stat-number" id="bandwidth-number-minimum" style="display: none"></span>
+            <span class="stat-number" id="bandwidth-number-total" style="display: none"></span>
+            <select name="bandwidth" class="graph-options admin__control-select">
+                <option value="average" selected="selected">Average</option>
+                <option value="minimum">Minimum</option>
+                <option value="total">Total</option>
+            </select>
+        </div>
+        <div id="bandwith" style="width: 100%;"></div>
+    </div>
+    <div class="chart">
+        <h3 class="chart-title">Requests</h3>
+        <div class="stat-container">
+            <span class="stat-number" id="requests-number-average"></span>
+            <span class="stat-number" id="requests-number-minimum" style="display: none"></span>
+            <span class="stat-number" id="requests-number-total" style="display: none"></span>
+            <select name="requests" class="graph-options admin__control-select">
+                <option value="average" selected="selected">Average</option>
+                <option value="minimum">Minimum</option>
+                <option value="total">Total</option>
+            </select>
+        </div>
+        <div id="requests" style="width: 100%;"></div>
+    </div>
+    <div class="chart">
+        <h3 class="chart-title">HTTP Client and Server Errors (500s)</h3>
+        <div class="stat-container">
+            <span class="stat-number" id="errors-number-average"></span>
+            <span class="stat-number" id="errors-number-minimum" style="display: none"></span>
+            <span class="stat-number" id="errors-number-total" style="display: none"></span>
+            <select name="errors" class="graph-options admin__control-select">
+                <option value="average" selected="selected">Average</option>
+                <option value="minimum">Minimum</option>
+                <option value="total">Total</option>
+            </select>
+        </div>
+        <div id="errorschart" style="width: 100%;"></div>
+    </div>
+    <div class="chart">
+        <h3 class="chart-title">Hit ratio</h3>
+        <div class="stat-container">
+            <span class="stat-number" id="hitratio-number-average"></span>
+            <span class="stat-number" id="hitratio-number-minimum" style="display: none"></span>
+            <span class="stat-number" id="hitratio-number-maximum" style="display: none"></span>
+            <select name="hitratio" class="graph-options admin__control-select">
+                <option value="average" selected="selected">Average</option>
+                <option value="minimum">Minimum</option>
+                <option value="maximum">Maximum</option>
+            </select>
+        </div>
+        <div id="hitratio" style="width: 100%;"></div>
+    </div>
+</div>
+
+<div class="no-data" style="display:none;">
+    <h1 style="text-align:center; font-weight: 300;"><?php echo __('No data.'); ?></h1>
+</div>
+<?php
+$applyHistoricStatsURL = $block->getUrl('adminhtml/fastlyCdn/apply', ['form_key' => $block->getFormKey()]);
+$serviceInfoUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/serviceInfo');
+
+?>
+
+<style type="text/css">
+    ul#filters {
+        list-style: none;
+        border-bottom: 1px solid #e3e3e3;
+        padding-bottom: 10px;
+        float: left;
+        width: 100%;
+    }
+
+    ul#filters li {
+        float:left;
+        margin-right: 5px;
+    }
+
+    .clearfix:after {
+        content:"";
+        display:block;
+        clear:both;
+    }
+
+    .chart-title {
+        text-align: center;
+        font-weight: 300;
+        text-transform: uppercase;
+    }
+
+    #Fastly {
+        padding: 20px 0px;
+    }
+    .stat-container {
+        text-align: center;
+        position: relative;
+        margin: 10px auto;
+    }
+
+    .stat-number {
+        text-align: center;
+        font-weight: 600;
+        color: #41362f;
+        font-size: 20px;
+        display: inline-block;
+        margin: 0px 10px;
+        width: auto;
+    }
+    .graph-options{
+        position: absolute;
+        top: -2px;
+        left: auto;
+    }
+
+    #presets {
+        float: left;
+        display: block;
+        width: 100%;
+        padding-top: 5px;
+        list-style: none;
+    }
+
+    #from-picker {
+        width: 17rem!important;
+    }
+
+    #to-picker {
+        width: 17rem!important;
+    }
+
+    .chart {
+        margin-bottom: 10px;
+    }
+</style>
+
+<script type="text/x-magento-init">
+        {
+            "*": {
+                "historicStats": {
+                    "applyHistoricStatsURL": "<?php echo $block->escapeJsQuote($applyHistoricStatsURL);?>",
+                    "serviceInfoUrl": "<?php echo $block->escapeJsQuote($serviceInfoUrl);?>"
+                }
+            }
+        }
+</script>

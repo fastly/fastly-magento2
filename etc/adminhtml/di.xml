@@ -21,6 +21,7 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Magento\Backend\Block\Dashboard\Grids" type="Fastly\Cdn\Block\Dashboard\Grids"/>
     <type name="Magento\PageCache\Model\System\Config\Source\Application">
         <plugin name="fastly-add-application-option" type="Fastly\Cdn\Model\System\Config\Source\ApplicationPlugin"/>
     </type>

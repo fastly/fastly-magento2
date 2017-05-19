@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.20
+
+- Add Historical bandwidth/request/error stats to the Magento Dashboard
+
 ## 1.2.19
 
 - Redesign the edge dictionaries interface to use individual actions/calls when adding/removing entries instead

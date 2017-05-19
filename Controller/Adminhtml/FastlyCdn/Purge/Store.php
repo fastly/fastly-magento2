@@ -76,9 +76,8 @@ class Store extends \Magento\Backend\App\Action
                     throw new \Exception(__('Invalid store "'.$storeId.'" given.'));
                 }
 
-                foreach ($store->getIdentities() as $tag) {
-                    $result = $this->purgeCache->sendPurgeRequest($tag);
-                }
+                $result = $this->purgeCache->sendPurgeRequest($store->getIdentities());
+
                 if ($result) {
                     $this->getMessageManager()->addSuccessMessage(__('The Fastly CDN has been cleaned.'));
                 } else {

@@ -1,5 +1,23 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.19
+
+- Redesign the edge dictionaries interface to use individual actions/calls when adding/removing entries instead
+of bulk calls as bulk
+
+## 1.2.18
+
+- Add Edge Dictionaries management interface directly into the Magento Plugin admin
+
+## 1.2.17
+
+- Purge by content type and store was not working due to fallout from the multiple surrogate key purge bug.
+
+
+## 1.2.16
+
+- Fix for multiple surrogate key purges being incorrectly serialized
+
 ## 1.2.15 
 
 - Convert multiple single surrogate key purges to the new single multiple key purges request

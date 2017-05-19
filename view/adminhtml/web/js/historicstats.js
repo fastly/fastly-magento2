@@ -39,7 +39,20 @@ define([
             toPicker.val(to);
 
             /* Init charts */
-            applyCharts();
+            $.ajax({
+                type: "GET",
+                url: config.serviceInfoUrl,
+                showLoader: true,
+            }).done(function (checkService) {
+                if (checkService.status != false) {
+                    applyCharts();
+                } else {
+                    $('#apply-historic-stats').prop("disabled", "disabled");
+                    $('.charts').html('<h3 class="chart-title">Please check your Service ID and API token and try again.</h3>').show();
+                }
+            }).fail(function () {
+
+            });
 
             $('.graph-options').on('change', function () {
                 var option = $(this).find(":selected").val();
@@ -114,7 +127,7 @@ define([
         });
 
         $('#apply-historic-stats').on('click', function () {
-           applyCharts();
+            applyCharts();
         });
 
         function applyCharts() {

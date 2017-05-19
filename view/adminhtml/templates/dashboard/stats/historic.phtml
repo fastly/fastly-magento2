@@ -114,6 +114,7 @@
 </div>
 <?php
 $applyHistoricStatsURL = $block->getUrl('adminhtml/fastlyCdn/apply', ['form_key' => $block->getFormKey()]);
+$serviceInfoUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/serviceInfo');
 
 ?>
 
@@ -192,7 +193,8 @@ $applyHistoricStatsURL = $block->getUrl('adminhtml/fastlyCdn/apply', ['form_key'
         {
             "*": {
                 "historicStats": {
-                    "applyHistoricStatsURL": "<?php echo $block->escapeJsQuote($applyHistoricStatsURL);?>"
+                    "applyHistoricStatsURL": "<?php echo $block->escapeJsQuote($applyHistoricStatsURL);?>",
+                    "serviceInfoUrl": "<?php echo $block->escapeJsQuote($serviceInfoUrl);?>"
                 }
             }
         }

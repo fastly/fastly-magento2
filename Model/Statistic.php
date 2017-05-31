@@ -35,7 +35,7 @@ class Statistic extends \Magento\Framework\Model\AbstractModel implements \Magen
 
     const FASTLY_MODULE_NAME = 'Fastly_Cdn';
     const CACHE_TAG = 'fastly_cdn_statistic';
-    const FASTLY_GA_TRACKING_ID = 'UA-89025888-2';
+    const FASTLY_GA_TRACKING_ID = 'UA-89025888-1';
     const GA_API_ENDPOINT = 'https://www.google-analytics.com/collect';
     const GA_HITTYPE_PAGEVIEW = 'pageview';
     const GA_HITTYPE_EVENT = 'event';

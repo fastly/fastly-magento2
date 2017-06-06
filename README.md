@@ -16,12 +16,6 @@ capabilities for a blazing fast e-commerce site.
 
 ## Description
 
-The Fastly_Cdn module consists of two main components:
-
-- The Magento2 module and
-- [the bundled Varnish Cache configuration file](etc/fastly.vcl)
-  (VCL).
-
 The Fastly_Cdn module relies on Magento2's page cache functionality and extends
 its Varnish capabilities to leverage Fastly's enhanced caching technology and
 Geo-IP support.

@@ -704,9 +704,9 @@ class Api
     public function upsertAclItem($aclId, $itemValue, $subnet = false)
     {
         if($subnet) {
-            $body = ['ip' => $itemValue, 'negated' => 1, 'comment' => 'do not allow', 'subnet' => $subnet];
+            $body = ['ip' => $itemValue, 'negated' => 0, 'comment' => 'Added by Magento Module', 'subnet' => $subnet];
         } else {
-            $body = ['ip' => $itemValue, 'negated' => 1, 'comment' => 'do not allow'];
+            $body = ['ip' => $itemValue, 'negated' => 0, 'comment' => 'Added by Magento Module'];
         }
         $url = $this->_getApiServiceUri(). 'acl/'. $aclId . '/entry';
         $result = $this->_fetch($url, \Zend_Http_Client::POST, $body);

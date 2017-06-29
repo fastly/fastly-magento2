@@ -1,0 +1,57 @@
+<?php
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/**
+ * Copied from Mage_Config::view/adminhtml/templates/system/config/form/field/array.phtml.
+ * Currently necessary for work around a missing feature in the M2 core.
+ *
+ * @see https://github.com/magento/magento2/pull/3469
+ */
+
+// @codingStandardsIgnoreFile
+
+?>
+
+<?php
+$_htmlId = $block->getHtmlId() ? $block->getHtmlId() : '_' . uniqid();
+$_colspan = $block->isAddAfter() ? 2 : 1;
+?>
+
+<button type="button" style="margin-bottom: 10px;" class="primary" id="add-acl-container-button"><?php echo __('Add ACL') ?></button>
+<div class="design_theme_ua_regexp" id="grid<?php /* @escapeNotVerified */ echo $_htmlId; ?>">
+    <div class="admin__control-table-wrapper">
+        <table class="admin__control-table" id="<?php /* @escapeNotVerified */ echo $block->getElement()->getId(); ?>">
+            <thead>
+            <tr>
+                <?php foreach ($block->getColumns() as $columnName => $column): ?>
+                    <th><?php /* @escapeNotVerified */ echo $column['label']; ?></th>
+                <?php endforeach;?>
+                <th class="col-actions" colspan="<?php /* @escapeNotVerified */ echo $_colspan; ?>"><?php echo __('Actions') ?></th>
+            </tr>
+            </thead>
+            <tbody id="fastly-acls-list"></tbody>
+        </table>
+    </div>
+    <p class="loading-dictionaries" style="display: none;"><img class="processing" alt="Collecting" style="margin:0 5px" src="<?php echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/> <?php echo __('Loading acl...'); ?></p>
+    <p class="no-dictionaries" style="display: none;"><?php echo __('There are no acl-s configured yet.'); ?></p>
+</div>
+
+<div class="message message-error fastly-button-messages" id="fastly-error-edge-button-msg" style="display: none"></div>
+
+<div class="message message-success fastly-button-messages" id="fastly-success-edge-button-msg" style="display: none"></div>
+
+<div class="message message-warning fastly-button-messages" id="fastly-warning-edge-button-msg" style="display: none"></div>
+
+<style type="text/css">
+    .admin__control-table .fastly-edit-dictionary-icon::before {
+        content: '\e610';
+        font-size: 2rem;
+    }
+
+    .no-dictionaries, .loading-dictionaries {
+        text-align: center;
+    }
+</style>

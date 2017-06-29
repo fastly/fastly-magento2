@@ -652,6 +652,84 @@ class Api
     }
 
     /**
+     * Create named ACL for a particular service and version.
+     *
+     * @param $version
+     * @param $params
+     * @return bool|mixed
+     */
+    public function createAcl($version, $params)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/acl';
+        $result = $this->_fetch($url, \Zend_Http_Client::POST, $params);
+
+        return $result;
+    }
+
+    /**
+     * Fetch ACL list for particular service and version
+     *
+     * @param $version
+     * @return bool|mixed
+     */
+    public function getAcls($version)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/acl';
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    /**
+     * Fetch ACL entry list for particular ACL
+     *
+     * @param $aclId
+     * @return bool|mixed
+     */
+    public function aclItemsList($aclId)
+    {
+        $url = $this->_getApiServiceUri() . 'acl/'. $aclId . '/entries';
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    /**
+     * Upsert single ACL entry
+     *
+     * @param $aclId
+     * @param $itemValue
+     * @return bool|mixed
+     */
+    public function upsertAclItem($aclId, $itemValue, $subnet = false)
+    {
+        if($subnet) {
+            $body = ['ip' => $itemValue, 'negated' => 1, 'comment' => 'do not allow', 'subnet' => $subnet];
+        } else {
+            $body = ['ip' => $itemValue, 'negated' => 1, 'comment' => 'do not allow'];
+        }
+        $url = $this->_getApiServiceUri(). 'acl/'. $aclId . '/entry';
+        $result = $this->_fetch($url, \Zend_Http_Client::POST, $body);
+
+        return $result;
+    }
+
+    /**
+     * Delete single ACL entry from specific ACL
+     *
+     * @param $aclId
+     * @param $aclItemId
+     * @return bool|mixed
+     */
+    public function deleteAclItem($aclId, $aclItemId)
+    {
+        $url = $this->_getApiServiceUri(). 'acl/'. $aclId . '/entry/' . $aclItemId;
+        $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
+
+        return $result;
+    }
+
+    /**
      * @param array $parameters
      * @return bool|mixed
      */

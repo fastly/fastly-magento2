@@ -74,6 +74,13 @@
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Edge</frontend_model>
                         </field>
                     </group>
+                    <group id="fastly_edge_acl" sortOrder="260" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Edge acl</label>
+                        <field id="acl" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Acl</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Acl</frontend_model>
+                        </field>
+                    </group>
                     <group id="fastly_advanced_configuration" sortOrder="300" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Advanced Configuration</label>
                         <field id="force_tls" translate="label comment" sortOrder="10" showInDefault="1" showInStore="0" showInWebsite="0">

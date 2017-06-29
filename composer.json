@@ -19,5 +19,11 @@
         "psr-4": {
             "Fastly\\Cdn\\": ""
         }
+    },
+    "repositories": {
+        "fastly-magento2": {
+            "type": "git",
+            "url": "https://github.com/fastly/fastly-magento2.git"
+        }
     }
 }

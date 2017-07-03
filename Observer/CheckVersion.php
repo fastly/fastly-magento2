@@ -41,7 +41,7 @@ class CheckVersion implements ObserverInterface
     }
 
     /**
-     * Predispath admin action controller
+     * Predispatch admin user login success
      *
      * @param \Magento\Framework\Event\Observer $observer
      * @return void

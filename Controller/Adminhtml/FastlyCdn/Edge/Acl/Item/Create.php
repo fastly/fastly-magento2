@@ -73,6 +73,7 @@ class Create extends \Magento\Backend\App\Action
             $result = $this->resultJson->create();
             $aclId = $this->getRequest()->getParam('acl_id');
             $value = $this->getRequest()->getParam('item_value');
+            $negated = $this->getRequest()->getParam('negated_field');
 
             // Handle subnet
             $ipParts = explode('/', $value);
@@ -89,7 +90,7 @@ class Create extends \Magento\Backend\App\Action
                 return $result->setData(array('status' => false, 'msg' => 'Invalid IP address format.'));
             }
 
-            $createAclItem = $this->api->upsertAclItem($aclId, $ipParts[0], $subnet);
+            $createAclItem = $this->api->upsertAclItem($aclId, $ipParts[0], $negated, $subnet);
 
             if(!$createAclItem) {
                 return $result->setData(array('status' => false, 'msg' => 'Failed to create Acl entry.'));

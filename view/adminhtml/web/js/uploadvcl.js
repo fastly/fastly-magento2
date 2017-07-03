@@ -40,8 +40,10 @@ define([
              */
 
             $('body').on('click', '#add-acl-item', function(e) {
+                var aclTimestamp = Math.round(e.timeStamp);
                 $('#acl-items-table > tbody').append('<tr>' +
                     '<td><input name="value" data-type="acl" data-id="" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
+                    '<td><div class="admin__field-option"><input name="negated" class="admin__control-checkbox" type="checkbox" id="acl_entry_'+ aclTimestamp +'"><label class="admin__field-label" for="acl_entry_'+ aclTimestamp +'"></label></div></td>' +
                     '<td class="col-actions">' +
                     '<button class="action-delete fastly-save-action save_item" title="Save" type="button"><span>Save</span></button>' +
                     '<button class="action-delete remove_item"  title="Delete" type="button"><span>Delete</span></button>' +
@@ -120,7 +122,8 @@ define([
 
                 var self = this;
                 if(type === 'acl') {
-                    vcl.saveAclItem(acl_id, item_value, true).done(function (response) {
+                    var negated_field = $(this).closest('tr').find("input[name='negated']")[0].checked ? 1 : 0;
+                    vcl.saveAclItem(acl_id, item_value, negated_field, true).done(function (response) {
                         if (response.status == true) {
                             $(self).closest('tr').find("input[name='value']").prop('disabled', true);
                             var newElement = $(self).closest('tr').find("input[name='value']")[0];
@@ -337,6 +340,7 @@ define([
                             var itemsHtml = '';
                             if (response.aclItems.length > 0) {
                                 $.each(response.aclItems, function (index, item) {
+                                    var negated = item.negated == 1 ? ' checked' : '';
                                     if(item.subnet) {
                                         ip_output = item.ip + '/' + item.subnet;
                                     } else {
@@ -344,6 +348,7 @@ define([
                                     }
                                     itemsHtml += '<tr><td>' +
                                         '<input name="value" data-type="acl" data-id="'+ item.id +'" value="'+ ip_output +'" class="input-text admin__control-text dictionary-items-field" type="text" disabled></td>' +
+                                        '<td><div class="admin__field-option"><input name="negated" class="admin__control-checkbox" type="checkbox" id="acl_entry_'+ item.id +'"'+negated+'><label class="admin__field-label" for="acl_entry_'+ item.id +'"></label></div></td>' +
                                         '<td class="col-actions">' +
                                         '<button class="action-delete fastly-save-action save_item" title="Save" type="button"><span>Save</span></button>' +
                                         '<button class="action-delete remove_item"  title="Delete" type="button"><span>Delete</span></button>' +
@@ -799,12 +804,12 @@ define([
             },
 
             // Save Acl entry item
-            saveAclItem: function(acl_id, item_value, loaderVisibility) {
+            saveAclItem: function(acl_id, item_value, negated_field, loaderVisibility) {
                 return $.ajax({
                     type: "GET",
                     url: config.createAclItem,
                     showLoader: loaderVisibility,
-                    data: {'acl_id': acl_id, 'item_value': item_value},
+                    data: {'acl_id': acl_id, 'item_value': item_value, 'negated_field': negated_field},
                     beforeSend: function (xhr) {
                         vcl.resetAllMessages();
                     }

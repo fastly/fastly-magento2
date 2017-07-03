@@ -37,7 +37,7 @@ class Notification extends \Magento\AdminNotification\Model\Feed
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Backend\App\ConfigInterface $backendConfig
-     * @param InboxFactory $inboxFactory
+     * @param \Magento\AdminNotification\Model\InboxFactory $inboxFactory
      * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
      * @param \Magento\Framework\Module\ModuleListInterface $moduleList
      * @param \Magento\Framework\Module\Manager $moduleManager,

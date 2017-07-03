@@ -699,14 +699,15 @@ class Api
      *
      * @param $aclId
      * @param $itemValue
+     * @param $negated
      * @return bool|mixed
      */
-    public function upsertAclItem($aclId, $itemValue, $subnet = false)
+    public function upsertAclItem($aclId, $itemValue, $negated, $subnet = false)
     {
         if($subnet) {
-            $body = ['ip' => $itemValue, 'negated' => 0, 'comment' => 'Added by Magento Module', 'subnet' => $subnet];
+            $body = ['ip' => $itemValue, 'negated' => $negated, 'comment' => 'Added by Magento Module', 'subnet' => $subnet];
         } else {
-            $body = ['ip' => $itemValue, 'negated' => 0, 'comment' => 'Added by Magento Module'];
+            $body = ['ip' => $itemValue, 'negated' => $negated, 'comment' => 'Added by Magento Module'];
         }
         $url = $this->_getApiServiceUri(). 'acl/'. $aclId . '/entry';
         $result = $this->_fetch($url, \Zend_Http_Client::POST, $body);

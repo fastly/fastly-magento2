@@ -43,7 +43,7 @@ define([
                 var aclTimestamp = Math.round(e.timeStamp);
                 $('#acl-items-table > tbody').append('<tr>' +
                     '<td><input name="value" data-type="acl" data-id="" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
-                    '<td><div class="admin__field-option"><input name="negated" class="admin__control-checkbox" type="checkbox" id="acl_entry_'+ aclTimestamp +'"><label class="admin__field-label" for="acl_entry_'+ aclTimestamp +'"></label></div></td>' +
+                    '<td><div class="admin__field-option" title="'+acl_negated_title+'"><input name="negated" class="admin__control-checkbox" type="checkbox" id="acl_entry_'+ aclTimestamp +'"><label class="admin__field-label" for="acl_entry_'+ aclTimestamp +'"></label></div></td>' +
                     '<td class="col-actions">' +
                     '<button class="action-delete fastly-save-action save_item" title="Save" type="button"><span>Save</span></button>' +
                     '<button class="action-delete remove_item"  title="Delete" type="button"><span>Delete</span></button>' +
@@ -348,7 +348,7 @@ define([
                                     }
                                     itemsHtml += '<tr><td>' +
                                         '<input name="value" data-type="acl" data-id="'+ item.id +'" value="'+ ip_output +'" class="input-text admin__control-text dictionary-items-field" type="text" disabled></td>' +
-                                        '<td><div class="admin__field-option"><input name="negated" class="admin__control-checkbox" type="checkbox" id="acl_entry_'+ item.id +'"'+negated+'><label class="admin__field-label" for="acl_entry_'+ item.id +'"></label></div></td>' +
+                                        '<td><div class="admin__field-option" title="'+ acl_negated_title +'"><input name="negated" class="admin__control-checkbox" type="checkbox" id="acl_entry_'+ item.id +'"'+negated+'><label class="admin__field-label" for="acl_entry_'+ item.id +'"></label></div></td>' +
                                         '<td class="col-actions">' +
                                         '<button class="action-delete fastly-save-action save_item" title="Save" type="button"><span>Save</span></button>' +
                                         '<button class="action-delete remove_item"  title="Delete" type="button"><span>Delete</span></button>' +
@@ -612,6 +612,11 @@ define([
         /*Dictionary button */
         var successDictionaryBtnMsg = $('#fastly-success-edge-button-msg');
         var errorDictionaryBtnMsg = $('#fastly-error-edge-button-msg');
+        /*ACL negated checkbox title*/
+        var acl_negated_title = "Negates another ACL entry.\n\n" +
+            "Example: If you have a purge_allow_acl that has "+
+            "192.168.1.0/24 but you add negated IP : 192.168.1.4, "+
+            "it means every IP in 192.168.1.0/24 range has access except for 192.168.1.4.";
 
         var vcl = {
 

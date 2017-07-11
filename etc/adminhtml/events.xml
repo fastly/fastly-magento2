@@ -6,5 +6,7 @@
     <event name="admin_system_config_changed_section_system">
         <observer name="fastly_admin_configuration_save" instance="Fastly\Cdn\Observer\ConfigurationSave" />
     </event>
+    <event name="backend_auth_user_login_success">
+        <observer name="fastly_admin_check_version" instance="Fastly\Cdn\Observer\CheckVersion" />
+    </event>
 </config>
-

@@ -78,7 +78,7 @@
     if (req.url ~ "/(catalogsearch|checkout)") {
         set req.http.x-pass = "1";
     # Pass all admin actions
-    } else if ( req.url ~ "^/admin(_.*)?/" ) {
+    } else if ( req.url ~ "^/(index\.php/)?admin(_.*)?/" ) {
         set req.http.x-pass = "1";
     }
 

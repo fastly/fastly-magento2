@@ -28,15 +28,15 @@ Magento admin > Stores > Configuration > Advanced > System > Full Page Cache > F
 
 Under the **Advanced Configuration** tab, press the **Force TLS** button. 
 
-![Force TLS button](images/guides/force-tls/force-tls.png "Force TLS button")
+![Force TLS button](../images/guides/force-tls/force-tls.png "Force TLS button")
 
 The modal window with the following content will pop up, press the **Upload button** in the upper right corner:
 
-![Force TLS modal](images/guides/force-tls/force-tls-modal.png "Force TLS modal")
+![Force TLS modal](../images/guides/force-tls/force-tls-modal.png "Force TLS modal")
 
 Once done, the modal windows will close and you will see a success message. Also, the current state will change to **enabled**.
 
-![Force TLS success](images/guides/force-tls/force-tls-success.png "Success")
+![Force TLS success](../images/guides/force-tls/force-tls-success.png "Success")
 
 
 

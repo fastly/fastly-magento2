@@ -11,7 +11,7 @@ Magento admin > Stores > Configuration > General > Web
 
 Click on the **Base URLs (Secure)** tab and enter your **Secure Base URL**. Also, set **Use Secure URLs in Frontend** and **Use Secure URLs in Admin** options to **Yes**.
 
-![Secure URL](images/guides/force-tls/secure-url.png "Secure URL")
+![Secure URL](../images/guides/force-tls/secure-url.png "Secure URL")
  
 Once you're done, press the Save config button in the upper right corner.
 

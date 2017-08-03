@@ -53,7 +53,7 @@ class GetAction extends \Magento\Framework\View\Element\AbstractBlock
     {
         if ($this->_config->isGeoIpEnabled()) {
             # https ESIs are not supported so we need to turn them into http
-            return sprintf('<esi:include src="%s" />', preg_replace("/^https/", "http", $this->getUrl('fastlyCdn/geoip/getaction')));
+            return sprintf('<esi:include src=\'%s\' />', preg_replace("/^https/", "http", $this->getUrl('fastlyCdn/geoip/getaction')));
         }
         return parent::_toHtml();
     }

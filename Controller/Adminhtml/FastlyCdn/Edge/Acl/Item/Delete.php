@@ -69,8 +69,9 @@ class Delete extends \Magento\Backend\App\Action
      */
     public function execute()
     {
+        $result = $this->resultJson->create();
+
         try {
-            $result = $this->resultJson->create();
             $aclId = $this->getRequest()->getParam('acl_id');
             $aclItemId = $this->getRequest()->getParam('acl_item_id');
 

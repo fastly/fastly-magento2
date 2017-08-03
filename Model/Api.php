@@ -374,6 +374,21 @@ class Api
     }
 
     /**
+     * Deleting an individual regular VCL Snippet
+     *
+     * @param $version
+     * @param $name
+     * @return bool|mixed
+     */
+    public function removeSnippet($version, $name)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version. '/snippet/' . $name;
+        $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
+
+        return $result;
+    }
+
+    /**
      * Creates a new condition
      *
      * @param $version
@@ -592,6 +607,19 @@ class Api
     public function dictionaryItemsList($dictionaryId)
     {
         $url = $this->_getApiServiceUri(). 'dictionary/'.$dictionaryId.'/items';
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    /**
+     * Fetches dictionary by name
+     *
+     * @param $dictionaryName
+     * @return bool|mixed
+     */
+    public function getSingleDictionary($version, $dictionaryName) {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/dictionary/' . $dictionaryName;
         $result = $this->_fetch($url, \Zend_Http_Client::GET);
 
         return $result;

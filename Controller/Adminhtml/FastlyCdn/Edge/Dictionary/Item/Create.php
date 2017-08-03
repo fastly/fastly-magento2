@@ -64,8 +64,9 @@ class Create extends \Magento\Backend\App\Action
 
     public function execute()
     {
+        $result = $this->resultJson->create();
+
         try {
-            $result = $this->resultJson->create();
             $dictionaryId = $this->getRequest()->getParam('dictionary_id');
             $value = $this->getRequest()->getParam('item_value');
             $key = $this->getRequest()->getParam('item_key');

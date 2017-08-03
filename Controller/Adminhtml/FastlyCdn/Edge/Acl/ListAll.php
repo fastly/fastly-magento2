@@ -51,8 +51,9 @@ class ListAll extends \Magento\Backend\App\Action
      */
     public function execute()
     {
+        $result = $this->resultJson->create();
+
         try {
-            $result = $this->resultJson->create();
             $activeVersion = $this->getRequest()->getParam('active_version');
             $acls = $this->api->getAcls($activeVersion);
 

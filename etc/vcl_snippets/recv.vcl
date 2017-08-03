@@ -77,9 +77,6 @@
     # in the request condition
     if (req.url ~ "/(catalogsearch|checkout)") {
         set req.http.x-pass = "1";
-    # Pass all admin actions
-    } else if ( req.url ~ "^/(index\.php/)?admin(_.*)?/" ) {
-        set req.http.x-pass = "1";
     }
 
     # static files are always cacheable. remove SSL flag and cookie

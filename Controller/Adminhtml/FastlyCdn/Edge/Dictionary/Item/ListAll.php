@@ -51,8 +51,9 @@ class ListAll extends \Magento\Backend\App\Action
      */
     public function execute()
     {
+        $result = $this->resultJson->create();
+
         try {
-            $result = $this->resultJson->create();
             $dictionaryId = $this->getRequest()->getParam('dictionary_id');
             $dictionaryItems = $this->api->dictionaryItemsList($dictionaryId);
 

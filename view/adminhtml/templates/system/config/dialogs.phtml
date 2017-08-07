@@ -317,6 +317,46 @@
         </fieldset>
     </form>
 </script>
+
+<script type="text/x-magento-template" id="fastly-auth-items-template">
+    <div class="messages">
+        <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
+        <div class="message message-success fastly-message-success" style="display: none;"></div>
+    </div>
+    <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="fastly-auth-form" class="form-inline" enctype="multipart/form-data">
+
+        <fieldset class="admin__fieldset form-list question">
+            <table class="admin__control-table" id="auth-items-table">
+                <thead>
+                <tr>
+                    <th><?php echo __('Username') ?></th>
+                    <th><?php echo __('Password') ?></th>
+                    <th class="col-actions" colspan="1"><?php echo __('Action') ?></th>
+                </tr>
+                </thead>
+                <tbody class="item-container">
+                <tr>
+                    <td><input name="auth_user" required="required" class="input-text admin__control-text auth-users-field" type="text"></td>
+                    <td><input name="auth_pass" required="required" class="input-text admin__control-text auth-users-field" type="text"></td>
+                    <td class="col-actions">
+                        <button class="action-delete fastly-save-action save_item_auth" title="Save" type="button"><span>Save</span></button>
+                        <button class="action-delete remove_item"  title="Delete" type="button"><span>Delete</span></button>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="3" class="col-actions-add">
+                        <button id="add-auth-item" class="action-add" title="Add new user" type="button">
+                            <span><?php echo __('Add new user') ?></span>
+                        </button>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </fieldset>
+    </form>
+</script>
 <?php
 
 /**
@@ -343,6 +383,11 @@ $listAcls = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/ListAll');
 $aclItems = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/ListAll');
 $createAclItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/Create');
 $deleteAclItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/Delete');
+$getAuthItems = $block->getUrl('adminhtml/fastlyCdn_Edge_Auth_Item/ListAll');
+$createAuthItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Auth_Item/Create');
+$deleteAuthItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Auth_Item/Delete');
+$deleteAuthItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Auth_Item/Delete');
+$enableAuth = $block->getUrl('adminhtml/fastlyCdn_Edge_Auth/Enable');
 
 /* This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application  */
 $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
@@ -373,7 +418,11 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "getAcls": "<?php echo $block->escapeJsQuote($listAcls);?>",
                     "getAclItems": "<?php echo $block->escapeJsQuote($aclItems);?>",
                     "createAclItem": "<?php echo $block->escapeJsQuote($createAclItem);?>",
-                    "deleteAclItem": "<?php echo $block->escapeJsQuote($deleteAclItem);?>"
+                    "deleteAclItem": "<?php echo $block->escapeJsQuote($deleteAclItem);?>",
+                    "getAuthItems": "<?php echo $block->escapeJsQuote($getAuthItems);?>",
+                    "createAuthItem": "<?php echo $block->escapeJsQuote($createAuthItem);?>",
+                    "deleteAuthItem": "<?php echo $block->escapeJsQuote($deleteAuthItem);?>",
+                    "enableAuth": "<?php echo $block->escapeJsQuote($enableAuth);?>"
                 }
             }
         }

@@ -64,8 +64,9 @@ class Create extends \Magento\Backend\App\Action
 
     public function execute()
     {
+        $result = $this->resultJson->create();
+
         try {
-            $result = $this->resultJson->create();
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
             $dictionaryName = $this->getRequest()->getParam('dictionary_name');

@@ -51,8 +51,9 @@ class ListAll extends \Magento\Backend\App\Action
      */
     public function execute()
     {
+        $result = $this->resultJson->create();
+
         try {
-            $result = $this->resultJson->create();
             $aclId = $this->getRequest()->getParam('acl_id');
             $aclItems = $this->api->aclItemsList($aclId);
 

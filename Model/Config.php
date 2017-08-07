@@ -92,6 +92,11 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_STALE_TTL = 'system/full_page_cache/fastly/fastly_advanced_configuration/stale_ttl';
 
     /**
+     * config path to basic auth status
+     */
+    const FASTLY_BASIC_AUTH_ENABLE = 'system/full_page_cache/fastly/fastly_basic_auth/enable_basic_auth';
+
+    /**
      * XML path to stale error ttl path
      */
     const XML_FASTLY_STALE_ERROR_TTL = 'system/full_page_cache/fastly/fastly_advanced_configuration/stale_error_ttl';
@@ -264,6 +269,16 @@ class Config extends \Magento\PageCache\Model\Config
     public function getStaleErrorTtl()
     {
         return intval($this->_scopeConfig->getValue(self::XML_FASTLY_STALE_ERROR_TTL));
+    }
+
+    /**
+     * Return basic auth status
+     *
+     * @return int
+     */
+    public function getBasicAuthenticationStatus()
+    {
+        return intval($this->_scopeConfig->getValue(self::FASTLY_BASIC_AUTH_ENABLE));
     }
 
     /**

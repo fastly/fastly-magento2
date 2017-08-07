@@ -1,6 +1,6 @@
 <?php
 
-namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Acl\Item;
+namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Auth\Item;
 
 use \Magento\Framework\App\Request\Http;
 use \Magento\Framework\Controller\Result\JsonFactory;
@@ -62,42 +62,31 @@ class Create extends \Magento\Backend\App\Action
         parent::__construct($context);
     }
 
-    /**
-     * Create ACL entry for specific ACL
-     *
-     * @return $resultJsonFactory
-     */
     public function execute()
     {
         $result = $this->resultJson->create();
 
         try {
-            $aclId = $this->getRequest()->getParam('acl_id');
-            $value = $this->getRequest()->getParam('item_value');
-            $negated = $this->getRequest()->getParam('negated_field');
+            $activeVersion = $this->getRequest()->getParam('active_version');
 
-            // Handle subnet
-            $ipParts = explode('/', $value);
-            $subnet = false;
-            if(!empty($ipParts[1])) {
-                if(is_numeric($ipParts[1]) && (int)$ipParts[1] < 129) {
-                    $subnet = $ipParts[1];
-                } else {
-                    return $result->setData(array('status' => false, 'msg' => 'Invalid IP subnet format.'));
-                }
+            $dictionary = $this->api->getSingleDictionary($activeVersion, 'magentomodule_basic_auth');
+
+            if((is_array($dictionary) && empty($dictionary)) || !isset($dictionary->id))
+            {
+                return $result->setData(array('status' => 'empty', 'msg' => 'Authentication dictionary does not exist.'));
             }
 
-            if (!filter_var($ipParts[0], FILTER_VALIDATE_IP)) {
-                return $result->setData(array('status' => false, 'msg' => 'Invalid IP address format.'));
+            $user = $this->getRequest()->getParam('auth_user');
+            $pass = $this->getRequest()->getParam('auth_pass');
+            $key = base64_encode($user . ':' . $pass);
+
+            $createDictionaryItem = $this->api->upsertDictionaryItem($dictionary->id, $key, true);
+
+            if(!$createDictionaryItem) {
+                return $result->setData(array('status' => false, 'msg' => 'Failed to create Dictionary item.'));
             }
 
-            $createAclItem = $this->api->upsertAclItem($aclId, $ipParts[0], $negated, $subnet);
-
-            if(!$createAclItem) {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to create Acl entry.'));
-            }
-
-            return $result->setData(array('status' => true, 'id' => $createAclItem->id));
+            return $result->setData(array('status' => true));
         } catch (\Exception $e) {
             return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
         }

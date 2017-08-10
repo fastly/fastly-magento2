@@ -74,11 +74,7 @@ class ListAll extends \Magento\Backend\App\Action
     public function execute()
     {
         $result = $this->resultJson->create();
-        $status = $this->getRequest()->getParam('status');
-        if(!(int)$status)
-        {
-            return $result->setData(array('status' => false, 'msg' => 'You have to enable Basic Auth first.'));
-        }
+
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
             $dictionary = $this->api->getSingleDictionary($activeVersion, 'magentomodule_basic_auth');
@@ -113,7 +109,7 @@ class ListAll extends \Magento\Backend\App\Action
                 $authItems[$key] = $item;
             }
 
-            return $result->setData(array('status' => true, 'authItems' => $authItems));
+            return $result->setData(array('status' => true, 'auths' => $authItems));
         } catch (\Exception $e) {
             return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
         }

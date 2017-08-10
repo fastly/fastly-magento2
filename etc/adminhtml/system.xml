@@ -80,6 +80,8 @@
                     </group>
                     <group id="fastly_edge_dictionaries" sortOrder="250" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Edge dictionaries</label>
+                        <comment>
+                            <![CDATA[Edge Dictionaries are made up of dictionary containers and the dictionary items within them. In combination, containers and items allow you to store data as key-value pairs on Fastly Edge nodes. <a href="https://docs.fastly.com/guides/edge-dictionaries/about-edge-dictionaries">Click here for more details.</a>]]></comment>
                         <field id="dictionaries" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Dictionaries</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Edge</frontend_model>
@@ -87,6 +89,8 @@
                     </group>
                     <group id="fastly_edge_acl" sortOrder="260" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Edge acl</label>
+                        <comment>
+                            <![CDATA[Edge ACLs are access control lists that allow you to manage IP addresses that are used in allowing or blocking access to resources. <a href="https://docs.fastly.com/guides/access-control-lists/creating-and-manipulating-edge-acl-entries">Click here for more details.</a>]]></comment>
                         <field id="acl" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Acl</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Acl</frontend_model>
@@ -164,6 +168,9 @@
                     </group>
                     <group id="fastly_error_maintenance_page" sortOrder="400" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Error/Maintenance page</label>
+                        <comment>
+                            <![CDATA[This option allows you to define an error/sorry page that will be sent to all users if Fastly is about to serve an error page (HTTP 500/503). It allows you to paste your own HTML which will override any backend or Fastly responses.]]>
+                        </comment>
                         <field id="force_tls" translate="label comment" sortOrder="10" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Error Page HTML]]></label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ErrorPageBtn</frontend_model>

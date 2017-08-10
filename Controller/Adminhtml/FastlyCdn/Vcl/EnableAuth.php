@@ -86,13 +86,6 @@ class EnableAuth extends \Magento\Backend\App\Action
                 return $result->setData(array('status' => false, 'msg' => 'Active versions mismatch.'));
             }
 
-            $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
-
-            if(!$clone) {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to clone active version.'));
-            }
-
-
             $vclPath = \Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl\CheckAuthSetting::VCL_AUTH_SNIPPET_PATH;
             $snippets = $this->config->getVclSnippets($vclPath);
 
@@ -110,6 +103,28 @@ class EnableAuth extends \Magento\Backend\App\Action
 
             if(!$status)
             {
+                // Check if Auth has entries
+                $dictionary = $this->api->getSingleDictionary($activeVersion, 'magentomodule_basic_auth');
+
+                // Fetch Authentication items
+                if((is_array($dictionary) && empty($dictionary)) || !isset($dictionary->id))
+                {
+                    return $result->setData(array('status' => 'empty', 'msg' => 'You must add users in order to enable Basic Authentication.'));
+                }
+
+                $authItems = $this->api->dictionaryItemsList($dictionary->id);
+
+                if(is_array($authItems) && empty($authItems))
+                {
+                    return $result->setData(array('status' => 'empty', 'msg' => 'You must add users in order to enable Basic Authentication.'));
+                }
+
+                $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
+
+                if(!$clone) {
+                    return $result->setData(array('status' => false, 'msg' => 'Failed to clone active version.'));
+                }
+
                 // Insert snippet
                 foreach($snippets as $key => $value)
                 {
@@ -129,6 +144,13 @@ class EnableAuth extends \Magento\Backend\App\Action
 
                 $enabled = true;
             } else {
+
+                $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
+
+                if(!$clone) {
+                    return $result->setData(array('status' => false, 'msg' => 'Failed to clone active version.'));
+                }
+
                 // Remove snippets
                 foreach($snippets as $key => $value)
                 {

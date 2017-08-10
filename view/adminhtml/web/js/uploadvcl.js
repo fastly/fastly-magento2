@@ -562,18 +562,21 @@ define([
                 return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
             });
 
+
+
             if(authDictStatus != false) {
                 vcl.listAuths(active_version, false).done(function (authResp) {
                     $('.loading-dictionaries').hide();
-                    if(authResp.status != false) {
-                        if(authResp.status != false) {
-                            if(authResp.auths.length > 0) {
-                                auths = authResp.auths;
-                                vcl.processAuths(authResp.auths);
-                            } else {
-                                $('.no-dictionaries').show();
-                            }
+                    if(authResp.status === true) {
+                        if(authResp.auths.length > 0) {
+                            auths = authResp.auths;
+                            vcl.processAuths(authResp.auths);
+                        } else {
+                            $('.no-dictionaries').show();
                         }
+                    } else if(authResp.status == 'empty') {
+                        auths = authResp.auths;
+                        vcl.processAuths([]);
                     }
                 }).fail(function () {
                     return errorAuthBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
@@ -1639,13 +1642,16 @@ define([
                             vcl.listAuths(active_version, false).done(function (authResp) {
                                 $('.loading-dictionaries').hide();
                                 if(authResp.status != false) {
-                                    if(authResp.status != false) {
+                                    if(authResp.status === true) {
                                         if(authResp.auths.length > 0) {
                                             auths = authResp.auths;
                                             vcl.processAuths(authResp.auths);
                                         } else {
                                             $('.no-dictionaries').show();
                                         }
+                                    } else if(authResp.status == 'empty') {
+                                        auths = authResp.auths;
+                                        vcl.processAuths([]);
                                     }
                                 }
                             }).fail(function () {

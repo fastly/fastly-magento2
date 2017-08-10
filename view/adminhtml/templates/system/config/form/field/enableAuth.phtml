@@ -1,42 +1,39 @@
-<?php
-/**
- * Copyright © 2015 Magento. All rights reserved.
- * See COPYING.txt for license details.
- */
+<?php echo $block->getButtonHtml() ?>
 
-/**
- * Copied from Mage_Config::view/adminhtml/templates/system/config/form/field/array.phtml.
- * Currently necessary for work around a missing feature in the M2 core.
- *
- * @see https://github.com/magento/magento2/pull/3469
- */
+<span class="collect-indicator" id="auth_state_span">
+    <span id="fastly_auth_state_message_span"><b>Current state:</b>
+        <img class="processing" hidden="hidden" alt="Collecting" style="margin:0 5px" src="<?php echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/>
+        <span style="display:none;" class="request_tls_state_span" id="enable_auth_state_enabled"> enabled</span>
+        <span style="display:none;" class="request_tls_state_span" id="enable_auth_state_disabled"> disabled</span>
+        <span style="display:none;" class="request_tls_state_span" id="enable_auth_state_unknown"> unknown</span>
+    </span>
+</span>
 
-// @codingStandardsIgnoreFile
-
-?>
-
-<?php
-$_htmlId = $block->getHtmlId() ? $block->getHtmlId() : '_' . uniqid();
-$_colspan = $block->isAddAfter() ? 2 : 1;
-$authEnabled = $this->isAuthEnabled();
-$msg = !($authEnabled) ? 'Click to Enable' : 'Click to Disable';
-?>
-
-<button type="button" style="margin-bottom: 10px;" class="primary" data-status="<?php echo $authEnabled; ?>" id="enable-auth-container-button"><?php echo __($msg) ?></button>
-<div class="design_theme_ua_regexp" id="grid<?php /* @escapeNotVerified */ echo $_htmlId; ?>">
+<div class="message message-error fastly-button-messages" id="fastly-error-auth-button-msg" style="display: none">
 </div>
 
-<div class="message message-error fastly-button-messages" id="fastly-error-auth-enable-button-msg" style="display: none"></div>
+<div class="message message-success fastly-button-messages" id="fastly-success-auth-button-msg" style="display: none">
+</div>
 
-<div class="message message-success fastly-button-messages" id="fastly-success-auth-enable-button-msg" style="display: none"></div>
+<div class="message message-warning fastly-button-messages" id="fastly-warning-auth-button-msg" style="display: none">
+</div>
 
 <style type="text/css">
-    .admin__control-table .fastly-edit-dictionary-icon::before {
-        content: '\e610';
-        font-size: 2rem;
+    .fastly-button-messages {
+        font-size: 1.2rem;
+        margin-top: 5px;
+        padding: 1.4rem 4rem 1.4rem 5.5rem;
     }
 
-    .no-dictionaries, .loading-dictionaries {
-        text-align: center;
+    #enable_auth_state_enabled {
+        color: #008000;
+    }
+
+    #enable_auth_state_disabled {
+        color: #808080;
+    }
+
+    #enable_auth_state_unknown {
+        color: #ff0000;
     }
 </style>

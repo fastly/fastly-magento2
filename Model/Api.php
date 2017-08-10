@@ -604,6 +604,27 @@ class Api
         return $result;
     }
 
+    /**
+     * Delete named dictionary for a particular service and version.
+     *
+     * @param $version
+     * @param $name
+     * @return bool|mixed
+     */
+    public function deleteDictionary($version, $name)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/dictionary/' . $name;
+        $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
+
+        return $result;
+    }
+
+    /**
+     * Get dictionary item list
+     *
+     * @param $dictionaryId
+     * @return bool|mixed
+     */
     public function dictionaryItemsList($dictionaryId)
     {
         $url = $this->_getApiServiceUri(). 'dictionary/'.$dictionaryId.'/items';

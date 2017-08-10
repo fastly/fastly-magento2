@@ -1,127 +1,75 @@
 <?php
 
-/**
- * Fastly CDN for Magento
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Fastly CDN for Magento End User License Agreement
- * that is bundled with this package in the file LICENSE_FASTLY_CDN.txt.
- *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade Fastly CDN to newer
- * versions in the future. If you wish to customize this module for your
- * needs please refer to http://www.magento.com for more information.
- *
- * @category    Fastly
- * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
- * @license     BSD, see LICENSE_FASTLY_CDN.txt
- */
 namespace Fastly\Cdn\Block\System\Config\Form\Field;
 
-use \Fastly\Cdn\Model\Config;
+use Magento\Backend\Block\Template\Context;
+use Magento\Config\Block\System\Config\Form\Field;
+use Magento\Framework\Data\Form\Element\AbstractElement;
 
-/**
- * Backend system config array field renderer
- */
-class EnableAuth extends \Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray
+class EnableAuth extends Field
 {
-    /**
-     * @var \Magento\Framework\Data\Form\Element\Factory
-     */
-    protected $_elementFactory;
-
-    protected $_api;
-
-    protected $config;
-
-    /**
-     * Currently necessary for work around a missing feature in the M2 core.
-     *
-     * @var string
-     */
     protected $_template = 'Fastly_Cdn::system/config/form/field/enableAuth.phtml';
 
-
+    /**
+     * @param Context $context
+     * @param array $data
+     */
     public function __construct(
-        \Magento\Backend\Block\Template\Context $context,
-        \Magento\Framework\Data\Form\Element\Factory $elementFactory,
-        \Fastly\Cdn\Model\Api $api,
-        Config $config,
+        Context $context,
         array $data = []
     ) {
-        $this->_elementFactory = $elementFactory;
-        $this->_api = $api;
-        $this->config = $config;
         parent::__construct($context, $data);
     }
 
     /**
-     * Initialise form fields
+     * Remove scope label
      *
-     * @return void
-     */
-    protected function _construct()
-    {
-        $this->addColumn('backend_name', ['label' => __('User')]);
-        $this->_addAfter = false;
-        parent::_construct();
-    }
-
-    /**
-     * Render array cell for prototypeJS template
-     *
-     * @param string $columnName
+     * @param  AbstractElement $element
      * @return string
      */
-    public function renderCellTemplate($columnName)
+    public function render(AbstractElement $element)
     {
-        if ($columnName == 'store_id' && isset($this->_columns[$columnName])) {
-            $options = $this->getOptions(__('-- Select Store --'));
-            $element = $this->_elementFactory->create('select');
-            $element->setForm(
-                $this->getForm()
-            )->setName(
-                $this->_getCellInputElementName($columnName)
-            )->setHtmlId(
-                $this->_getCellInputElementId('<%- _id %>', $columnName)
-            )->setValues(
-                $options
-            );
-            return str_replace("\n", '', $element->getElementHtml());
-        }
-
-        return parent::renderCellTemplate($columnName);
+        $element->unsScope()->unsCanUseWebsiteValue()->unsCanUseDefaultValue();
+        return parent::render($element);
     }
 
     /**
-     * Get list of store views.
+     * Return element html
      *
-     * @param bool|false $label
-     *
-     * @return array
+     * @param  AbstractElement $element
+     * @return string
      */
-    protected function getOptions($label = false)
+    protected function _getElementHtml(AbstractElement $element)
     {
-        $options = [];
-        foreach ($this->_storeManager->getStores() as $store)
-        {
-            $options[] = ['value' => $store->getId(), 'label' => $store->getName()];
-        }
-        if ($label) {
-            array_unshift($options, ['value' => '', 'label' => $label]);
-        }
-        return $options;
+        return $this->_toHtml();
     }
 
     /**
-     * Check if Basic Authentication is enabled
-     * @return int
+     * Return ajax url for collect button
+     *
+     * @return string
      */
-    public function isAuthEnabled()
+    public function getAjaxUrl()
     {
-        return $this->config->getBasicAuthenticationStatus();
+        return $this->getUrl('adminhtml/fastlyCdn/vcl/serviceinfo');
+    }
+
+    /**
+     * Generate upload button html
+     *
+     * @return string
+     */
+    public function getButtonHtml()
+    {
+        $button = $this->getLayout()->createBlock(
+            'Magento\Backend\Block\Widget\Button'
+        )->setData(
+            [
+                'id' => 'fastly_enable_auth_button',
+                'label' => __('Basic Authentication Status'),
+            ]
+        );
+
+        return $button->toHtml();
     }
 }

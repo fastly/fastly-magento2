@@ -69,6 +69,7 @@
                     </group>
                     <group id="fastly_basic_auth" sortOrder="240" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Basic Authentication</label>
+                        <comment><![CDATA[Basic authentication allows you to protect every page and asset on your site with username and password. This can be used to protect the site during development. It is not advised to use this in production]]></comment>
                         <field id="enable_basic_auth" translate="label comment" type="select" sortOrder="80" showInDefault="1">
                             <label>Basic Authentication Status</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\EnableAuth</frontend_model>

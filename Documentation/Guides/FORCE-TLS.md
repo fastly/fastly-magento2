@@ -11,7 +11,7 @@ Magento admin > Stores > Configuration > General > Web
 
 Click on the **Base URLs (Secure)** tab and enter your **Secure Base URL**. Also, set **Use Secure URLs in Frontend** and **Use Secure URLs in Admin** options to **Yes**.
 
-![Secure URL](images/guides/force-tls/secure-url.png "Secure URL")
+![Secure URL](../images/guides/force-tls/secure-url.png "Secure URL")
  
 Once you're done, press the Save config button in the upper right corner.
 
@@ -28,15 +28,15 @@ Magento admin > Stores > Configuration > Advanced > System > Full Page Cache > F
 
 Under the **Advanced Configuration** tab, press the **Force TLS** button. 
 
-![Force TLS button](images/guides/force-tls/force-tls.png "Force TLS button")
+![Force TLS button](../images/guides/force-tls/force-tls.png "Force TLS button")
 
 The modal window with the following content will pop up, press the **Upload button** in the upper right corner:
 
-![Force TLS modal](images/guides/force-tls/force-tls-modal.png "Force TLS modal")
+![Force TLS modal](../images/guides/force-tls/force-tls-modal.png "Force TLS modal")
 
 Once done, the modal windows will close and you will see a success message. Also, the current state will change to **enabled**.
 
-![Force TLS success](images/guides/force-tls/force-tls-success.png "Success")
+![Force TLS success](../images/guides/force-tls/force-tls-success.png "Success")
 
 
 

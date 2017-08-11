@@ -19,11 +19,13 @@ Under the *Basic Authentication** tab, you will see a screen like this.
 First thing you will need to do is add user/password pairs for basic auth. To do so click on **Manage Users** button. 
 A modal window with the following content will pop up.
 
-![Basic Auth Manage Users Modal](../images/guides/basic-auth/create-container-for-authenticated-users.png "Basic Auth Manage Users Modal")
+![Basic Auth Create Container for Auth Users Modal](../images/guides/basic-auth/create-container-for-authenticated-users.png "Basic Auth Create Container for Auth Users Modal")
 
 press the **Upload button** in the upper right corner. This will create a Fastly Edge Dictionary that is used to store
 authentication information. Once done, another modal window will open up that allows you to add username/password pairs for users. 
 After adding an entry make sure you click on the save icon (pointed out with a red arrow).
+
+![Basic Auth Manage Users Modal](../images/guides/basic-auth/adding-users.png "Basic Auth Manage Users Modal")
 
 Once the basic auth users have been created click on the **Enable/Disable** button. A modal window will show up. Press the 
 **Upload button** in the upper right corner to activate it. 

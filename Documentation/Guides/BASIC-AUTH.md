@@ -37,10 +37,8 @@ The modal windows will close and you will see a success message. Also, the curre
 
 ## Turning off Basic Auth
 
-Turn off basic authentication can be achieved by click the **Enable/Disable** button and clicking the upload button in the resulting
-modal.
+Once you are ready to go live you will want to turn off Basic Auth. This can be achieved by clicking the **Enable/Disable** button then clicking the **Upload button**. Please note this will not remove basic auth users table so you may see a warning in Fastly UI about _magentomodule_basic_auth_ table not being used. This is not a critical error and you can disregard it. If you are sure you no longer need Basic Auth you can follow **Removing all users** instructions below. 
 
 ## Removing all users
 
-If you need to start from scratch you can remove all users. Please note this will disable Basic Authentication since no access
-will be allowed.
+If you need to start from scratch or want to completely remove all remanants of Basic Auth click the **Remove all users** button. Please note this will disable Basic Authentication since with no users Basic Auth is pointless.

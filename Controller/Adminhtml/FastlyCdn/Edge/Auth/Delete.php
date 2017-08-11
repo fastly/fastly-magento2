@@ -81,13 +81,13 @@ class Delete extends \Magento\Backend\App\Action
                 return $result->setData(array('status' => false, 'msg' => 'Active versions mismatch.'));
             }
 
-            // Check dictionaty
+            // Check dictionary
             $dictionaryName = \Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl\CheckAuthSetting::AUTH_DICTIONARY_NAME;
             $dictionary = $this->api->getSingleDictionary($activeVersion, $dictionaryName);
 
             if((is_array($dictionary) && empty($dictionary)) || $dictionary == false)
             {
-                return $result->setData(array('status' => false, 'not_exists' => true, 'msg' => 'Authentication dictionary does not exist.'));
+                return $result->setData(array('status' => false, 'not_exists' => true, 'msg' => 'Authentication dictionary does not exist. Nothing to remove.'));
             }
 
             $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
@@ -96,10 +96,20 @@ class Delete extends \Magento\Backend\App\Action
                 return $result->setData(array('status' => false, 'msg' => 'Failed to clone active version.'));
             }
 
+            $vclPath = \Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl\CheckAuthSetting::VCL_AUTH_SNIPPET_PATH;
+            $snippets = $this->config->getVclSnippets($vclPath);
+
+            // Remove snippets
+            foreach($snippets as $key => $value)
+            {
+                $name = Config::FASTLY_MAGENTO_MODULE.'_basic_auth_'.$key;
+                $status = $this->api->removeSnippet($clone->number, $name);
+            }
+
             $deleteDictionary = $this->api->deleteDictionary($clone->number, $dictionaryName);
 
             if(!$deleteDictionary) {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to create Dictionary container.'));
+                return $result->setData(array('status' => false, 'msg' => 'Failed to delete Auth Dictionary.'));
             }
 
             $validate = $this->api->validateServiceVersion($clone->number);

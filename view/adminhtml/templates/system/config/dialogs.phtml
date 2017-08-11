@@ -61,7 +61,7 @@
             <?php /* @escapeNotVerified */ echo __("You are about to clone your active version #x.")?>
             <?php /* @escapeNotVerified */ echo __("We'll make the changes to version #y.")?>
         </div>
-        <div class="message message-error fastly-message-error" style="display: none">
+        <div class="message message-error fastly-message-error" id="fastly-auth-toggle-message-error" style="display: none">
         </div>
     </div>
     <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="vcl-upload-form" class="form-inline" enctype="multipart/form-data">
@@ -463,6 +463,7 @@ $deleteAuthItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Auth_Item/Delete');
 $checkAuthSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkAuthSetting');
 $checkAuthDictionaryUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkAuthDictionary');
 $toggleAuthSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/enableAuth');
+$checkAuthUsersAvailable = $block->getUrl('adminhtml/fastlyCdn_Vcl/CheckAuthUsersAvailable');
 
 /* This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application  */
 $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
@@ -501,7 +502,8 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "deleteAuthItem": "<?php echo $block->escapeJsQuote($deleteAuthItem);?>",
                     "checkAuthSettingUrl": "<?php echo $block->escapeJsQuote($checkAuthSettingUrl);?>",
                     "checkAuthDictionaryUrl": "<?php echo $block->escapeJsQuote($checkAuthDictionaryUrl);?>",
-                    "toggleAuthSettingUrl": "<?php echo $block->escapeJsQuote($toggleAuthSettingUrl);?>"
+                    "toggleAuthSettingUrl": "<?php echo $block->escapeJsQuote($toggleAuthSettingUrl);?>",
+                    "checkAuthUsersAvailable": "<?php echo $block->escapeJsQuote($checkAuthUsersAvailable);?>"
                 }
             }
         }

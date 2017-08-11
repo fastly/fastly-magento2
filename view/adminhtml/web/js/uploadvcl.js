@@ -134,13 +134,12 @@ define([
                         vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
                     });
 
+                    vcl.showPopup('fastly-auth-container-delete');
+                    vcl.setActiveServiceLabel(active_version, next_version, service_name);
 
                 }).fail(function () {
                     return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                 });
-
-                vcl.showPopup('fastly-auth-container-delete');
-                vcl.setActiveServiceLabel(active_version, next_version, service_name);
             });
 
             /**
@@ -158,6 +157,8 @@ define([
                         if (response.status == true) {
                             $(self).closest('tr').remove();
                             vcl.showSuccessMessage($.mage.__('Authentication item is successfully deleted.'));
+                        } else if(response.status == 'empty') {
+                            vcl.showSuccessMessage($.mage.__(response.msg));
                         }
                     }).fail(function () {
                         vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
@@ -562,8 +563,6 @@ define([
                 return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
             });
 
-
-
             if(authDictStatus != false) {
                 vcl.listAuths(active_version, false).done(function (authResp) {
                     $('.loading-dictionaries').hide();
@@ -707,9 +706,32 @@ define([
                         vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
                     }
                 );
-                vcl.showPopup('fastly-auth-options');
-                vcl.setActiveServiceLabel(active_version, next_version, service_name);
 
+                // Check if Users are available and Auth can be enabled
+                var enableMsg = false;
+                $.ajax({
+                    type: "GET",
+                    url: config.checkAuthUsersAvailable,
+                    data: {
+                        'active_version': active_version
+                    },
+                    showLoader: true,
+                    success: function(response)
+                    {
+                        if(response.status == 'empty') {
+                            enableMsg = response.msg;
+                        }
+
+                        vcl.showPopup('fastly-auth-options');
+                        vcl.setActiveServiceLabel(active_version, next_version, service_name);
+
+                        if(enableMsg) {
+                            var enableAuthPopupMsg =  $('.fastly-message-error');
+                            enableAuthPopupMsg.text($.mage.__(response.msg));
+                            enableAuthPopupMsg.show();
+                        }
+                    }
+                });
             }).fail(function (msg) {
                 return errorAuthBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
             });
@@ -890,7 +912,8 @@ define([
         var successAuthBtnMsg = $('#fastly-success-auth-button-msg');
         var errorAuthBtnMsg = $('#fastly-error-auth-button-msg');
         var warningAuthBtnMsg = $('#fastly-warning-auth-button-msg');
-        var deleteAuthBtnMsg = $('#fastly-error-auth-list-button-msg');
+        var deleteAuthBtnMsgError = $('#fastly-error-auth-list-button-msg');
+        var deleteAuthBtnMsgSuccess = $('#fastly-success-auth-list-button-msg');
 
         var vcl = {
 
@@ -1637,6 +1660,7 @@ define([
                     {
                         if(response.status == true)
                         {
+                            authDictStatus = true;
                             successDictionaryBtnMsg.text($.mage.__('Authentication dictionary is successfully created.')).show();
                             active_version = response.active_version;
                             vcl.listAuths(active_version, false).done(function (authResp) {
@@ -1690,22 +1714,27 @@ define([
                     {
                         if(response.status == true)
                         {
+                            // Change to Auth to disabled
+                            successAuthBtnMsg.text($.mage.__('Basic Authentication is successfully turned off.')).show();
+                            authStateMsgSpan.find('#enable_auth_state_enabled').hide();
+                            authStateMsgSpan.find('#enable_auth_state_disabled').show();
                             active_version = response.active_version;
                             authDictStatus = true;
                             vcl.modal.modal('closeModal');
-                            return deleteAuthBtnMsg.text($.mage.__('Authentication users removed.')).show();
+                            return deleteAuthBtnMsgSuccess.text($.mage.__('Authentication users removed.')).show();
                         } else {
                             if(response.not_exists == true) {
                                 authDictStatus = false;
                             }
                             vcl.resetAllMessages();
                             vcl.modal.modal('closeModal');
-                            return deleteAuthBtnMsg.text($.mage.__(response.msg)).show();
+                            return deleteAuthBtnMsgError.text($.mage.__(response.msg)).show();
                         }
                     },
                     error: function(msg)
                     {
-                        return deleteAuthBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                        requestStateMsgSpan.find('#enable_auth_state_unknown').show();
+                        return deleteAuthBtnMsgError.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                     }
                 });
             },
@@ -1777,7 +1806,7 @@ define([
                     }
                 },
                 'fastly-auth-container-options': {
-                    title: jQuery.mage.__('Auth container'),
+                    title: jQuery.mage.__('Authentication container'),
                     content: function () {
                         return document.getElementById('fastly-auth-container-template').textContent;
                     },

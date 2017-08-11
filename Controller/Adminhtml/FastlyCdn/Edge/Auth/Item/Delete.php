@@ -76,6 +76,18 @@ class Delete extends \Magento\Backend\App\Action
                 return $result->setData(array('status' => 'empty', 'msg' => 'Authentication dictionary does not exist.'));
             }
 
+            // Check if there are any entries left
+            $authItems = $this->api->dictionaryItemsList($dictionary->id);
+
+            if((is_array($authItems) && count($authItems) < 2) || $authItems == false)
+            {
+                // No users left, send message
+                return $result->setData(array(
+                    'status' => 'empty',
+                    'msg' => 'While Basic Authenticaton is enabled, et least one user must exist.',
+                ));
+            }
+
             $itemKey = $this->getRequest()->getParam('item_key_id');
 
             $deleteItem = $this->api->deleteDictionaryItem($dictionary->id, $itemKey);

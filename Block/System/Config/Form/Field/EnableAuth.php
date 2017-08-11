@@ -66,7 +66,7 @@ class EnableAuth extends Field
         )->setData(
             [
                 'id' => 'fastly_enable_auth_button',
-                'label' => __('Basic Authentication Status'),
+                'label' => __('Enable/Disable'),
             ]
         );
 

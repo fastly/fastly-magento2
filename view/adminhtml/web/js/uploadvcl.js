@@ -1788,7 +1788,7 @@ define([
                     }
                 },
                 'fastly-dictionary-container-options': {
-                    title: jQuery.mage.__('Dictionary container'),
+                    title: jQuery.mage.__('Create dictionary container'),
                     content: function () {
                         return document.getElementById('fastly-dictionary-container-template').textContent;
                     },
@@ -1797,7 +1797,7 @@ define([
                     }
                 },
                 'fastly-acl-container-options': {
-                    title: jQuery.mage.__('Acl container'),
+                    title: jQuery.mage.__('Create ACL container'),
                     content: function () {
                         return document.getElementById('fastly-acl-container-template').textContent;
                     },
@@ -1806,7 +1806,7 @@ define([
                     }
                 },
                 'fastly-auth-container-options': {
-                    title: jQuery.mage.__('Authentication container'),
+                    title: jQuery.mage.__('Create container for authenticated users'),
                     content: function () {
                         return document.getElementById('fastly-auth-container-template').textContent;
                     },
@@ -1840,7 +1840,7 @@ define([
                     }
                 },
                 'fastly-auth-items': {
-                    title: jQuery.mage.__('Authentication users'),
+                    title: jQuery.mage.__('Basic Auth users'),
                     content: function () {
                         return document.getElementById('fastly-auth-items-template').textContent;
                     },

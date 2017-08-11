@@ -69,7 +69,7 @@
                     </group>
                     <group id="fastly_basic_auth" sortOrder="240" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Basic Authentication</label>
-                        <comment><![CDATA[Basic authentication allows you to protect every page and asset on your site with username and password. This can be used to protect the site during development. It is not advised to use this in production]]></comment>
+                        <comment><![CDATA[Basic authentication allows you to protect every page and asset on your site with username and password. This can be used to protect the site during development. You will still be able to access Magento admin without basic auth. It is not advised to use this in production]]></comment>
                         <field id="enable_basic_auth" translate="label comment" type="select" sortOrder="80" showInDefault="1">
                             <label>Basic Authentication Status</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\EnableAuth</frontend_model>
@@ -82,7 +82,7 @@
                     <group id="fastly_edge_dictionaries" sortOrder="250" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Edge dictionaries</label>
                         <comment>
-                            <![CDATA[Edge Dictionaries are made up of dictionary containers and the dictionary items within them. In combination, containers and items allow you to store data as key-value pairs on Fastly Edge nodes. <a href="https://docs.fastly.com/guides/edge-dictionaries/about-edge-dictionaries">Click here for more details.</a>]]></comment>
+                            <![CDATA[Edge Dictionaries are made up of dictionary containers and the dictionary items within them. In combination, containers and items allow you to store data as key-value pairs on Fastly Edge nodes. <a href="https://docs.fastly.com/guides/edge-dictionaries/about-edge-dictionaries">Click here for more details.</a>. This interface only allows management of containers and entries. To invoke them you will need to configure your Fastly service.]]></comment>
                         <field id="dictionaries" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Dictionaries</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Edge</frontend_model>
@@ -91,7 +91,7 @@
                     <group id="fastly_edge_acl" sortOrder="260" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Edge acl</label>
                         <comment>
-                            <![CDATA[Edge ACLs are access control lists that allow you to manage IP addresses that are used in allowing or blocking access to resources. <a href="https://docs.fastly.com/guides/access-control-lists/creating-and-manipulating-edge-acl-entries">Click here for more details.</a>]]></comment>
+                            <![CDATA[Edge ACLs are access control lists that allow you to manage IP addresses that are used in allowing or blocking access to resources. <a href="https://docs.fastly.com/guides/access-control-lists/creating-and-manipulating-edge-acl-entries">Click here for more details.</a> This interface only allows management of containers and entries. To invoke them you will need to configure your Fastly service.]]></comment>
                         <field id="acl" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Acl</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Acl</frontend_model>

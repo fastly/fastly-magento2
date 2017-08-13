@@ -1,5 +1,17 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.24
+
+- Fix for a bug where 302 may be deemed an unsuccessful code resulting in caching of cookies
+
+## 1.2.23
+
+- Add Basic Authentication functionality - ability to protect your site during maintenance or development
+
+## 1.2.21
+
+- Add Edge ACLs management interface directly into the Magento Plugin admin
+
 ## 1.2.20
 
 - Add Historical bandwidth/request/error stats to the Magento Dashboard

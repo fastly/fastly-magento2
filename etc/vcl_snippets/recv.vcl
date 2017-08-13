@@ -58,11 +58,11 @@
     # geoip lookup
     if (req.url ~ "fastlyCdn/geoip/getaction/") {
         # check if GeoIP has been already processed by client. this normally happens before essential cookies are set.
-        if (req.http.cookie ~ "(X-Magento-Vary|form_key)=") {
+        if (req.http.cookie:X-Magento-Vary || req.http.cookie:form_key) {
             error 200 "";
         } else {
             # append parameter with country code only if it doesn't exist already
-            if ( req.url !~ "country_code=" ) {
+            if ( req.url.qs !~ "country_code=" ) {
                 set req.url = req.url "?country_code=" if ( req.http.geo_override, req.http.geo_override, client.geo.country_code);
             }
         }

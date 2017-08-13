@@ -70,9 +70,12 @@
         return (pass);
     }
 
-    # cache only successfully responses and 404s
-    if ( !http_status_matches(beresp.status, "200,301,404")) {
+    # Cache non-successful responses for 1 second to avoid onslaught of traffic if backend starts
+    # spewing 500s. Also set 5 second grace in case backend is timing out or otherwise messed up
+    if ( !http_status_matches(beresp.status, "200,203,300,301,302,404,410")) {
         set req.http.Fastly-Cachetype = "ERROR";
+        # Remove Set-Cookies so we don't inadvertenly cache them
+        unset beresp.http.Set-Cookie;
         set beresp.ttl = 1s;
         set beresp.grace = 5s;
         return (deliver);

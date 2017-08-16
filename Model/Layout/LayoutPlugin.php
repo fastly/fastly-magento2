@@ -86,6 +86,13 @@ class LayoutPlugin
                 $this->response->setHeader($header->getFieldName(), $value, true);
             }
         }
+        # Surface the cacheability of a page. This may expose things like page blocks being set to
+        # cacheable = false which makes the whole page uncacheable
+        if ($subject->isCacheable() ) {
+          $this->response->setHeader("fastly-page-cacheable", "YES");
+        } else {
+          $this->response->setHeader("fastly-page-cacheable", "NO");
+        }
         return $result;
     }
 
@@ -106,7 +113,7 @@ class LayoutPlugin
             }
             # Add a debug header to indicate this request has passed through the Fastly Module. This is
             # for ease of debugging
-            $this->response->setHeader("Fastly-Module-Enabled", "1.2.24", true);
+            $this->response->setHeader("Fastly-Module-Enabled", "1.2.25", true);
         }
         return $result;
     }

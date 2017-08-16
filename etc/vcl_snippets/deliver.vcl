@@ -22,6 +22,7 @@
         set resp.http.Fastly-Magento-VCL-Uploaded = "1.2.24";
     } else {
         remove resp.http.Fastly-Module-Enabled;
+        remove resp.http.fastly-page-cacheable;
     }
     # debug info
     if (resp.http.X-Magento-Debug) {

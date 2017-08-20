@@ -4,9 +4,11 @@
         set req.url = re.group.2;
     }
 
-    # Sort the query arguments
+    # Sort the query arguments to increase cache hit ratio with query arguments that
+    # may be out od order
     set req.url = boltsort.sort(req.url);
 
+    # Rewrite /static/versionxxxxx URLs. Avoids us having to rewrite on nginx layer
     if (req.url ~ "^/static/version(\d*/)?(.*)$") {
        set req.url = "/static/" + re.group.2 + "?" + re.group.1;
     }

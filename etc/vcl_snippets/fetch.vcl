@@ -8,11 +8,11 @@
 
         /* deliver stale if the object is available */
         if (stale.exists) {
-        return(deliver_stale);
+            return(deliver_stale);
         }
 
         if (req.restarts < 1 && (req.request == "GET" || req.request == "HEAD")) {
-        restart;
+            restart;
         }
 
         /* else go to vcl_error to deliver a synthetic */
@@ -31,19 +31,15 @@
 
     }
 
-    if (req.restarts > 0 ) {
-        set beresp.http.Fastly-Restarts = req.restarts;
-    }
-
     if (beresp.http.Content-Type ~ "text/(html|xml)") {
         # enable ESI feature for Magento response by default
         esi;
         if (!beresp.http.Vary ~ "X-Magento-Vary,Https") {
             if (beresp.http.Vary) {
-                    set beresp.http.Vary = beresp.http.Vary ",X-Magento-Vary,Https";
-                } else {
-                    set beresp.http.Vary = "X-Magento-Vary,Https";
-                }
+                set beresp.http.Vary = beresp.http.Vary ",X-Magento-Vary,Https";
+            } else {
+                set beresp.http.Vary = "X-Magento-Vary,Https";
+            }
         }
         # Since varnish doesn't compress ESIs we need to hint to the HTTP/2 terminators to
         # compress it
@@ -89,9 +85,6 @@
     # images, css and js are cacheable by default so we have to remove cookie also
     if (beresp.ttl > 0s && (req.request == "GET" || req.request == "HEAD") && !req.http.x-pass ) {
         unset beresp.http.set-cookie;
-        if (req.url !~ "^/(pub/)?(media|static)/.*") {
-            set beresp.grace = 86400m;
-        }
 
         # init surrogate keys
         if (beresp.http.X-Magento-Tags) {
@@ -100,13 +93,9 @@
             set beresp.http.Surrogate-Key = "text";
         }
 
-        # set surrogate keys by content type
-        if (beresp.http.Content-Type ~ "image") {
-            set beresp.http.Surrogate-Key = "image";
-        } elsif (beresp.http.Content-Type ~ "script") {
-            set beresp.http.Surrogate-Key = "script";
-        } elsif (beresp.http.Content-Type ~ "css") {
-            set beresp.http.Surrogate-Key = "css";
+        # set surrogate keys by content type if they are image/script or CSS
+        if (beresp.http.Content-Type ~ "(image|script|css)") {
+            set beresp.http.Surrogate-Key = re.group.1;
         }
         return (deliver);
     }

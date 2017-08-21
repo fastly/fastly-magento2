@@ -61,8 +61,17 @@
         }
     }
 
-    if (beresp.http.Cache-Control ~ "private") {
+    if (beresp.http.Cache-Control ~ "private|no-cache|no-store") {
         set req.http.Fastly-Cachetype = "PRIVATE";
+        return (pass);
+    }
+
+    if (beresp.http.X-Magento-Debug) {
+        set beresp.http.X-Magento-Cache-Control = beresp.http.Cache-Control;
+    }
+
+    # Never cache 302s
+    if (beresp.status == 302) {
         return (pass);
     }
 
@@ -75,10 +84,6 @@
         set beresp.ttl = 1s;
         set beresp.grace = 5s;
         return (deliver);
-    }
-
-    if (beresp.http.X-Magento-Debug) {
-        set beresp.http.X-Magento-Cache-Control = beresp.http.Cache-Control;
     }
 
     # validate if we need to cache it and prevent from setting cookie

@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.26
+
+- VCL clean up. Remove unused structures. Add few more guardrails
+
 ## 1.2.25
 
 - Add fastly-page-cacheable debug header to indicate whether a page is cacheable. Helpful to determine if a particular

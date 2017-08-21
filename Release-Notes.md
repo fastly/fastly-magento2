@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.25
+
+- Add fastly-page-cacheable debug header to indicate whether a page is cacheable. Helpful to determine if a particular
+  block in the page has been marked uncacheable
+
 ## 1.2.24
 
 - Fix for a bug where 302 may be deemed an unsuccessful code resulting in caching of cookies

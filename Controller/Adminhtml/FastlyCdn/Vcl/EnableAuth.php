@@ -171,7 +171,7 @@ class EnableAuth extends \Magento\Backend\App\Action
 
             if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
                 if(!$enabled) {
-                    $this->api->sendWebHook('*Basic Authenticationhas been turned OFF in Fastly version '. $clone->number . '*');
+                    $this->api->sendWebHook('*Basic Authentication has been turned OFF in Fastly version '. $clone->number . '*');
                 } else {
                     $this->api->sendWebHook('*Basic Authentication has been turned ON in Fastly version '. $clone->number . '*');
                 }

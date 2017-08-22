@@ -803,57 +803,61 @@ class Api
      */
     protected function _fetch($uri, $method = \Zend_Http_Client::GET, $body = '', $test = false, $testApiKey = null)
     {
+        $apiKey = ($test == true) ? $testApiKey : $this->config->getApiKey();
 
-        if($test) {
-            $apiKey = $testApiKey;
-        } else {
-            $apiKey = $this->config->getApiKey();
+        // Corectly format $body string
+        if (is_array($body) == true) {
+            $body = http_build_query($body);
         }
 
-        // set headers
+        // Client headers
         $headers = [
             self::FASTLY_HEADER_AUTH  . ': ' . $apiKey,
             'Accept: application/json'
         ];
 
-        if($method == \Zend_Http_Client::PUT) {
-            array_push($headers, 'Content-Type: application/x-www-form-urlencoded');
+        // Client options
+        $options = [];
+
+        // Request method specific header & option changes
+        if ($method == \Zend_Http_Client::PUT) {
+            $headers[] = 'Content-Type: application/x-www-form-urlencoded';
+            $options[CURLOPT_CUSTOMREQUEST] = \Zend_Http_Client::PUT;
+
+            if ($body != '') {
+                $options[CURLOPT_POSTFIELDS] = $body;
+            }
         }
 
-        if($method == \Zend_Http_Client::PATCH) {
-            array_push($headers, 'Content-Type: text/json');
+        if ($method == \Zend_Http_Client::DELETE) {
+            $options[CURLOPT_CUSTOMREQUEST] = \Zend_Http_Client::DELETE;
         }
 
-        try {
-            $client = $this->curlFactory->create();
-            if($method == \Zend_Http_Client::PUT) {
-                $client->addOption(CURLOPT_CUSTOMREQUEST, 'PUT');
-                if($body != '')
-                {
-                    $client->addOption(CURLOPT_POSTFIELDS, http_build_query($body));
-                }
-            } elseif($method == \Zend_Http_Client::DELETE) {
-                $client->addOption(CURLOPT_CUSTOMREQUEST, 'DELETE');
-            } elseif($method == \Zend_Http_Client::PATCH) {
-                $client->addOption(CURLOPT_CUSTOMREQUEST, 'PATCH');
-                if($body != '')
-                {
-                    $client->addOption(CURLOPT_POSTFIELDS, $body);
-                }
-            }
-            $client->write($method, $uri, '1.1', $headers, $body);
-            $response = $client->read();
-            $responseBody = \Zend_Http_Response::extractBody($response);
-            $responseCode = \Zend_Http_Response::extractCode($response);
-            $client->close();
+        if ($method == \Zend_Http_Client::PATCH) {
+            $options[CURLOPT_CUSTOMREQUEST] = \Zend_Http_Client::PATCH;
+            $headers[] = 'Content-Type: text/json';
 
-            // check response
-            if ($responseCode != '200') {
-                throw new \Exception('Return status ' . $responseCode);
+            if ($body != '') {
+                $options[CURLOPT_POSTFIELDS] = $body;
             }
+        }
 
-        } catch (\Exception $e) {
-            $this->logger->critical($e->getMessage(), $uri);
+        /** @var \Magento\Framework\HTTP\Adapter\Curl $client */
+        $client = $this->curlFactory->create();
+
+        // Execute request
+        $client->setOptions($options);
+        $client->write($method, $uri, '1.1', $headers, $body);
+        $response = $client->read();
+        $client->close();
+
+        // Parse response
+        $responseBody = \Zend_Http_Response::extractBody($response);
+        $responseCode = \Zend_Http_Response::extractCode($response);
+
+        // Return error based on response code
+        if ($responseCode != '200') {
+            $this->logger->critical('Return status ' . $responseCode, $uri);
             return false;
         }
 

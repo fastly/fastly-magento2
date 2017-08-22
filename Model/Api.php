@@ -796,7 +796,7 @@ class Api
     /**
      * @param $uri
      * @param string $method
-     * @param string $body
+     * @param mixed[]|string $body
      * @param bool $test
      * @param $testApiKey
      * @return bool|mixed
@@ -820,26 +820,28 @@ class Api
         $options = [];
 
         // Request method specific header & option changes
-        if ($method == \Zend_Http_Client::PUT) {
-            $headers[] = 'Content-Type: application/x-www-form-urlencoded';
-            $options[CURLOPT_CUSTOMREQUEST] = \Zend_Http_Client::PUT;
+        switch ($method) {
+            case \Zend_Http_Client::DELETE:
+                $options[CURLOPT_CUSTOMREQUEST] = \Zend_Http_Client::DELETE;
+                break;
+            case \Zend_Http_Client::PUT:
+                $headers[] = 'Content-Type: application/x-www-form-urlencoded';
+                $options[CURLOPT_CUSTOMREQUEST] = \Zend_Http_Client::PUT;
 
-            if ($body != '') {
-                $options[CURLOPT_POSTFIELDS] = $body;
-            }
-        }
+                if ($body != '') {
+                    $options[CURLOPT_POSTFIELDS] = $body;
+                }
 
-        if ($method == \Zend_Http_Client::DELETE) {
-            $options[CURLOPT_CUSTOMREQUEST] = \Zend_Http_Client::DELETE;
-        }
+                break;
+            case \Zend_Http_Client::PATCH:
+                $options[CURLOPT_CUSTOMREQUEST] = \Zend_Http_Client::PATCH;
+                $headers[] = 'Content-Type: text/json';
 
-        if ($method == \Zend_Http_Client::PATCH) {
-            $options[CURLOPT_CUSTOMREQUEST] = \Zend_Http_Client::PATCH;
-            $headers[] = 'Content-Type: text/json';
+                if ($body != '') {
+                    $options[CURLOPT_POSTFIELDS] = $body;
+                }
 
-            if ($body != '') {
-                $options[CURLOPT_POSTFIELDS] = $body;
-            }
+                break;
         }
 
         /** @var \Magento\Framework\HTTP\Adapter\Curl $client */

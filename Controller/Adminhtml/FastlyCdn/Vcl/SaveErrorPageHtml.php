@@ -126,8 +126,8 @@ class SaveErrorPageHtml extends \Magento\Backend\App\Action
                 'name' => Config::ERROR_PAGE_RESPONSE_OBJECT,
                 'request_condition' => $createCondition->name,
                 'content'   =>  $html,
-                'status' => "503"
-
+                'status' => "503",
+                'response' => "Service Temporarily Unavailable"
             );
 
             $createResponse = $this->api->createResponse($clone->number, $response);

@@ -4,10 +4,6 @@
         set req.url = re.group.2;
     }
 
-    # Sort the query arguments to increase cache hit ratio with query arguments that
-    # may be out od order
-    set req.url = boltsort.sort(req.url);
-
     # Rewrite /static/versionxxxxx URLs. Avoids us having to rewrite on nginx layer
     if (req.url ~ "^/static/version(\d*/)?(.*)$") {
        set req.url = "/static/" + re.group.2 + "?" + re.group.1;
@@ -82,7 +78,12 @@
     # Pass all admin actions
     } else if ( req.url ~ "^/(index\.php/)?admin(_.*)?/" ) {
         set req.http.x-pass = "1";
+    } else {
+        # Sort the query arguments to increase cache hit ratio with query arguments that
+        # may be out od order
+        set req.url = boltsort.sort(req.url);
     }
+
 
     # static files are always cacheable. remove SSL flag and cookie
     if (req.url ~ "^/(pub/)?(media|static)/.*") {

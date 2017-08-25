@@ -113,7 +113,7 @@ class LayoutPlugin
             }
             # Add a debug header to indicate this request has passed through the Fastly Module. This is
             # for ease of debugging
-            $this->response->setHeader("Fastly-Module-Enabled", "1.2.26", true);
+            $this->response->setHeader("Fastly-Module-Enabled", "1.2.27", true);
         }
         return $result;
     }

@@ -16,7 +16,7 @@
         }
 
         /* else go to vcl_error to deliver a synthetic */
-        error 503;
+        error beresp.status beresp.response;
     }
 
     # Remove Set-Cookies from responses for static content
@@ -73,6 +73,16 @@
     # Never cache 302s
     if (beresp.status == 302) {
         return (pass);
+    }
+
+    # Just in case the Request Setting for x-pass is missing
+    if (req.http.x-pass) {
+        return (pass);
+    }
+
+    # Varnish sets default TTL if none of these are present
+    if (!beresp.http.Expires && !beresp.http.Surrogate-Control ~ "max-age" && !beresp.http.Cache-Control ~ "(s-maxage|max-age)") {
+        set beresp.ttl = 0s;
     }
 
     # validate if we need to cache it and prevent from setting cookie

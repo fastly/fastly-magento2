@@ -80,6 +80,11 @@
         return (pass);
     }
 
+    # Varnish sets default TTL if none of these are present
+    if (!beresp.http.Expires && !beresp.http.Surrogate-Control ~ "max-age" && !beresp.http.Cache-Control ~ "(s-maxage|max-age)") {
+        set beresp.ttl = 0s;
+    }
+
     # validate if we need to cache it and prevent from setting cookie
     # images, css and js are cacheable by default so we have to remove cookie also
     if (beresp.ttl > 0s && (req.request == "GET" || req.request == "HEAD") && !req.http.x-pass ) {

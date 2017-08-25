@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.27
+
+- Error/maintenance page was returning 503 OK when returning a response. This has now been change 
+  503 Service Temporarily Unavailable
+- Magento 2.2 changes HTTP API which break PUT requests. This release contains fix for 2.2
+
 ## 1.2.26
 
 - VCL clean up. Remove unused structures. Add few more guardrails

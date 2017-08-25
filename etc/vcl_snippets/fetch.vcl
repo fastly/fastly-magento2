@@ -16,7 +16,7 @@
         }
 
         /* else go to vcl_error to deliver a synthetic */
-        error 503;
+        error beresp.status beresp.response;
     }
 
     # Remove Set-Cookies from responses for static content

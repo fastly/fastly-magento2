@@ -75,6 +75,11 @@
         return (pass);
     }
 
+    # Just in case the Request Setting for x-pass is missing
+    if (req.http.x-pass) {
+        return (pass);
+    }
+
     # validate if we need to cache it and prevent from setting cookie
     # images, css and js are cacheable by default so we have to remove cookie also
     if (beresp.ttl > 0s && (req.request == "GET" || req.request == "HEAD") && !req.http.x-pass ) {

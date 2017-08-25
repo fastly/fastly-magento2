@@ -70,6 +70,11 @@
         set req.http.Magento-Original-URL = req.url;
         set req.url = querystring.regfilter(req.url, "^(utm_.*|gclid|gdftrk|_ga|mc_.*)");
     }
+
+    # Don't allow clients to force a pass
+    if (req.restarts == 0) {
+        unset req.http.x-pass;
+    }
     
     # Pass on checkout URLs. Because it's a snippet we want to execute this after backend selection so we handle it
     # in the request condition

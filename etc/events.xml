@@ -20,15 +20,13 @@
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
-    <event name="controller_action_postdispatch_catalog_product_save">
-        <observer name="invalidate_varnish" instance="Fastly\Cdn\Observer\InvalidateVarnishObserver"/>
-    </event>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
     <event name="clean_cache_after_reindex">
-        <observer name="invalidate_varnish" instance="Fastly\Cdn\Observer\InvalidateVarnishObserver"/>
+        <observer name="flush_fastly_cdn" instance="Fastly\Cdn\Observer\InvalidateVarnishObserver"/>
     </event>
     <event name="clean_cache_by_tags">
-        <observer name="invalidate_varnish" instance="Fastly\Cdn\Observer\InvalidateVarnishObserver"/>
+        <observer name="flush_fastly_cdn" instance="Fastly\Cdn\Observer\InvalidateVarnishObserver"/>
     </event>
     <event name="adminhtml_cache_flush_system">
         <observer name="flush_fastly_cdn" instance="Fastly\Cdn\Observer\FlushAllCacheObserver"/>

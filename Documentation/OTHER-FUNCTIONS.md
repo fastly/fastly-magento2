@@ -3,7 +3,6 @@
 ## Contents
 
 * [Purging](#purging)
-* [VCL Design Exceptions](#vcl-design-exceptions)
 
 ## Purging
 
@@ -51,13 +50,3 @@ refreshed. You can also enable automatic purging of CMS pages, categories and
 products when they are saved (see configuration). If you don't want these
 observers to take automatic action comment them out in the config.xml of the
 Fastly_Cdn module.
-
-## VCL Design Exceptions
-
-By default Varnish does not take into account
-User-Agent string of a request when building its cache object. Magento Design
-Exceptions use regular expressions to match different design configurations to
-User-Agent strings. In order to make Design Exceptions work with Varnish you
-will have to renew Varnish VCL each time Design Exceptions are updated.
-To do this use the button in the plugin to automatically upload VCL to Fastly in the
-configuration section. This will upload the correct VCL to your Fastly service.

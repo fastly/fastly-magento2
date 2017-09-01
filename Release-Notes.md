@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.28
+
+- Fix for missing observers. Relates to MAGETWO-70616 issue
+
 ## 1.2.27
 
 - Error/maintenance page was returning 503 OK when returning a response. This has now been change 

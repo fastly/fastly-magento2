@@ -120,7 +120,7 @@
                         </field>
                         <field id="purge_catalog_category" translate="label comment" type="select" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Purge category</label>
-                            <comment>Choose to purge the whole product category when updating or modifying a single product.</comment>
+                            <comment>Choose to purge all the category assets when saving a change to that category.</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="purge_catalog_product" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">

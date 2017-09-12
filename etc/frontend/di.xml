@@ -20,8 +20,13 @@
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\Framework\View\Layout">
-        <plugin name="fastly-adjust-cache-tags" type="Fastly\Cdn\Model\Layout\LayoutPlugin" sortOrder="99"/>
+        <plugin name="fastly_adjust_headers" type="Fastly\Cdn\Model\Layout\LayoutPlugin" sortOrder="99"/>
+    </type>
+
+    <type name="Magento\Framework\App\Response\Http">
+        <plugin name="fastly_adjust_cache_tags" type="Fastly\Cdn\Model\ResponsePlugin" sortOrder="100"/>
     </type>
 </config>

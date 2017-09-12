@@ -86,18 +86,21 @@ class LayoutPlugin
                 $this->response->setHeader($header->getFieldName(), $value, true);
             }
         }
+
         # Surface the cacheability of a page. This may expose things like page blocks being set to
         # cacheable = false which makes the whole page uncacheable
         if ($subject->isCacheable() ) {
-          $this->response->setHeader("fastly-page-cacheable", "YES");
+            $this->response->setHeader("fastly-page-cacheable", "YES");
         } else {
-          $this->response->setHeader("fastly-page-cacheable", "NO");
+            $this->response->setHeader("fastly-page-cacheable", "NO");
         }
+
         return $result;
     }
 
     /**
-     * Adjust X-Magento-Tags for Fastly
+     * Add a debug header to indicate this request has passed through the Fastly Module.
+     * This is for ease of debugging
      *
      * @param \Magento\Framework\View\Layout $subject
      * @param mixed $result
@@ -106,15 +109,10 @@ class LayoutPlugin
     public function afterGetOutput(\Magento\Framework\View\Layout $subject, $result)
     {
         if ($this->config->getType() == Config::FASTLY) {
-            // Fastly expects surrogate keys separated by space. replace existing header.
-            $header = $this->response->getHeader('X-Magento-Tags');
-            if ($header instanceof \Zend\Http\Header\HeaderInterface) {
-                $this->response->setHeader($header->getFieldName(),  $this->cacheTags->convertCacheTags(str_replace(',', ' ', $header->getFieldValue())), true);
-            }
-            # Add a debug header to indicate this request has passed through the Fastly Module. This is
-            # for ease of debugging
-            $this->response->setHeader("Fastly-Module-Enabled", "1.2.28", true);
+            $this->response->setHeader("Fastly-Module-Enabled", "1.2.27", true);
         }
+
         return $result;
     }
 }
+

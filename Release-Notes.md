@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.29
+
+- Fix for category ESIs not being correctly purged https://github.com/fastly/fastly-magento2/pull/101
+
 ## 1.2.28
 
 - Fix for missing observers. Relates to MAGETWO-70616 issue

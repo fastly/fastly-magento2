@@ -1,11 +1,6 @@
     /* handle 5XX (or any other unwanted status code) */
     if (beresp.status >= 500 && beresp.status < 600) {
 
-        # let SOAP errors pass - better debugging
-        if (beresp.http.Content-Type ~ "text/xml") {
-            return (deliver);
-        }
-
         /* deliver stale if the object is available */
         if (stale.exists) {
             return(deliver_stale);

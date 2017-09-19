@@ -6,3 +6,10 @@
             return(deliver_stale);
         }
     }
+
+    # Return empty response in case fastlyCdn/geoip/getaction/ has been processed already
+    if (obj.status == 980) {
+        set obj.status = 200;
+        synthetic {""};
+        return (deliver);
+    }

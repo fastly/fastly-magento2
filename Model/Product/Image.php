@@ -2,7 +2,9 @@
 
 namespace Fastly\Cdn\Model\Product;
 
+use Fastly\Cdn\Model\Config;
 use Magento\Catalog\Model\Product\Image as ImageModel;
+use Magento\PageCache\Model\Config as PageCacheConfig;
 
 /**
  * Fastly CDN for Magento
@@ -36,16 +38,32 @@ class Image extends ImageModel
     private $fastlyOverlay = [];
 
     /**
+     * @var bool
+     */
+    private $isFastlyEnabled = null;
+
+    /**
      * On/Off switch based on conffig value
      *
      * @return bool
      */
     private function isFastlyImageOptimizationEnabled()
     {
-        // TODO: Check if module is enabled first
-        return $this->_scopeConfig->isSetFlag(
-            \Fastly\Cdn\Model\Config::XML_FASTLY_IMAGE_OPTIMIZATIONS
-        );
+        if ($this->isFastlyEnabled !== null) {
+            return $this->isFastlyEnabled;
+        }
+
+        $this->isFastlyEnabled = true;
+
+        if ($this->_scopeConfig->isSetFlag(Config::XML_FASTLY_IMAGE_OPTIMIZATIONS) == false) {
+            $this->isFastlyEnabled = false;
+        }
+
+        if ($this->_scopeConfig->getValue(PageCacheConfig::XML_PAGECACHE_TYPE) !== Config::FASTLY) {
+            $this->isFastlyEnabled = false;
+        }
+
+        return $this->isFastlyEnabled;
     }
 
     /**

@@ -42,6 +42,7 @@ class Image extends ImageModel
      */
     private function isFastlyImageOptimizationEnabled()
     {
+        // TODO: Check if module is enabled first
         return $this->_scopeConfig->isSetFlag(
             \Fastly\Cdn\Model\Config::XML_FASTLY_IMAGE_OPTIMIZATIONS
         );
@@ -134,10 +135,38 @@ class Image extends ImageModel
      * @param int $width
      * @param int $height
      * @param int $opacity
-     * @return $this
+     * @return \Magento\Catalog\Model\Product\Image
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function setWatermark(
+        $file,
+        $position = null,
+        $size = null,
+        $width = null,
+        $height = null,
+        $opacity = null
+    ) {
+        if ($this->isFastlyImageOptimizationEnabled() == false) {
+            return parent::setWatermark($file, $position, $size, $width, $height, $opacity);
+        }
+
+        return $this->setFastlyWatermark($file, $position, $size, $width, $height, $opacity);
+    }
+
+    /**
+     * Add watermark to image
+     * size param in format 100x200
+     *
+     * @param string $file
+     * @param string $position
+     * @param array $size ['width' => int, 'height' => int]
+     * @param int $width
+     * @param int $height
+     * @param int $opacity
+     * @return \Magento\Catalog\Model\Product\Image
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     */
+    private function setFastlyWatermark(
         $file,
         $position = null,
         $size = null,
@@ -209,6 +238,23 @@ class Image extends ImageModel
         }
 
         return $map[$position];
+    }
+
+    /**
+     * Return resized product image information
+     *
+     * @return array
+     */
+    public function getResizedImageInfo()
+    {
+        if ($this->isFastlyImageOptimizationEnabled() == false) {
+            return parent::getResizedImageInfo();
+        }
+
+        return [
+            0 => $this->getWidth(),
+            1 => $this->getHieght()
+        ];
     }
 
     /**

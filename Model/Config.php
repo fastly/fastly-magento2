@@ -137,6 +137,11 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_GEOIP_COUNTRY_MAPPING = 'system/full_page_cache/fastly/fastly_advanced_configuration/geoip_country_mapping';
 
     /**
+     * XML path to image optimizations flag
+     */
+    const XML_FASTLY_IMAGE_OPTIMIZATIONS = 'system/full_page_cache/fastly/fastly_advanced_configuration/image_optimizations';
+
+    /**
      * XML path to Google analytics CID
      */
     const XML_FASTLY_GA_CID = 'system/full_page_cache/fastly/fastly_ga_cid';
@@ -349,6 +354,16 @@ class Config extends \Magento\PageCache\Model\Config
     public function getGeoIpRedirectMapping()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_GEOIP_COUNTRY_MAPPING);
+    }
+
+    /**
+     * Determines should Image optimization be used
+     *
+     * @return bool
+     */
+    public function isImageOptimizationEnabled()
+    {
+        return $this->_scopeConfig->isSetFlag(self::XML_FASTLY_IMAGE_OPTIMIZATIONS);
     }
 
     /**

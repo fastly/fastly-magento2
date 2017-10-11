@@ -428,6 +428,45 @@ class Api
     }
 
     /**
+     * Creates a new header
+     *
+     * @param $version
+     * @param $condition
+     * @return bool|mixed
+     */
+    public function createHeader($version, array $condition)
+    {
+        $checkIfExists = $this->getHeader($version, $condition['name']);
+        $url = $this->_getApiServiceUri(). 'version/' .$version. '/header';
+
+        if($checkIfExists === false) {
+            $verb = \Zend_Http_Client::POST;
+        } else {
+            $verb = \Zend_Http_Client::PUT;
+            $url .= '/'.$condition['name'];
+        }
+
+        $result = $this->_fetch($url, $verb, $condition);
+
+        return $result;
+    }
+
+    /**
+     * Gets the specified header.
+     *
+     * @param $version
+     * @param $name
+     * @return bool|mixed
+     */
+    public function getHeader($version, $name)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version. '/header/' . $name;
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    /**
      * Creates a new Response Object.
      *
      * @param $version

@@ -622,12 +622,51 @@ define([
             });
         });
 
+
+        /**
+         * Activate image optimizations button
+         */
+        $('#fastly_push_image_config').on('click', function () {
+            vcl.resetAllMessages();
+
+            $.ajax({
+                type: "GET",
+                url: config.serviceInfoUrl,
+                showLoader: true
+            }).done(function (service) {
+                if(service.status == false) {
+                    return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
+                }
+
+                active_version = service.active_version;
+                next_version = service.next_version;
+                service_name = service.service.name;
+                vcl.checkImageSetting(active_version, true).done(function (response) {
+                    if(response.status === false) {
+                        errorImageBtnMsg.text($.mage.__('We are unable to push service config.')).show();
+                        return; // Error occured, escape
+                    }
+
+                    if (typeof(response.old_config) !== 'undefined' ) {
+                        successImageBtnMsg.text($.mage.__('Configuration was already active. You can enable this service.')).show();
+                        return; // Config was there, nothing to do here
+                    }
+
+                    vcl.showPopup('fastly-image-options');
+                    vcl.setActiveServiceLabel(active_version, next_version, service_name);
+                }).fail(function () {
+                    errorImageBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                });
+
+            }).fail(function (msg) {
+                vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
+            });
+        });
+
         /**
          * Force TLS button
          */
-
         $('#fastly_force_tls_button').on('click', function () {
-
             if(isAlreadyConfigured != true) {
                 $(this).attr('disabled', true);
                 return alert($.mage.__('Please save config prior to continuing.'));
@@ -888,6 +927,9 @@ define([
         var service_name;
         var forceTls = true;
         var isAlreadyConfigured = true;
+        /* Image button message */
+        var successImageBtnMsg = $('#fastly-success-image-button-msg');
+        var errorImageBtnMsg = $('#fastly-error-image-button-msg');
         /* VCL button messages */
         var successVclBtnMsg = $('#fastly-success-vcl-button-msg');
         var errorVclBtnMsg = $('#fastly-error-vcl-button-msg');
@@ -965,6 +1007,16 @@ define([
                     {
                         // TODO: error handling
                     }
+                });
+            },
+
+            // Queries Fastly API to retrive Tls setting
+            checkImageSetting: function(active_version, loaderVisibility) {
+                return $.ajax({
+                    type: "POST",
+                    url: config.pushImageSettingsUrl,
+                    showLoader: loaderVisibility,
+                    data: {'active_version': active_version, 'check_only': true}
                 });
             },
 
@@ -1234,6 +1286,40 @@ define([
                         } else {
                             vcl.resetAllMessages();
                             vcl.showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function(msg)
+                    {
+                        // TODO: error handling
+                    }
+                });
+            },
+
+            // Toggle Tls process
+            pushImageConfig: function (active_version) {
+                var activate_vcl_flag = false;
+
+                if($('#fastly_activate_image_vcl').is(':checked')) {
+                    activate_vcl_flag = true;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: config.pushImageSettingsUrl,
+                    data: {
+                        'activate_flag': activate_vcl_flag,
+                        'active_version': active_version
+                    },
+                    showLoader: true,
+                    success: function(response) {
+                        if(response.status == true) {
+                            vcl.modal.modal('closeModal');
+                            successImageBtnMsg.text($.mage.__('Image optimization settings are successfully pushed.')).show();
+                            $('.request_tls_state_span').hide();
+                        } else {
+                            vcl.resetAllMessages();
+                            $('.request_tls_state_span').hide();
+                            errorImageBtnMsg.text(response.msg).show();
                         }
                     },
                     error: function(msg)
@@ -1536,14 +1622,16 @@ define([
 
             showErrorMessage: function (msg) {
                 var msgError = $('.fastly-message-error');
-                msgError.text($.mage.__(msg));
+                msgError.html($.mage.__(msg));
                 msgError.show();
+                msgError.focus();
             },
 
             showSuccessMessage: function (msg) {
                 var msgSuccess = $('.fastly-message-success');
-                msgSuccess.text($.mage.__(msg));
+                msgSuccess.html($.mage.__(msg));
                 msgSuccess.show();
+                msgSuccess.focus();
             },
 
             resetAllMessages: function () {
@@ -1567,6 +1655,10 @@ define([
                 successVclBtnMsg.hide();
                 errorVclBtnMsg.hide();
                 warningTlsBtnMsg.hide();
+
+                // Image button messages
+                successImageBtnMsg.hide();
+                errorImageBtnMsg.hide();
 
                 // Tls button messages
                 successTlsBtnMsg.hide();
@@ -1756,6 +1848,15 @@ define([
                     },
                     actionOk: function () {
                         vcl.toggleTls(active_version);
+                    }
+                },
+                'fastly-image-options': {
+                    title: jQuery.mage.__('Actiate image optimization'),
+                    content: function () {
+                        return document.getElementById('fastly-image-template').textContent;
+                    },
+                    actionOk: function () {
+                        vcl.pushImageConfig(active_version);
                     }
                 },
                 'fastly-auth-options': {

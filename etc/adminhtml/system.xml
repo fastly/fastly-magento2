@@ -166,11 +166,11 @@
                                 <field id="enable_geoip">1</field>
                             </depends>
                         </field>
-                        <field id="fastly_push_image_config" translate="label comment" sortOrder="100" showInDefault="1" showInStore="0" showInWebsite="0">
+                        <field id="fastly_push_image_config" translate="label comment" sortOrder="90" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Push image config]]></label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ImageBtn</frontend_model>
                         </field>
-                        <field id="image_optimizations" translate="label comment" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="image_optimizations" translate="label comment" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Use Fastly image optimization services</label>
                             <comment>
                                 <![CDATA[<a href="https://docs.fastly.com/guides/imageopto-setup-use/setup" target="_blank">Image optimization</a> needs to be enabled for your account.]]>

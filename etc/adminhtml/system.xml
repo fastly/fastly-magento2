@@ -167,7 +167,7 @@
                             </depends>
                         </field>
                         <field id="fastly_push_image_config" translate="label comment" sortOrder="100" showInDefault="1" showInStore="0" showInWebsite="0">
-                            <label><![CDATA[Psuh image config]]></label>
+                            <label><![CDATA[Push image config]]></label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ImageBtn</frontend_model>
                         </field>
                         <field id="image_optimizations" translate="label comment" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">

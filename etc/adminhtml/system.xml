@@ -171,7 +171,7 @@
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ImageBtn</frontend_model>
                         </field>
                         <field id="image_optimizations" translate="label comment" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
-                            <label>Use Fastly image optimization services</label>
+                            <label>Use Fastly image optimization services for images on frontend</label>
                             <comment>
                                 <![CDATA[<a href="https://docs.fastly.com/guides/imageopto-setup-use/setup" target="_blank">Image optimization</a> needs to be enabled for your account.]]>
                             </comment>

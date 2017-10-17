@@ -656,6 +656,7 @@ define([
                         ).show();
                     }
                 }).fail(function () {
+                    vcl.modal.modal('closeModal');
                     errorImageBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                 });
 
@@ -1318,6 +1319,7 @@ define([
                             successImageBtnMsg.text($.mage.__('Image optimization settings are successfully pushed.')).show();
                             $('.request_tls_state_span').hide();
                         } else {
+                            vcl.modal.modal('closeModal');
                             vcl.resetAllMessages();
                             $('.request_tls_state_span').hide();
                             errorImageBtnMsg.text(response.msg).show();
@@ -1325,7 +1327,7 @@ define([
                     },
                     error: function(msg)
                     {
-                        // TODO: error handling
+                        vcl.modal.modal('closeModal');
                     }
                 });
             },

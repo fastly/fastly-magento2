@@ -647,13 +647,14 @@ define([
                         return; // Error occured, escape
                     }
 
-                    if (typeof(response.old_config) !== 'undefined' ) {
-                        successImageBtnMsg.text($.mage.__('Configuration was already active. You can enable this service.')).show();
-                        return; // Config was there, nothing to do here
-                    }
-
                     vcl.showPopup('fastly-image-options');
                     vcl.setActiveServiceLabel(active_version, next_version, service_name);
+
+                    if (typeof(response.old_config) !== 'undefined' ) {
+                        $('#fastly-image-template-notifications').text(
+                            $.mage.__('Configuration was already uploaded. This will overwrite the existing snippet.')
+                        ).show();
+                    }
                 }).fail(function () {
                     errorImageBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                 });

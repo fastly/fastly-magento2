@@ -16,8 +16,9 @@ class PushImageSettings extends Action
     /**
      * VCL snippet names
      */
-    const CONDITION_NAME = 'fastly-image-optimizer-condition';
-    const HEADER_NAME = 'fastly-image-optimizer-header';
+    const CONDITION_NAME    = 'fastly-image-optimizer-condition';
+    const HEADER_NAME       = 'fastly-image-optimizer-header';
+    const VCL_SNIPPET_PATH  = '/vcl_snippets_image_optimizations';
 
     /**
      * @var Http
@@ -45,14 +46,9 @@ class PushImageSettings extends Action
     protected $vcl;
 
     /**
-     * @var bool Flag for uploading custom condition to VCL
+     * @var int Current Fastly version
      */
-    protected $hasCondition = false;
-
-    /**
-     * @var bool Flag for uploading custom header to VCL
-     */
-    protected $hasHeader = false;
+    protected $currentVersion;
 
     /**
      * PushImageSettings constructor.
@@ -89,27 +85,20 @@ class PushImageSettings extends Action
     public function execute()
     {
         $result = $this->resultJson->create();
-        $activeVersion = $this->getRequest()->getParam('active_version');
+        $this->currentVersion = $this->getRequest()->getParam('active_version');
         $checkOnly = $this->getRequest()->getParam('check_only');
         $activateVcl = $this->getRequest()->getParam('activate_flag');
 
         try {
-            // Check if service has been initialized
-            $service = $this->api->checkServiceDetails();
-            if($service === false) {
-                throw new LocalizedException(__('Failed to check Service details.'));
-            }
-
-            // Get the current version
-            $currActiveVersion = $this->vcl->determineVersions($service->versions);
-            if($currActiveVersion['active_version'] != $activeVersion) {
-                throw new LocalizedException(__('Active versions mismatch.'));
-            }
+            // Check status of config
+            $this->validateRequest();
 
             // Check the status of image optimization configuration
-            $this->hasCondition = $this->conditionExists($currActiveVersion['active_version']);
-            $this->hasHeader = $this->headerExists($currActiveVersion['active_version']);
-            if ($this->hasCondition === true && $this->hasHeader == true) {
+            $hasSnippet = $this->api->getSnippet(
+                $this->currentVersion,
+                Config::FASTLY_MAGENTO_MODULE . '_image_optimization_recv'
+            );
+            if ($hasSnippet !== false && $checkOnly == true) {
                 $result->setData([
                     'status'        => true,
                     'old_config'    => true
@@ -125,25 +114,8 @@ class PushImageSettings extends Action
                 return $result;
             }
 
-            // Lets clone it and push the required config
-            $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
-            if($clone === false) {
-                throw new LocalizedException(__('Failed to clone active version.'));
-            }
-
-            $this->createCondition($clone->number);
-            $this->createHeader($clone->number);
-
-            // Validate before sending success
-            $validate = $this->api->validateServiceVersion($clone->number);
-
-            if($validate->status == 'error') {
-                throw new LocalizedException(__('Failed to validate service version: ' . $validate->msg));
-           }
-
-            if($activateVcl === 'true') {
-                $this->api->activateVersion($clone->number);
-            }
+            // Push snippets
+            $this->pushSnippets($activateVcl);
         } catch (\Exception $e) {
             $result->setData([
                 'status'    => false,
@@ -159,108 +131,75 @@ class PushImageSettings extends Action
     }
 
     /**
-     * Determines if image optimization condition exists
+     * Push image optimiaztion related snippets
      *
-     * @param $version
-     * @return bool
+     * @param $activateVcl
+     * @throws LocalizedException
      */
-    private function conditionExists($version)
+    protected function pushSnippets($activateVcl)
     {
-        $condition = $this->api->getCondition($version, self::CONDITION_NAME);
-
-        if ($condition === false) {
-            return false;
+        // Lets clone it and push the required config
+        $clone = $this->api->cloneVersion($this->currentVersion);
+        if($clone === false) {
+            throw new LocalizedException(__('Failed to clone active version.'));
         }
 
-        return true;
+        // Load image optimization related snippets and push them
+        $snippets = $this->config->getVclSnippets(self::VCL_SNIPPET_PATH);
+        foreach($snippets as $key => $value) {
+            $snippetData =[
+                'name' => Config::FASTLY_MAGENTO_MODULE . '_image_optimization_' . $key,
+                'type' => $key,
+                'dynamic' => "0",
+                'content' => $value,
+                'priority' => 10
+            ];
+
+            $status = $this->api->uploadSnippet($clone->number, $snippetData);
+            if($status == false) {
+                throw new LocalizedException(__('Failed to upload the Snippet file.'));
+            }
+
+            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+                $this->api->sendWebHook(
+                    '*Image optimization snippet has been pushed in Fastly version '. $clone->number . '*'
+                );
+            }
+        }
+
+        // Validate before sending success
+        $validate = $this->api->validateServiceVersion($clone->number);
+
+        if($validate->status == 'error') {
+            throw new LocalizedException(__('Failed to validate service version: ' . $validate->msg));
+        }
+
+        // Attempt to activate the new Fastly version
+        if($activateVcl === 'true') {
+            $this->api->activateVersion($clone->number);
+        }
     }
 
     /**
-     * Creates condition for configuring image optimization
+     * Validates that current state of service configuration is good
      *
-     * @param string $version
      * @return bool
      * @throws LocalizedException
      */
-    private function createCondition($version)
+    protected function validateRequest()
     {
-        if ($this->hasCondition === true) {
-            return true;
+        // Check if service has been initialized
+        $service = $this->api->checkServiceDetails();
+        if($service === false) {
+            throw new LocalizedException(__('Failed to check Service details.'));
         }
 
-        $conditionData = [
-            'name'      => self::CONDITION_NAME,
-            'statement' => 'req.url.ext ~ "(?i)^(gif|png|jpg|jpeg|webp)$"',
-            'priority'  => 10,
-            'type'      => 'request'
-        ];
-
-        $response = $this->api->createCondition($version, $conditionData);
-
-        if(!$response) {
-            throw new LocalizedException(__('Failed to create the CONDITION.'));
-        }
-
-        if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-            $this->api->sendWebHook(
-                '*Image optimization CONDITION has been created in Fastly version '. $version . '*'
-            );
+        // Get the current version
+        $currActiveVersion = $this->vcl->determineVersions($service->versions);
+        if($currActiveVersion['active_version'] != $this->currentVersion) {
+            throw new LocalizedException(__('Active versions mismatch.'));
         }
 
         return true;
-    }
-
-    /**
-     * Determines if image optimization header exists
-     *
-     * @param $version
-     * @return bool
-     */
-    private function headerExists($version)
-    {
-        $header = $this->api->getHeader($version, self::HEADER_NAME);
-
-        if ($header === false) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Creates header for configuring image optimization
-     *
-     * @param string $version
-     * @return bool
-     * @throws LocalizedException
-     */
-    private function createHeader($version)
-    {
-        if ($this->hasHeader === true) {
-            return true;
-        }
-
-        $headerData = [
-            'name'              => self::HEADER_NAME,
-            'type'              => 'request',
-            'action'            => 'set',
-            'dst'               => 'http.x-fastly-imageopto-api',
-            'src'               => '"fastly"',
-            'ignore_if_set'     => 0,
-            'priority'          => 1,
-            'request_condition' => self::CONDITION_NAME
-        ];
-
-        $response = $this->api->createHeader($version, $headerData);
-
-        if(!$response) {
-            throw new LocalizedException(__('Failed to create the HEADER.'));
-        }
-
-        if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-            $this->api->sendWebHook(
-                '*Image optimization HEADER has been created in Fastly version '. $version . '*'
-            );
-        }
     }
 }

@@ -22,9 +22,12 @@ namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
 
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
-use \Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\Controller\Result\Json;
+use Magento\Framework\Controller\Result\JsonFactory;
 
-class CheckTlsSetting extends \Magento\Backend\App\Action
+class CheckTlsSetting extends Action
 {
     const FORCE_TLS_SETTING_NAME = 'magentomodule_force_tls';
 
@@ -39,48 +42,57 @@ class CheckTlsSetting extends \Magento\Backend\App\Action
     protected $config;
 
     /**
-     * @var \Magento\Framework\Controller\Result\JsonFactory
+     * @var JsonFactory
      */
     protected $resultJsonFactory;
 
     /**
      * CheckTlsSetting constructor.
      *
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param Context $context
      * @param Config $config
      * @param Api $api
      * @param JsonFactory $resultJsonFactory
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         Config $config,
         Api $api,
-        \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
+        JsonFactory $resultJsonFactory
     ) {
         $this->api = $api;
         $this->config = $config;
         $this->resultJsonFactory = $resultJsonFactory;
+
         parent::__construct($context);
     }
 
     /**
-     * Checking request setting
-     * @return \Magento\Framework\Controller\Result\Json
+     * Verifes weather or not TLS settings snippet existis on specified Faslty version
+     *
+     * @return Json
      */
     public function execute()
     {
+        $result = $this->resultJsonFactory->create();
+
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $result = $this->resultJsonFactory->create();
             $req = $this->api->getRequest($activeVersion, self::FORCE_TLS_SETTING_NAME);
 
-            if(!$req) {
-                return $result->setData(array('status' => false));
+            if($req == false) {
+                return $result->setData(['status' => false]);
             }
 
-            return $result->setData(array('status' => true, 'req_setting' => $req));
+            return $result->setData([
+                'status'        => true,
+                'req_setting'   => $req
+            ]);
         } catch (\Exception $e) {
-            return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
+            return $result->setData([
+                'status'    => false,
+                'msg'       => $e->getMessage()
+            ]);
         }
     }
 }

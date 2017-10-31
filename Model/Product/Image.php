@@ -149,10 +149,24 @@ class Image extends ImageModel
             return parent::getResizedImageInfo();
         }
 
-        return [
-            0 => $this->getWidth(),
-            1 => $this->getHieght()
-        ];
+        // Return placeholder data
+        if ($this->getBaseFile() !== null) {
+            return [
+                0 => $this->getWidth(),
+                1 => $this->getHeight()
+            ];
+        }
+
+        $asset = $this->_assetRepo->createAsset(
+            "Magento_Catalog::images/product/placeholder/{$this->getDestinationSubdir()}.jpg"
+        );
+        $img = $asset->getSourceFile();
+        $imageInfo = getimagesize($img);
+
+        $this->setWidth($imageInfo[0]);
+        $this->setHeight($imageInfo[1]);
+
+        return $imageInfo;
     }
 
     /**
@@ -190,10 +204,17 @@ class Image extends ImageModel
      */
     public function getFastlyUrl()
     {
-        $url = $this->_storeManager->getStore()->getBaseUrl(
+        $baseFile = $this->getBaseFile();
+        if ($baseFile === null) {
+            $url = $this->_assetRepo->getUrl(
+                "Magento_Catalog::images/product/placeholder/{$this->getDestinationSubdir()}.jpg"
+            );
+        } else {
+            $url = $this->_storeManager->getStore()->getBaseUrl(
                 \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
             );
-        $url .= $this->getBaseFile();
+            $url .= $baseFile;
+        }
 
         // Add some default parameters
         $this->fastlyParameters['quality'] = $this->_quality;
@@ -214,6 +235,11 @@ class Image extends ImageModel
      */
     private function compileFastlyParameters()
     {
+        if (isset($this->fastlyParameters['width']) == false) {
+            $this->fastlyParameters['height'] = $this->_height;
+            $this->fastlyParameters['width'] = $this->_width;
+        }
+
         $params = [];
         foreach ($this->fastlyParameters as $key => $value) {
             $params[] = $key . '=' . $value;

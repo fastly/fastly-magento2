@@ -1,7 +1,12 @@
 <?php echo $block->getButtonHtml(); ?>
 
+<b>Current state: </b>
+<span id="image-optimization-status">
+    <?php echo ($block->getState() == true) ? 'enabled' : 'disabled' ?>
+</span>
+
 <p class="note">
-    <span>It is required to push config to VCL and activate it before activating the image optimization feature.</span>
+    <span><a href="https://docs.fastly.com/guides/imageopto-setup-use/setup" target="_blank">Image optimization</a> needs to be enabled for your Fastly service.</span>
 </p>
 
 <div class="message message-error fastly-button-messages" id="fastly-error-image-button-msg" style="display: none">

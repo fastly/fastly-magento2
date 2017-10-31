@@ -342,7 +342,7 @@ class Api
      */
     public function uploadSnippet($version, array $snippet)
     {
-        $checkIfExists = $this->getSnippet($version, $snippet['name']);
+        $checkIfExists = $this->hasSnippet($version, $snippet['name']);
         $url = $this->_getApiServiceUri(). 'version/' .$version. '/snippet';
         if(!$checkIfExists)
         {

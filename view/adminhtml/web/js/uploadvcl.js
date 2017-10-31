@@ -643,16 +643,24 @@ define([
                 service_name = service.service.name;
                 vcl.checkImageSetting(active_version, true).done(function (response) {
                     if(response.status === false) {
-                        errorImageBtnMsg.text($.mage.__('We are unable to push service config.')).show();
+                        errorImageBtnMsg.text($.mage.__('Something went wrong. Please check log files.')).show();
                         return; // Error occured, escape
                     }
 
                     vcl.showPopup('fastly-image-options');
                     vcl.setActiveServiceLabel(active_version, next_version, service_name);
 
-                    if (typeof(response.old_config) !== 'undefined' ) {
+                    if (typeof(response.setting_value) === 'undefined') {
+                        return;
+                    }
+
+                    if (response.setting_value === true) {
                         $('#fastly-image-template-notifications').text(
-                            $.mage.__('Configuration was already uploaded. This will overwrite the existing snippet.')
+                            $.mage.__('Image optimization will be disabled.')
+                        ).show();
+                    } else {
+                        $('#fastly-image-template-notifications').text(
+                            $.mage.__('Image optimization will be enabled.')
                         ).show();
                     }
                 }).fail(function () {
@@ -1317,11 +1325,11 @@ define([
                         if(response.status == true) {
                             vcl.modal.modal('closeModal');
                             successImageBtnMsg.text($.mage.__('Image optimization settings are successfully pushed.')).show();
-                            $('.request_tls_state_span').hide();
+                            $('#image-optimization-status').text((response.new_state === true) ? 'enabled' : 'disabled')
                         } else {
                             vcl.modal.modal('closeModal');
                             vcl.resetAllMessages();
-                            $('.request_tls_state_span').hide();
+
                             errorImageBtnMsg.text(response.msg).show();
                         }
                     },

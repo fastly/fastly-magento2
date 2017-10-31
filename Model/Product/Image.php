@@ -33,11 +33,6 @@ class Image extends ImageModel
     private $fastlyParameters = [];
 
     /**
-     * @var array
-     */
-    private $fastlyOverlay = [];
-
-    /**
      * @var bool
      */
     private $isFastlyEnabled = null;
@@ -144,121 +139,6 @@ class Image extends ImageModel
     }
 
     /**
-     * Add watermark to image
-     * size param in format 100x200
-     *
-     * @param string $file
-     * @param string $position
-     * @param array $size ['width' => int, 'height' => int]
-     * @param int $width
-     * @param int $height
-     * @param int $opacity
-     * @return \Magento\Catalog\Model\Product\Image
-     * @SuppressWarnings(PHPMD.NPathComplexity)
-     */
-    public function setWatermark(
-        $file,
-        $position = null,
-        $size = null,
-        $width = null,
-        $height = null,
-        $opacity = null
-    ) {
-        if ($this->isFastlyImageOptimizationEnabled() == false) {
-            return parent::setWatermark($file, $position, $size, $width, $height, $opacity);
-        }
-
-        return $this->setFastlyWatermark($file, $position, $size, $width, $height, $opacity);
-    }
-
-    /**
-     * Add watermark to image
-     * size param in format 100x200
-     *
-     * @param string $file
-     * @param string $position
-     * @param array $size ['width' => int, 'height' => int]
-     * @param int $width
-     * @param int $height
-     * @param int $opacity
-     * @return \Magento\Catalog\Model\Product\Image
-     * @SuppressWarnings(PHPMD.NPathComplexity)
-     */
-    private function setFastlyWatermark(
-        $file,
-        $position = null,
-        $size = null,
-        $width = null,
-        $height = null,
-        $opacity = null
-    ) {
-        if ($this->_isBaseFilePlaceholder) {
-            return $this;
-        }
-
-        if ($file) {
-            $this->setWatermarkFile($file);
-        } else {
-            return $this;
-        }
-
-        if ($position) {
-            $this->setWatermarkPosition($position);
-        }
-        if ($size) {
-            $this->setWatermarkSize($size);
-        }
-        if ($width) {
-            $this->setWatermarkWidth($width);
-        }
-        if ($height) {
-            $this->setWatermarkHeight($height);
-        }
-        if ($opacity) {
-            $this->setWatermarkImageOpacity($opacity);
-        }
-        $filePath = $this->_getWatermarkFilePath();
-
-        if ($filePath) {
-            $this->fastlyOverlay['overlay'] = $filePath;
-            $this->fastlyOverlay['overlay-width'] = $this->getWatermarkWidth();
-            $this->fastlyOverlay['overlay-height'] = $this->getWatermarkHeight();
-
-            $this->fastlyOverlay['overlay-align'] = $this->fastlyMapPosition($this->getWatermarkPosition());
-            if ($this->getWatermarkPosition() == 'tile') {
-                $this->fastlyOverlay['overlay-repeat'] = 'both';
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * Transaltes Magento position to Fastly position
-     *
-     * @param string $position
-     * @return string
-     */
-    private function fastlyMapPosition($position)
-    {
-        $map = [
-            'stretch'       => 'middle, center',
-            'tile'          => 'top,left',
-            'top-left'      => 'top,left',
-            'top-right'     => 'top,right',
-            'bottom-left'   => 'bottom,left',
-            'bottom-right'  => 'bottom,right',
-            'center'        => 'middle,center'
-        ];
-
-        if (array_key_exists($position, $map) === true) {
-            $position = 'center';
-        }
-
-        return $map[$position];
-    }
-
-    /**
      * Return resized product image information
      *
      * @return array
@@ -323,8 +203,6 @@ class Image extends ImageModel
         }
 
         $url .= '?' . $this->compileFastlyParameters();
-
-        // TODO: Watermark not implemented
 
         return $url;
     }

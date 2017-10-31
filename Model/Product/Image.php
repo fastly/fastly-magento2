@@ -132,10 +132,31 @@ class Image extends ImageModel
         if ($this->getWidth() === null && $this->getHeight() === null) {
             return $this;
         }
-        $this->fastlyParameters['width'] = $this->_width;
-        $this->fastlyParameters['height'] = $this->_height;
+
+        $this->adjustSize();
 
         return $this;
+    }
+
+    protected function adjustSize()
+    {
+        $originalImage = $this->_mediaDirectory->getAbsolutePath($this->getBaseFile());
+        $originalSize = getimagesize($originalImage);
+
+        if ($this->_keepFrame) {
+            $this->fastlyParameters['canvas'] = implode(',', [$this->getWidth(), $this->getHeight()]);
+        }
+
+        if ($this->getWidth() > $originalSize[0]) {
+            $this->setWidth($originalSize[0]);
+        }
+
+        if ($this->getHeight() > $originalSize[1]) {
+            $this->setHeight($originalSize[1]);
+        }
+
+        $this->fastlyParameters['width'] = $this->_width;
+        $this->fastlyParameters['height'] = $this->_height;
     }
 
     /**
@@ -149,7 +170,7 @@ class Image extends ImageModel
             return parent::getResizedImageInfo();
         }
 
-        // Return placeholder data
+        // Return image data
         if ($this->getBaseFile() !== null) {
             return [
                 0 => $this->getWidth(),
@@ -157,6 +178,7 @@ class Image extends ImageModel
             ];
         }
 
+        // No image, parse the placeholder
         $asset = $this->_assetRepo->createAsset(
             "Magento_Catalog::images/product/placeholder/{$this->getDestinationSubdir()}.jpg"
         );

@@ -1,5 +1,13 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.31
+
+- Fix for when adding first entry to an ACL modal is incorrectly displayed https://github.com/fastly/fastly-magento2/pull/105
+
+## 1.2.30
+
+- Fix for GeoIP processed
+
 ## 1.2.29
 
 - Fix for category ESIs not being correctly purged https://github.com/fastly/fastly-magento2/pull/101

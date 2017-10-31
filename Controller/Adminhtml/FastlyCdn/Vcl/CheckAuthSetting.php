@@ -22,9 +22,11 @@ namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
 
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
-use \Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\Controller\Result\JsonFactory;
 
-class CheckAuthSetting extends \Magento\Backend\App\Action
+class CheckAuthSetting extends Action
 {
     /**
      * Path to Authentication snippet
@@ -47,32 +49,34 @@ class CheckAuthSetting extends \Magento\Backend\App\Action
     protected $config;
 
     /**
-     * @var \Magento\Framework\Controller\Result\JsonFactory
+     * @var JsonFactory
      */
     protected $resultJsonFactory;
 
     /**
      * CheckTlsSetting constructor.
      *
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param Context $context
      * @param Config $config
      * @param Api $api
      * @param JsonFactory $resultJsonFactory
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         Config $config,
         Api $api,
-        \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
+        JsonFactory $resultJsonFactory
     ) {
         $this->api = $api;
         $this->config = $config;
         $this->resultJsonFactory = $resultJsonFactory;
+
         parent::__construct($context);
     }
 
     /**
-     * Checking request setting
+     * Verifes weather or not auth settings snippet existis on specified Faslty version
+     *
      * @return \Magento\Framework\Controller\Result\Json
      */
     public function execute()
@@ -83,19 +87,21 @@ class CheckAuthSetting extends \Magento\Backend\App\Action
             $activeVersion = $this->getRequest()->getParam('active_version');
             $snippets = $this->config->getVclSnippets(self::VCL_AUTH_SNIPPET_PATH);
 
-            foreach($snippets as $key => $value)
-            {
-                $name = Config::FASTLY_MAGENTO_MODULE.'_basic_auth_'.$key;
-                $status = $this->api->getSnippet($activeVersion, $name);
+            foreach($snippets as $key => $value) {
+                $name = Config::FASTLY_MAGENTO_MODULE . '_basic_auth_' . $key;
+                $status = $this->api->hasSnippet($activeVersion, $name);
 
-                if(!$status) {
-                return $result->setData(array('status' => false));
+                if($status == false) {
+                    return $result->setData(['status' => false]);
                 }
             }
 
-            return $result->setData(array('status' => true));
+            return $result->setData(['status' => true]);
         } catch (\Exception $e) {
-            return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
+            return $result->setData([
+                'status'    => false,
+                'msg'       => $e->getMessage()
+            ]);
         }
     }
 }

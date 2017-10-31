@@ -374,6 +374,26 @@ class Api
     }
 
     /**
+     * Performs a lookup to determine if VCL snippet exists
+     *
+     * @param string    $version    Fastly version
+     * @param string    $name   VCL snippet name
+     *
+     * @return bool
+     */
+    public function hasSnippet($version, $name)
+    {
+        $url = $this->_getApiServiceUri() . 'version/' . $version . '/snippet/' . $name;
+        $result = $this->_fetch($url, \Zend_Http_Client::GET, '', false, null, false);
+
+        if ($result == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Deleting an individual regular VCL Snippet
      *
      * @param $version
@@ -530,16 +550,17 @@ class Api
     }
 
     /**
-     * Gets the specified Request Settings object.
+     * Retrieves a specific Request settings object.
      *
-     * @param $version
-     * @param $name
-     * @return bool|mixed
+     * @param string    $version    Fastly version
+     * @param string    $name   Request name
+     *
+     * @return bool
      */
     public function getRequest($version, $name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version. '/request_settings/' . $name;
-        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+        $result = $this->_fetch($url, \Zend_Http_Client::GET, '', false, null, false);
 
         return $result;
     }
@@ -833,15 +854,25 @@ class Api
     }
 
     /**
-     * @param $uri
-     * @param string $method
-     * @param mixed[]|string $body
-     * @param bool $test
-     * @param $testApiKey
-     * @return bool|mixed
+     * Wrapper for API calls towards Fastly service
+     *
+     * @param string    $uri    API Endpoint
+     * @param string    $method HTTP Method for request
+     * @param mixed[]|string    $body   Content
+     * @param bool  $test   Use $testApiKey for request
+     * @param string    $testApiKey API key to be tested
+     * @param bool  $logError   When set to false, prevents writing failed requests to log
+     *
+     * @return bool|mixed   Returns false on failiure
      */
-    protected function _fetch($uri, $method = \Zend_Http_Client::GET, $body = '', $test = false, $testApiKey = null)
-    {
+    protected function _fetch(
+        $uri,
+        $method = \Zend_Http_Client::GET,
+        $body = '',
+        $test = false,
+        $testApiKey = null,
+        $logError = true
+    ) {
         $apiKey = ($test == true) ? $testApiKey : $this->config->getApiKey();
 
         // Corectly format $body string
@@ -898,7 +929,10 @@ class Api
 
         // Return error based on response code
         if ($responseCode != '200') {
-            $this->logger->critical('Return status ' . $responseCode, $uri);
+            if ($logError == true) {
+                $this->logger->critical('Return status ' . $responseCode, $uri);
+            }
+
             return false;
         }
 

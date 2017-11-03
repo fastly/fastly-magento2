@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.32
+
+- Remove errant logging when checking if a feature is enabled or not https://github.com/fastly/fastly-magento2/pull/108
+- Enable long caching of signed assets https://github.com/fastly/fastly-magento2/pull/109
+- Fix for Surrogate Keys not being set on HTML assets when shielding is turned on
+
 ## 1.2.31
 
 - Fix for when adding first entry to an ACL modal is incorrectly displayed https://github.com/fastly/fastly-magento2/pull/105

@@ -29,7 +29,7 @@
     # Force caching for signed cached assets.
     if (req.http.x-long-cache) {
         set beresp.ttl = 31536000s;
-        set beresp.http.Cache-Control = "max-age=31536000";
+        set beresp.http.Cache-Control = "max-age=31536000, immutable";
     }
 
     if (beresp.http.Content-Type ~ "text/(html|xml)") {

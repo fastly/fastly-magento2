@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.33
+
+- Don't cache /customer/section/load. This works around core bug where Cache-Control headers are set to cache https://github.com/fastly/fastly-magento2/pull/111
+- Due to the way Fastly plugin is implemented we are still sending Varnish like purges which don't do anything https://github.com/fastly/fastly-magento2/pull/110. This fixes it so it doesn't send those
+
 ## 1.2.32
 
 - Remove errant logging when checking if a feature is enabled or not https://github.com/fastly/fastly-magento2/pull/108

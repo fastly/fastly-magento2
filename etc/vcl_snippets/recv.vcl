@@ -81,7 +81,7 @@
     
     # Pass on checkout URLs. Because it's a snippet we want to execute this after backend selection so we handle it
     # in the request condition
-    if (req.url ~ "/(catalogsearch|checkout)") {
+    if (req.url ~ "/(catalogsearch|checkout|customer/section/load)") {
         set req.http.x-pass = "1";
     # Pass all admin actions
     } else if ( req.url ~ "^/(index\.php/)?admin(_.*)?/" ) {

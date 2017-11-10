@@ -92,6 +92,7 @@ class ForceTls extends \Magento\Backend\App\Action
             }
             $reqName = Config::FASTLY_MAGENTO_MODULE.'_force_tls';
             $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);
+            $snippet = $this->config->getVclSnippets('/vcl_snippets_force_tls', 'recv.vcl');
 
             if(!$checkIfReqExist) {
                 $request = array(
@@ -106,14 +107,40 @@ class ForceTls extends \Magento\Backend\App\Action
                 if(!$createReq) {
                     return $result->setData(array('status' => false, 'msg' => 'Failed to create the REQUEST object.'));
                 }
+
+                // Add force TLS snipet
+                foreach($snippet as $key => $value)
+                {
+                    $snippetData = array(
+                        'name' => Config::FASTLY_MAGENTO_MODULE.'_force_tls_'.$key,
+                        'type' => $key, 'dynamic' => "0",
+                        'priority' => 10,
+                        'content' => $value
+                    );
+                    $status = $this->api->uploadSnippet($clone->number, $snippetData);
+
+                    if(!$status) {
+                        return $result->setData(array('status' => false, 'msg' => 'Failed to upload the Snippet file.'));
+                    }
+                }
             } else {
                 $deleteRequest = $this->api->deleteRequest($clone->number, $reqName);
 
                 if(!$deleteRequest) {
                     return $result->setData(array('status' => false, 'msg' => 'Failed to delete the REQUEST object.'));
                 }
-            }
 
+                // Remove force TLS snipet
+                foreach($snippet as $key => $value)
+                {
+                    $name = Config::FASTLY_MAGENTO_MODULE.'_force_tls_'.$key;
+                    $status = $this->api->removeSnippet($clone->number, $name);
+
+                    if(!$status) {
+                        return $result->setData(array('status' => false, 'msg' => 'Failed to remove the Snippet file.'));
+                    }
+                }
+            }
 
             $validate = $this->api->validateServiceVersion($clone->number);
 

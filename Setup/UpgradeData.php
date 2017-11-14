@@ -6,6 +6,7 @@ use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Fastly\Cdn\Model\Statistic;
+use Magento\Framework\Serialize\Serializer;
 
 class UpgradeData implements UpgradeDataInterface
 {
@@ -43,12 +44,18 @@ class UpgradeData implements UpgradeDataInterface
     protected $_helper;
 
     /**
+     * @var \Magento\Framework\Serialize\Serializer\Json
+     */
+    protected $_serializer;
+
+    /**
      * UpgradeData constructor.
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\App\Config\Storage\WriterInterface $configWriter
      * @param Statistic $statistic
      * @param \Magento\Framework\Stdlib\DateTime\DateTime $date
      * @param \Magento\Framework\App\Cache\Manager $cacheManager
+     * @param \Magento\Framework\Serialize\Serializer\Json $serializer
      */
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
@@ -56,7 +63,8 @@ class UpgradeData implements UpgradeDataInterface
         Statistic $statistic,
         \Magento\Framework\Stdlib\DateTime\DateTime $date,
         \Magento\Framework\App\Cache\Manager $cacheManager,
-        \Fastly\Cdn\Helper\Data $helper
+        \Fastly\Cdn\Helper\Data $helper,
+        \Magento\Framework\Serialize\Serializer\Json $serializer
     )
     {
         $this->_date = $date;
@@ -64,6 +72,7 @@ class UpgradeData implements UpgradeDataInterface
         $this->_configWriter = $configWriter;
         $this->_statistic = $statistic;
         $this->_helper = $helper;
+        $this->_serializer = $serializer;
         $this->_cacheManager = $cacheManager;
     }
 
@@ -131,6 +140,25 @@ class UpgradeData implements UpgradeDataInterface
 
                 // Generate GA cid and store it for further use
                 $this->_configWriter->save('system/full_page_cache/fastly/fastly_ga_cid', $this->_statistic->generateCid());
+                $this->_cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
+                $setup->endSetup();
+            }
+        }
+
+        if($context->getVersion()) {
+            if (version_compare($context->getVersion(), '1.0.10', '<=')) {
+                // Convert serialized data to magento supported serialized data
+
+                $oldData = $this->_scopeConfig->getValue($newConfigPaths['geoip_country_mapping']);
+                $oldData = unserialize($oldData);
+                if(is_array($oldData)) {
+                    $newData = $this->_serializer->serialize($oldData);
+                } else {
+                    $newData = $this->_serializer->serialize(array());
+                }
+
+                $this->_configWriter->save($newConfigPaths['geoip_country_mapping'], $newData);
+
                 $this->_cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
                 $setup->endSetup();
             }

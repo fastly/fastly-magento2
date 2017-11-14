@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.34
+
+- Fix for serialization issue regarding old config data for GeoIP Country Mapping
+
 ## 1.2.33
 
 - Don't cache /customer/section/load. This works around core bug where Cache-Control headers are set to cache https://github.com/fastly/fastly-magento2/pull/111

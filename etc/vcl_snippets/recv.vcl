@@ -4,9 +4,12 @@
         set req.url = re.group.2;
     }
 
+    unset req.http.x-long-cache;
+
     # Rewrite /static/versionxxxxx URLs. Avoids us having to rewrite on nginx layer
     if (req.url ~ "^/static/version(\d*/)?(.*)$") {
        set req.url = "/static/" + re.group.2 + "?" + re.group.1;
+       set req.http.x-long-cache = "1";
     }
     
     # User's Cookie may contain some Magento Vary items we should vary on
@@ -78,7 +81,7 @@
     
     # Pass on checkout URLs. Because it's a snippet we want to execute this after backend selection so we handle it
     # in the request condition
-    if (req.url ~ "/(catalogsearch|checkout)") {
+    if (req.url ~ "/(catalogsearch|checkout|customer/section/load)") {
         set req.http.x-pass = "1";
     # Pass all admin actions
     } else if ( req.url ~ "^/(index\.php/)?admin(_.*)?/" ) {

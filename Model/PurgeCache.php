@@ -28,13 +28,20 @@ class PurgeCache
     protected $api;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * Constructor
      *
      * @param Api $api
+     * @param Config $config
      */
-    public function __construct(Api $api)
+    public function __construct(Api $api, Config $config)
     {
         $this->api = $api;
+        $this->config = $config;
     }
 
     /**
@@ -46,7 +53,11 @@ class PurgeCache
     public function sendPurgeRequest($pattern = '')
     {
         if (empty($pattern)) {
-            $result = $this->api->cleanAll();
+            if ($this->config->canPreserveStatic()) {
+                $result = $this->api->cleanBySurrogateKey(['text']);
+            } else {
+                $result = $this->api->cleanAll();
+            }
         } elseif (!is_array($pattern) && strpos($pattern, 'http') === 0) {
             $result = $this->api->cleanUrl($pattern);
         } else if (is_array($pattern)) {

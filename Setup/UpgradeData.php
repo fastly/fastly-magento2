@@ -6,7 +6,6 @@ use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Fastly\Cdn\Model\Statistic;
-use Magento\Framework\Serialize\Serializer;
 
 class UpgradeData implements UpgradeDataInterface
 {
@@ -44,9 +43,9 @@ class UpgradeData implements UpgradeDataInterface
     protected $_helper;
 
     /**
-     * @var \Magento\Framework\Serialize\Serializer\Json
+     * @var \Magento\Framework\App\ProductMetadataInterface
      */
-    protected $_serializer;
+    protected $_productMetadata;
 
     /**
      * UpgradeData constructor.
@@ -55,7 +54,8 @@ class UpgradeData implements UpgradeDataInterface
      * @param Statistic $statistic
      * @param \Magento\Framework\Stdlib\DateTime\DateTime $date
      * @param \Magento\Framework\App\Cache\Manager $cacheManager
-     * @param \Magento\Framework\Serialize\Serializer\Json $serializer
+     * @param \Fastly\Cdn\Helper\Data $helper
+     * @param \Magento\Framework\App\ProductMetadataInterface $productMetadata
      */
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
@@ -64,7 +64,7 @@ class UpgradeData implements UpgradeDataInterface
         \Magento\Framework\Stdlib\DateTime\DateTime $date,
         \Magento\Framework\App\Cache\Manager $cacheManager,
         \Fastly\Cdn\Helper\Data $helper,
-        \Magento\Framework\Serialize\Serializer\Json $serializer
+        \Magento\Framework\App\ProductMetadataInterface $productMetadata
     )
     {
         $this->_date = $date;
@@ -72,7 +72,7 @@ class UpgradeData implements UpgradeDataInterface
         $this->_configWriter = $configWriter;
         $this->_statistic = $statistic;
         $this->_helper = $helper;
-        $this->_serializer = $serializer;
+        $this->_productMetadata = $productMetadata;
         $this->_cacheManager = $cacheManager;
     }
 
@@ -146,22 +146,24 @@ class UpgradeData implements UpgradeDataInterface
         }
 
         if($context->getVersion()) {
-            if (version_compare($context->getVersion(), '1.0.10', '<=')) {
+            $magVer = $this->_productMetadata->getVersion();
+            if (version_compare($context->getVersion(), '1.0.10', '<=') && version_compare($magVer, '2.2', '>=')) {
                 // Convert serialized data to magento supported serialized data
 
                 $oldData = $this->_scopeConfig->getValue($newConfigPaths['geoip_country_mapping']);
-                $oldData = unserialize($oldData);
-                if(is_array($oldData)) {
-                    $newData = $this->_serializer->serialize($oldData);
-                } else {
-                    $newData = $this->_serializer->serialize(array());
+                $oldData = @unserialize($oldData);
+                $oldData = (is_array($oldData)) ? $oldData : array();
+
+                $newData = json_encode($oldData);
+                if (false === $newData) {
+                    throw new \InvalidArgumentException('Unable to encode data.');
                 }
 
                 $this->_configWriter->save($newConfigPaths['geoip_country_mapping'], $newData);
 
                 $this->_cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
-                $setup->endSetup();
             }
+            $setup->endSetup();
         }
     }
 }

@@ -2,7 +2,9 @@
 
 ## 1.2.34
 
-- Fix for serialization issue regarding old config data for GeoIP Country Mapping
+- Fix for serialization issue regarding old config data for GeoIP Country Mapping (Magento version above 2.2)
+- Added shell function for converting Fastly config data to JSON manually (Magento version above 2.2), executed by: fastly:format:serializetojson
+- Added shell function for converting Fastly config data to serialize format manually (Should be used only to revert changes made from fastly:format:serializetojson), executed by: fastly:format:jsontoserialize
 
 ## 1.2.33
 

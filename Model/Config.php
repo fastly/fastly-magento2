@@ -117,7 +117,7 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_PURGE_CMS_PAGE = 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_cms_page';
 
     /**
-     * XML path to config preservse_static
+     * XML path to config preserve_static
      */
     const XML_FASTLY_PRESERVE_STATIC = 'system/full_page_cache/fastly/fastly_advanced_configuration/preserve_static';
 
@@ -317,7 +317,7 @@ class Config extends \Magento\PageCache\Model\Config
     }
 
     /**
-     * Should we flush all or presrve static?
+     * Should we flush all or preserve static?
      *
      * @return bool
      */

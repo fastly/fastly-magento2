@@ -78,6 +78,14 @@ class Additional extends \Magento\Backend\Block\Template
     }
 
     /**
+     * @return string
+     */
+    public function getPurgeAllUrl()
+    {
+        return $this->getUrl('*/fastlyCdn_purge/all');
+    }
+
+    /**
      *
      *
      * @return string

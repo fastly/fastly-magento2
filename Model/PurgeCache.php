@@ -47,7 +47,7 @@ class PurgeCache
     /**
      * Send API purge request to invalidate cache by pattern
      *
-     * @param string or array $pattern
+     * @param string|array $pattern
      * @return bool Return true if successful; otherwise return false
      */
     public function sendPurgeRequest($pattern = '')

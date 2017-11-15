@@ -134,9 +134,9 @@
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="preserve_static" translate="label comment" type="select" sortOrder="47" showInDefault="1" showInWebsite="0" showInStore="0">
-                            <label>Preserve static assests on pruge</label>
+                            <label>Preserve static assets on purge</label>
                             <comment>
-                                When flushing cache, flush only dynamic content and preserve static assests.
+                                When flushing cache, flush only dynamic content and preserve static assets.
                             </comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>

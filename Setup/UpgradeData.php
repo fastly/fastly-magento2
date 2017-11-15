@@ -43,12 +43,19 @@ class UpgradeData implements UpgradeDataInterface
     protected $_helper;
 
     /**
+     * @var \Magento\Framework\App\ProductMetadataInterface
+     */
+    protected $_productMetadata;
+
+    /**
      * UpgradeData constructor.
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\App\Config\Storage\WriterInterface $configWriter
      * @param Statistic $statistic
      * @param \Magento\Framework\Stdlib\DateTime\DateTime $date
      * @param \Magento\Framework\App\Cache\Manager $cacheManager
+     * @param \Fastly\Cdn\Helper\Data $helper
+     * @param \Magento\Framework\App\ProductMetadataInterface $productMetadata
      */
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
@@ -56,7 +63,8 @@ class UpgradeData implements UpgradeDataInterface
         Statistic $statistic,
         \Magento\Framework\Stdlib\DateTime\DateTime $date,
         \Magento\Framework\App\Cache\Manager $cacheManager,
-        \Fastly\Cdn\Helper\Data $helper
+        \Fastly\Cdn\Helper\Data $helper,
+        \Magento\Framework\App\ProductMetadataInterface $productMetadata
     )
     {
         $this->_date = $date;
@@ -64,6 +72,7 @@ class UpgradeData implements UpgradeDataInterface
         $this->_configWriter = $configWriter;
         $this->_statistic = $statistic;
         $this->_helper = $helper;
+        $this->_productMetadata = $productMetadata;
         $this->_cacheManager = $cacheManager;
     }
 
@@ -134,6 +143,27 @@ class UpgradeData implements UpgradeDataInterface
                 $this->_cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
                 $setup->endSetup();
             }
+        }
+
+        if($context->getVersion()) {
+            $magVer = $this->_productMetadata->getVersion();
+            if (version_compare($context->getVersion(), '1.0.10', '<=') && version_compare($magVer, '2.2', '>=')) {
+                // Convert serialized data to magento supported serialized data
+
+                $oldData = $this->_scopeConfig->getValue($newConfigPaths['geoip_country_mapping']);
+                $oldData = @unserialize($oldData);
+                $oldData = (is_array($oldData)) ? $oldData : array();
+
+                $newData = json_encode($oldData);
+                if (false === $newData) {
+                    throw new \InvalidArgumentException('Unable to encode data.');
+                }
+
+                $this->_configWriter->save($newConfigPaths['geoip_country_mapping'], $newData);
+
+                $this->_cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
+            }
+            $setup->endSetup();
         }
     }
 }

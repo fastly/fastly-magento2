@@ -86,6 +86,20 @@
         </table>
     </form>
 
+    <form id="quick_purge_form" action="<?php echo $block->getPurgeAllUrl() ?>" method="post" id="fastlycdn_clean_form">
+        <?php echo $block->getBlockHtml('formkey')?>
+        <table class="form-list" style="margin-bottom:10px">
+            <tr>
+                <td class="scope-label">
+                    <button type="submit" class="scalable"><span><?php /* @escapeNotVerified */ echo __('Purge All') ?></span></button>
+                </td>
+                <td class="scope-label">
+                    <span><?php /* @escapeNotVerified */ echo __('Purge all Magento & Fastly Cache.')?></span>
+                </td>
+            </tr>
+        </table>
+    </form>
+
     <script>
         require(["jquery","mage/mage"],function($){
             $('#quick_purge_form').mage('form').mage('validation');

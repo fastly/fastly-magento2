@@ -117,6 +117,11 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_PURGE_CMS_PAGE = 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_cms_page';
 
     /**
+     * XML path to config preservse_static
+     */
+    const XML_FASTLY_PRESERVE_STATIC = 'system/full_page_cache/fastly/fastly_advanced_configuration/preserve_static';
+
+    /**
      * XML path to soft purge
      */
     const XML_FASTLY_SOFT_PURGE = 'system/full_page_cache/fastly/fastly_advanced_configuration/soft_purge';
@@ -309,6 +314,16 @@ class Config extends \Magento\PageCache\Model\Config
     public function canPurgeCmsPage()
     {
         return $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PURGE_CMS_PAGE);
+    }
+
+    /**
+     * Should we flush all or presrve static?
+     *
+     * @return bool
+     */
+    public function canPreserveStatic()
+    {
+        return $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PRESERVE_STATIC);
     }
 
     /**

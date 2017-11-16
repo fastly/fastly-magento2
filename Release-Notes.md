@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.35
+
+- Some VCL optimizations and fixes https://github.com/fastly/fastly-magento2/pull/117
+
 ## 1.2.34
 
 - Fix for serialization issue regarding old config data for GeoIP Country Mapping (Magento version above 2.2)

@@ -54,7 +54,7 @@ class GenerateVclCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $vcl = $this->_config->getVclFile(\Magento\PageCache\Model\Config::VARNISH_4_CONFIGURATION_PATH);
-        $output->writeln($vcl);
+        echo "Fastly custom VCL use been deprecated. Please upload VCL snippets from the Magento admin UI\n";
+        return;
     }
 }

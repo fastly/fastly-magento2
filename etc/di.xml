@@ -33,6 +33,7 @@
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">
+                <item name="EnableCommand" xsi:type="object">Fastly\Cdn\Console\Command\EnableCommand</item>
                 <item name="generateFastlyVclCommand" xsi:type="object">Fastly\Cdn\Console\Command\GenerateVclCommand</item>
                 <item name="SerializeToJson" xsi:type="object">Fastly\Cdn\Console\Command\SerializeToJson</item>
                 <item name="JsonToSerialize" xsi:type="object">Fastly\Cdn\Console\Command\JsonToSerialize</item>

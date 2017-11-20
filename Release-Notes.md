@@ -1,8 +1,11 @@
 # Fastly_Cdn Release Notes
 
-## 1.2.35
+## 1.2.36
 
 - Added shell functionality for setting Service ID, Token, enabling/disabling Fastly, uploading default VCL, testing connection and cleaning configuration cache.
+
+## 1.2.35
+
 - VCL optimizations and fixes https://github.com/fastly/fastly-magento2/pull/117
 
 ## 1.2.34

@@ -38,7 +38,7 @@ class GenerateVclCommand extends Command
     protected function configure()
     {
         $this->setName('fastly:vcl:generate')
-            ->setDescription('Generates Fastly VCL and echos it to the command line');
+            ->setDescription('DEPRECATED: Generates Fastly VCL and echos it to the command line');
     }
 
     /**
@@ -54,7 +54,7 @@ class GenerateVclCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        echo "Fastly custom VCL use been deprecated. Please upload VCL snippets from the Magento admin UI\n";
+        echo "Fastly custom VCL use been deprecated. Please upload VCL snippets from the Magento admin UI or using the CLI commands.\n";
         return;
     }
 }

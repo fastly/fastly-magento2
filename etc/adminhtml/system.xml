@@ -165,7 +165,7 @@
                         <field id="geoip_country_mapping" translate="label comment tooltip" sortOrder="71" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>GeoIP Country Mapping</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\CountryMapping</frontend_model>
-                            <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                            <backend_model>Fastly\Cdn\Model\Config\Backend\Geoipcountry</backend_model>
                             <comment>
                                 <![CDATA[Use capitalized <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2" target="_blank">two-letter country codes</a> to map countries to store views. Use * to define a default fallback.]]>
                             </comment>

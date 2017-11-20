@@ -86,7 +86,7 @@ class Notification extends \Magento\AdminNotification\Model\Feed
         if($lastVersion && version_compare($currentVersion, $lastVersion, '<')) {
             $inboxFactory = $this->_inboxFactory;
             $inbox = $inboxFactory->create();
-            $inbox->addNotice('Fastly CDN', "Version $lastVersion available!");
+            $inbox->addNotice('Fastly CDN', "Version $lastVersion is available. You are currently running $currentVersion. Please consider upgrading at your earliest convenience.");
         }
     }
 

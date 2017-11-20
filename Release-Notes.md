@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.35
+
+- Added shell functionality for setting Service ID, Token, enabling/disabling Fastly, uploading default VCL, testing connection and cleaning configuration cache.
+
 ## 1.2.34
 
 - Fix for serialization issue regarding old config data for GeoIP Country Mapping (Magento version above 2.2)

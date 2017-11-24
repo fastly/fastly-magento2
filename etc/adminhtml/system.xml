@@ -213,6 +213,14 @@
                                 <field id="enable_webhooks">1</field>
                             </depends>
                         </field>
+                        <field id="publish_purge_all_trace" translate="label comment" type="select" sortOrder="32" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Publish stack trace on purge all event</label>
+                            <comment>Submits the stack trace when the purge all event is created, for debugging purposes</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="enab2le_webhooks">1</field>
+                            </depends>
+                        </field>
                         <field id="publish_config_change_events" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Publish Config change events</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>

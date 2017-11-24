@@ -163,6 +163,18 @@ class Api
 
         if ($this->config->areWebHooksEnabled() && $this->config->canPublishPurgeAllChanges()) {
             $this->sendWebHook('*initiated clean/purge all*');
+
+            if ($this->config->canPublishDebugBacktrace() == false) {
+                return $result;
+            }
+            
+            $stackTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+            $trace = [];
+            foreach ($stackTrace as $row => $data) {
+                $trace[] = "#{$row} {$data['file']}:{$data['line']} -> {$data['function']}()";
+            }
+
+            $this->sendWebHook('*Pruge all backtrace:*```' .  implode("\n", $trace) . '```');
         }
 
         return $result;

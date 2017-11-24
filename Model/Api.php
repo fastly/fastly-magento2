@@ -174,7 +174,7 @@ class Api
                 $trace[] = "#{$row} {$data['file']}:{$data['line']} -> {$data['function']}()";
             }
 
-            $this->sendWebHook('*Pruge all backtrace:*```' .  implode("\n", $trace) . '```');
+            $this->sendWebHook('*Purge all backtrace:*```' .  implode("\n", $trace) . '```');
         }
 
         return $result;

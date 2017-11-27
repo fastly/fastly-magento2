@@ -172,6 +172,11 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_PUBLISH_PURGE_ALL_EVENTS = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_all_items_events';
 
     /**
+     * XML path to enable Publish Purge All/Clean backtrace
+     */
+    const XML_FASTLY_PUBLISH_PURGE_ALL_TRACE = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_all_trace';
+
+    /**
      * XML path to enable Publish Config change events
      */
     const XML_FASTLY_PUBLISH_CONFIG_CHANGE_EVENTS = 'system/full_page_cache/fastly/fastly_web_hooks/publish_config_change_events';
@@ -399,6 +404,16 @@ class Config extends \Magento\PageCache\Model\Config
     public function canPublishPurgeAllChanges()
     {
         return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PUBLISH_PURGE_ALL_EVENTS));
+    }
+
+    /**
+     * Is publishing backtrace on purgall allowed
+     *
+     * @return bool
+     */
+    public function canPublishDebugBacktrace()
+    {
+        return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PUBLISH_PURGE_ALL_TRACE));
     }
 
     /**

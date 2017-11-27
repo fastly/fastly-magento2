@@ -40,6 +40,7 @@
                         <enable_webhooks>0</enable_webhooks>
                         <publish_key_url_purge_events>1</publish_key_url_purge_events>
                         <publish_purge_all_items_events>1</publish_purge_all_items_events>
+                        <publish_purge_all_trace>0</publish_purge_all_trace>
                         <publish_config_change_events>1</publish_config_change_events>
                     </fastly_web_hooks>
                 </fastly>

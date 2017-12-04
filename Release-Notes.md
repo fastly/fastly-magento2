@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.37
+
+- Add ability to see full stack trace of purge all requests. Often times 3rd party modules will invoke purge all
+needlessly and this allows you to track down who is making the calls. By default this functionality is off.
+
 ## 1.2.36
 
 - Added shell functionality for setting Service ID, Token, enabling/disabling Fastly, uploading default VCL, testing connection and cleaning configuration cache.

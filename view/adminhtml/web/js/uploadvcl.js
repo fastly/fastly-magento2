@@ -419,7 +419,7 @@ define([
                 var backend_name = "Backend " + backends[backend_id].name;
                 $('.modal-title').text($.mage.__(backend_name));
                 $('#backend_name').val(backends[backend_id].name);
-                $('#backend_shield option[value=' + backends[backend_id].shield +']').attr('selected','selected');
+                $('#backend_shield option[value=\'' + backends[backend_id].shield +'\']').attr('selected','selected');
                 $('#backend_connect_timeout').val(backends[backend_id].connect_timeout);
                 $('#backend_between_bytes_timeout').val(backends[backend_id].between_bytes_timeout);
                 $('#backend_first_byte_timeout').val(backends[backend_id].first_byte_timeout);

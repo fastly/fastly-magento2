@@ -147,6 +147,11 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_GA_CID = 'system/full_page_cache/fastly/fastly_ga_cid';
 
     /**
+     * XML path to Last checked issued Fastly M2 version
+     */
+    const XML_FASTLY_LAST_CHECKED_ISSUED_VERSION = 'system/full_page_cache/fastly/last_checked_issues_version';
+
+    /**
      * XML path to Fastly module version
      */
     const XML_FASTLY_MODULE_VERSION = 'system/full_page_cache/fastly/current_version';
@@ -452,6 +457,16 @@ class Config extends \Magento\PageCache\Model\Config
     public function getWebhookMessagePrefix()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_WEBHOOK_MESSAGE_PREFIX);
+    }
+
+    /**
+     * return Webhook message format
+     *
+     * @return mixed
+     */
+    public function getLastCheckedIssuedVersion()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_LAST_CHECKED_ISSUED_VERSION);
     }
 
     /**

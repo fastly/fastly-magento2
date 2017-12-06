@@ -157,6 +157,11 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_WEBHOOKS_ENABLED = 'system/full_page_cache/fastly/fastly_web_hooks/enable_webhooks';
 
     /**
+     * XML path to Webhook Username
+     */
+    const XML_FASTLY_WEBHOOKS_USERNAME = 'system/full_page_cache/fastly/fastly_web_hooks/webhooks_username';
+
+    /**
      * XML path to Incoming webhook URL
      */
     const XML_FASTLY_INCOMING_WEBHOOK_URL = 'system/full_page_cache/fastly/fastly_web_hooks/incoming_webhook_url';
@@ -381,9 +386,22 @@ class Config extends \Magento\PageCache\Model\Config
         return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_WEBHOOKS_ENABLED));
     }
 
+    /**
+     * Get Webhooks Endpoint URL
+     * @return mixed
+     */
     public function getIncomingWebhookURL()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_INCOMING_WEBHOOK_URL);
+    }
+
+    /**
+     * Get Webhooks Username
+     * @return mixed
+     */
+    public function getWebhookUsername()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_WEBHOOKS_USERNAME);
     }
 
     /**

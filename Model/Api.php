@@ -592,11 +592,10 @@ class Api
     {
         $url = $this->config->getIncomingWebhookURL();
         $messagePrefix = $this->config->getWebhookMessagePrefix();
-        $currentUsername = 'System'; // TO DO: Fetch current admin username
+        $currentUsername = $this->config->getWebhookUsername();
         $storeName = $this->helper->getStoreName();
         $storeUrl = $this->helper->getStoreUrl();
-
-        $text =  $messagePrefix.' user='.$currentUsername.' '.$message.' on <'.$storeUrl.'|Store> | '.$storeName;
+        $text =  $messagePrefix . ' ' . $message.' on <'.$storeUrl.'|Store> | '.$storeName;
 
         $headers = [
             'Content-type: application/json'
@@ -604,7 +603,7 @@ class Api
 
         $body = json_encode(array(
             "text"  =>  $text,
-            "username" => "fastly-magento-bot",
+            "username" => $currentUsername,
             "icon_emoji"=> ":airplane:"
         ));
 

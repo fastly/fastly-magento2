@@ -59,6 +59,11 @@ class Api
     protected $log;
 
     /**
+     * @var \Magento\Backend\Model\Auth\Session
+     */
+    protected $_authSession;
+
+    /**
      * Api constructor.
      * @param Config $config
      * @param CurlFactory $curlFactory
@@ -71,13 +76,15 @@ class Api
         CurlFactory $curlFactory,
         InvalidateLogger $logger,
         Data $helper,
-        LoggerInterface $log
+        LoggerInterface $log,
+        \Magento\Backend\Model\Auth\Session $authSession
     ) {
         $this->config = $config;
         $this->curlFactory = $curlFactory;
         $this->logger = $logger;
         $this->helper = $helper;
         $this->log = $log;
+        $this->_authSession = $authSession;
     }
 
     /**
@@ -590,13 +597,14 @@ class Api
      */
     public function sendWebHook($message)
     {
+        $user = $this->_authSession->getUser();
+        $userName = $user ? $user->getUsername() : 'System';
         $url = $this->config->getIncomingWebhookURL();
         $messagePrefix = $this->config->getWebhookMessagePrefix();
-        $currentUsername = 'System'; // TO DO: Fetch current admin username
+        $currentUsername = $this->config->getWebhookUsername();
         $storeName = $this->helper->getStoreName();
         $storeUrl = $this->helper->getStoreUrl();
-
-        $text =  $messagePrefix.' user='.$currentUsername.' '.$message.' on <'.$storeUrl.'|Store> | '.$storeName;
+        $text =  $messagePrefix.' user='.$userName.' '.$message.' on <'.$storeUrl.'|Store> | '.$storeName;
 
         $headers = [
             'Content-type: application/json'
@@ -604,7 +612,7 @@ class Api
 
         $body = json_encode(array(
             "text"  =>  $text,
-            "username" => "fastly-magento-bot",
+            "username" => $currentUsername,
             "icon_emoji"=> ":airplane:"
         ));
 

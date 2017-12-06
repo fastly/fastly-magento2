@@ -10,7 +10,7 @@
         "magento/framework": ">=100.0.0"
     },
     "type": "magento2-module",
-    "version": "1.2.38",
+    "version": "1.2.37",
     "license": [
         "BSD"
     ],

@@ -199,12 +199,6 @@
                                 <field id="enable_webhooks">1</field>
                             </depends>
                         </field>
-                        <field id="webhooks_username" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                            <label>Webhooks Username</label>
-                            <depends>
-                                <field id="enable_webhooks">1</field>
-                            </depends>
-                        </field>
                         <field id="publish_key_url_purge_events" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Publish Key and URL Purge Events</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>

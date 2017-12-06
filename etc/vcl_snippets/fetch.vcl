@@ -102,5 +102,4 @@
         if (beresp.http.Content-Type ~ "(image|script|css)") {
             set beresp.http.Surrogate-Key = re.group.1;
         }
-        return (deliver);
     }

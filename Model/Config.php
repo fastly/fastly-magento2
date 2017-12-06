@@ -147,11 +147,6 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_GA_CID = 'system/full_page_cache/fastly/fastly_ga_cid';
 
     /**
-     * XML path to Last checked issued Fastly M2 version
-     */
-    const XML_FASTLY_LAST_CHECKED_ISSUED_VERSION = 'system/full_page_cache/fastly/last_checked_issues_version';
-
-    /**
      * XML path to Fastly module version
      */
     const XML_FASTLY_MODULE_VERSION = 'system/full_page_cache/fastly/current_version';
@@ -160,11 +155,6 @@ class Config extends \Magento\PageCache\Model\Config
      * XML path to enable Webhooks
      */
     const XML_FASTLY_WEBHOOKS_ENABLED = 'system/full_page_cache/fastly/fastly_web_hooks/enable_webhooks';
-
-    /**
-     * XML path to Webhook Username
-     */
-    const XML_FASTLY_WEBHOOKS_USERNAME = 'system/full_page_cache/fastly/fastly_web_hooks/webhooks_username';
 
     /**
      * XML path to Incoming webhook URL
@@ -391,22 +381,9 @@ class Config extends \Magento\PageCache\Model\Config
         return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_WEBHOOKS_ENABLED));
     }
 
-    /**
-     * Get Webhooks Endpoint URL
-     * @return mixed
-     */
     public function getIncomingWebhookURL()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_INCOMING_WEBHOOK_URL);
-    }
-
-    /**
-     * Get Webhooks Username
-     * @return mixed
-     */
-    public function getWebhookUsername()
-    {
-        return $this->_scopeConfig->getValue(self::XML_FASTLY_WEBHOOKS_USERNAME);
     }
 
     /**
@@ -457,16 +434,6 @@ class Config extends \Magento\PageCache\Model\Config
     public function getWebhookMessagePrefix()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_WEBHOOK_MESSAGE_PREFIX);
-    }
-
-    /**
-     * return Webhook message format
-     *
-     * @return mixed
-     */
-    public function getLastCheckedIssuedVersion()
-    {
-        return $this->_scopeConfig->getValue(self::XML_FASTLY_LAST_CHECKED_ISSUED_VERSION);
     }
 
     /**

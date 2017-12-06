@@ -1,9 +1,5 @@
 # Fastly_Cdn Release Notes
 
-## 1.2.38
-
-- Fix for reducing new version notification duplicating
-
 ## 1.2.37
 
 - Add ability to see full stack trace of purge all requests. Often times 3rd party modules will invoke purge all

@@ -34,23 +34,6 @@ class Notification extends \Magento\AdminNotification\Model\Feed
     protected $_curlFactory;
 
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $_scopeConfig;
-
-    /**
-     * @var \Magento\Framework\App\Config\Storage\WriterInterface
-     */
-    protected $_configWriter;
-
-    /**
-     * @var \Magento\Framework\App\Cache\Manager
-     */
-    protected $_cacheManager;
-
-
-
-    /**
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Backend\App\ConfigInterface $backendConfig
@@ -79,10 +62,6 @@ class Notification extends \Magento\AdminNotification\Model\Feed
         \Magento\Framework\App\DeploymentConfig $deploymentConfig,
         \Magento\Framework\App\ProductMetadataInterface $productMetadata,
         \Magento\Framework\UrlInterface $urlBuilder,
-        \Fastly\Cdn\Model\Config $fastlyConfig,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Framework\App\Config\Storage\WriterInterface $configWriter,
-        \Magento\Framework\App\Cache\Manager $cacheManager,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -90,10 +69,6 @@ class Notification extends \Magento\AdminNotification\Model\Feed
         parent::__construct($context, $registry, $backendConfig, $inboxFactory, $curlFactory, $deploymentConfig, $productMetadata, $urlBuilder, $resource, $resourceCollection, $data);
         $this->_backendAuthSession  = $backendAuthSession;
         $this->_moduleList = $moduleList;
-        $this->_moduleList = $fastlyConfig;
-        $this->_scopeConfig = $scopeConfig;
-        $this->_configWriter = $configWriter;
-        $this->_cacheManager = $cacheManager;
         $this->_moduleManager = $moduleManager;
         $this->_curlFactory = $curlFactory;
         $this->_logger = $context->getLogger();
@@ -109,17 +84,9 @@ class Notification extends \Magento\AdminNotification\Model\Feed
     {
         $lastVersion = $this->getLastVersion();
         if($lastVersion && version_compare($currentVersion, $lastVersion, '<')) {
-            $versionPath = \Fastly\Cdn\Model\Config::XML_FASTLY_LAST_CHECKED_ISSUED_VERSION;
-            $oldValue = $this->_scopeConfig->getValue($versionPath);
-            if (version_compare($oldValue, $lastVersion, '<')) {
-                $this->_configWriter->save($versionPath, $lastVersion);
-
-                // save last version in db, and notify only if newly fetched last version is greater than stored version
-                $inboxFactory = $this->_inboxFactory;
-                $inbox = $inboxFactory->create();
-                $inbox->addNotice('Fastly CDN', "Version $lastVersion is available. You are currently running $currentVersion. Please consider upgrading at your earliest convenience.");
-                $this->_cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
-            }
+            $inboxFactory = $this->_inboxFactory;
+            $inbox = $inboxFactory->create();
+            $inbox->addNotice('Fastly CDN', "Version $lastVersion is available. You are currently running $currentVersion. Please consider upgrading at your earliest convenience.");
         }
     }
 

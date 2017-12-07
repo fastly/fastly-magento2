@@ -59,6 +59,11 @@ class Api
     protected $log;
 
     /**
+     * @var bool Purge all flag
+     */
+    protected $purged = false;
+
+    /**
      * Api constructor.
      * @param Config $config
      * @param CurlFactory $curlFactory
@@ -150,12 +155,18 @@ class Api
     }
 
     /**
-     * Purge all of Fastly's CDN content
+     * Purge all of Fastly's CDN content. Can be called only once per request
      *
      * @return bool
      */
     public function cleanAll()
     {
+        // Check if purge has been requested on this request
+        if ($this->purged == true) {
+            return true;
+        }
+        $this->purged = true;
+
         $uri = $this->_getApiServiceUri() . 'purge_all';
         if ($result = $this->_purge($uri)) {
             $this->logger->execute('clean all items');

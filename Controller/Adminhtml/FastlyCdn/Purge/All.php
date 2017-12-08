@@ -20,54 +20,68 @@
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Purge;
 
-use Fastly\Cdn\Model;
-use Magento\Framework\App\Cache;
+use Fastly\Cdn\Model\Api;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Cache\Manager;
 
-class All extends \Magento\Backend\App\Action
+class All extends Action
 {
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
     protected $api;
-    protected $_cacheManager;
 
+    /**
+     * @var Manager
+     */
+    protected $_cacheManager;
 
     /**
      * All constructor.
-     * @param \Magento\Backend\App\Action\Context $context
-     * @param Model\Api $api
-     * @param Cache\Manager $cacheManager
+     *
+     * @param Context $context
+     * @param Api $api
+     * @param Manager $cacheManager
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        \Fastly\Cdn\Model\Api $api,
-        \Magento\Framework\App\Cache\Manager $cacheManager
+        Context $context,
+        Api $api,
+        Manager $cacheManager
     ) {
-        parent::__construct($context);
         $this->api = $api;
         $this->_cacheManager = $cacheManager;
+
+        parent::__construct($context);
     }
 
     /**
-     * Purge by content type
+     * Performs cache cleanup and purge all on Fastly service.
+     * Should be used when "Preserve static assets on purge" is enabled.
      *
      * @return \Magento\Framework\App\ResponseInterface
-     * @throws \Exception
      */
     public function execute()
     {
+        // Flush all Magento caches
         $types = $this->_cacheManager->getAvailableTypes();
-        // Clear Magento cache
+        $types = array_diff($types, ['full_page']); // FPC is Handled separately
+
         $this->_cacheManager->clean($types);
-        // Clear Fastly cache
+
+        // Purge everything from Fastly
         $result = $this->api->cleanAll();
-        if ($result) {
-            $this->messageManager->addSuccessMessage(__('Full Magento & Fastly Cache has been cleaned.'));
+
+        if ($result === true) {
+            $this->messageManager->addSuccessMessage(
+                __('Full Magento & Fastly Cache has been cleaned.')
+            );
         } else {
             $this->getMessageManager()->addErrorMessage(
                 __('Full Magento & Fastly Cache was not cleaned successfully.')
             );
         }
+
         return $this->_redirect('*/cache/index');
     }
 }

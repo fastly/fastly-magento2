@@ -30,4 +30,7 @@
             <argument name="config" xsi:type="object">Fastly\Cdn\Model\Config</argument>
         </arguments>
     </type>
+    <type name="Magento\Config\Model\Config">
+        <plugin name="inchoo_config_after_save" type="Fastly\Cdn\Model\Config\ConfigRewrite"/>
+    </type>
 </config>

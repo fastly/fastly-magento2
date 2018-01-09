@@ -84,7 +84,7 @@
     if (!req.http.x-long-cache && req.url ~ "/(catalogsearch|checkout|customer/section/load)") {
         set req.http.x-pass = "1";
     # Pass all admin actions
-    } else if ( req.url ~ "^/(index\.php/)?admin(_.*)?/" ) {
+    } else if ( req.url ~ "^/(index\.php/)?####ADMIN_PATH####/" ) {
         set req.http.x-pass = "1";
     } else {
         # Sort the query arguments to increase cache hit ratio with query arguments that

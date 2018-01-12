@@ -109,9 +109,11 @@ class Upload extends \Magento\Backend\App\Action
             }
 
             $snippets = $this->config->getVclSnippets();
+            $adminUrl = $this->vcl->getAdminFrontName();
 
             foreach($snippets as $key => $value)
             {
+                $value = str_replace('####ADMIN_PATH####', $adminUrl, $value);
                 $snippetData = array('name' => Config::FASTLY_MAGENTO_MODULE.'_'.$key, 'type' => $key, 'dynamic' => "0", 'priority' => 50, 'content' => $value);
                 $status = $this->api->uploadSnippet($clone->number, $snippetData);
 

@@ -87,6 +87,11 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_API_KEY = 'system/full_page_cache/fastly/fastly_api_key';
 
     /**
+     * XML path to Fastly custom parameters
+     */
+    const XML_FASTLY_CUSTOM_PARAMETERS = 'system/full_page_cache/fastly/fastly_custom_parameters';
+
+    /**
      * XML path to stale ttl path
      */
     const XML_FASTLY_STALE_TTL = 'system/full_page_cache/fastly/fastly_advanced_configuration/stale_ttl';
@@ -259,6 +264,16 @@ class Config extends \Magento\PageCache\Model\Config
     public function getApiKey()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_API_KEY);
+    }
+
+    /**
+     * Return Fastly custom parameters
+     *
+     * @return int
+     */
+    public function getCustomParameters()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_CUSTOM_PARAMETERS);
     }
 
     /**

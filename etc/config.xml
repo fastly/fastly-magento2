@@ -26,6 +26,7 @@
             <full_page_cache>
                 <fastly>
                     <path>fastly.vcl</path>
+                    <fastly_custom_parameters>utm_.*, gclid, gdftrk, _ga, mc_.*</fastly_custom_parameters>
                     <fastly_advanced_configuration>
                         <stale_ttl>86400</stale_ttl>
                         <stale_error_ttl>86400</stale_error_ttl>

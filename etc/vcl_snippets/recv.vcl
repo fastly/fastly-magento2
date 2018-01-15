@@ -69,9 +69,10 @@
         }
     } else {
         # Per suggestions in https://github.com/sdinteractive/SomethingDigital_PageCacheParams
-        # we'll strip out query parameters used in Google AdWords, Mailchimp tracking
+        # we'll strip out query parameters used in Google AdWords, Mailchimp tracking by default
+        # and allow custom parameters to be set
         set req.http.Magento-Original-URL = req.url;
-        set req.url = querystring.regfilter(req.url, "^(utm_.*|gclid|gdftrk|_ga|mc_.*)");
+        set req.url = querystring.regfilter(req.url, "^(####QUERY_PARAMETERS####)");
     }
 
     # Don't allow clients to force a pass

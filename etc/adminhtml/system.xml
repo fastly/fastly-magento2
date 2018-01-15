@@ -49,10 +49,10 @@
                         <validate>required-entry</validate>
                     </field>
                     <field id="fastly_custom_parameters" type="text" translate="label comment" sortOrder="21" showInDefault="1" showInWebsite="0" showInStore="0">
-                        <label>Custom URL Parameters</label>
+                        <label>Ignored URL Parameters</label>
                         <comment>
                             <![CDATA[A comma separated list of ignored query string parameters.<br /><br />
-                            After making any changes to Fastly Service ID or API token, please Save Config first before uploading VCL.]]>
+                            After making any changes to Fastly Service ID, API token or Ignored URL Parameters, please Save Config first before uploading VCL.]]>
                         </comment>
                         <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
                     </field>

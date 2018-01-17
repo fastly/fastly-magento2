@@ -1,8 +1,6 @@
     # Deactivate gzip on origin. This is so we can make sure that ESI fragments
-    # come uncompressed. X-Long-Cache objects can be left untouched.
-    if ( !req.http.x-long-cache ) {
-        unset bereq.http.Accept-Encoding;
-    }
+    # come uncompressed.
+    unset bereq.http.Accept-Encoding;
 
     # Increase first byte timeouts for /admin* URLs to 3 minutes
     # ####ADMIN_PATH#### is replaced with value of frontName from app/etc/env.php

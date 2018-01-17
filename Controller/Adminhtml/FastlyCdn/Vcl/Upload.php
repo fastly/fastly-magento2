@@ -109,11 +109,17 @@ class Upload extends \Magento\Backend\App\Action
             }
 
             $snippets = $this->config->getVclSnippets();
+            $ignoredUrlParameters = $this->config->getIgnoredUrlParameters();
             $adminUrl = $this->vcl->getAdminFrontName();
+
+            $ignoredUrlParameterPieces = explode(",", $ignoredUrlParameters);
+            $filterIgnoredUrlParameterPieces = array_filter(array_map('trim', $ignoredUrlParameterPieces));
+            $queryParameters = implode('|', $filterIgnoredUrlParameterPieces);
 
             foreach($snippets as $key => $value)
             {
                 $value = str_replace('####ADMIN_PATH####', $adminUrl, $value);
+                $value = str_replace('####QUERY_PARAMETERS####', $queryParameters, $value);
                 $snippetData = array('name' => Config::FASTLY_MAGENTO_MODULE.'_'.$key, 'type' => $key, 'dynamic' => "0", 'priority' => 50, 'content' => $value);
                 $status = $this->api->uploadSnippet($clone->number, $snippetData);
 

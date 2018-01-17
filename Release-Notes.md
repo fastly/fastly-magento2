@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.40
+
+- Allow user to override default list of query arguments to strip out https://github.com/fastly/fastly-magento2/pull/134
+
 ## 1.2.39
 
 - Use frontName from app/etc/env.php to generate VCL statements for handling /admin/ URLS https://github.com/fastly/fastly-magento2/pull/132

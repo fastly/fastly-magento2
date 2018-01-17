@@ -109,12 +109,12 @@ class Upload extends \Magento\Backend\App\Action
             }
 
             $snippets = $this->config->getVclSnippets();
-            $customParameters = $this->config->getCustomParameters();
+            $ignoredUrlParameters = $this->config->getIgnoredUrlParameters();
             $adminUrl = $this->vcl->getAdminFrontName();
 
-            $customParameterPieces = explode(",", $customParameters);
-            $filterCustomParameterPieces = array_filter(array_map('trim', $customParameterPieces));
-            $queryParameters = implode('|', $filterCustomParameterPieces);
+            $ignoredUrlParameterPieces = explode(",", $ignoredUrlParameters);
+            $filterIgnoredUrlParameterPieces = array_filter(array_map('trim', $ignoredUrlParameterPieces));
+            $queryParameters = implode('|', $filterIgnoredUrlParameterPieces);
 
             foreach($snippets as $key => $value)
             {

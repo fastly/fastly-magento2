@@ -87,11 +87,6 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_API_KEY = 'system/full_page_cache/fastly/fastly_api_key';
 
     /**
-     * XML path to Fastly custom parameters
-     */
-    const XML_FASTLY_CUSTOM_PARAMETERS = 'system/full_page_cache/fastly/fastly_custom_parameters';
-
-    /**
      * XML path to stale ttl path
      */
     const XML_FASTLY_STALE_TTL = 'system/full_page_cache/fastly/fastly_advanced_configuration/stale_ttl';
@@ -105,6 +100,11 @@ class Config extends \Magento\PageCache\Model\Config
      * XML path to stale error ttl path
      */
     const XML_FASTLY_STALE_ERROR_TTL = 'system/full_page_cache/fastly/fastly_advanced_configuration/stale_error_ttl';
+
+    /**
+     * XML path to Fastly custom parameters
+     */
+    const XML_FASTLY_IGNORED_URL_PARAMETERS = 'system/full_page_cache/fastly/fastly_advanced_configuration/ignored_url_parameters';
 
     /**
      * XML path to purge catalog category
@@ -267,16 +267,6 @@ class Config extends \Magento\PageCache\Model\Config
     }
 
     /**
-     * Return Fastly custom parameters
-     *
-     * @return int
-     */
-    public function getCustomParameters()
-    {
-        return $this->_scopeConfig->getValue(self::XML_FASTLY_CUSTOM_PARAMETERS);
-    }
-
-    /**
      * Return page lifetime
      *
      * @return int
@@ -304,6 +294,16 @@ class Config extends \Magento\PageCache\Model\Config
     public function getStaleErrorTtl()
     {
         return intval($this->_scopeConfig->getValue(self::XML_FASTLY_STALE_ERROR_TTL));
+    }
+
+    /**
+     * Return Fastly custom parameters
+     *
+     * @return int
+     */
+    public function getIgnoredUrlParameters()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_IGNORED_URL_PARAMETERS);
     }
 
     /**

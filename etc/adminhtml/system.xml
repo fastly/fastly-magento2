@@ -43,18 +43,11 @@
                     <field id="fastly_api_key" type="text" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Fastly API token</label>
                         <comment>
-                            <![CDATA[Please create a <a href="https://manage.fastly.com/account/personal/tokens" target="_blank">Fastly API token</a> with a global scope.<br />]]>
+                            <![CDATA[Please create a <a href="https://manage.fastly.com/account/personal/tokens" target="_blank">Fastly API token</a> with a global scope.<br /><br />
+                            After making any changes to Fastly Service ID or API token please Save Config first before uploading VCL.]]>
                         </comment>
                         <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
                         <validate>required-entry</validate>
-                    </field>
-                    <field id="fastly_custom_parameters" type="text" translate="label comment" sortOrder="21" showInDefault="1" showInWebsite="0" showInStore="0">
-                        <label>Ignored URL Parameters</label>
-                        <comment>
-                            <![CDATA[A comma separated list of ignored query string parameters.<br /><br />
-                            After making any changes to Fastly Service ID, API token or Ignored URL Parameters, please Save Config first before uploading VCL.]]>
-                        </comment>
-                        <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
                     </field>
                     <field id="test_connection" translate="label comment" sortOrder="25" showInDefault="1" showInStore="0" showInWebsite="0">
                         <label><![CDATA[Test credentials]]></label>
@@ -124,6 +117,14 @@
                                 <![CDATA[Time in seconds that Fastly will continue to serve <a href="https://docs.fastly.com/guides/performance-tuning/serving-stale-content#serving-stale-content-on-errors" target="_blank">stale content​</a> if your origin is unavailable. Set to 0 to disable this feature.]]>
                             </comment>
                             <backend_model>Magento\PageCache\Model\System\Config\Backend\Ttl</backend_model>
+                        </field>
+                        <field id="ignored_url_parameters" type="text" translate="label comment" sortOrder="31" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Ignored URL Parameters</label>
+                            <comment>
+                                <![CDATA[A comma separated list of ignored query string parameters.<br /><br />
+                                Please reupload VCL after making changes to Ignored URL Parameters.]]>
+                            </comment>
+                            <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
                         </field>
                         <field id="purge_catalog_category" translate="label comment" type="select" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Purge category</label>

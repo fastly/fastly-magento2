@@ -44,7 +44,7 @@
                         <label>Fastly API token</label>
                         <comment>
                             <![CDATA[Please create a <a href="https://manage.fastly.com/account/personal/tokens" target="_blank">Fastly API token</a> with a global scope.<br /><br />
-                            After making any changes to Fastly Service ID or API token please Save Config first before uploading VCL.]]>
+                            After making any changes to Fastly Service ID or API token, please Save Config first before uploading VCL.]]>
                         </comment>
                         <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
                         <validate>required-entry</validate>

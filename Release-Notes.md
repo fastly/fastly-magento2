@@ -1,5 +1,14 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.40
+
+- Allow user to override default list of query arguments to strip out https://github.com/fastly/fastly-magento2/pull/134
+
+## 1.2.39
+
+- Use frontName from app/etc/env.php to generate VCL statements for handling /admin/ URLS https://github.com/fastly/fastly-magento2/pull/132
+- Handle cases where more than 256 surrogate keys are being purged. Those need to be broken up into multiple transactions https://github.com/fastly/fastly-magento2/pull/133/files
+
 ## 1.2.38
 
 - Fix for Edit Backends where due to improper escaping in certain situations backends would not show

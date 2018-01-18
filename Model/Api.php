@@ -32,6 +32,7 @@ class Api
     const FASTLY_HEADER_SOFT_PURGE = 'Fastly-Soft-Purge';
     const PURGE_TIMEOUT        = 10;
     const PURGE_TOKEN_LIFETIME = 30;
+    const FASTLY_MAX_HEADER_KEY_SIZE = 256;
 
     /**
      * @var Config $config,
@@ -140,15 +141,30 @@ class Api
     public function cleanBySurrogateKey($keys)
     {
         $uri = $this->_getApiServiceUri() . 'purge';
-        $payload = json_encode(['surrogate_keys' => $keys]);
-        if ($result = $this->_purge($uri, \Zend_Http_Client::POST, $payload)) {
-            foreach ($keys as $key) {
-                $this->logger->execute('surrogate key: ' . $key);
-            }
+        $num = count($keys);
+        if ($num >= self::FASTLY_MAX_HEADER_KEY_SIZE) {
+            $parts = $num / self::FASTLY_MAX_HEADER_KEY_SIZE;
+            $additional = ($parts > (int)$parts) ? 1 : 0;
+            $parts = (int)$parts + (int)$additional;
+            $chunks = ceil($num/$parts);
+            $collection = array_chunk($keys, $chunks);
+        } else {
+            $collection = [$keys];
         }
 
-        if ($this->config->areWebHooksEnabled() && $this->config->canPublishKeyUrlChanges()) {
-            $this->sendWebHook('*clean by key on ' . join(" ", $keys) . '*');
+        foreach($collection as $keys) {
+
+            $payload = json_encode(['surrogate_keys' => $keys]);
+            if ($result = $this->_purge($uri, \Zend_Http_Client::POST, $payload)) {
+                foreach ($keys as $key) {
+                    $this->logger->execute('surrogate key: ' . $key);
+                }
+            }
+
+            if ($this->config->areWebHooksEnabled() && $this->config->canPublishKeyUrlChanges()) {
+                $this->sendWebHook('*clean by key on ' . join(" ", $keys) . '*');
+            }
+
         }
 
         return $result;

@@ -85,6 +85,7 @@
     if (!req.http.x-long-cache && req.url ~ "/(catalogsearch|checkout|customer/section/load)") {
         set req.http.x-pass = "1";
     # Pass all admin actions
+    # ####ADMIN_PATH#### is replaced with value of frontName from app/etc/env.php
     } else if ( req.url ~ "^/(index\.php/)?####ADMIN_PATH####/" ) {
         set req.http.x-pass = "1";
     } else {

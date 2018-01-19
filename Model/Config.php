@@ -102,6 +102,11 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_STALE_ERROR_TTL = 'system/full_page_cache/fastly/fastly_advanced_configuration/stale_error_ttl';
 
     /**
+     * XML path to Fastly admin path timeout
+     */
+    const XML_FASTLY_ADMIN_PATH_TIMEOUT= 'system/full_page_cache/fastly/fastly_advanced_configuration/admin_path_timeout';
+
+    /**
      * XML path to Fastly ignored url parameters
      */
     const XML_FASTLY_IGNORED_URL_PARAMETERS = 'system/full_page_cache/fastly/fastly_advanced_configuration/ignored_url_parameters';
@@ -294,6 +299,16 @@ class Config extends \Magento\PageCache\Model\Config
     public function getStaleErrorTtl()
     {
         return intval($this->_scopeConfig->getValue(self::XML_FASTLY_STALE_ERROR_TTL));
+    }
+
+    /**
+     * Return admin path timeout
+     *
+     * @return int
+     */
+    public function getAdminPathTimeout()
+    {
+        return intval($this->_scopeConfig->getValue(self::XML_FASTLY_ADMIN_PATH_TIMEOUT));
     }
 
     /**

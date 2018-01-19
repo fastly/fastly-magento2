@@ -6,7 +6,7 @@
     # ####ADMIN_PATH#### is replaced with value of frontName from app/etc/env.php
     if ( req.url ~ "^/(index\.php/)?####ADMIN_PATH####/" ) {
 
-      set bereq.first_byte_timeout = 180s;
+      set bereq.first_byte_timeout = ####ADMIN_PATH_TIMEOUT####s;
 
 
     }

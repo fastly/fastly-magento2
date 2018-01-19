@@ -124,7 +124,7 @@
                                 <![CDATA[Time in seconds for the admin path first byte timeout.]]>
                             </comment>
                             <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
-                            <validate>required-entry</validate>
+                            <validate>required-entry validate-digits</validate>
                         </field>
                         <field id="ignored_url_parameters" type="text" translate="label comment" sortOrder="32" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Ignored URL Parameters</label>

@@ -117,12 +117,20 @@ class Blocking extends \Magento\Backend\App\Action
             $blockedItems = $country_codes . $acls;
             $strippedBlockedItems = substr($blockedItems, 0, strrpos($blockedItems, '||', -1));
 
+            $condition = array('name' => Config::FASTLY_MAGENTO_MODULE.'_block', 'statement' => 'req.http.x-pass', 'type' => 'REQUEST', 'priority' => 5);
+            $createCondition = $this->api->createCondition($clone->number, $condition);
+
+            if(!$createCondition) {
+                return $result->setData(array('status' => false, 'msg' => 'Failed to create a REQUEST condition.'));
+            }
+
             if(!$checkIfReqExist) {
                 $request = array(
                     'name' => $reqName,
                     'service_id' => $service->id,
                     'version' => $currActiveVersion['active_version'],
-                    'force_ssl' => true
+                    'force_ssl' => true,
+                    'request_condition' => $createCondition->name
                 );
 
                 $createReq = $this->api->createRequest($clone->number, $request);
@@ -142,7 +150,8 @@ class Blocking extends \Magento\Backend\App\Action
 
                     $snippetData = array(
                         'name' => Config::FASTLY_MAGENTO_MODULE.'_blocking_'.$key,
-                        'type' => $key, 'dynamic' => "0",
+                        'type' => $key,
+                        'dynamic' => "0",
                         'priority' => 5,
                         'content' => $value
                     );

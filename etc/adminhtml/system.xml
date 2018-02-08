@@ -197,9 +197,10 @@
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="block" translate="label comment" sortOrder="5" showInDefault="1" showInStore="0" showInWebsite="0">
-                            <label><![CDATA[Block]]></label>
+                            <label><![CDATA[Blocking]]></label>
                             <comment>
-                                <![CDATA[]]></comment>
+                                <![CDATA[Block traffic from selected Acl IPs and Countries. Please save config prior to toggling.]]>
+                            </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\BlockingBtn</frontend_model>
                             <depends>
                                 <field id="enable_blocking">1</field>
@@ -207,6 +208,9 @@
                         </field>
                         <field id="block_by_country" translate="label comment" type="multiselect" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Block by country</label>
+                            <comment>
+                                <![CDATA[List of countries that can be blocked.]]>
+                            </comment>
                             <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                             <can_be_empty>1</can_be_empty>
                             <depends>
@@ -215,6 +219,9 @@
                         </field>
                         <field id="block_by_acl" translate="label comment" type="multiselect" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Block by ACL</label>
+                            <comment>
+                                <![CDATA[List of Acls that can be blocked.]]>
+                            </comment>
                             <source_model>Fastly\Cdn\Model\Config\Backend\ListAcl</source_model>
                             <can_be_empty>1</can_be_empty>
                             <depends>

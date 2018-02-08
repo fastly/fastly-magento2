@@ -166,10 +166,19 @@ class Config extends \Magento\PageCache\Model\Config
      */
     const XML_FASTLY_MODULE_VERSION = 'system/full_page_cache/fastly/current_version';
 
+    /**
+     * XML path to enable Fastly blocking
+     */
     const XML_FASTLY_BLOCKING_ENABLED = 'system/full_page_cache/fastly/fastly_blocking/enable_blocking';
 
+    /**
+     * XML path to Fastly list of blocked countries
+     */
     const XML_FASTLY_BLOCK_BY_COUNTRY = 'system/full_page_cache/fastly/fastly_blocking/block_by_country';
 
+    /**
+     * XML path to Fastly list of blocked Acls
+     */
     const XML_FASTLY_BLOCK_BY_ACL = 'system/full_page_cache/fastly/fastly_blocking/block_by_acl';
 
     /**
@@ -426,11 +435,19 @@ class Config extends \Magento\PageCache\Model\Config
         return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_BLOCKING_ENABLED));
     }
 
+    /**
+     * Return blocked countries
+     * @return mixed
+     */
     public function getBlockByCountry()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_BLOCK_BY_COUNTRY);
     }
 
+    /**
+     * Return blocked Acls
+     * @return mixed
+     */
     public function getBlockByAcl()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_BLOCK_BY_ACL);

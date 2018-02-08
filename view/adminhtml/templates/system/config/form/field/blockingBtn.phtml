@@ -1,0 +1,42 @@
+<?php echo $block->getButtonHtml() ?>
+
+<span class="collect-indicator" id="blocking_state_span">
+    <span id="fastly_blocking_state_message_span"><b>Current state:</b>
+        <img class="processing" hidden="hidden" alt="Collecting" style="margin:0 5px" src="<?php echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/>
+        <span style="display:none;" class="blocking_state_span" id="blocking_state_enabled"> enabled</span>
+        <span style="display:none;" class="blocking_state_span" id="blocking_state_disabled"> disabled</span>
+        <span style="display:none;" class="blocking_state_span" id="blocking_state_unknown"> unknown</span>
+    </span>
+</span>
+
+<div class="message message-error fastly-button-messages" id="fastly-error-blocking-button-msg" style="display: none">
+</div>
+
+<div class="message message-success fastly-button-messages" id="fastly-success-blocking-button-msg" style="display: none">
+</div>
+
+<div class="message message-warning fastly-button-messages" id="fastly-warning-blocking-button-msg" style="display: none">
+</div>
+
+<style type="text/css">
+    .fastly-button-messages {
+        font-size: 1.2rem;
+        margin-top: 5px;
+        padding: 1.4rem 4rem 1.4rem 5.5rem;
+    }
+
+    #blocking_state_enabled {
+        color: #008000;
+    }
+
+    #blocking_state_disabled {
+        color: #808080;
+    }
+
+    #blocking_state_unknown {
+        color: #ff0000;
+    }
+</style>
+
+
+

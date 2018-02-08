@@ -166,6 +166,12 @@ class Config extends \Magento\PageCache\Model\Config
      */
     const XML_FASTLY_MODULE_VERSION = 'system/full_page_cache/fastly/current_version';
 
+    const XML_FASTLY_BLOCKING_ENABLED = 'system/full_page_cache/fastly/fastly_blocking/enable_blocking';
+
+    const XML_FASTLY_BLOCK_BY_COUNTRY = 'system/full_page_cache/fastly/fastly_blocking/block_by_country';
+
+    const XML_FASTLY_BLOCK_BY_ACL = 'system/full_page_cache/fastly/fastly_blocking/block_by_acl';
+
     /**
      * XML path to enable Webhooks
      */
@@ -409,6 +415,25 @@ class Config extends \Magento\PageCache\Model\Config
     public function getGeoIpRedirectMapping()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_GEOIP_COUNTRY_MAPPING);
+    }
+
+    /**
+     * Return is Blocking enabled
+     * @return bool
+     */
+    public function isBlockingEnabled()
+    {
+        return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_BLOCKING_ENABLED));
+    }
+
+    public function getBlockByCountry()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_BLOCK_BY_COUNTRY);
+    }
+
+    public function getBlockByAcl()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_BLOCK_BY_ACL);
     }
 
     /**

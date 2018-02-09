@@ -2,36 +2,38 @@
 
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Acl;
 
-use \Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Acl;
 
-class GetAcl extends \Magento\Backend\App\Action
+class GetAcl extends Action
 {
     /**
      * @var JsonFactory
      */
-    protected $resultJson;
+    private $resultJson;
 
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
-    protected $api;
+    private $api;
 
     /**
      * @var Acl
      */
-    protected $acl;
+    private $acl;
 
     /**
      * GetAcl constructor.
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param Context $context
      * @param JsonFactory $resultJsonFactory
      * @param Api $api
      * @param Acl $acl
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         JsonFactory $resultJsonFactory,
         Api $api,
         Acl $acl
@@ -53,13 +55,19 @@ class GetAcl extends \Magento\Backend\App\Action
         try {
             $service = $this->api->checkServiceDetails();
             if(!$service) {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to check Service details.'));
+                return $result->setData([
+                    'status'    => false,
+                    'msg'       => 'Failed to check Service details.'
+                ]);
             }
 
             return $result->$this->acl->determineVersions($service->versions);
 
         } catch (\Exception $e) {
-            return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
+            return $result->setData([
+                'status'    => false,
+                'msg'       => $e->getMessage()
+            ]);
         }
     }
 }

@@ -12,17 +12,17 @@ class ListAcl implements ArrayInterface
     /**
      * @var JsonFactory
      */
-    protected $resultJson;
+    private $resultJson;
 
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
-    protected $api;
+    private $api;
 
     /**
      * @var Acl
      */
-    protected $acl;
+    private $acl;
 
     /**
      * GetAcl constructor.
@@ -41,6 +41,9 @@ class ListAcl implements ArrayInterface
         $this->acl = $acl;
     }
 
+    /**
+     * @return array
+     */
     public function toOptionArray()
     {
         $service = $this->api->checkServiceDetails();

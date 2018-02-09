@@ -49,6 +49,9 @@ class Acl extends AbstractHelper
             $nextVersion = (int) end($versions)->number + 1;
         }
 
-        return array('active_version' => $activeVersion, 'next_version' => $nextVersion);
+        return [
+            'active_version'    => $activeVersion,
+            'next_version'      => $nextVersion
+        ];
     }
 }

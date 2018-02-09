@@ -32,14 +32,14 @@ class CheckBlockingSetting extends Action
     const BLOCKING_SETTING_NAME = 'magentomodule_blocking';
 
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
-    protected $api;
+    private $api;
 
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
      * @var JsonFactory
@@ -81,7 +81,9 @@ class CheckBlockingSetting extends Action
             $req = $this->api->getRequest($activeVersion, self::BLOCKING_SETTING_NAME);
 
             if($req == false) {
-                return $result->setData(['status' => false]);
+                return $result->setData([
+                    'status' => false
+                ]);
             }
 
             return $result->setData([

@@ -2,23 +2,16 @@
 
 namespace Fastly\Cdn\Block\System\Config\Form\Field;
 
-use Magento\Backend\Block\Template\Context;
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 
 class BlockingBtn extends Field
 {
-    protected $_template = 'Fastly_Cdn::system/config/form/field/blockingBtn.phtml';
+    protected function _construct() // @codingStandardsIgnoreLine - required by parent class
+    {
+        $this->_template = 'Fastly_Cdn::system/config/form/field/blockingBtn.phtml';
 
-    /**
-     * @param Context $context
-     * @param array $data
-     */
-    public function __construct(
-        Context $context,
-        array $data = []
-    ) {
-        parent::__construct($context, $data);
+        parent::_construct();
     }
 
     /**
@@ -39,7 +32,7 @@ class BlockingBtn extends Field
      * @param  AbstractElement $element
      * @return string
      */
-    protected function _getElementHtml(AbstractElement $element)
+    protected function _getElementHtml(AbstractElement $element) // @codingStandardsIgnoreLine - required by parent class
     {
         return $this->_toHtml();
     }
@@ -55,6 +48,7 @@ class BlockingBtn extends Field
     }
 
     /**
+     * Render Blocking button HTML
      * @return mixed
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -62,10 +56,9 @@ class BlockingBtn extends Field
     {
         $button = $this->getLayout()->createBlock(
             'Magento\Backend\Block\Widget\Button'
-        )->setData(
-            [
-                'id' => 'fastly_blocking_button',
-                'label' => __('Toggle Blocking'),
+        )->setData([
+                'id'    => 'fastly_blocking_button',
+                'label' => __('Toggle Blocking')
             ]
         );
 

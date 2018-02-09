@@ -22,49 +22,52 @@ namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
 
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
-use \Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
 use Fastly\Cdn\Helper\Vcl;
+use Magento\Framework\Controller\Result\JsonFactory;
 
-class CustomerInfo extends \Magento\Backend\App\Action
+class CustomerInfo extends Action
 {
     /**
      * @var \Fastly\Cdn\Model\Api
      */
-    protected $api;
+    private $api;
 
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
      * @var Vcl
      */
-    protected $vcl;
+    private $vcl;
 
     /**
-     * @var \Magento\Framework\Controller\Result\JsonFactory
+     * @var JsonFactory
      */
-    protected $resultJsonFactory;
+    private $resultJsonFactory;
 
     /**
      * ServiceInfo constructor.
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param Context $context
      * @param Config $config
      * @param Api $api
      * @param JsonFactory $resultJsonFactory
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         Config $config,
         Api $api,
-        \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
+        JsonFactory $resultJsonFactory,
         Vcl $vcl
     ) {
         $this->api = $api;
         $this->config = $config;
         $this->resultJsonFactory = $resultJsonFactory;
         $this->vcl = $vcl;
+
         parent::__construct($context);
     }
 
@@ -78,13 +81,19 @@ class CustomerInfo extends \Magento\Backend\App\Action
             $result = $this->resultJsonFactory->create();
             $customer = $this->api->getCustomerInfo();
 
-            if(!$customer) {
-                return $result->setData(array('status' => false));
+            if (!$customer) {
+                return $result->setData(['status' => false]);
             }
 
-            return $result->setData(array('status' => true, 'customer' => $customer));
+            return $result->setData([
+                'status'    => true,
+                'customer'  => $customer
+            ]);
         } catch (\Exception $e) {
-            return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
+            return $result->setData([
+                'status'    => false,
+                'msg'       => $e->getMessage()
+            ]);
         }
     }
 }

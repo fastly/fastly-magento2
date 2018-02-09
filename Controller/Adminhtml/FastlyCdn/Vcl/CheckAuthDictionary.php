@@ -21,38 +21,40 @@
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
 
 use Fastly\Cdn\Model\Api;
-use \Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\Controller\Result\JsonFactory;
 
-class CheckAuthDictionary extends \Magento\Backend\App\Action
+class CheckAuthDictionary extends Action
 {
 
     /**
      * @var \Fastly\Cdn\Model\Api
      */
-    protected $api;
+    private $api;
 
     /**
-     * @var \Magento\Framework\Controller\Result\JsonFactory
+     * @var JsonFactory
      */
-    protected $resultJsonFactory;
+    private $resultJsonFactory;
 
     /**
      * CheckTlsSetting constructor.
      *
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param Context $context
      * @param Api $api
      * @param JsonFactory $resultJsonFactory
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         Api $api,
-        \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
+        JsonFactory $resultJsonFactory
     ) {
         $this->api = $api;
         $this->resultJsonFactory = $resultJsonFactory;
+
         parent::__construct($context);
     }
-
 
     /**
      * Check if AUTH dictionary exists
@@ -65,17 +67,19 @@ class CheckAuthDictionary extends \Magento\Backend\App\Action
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
 
-            $dictonaryName = \Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl\CheckAuthSetting::AUTH_DICTIONARY_NAME;
+            $dictonaryName = CheckAuthSetting::AUTH_DICTIONARY_NAME;
             $dictionary = $this->api->getSingleDictionary($activeVersion, $dictonaryName);
 
-            if((is_array($dictionary) && empty($dictionary)) || $dictionary == false)
-            {
-                return $result->setData(array('status' => false));
+            if ((is_array($dictionary) && empty($dictionary)) || $dictionary == false) {
+                return $result->setData(['status' => false]);
             } else {
-                return $result->setData(array('status' => true));
+                return $result->setData(['status' => true]);
             }
         } catch (\Exception $e) {
-            return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
+            return $result->setData([
+                'status'    => false,
+                'msg'       => $e->getMessage()
+            ]);
         }
     }
 }

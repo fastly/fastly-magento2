@@ -104,22 +104,26 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * XML path to Fastly admin path timeout
      */
-    const XML_FASTLY_ADMIN_PATH_TIMEOUT= 'system/full_page_cache/fastly/fastly_advanced_configuration/admin_path_timeout';
+    const XML_FASTLY_ADMIN_PATH_TIMEOUT
+        = 'system/full_page_cache/fastly/fastly_advanced_configuration/admin_path_timeout';
 
     /**
      * XML path to Fastly ignored url parameters
      */
-    const XML_FASTLY_IGNORED_URL_PARAMETERS = 'system/full_page_cache/fastly/fastly_advanced_configuration/ignored_url_parameters';
+    const XML_FASTLY_IGNORED_URL_PARAMETERS
+        = 'system/full_page_cache/fastly/fastly_advanced_configuration/ignored_url_parameters';
 
     /**
      * XML path to purge catalog category
      */
-    const XML_FASTLY_PURGE_CATALOG_CATEGORY = 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_catalog_category';
+    const XML_FASTLY_PURGE_CATALOG_CATEGORY
+        = 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_catalog_category';
 
     /**
      * XML path to purge catalog product
      */
-    const XML_FASTLY_PURGE_CATALOG_PRODUCT = 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_catalog_product';
+    const XML_FASTLY_PURGE_CATALOG_PRODUCT
+        = 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_catalog_product';
 
     /**
      * XML path to purge CMS page
@@ -149,7 +153,8 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * XML path to GeoIP redirect mapping
      */
-    const XML_FASTLY_GEOIP_COUNTRY_MAPPING = 'system/full_page_cache/fastly/fastly_advanced_configuration/geoip_country_mapping';
+    const XML_FASTLY_GEOIP_COUNTRY_MAPPING
+        = 'system/full_page_cache/fastly/fastly_advanced_configuration/geoip_country_mapping';
 
     /**
      * XML path to Google analytics CID
@@ -184,28 +189,32 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * XML path to enable Publish Key and URL Purge Events
      */
-    const XML_FASTLY_PUBLISH_KEY_URL_PURGE_EVENTS = 'system/full_page_cache/fastly/fastly_web_hooks/publish_key_url_purge_events';
+    const XML_FASTLY_PUBLISH_KEY_URL_PURGE_EVENTS
+        = 'system/full_page_cache/fastly/fastly_web_hooks/publish_key_url_purge_events';
 
     /**
      * XML path to enable Publish Purge All/Clean All Items Events
      */
-    const XML_FASTLY_PUBLISH_PURGE_ALL_EVENTS = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_all_items_events';
+    const XML_FASTLY_PUBLISH_PURGE_ALL_EVENTS
+        = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_all_items_events';
 
     /**
      * XML path to enable Publish Purge All/Clean backtrace
      */
-    const XML_FASTLY_PUBLISH_PURGE_ALL_TRACE = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_all_trace';
+    const XML_FASTLY_PUBLISH_PURGE_ALL_TRACE
+        = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_all_trace';
 
     /**
      * XML path to enable Publish Config change events
      */
-    const XML_FASTLY_PUBLISH_CONFIG_CHANGE_EVENTS = 'system/full_page_cache/fastly/fastly_web_hooks/publish_config_change_events';
+    const XML_FASTLY_PUBLISH_CONFIG_CHANGE_EVENTS
+        = 'system/full_page_cache/fastly/fastly_web_hooks/publish_config_change_events';
 
     /**
      * XML path to enable Publish Config change events
      */
-    const XML_FASTLY_WEBHOOK_MESSAGE_PREFIX = 'system/full_page_cache/fastly/fastly_web_hooks/webhook_message_prefix';
-
+    const XML_FASTLY_WEBHOOK_MESSAGE_PREFIX
+        = 'system/full_page_cache/fastly/fastly_web_hooks/webhook_message_prefix';
 
     /**
      * Check if Fastly is selected for Caching Application
@@ -214,7 +223,7 @@ class Config extends \Magento\PageCache\Model\Config
      */
     public function isFastlyEnabled()
     {
-        if($this->getType() == Config::FASTLY) {
+        if ($this->getType() == Config::FASTLY) {
             return true;
         }
 
@@ -278,7 +287,7 @@ class Config extends \Magento\PageCache\Model\Config
      */
     public function getTtl()
     {
-        return intval($this->_scopeConfig->getValue(self::XML_PAGECACHE_TTL));
+        return (int)$this->_scopeConfig->getValue(self::XML_PAGECACHE_TTL);
     }
 
     /**
@@ -288,7 +297,7 @@ class Config extends \Magento\PageCache\Model\Config
      */
     public function getStaleTtl()
     {
-        return intval($this->_scopeConfig->getValue(self::XML_FASTLY_STALE_TTL));
+        return (int)$this->_scopeConfig->getValue(self::XML_FASTLY_STALE_TTL);
     }
 
     /**
@@ -298,7 +307,7 @@ class Config extends \Magento\PageCache\Model\Config
      */
     public function getStaleErrorTtl()
     {
-        return intval($this->_scopeConfig->getValue(self::XML_FASTLY_STALE_ERROR_TTL));
+        return (int)$this->_scopeConfig->getValue(self::XML_FASTLY_STALE_ERROR_TTL);
     }
 
     /**
@@ -308,7 +317,7 @@ class Config extends \Magento\PageCache\Model\Config
      */
     public function getAdminPathTimeout()
     {
-        return intval($this->_scopeConfig->getValue(self::XML_FASTLY_ADMIN_PATH_TIMEOUT));
+        return (int)$this->_scopeConfig->getValue(self::XML_FASTLY_ADMIN_PATH_TIMEOUT);
     }
 
     /**
@@ -328,7 +337,7 @@ class Config extends \Magento\PageCache\Model\Config
      */
     public function getBasicAuthenticationStatus()
     {
-        return intval($this->_scopeConfig->getValue(self::FASTLY_BASIC_AUTH_ENABLE));
+        return (int)$this->_scopeConfig->getValue(self::FASTLY_BASIC_AUTH_ENABLE);
     }
 
     /**
@@ -517,11 +526,11 @@ class Config extends \Magento\PageCache\Model\Config
 
                 // check for direct match
                 foreach ($mapping as $map) {
-                    if (is_array($map) && isset($map[$countryId]) &&
-                        strtolower($map[$countryId]) == strtolower($countryCode))
-                    {
+                    if (is_array($map) && isset($map[$countryId])
+                        && strtolower($map[$countryId]) == strtolower($countryCode)
+                    ) {
                         if (isset($map[$key])) {
-                            return intval($map[$key]);
+                            return (int)$map[$key];
                         }
                     }
                 }
@@ -529,7 +538,7 @@ class Config extends \Magento\PageCache\Model\Config
                 foreach ($mapping as $map) {
                     if (is_array($map) && isset($map[$countryId]) && $map[$countryId] == '*') {
                         if (isset($map[$key])) {
-                            return intval($map[$key]);
+                            return (int)$map[$key];
                         }
                     }
                 }
@@ -541,11 +550,10 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Return generated magento2_fastly_varnish.vcl configuration file
      *
-     * @param string $vclTemplatePath
      * @return string
-     * @api
+     * @throws \Magento\Framework\Exception\FileSystemException
      */
-    public function getVclFile($vclTemplatePath)
+    public function getVclFile()
     {
         $moduleEtcPath = $this->reader->getModuleDir(Dir::MODULE_ETC_DIR, 'Fastly_Cdn');
         $configFilePath = $moduleEtcPath . '/' . $this->_scopeConfig->getValue(self::FASTLY_CONFIGURATION_PATH);
@@ -557,15 +565,14 @@ class Config extends \Magento\PageCache\Model\Config
 
     public function getVclSnippets($path = '/vcl_snippets', $specificFile = null)
     {
-        $snippetsData = array();
+        $snippetsData = [];
 
         $moduleEtcPath = $this->reader->getModuleDir(Dir::MODULE_ETC_DIR, 'Fastly_Cdn') . $path;
         $directoryRead = $this->readFactory->create($moduleEtcPath);
-        if(!$specificFile) {
+        if (!$specificFile) {
             $files = $directoryRead->read();
 
-            if(is_array($files))
-            {
+            if (is_array($files)) {
                 foreach ($files as $file) {
                     if (substr($file, strpos($file, ".") + 1) !== 'vcl') {
                         continue;
@@ -591,7 +598,7 @@ class Config extends \Magento\PageCache\Model\Config
      *
      * @return array
      */
-    protected function getReplacements()
+    private function getReplacements()
     {
         return [
             '### {{ design_exceptions_code }} ###' => $this->getDesignExceptions()
@@ -606,7 +613,7 @@ class Config extends \Magento\PageCache\Model\Config
      *
      * @return string
      */
-    protected function getDesignExceptions()
+    private function getDesignExceptions()
     {
         $result = '';
         $tpl = "        %s (req.http.user-agent ~ \"%s\") {\n" . "            set req.hash += \"%s\";\n" . "        }";

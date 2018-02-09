@@ -27,16 +27,14 @@ use Magento\Framework\Event\ObserverInterface;
 class FlushAllCacheObserver implements ObserverInterface
 {
     /**
-     * Fastly config object
-     *
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
      * @var PurgeCache
      */
-    protected $purgeCache;
+    private $purgeCache;
 
     /**
      * @param Config $config
@@ -60,7 +58,5 @@ class FlushAllCacheObserver implements ObserverInterface
         if ($this->config->getType() == Config::FASTLY && $this->config->isEnabled()) {
             $this->purgeCache->sendPurgeRequest();
         }
-
-        // @TODO implement message for admin
     }
 }

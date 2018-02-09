@@ -30,12 +30,12 @@ class All extends Action
     /**
      * @var Api
      */
-    protected $api;
+    private $api;
 
     /**
      * @var Manager
      */
-    protected $_cacheManager;
+    private $cacheManager;
 
     /**
      * All constructor.
@@ -64,10 +64,10 @@ class All extends Action
     public function execute()
     {
         // Flush all Magento caches
-        $types = $this->_cacheManager->getAvailableTypes();
+        $types = $this->cacheManager->getAvailableTypes();
         $types = array_diff($types, ['full_page']); // FPC is Handled separately
 
-        $this->_cacheManager->clean($types);
+        $this->cacheManager->clean($types);
 
         // Purge everything from Fastly
         $result = $this->api->cleanAll();

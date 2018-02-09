@@ -4,7 +4,7 @@ define([
     "Magento_Ui/js/modal/modal",
     'mage/translate',
     'mage/validation'
-], function($){
+], function ($) {
 
     return function (config) {
 
@@ -12,7 +12,7 @@ define([
         var requestStateMsgSpan = '';
 
         $('#system_full_page_cache_caching_application').on('change', function () {
-            if($(this).val() == 'fastly') {
+            if ($(this).val() == 'fastly') {
                 init();
             }
         });
@@ -26,7 +26,7 @@ define([
              * Add new dictionary item
              */
 
-            $('body').on('click', '#add-dictionary-item', function(e) {
+            $('body').on('click', '#add-dictionary-item', function (e) {
                 $('#dictionary-items-table > tbody').append('<tr><td><input name="key" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
                     '<td><input name="value" data-type="dictionary" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
                     '<td class="col-actions">' +
@@ -39,7 +39,7 @@ define([
              * Add new acl item
              */
 
-            $('body').on('click', '#add-acl-item', function(e) {
+            $('body').on('click', '#add-acl-item', function (e) {
                 var aclTimestamp = Math.round(e.timeStamp);
                 $('#acl-items-table > tbody').append('<tr>' +
                     '<td><input name="value" data-type="acl" data-id="" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
@@ -54,7 +54,7 @@ define([
              * Add new auth item
              */
 
-            $('body').on('click', '#add-auth-item', function(e) {
+            $('body').on('click', '#add-auth-item', function (e) {
                 $('#auth-items-table > tbody').append('<tr><td><input name="auth_user" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
                     '<td><input name="auth_pass" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
                     '<td class="col-actions">' +
@@ -67,7 +67,7 @@ define([
              * Handles dictionary and ACL item removing
              */
 
-            $('body').on('click', '.remove_item', function(e) {
+            $('body').on('click', '.remove_item', function (e) {
                 e.preventDefault();
                 var valueField = $(this).closest('tr').find("input[name='value']");
                 var item_key = $(this).closest('tr').find("input[name='key']").val();
@@ -75,7 +75,7 @@ define([
                 var type = valueField.data('type');
 
                 if (confirm("Are you sure you want to delete this item?")) {
-                    if(type === 'acl') {
+                    if (type === 'acl') {
                         var acl_item_id = valueField.data('id');
                         vcl.deleteAclItem(acl_id, acl_item_id, true).done(function (response) {
                             if (response.status == true) {
@@ -102,8 +102,8 @@ define([
              * Remove Auth dictionary (all users)
              */
 
-            $('body').on('click', '.remove_auth_dictionary', function(e) {
-                if(isAlreadyConfigured != true) {
+            $('body').on('click', '.remove_auth_dictionary', function (e) {
+                if (isAlreadyConfigured != true) {
                     $(this).attr('disabled', true);
                     return alert($.mage.__('Please save config prior to continuing.'));
                 }
@@ -118,7 +118,7 @@ define([
                     })
                 ).done(function (service) {
 
-                    if(service.status == false) {
+                    if (service.status == false) {
                         return errorHtmlBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                     }
 
@@ -127,10 +127,10 @@ define([
                     service_name = service.service.name;
 
                     vcl.getErrorPageRespObj(active_version, true).done(function (response) {
-                        if(response.status == true) {
+                        if (response.status == true) {
                             $('#error_page_html').text(response.errorPageResp.content).html();
                         }
-                    }).fail(function() {
+                    }).fail(function () {
                         vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
                     });
 
@@ -146,7 +146,7 @@ define([
              * Handles AUTH item removing
              */
 
-            $('body').on('click', '.remove_item_auth', function(e) {
+            $('body').on('click', '.remove_item_auth', function (e) {
                 e.preventDefault();
                 var valueField = $(this).closest('tr').find("input[name='auth_user']");
                 var self = this;
@@ -157,7 +157,7 @@ define([
                         if (response.status == true) {
                             $(self).closest('tr').remove();
                             vcl.showSuccessMessage($.mage.__('Authentication item is successfully deleted.'));
-                        } else if(response.status == 'empty') {
+                        } else if (response.status == 'empty') {
                             vcl.showSuccessMessage($.mage.__(response.msg));
                         }
                     }).fail(function () {
@@ -170,7 +170,7 @@ define([
              * Handles dictionary and ACL item saving
              */
 
-            $('body').on('click', '.save_item', function(e) {
+            $('body').on('click', '.save_item', function (e) {
                 e.preventDefault();
                 var keyField = $(this).closest('tr').find("input[name='key']");
                 var valueField = $(this).closest('tr').find("input[name='value']");
@@ -179,30 +179,27 @@ define([
                 var errors = false;
                 var type = valueField.data('type');
 
-                if (item_key == '' && type !== 'acl')
-                {
+                if (item_key == '' && type !== 'acl') {
                     errors = true;
                     keyField.css('border-color', '#e22626');
                 } else {
                     keyField.css('border-color', '#878787');
                 }
 
-                if (item_value == '')
-                {
+                if (item_value == '') {
                     errors = true;
                     valueField.css('border-color', '#e22626');
                 } else {
                     valueField.css('border-color', '#878787');
                 }
 
-                if (errors)
-                {
+                if (errors) {
                     vcl.resetAllMessages();
                     return vcl.showErrorMessage($.mage.__('Please enter all required fields.'));
                 }
 
                 var self = this;
-                if(type === 'acl') {
+                if (type === 'acl') {
                     var negated_field = $(this).closest('tr').find("input[name='negated']")[0].checked ? 1 : 0;
                     vcl.saveAclItem(acl_id, item_value, negated_field, true).done(function (response) {
                         if (response.status == true) {
@@ -235,7 +232,7 @@ define([
              * Handles AUTH item saving
              */
 
-            $('body').on('click', '.save_item_auth', function(e) {
+            $('body').on('click', '.save_item_auth', function (e) {
                 e.preventDefault();
                 var keyField = $(this).closest('tr').find("input[name='auth_user']");
                 var valueField = $(this).closest('tr').find("input[name='auth_pass']");
@@ -243,16 +240,14 @@ define([
                 var item_value = valueField.val();
                 var errors = false;
 
-                if (item_value == '')
-                {
+                if (item_value == '') {
                     errors = true;
                     valueField.css('border-color', '#e22626');
                 } else {
                     valueField.css('border-color', '#878787');
                 }
 
-                if (errors)
-                {
+                if (errors) {
                     vcl.resetAllMessages();
                     return vcl.showErrorMessage($.mage.__('Please enter all required fields.'));
                 }
@@ -275,12 +270,13 @@ define([
             });
         });
 
-        function init() {
+        function init()
+        {
             $.ajax({
                 type: "GET",
                 url: config.isAlreadyConfiguredUrl
             }).done(function (response) {
-                if(response.status == true) {
+                if (response.status == true) {
                     isAlreadyConfigured = response.flag;
                 }
             });
@@ -304,14 +300,13 @@ define([
                     // Fetch force tls req setting status
                     var tls = vcl.getTlsSetting(checkService.active_version, false);
                     tls.done(function (checkReqSetting) {
-                            requestStateSpan.find('.processing').hide();
-                            if (checkReqSetting.status != false) {
-                                requestStateMsgSpan.find('#force_tls_state_enabled').show();
-                            } else {
-                                requestStateMsgSpan.find('#force_tls_state_disabled').show();
-                            }
+                        requestStateSpan.find('.processing').hide();
+                        if (checkReqSetting.status != false) {
+                            requestStateMsgSpan.find('#force_tls_state_enabled').show();
+                        } else {
+                            requestStateMsgSpan.find('#force_tls_state_disabled').show();
                         }
-                    ).fail(function () {
+                    }).fail(function () {
                         requestStateSpan.find('.processing').hide();
                         requestStateMsgSpan.find('#force_tls_state_unknown').show();
                     });
@@ -325,8 +320,7 @@ define([
                         } else {
                             authStateMsgSpan.find('#enable_auth_state_disabled').show();
                         }
-                    }
-                    ).fail(function () {
+                    }).fail(function () {
                         authStateSpan.find('.processing').hide();
                         authStateMsgSpan.find('#enable_auth_state_unknown').show();
                     });
@@ -336,16 +330,15 @@ define([
                     authDict.done(function (checkReqSetting) {
                         authStateSpan.find('.processing').hide();
                         authDictStatus = checkReqSetting.status;
-                        }
-                    ).fail(function () {
+                    }).fail(function () {
                         authStateSpan.find('.processing').hide();
                     });
 
                     // Fetch backends
                     vcl.getBackends(active_version, false).done(function (backendsResp) {
                         $('.loading-backends').hide();
-                        if(backendsResp.status != false) {
-                            if(backendsResp.backends.length > 0) {
+                        if (backendsResp.status != false) {
+                            if (backendsResp.backends.length > 0) {
                                 backends = backendsResp.backends;
                                 vcl.processBackends(backendsResp.backends);
                             } else {
@@ -359,9 +352,9 @@ define([
                     // Fetch dictionaries
                     vcl.listDictionaries(active_version, false).done(function (dictResp) {
                         $('.loading-dictionaries').hide();
-                        if(dictResp.status != false) {
-                            if(dictResp.status != false) {
-                                if(dictResp.dictionaries.length > 0) {
+                        if (dictResp.status != false) {
+                            if (dictResp.status != false) {
+                                if (dictResp.dictionaries.length > 0) {
                                     dictionaries = dictResp.dictionaries;
                                     vcl.processDictionaries(dictResp.dictionaries);
                                 } else {
@@ -376,9 +369,9 @@ define([
                     // Fetch ACLs
                     vcl.listAcls(active_version, false).done(function (aclResp) {
                         $('.loading-dictionaries').hide();
-                        if(aclResp.status != false) {
-                            if(aclResp.status != false) {
-                                if(aclResp.acls.length > 0) {
+                        if (aclResp.status != false) {
+                            if (aclResp.status != false) {
+                                if (aclResp.acls.length > 0) {
                                     acls = aclResp.acls;
                                     vcl.processAcls(aclResp.acls);
                                 } else {
@@ -402,7 +395,7 @@ define([
          * Backend Edit icon
          */
 
-        $('body').on('click', 'button.fastly-edit-backend-icon', function() {
+        $('body').on('click', 'button.fastly-edit-backend-icon', function () {
             $.ajax({
                 type: "GET",
                 url: config.serviceInfoUrl
@@ -414,7 +407,7 @@ define([
             });
 
             var backend_id = $(this).data('backend-id');
-            if(backends != null && backend_id != null) {
+            if (backends != null && backend_id != null) {
                 vcl.showPopup('fastly-backend-options');
                 var backend_name = "Backend " + backends[backend_id].name;
                 $('.modal-title').text($.mage.__(backend_name));
@@ -430,7 +423,7 @@ define([
          * Dictionary/ACL Edit icon
          */
 
-        $('body').on('click', 'button.fastly-edit-dictionary-icon', function() {
+        $('body').on('click', 'button.fastly-edit-dictionary-icon', function () {
             $.ajax({
                 type: "GET",
                 url: config.serviceInfoUrl
@@ -444,8 +437,8 @@ define([
             dictionary_id = $(this).data('dictionary-id');
             acl_id = $(this).data('acl-id');
             // Handle Dictionaries
-            if(dictionary_id) {
-                if(dictionaries != null && dictionary_id != null) {
+            if (dictionary_id) {
+                if (dictionaries != null && dictionary_id != null) {
                     $.ajax({
                         type: "POST",
                         url: config.getDictionaryItems,
@@ -472,15 +465,14 @@ define([
                         vcl.showPopup('fastly-edge-items');
                         $('.upload-button').remove();
 
-                        if (itemsHtml != '')
-                        {
+                        if (itemsHtml != '') {
                             $('#dictionary-items-table > tbody').html(itemsHtml);
                         }
                     });
                 }
             } else {
                 // Handle ACLs
-                if(acls != null && acl_id != null) {
+                if (acls != null && acl_id != null) {
                     $.ajax({
                         type: "POST",
                         url: config.getAclItems,
@@ -493,7 +485,7 @@ define([
                             if (response.aclItems.length > 0) {
                                 $.each(response.aclItems, function (index, item) {
                                     var negated = item.negated == 1 ? ' checked' : '';
-                                    if(item.subnet) {
+                                    if (item.subnet) {
                                         ip_output = item.ip + '/' + item.subnet;
                                     } else {
                                         ip_output = item.ip;
@@ -525,9 +517,9 @@ define([
          * Manage Auth Icon (Edit)
          */
 
-        $('body').on('click', '#add-auth-container-button', function() {
+        $('body').on('click', '#add-auth-container-button', function () {
 
-            if(isAlreadyConfigured != true) {
+            if (isAlreadyConfigured != true) {
                 $(this).attr('disabled', true);
                 return alert($.mage.__('Please save config prior to continuing.'));
             }
@@ -542,7 +534,7 @@ define([
                 })
             ).done(function (service) {
 
-                if(service.status == false) {
+                if (service.status == false) {
                     return errorHtmlBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
 
@@ -551,10 +543,10 @@ define([
                 service_name = service.service.name;
 
                 vcl.getErrorPageRespObj(active_version, true).done(function (response) {
-                    if(response.status == true) {
+                    if (response.status == true) {
                         $('#error_page_html').text(response.errorPageResp.content).html();
                     }
-                }).fail(function() {
+                }).fail(function () {
                     vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
                 });
 
@@ -563,17 +555,17 @@ define([
                 return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
             });
 
-            if(authDictStatus != false) {
+            if (authDictStatus != false) {
                 vcl.listAuths(active_version, false).done(function (authResp) {
                     $('.loading-dictionaries').hide();
-                    if(authResp.status === true) {
-                        if(authResp.auths.length > 0) {
+                    if (authResp.status === true) {
+                        if (authResp.auths.length > 0) {
                             auths = authResp.auths;
                             vcl.processAuths(authResp.auths);
                         } else {
                             $('.no-dictionaries').show();
                         }
-                    } else if(authResp.status == 'empty') {
+                    } else if (authResp.status == 'empty') {
                         auths = authResp.auths;
                         vcl.processAuths([]);
                     }
@@ -592,7 +584,7 @@ define([
 
         $('#fastly_vcl_upload_button').on('click', function () {
 
-            if(isAlreadyConfigured != true) {
+            if (isAlreadyConfigured != true) {
                 $(this).attr('disabled', true);
                 return alert($.mage.__('Please save config prior to continuing.'));
             }
@@ -607,7 +599,7 @@ define([
                 })
             ).done(function (service) {
 
-                if(service.status == false) {
+                if (service.status == false) {
                     return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
 
@@ -628,7 +620,7 @@ define([
 
         $('#fastly_force_tls_button').on('click', function () {
 
-            if(isAlreadyConfigured != true) {
+            if (isAlreadyConfigured != true) {
                 $(this).attr('disabled', true);
                 return alert($.mage.__('Please save config prior to continuing.'));
             }
@@ -641,7 +633,7 @@ define([
                 showLoader: true
             }).done(function (service) {
 
-                if(service.status == false) {
+                if (service.status == false) {
                     return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
 
@@ -649,17 +641,15 @@ define([
                 next_version = service.next_version;
                 service_name = service.service.name;
                 vcl.getTlsSetting(active_version, true).done(function (response) {
-                        if(response.status == false) {
-                            $('.modal-title').text($.mage.__('We are about to turn on TLS'));
-                        } else {
-                            $('.modal-title').text($.mage.__('We are about to turn off TLS'));
-                        }
-                        forceTls = response.status;
+                    if (response.status == false) {
+                        $('.modal-title').text($.mage.__('We are about to turn on TLS'));
+                    } else {
+                        $('.modal-title').text($.mage.__('We are about to turn off TLS'));
                     }
-                ).fail(function () {
-                        vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
-                    }
-                );
+                    forceTls = response.status;
+                }).fail(function () {
+                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
+                });
                 vcl.showPopup('fastly-tls-options');
                 vcl.setActiveServiceLabel(active_version, next_version, service_name);
 
@@ -674,7 +664,7 @@ define([
 
         $('#fastly_enable_auth_button').on('click', function () {
 
-            if(isAlreadyConfigured != true) {
+            if (isAlreadyConfigured != true) {
                 $(this).attr('disabled', true);
                 return alert($.mage.__('Please save config prior to continuing.'));
             }
@@ -687,7 +677,7 @@ define([
                 showLoader: true
             }).done(function (service) {
 
-                if(service.status == false) {
+                if (service.status == false) {
                     return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
 
@@ -695,17 +685,15 @@ define([
                 next_version = service.next_version;
                 service_name = service.service.name;
                 vcl.getAuthSetting(active_version, true).done(function (response) {
-                        if(response.status == false) {
-                            $('.modal-title').text($.mage.__('We are about to turn on Basic Authentication'));
-                        } else {
-                            $('.modal-title').text($.mage.__('We are about to turn off Basic Authentication'));
-                        }
-                        authStatus = response.status;
+                    if (response.status == false) {
+                        $('.modal-title').text($.mage.__('We are about to turn on Basic Authentication'));
+                    } else {
+                        $('.modal-title').text($.mage.__('We are about to turn off Basic Authentication'));
                     }
-                ).fail(function () {
-                        vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
-                    }
-                );
+                    authStatus = response.status;
+                }).fail(function () {
+                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
+                });
 
                 // Check if Users are available and Auth can be enabled
                 var enableMsg = false;
@@ -716,16 +704,15 @@ define([
                         'active_version': active_version
                     },
                     showLoader: true,
-                    success: function(response)
-                    {
-                        if(response.status == 'empty') {
+                    success: function (response) {
+                        if (response.status == 'empty') {
                             enableMsg = response.msg;
                         }
 
                         vcl.showPopup('fastly-auth-options');
                         vcl.setActiveServiceLabel(active_version, next_version, service_name);
 
-                        if(enableMsg) {
+                        if (enableMsg) {
                             var enableAuthPopupMsg =  $('.fastly-message-error');
                             enableAuthPopupMsg.text($.mage.__(response.msg));
                             enableAuthPopupMsg.show();
@@ -743,7 +730,7 @@ define([
 
         $('#fastly_error_page_button').on('click', function () {
 
-            if(isAlreadyConfigured != true) {
+            if (isAlreadyConfigured != true) {
                 $(this).attr('disabled', true);
                 return alert($.mage.__('Please save config prior to continuing.'));
             }
@@ -758,7 +745,7 @@ define([
                 })
             ).done(function (service) {
 
-                if(service.status == false) {
+                if (service.status == false) {
                     return errorHtmlBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
 
@@ -767,10 +754,10 @@ define([
                 service_name = service.service.name;
 
                 vcl.getErrorPageRespObj(active_version, true).done(function (response) {
-                    if(response.status == true) {
+                    if (response.status == true) {
                         $('#error_page_html').text(response.errorPageResp.content).html();
                     }
-                }).fail(function() {
+                }).fail(function () {
                     vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
                 });
 
@@ -788,7 +775,7 @@ define([
 
         $('#add-dictionary-container-button').on('click', function () {
 
-            if(isAlreadyConfigured != true) {
+            if (isAlreadyConfigured != true) {
                 $(this).attr('disabled', true);
                 return alert($.mage.__('Please save config prior to continuing.'));
             }
@@ -803,7 +790,7 @@ define([
                 })
             ).done(function (service) {
 
-                if(service.status == false) {
+                if (service.status == false) {
                     return errorHtmlBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
 
@@ -812,10 +799,10 @@ define([
                 service_name = service.service.name;
 
                 vcl.getErrorPageRespObj(active_version, true).done(function (response) {
-                    if(response.status == true) {
+                    if (response.status == true) {
                         $('#error_page_html').text(response.errorPageResp.content).html();
                     }
-                }).fail(function() {
+                }).fail(function () {
                     vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
                 });
 
@@ -833,7 +820,7 @@ define([
 
         $('#add-acl-container-button').on('click', function () {
 
-            if(isAlreadyConfigured != true) {
+            if (isAlreadyConfigured != true) {
                 $(this).attr('disabled', true);
                 return alert($.mage.__('Please save config prior to continuing.'));
             }
@@ -848,7 +835,7 @@ define([
                 })
             ).done(function (service) {
 
-                if(service.status == false) {
+                if (service.status == false) {
                     return errorHtmlBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
 
@@ -857,10 +844,10 @@ define([
                 service_name = service.service.name;
 
                 vcl.getErrorPageRespObj(active_version, true).done(function (response) {
-                    if(response.status == true) {
+                    if (response.status == true) {
                         $('#error_page_html').text(response.errorPageResp.content).html();
                     }
-                }).fail(function() {
+                }).fail(function () {
                     vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
                 });
 
@@ -917,14 +904,14 @@ define([
 
         var vcl = {
 
-            showPopup: function(divId) {
+            showPopup: function (divId) {
                 var self = this;
 
                 this.modal = jQuery('<div/>').attr({id: divId}).html(this.uploadVclConfig[divId].content()).modal({
                     modalClass: 'magento',
                     title: this.uploadVclConfig[divId].title,
                     type: 'slide',
-                    closed: function(e, modal){
+                    closed: function (e, modal) {
                         modal.modal.remove();
                     },
                     opened: function () {
@@ -950,26 +937,24 @@ define([
             },
 
             // Queries Fastly API to retrive services
-            getService: function() {
+            getService: function () {
                 $.ajax({
                     type: "GET",
                     url: config.serviceInfoUrl,
                     showLoader: true,
-                    success: function(response)
-                    {
-                        if(response != false) {
+                    success: function (response) {
+                        if (response != false) {
                             vcl.setActiveServiceLabel(active_version, next_version);
                         }
                     },
-                    error: function(msg)
-                    {
-                        // TODO: error handling
+                    error: function (msg) {
+                        // error handling
                     }
                 });
             },
 
             // Queries Fastly API to retrive Tls setting
-            getTlsSetting: function(active_version, loaderVisibility) {
+            getTlsSetting: function (active_version, loaderVisibility) {
                 return $.ajax({
                     type: "POST",
                     url: config.checkTlsSettingUrl,
@@ -979,7 +964,7 @@ define([
             },
 
             // Queries Fastly API to retrive Basic Auth status
-            getAuthSetting: function(active_version, loaderVisibility) {
+            getAuthSetting: function (active_version, loaderVisibility) {
                 return $.ajax({
                     type: "POST",
                     url: config.checkAuthSettingUrl,
@@ -989,7 +974,7 @@ define([
             },
 
             // Queries Fastly API to retrive Basic Auth status
-            getAuthDictionary: function(active_version, loaderVisibility) {
+            getAuthDictionary: function (active_version, loaderVisibility) {
                 return $.ajax({
                     type: "POST",
                     url: config.checkAuthDictionaryUrl,
@@ -999,7 +984,7 @@ define([
             },
 
             // Queries Fastly API to retrive Backends
-            getBackends: function(active_version, loaderVisibility) {
+            getBackends: function (active_version, loaderVisibility) {
                 return $.ajax({
                     type: "GET",
                     url: config.fetchBackendsUrl,
@@ -1012,7 +997,7 @@ define([
             },
 
             // Queries Fastly API to retrive Backends
-            getErrorPageRespObj: function(active_version, loaderVisibility) {
+            getErrorPageRespObj: function (active_version, loaderVisibility) {
                 return $.ajax({
                     type: "GET",
                     url: config.getErrorPageRespObj,
@@ -1022,7 +1007,7 @@ define([
             },
 
             // Process backends
-            processBackends: function(backends) {
+            processBackends: function (backends) {
                 $.each(backends, function (index, backend) {
                     var html = "<tr id='fastly_" + index + "'>";
                     html += "<td><input data-backendId='"+ index + "' id='backend_" + index + "' value='"+ backend.name +"' disabled='disabled' class='input-text' type='text'></td>";
@@ -1033,7 +1018,7 @@ define([
             },
 
             // Process dictionaries
-            processDictionaries: function(dictionaries) {
+            processDictionaries: function (dictionaries) {
                 var html = '';
                 $.each(dictionaries, function (index, dictionary) {
                     html += "<tr id='fastly_dict_" + index + "'>";
@@ -1047,7 +1032,7 @@ define([
             },
 
             // Queries Fastly API to retrive Dictionaries
-            listDictionaries: function(active_version, loaderVisibility) {
+            listDictionaries: function (active_version, loaderVisibility) {
                 return $.ajax({
                     type: "GET",
                     url: config.getDictionaries,
@@ -1060,7 +1045,7 @@ define([
             },
 
             // Queries Fastly API to retrive ACLs
-            listAcls: function(active_version, loaderVisibility) {
+            listAcls: function (active_version, loaderVisibility) {
                 return $.ajax({
                     type: "GET",
                     url: config.getAcls,
@@ -1073,7 +1058,7 @@ define([
             },
 
             // Queries Fastly API to retrive ACLs
-            listAuths: function(active_version, loaderVisibility) {
+            listAuths: function (active_version, loaderVisibility) {
                 return $.ajax({
                     type: "GET",
                     url: config.getAuths,
@@ -1086,7 +1071,7 @@ define([
             },
 
             // Process ACLs
-            processAcls: function(acls) {
+            processAcls: function (acls) {
                 var html = '';
                 $.each(acls, function (index, acl) {
                     html += "<tr id='fastly_acl_" + index + "'>";
@@ -1100,7 +1085,7 @@ define([
             },
 
             // Process AUTHs
-            processAuths: function(auths) {
+            processAuths: function (auths) {
                 var html = '';
                 $.each(auths, function (index, auth) {
                     html += '<tr><td>' +
@@ -1123,7 +1108,7 @@ define([
             },
 
             // Delete Edge Dictionary item
-            deleteEdgeDictionaryItem: function(dictionary_id, item_key, loaderVisibility) {
+            deleteEdgeDictionaryItem: function (dictionary_id, item_key, loaderVisibility) {
                 return $.ajax({
                     type: "GET",
                     url: config.deleteDictionaryItem,
@@ -1136,7 +1121,7 @@ define([
             },
 
             // Save Edge Dictionary item
-            saveEdgeDictionaryItem: function(dictionary_id, item_key, item_value, loaderVisibility) {
+            saveEdgeDictionaryItem: function (dictionary_id, item_key, item_value, loaderVisibility) {
                 return $.ajax({
                     type: "GET",
                     url: config.createDictionaryItem,
@@ -1149,7 +1134,7 @@ define([
             },
 
             // Delete Acl entry item
-            deleteAclItem: function(acl_id, acl_item_id, loaderVisibility) {
+            deleteAclItem: function (acl_id, acl_item_id, loaderVisibility) {
                 return $.ajax({
                     type: "GET",
                     url: config.deleteAclItem,
@@ -1162,7 +1147,7 @@ define([
             },
 
             // Save Acl entry item
-            saveAclItem: function(acl_id, item_value, negated_field, loaderVisibility) {
+            saveAclItem: function (acl_id, item_value, negated_field, loaderVisibility) {
                 return $.ajax({
                     type: "GET",
                     url: config.createAclItem,
@@ -1175,7 +1160,7 @@ define([
             },
 
             // Save Auth item
-            saveAuthItem: function(item_key, item_value, loaderVisibility) {
+            saveAuthItem: function (item_key, item_value, loaderVisibility) {
                 return $.ajax({
                     type: "GET",
                     url: config.createAuthItem,
@@ -1188,7 +1173,7 @@ define([
             },
 
             // Delete Auth item
-            deleteAuthItem: function(item_key_id, loaderVisibility) {
+            deleteAuthItem: function (item_key_id, loaderVisibility) {
                 return $.ajax({
                     type: "GET",
                     url: config.deleteAuthItem,
@@ -1212,7 +1197,7 @@ define([
             submitVcl: function () {
                 var activate_vcl_flag = false;
 
-                if($('#fastly_activate_vcl').is(':checked')) {
+                if ($('#fastly_activate_vcl').is(':checked')) {
                     activate_vcl_flag = true;
                 }
 
@@ -1224,10 +1209,8 @@ define([
                         'active_version': active_version
                     },
                     showLoader: true,
-                    success: function(response)
-                    {
-                        if(response.status == true)
-                        {
+                    success: function (response) {
+                        if (response.status == true) {
                             active_version = response.active_version;
                             vcl.modal.modal('closeModal');
                             successVclBtnMsg.text($.mage.__('VCL file is successfully uploaded to the Fastly service.')).show();
@@ -1236,9 +1219,8 @@ define([
                             vcl.showErrorMessage(response.msg);
                         }
                     },
-                    error: function(msg)
-                    {
-                        // TODO: error handling
+                    error: function (msg) {
+                        // error handling
                     }
                 });
             },
@@ -1247,7 +1229,7 @@ define([
             toggleTls: function (active_version) {
                 var activate_tls_flag = false;
 
-                if($('#fastly_activate_tls').is(':checked')) {
+                if ($('#fastly_activate_tls').is(':checked')) {
                     activate_tls_flag = true;
                 }
 
@@ -1259,14 +1241,12 @@ define([
                         'active_version': active_version
                     },
                     showLoader: true,
-                    success: function(response)
-                    {
-                        if(response.status == true)
-                        {
+                    success: function (response) {
+                        if (response.status == true) {
                             vcl.modal.modal('closeModal');
                             var onOrOff = 'off';
                             var disabledOrEnabled = 'disabled';
-                            if(forceTls == false) {
+                            if (forceTls == false) {
                                 onOrOff = 'on';
                                 disabledOrEnabled = 'enabled';
                             } else {
@@ -1275,7 +1255,7 @@ define([
                             }
                             successTlsBtnMsg.text($.mage.__('The Force TLS request setting is successfully turned ' + onOrOff + '.')).show();
                             $('.request_tls_state_span').hide();
-                            if(disabledOrEnabled == 'enabled') {
+                            if (disabledOrEnabled == 'enabled') {
                                 requestStateMsgSpan.find('#force_tls_state_disabled').hide();
                                 requestStateMsgSpan.find('#force_tls_state_enabled').show();
                             } else {
@@ -1287,9 +1267,8 @@ define([
                             vcl.showErrorMessage(response.msg);
                         }
                     },
-                    error: function(msg)
-                    {
-                        // TODO: error handling
+                    error: function (msg) {
+                        // error handling
                     }
                 });
             },
@@ -1298,7 +1277,7 @@ define([
             toggleAuth: function (active_version) {
                 var activate_auth_flag = false;
 
-                if($('#fastly_activate_auth').is(':checked')) {
+                if ($('#fastly_activate_auth').is(':checked')) {
                     activate_auth_flag = true;
                 }
 
@@ -1310,14 +1289,12 @@ define([
                         'active_version': active_version
                     },
                     showLoader: true,
-                    success: function(response)
-                    {
-                        if(response.status == true)
-                        {
+                    success: function (response) {
+                        if (response.status == true) {
                             vcl.modal.modal('closeModal');
                             var onOrOff = 'off';
                             var disabledOrEnabled = 'disabled';
-                            if(authStatus == false) {
+                            if (authStatus == false) {
                                 onOrOff = 'on';
                                 disabledOrEnabled = 'enabled';
                             } else {
@@ -1326,7 +1303,7 @@ define([
                             }
                             successAuthBtnMsg.text($.mage.__('Basic Authentication is successfully turned ' + onOrOff + '.')).show();
                             $('.request_tls_state_span').hide();
-                            if(disabledOrEnabled == 'enabled') {
+                            if (disabledOrEnabled == 'enabled') {
                                 authStateMsgSpan.find('#enable_auth_state_disabled').hide();
                                 authStateMsgSpan.find('#enable_auth_state_enabled').show();
                             } else {
@@ -1338,9 +1315,8 @@ define([
                             vcl.showErrorMessage(response.msg);
                         }
                     },
-                    error: function(msg)
-                    {
-                        // TODO: error handling
+                    error: function (msg) {
+                        // error handling
                     }
                 });
             },
@@ -1349,7 +1325,7 @@ define([
             configureBackend: function () {
                 var activate_backend = false;
 
-                if($('#fastly_activate_backend').is(':checked')) {
+                if ($('#fastly_activate_backend').is(':checked')) {
                     activate_backend = true;
                 }
 
@@ -1366,18 +1342,16 @@ define([
                         'first_byte_timeout': $('#backend_first_byte_timeout').val()
                     },
                     showLoader: true,
-                    success: function(response)
-                    {
-                        if(response.status == true)
-                        {
+                    success: function (response) {
+                        if (response.status == true) {
                             $('#fastly-success-backend-button-msg').text($.mage.__('Backend is successfully updated.')).show();
                             active_version = response.active_version;
                             vcl.modal.modal('closeModal');
                             $('#fastly-backends-list').html('');
                             vcl.getBackends(response.active_version, false).done(function (backendsResp) {
                                 $('.loading-backends').hide();
-                                if(backendsResp.status != false) {
-                                    if(backendsResp.backends.length > 0) {
+                                if (backendsResp.status != false) {
+                                    if (backendsResp.backends.length > 0) {
                                         backends = backendsResp.backends;
                                         vcl.processBackends(backendsResp.backends);
                                     }
@@ -1390,9 +1364,8 @@ define([
                             vcl.showErrorMessage(response.msg);
                         }
                     },
-                    error: function(msg)
-                    {
-                        // TODO: error handling
+                    error: function (msg) {
+                        // error handling
                     }
                 });
             },
@@ -1401,7 +1374,7 @@ define([
             saveErrorHtml: function () {
                 var activate_vcl = false;
 
-                if($('#fastly_activate_vcl').is(':checked')) {
+                if ($('#fastly_activate_vcl').is(':checked')) {
                     activate_vcl = true;
                 }
 
@@ -1414,10 +1387,8 @@ define([
                         'html': $('#error_page_html').val()
                     },
                     showLoader: true,
-                    success: function(response)
-                    {
-                        if(response.status == true)
-                        {
+                    success: function (response) {
+                        if (response.status == true) {
                             successHtmlBtnMsg.text($.mage.__('Error page HTML is successfully updated.')).show();
                             active_version = response.active_version;
                             vcl.modal.modal('closeModal');
@@ -1426,8 +1397,7 @@ define([
                             vcl.showErrorMessage(response.msg);
                         }
                     },
-                    error: function(msg)
-                    {
+                    error: function (msg) {
                         return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                     }
                 });
@@ -1437,7 +1407,7 @@ define([
             createDictionary: function () {
                 var activate_vcl = false;
 
-                if($('#fastly_activate_vcl').is(':checked')) {
+                if ($('#fastly_activate_vcl').is(':checked')) {
                     activate_vcl = true;
                 }
 
@@ -1450,18 +1420,16 @@ define([
                         'dictionary_name': $('#dictionary_name').val()
                     },
                     showLoader: true,
-                    success: function(response)
-                    {
-                        if(response.status == true)
-                        {
+                    success: function (response) {
+                        if (response.status == true) {
                             successDictionaryBtnMsg.text($.mage.__('Dictionary is successfully created.')).show();
                             active_version = response.active_version;
                             // Fetch dictionaries
                             vcl.listDictionaries(active_version, false).done(function (dictResp) {
                                 $('.loading-dictionaries').hide();
-                                if(dictResp.status != false) {
-                                    if(dictResp.status != false) {
-                                        if(dictResp.dictionaries.length > 0) {
+                                if (dictResp.status != false) {
+                                    if (dictResp.status != false) {
+                                        if (dictResp.dictionaries.length > 0) {
                                             dictionaries = dictResp.dictionaries;
                                             vcl.processDictionaries(dictResp.dictionaries);
                                         } else {
@@ -1478,8 +1446,7 @@ define([
                             vcl.showErrorMessage(response.msg);
                         }
                     },
-                    error: function(msg)
-                    {
+                    error: function (msg) {
                         return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                     }
                 });
@@ -1489,7 +1456,7 @@ define([
             createDictionaryItems: function () {
                 var activate_vcl = false;
 
-                if($('#fastly_activate_vcl').is(':checked')) {
+                if ($('#fastly_activate_vcl').is(':checked')) {
                     activate_vcl = true;
                 }
 
@@ -1515,10 +1482,8 @@ define([
                         'old_items': dictionaryItems
                     },
                     showLoader: true,
-                    success: function(response)
-                    {
-                        if(response.status == true)
-                        {
+                    success: function (response) {
+                        if (response.status == true) {
                             successDictionaryBtnMsg.text($.mage.__('Dictionary items are successfully saved.')).show();
                             active_version = response.active_version;
                             vcl.modal.modal('closeModal');
@@ -1527,8 +1492,7 @@ define([
                             vcl.showErrorMessage(response.msg);
                         }
                     },
-                    error: function(msg)
-                    {
+                    error: function (msg) {
                         return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                     }
                 });
@@ -1593,7 +1557,7 @@ define([
             createAcl: function () {
                 var activate_vcl = false;
 
-                if($('#fastly_activate_vcl').is(':checked')) {
+                if ($('#fastly_activate_vcl').is(':checked')) {
                     activate_vcl = true;
                 }
 
@@ -1606,17 +1570,15 @@ define([
                         'acl_name': $('#acl_name').val()
                     },
                     showLoader: true,
-                    success: function(response)
-                    {
-                        if(response.status == true)
-                        {
+                    success: function (response) {
+                        if (response.status == true) {
                             successDictionaryBtnMsg.text($.mage.__('Acl is successfully created.')).show();
                             active_version = response.active_version;
                             vcl.listAcls(active_version, false).done(function (aclResp) {
                                 $('.loading-dictionaries').hide();
-                                if(aclResp.status != false) {
-                                    if(aclResp.status != false) {
-                                        if(aclResp.acls.length > 0) {
+                                if (aclResp.status != false) {
+                                    if (aclResp.status != false) {
+                                        if (aclResp.acls.length > 0) {
                                             acls = aclResp.acls;
                                             vcl.processAcls(aclResp.acls);
                                         } else {
@@ -1633,8 +1595,7 @@ define([
                             vcl.showErrorMessage(response.msg);
                         }
                     },
-                    error: function(msg)
-                    {
+                    error: function (msg) {
                         return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                     }
                 });
@@ -1644,7 +1605,7 @@ define([
             createAuth: function () {
                 var activate_vcl = false;
 
-                if($('#fastly_activate_vcl').is(':checked')) {
+                if ($('#fastly_activate_vcl').is(':checked')) {
                     activate_vcl = true;
                 }
 
@@ -1656,24 +1617,22 @@ define([
                         'activate_flag': activate_vcl
                     },
                     showLoader: true,
-                    success: function(response)
-                    {
-                        if(response.status == true)
-                        {
+                    success: function (response) {
+                        if (response.status == true) {
                             authDictStatus = true;
                             successDictionaryBtnMsg.text($.mage.__('Authentication dictionary is successfully created.')).show();
                             active_version = response.active_version;
                             vcl.listAuths(active_version, false).done(function (authResp) {
                                 $('.loading-dictionaries').hide();
-                                if(authResp.status != false) {
-                                    if(authResp.status === true) {
-                                        if(authResp.auths.length > 0) {
+                                if (authResp.status != false) {
+                                    if (authResp.status === true) {
+                                        if (authResp.auths.length > 0) {
                                             auths = authResp.auths;
                                             vcl.processAuths(authResp.auths);
                                         } else {
                                             $('.no-dictionaries').show();
                                         }
-                                    } else if(authResp.status == 'empty') {
+                                    } else if (authResp.status == 'empty') {
                                         auths = authResp.auths;
                                         vcl.processAuths([]);
                                     }
@@ -1687,8 +1646,7 @@ define([
                             vcl.showErrorMessage(response.msg);
                         }
                     },
-                    error: function(msg)
-                    {
+                    error: function (msg) {
                         return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                     }
                 });
@@ -1698,7 +1656,7 @@ define([
             deleteMainAuth: function () {
                 var activate_vcl = false;
 
-                if($('#fastly_activate_vcl').is(':checked')) {
+                if ($('#fastly_activate_vcl').is(':checked')) {
                     activate_vcl = true;
                 }
 
@@ -1710,10 +1668,8 @@ define([
                         'activate_flag': activate_vcl
                     },
                     showLoader: true,
-                    success: function(response)
-                    {
-                        if(response.status == true)
-                        {
+                    success: function (response) {
+                        if (response.status == true) {
                             // Change to Auth to disabled
                             successAuthBtnMsg.text($.mage.__('Basic Authentication is successfully turned off.')).show();
                             authStateMsgSpan.find('#enable_auth_state_enabled').hide();
@@ -1723,7 +1679,7 @@ define([
                             vcl.modal.modal('closeModal');
                             return deleteAuthBtnMsgSuccess.text($.mage.__('Authentication users removed.')).show();
                         } else {
-                            if(response.not_exists == true) {
+                            if (response.not_exists == true) {
                                 authDictStatus = false;
                             }
                             vcl.resetAllMessages();
@@ -1731,8 +1687,7 @@ define([
                             return deleteAuthBtnMsgError.text($.mage.__(response.msg)).show();
                         }
                     },
-                    error: function(msg)
-                    {
+                    error: function (msg) {
                         requestStateMsgSpan.find('#enable_auth_state_unknown').show();
                         return deleteAuthBtnMsgError.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                     }

@@ -20,35 +20,34 @@
  */
 namespace Fastly\Cdn\Observer;
 
+use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Module\Manager;
 use Fastly\Cdn\Model\StatisticRepository;
 use Fastly\Cdn\Model\Statistic;
 use Fastly\Cdn\Model\StatisticFactory;
 
-
 class ConfigurationSave implements ObserverInterface
 {
-
     /**
      * @var Manager
      */
-    protected $_moduleManager;
+    private $moduleManager;
 
     /**
      * @var StatisticRepository
      */
-    protected $_statisticRepo;
+    private $statisticRepo;
 
     /**
      * @var Statistic
      */
-    protected $_statistic;
+    private $statistic;
 
     /**
      * @var StatisticFactory
      */
-    protected $_statisticFactory;
+    private $statisticFactory;
 
     /**
      * ConfigurationSave constructor.
@@ -57,30 +56,39 @@ class ConfigurationSave implements ObserverInterface
      * @param Statistic $statistic
      * @param StatisticFactory $statisticFactory
      */
-    public function __construct(Manager $manager, StatisticRepository $statisticRepository, Statistic $statistic,
-                                StatisticFactory $statisticFactory)
-    {
-        $this->_moduleManager = $manager;
-        $this->_statisticRepo = $statisticRepository;
-        $this->_statistic = $statistic;
-        $this->_statisticFactory = $statisticFactory;
+    public function __construct(
+        Manager $manager,
+        StatisticRepository $statisticRepository,
+        Statistic $statistic,
+        StatisticFactory $statisticFactory
+    ) {
+        $this->moduleManager = $manager;
+        $this->statisticRepo = $statisticRepository;
+        $this->statistic = $statistic;
+        $this->statisticFactory = $statisticFactory;
     }
 
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    /**
+     * @param Observer $observer
+     * @throws \Exception
+     * @throws \Magento\Framework\Exception\AlreadyExistsException
+     */
+    public function execute(Observer $observer)
     {
-        if($this->_moduleManager->isEnabled(Statistic::FASTLY_MODULE_NAME)) {
+        if ($this->moduleManager->isEnabled(Statistic::FASTLY_MODULE_NAME) == false) {
+            return;
+        }
 
-            $isServiceValid = $this->_statistic->isApiKeyValid();
-            $stat = $this->_statisticRepo->getStatByAction(Statistic::FASTLY_CONFIGURATION_FLAG);
+        $isServiceValid = $this->statistic->isApiKeyValid();
+        $stat = $this->statisticRepo->getStatByAction(Statistic::FASTLY_CONFIGURATION_FLAG);
 
-            if((!$stat->getId()) || !($stat->getState() == true && $isServiceValid == true) ) {
-                $GAreq = $this->_statistic->sendConfigurationRequest($isServiceValid);
-                $newConfigured = $this->_statisticFactory->create();
-                $newConfigured->setAction(Statistic::FASTLY_CONFIGURATION_FLAG);
-                $newConfigured->setState($isServiceValid);
-                $newConfigured->setSent($GAreq);
-                $this->_statisticRepo->save($newConfigured);
-            }
+        if ((!$stat->getId()) || !($stat->getState() == true && $isServiceValid == true)) {
+            $GAreq = $this->statistic->sendConfigurationRequest($isServiceValid);
+            $newConfigured = $this->statisticFactory->create();
+            $newConfigured->setAction(Statistic::FASTLY_CONFIGURATION_FLAG);
+            $newConfigured->setState($isServiceValid);
+            $newConfigured->setSent($GAreq);
+            $this->statisticRepo->save($newConfigured);
         }
     }
 }

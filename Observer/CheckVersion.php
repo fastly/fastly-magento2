@@ -2,10 +2,14 @@
 
 namespace Fastly\Cdn\Observer;
 
-use Magento\Framework\Event\ObserverInterface;
 use Fastly\Cdn\Model\Notification;
+use Magento\Backend\Model\Auth\Session;
+use Magento\Framework\App\CacheInterface;
+use Magento\Framework\Component\ComponentRegistrarInterface;
+use Magento\Framework\Event\Observer;
+use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Component\ComponentRegistrar;
-
+use Magento\Framework\Model\Context;
 
 /**
  * Fastly CDN observer for new version notification
@@ -13,58 +17,71 @@ use Magento\Framework\Component\ComponentRegistrar;
 class CheckVersion implements ObserverInterface
 {
     /**
-     * @var \Fastly\Cdn\Model\Notification
+     * @var Notification
      */
-    protected $_feedFactory;
+    private $feedFactory;
 
     /**
-     * @var \Magento\Backend\Model\Auth\Session
+     * @var Session
      */
-    protected $_backendAuthSession;
+    private $backendAuthSession;
 
-
-    protected $_moduleRegistry;
     /**
-     * @param \Fastly\Cdn\Model\Notification $feedFactory
-     * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
+     * @var ComponentRegistrarInterface
+     */
+    private $moduleRegistry;
+
+    /**
+     * @var CacheInterface
+     */
+    private $cacheManager;
+
+    /**
+     * CheckVersion constructor.
+     *
+     * @param Notification $feedFactory
+     * @param Session $backendAuthSession
+     * @param Context $context
+     * @param ComponentRegistrarInterface $moduleRegistry
      */
     public function __construct(
-        \Fastly\Cdn\Model\Notification $feedFactory,
-        \Magento\Backend\Model\Auth\Session $backendAuthSession,
-        \Magento\Framework\Model\Context $context,
-        \Magento\Framework\Component\ComponentRegistrarInterface $moduleRegistry
+        Notification $feedFactory,
+        Session $backendAuthSession,
+        Context $context,
+        ComponentRegistrarInterface $moduleRegistry
     ) {
-        $this->_moduleRegistry = $moduleRegistry;
-        $this->_backendAuthSession = $backendAuthSession;
-        $this->_feedFactory = $feedFactory;
-        $this->_cacheManager = $context->getCacheManager();
+        $this->moduleRegistry = $moduleRegistry;
+        $this->backendAuthSession = $backendAuthSession;
+        $this->feedFactory = $feedFactory;
+        $this->cacheManager = $context->getCacheManager();
     }
 
     /**
      * Predispatch admin user login success
      *
-     * @param \Magento\Framework\Event\Observer $observer
-     * @return void
+     * @param Observer $observer
+     * @return $this|void
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function execute(Observer $observer)
     {
-        if ($this->_backendAuthSession->isLoggedIn()) {
-
-            if ($this->getFrequency() + $this->getLastUpdate() > time()) {
-                return $this;
-            }
-
-            $modulePath = $this->_moduleRegistry->getPath(ComponentRegistrar::MODULE, 'Fastly_Cdn');
-            $filePath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, "$modulePath/composer.json");
-            $composerData = json_decode(file_get_contents($filePath));
-            $currentVersion = !empty($composerData->version) ? $composerData->version : false;
-
-            if($currentVersion) {
-                $this->_feedFactory->checkUpdate($currentVersion);
-            }
-
-            $this->setLastUpdate();
+        if ($this->backendAuthSession->isLoggedIn() == false) {
+            return;
         }
+
+        if ($this->getFrequency() + $this->getLastUpdate() > time()) {
+            return;
+        }
+
+        $modulePath = $this->moduleRegistry->getPath(ComponentRegistrar::MODULE, 'Fastly_Cdn');
+        $filePath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, "$modulePath/composer.json");
+        $composerData = json_decode(file_get_contents($filePath));
+        $currentVersion = !empty($composerData->version) ? $composerData->version : false;
+
+        if ($currentVersion) {
+            $this->feedFactory->checkUpdate($currentVersion);
+        }
+
+        $this->setLastUpdate();
     }
 
     /**
@@ -72,9 +89,9 @@ class CheckVersion implements ObserverInterface
      *
      * @return int
      */
-    public function getLastUpdate()
+    private function getLastUpdate()
     {
-        return $this->_cacheManager->load('fastlycdn_admin_notifications_lastcheck');
+        return $this->cacheManager->load('fastlycdn_admin_notifications_lastcheck');
     }
 
     /**
@@ -82,9 +99,9 @@ class CheckVersion implements ObserverInterface
      *
      * @return $this
      */
-    public function setLastUpdate()
+    private function setLastUpdate()
     {
-        $this->_cacheManager->save(time(), 'fastlycdn_admin_notifications_lastcheck');
+        $this->cacheManager->save(time(), 'fastlycdn_admin_notifications_lastcheck');
         return $this;
     }
 
@@ -93,7 +110,7 @@ class CheckVersion implements ObserverInterface
      *
      * @return int
      */
-    public function getFrequency()
+    private function getFrequency()
     {
         return 86400;
     }

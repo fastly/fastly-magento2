@@ -2,43 +2,45 @@
 
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Acl\Item;
 
-use \Magento\Framework\App\Request\Http;
-use \Magento\Framework\Controller\Result\JsonFactory;
-use \Fastly\Cdn\Model\Config;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Request\Http;
+use Magento\Framework\Controller\Result\JsonFactory;
+use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
 
-class Create extends \Magento\Backend\App\Action
+class Create extends Action
 {
     /**
      * @var Http
      */
-    protected $request;
+    private $request;
 
     /**
      * @var JsonFactory
      */
-    protected $resultJson;
+    private $resultJson;
 
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
      * @var \Fastly\Cdn\Model\Api
      */
-    protected $api;
+    private $api;
 
     /**
      * @var Vcl
      */
-    protected $vcl;
+    private $vcl;
 
     /**
      * ForceTls constructor.
      *
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
      * @param Config $config
@@ -46,19 +48,19 @@ class Create extends \Magento\Backend\App\Action
      * @param Vcl $vcl
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
         Config $config,
         Api $api,
         Vcl $vcl
-    )
-    {
+    ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
         $this->config = $config;
         $this->api = $api;
         $this->vcl = $vcl;
+
         parent::__construct($context);
     }
 
@@ -79,27 +81,42 @@ class Create extends \Magento\Backend\App\Action
             // Handle subnet
             $ipParts = explode('/', $value);
             $subnet = false;
-            if(!empty($ipParts[1])) {
-                if(is_numeric($ipParts[1]) && (int)$ipParts[1] < 129) {
+            if (!empty($ipParts[1])) {
+                if (is_numeric($ipParts[1]) && (int)$ipParts[1] < 129) {
                     $subnet = $ipParts[1];
                 } else {
-                    return $result->setData(array('status' => false, 'msg' => 'Invalid IP subnet format.'));
+                    return $result->setData([
+                        'status'    => false,
+                        'msg'       => 'Invalid IP subnet format.'
+                    ]);
                 }
             }
 
             if (!filter_var($ipParts[0], FILTER_VALIDATE_IP)) {
-                return $result->setData(array('status' => false, 'msg' => 'Invalid IP address format.'));
+                return $result->setData([
+                    'status'    => false,
+                    'msg'       => 'Invalid IP address format.'
+                ]);
             }
 
             $createAclItem = $this->api->upsertAclItem($aclId, $ipParts[0], $negated, $subnet);
 
-            if(!$createAclItem) {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to create Acl entry.'));
+            if (!$createAclItem) {
+                return $result->setData([
+                    'status'    => false,
+                    'msg'       => 'Failed to create Acl entry.'
+                ]);
             }
 
-            return $result->setData(array('status' => true, 'id' => $createAclItem->id));
+            return $result->setData([
+                'status'    => true,
+                'id'        => $createAclItem->id
+            ]);
         } catch (\Exception $e) {
-            return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
+            return $result->setData([
+                'status'    => false,
+                'msg'       => $e->getMessage()
+            ]);
         }
     }
 }

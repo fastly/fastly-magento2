@@ -4,9 +4,11 @@ namespace Fastly\Cdn\Block\Dashboard;
 
 class Grids extends \Magento\Backend\Block\Dashboard\Grids
 {
-    protected function _prepareLayout()
+
+    protected function _prepareLayout() // @codingStandardsIgnoreLine - required by parent class
     {
         parent::_prepareLayout();
+
         $this->addTab(
             'fastly_historic_stats',
             [

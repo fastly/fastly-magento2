@@ -223,7 +223,7 @@ class Statistic extends AbstractModel implements IdentityInterface
         $mandatoryReqData['v'] = 1;
         // Tracking ID
         $mandatoryReqData['tid'] = $this->getGATrackingId();
-        $cid = $this->_config->getCID();
+        $cid = $this->config->getCID();
         $mandatoryReqData['cid'] = $cid;
         $mandatoryReqData['uid'] = $cid;
         // Magento version

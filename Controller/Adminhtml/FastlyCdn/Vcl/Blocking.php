@@ -84,7 +84,6 @@ class Blocking extends Action
             }
 
             $currActiveVersion = $this->vcl->determineVersions($service->versions);
-
             if ($currActiveVersion['active_version'] != $activeVersion) {
                 return $result->setData([
                     'status'    => false,
@@ -93,7 +92,6 @@ class Blocking extends Action
             }
 
             $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
-
             if (!$clone) {
                 return $result->setData([
                     'status'    => false,
@@ -136,7 +134,6 @@ class Blocking extends Action
             ];
 
             $createCondition = $this->api->createCondition($clone->number, $condition);
-
             if (!$createCondition) {
                 return $result->setData([
                     'status'    => false,
@@ -154,7 +151,6 @@ class Blocking extends Action
                 ];
 
                 $createReq = $this->api->createRequest($clone->number, $request);
-
                 if (!$createReq) {
                     return $result->setData([
                         'status'    => false,
@@ -189,7 +185,6 @@ class Blocking extends Action
                 }
             } else {
                 $deleteRequest = $this->api->deleteRequest($clone->number, $reqName);
-
                 if (!$deleteRequest) {
                     return $result->setData([
                         'status'    => false,
@@ -201,7 +196,6 @@ class Blocking extends Action
                 foreach ($snippet as $key => $value) {
                     $name = Config::FASTLY_MAGENTO_MODULE . '_blocking_' . $key;
                     $status = $this->api->removeSnippet($clone->number, $name);
-
                     if (!$status) {
                         return $result->setData([
                             'status'    => false,
@@ -212,7 +206,6 @@ class Blocking extends Action
             }
 
             $validate = $this->api->validateServiceVersion($clone->number);
-
             if ($validate->status == 'error') {
                 return $result->setData([
                     'status'    => false,

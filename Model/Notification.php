@@ -28,11 +28,6 @@ class Notification extends Feed
     const CHECK_VERSION_URL = 'https://raw.githubusercontent.com/fastly/fastly-magento2/master/composer.json';
 
     /**
-     * @var CurlFactory
-     */
-    private $curlFactory;
-
-    /**
      * @var ScopeConfigInterface
      */
     private $scopeConfig;
@@ -84,7 +79,6 @@ class Notification extends Feed
         $this->scopeConfig = $scopeConfig;
         $this->configWriter = $configWriter;
         $this->cacheManager = $cacheManager;
-        $this->curlFactory = $curlFactory;
         $this->_logger = $context->getLogger();
 
         parent::__construct(

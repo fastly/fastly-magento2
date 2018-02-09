@@ -54,8 +54,7 @@ class Blocking extends Action
         Config $config,
         Api $api,
         Vcl $vcl
-    )
-    {
+    ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
         $this->config = $config;

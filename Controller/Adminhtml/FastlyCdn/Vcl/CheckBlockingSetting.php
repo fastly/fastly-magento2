@@ -44,7 +44,7 @@ class CheckBlockingSetting extends Action
     /**
      * @var JsonFactory
      */
-    protected $resultJsonFactory;
+    private $resultJsonFactory;
 
     /**
      * CheckBlockingSetting constructor.
@@ -80,7 +80,7 @@ class CheckBlockingSetting extends Action
             $activeVersion = $this->getRequest()->getParam('active_version');
             $req = $this->api->getRequest($activeVersion, self::BLOCKING_SETTING_NAME);
 
-            if($req == false) {
+            if ($req == false) {
                 return $result->setData([
                     'status' => false
                 ]);

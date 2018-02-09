@@ -57,10 +57,9 @@ class BlockingBtn extends Field
         $button = $this->getLayout()->createBlock(
             'Magento\Backend\Block\Widget\Button'
         )->setData([
-                'id'    => 'fastly_blocking_button',
-                'label' => __('Toggle Blocking')
-            ]
-        );
+            'id'    => 'fastly_blocking_button',
+            'label' => __('Toggle Blocking')
+        ]);
 
         return $button->toHtml();
     }

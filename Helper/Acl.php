@@ -11,7 +11,7 @@ class Acl extends AbstractHelper
     /**
      * @var Reader
      */
-    protected $configReader;
+    private $configReader;
 
     /**
      * Templetize constructor.
@@ -21,7 +21,7 @@ class Acl extends AbstractHelper
     public function __construct(
         Context $context,
         Reader $configReader
-    ){
+    ) {
         $this->configReader = $configReader;
         parent::__construct($context);
     }
@@ -37,11 +37,9 @@ class Acl extends AbstractHelper
         $activeVersion = null;
         $nextVersion = null;
 
-        if(!empty($versions))
-        {
-            foreach($versions as $version)
-            {
-                if($version->active) {
+        if (!empty($versions)) {
+            foreach ($versions as $version) {
+                if ($version->active) {
                     $activeVersion = $version->number;
                 }
             }

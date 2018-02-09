@@ -34,8 +34,7 @@ class ListAcl implements ArrayInterface
         JsonFactory $resultJsonFactory,
         Api $api,
         Acl $acl
-    )
-    {
+    ) {
         $this->resultJson = $resultJsonFactory;
         $this->api = $api;
         $this->acl = $acl;
@@ -51,7 +50,6 @@ class ListAcl implements ArrayInterface
         if ($service === false) {
             return $options;
         } else {
-
             $currActiveVersion = $this->acl->determineVersions($service->versions);
             $acls = $this->api->getAcls($currActiveVersion['active_version']);
 
@@ -63,7 +61,6 @@ class ListAcl implements ArrayInterface
                     ];
                 }
                 return $options;
-
             } catch (\Exception $e) {
                 return $options;
             }

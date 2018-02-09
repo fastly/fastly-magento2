@@ -37,8 +37,7 @@ class GetAcl extends Action
         JsonFactory $resultJsonFactory,
         Api $api,
         Acl $acl
-    )
-    {
+    ) {
         $this->resultJson = $resultJsonFactory;
         $this->api = $api;
         $this->acl = $acl;
@@ -54,7 +53,7 @@ class GetAcl extends Action
 
         try {
             $service = $this->api->checkServiceDetails();
-            if(!$service) {
+            if (!$service) {
                 return $result->setData([
                     'status'    => false,
                     'msg'       => 'Failed to check Service details.'
@@ -62,7 +61,6 @@ class GetAcl extends Action
             }
 
             return $result->$this->acl->determineVersions($service->versions);
-
         } catch (\Exception $e) {
             return $result->setData([
                 'status'    => false,

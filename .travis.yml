@@ -14,4 +14,4 @@ install:
     - php vendor/bin/phpcs --config-set installed_paths vendor/magento/marketplace-eqp/
 
 script:
-    - php vendor/bin/phpcs --ignore=/vendor --standard=MEQP2 --extensions=php,phtml,js .
+    - php vendor/bin/phpcs --ignore=./vendor/*,*/Unit/* --standard=MEQP2 --extensions=php,phtml,js .

@@ -120,7 +120,7 @@ class Notification extends Feed
             $inbox = $inboxFactory->create();
             $inbox->addNotice(
                 'Fastly CDN',
-                'Version $lastVersion is available. You are currently running $currentVersion.'
+                "Version $lastVersion is available. You are currently running $currentVersion."
                     . ' Please consider upgrading at your earliest convenience.'
             );
             $this->cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);

@@ -546,14 +546,15 @@ class Config extends \Magento\PageCache\Model\Config
         }
         return null;
     }
-
+    
     /**
      * Return generated magento2_fastly_varnish.vcl configuration file
      *
+     * @param string $vclTemplatePath
      * @return string
      * @throws \Magento\Framework\Exception\FileSystemException
      */
-    public function getVclFile()
+    public function getVclFile($vclTemplatePath) // @codingStandardsIgnoreLine - Unused parameter required due to compatibility with parent class
     {
         $moduleEtcPath = $this->reader->getModuleDir(Dir::MODULE_ETC_DIR, 'Fastly_Cdn');
         $configFilePath = $moduleEtcPath . '/' . $this->_scopeConfig->getValue(self::FASTLY_CONFIGURATION_PATH);

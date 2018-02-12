@@ -29,7 +29,7 @@ class PurgeCachePlugin
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
      * PurgeCachePlugin constructor.

@@ -2,23 +2,16 @@
 
 namespace Fastly\Cdn\Block\System\Config\Form\Field;
 
-use Magento\Backend\Block\Template\Context;
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 
 class EnableAuth extends Field
 {
-    protected $_template = 'Fastly_Cdn::system/config/form/field/enableAuth.phtml';
+    protected function _construct() // @codingStandardsIgnoreLine - required by parent class
+    {
+        $this->_template = 'Fastly_Cdn::system/config/form/field/enableAuth.phtml';
 
-    /**
-     * @param Context $context
-     * @param array $data
-     */
-    public function __construct(
-        Context $context,
-        array $data = []
-    ) {
-        parent::__construct($context, $data);
+        parent::_construct();
     }
 
     /**
@@ -39,7 +32,7 @@ class EnableAuth extends Field
      * @param  AbstractElement $element
      * @return string
      */
-    protected function _getElementHtml(AbstractElement $element)
+    protected function _getElementHtml(AbstractElement $element) // @codingStandardsIgnoreLine - required by parent class
     {
         return $this->_toHtml();
     }
@@ -55,9 +48,10 @@ class EnableAuth extends Field
     }
 
     /**
-     * Generate upload button html
+     * Generate Enable auth button HTML
      *
-     * @return string
+     * @return mixed
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getButtonHtml()
     {

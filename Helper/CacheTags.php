@@ -14,7 +14,7 @@ class CacheTags extends AbstractHelper
      */
     public function convertCacheTags($tags)
     {
-        $fastlyTags = array(
+        $fastlyTags = [
             // 2.1.*
             'catalog_product_' => 'p',
             'catalog_category_' => 'c',
@@ -29,7 +29,7 @@ class CacheTags extends AbstractHelper
 
             // Other
             'brands_brand_' => 'b'
-        );
+        ];
 
         return str_replace(array_keys($fastlyTags), $fastlyTags, $tags);
     }

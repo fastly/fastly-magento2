@@ -2,45 +2,47 @@
 
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Dictionary\Item;
 
-use \Magento\Framework\App\Request\Http;
-use \Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Api;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Request\Http;
+use Magento\Framework\Controller\Result\JsonFactory;
 
-class ListAll extends \Magento\Backend\App\Action
+class ListAll extends Action
 {
     /**
      * @var Http
      */
-    protected $request;
+    private $request;
 
     /**
      * @var JsonFactory
      */
-    protected $resultJson;
+    private $resultJson;
 
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
-    protected $api;
+    private $api;
 
     /**
      * ListAll constructor
      *
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
      * @param Api $api
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
         Api $api
-    )
-    {
+    ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
         $this->api = $api;
+
         parent::__construct($context);
     }
 
@@ -57,18 +59,29 @@ class ListAll extends \Magento\Backend\App\Action
             $dictionaryId = $this->getRequest()->getParam('dictionary_id');
             $dictionaryItems = $this->api->dictionaryItemsList($dictionaryId);
 
-            if(is_array($dictionaryItems) && empty($dictionaryItems))
-            {
-                return $result->setData(array('status' => 'empty', 'msg' => 'There are no dictionary items.'));
+            if (is_array($dictionaryItems) && empty($dictionaryItems)) {
+                return $result->setData([
+                    'status'    => 'empty',
+                    'msg'       => 'There are no dictionary items.'
+                ]);
             }
 
-            if(!$dictionaryItems) {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to fetch dictionary items.'));
+            if (!$dictionaryItems) {
+                return $result->setData([
+                    'status'    => false,
+                    'msg'       => 'Failed to fetch dictionary items.'
+                ]);
             }
 
-            return $result->setData(array('status' => true, 'dictionaryItems' => $dictionaryItems));
+            return $result->setData([
+                'status'            => true,
+                'dictionaryItems'   => $dictionaryItems
+            ]);
         } catch (\Exception $e) {
-            return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
+            return $result->setData([
+                'status'    => false,
+                'msg'       => $e->getMessage()
+            ]);
         }
     }
 }

@@ -2,7 +2,10 @@
 
 namespace Fastly\Cdn\Model\Config\Backend;
 
-class ValidateInt extends \Magento\Framework\App\Config\Value
+use Magento\Framework\App\Config\Value;
+use Magento\Framework\Exception\LocalizedException;
+
+class ValidateInt extends Value
 {
     /**
      * @return $this|string
@@ -11,15 +14,13 @@ class ValidateInt extends \Magento\Framework\App\Config\Value
     public function beforeSave()
     {
         $value = $this->getValue();
-        try {
-            if (!ctype_digit($value)){
-                $label = $this->getFieldConfig('label');
-                $msg = __('%1 field must contain a numeric value.', $label);
-                throw new \Exception($msg);
-            }
-            return $value;
-        } catch (\Exception $e) {
-            throw $e;
+
+        if (ctype_digit($value) === false) {
+            throw new LocalizedException(
+                __('%1 field must contain a numeric value.', $this->getFieldConfig('label'))
+            );
         }
+
+        return $value;
     }
 }

@@ -2,50 +2,52 @@
 
 namespace Fastly\Cdn\Model\ResourceModel;
 
-class Statistic extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
+use Magento\Framework\Model\AbstractModel;
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
+use Magento\Framework\Model\ResourceModel\Db\Context;
+use Magento\Framework\Stdlib\DateTime\DateTime;
+
+class Statistic extends AbstractDb
 {
     /**
      * Date model
      *
-     * @var \Magento\Framework\Stdlib\DateTime\DateTime
+     * @var DateTime
      */
-    protected $_date;
+    private $date;
 
     /**
      * constructor
      *
-     * @param \Magento\Framework\Stdlib\DateTime\DateTime $date
-     * @param \Magento\Framework\Model\ResourceModel\Db\Context $context
+     * @param DateTime $date
+     * @param Context $context
      */
     public function __construct(
-        \Magento\Framework\Stdlib\DateTime\DateTime $date,
-        \Magento\Framework\Model\ResourceModel\Db\Context $context
-    )
-    {
-        $this->_date = $date;
+        DateTime $date,
+        Context $context
+    ) {
+        $this->date = $date;
+
         parent::__construct($context);
     }
-
 
     /**
      * Initialize resource model
      *
      * @return void
      */
-    protected function _construct()
+    protected function _construct() // @codingStandardsIgnoreLine - required by parent class
     {
         $this->_init('fastly_statistics', 'stat_id');
     }
 
     /**
-     * before save callback
-     *
-     * @param \Magento\Framework\Model\AbstractModel|\Fastly\Cdn\Model\Statistic $object
+     * @param AbstractModel $object
      * @return $this
      */
-    protected function _beforeSave(\Magento\Framework\Model\AbstractModel $object)
+    protected function _beforeSave(AbstractModel $object) // @codingStandardsIgnoreLine - required by parent class
     {
-        $object->setCreatedAt($this->_date->date());
+        $object->setCreatedAt($this->date->date());
         return parent::_beforeSave($object);
     }
 }

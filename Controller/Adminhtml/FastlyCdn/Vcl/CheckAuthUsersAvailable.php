@@ -22,9 +22,11 @@ namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
 
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
-use \Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\Controller\Result\JsonFactory;
 
-class CheckAuthUsersAvailable extends \Magento\Backend\App\Action
+class CheckAuthUsersAvailable extends Action
 {
     /**
      * Path to Authentication snippet
@@ -39,35 +41,36 @@ class CheckAuthUsersAvailable extends \Magento\Backend\App\Action
     /**
      * @var \Fastly\Cdn\Model\Api
      */
-    protected $api;
+    private $api;
 
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
-     * @var \Magento\Framework\Controller\Result\JsonFactory
+     * @var JsonFactory
      */
-    protected $resultJsonFactory;
+    private $resultJsonFactory;
 
     /**
      * CheckTlsSetting constructor.
      *
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param Context $context
      * @param Config $config
      * @param Api $api
      * @param JsonFactory $resultJsonFactory
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         Config $config,
         Api $api,
-        \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
+        JsonFactory $resultJsonFactory
     ) {
         $this->api = $api;
         $this->config = $config;
         $this->resultJsonFactory = $resultJsonFactory;
+
         parent::__construct($context);
     }
 
@@ -82,25 +85,34 @@ class CheckAuthUsersAvailable extends \Magento\Backend\App\Action
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
 
-            $dictonaryName = \Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl\CheckAuthSetting::AUTH_DICTIONARY_NAME;
+            $dictonaryName = CheckAuthSetting::AUTH_DICTIONARY_NAME;
             $dictionary = $this->api->getSingleDictionary($activeVersion, $dictonaryName);
 
-            if((is_array($dictionary) && empty($dictionary)) || $dictionary == false || !isset($dictionary->id))
-            {
-                return $result->setData(array('status' => 'empty', 'msg' => 'Basic Authentication cannot be enabled because there are no users assigned to it.'));
+            if ((is_array($dictionary) && empty($dictionary))
+                || $dictionary == false
+                || !isset($dictionary->id)
+            ) {
+                return $result->setData([
+                    'status'    => 'empty',
+                    'msg'       => 'Basic Authentication cannot be enabled because there are no users assigned to it.'
+                ]);
             } else {
-
                 $authItems = $this->api->dictionaryItemsList($dictionary->id);
 
-                if(is_array($authItems) && empty($authItems))
-                {
-                    return $result->setData(array('status' => 'empty', 'msg' => 'Basic Authentication cannot be enabled because there are no users assigned to it.'));
+                if (is_array($authItems) && empty($authItems)) {
+                    return $result->setData([
+                        'status' => 'empty',
+                        'msg'    => 'Basic Authentication cannot be enabled because there are no users assigned to it.'
+                    ]);
                 }
 
-                return $result->setData(array('status' => true));
+                return $result->setData(['status' => true]);
             }
         } catch (\Exception $e) {
-            return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
+            return $result->setData([
+                'status'    => false,
+                'msg'       => $e->getMessage()
+            ]);
         }
     }
 }

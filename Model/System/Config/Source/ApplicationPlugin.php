@@ -19,8 +19,9 @@
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Model\System\Config\Source;
-use \Magento\PageCache\Model\System\Config\Source\Application;
-use \Fastly\Cdn\Model\Config;
+
+use Magento\PageCache\Model\System\Config\Source\Application;
+use Fastly\Cdn\Model\Config;
 
 class ApplicationPlugin
 {
@@ -29,7 +30,7 @@ class ApplicationPlugin
      *
      * @return array
      */
-    public function afterToOptionArray(Application $application, Array $optionArray)
+    public function afterToOptionArray(Application $application, array $optionArray)
     {
         return array_merge($optionArray, [['value' => Config::FASTLY, 'label' => __('Fastly CDN')]]);
     }
@@ -39,7 +40,7 @@ class ApplicationPlugin
      *
      * @return array
      */
-    public function afterToArray(Application $application, Array $optionArray)
+    public function afterToArray(Application $application, array $optionArray)
     {
         $optionArray[Config::FASTLY] = __('Fastly CDN');
         return $optionArray;

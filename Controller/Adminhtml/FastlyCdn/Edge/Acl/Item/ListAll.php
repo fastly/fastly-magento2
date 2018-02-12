@@ -2,45 +2,47 @@
 
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Acl\Item;
 
-use \Magento\Framework\App\Request\Http;
-use \Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Request\Http;
+use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Api;
 
-class ListAll extends \Magento\Backend\App\Action
+class ListAll extends Action
 {
     /**
      * @var Http
      */
-    protected $request;
+    private $request;
 
     /**
      * @var JsonFactory
      */
-    protected $resultJson;
+    private $resultJson;
 
     /**
      * @var \Fastly\Cdn\Model\Api
      */
-    protected $api;
+    private $api;
 
     /**
      * ListAll constructor
      *
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
      * @param Api $api
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
         Api $api
-    )
-    {
+    ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
         $this->api = $api;
+
         parent::__construct($context);
     }
 
@@ -57,18 +59,29 @@ class ListAll extends \Magento\Backend\App\Action
             $aclId = $this->getRequest()->getParam('acl_id');
             $aclItems = $this->api->aclItemsList($aclId);
 
-            if(is_array($aclItems) && empty($aclItems))
-            {
-                return $result->setData(array('status' => 'empty', 'msg' => 'There are no acl items.'));
+            if (is_array($aclItems) && empty($aclItems)) {
+                return $result->setData([
+                    'status'    => 'empty',
+                    'msg'       => 'There are no acl items.'
+                ]);
             }
 
-            if(!$aclItems) {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to fetch acl items.'));
+            if (!$aclItems) {
+                return $result->setData([
+                    'status'    => false,
+                    'msg'       => 'Failed to fetch acl items.'
+                ]);
             }
 
-            return $result->setData(array('status' => true, 'aclItems' => $aclItems));
+            return $result->setData([
+                'status'    => true,
+                'aclItems'  => $aclItems
+            ]);
         } catch (\Exception $e) {
-            return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
+            return $result->setData([
+                'status'    => false,
+                'msg'       => $e->getMessage()
+            ]);
         }
     }
 }

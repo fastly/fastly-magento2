@@ -2,42 +2,43 @@
 
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Acl;
 
-use \Magento\Framework\App\Request\Http;
-use \Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Request\Http;
+use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Api;
 
-class ListAll extends \Magento\Backend\App\Action
+class ListAll extends Action
 {
     /**
      * @var Http
      */
-    protected $request;
+    private $request;
 
     /**
      * @var JsonFactory
      */
-    protected $resultJson;
+    private $resultJson;
 
     /**
      * @var \Fastly\Cdn\Model\Api
      */
-    protected $api;
+    private $api;
 
     /**
      * ListAll constructor
      *
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
      * @param Api $api
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
         Api $api
-    )
-    {
+    ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
         $this->api = $api;
@@ -57,18 +58,29 @@ class ListAll extends \Magento\Backend\App\Action
             $activeVersion = $this->getRequest()->getParam('active_version');
             $acls = $this->api->getAcls($activeVersion);
 
-            if(is_array($acls) && empty($acls))
-            {
-                return $result->setData(array('status' => true, 'acls' => []));
+            if (is_array($acls) && empty($acls)) {
+                return $result->setData([
+                    'status'    => true,
+                    'acls' => []
+                ]);
             }
 
-            if(!$acls) {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to fetch ACLs.'));
+            if (!$acls) {
+                return $result->setData([
+                    'status'    => false,
+                    'msg'       => 'Failed to fetch ACLs.'
+                ]);
             }
 
-            return $result->setData(array('status' => true, 'acls' => $acls));
+            return $result->setData([
+                'status'    => true,
+                'acls'      => $acls
+            ]);
         } catch (\Exception $e) {
-            return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
+            return $result->setData([
+                'status'    => false,
+                'msg'       => $e->getMessage()
+            ]);
         }
     }
 }

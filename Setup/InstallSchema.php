@@ -19,7 +19,7 @@ class InstallSchema implements InstallSchemaInterface
     {
         $installer = $setup;
 
-        /* @var $connection \Magento\Framework\DB\Adapter\AdapterInterface */
+        /** @var \Magento\Framework\DB\Adapter\AdapterInterface $connection */
         $connection = $installer->getConnection();
 
         $installer->startSetup();
@@ -62,6 +62,5 @@ class InstallSchema implements InstallSchemaInterface
         );
         $connection->createTable($table);
         $installer->endSetup();
-
     }
 }

@@ -22,41 +22,48 @@ namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Purge;
 
 use Fastly\Cdn\Model\PurgeCache;
 use Fastly\Cdn\Model\Config;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\UrlInterface;
+use Magento\Store\Model\StoreManagerInterface;
 
-class Quick extends \Magento\Backend\App\Action
+class Quick extends Action
 {
     /**
      * @var PurgeCache
      */
-    protected $purgeCache;
+    private $purgeCache;
 
     /**
-     * @var \Magento\Store\Model\StoreManagerInterface
+     * @var StoreManagerInterface
      */
-    protected $storeManager;
+    private $storeManager;
 
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
-     * @param \Magento\Backend\App\Action\Context $context
+     * Quick constructor.
+     *
+     * @param Context $context
      * @param PurgeCache $purgeCache
-     * @param \Magento\Store\Model\StoreManagerInterface
+     * @param StoreManagerInterface $storeManager
      * @param Config $config
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         PurgeCache $purgeCache,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        StoreManagerInterface $storeManager,
         Config $config
     ) {
-        parent::__construct($context);
         $this->purgeCache = $purgeCache;
         $this->storeManager = $storeManager;
         $this->config = $config;
+
+        parent::__construct($context);
     }
 
     /**
@@ -74,7 +81,7 @@ class Quick extends \Magento\Backend\App\Action
                 $urlFragments = parse_url($url);
 
                 if (!$url || $urlFragments === false) {
-                    throw new \Exception(__('Invalid URL "'.$url.'".'));
+                    throw new LocalizedException(__('Invalid URL "'.$url.'".'));
                 }
 
                 // get url fragments
@@ -82,12 +89,12 @@ class Quick extends \Magento\Backend\App\Action
 
                 // check if host is set
                 if (!isset($host) || !isset($scheme)) {
-                    throw new \Exception(__('Invalid URL "'.$url.'".'));
+                    throw new LocalizedException(__('Invalid URL "'.$url.'".'));
                 }
 
                 // check if host is one of magento's
                 if (!$this->isHostInDomainList($host)) {
-                    throw new \Exception(__('Invalid domain "'.$host.'".'));
+                    throw new LocalizedException(__('Invalid domain "'.$host.'".'));
                 }
 
                 // build uri to purge
@@ -96,10 +103,12 @@ class Quick extends \Magento\Backend\App\Action
                 if (isset($path)) {
                     $uri .= $path;
                 }
+
                 if (isset($query)) {
                     $uri .= '\?';
                     $uri .= $query;
                 }
+
                 if (isset($fragment)) {
                     $uri .= '#';
                     $uri .= $fragment;
@@ -129,7 +138,7 @@ class Quick extends \Magento\Backend\App\Action
      * @param string $host
      * @return bool
      */
-    protected function isHostInDomainList($host)
+    private function isHostInDomainList($host)
     {
         $urlTypes = [
             UrlInterface::URL_TYPE_LINK,
@@ -141,7 +150,7 @@ class Quick extends \Magento\Backend\App\Action
         $secureScheme = [true, false];
 
         foreach ($this->storeManager->getStores() as $store) {
-            /* @var $store \Magento\Store\Model\Store */
+            /** @var \Magento\Store\Model\Store $store */
             foreach ($urlTypes as $urlType) {
                 foreach ($secureScheme as $scheme) {
                     $shopHost = \Zend_Uri::factory($store->getBaseUrl($urlType, $scheme))->getHost();

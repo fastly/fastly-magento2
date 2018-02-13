@@ -2,70 +2,63 @@
 
 namespace Fastly\Cdn\Setup;
 
+use Fastly\Cdn\Helper\Data;
+use Magento\Framework\App\Cache\Manager;
+use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\Setup\InstallDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Fastly\Cdn\Model\Statistic;
+use Magento\Framework\Stdlib\DateTime\DateTime;
 
 class InstallData implements InstallDataInterface
 {
     /**
-     * Date model
-     *
-     * @var \Magento\Framework\Stdlib\DateTime\DateTime
+     * @var DateTime
      */
-    protected $_date;
+    private $date;
 
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var WriterInterface
      */
-    protected $_scopeConfig;
-
-    /**
-     * @var \Magento\Framework\App\Config\Storage\WriterInterface
-     */
-    protected $_configWriter;
+    private $configWriter;
 
     /**
      * @var Statistic
      */
-    protected $_statistic;
+    private $statistic;
 
     /**
-     * @var \Magento\Framework\App\Cache\Manager
+     * @var Manager
      */
-    protected $_cacheManager;
+    private $cacheManager;
 
     /**
-     * @var \Fastly\Cdn\Helper\Data
+     * @var Data
      */
-    protected $_helper;
+    private $helper;
 
     /**
      * InstallData constructor
      *
-     * @param \Magento\Framework\Stdlib\DateTime\DateTime $date
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Magento\Framework\App\Config\Storage\WriterInterface $configWriter
+     * @param DateTime $date
+     * @param WriterInterface $configWriter
      * @param Statistic $statistic
-     * @param \Magento\Framework\App\Cache\Manager $cacheManager
-     * @param \Fastly\Cdn\Helper\Data $helper
+     * @param Manager $cacheManager
+     * @param Data $helper
      */
     public function __construct(
-        \Magento\Framework\Stdlib\DateTime\DateTime $date,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Framework\App\Config\Storage\WriterInterface $configWriter,
+        DateTime $date,
+        WriterInterface $configWriter,
         Statistic $statistic,
-        \Magento\Framework\App\Cache\Manager $cacheManager,
-        \Fastly\Cdn\Helper\Data $helper
-    )
-    {
-        $this->_date = $date;
-        $this->_scopeConfig = $scopeConfig;
-        $this->_configWriter = $configWriter;
-        $this->_statistic = $statistic;
-        $this->_cacheManager = $cacheManager;
-        $this->_helper = $helper;
+        Manager $cacheManager,
+        Data $helper
+    ) {
+        $this->date = $date;
+        $this->configWriter = $configWriter;
+        $this->statistic = $statistic;
+        $this->cacheManager = $cacheManager;
+        $this->helper = $helper;
     }
 
     /**
@@ -76,22 +69,21 @@ class InstallData implements InstallDataInterface
     {
         $setup->startSetup();
         $tableName = $setup->getTable('fastly_statistics');
-        if($setup->getConnection()->isTableExists($tableName) == true) {
-
+        if ($setup->getConnection()->isTableExists($tableName) == true) {
             $data = [
                 'action' => Statistic::FASTLY_INSTALLED_FLAG,
-                'created_at' => $this->_date->date()
+                'created_at' => $this->date->date()
             ];
 
             $setup->getConnection()->insert($tableName, $data);
         }
 
         // Save current Fastly module version
-        $this->_configWriter->save('system/full_page_cache/fastly/current_version', $this->_helper->getModuleVersion());
+        $this->configWriter->save('system/full_page_cache/fastly/current_version', $this->helper->getModuleVersion());
 
         // Generate GA cid and store it for further use
-        $this->_configWriter->save('system/full_page_cache/fastly/fastly_ga_cid', $this->_statistic->generateCid());
-        $this->_cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
+        $this->configWriter->save('system/full_page_cache/fastly/fastly_ga_cid', $this->statistic->generateCid());
+        $this->cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
         $setup->endSetup();
     }
 }

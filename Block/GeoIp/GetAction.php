@@ -18,43 +18,57 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-
 namespace Fastly\Cdn\Block\GeoIp;
 
 use Fastly\Cdn\Model\Config;
+use Magento\Framework\View\Element\AbstractBlock;
+use Magento\Framework\View\Element\Context;
 
 /**
  * This is a just a place holder to insert the ESI tag for GeoIP lookup.
  */
-class GetAction extends \Magento\Framework\View\Element\AbstractBlock
+class GetAction extends AbstractBlock
 {
     /**
      * @var Config
      */
-    protected $_config;
+    private $config;
 
     /**
      * GetAction constructor.
      *
-     * @param \Magento\Framework\View\Element\Context $context
      * @param Config $config
+     * @param Context $context
      * @param array $data
      */
-    public function __construct(\Magento\Framework\View\Element\Context $context, Config $config, array $data = [])
-    {
-        $this->_config = $config;
+    public function __construct(
+        Config $config,
+        Context $context,
+        array $data = []
+    ) {
+        $this->config = $config;
+
         parent::__construct($context, $data);
     }
 
     /**
+     * Renders ESI GeoIp block
+     *
      * @return string
      */
-    protected function _toHtml()
+    protected function _toHtml() // @codingStandardsIgnoreLine - required by parent class
     {
-        if ($this->_config->isGeoIpEnabled()) {
-            # https ESIs are not supported so we need to turn them into http
-            return sprintf('<esi:include src=\'%s\' />', preg_replace("/^https/", "http", $this->getUrl('fastlyCdn/geoip/getaction')));
+        if ($this->config->isGeoIpEnabled() == false) {
+            return parent::_toHtml();
         }
-        return parent::_toHtml();
+
+        /** @var string $actionUrl */
+        $actionUrl = $this->getUrl('fastlyCdn/geoip/getaction');
+
+        // HTTPS ESIs are not supported so we need to turn them into HTTP
+        return sprintf(
+            '<esi:include src=\'%s\' />',
+            preg_replace("/^https/", "http", $actionUrl)
+        );
     }
 }

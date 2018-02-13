@@ -23,14 +23,14 @@ namespace Fastly\Cdn\Model;
 class PurgeCache
 {
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
-    protected $api;
+    private $api;
 
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
      * Constructor
@@ -60,7 +60,7 @@ class PurgeCache
             }
         } elseif (!is_array($pattern) && strpos($pattern, 'http') === 0) {
             $result = $this->api->cleanUrl($pattern);
-        } else if (is_array($pattern)) {
+        } elseif (is_array($pattern)) {
             $result = $this->api->cleanBySurrogateKey($pattern);
         } else {
             return false;

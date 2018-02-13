@@ -2,7 +2,7 @@
 
 namespace Fastly\Cdn\Helper;
 
-use \Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\App\DeploymentConfig\Reader;
 
@@ -11,7 +11,7 @@ class Vcl extends AbstractHelper
     /**
      * @var Reader
      */
-    protected $configReader;
+    private $configReader;
 
     /**
      * Templetize constructor.
@@ -21,8 +21,9 @@ class Vcl extends AbstractHelper
     public function __construct(
         Context $context,
         Reader $configReader
-    ){
+    ) {
         $this->configReader = $configReader;
+
         parent::__construct($context);
     }
 
@@ -37,11 +38,9 @@ class Vcl extends AbstractHelper
         $activeVersion = null;
         $nextVersion = null;
 
-        if(!empty($versions))
-        {
-            foreach($versions as $version)
-            {
-                if($version->active) {
+        if (!empty($versions)) {
+            foreach ($versions as $version) {
+                if ($version->active) {
                     $activeVersion = $version->number;
                 }
             }
@@ -49,7 +48,10 @@ class Vcl extends AbstractHelper
             $nextVersion = (int) end($versions)->number + 1;
         }
 
-        return array('active_version' => $activeVersion, 'next_version' => $nextVersion);
+        return [
+            'active_version'    => $activeVersion,
+            'next_version'      => $nextVersion
+        ];
     }
 
     /**
@@ -57,9 +59,11 @@ class Vcl extends AbstractHelper
      * @throws \Exception
      * @throws \Magento\Framework\Exception\FileSystemException
      */
-    public function getAdminFrontName(){
+    public function getAdminFrontName()
+    {
         $config = $this->configReader->load();
         $adminFrontName = $config['backend']['frontName'];
+
         return $adminFrontName;
     }
 }

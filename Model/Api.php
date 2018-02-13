@@ -20,6 +20,7 @@
  */
 namespace Fastly\Cdn\Model;
 
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\Adapter\CurlFactory;
 use Magento\Framework\Cache\InvalidateLogger;
 use Fastly\Cdn\Helper\Data;
@@ -37,32 +38,32 @@ class Api
     /**
      * @var Config $config,
      */
-    protected $config;
+    private $config;
 
     /**
      * @var \Magento\Framework\HTTP\Adapter\CurlFactory
      */
-    protected $curlFactory;
+    private $curlFactory;
 
     /**
      * @var InvalidateLogger
      */
-    protected $logger;
+    private $logger;
 
     /**
      * @var Data
      */
-    protected $helper;
+    private $helper;
 
     /**
      * @var LoggerInterface
      */
-    protected $log;
+    private $log;
 
     /**
      * @var bool Purge all flag
      */
-    protected $purged = false;
+    private $purged = false;
 
     /**
      * Api constructor.
@@ -91,7 +92,7 @@ class Api
      *
      * @return string
      */
-    protected function _getApiServiceUri()
+    private function _getApiServiceUri()
     {
         $uri = $this->config->getApiEndpoint()
             . 'service/'
@@ -106,7 +107,7 @@ class Api
      *
      * @return string
      */
-    protected function _getHistoricalEndpoint()
+    private function _getHistoricalEndpoint()
     {
         $uri = $this->config->getApiEndpoint() . 'stats/service/' . $this->config->getServiceId();
 
@@ -152,8 +153,7 @@ class Api
             $collection = [$keys];
         }
 
-        foreach($collection as $keys) {
-
+        foreach ($collection as $keys) {
             $payload = json_encode(['surrogate_keys' => $keys]);
             if ($result = $this->_purge($uri, \Zend_Http_Client::POST, $payload)) {
                 foreach ($keys as $key) {
@@ -164,7 +164,6 @@ class Api
             if ($this->config->areWebHooksEnabled() && $this->config->canPublishKeyUrlChanges()) {
                 $this->sendWebHook('*clean by key on ' . join(" ", $keys) . '*');
             }
-
         }
 
         return $result;
@@ -215,10 +214,10 @@ class Api
      * @param null $payload
      * @return bool
      */
-    protected function _purge($uri, $method = \Zend_Http_Client::POST, $payload = null)
+    private function _purge($uri, $method = \Zend_Http_Client::POST, $payload = null)
     {
 
-        if($method == 'PURGE') {
+        if ($method == 'PURGE') {
             // create purge token
             $expiration   = time() + self::PURGE_TOKEN_LIFETIME;
             $stringToSign = parse_url($uri, PHP_URL_PATH) . $expiration;
@@ -227,25 +226,25 @@ class Api
             $headers = [
                 self::FASTLY_HEADER_TOKEN . ': ' . $token
             ];
-
         } else {
-
             // set headers
             $headers = [
                 self::FASTLY_HEADER_AUTH  . ': ' . $this->config->getApiKey()
             ];
-
         }
 
         // soft purge if needed
         if ($this->config->canUseSoftPurge()) {
-            array_push( $headers, self::FASTLY_HEADER_SOFT_PURGE . ': 1' );
+            array_push(
+                $headers,
+                self::FASTLY_HEADER_SOFT_PURGE . ': 1'
+            );
         }
 
         try {
             $client = $this->curlFactory->create();
             $client->setConfig(['timeout' => self::PURGE_TIMEOUT]);
-            if($method == 'PURGE') {
+            if ($method == 'PURGE') {
                 $client->addOption(CURLOPT_CUSTOMREQUEST, 'PURGE');
             }
             $client->write($method, $uri, '1.1', $headers, $payload);
@@ -255,7 +254,7 @@ class Api
 
             // check response
             if ($responseCode != '200') {
-                throw new \Exception('Return status ' . $responseCode);
+                throw new LocalizedException(__('Return status ' . $responseCode));
             }
         } catch (\Exception $e) {
             $this->logger->critical($e->getMessage(), $uri);
@@ -264,7 +263,6 @@ class Api
 
         return true;
     }
-
 
     /**
      * Get the logged in customer details
@@ -289,7 +287,7 @@ class Api
      */
     public function checkServiceDetails($test = false, $serviceId = null, $apiKey = null)
     {
-        if(!$test) {
+        if (!$test) {
             $uri = rtrim($this->_getApiServiceUri(), '/');
             $result = $this->_fetch($uri);
         } else {
@@ -383,8 +381,7 @@ class Api
     {
         $checkIfExists = $this->getSnippet($version, $snippet['name']);
         $url = $this->_getApiServiceUri(). 'version/' .$version. '/snippet';
-        if(!$checkIfExists)
-        {
+        if (!$checkIfExists) {
             $verb = \Zend_Http_Client::POST;
         } else {
             $verb = \Zend_Http_Client::PUT;
@@ -458,8 +455,7 @@ class Api
     {
         $checkIfExists = $this->getCondition($version, $condition['name']);
         $url = $this->_getApiServiceUri(). 'version/' .$version. '/condition';
-        if(!$checkIfExists)
-        {
+        if (!$checkIfExists) {
             $verb = \Zend_Http_Client::POST;
         } else {
             $verb = \Zend_Http_Client::PUT;
@@ -497,8 +493,7 @@ class Api
     {
         $checkIfExists = $this->getResponse($version, $response['name']);
         $url = $this->_getApiServiceUri(). 'version/' .$version. '/response_object';
-        if(!$checkIfExists)
-        {
+        if (!$checkIfExists) {
             $verb = \Zend_Http_Client::POST;
         } else {
             $verb = \Zend_Http_Client::PUT;
@@ -536,8 +531,7 @@ class Api
     {
         $checkIfExists = $this->getRequest($version, $request['name']);
         $url = $this->_getApiServiceUri(). 'version/' .$version. '/request_settings';
-        if(!$checkIfExists)
-        {
+        if (!$checkIfExists) {
             $verb = \Zend_Http_Client::POST;
         } else {
             $verb = \Zend_Http_Client::PUT;
@@ -604,8 +598,17 @@ class Api
      */
     public function configureBackend($params, $version, $old_name)
     {
-        $url = $this->_getApiServiceUri(). 'version/'. $version . '/backend/' . str_replace ( ' ', '%20', $old_name);
-        $result = $this->_fetch($url, \Zend_Http_Client::PUT, $params);
+        $url = $this->_getApiServiceUri()
+            . 'version/'
+            . $version
+            . '/backend/'
+            . str_replace(' ', '%20', $old_name);
+
+        $result = $this->_fetch(
+            $url,
+            \Zend_Http_Client::PUT,
+            $params
+        );
 
         return $result;
     }
@@ -629,11 +632,11 @@ class Api
             'Content-type: application/json'
         ];
 
-        $body = json_encode(array(
+        $body = json_encode([
             "text"  =>  $text,
             "username" => "fastly-magento-bot",
             "icon_emoji"=> ":airplane:"
-        ));
+        ]);
 
         $client = $this->curlFactory->create();
         $client->addOption(CURLOPT_CONNECTTIMEOUT, 2);
@@ -699,7 +702,8 @@ class Api
      * @param $dictionaryName
      * @return bool|mixed
      */
-    public function getSingleDictionary($version, $dictionaryName) {
+    public function getSingleDictionary($version, $dictionaryName)
+    {
         $url = $this->_getApiServiceUri(). 'version/'. $version . '/dictionary/' . $dictionaryName;
         $result = $this->_fetch($url, \Zend_Http_Client::GET);
 
@@ -813,11 +817,16 @@ class Api
      */
     public function upsertAclItem($aclId, $itemValue, $negated, $subnet = false)
     {
-        if($subnet) {
-            $body = ['ip' => $itemValue, 'negated' => $negated, 'comment' => 'Added by Magento Module', 'subnet' => $subnet];
-        } else {
-            $body = ['ip' => $itemValue, 'negated' => $negated, 'comment' => 'Added by Magento Module'];
+        $body = [
+            'ip' => $itemValue,
+            'negated' => $negated,
+            'comment' => 'Added by Magento Module'
+        ];
+
+        if ($subnet) {
+            $body['subnet'] = $subnet;
         }
+
         $url = $this->_getApiServiceUri(). 'acl/'. $aclId . '/entry';
         $result = $this->_fetch($url, \Zend_Http_Client::POST, $body);
 
@@ -846,7 +855,11 @@ class Api
     public function queryHistoricStats(array $parameters)
     {
         $uri = $this->_getHistoricalEndpoint()
-                        .'?region='.$parameters['region'].'&from='.$parameters['from'].'&to='.$parameters['to'].'&by='.$parameters['sample_rate'];
+            . '?region='.$parameters['region']
+            . '&from='.$parameters['from']
+            . '&to='.$parameters['to']
+            . '&by='
+            . $parameters['sample_rate'];
 
         $result = $this->_fetch($uri);
 
@@ -865,7 +878,7 @@ class Api
      *
      * @return bool|mixed   Returns false on failiure
      */
-    protected function _fetch(
+    private function _fetch(
         $uri,
         $method = \Zend_Http_Client::GET,
         $body = '',

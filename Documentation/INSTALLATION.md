@@ -23,9 +23,6 @@ onwards.
 
 You will need to signup for a free account with [fastly.com](https://www.fastly.com/signup) in order to use the module. If you need professional services for assistance with setting up your environment please contact magento@fastly.com.
 
-To use the module make sure that your server does not compress text content. This
-would prevent the ESI functionality.
-
 ## Installation
 
 The tasks involved in this are:

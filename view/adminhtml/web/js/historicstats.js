@@ -3,7 +3,7 @@ define([
     'mage/translate',
     'https://www.gstatic.com/charts/loader.js',
     'moment'
-], function($, t, g, moment) {
+], function ($, t, g, moment) {
     "use strict";
 
     return function (config) {
@@ -19,16 +19,16 @@ define([
 
             $('#Fastly').removeClass('ui-tabs-panel');
             // From picker init
-            fromPicker.datetimepicker( { dateFormat: "mm/dd/yy" } );
+            fromPicker.datetimepicker({dateFormat: "mm/dd/yy"});
             $(".ui-datepicker-trigger").removeAttr("style");
-            $(".ui-datepicker-trigger").click(function(){
+            $(".ui-datepicker-trigger").click(function () {
                 fromPicker.focus();
             });
 
             // To picker init
-            toPicker.datetimepicker( { dateFormat: "mm/dd/yy" } );
+            toPicker.datetimepicker({dateFormat: "mm/dd/yy"});
             $(".ui-datepicker-trigger").removeAttr("style");
-            $(".ui-datepicker-trigger").click(function(){
+            $(".ui-datepicker-trigger").click(function () {
                 toPicker.focus();
             });
 
@@ -130,7 +130,8 @@ define([
             applyCharts();
         });
 
-        function applyCharts() {
+        function applyCharts()
+        {
             var from = fromPicker.val();
             var to = toPicker.val();
             var sample_rate = $('#sample-rate').val();
@@ -270,7 +271,8 @@ define([
             });
         }
 
-        function errorsChart() {
+        function errorsChart()
+        {
             var data = new google.visualization.DataTable();
             data.addColumn('datetime', 'Date');
             data.addColumn('number', '5xx');
@@ -290,7 +292,8 @@ define([
             chart.draw(data,options);
         }
 
-        function hitRatioChart() {
+        function hitRatioChart()
+        {
             var data = new google.visualization.DataTable();
             data.addColumn('datetime', 'Date');
             data.addColumn('number', 'Ratio');
@@ -313,7 +316,8 @@ define([
 
         }
 
-        function bandwithChart() {
+        function bandwithChart()
+        {
             var data = new google.visualization.DataTable();
             data.addColumn('datetime', 'Date');
             data.addColumn('number', 'Bandwith');
@@ -359,7 +363,8 @@ define([
 
         }
 
-        function requestsChart() {
+        function requestsChart()
+        {
             var data = new google.visualization.DataTable();
             data.addColumn('datetime', 'Date');
             data.addColumn('number', 'Requests');
@@ -383,15 +388,18 @@ define([
             chart.draw(data,options);
         }
 
-        function round(value, exp) {
-            if (typeof exp === 'undefined' || +exp === 0)
+        function round(value, exp)
+        {
+            if (typeof exp === 'undefined' || +exp === 0) {
                 return Math.round(value);
+            }
 
             value = +value;
             exp = +exp;
 
-            if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0))
+            if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
                 return NaN;
+            }
 
             // Shift
             value = value.toString().split('e');
@@ -402,24 +410,26 @@ define([
             return +(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp));
         }
 
-        function formatBytes(bytes, decimals, roundValue) {
-            if(bytes == 0) return '0 Bytes';
+        function formatBytes(bytes, decimals, roundValue)
+        {
+            if (bytes == 0) {
+                return '0 Bytes';
+            }
             var k = 1000,
                 dm = decimals + 1 || 3,
                 sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
                 i = Math.floor(Math.log(bytes) / Math.log(k));
-            if (typeof roundValue == "undefined")
-            {
+            if (typeof roundValue == "undefined") {
                 return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-            } else
-            {
+            } else {
                 var result = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
                 result = round(result, 0);
                 return result + ' ' + sizes[i];
             }
         }
 
-        function nFormatter(num, digits) {
+        function nFormatter(num, digits)
+        {
             var si = [
                 { value: 1E18, symbol: "E" },
                 { value: 1E15, symbol: "P" },

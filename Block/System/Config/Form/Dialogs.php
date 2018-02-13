@@ -5,20 +5,12 @@ namespace Fastly\Cdn\Block\System\Config\Form;
 use Magento\Backend\Block\Template;
 use Fastly\Cdn\Model\Config;
 
-
 class Dialogs extends Template
 {
     /**
-     * Block template
-     *
-     * @var string
-     */
-    protected $_template = 'Fastly_Cdn::system/config/dialogs.phtml';
-
-    /**
      * @var Config
      */
-    protected $_config;
+    private $config;
 
     /**
      * Dialogs constructor.
@@ -28,8 +20,16 @@ class Dialogs extends Template
      */
     public function __construct(Config $config, Template\Context $context, array $data)
     {
+        $this->config = $config;
+
         parent::__construct($context, $data);
-        $this->_config = $config;
+    }
+
+    protected function _construct() // @codingStandardsIgnoreLine - required by parent class
+    {
+        $this->_template = 'Fastly_Cdn::system/config/dialogs.phtml';
+
+        parent::_construct();
     }
 
     /**
@@ -39,6 +39,6 @@ class Dialogs extends Template
      */
     public function getConfig()
     {
-        return $this->_config;
+        return $this->config;
     }
 }

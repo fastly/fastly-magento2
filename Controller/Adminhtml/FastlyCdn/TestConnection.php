@@ -22,64 +22,62 @@ namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn;
 
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
-use \Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
 use Fastly\Cdn\Helper\Vcl;
 use Fastly\Cdn\Model\Statistic;
 use Fastly\Cdn\Model\StatisticFactory;
 use Fastly\Cdn\Model\StatisticRepository;
+use Magento\Framework\Controller\Result\JsonFactory;
 
-class TestConnection extends \Magento\Backend\App\Action
+class TestConnection extends Action
 {
     /**
      * @var \Fastly\Cdn\Model\Api
      */
-    protected $api;
+    private $api;
 
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
-     * @var Vcl
+     * @var JsonFactory
      */
-    protected $vcl;
-
-    /**
-     * @var \Magento\Framework\Controller\Result\JsonFactory
-     */
-    protected $resultJsonFactory;
+    private $resultJsonFactory;
 
     /**
      * @var Statistic
      */
-    protected $_statistic;
+    private $statistic;
 
     /**
      * @var StatisticFactory
      */
-    protected $_statisticFactory;
+    private $statisticFactory;
 
     /**
      * @var StatisticRepository
      */
-    protected $_statisticRepository;
+    private $statisticRepository;
 
     /**
      * TestConnection constructor.
      *
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param Context $context
      * @param Config $config
      * @param Api $api
      * @param JsonFactory $resultJsonFactory
      * @param Statistic $statistic
      * @param StatisticFactory $statisticFactory
+     * @param StatisticRepository $statisticRepository
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         Config $config,
         Api $api,
-        \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
+        JsonFactory $resultJsonFactory,
         Statistic $statistic,
         StatisticFactory $statisticFactory,
         StatisticRepository $statisticRepository
@@ -87,9 +85,9 @@ class TestConnection extends \Magento\Backend\App\Action
         $this->api = $api;
         $this->config = $config;
         $this->resultJsonFactory = $resultJsonFactory;
-        $this->_statistic = $statistic;
-        $this->_statisticFactory = $statisticFactory;
-        $this->_statisticRepository = $statisticRepository;
+        $this->statistic = $statistic;
+        $this->statisticFactory = $statisticFactory;
+        $this->statisticRepository = $statisticRepository;
 
         parent::__construct($context);
     }
@@ -112,27 +110,33 @@ class TestConnection extends \Magento\Backend\App\Action
 
             $service = $this->api->checkServiceDetails(true, $serviceId, $apiKey);
 
-            if(!$service) {
-                $sendValidationReq = $this->_statistic->sendValidationRequest(false, $serviceId);
-                $this->_saveValidationState(false, $sendValidationReq);
-                return $result->setData(array('status' => false));
+            if (!$service) {
+                $sendValidationReq = $this->statistic->sendValidationRequest(false, $serviceId);
+                $this->saveValidationState(false, $sendValidationReq);
+                return $result->setData(['status' => false]);
             }
             
-            $sendValidationReq = $this->_statistic->sendValidationRequest(true, $serviceId);
-            $this->_saveValidationState(true, $sendValidationReq);
+            $sendValidationReq = $this->statistic->sendValidationRequest(true, $serviceId);
+            $this->saveValidationState(true, $sendValidationReq);
 
-            return $result->setData(array('status' => true, 'service_name' => $service->name));
+            return $result->setData([
+                'status'        => true,
+                'service_name'  => $service->name
+            ]);
         } catch (\Exception $e) {
-            return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
+            return $result->setData([
+                'status'    => false,
+                'msg'       => $e->getMessage()
+            ]);
         }
     }
 
-    protected function _saveValidationState($serviceStatus, $gaRequestStatus)
+    private function saveValidationState($serviceStatus, $gaRequestStatus)
     {
-        $validationStat = $this->_statisticFactory->create();
+        $validationStat = $this->statisticFactory->create();
         $validationStat->setAction(Statistic::FASTLY_VALIDATION_FLAG);
         $validationStat->setSent($gaRequestStatus);
         $validationStat->setState($serviceStatus);
-        $this->_statisticRepository->save($validationStat);
+        $this->statisticRepository->save($validationStat);
     }
 }

@@ -20,6 +20,10 @@
  */
 namespace Fastly\Cdn\Console\Command;
 
+use Magento\Framework\App\Cache\Manager;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\Config\Storage\WriterInterface;
+use Magento\Framework\App\ProductMetadataInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -28,90 +32,92 @@ class JsonToSerialize extends Command
 {
 
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var ScopeConfigInterface
      */
-    protected $_scopeConfig;
+    private $scopeConfig;
 
     /**
      * @var \Magento\Framework\Serialize\Serializer\Json
      */
-    protected $_productMetadata;
+    private $productMetadata;
 
     /**
-     * @var \Magento\Framework\App\Config\Storage\WriterInterface
+     * @var WriterInterface
      */
-    protected $_configWriter;
+    private $configWriter;
 
     /**
-     * @var \Magento\Framework\App\Cache\Manager
+     * @var Manager
      */
-    protected $_cacheManager;
+    private $cacheManager;
+
+    /**
+     * JsonToSerialize constructor.
+     * @param ScopeConfigInterface $scopeConfig
+     * @param WriterInterface $configWriter
+     * @param ProductMetadataInterface $productMetadata
+     * @param Manager $cacheManager
+     */
+    public function __construct(
+        ScopeConfigInterface $scopeConfig,
+        WriterInterface $configWriter,
+        ProductMetadataInterface $productMetadata,
+        Manager $cacheManager
+    ) {
+        parent::__construct();
+
+        $this->scopeConfig = $scopeConfig;
+        $this->configWriter = $configWriter;
+        $this->productMetadata = $productMetadata;
+        $this->cacheManager = $cacheManager;
+    }
 
     /**
      * @inheritdoc
      */
-    protected function configure()
+    protected function configure() // @codingStandardsIgnoreLine - required by parent class
     {
         $this->setName('fastly:format:jsontoserialize')
             ->setDescription('Converts Module JSON data to serialized format');
     }
 
     /**
-     * JsonToSerialize constructor.
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Magento\Framework\App\Config\Storage\WriterInterface $configWriter
-     * @param \Magento\Framework\App\ProductMetadataInterface $productMetadata
-     * @param \Magento\Framework\App\Cache\Manager $cacheManager
-     */
-    public function __construct(
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Framework\App\Config\Storage\WriterInterface $configWriter,
-        \Magento\Framework\App\ProductMetadataInterface $productMetadata,
-        \Magento\Framework\App\Cache\Manager $cacheManager
-    ) {
-        parent::__construct();
-        $this->_scopeConfig = $scopeConfig;
-        $this->_configWriter = $configWriter;
-        $this->_productMetadata = $productMetadata;
-        $this->_cacheManager = $cacheManager;
-    }
-
-    /**
      * Converts Fastly JSON data to serialized format
-     * @inheritdoc
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output) // @codingStandardsIgnoreLine - required by parent class
     {
 
         $configPaths = [
             'geoip_country_mapping' => \Fastly\Cdn\Model\Config::XML_FASTLY_GEOIP_COUNTRY_MAPPING
         ];
 
-        foreach($configPaths as $path){
+        foreach ($configPaths as $path) {
+            $magVer = $this->productMetadata->getVersion();
 
-            $magVer = $this->_productMetadata->getVersion();
-            if(version_compare($magVer, '2.2', '>=')) {
-                echo "Warning : This function is used for converting JSON data to serialized format" .
-                "(used only to revert changes made by : bin/magento fastly:format:serializetojson)\n";
+            if (version_compare($magVer, '2.2', '>=')) {
+                $output->writeln('Warning : This function is used for converting JSON data to serialized format'
+                . '(used only to revert changes made by : bin/magento fastly:format:serializetojson)');
             }
 
-            $oldData = $this->_scopeConfig->getValue($path);
+            $oldData = $this->scopeConfig->getValue($path);
             $oldData = json_decode($oldData, true);
-            if($oldData === false || is_null($oldData)) {
-                echo 'Invalid JSON format, unable to decode config data : ' . $path . "\n";
+
+            if ($oldData === false || $oldData === null) {
+                $output->writeln('Invalid JSON format, unable to decode config data : ' . $path);
                 return;
             }
-            $oldData = (is_array($oldData)) ? $oldData : array();
 
+            $oldData = (is_array($oldData)) ? $oldData : [];
             $newData = serialize($oldData);
+
             if (false === $newData) {
                 throw new \InvalidArgumentException('Unable to serialize data.');
             }
 
-            $this->_configWriter->save($path, $newData);
-            $this->_cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
+            $this->configWriter->save($path, $newData);
+            $this->cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
 
-            echo "Config Cache Flushed\n";
+            $output->writeln('Config Cache Flushed');
         }
     }
 }

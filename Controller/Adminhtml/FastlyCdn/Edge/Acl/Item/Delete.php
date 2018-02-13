@@ -2,43 +2,45 @@
 
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Acl\Item;
 
-use \Magento\Framework\App\Request\Http;
-use \Magento\Framework\Controller\Result\JsonFactory;
-use \Fastly\Cdn\Model\Config;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Request\Http;
+use Magento\Framework\Controller\Result\JsonFactory;
+use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
 
-class Delete extends \Magento\Backend\App\Action
+class Delete extends Action
 {
     /**
      * @var Http
      */
-    protected $request;
+    private $request;
 
     /**
      * @var JsonFactory
      */
-    protected $resultJson;
+    private $resultJson;
 
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
      * @var \Fastly\Cdn\Model\Api
      */
-    protected $api;
+    private $api;
 
     /**
      * @var Vcl
      */
-    protected $vcl;
+    private $vcl;
 
     /**
      * ForceTls constructor.
      *
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
      * @param Config $config
@@ -46,19 +48,19 @@ class Delete extends \Magento\Backend\App\Action
      * @param Vcl $vcl
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
         Config $config,
         Api $api,
         Vcl $vcl
-    )
-    {
+    ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
         $this->config = $config;
         $this->api = $api;
         $this->vcl = $vcl;
+
         parent::__construct($context);
     }
 
@@ -78,12 +80,15 @@ class Delete extends \Magento\Backend\App\Action
             $deleteItem = $this->api->deleteAclItem($aclId, $aclItemId);
 
             if (!$deleteItem) {
-                return $result->setData(array('status' => false));
+                return $result->setData(['status' => false]);
             }
 
-            return $result->setData(array('status' => true));
+            return $result->setData(['status' => true]);
         } catch (\Exception $e) {
-            return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
+            return $result->setData([
+                'status'    => false,
+                'msg'       => $e->getMessage()
+            ]);
         }
     }
 }

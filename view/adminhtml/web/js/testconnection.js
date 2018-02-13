@@ -3,10 +3,8 @@ define([
     'mage/template',
     "Magento_Ui/js/modal/modal",
     'mage/translate'
-], function($){
-
+], function ($) {
     return function (config) {
-
         successBtnMsg = $('#fastly-test-success-button-msg');
         errorBtnMsg = $('#fastly-test-error-button-msg');
         warningBtnMsg = $('#fastly-test-warning-button-msg');
@@ -36,7 +34,8 @@ define([
         });
     };
 
-    function resetAllMessages() {
+    function resetAllMessages()
+    {
         successBtnMsg.text();
         successBtnMsg.hide();
         errorBtnMsg.text();

@@ -21,36 +21,34 @@
  */
 namespace Fastly\Cdn\Block\System\Config\Form\Field;
 
+use Magento\Backend\Block\Template\Context;
+use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
+use Magento\Framework\Data\Form\Element\Factory;
+
 /**
  * Backend system config array field renderer
  */
-class Backend extends \Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray
+class Backend extends AbstractFieldArray
 {
     /**
-     * @var \Magento\Framework\Data\Form\Element\Factory
+     * @var Factory
      */
-    protected $_elementFactory;
-
-    protected $_api;
+    private $elementFactory;
 
     /**
-     * Currently necessary for work around a missing feature in the M2 core.
+     * Backend constructor.
      *
-     * @see https://github.com/magento/magento2/pull/3469
-     *
-     * @var string
+     * @param Context $context
+     * @param Factory $elementFactory
+     * @param array $data
      */
-    protected $_template = 'Fastly_Cdn::system/config/form/field/backend.phtml';
-
-
     public function __construct(
-        \Magento\Backend\Block\Template\Context $context,
-        \Magento\Framework\Data\Form\Element\Factory $elementFactory,
-        \Fastly\Cdn\Model\Api $api,
+        Context $context,
+        Factory $elementFactory,
         array $data = []
     ) {
-        $this->_elementFactory = $elementFactory;
-        $this->_api = $api;
+        $this->elementFactory = $elementFactory;
+
         parent::__construct($context, $data);
     }
 
@@ -59,10 +57,12 @@ class Backend extends \Magento\Config\Block\System\Config\Form\Field\FieldArray\
      *
      * @return void
      */
-    protected function _construct()
+    protected function _construct() // @codingStandardsIgnoreLine - required by parent class
     {
         $this->addColumn('backend_name', ['label' => __('Name')]);
         $this->_addAfter = false;
+        $this->_template = 'Fastly_Cdn::system/config/form/field/backend.phtml';
+
         parent::_construct();
     }
 
@@ -70,13 +70,14 @@ class Backend extends \Magento\Config\Block\System\Config\Form\Field\FieldArray\
      * Render array cell for prototypeJS template
      *
      * @param string $columnName
-     * @return string
+     * @return mixed|string
+     * @throws \Exception
      */
     public function renderCellTemplate($columnName)
     {
         if ($columnName == 'store_id' && isset($this->_columns[$columnName])) {
             $options = $this->getOptions(__('-- Select Store --'));
-            $element = $this->_elementFactory->create('select');
+            $element = $this->elementFactory->create('select');
             $element->setForm(
                 $this->getForm()
             )->setName(
@@ -96,19 +97,19 @@ class Backend extends \Magento\Config\Block\System\Config\Form\Field\FieldArray\
      * Get list of store views.
      *
      * @param bool|false $label
-     *
      * @return array
      */
-    protected function getOptions($label = false)
+    protected function getOptions($label = false) // @codingStandardsIgnoreLine - required by parent class
     {
         $options = [];
-        foreach ($this->_storeManager->getStores() as $store)
-        {
+        foreach ($this->_storeManager->getStores() as $store) {
             $options[] = ['value' => $store->getId(), 'label' => $store->getName()];
         }
+
         if ($label) {
             array_unshift($options, ['value' => '', 'label' => $label]);
         }
+
         return $options;
     }
 }

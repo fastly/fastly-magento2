@@ -2,6 +2,7 @@
 
 namespace Fastly\Cdn\Model;
 
+use Fastly\Cdn\Helper\CacheTags;
 use Magento\Framework\App\Response\Http;
 
 /**
@@ -26,12 +27,12 @@ use Magento\Framework\App\Response\Http;
 class ResponsePlugin
 {
     /**
-     * @var \Fastly\Cdn\Model\Config
+     * @var Config
      */
     private $config;
 
     /**
-     * @var \Fastly\Cdn\Helper\CacheTags
+     * @var CacheTags
      */
     private $cacheTags;
 
@@ -39,11 +40,11 @@ class ResponsePlugin
      * ResponsePlugin constructor.
      *
      * @param Config $config
-     * @param \Fastly\Cdn\Helper\CacheTags $cacheTags
+     * @param CacheTags $cacheTags
      */
     public function __construct(
-        \Fastly\Cdn\Model\Config $config,
-        \Fastly\Cdn\Helper\CacheTags $cacheTags
+        Config $config,
+        CacheTags $cacheTags
     ) {
         $this->config       = $config;
         $this->cacheTags    = $cacheTags;

@@ -2,37 +2,47 @@
 
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn;
 
-use \Magento\Framework\App\Request\Http;
-use \Magento\Framework\Controller\Result\JsonFactory;
-use \Fastly\Cdn\Model\Api;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Request\Http;
+use Magento\Framework\Controller\Result\JsonFactory;
+use Fastly\Cdn\Model\Api;
 
-class Apply extends \Magento\Backend\App\Action
+class Apply extends Action
 {
     /**
      * @var Http
      */
-    protected $request;
+    private $request;
 
     /**
      * @var JsonFactory
      */
-    protected $resultJson;
+    private $resultJson;
 
     /**
      * @var Api
      */
-    protected $api;
+    private $api;
 
+    /**
+     * Apply constructor.
+     *
+     * @param Context $context
+     * @param Http $request
+     * @param JsonFactory $resultJsonFactory
+     * @param Api $api
+     */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
         Api $api
-    )
-    {
+    ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
         $this->api = $api;
+
         parent::__construct($context);
     }
 
@@ -45,7 +55,10 @@ class Apply extends \Magento\Backend\App\Action
         $region = $this->getRequest()->getParam('region');
 
         if (!$from || !$to) {
-            return $result->setData(array('status' => false, 'msg' => 'Please enter dates.'));
+            return $result->setData([
+                'status'    => false,
+                'msg'       => 'Please enter dates.'
+            ]);
         }
 
         /* Convert datetime to timestamp */
@@ -61,6 +74,9 @@ class Apply extends \Magento\Backend\App\Action
 
         $queryResult = $this->api->queryHistoricStats($parameters);
 
-        return $result->setData(array('status' => true, 'stats' => $queryResult));
+        return $result->setData([
+            'status'    => true,
+            'stats'     => $queryResult
+        ]);
     }
 }

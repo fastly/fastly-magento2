@@ -28,31 +28,35 @@ use Magento\Framework\Event\ObserverInterface;
 class InvalidateVarnishObserver implements ObserverInterface
 {
     /**
-     * Application config object
-     *
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
      * @var PurgeCache
      */
-    protected $purgeCache;
+    private $purgeCache;
 
     /**
      * @var CacheTags
      */
-    protected $cacheTags;
+    private $cacheTags;
 
-    protected $alreadyPurged = [];
+    /**
+     * @var array
+     */
+    private $alreadyPurged = [];
 
     /**
      * @param Config $config
      * @param PurgeCache $purgeCache
      * @param CacheTags $cacheTags
      */
-    public function __construct(Config $config, PurgeCache $purgeCache, CacheTags $cacheTags)
-    {
+    public function __construct(
+        Config $config,
+        PurgeCache $purgeCache,
+        CacheTags $cacheTags
+    ) {
         $this->config = $config;
         $this->purgeCache = $purgeCache;
         $this->cacheTags = $cacheTags;
@@ -79,13 +83,11 @@ class InvalidateVarnishObserver implements ObserverInterface
                     }
                 }
 
-                if(!empty($tags)) {
+                if (!empty($tags)) {
                     $this->purgeCache->sendPurgeRequest(array_unique($tags));
                 }
             }
         }
-
-        // @TODO implement message for admin
     }
 
     /**
@@ -94,7 +96,7 @@ class InvalidateVarnishObserver implements ObserverInterface
      * @param \Magento\Framework\DataObject\IdentityInterface $object
      * @return bool
      */
-    protected function canPurgeObject(\Magento\Framework\DataObject\IdentityInterface $object)
+    private function canPurgeObject(\Magento\Framework\DataObject\IdentityInterface $object)
     {
         if ($object instanceof \Magento\Catalog\Model\Category && !$this->config->canPurgeCatalogCategory()) {
             return false;

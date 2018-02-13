@@ -1,5 +1,9 @@
 <?php
+
 namespace Fastly\Cdn\Model\Config;
+
+use Fastly\Cdn\Model\Api;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 /**
  * Used for sending purge after disabling Fastly as caching service
@@ -8,30 +12,30 @@ namespace Fastly\Cdn\Model\Config;
  */
 class ConfigRewrite
 {
-    protected $_purge = false;
+    private $purge = false;
 
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var ScopeConfigInterface
      */
-    protected $_scopeConfig = null;
+    private $scopeConfig = null;
 
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
-    protected $api;
+    private $api;
 
     /**
      * ConfigRewrite constructor.
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Fastly\Cdn\Model\PurgeCache $api
+     *
+     * @param ScopeConfigInterface $scopeConfig
+     * @param Api $api
      */
     public function __construct(
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Fastly\Cdn\Model\Api $api
-    )
-    {
-        $this->_scopeConfig = $scopeConfig;
-        $this->_api = $api;
+        ScopeConfigInterface $scopeConfig,
+        Api $api
+    ) {
+        $this->scopeConfig = $scopeConfig;
+        $this->api = $api;
     }
 
     /**
@@ -40,8 +44,8 @@ class ConfigRewrite
      */
     public function afterSave(\Magento\Config\Model\Config $subject)
     {
-        if($this->_purge) {
-            $this->_api->cleanBySurrogateKey(['text']);
+        if ($this->purge) {
+            $this->api->cleanBySurrogateKey(['text']);
         }
     }
 
@@ -52,12 +56,12 @@ class ConfigRewrite
     public function beforeSave(\Magento\Config\Model\Config $subject)
     {
         $data = $subject->getData();
-        if(!empty($data['groups']['full_page_cache']['fields']['caching_application']['value'])) {
+        if (!empty($data['groups']['full_page_cache']['fields']['caching_application']['value'])) {
             $currentCacheConfig = $data['groups']['full_page_cache']['fields']['caching_application']['value'];
-            $oldCacheConfig = $this->_scopeConfig->getValue(\Magento\PageCache\Model\Config::XML_PAGECACHE_TYPE);
+            $oldCacheConfig = $this->scopeConfig->getValue(\Magento\PageCache\Model\Config::XML_PAGECACHE_TYPE);
 
-            if($oldCacheConfig == \Fastly\Cdn\Model\Config::FASTLY && $currentCacheConfig != $oldCacheConfig) {
-                $this->_purge = true;
+            if ($oldCacheConfig == \Fastly\Cdn\Model\Config::FASTLY && $currentCacheConfig != $oldCacheConfig) {
+                $this->purge = true;
             }
         }
     }

@@ -22,8 +22,11 @@ namespace Fastly\Cdn\Controller\GeoIP;
 
 use Fastly\Cdn\Model\Config;
 use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Locale\ResolverInterface as LocaleResolverInterface;
 use Magento\Framework\UrlInterface;
+use Magento\Framework\View\Result\Layout;
 use Magento\Framework\View\Result\LayoutFactory;
 use Magento\Store\Api\StoreRepositoryInterface;
 use Magento\Store\Model\StoreManagerInterface;
@@ -46,37 +49,37 @@ class GetAction extends \Magento\Framework\App\Action\Action
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
      * @var UrlInterface
      */
-    protected $url;
+    private $url;
 
     /**
      * @var StoreRepositoryInterface
      */
-    protected $storeRepository;
+    private $storeRepository;
 
     /**
      * @var StoreManagerInterface
      */
-    protected $storeManager;
+    private $storeManager;
 
     /**
      * @var LayoutFactory
      */
-    protected $resultLayoutFactory;
+    private $resultLayoutFactory;
 
     /**
      * @var LocaleResolverInterface
      */
-    protected $localeResolver;
+    private $localeResolver;
 
     /**
      * @var LoggerInterface
      */
-    protected $logger;
+    private $logger;
 
     /**
      * @param Context $context
@@ -109,7 +112,7 @@ class GetAction extends \Magento\Framework\App\Action\Action
     /**
      * Return country action.
      *
-     * @return LayoutFactory
+     * @return ResponseInterface|ResultInterface|Layout|null
      */
     public function execute()
     {
@@ -123,7 +126,7 @@ class GetAction extends \Magento\Framework\App\Action\Action
             $countryCode = $this->getRequest()->getParam(self::REQUEST_PARAM_COUNTRY);
             $storeId = $this->config->getGeoIpMappingForCountry($countryCode);
 
-            if (!is_null($storeId)) {
+            if ($storeId !== null) {
                 // get redirect URL
                 $redirectUrl = null;
                 $targetStore = $this->storeRepository->getActiveStoreById($storeId);
@@ -167,7 +170,7 @@ class GetAction extends \Magento\Framework\App\Action\Action
      * @param StoreInterface $emulatedStore
      * @return string
      */
-    protected function getMessageInStoreLocale(StoreInterface $emulatedStore)
+    private function getMessageInStoreLocale(StoreInterface $emulatedStore)
     {
         $currentStore = $this->storeManager->getStore();
 

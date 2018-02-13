@@ -22,40 +22,47 @@ namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Purge;
 
 use Fastly\Cdn\Model\PurgeCache;
 use Fastly\Cdn\Model\Config;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Store\Model\StoreManagerInterface;
 
-class Store extends \Magento\Backend\App\Action
+class Store extends Action
 {
     /**
      * @var PurgeCache
      */
-    protected $purgeCache;
+    private $purgeCache;
 
     /**
-     * @var \Magento\Store\Model\StoreManagerInterface
+     * @var StoreManagerInterface
      */
-    protected $storeManager;
+    private $storeManager;
 
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
-     * @param \Magento\Backend\App\Action\Context $context
+     * Store constructor.
+     *
+     * @param Context $context
      * @param PurgeCache $purgeCache
-     * @param \Magento\Store\Model\StoreManagerInterface
+     * @param StoreManagerInterface $storeManager
      * @param Config $config
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         PurgeCache $purgeCache,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        StoreManagerInterface $storeManager,
         Config $config
     ) {
-        parent::__construct($context);
         $this->purgeCache = $purgeCache;
         $this->storeManager = $storeManager;
         $this->config = $config;
+
+        parent::__construct($context);
     }
 
     /**
@@ -70,10 +77,10 @@ class Store extends \Magento\Backend\App\Action
             if ($this->config->getType() == Config::FASTLY && $this->config->isEnabled()) {
                 // check if store exists
                 $storeId = $this->getRequest()->getParam('stores', false);
+                /** @var \Magento\Store\Model\Store $store */
                 $store = $this->storeManager->getStore($storeId);
-                /* @var $store \Magento\Store\Model\Store */
                 if (!$store->getId()) {
-                    throw new \Exception(__('Invalid store "'.$storeId.'" given.'));
+                    throw new LocalizedException(__('Invalid store "'.$storeId.'" given.'));
                 }
 
                 $result = $this->purgeCache->sendPurgeRequest($store->getIdentities());

@@ -2,9 +2,6 @@
 
 namespace Fastly\Cdn\Model;
 
-use Magento\Framework\Exception\CouldNotDeleteException;
-use Magento\Framework\Exception\CouldNotSaveException;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Fastly\Cdn\Model\ResourceModel\Statistic as ResourceStatistic;
 use Fastly\Cdn\Model\ResourceModel\Statistic\CollectionFactory as StatisticCollectionFactory;
 use Magento\Store\Model\StoreManagerInterface;
@@ -18,17 +15,17 @@ class StatisticRepository
     /**
      * @var ResourceStatistic
      */
-    protected $statisticResource;
+    private $statisticResource;
 
     /**
      * @var StatisticFactory
      */
-    protected $statisticFactory;
+    private $statisticFactory;
 
     /**
      * @var StatisticCollectionFactory
      */
-    protected $statisticCollectionFactory;
+    private $statisticCollectionFactory;
 
     /**
      * @var StoreManagerInterface
@@ -56,6 +53,7 @@ class StatisticRepository
 
     public function getStatByAction($action)
     {
+        /** @var \Fastly\Cdn\Model\ResourceModel\Statistic\Collection $collection */
         $collection = $this->statisticCollectionFactory->create();
         $collection->addFieldToFilter('action', $action);
         $collection->setOrder('created_at', 'DESC');
@@ -66,16 +64,26 @@ class StatisticRepository
     public function getValidatedNonValidated()
     {
         $collection = $this->statisticCollectionFactory->create();
-        $collection->addFieldToFilter('action', [['eq' => Statistic::FASTLY_VALIDATED_FLAG],
-                                            ['eq' => Statistic::FASTLY_NON_VALIDATED_FLAG]]);
+        $collection->addFieldToFilter(
+            'action',
+            [
+                ['eq' => Statistic::FASTLY_VALIDATED_FLAG],
+                ['eq' => Statistic::FASTLY_NON_VALIDATED_FLAG]
+            ]
+        );
 
         return $collection->getData();
     }
 
+    /**
+     * @param Statistic $statistic
+     * @return Statistic
+     * @throws \Exception
+     * @throws \Magento\Framework\Exception\AlreadyExistsException
+     */
     public function save(\Fastly\Cdn\Model\Statistic $statistic)
     {
         $this->statisticResource->save($statistic);
         return $statistic;
     }
-
 }

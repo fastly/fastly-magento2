@@ -121,7 +121,7 @@
                         <field id="admin_path_timeout" type="text" translate="label comment" sortOrder="31" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Admin path timeout</label>
                             <comment>
-                                <![CDATA[Time in seconds for the admin path first byte timeout.]]>
+                                <![CDATA[Time in seconds for the admin path first byte timeout. Please reupload VCL after making changes.]]>
                             </comment>
                             <backend_model>Fastly\Cdn\Model\Config\Backend\ValidateInt</backend_model>
                             <validate>required-entry validate-digits</validate>

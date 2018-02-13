@@ -2,41 +2,44 @@
 
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
 
-use \Magento\Framework\App\Request\Http;
-use \Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Request\Http;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Api;
+use Magento\Framework\Controller\ResultInterface;
 
-class GetBackends extends \Magento\Backend\App\Action
+class GetBackends extends Action
 {
     /**
      * @var Http
      */
-    protected $request;
+    private $request;
 
     /**
      * @var JsonFactory
      */
-    protected $resultJson;
+    private $resultJson;
 
     /**
      * @var \Fastly\Cdn\Model\Api
      */
-    protected $api;
+    private $api;
 
     /**
      * GetBackends constructor.
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
      * @param Api $api
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
         Api $api
-    )
-    {
+    ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
         $this->api = $api;
@@ -46,7 +49,7 @@ class GetBackends extends \Magento\Backend\App\Action
     /**
      * Get all backends for active version
      *
-     * @return $resultJsonFactory
+     * @return $this|ResponseInterface|ResultInterface
      */
     public function execute()
     {
@@ -55,13 +58,22 @@ class GetBackends extends \Magento\Backend\App\Action
             $activeVersion = $this->getRequest()->getParam('active_version');
             $backends = $this->api->getBackends($activeVersion);
 
-            if(!$backends) {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to check Backend details.'));
+            if (!$backends) {
+                return $result->setData([
+                    'status'    => false,
+                    'msg'       => 'Failed to check Backend details.'
+                ]);
             }
 
-            return $result->setData(array('status' => true, 'backends' => $backends));
+            return $result->setData([
+                'status'    => true,
+                'backends'  => $backends
+            ]);
         } catch (\Exception $e) {
-            return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
+            return $result->setData([
+                'status'    => false,
+                'msg'       => $e->getMessage()
+            ]);
         }
     }
 }

@@ -327,8 +327,7 @@ define([
                             } else {
                                 blockingStateMsgSpan.find('#blocking_state_disabled').show();
                             }
-                        }
-                    ).fail(function () {
+                    }).fail(function () {
                         blockingStateSpan.find('.processing').hide();
                         blockingStateMsgSpan.find('#blocking_state_unknown').show();
                     });
@@ -689,7 +688,7 @@ define([
 
         $('#fastly_blocking_button').on('click', function () {
 
-            if(isAlreadyConfigured != true) {
+            if (isAlreadyConfigured != true) {
                 $(this).attr('disabled', true);
                 return alert($.mage.__('Please save config prior to continuing.'));
             }
@@ -702,7 +701,7 @@ define([
                 showLoader: true
             }).done(function (service) {
 
-                if(service.status == false) {
+                if (service.status == false) {
                     return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
 
@@ -710,17 +709,15 @@ define([
                 next_version = service.next_version;
                 service_name = service.service.name;
                 vcl.getBlockingSetting(active_version, true).done(function (response) {
-                        if(response.status == false) {
+                        if (response.status == false) {
                             $('.modal-title').text($.mage.__('We are about to turn on blocking'));
                         } else {
                             $('.modal-title').text($.mage.__('We are about to turn off blocking'));
                         }
                         blocking = response.status;
-                    }
-                ).fail(function () {
+                }).fail(function () {
                         vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
-                    }
-                );
+                });
                 vcl.showPopup('fastly-blocking-options');
                 vcl.setActiveServiceLabel(active_version, next_version, service_name);
 
@@ -1040,7 +1037,7 @@ define([
             },
 
             // Queries Fastly API to retrieve blocking setting
-            getBlockingSetting: function(active_version, loaderVisibility) {
+            getBlockingSetting: function (active_version, loaderVisibility) {
                 return $.ajax({
                     type: "POST",
                     url: config.checkBlockingSettingUrl,
@@ -1363,7 +1360,7 @@ define([
             toggleBlocking: function (active_version) {
                 var activate_blocking_flag = false;
 
-                if($('#fastly_activate_blocking').is(':checked')) {
+                if ($('#fastly_activate_blocking').is(':checked')) {
                     activate_blocking_flag = true;
                 }
 
@@ -1375,14 +1372,12 @@ define([
                         'active_version': active_version
                     },
                     showLoader: true,
-                    success: function(response)
-                    {
-                        if(response.status == true)
-                        {
+                    success: function (response) {
+                        if (response.status == true) {
                             vcl.modal.modal('closeModal');
                             var onOrOff = 'OFF';
                             var disabledOrEnabled = 'disabled';
-                            if(blocking == false) {
+                            if (blocking == false) {
                                 onOrOff = 'ON';
                                 disabledOrEnabled = 'enabled';
                             } else {
@@ -1391,7 +1386,7 @@ define([
                             }
                             successBlockingBtnMsg.text($.mage.__('The Blocking request setting is successfully turned ' + onOrOff + '.')).show();
                             $('.request_blocking_state_span').hide();
-                            if(disabledOrEnabled == 'enabled') {
+                            if (disabledOrEnabled == 'enabled') {
                                 blockingStateMsgSpan.find('#blocking_state_disabled').hide();
                                 blockingStateMsgSpan.find('#blocking_state_enabled').show();
                             } else {
@@ -1403,9 +1398,8 @@ define([
                             vcl.showErrorMessage(response.msg);
                         }
                     },
-                    error: function(msg)
-                    {
-                        // TODO: error handling
+                    error: function (msg) {
+                        // error handling
                     }
                 });
             },

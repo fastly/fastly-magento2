@@ -220,7 +220,10 @@ class Api
         if ($method == 'PURGE') {
             // create purge token
             $expiration   = time() + self::PURGE_TOKEN_LIFETIME;
-            $stringToSign = parse_url($uri, PHP_URL_PATH) . $expiration;
+
+            $zendUri = \Zend_Uri::factory($uri);
+            $path = $zendUri->getPath();
+            $stringToSign = $path . $expiration;
             $signature    = hash_hmac('sha1', $stringToSign, $this->config->getServiceId());
             $token        = $expiration . '_' . urlencode($signature);
             $headers = [
@@ -279,11 +282,11 @@ class Api
 
     /**
      * List detailed information on a specified service
-     *
      * @param bool $test
-     * @param $serviceId
-     * @param $apiKey
+     * @param null $serviceId
+     * @param null $apiKey
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function checkServiceDetails($test = false, $serviceId = null, $apiKey = null)
     {
@@ -295,19 +298,27 @@ class Api
             $result = $this->_fetch($uri, \Zend_Http_Client::GET, null, true, $apiKey);
         }
 
+        if (!$result) {
+            throw new LocalizedException(__('Failed to check Service details.'));
+        }
+
         return $result;
     }
 
     /**
      * Clone the current configuration into a new version.
-     *
      * @param $curVersion
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function cloneVersion($curVersion)
     {
         $url = $this->_getApiServiceUri() . 'version/'.$curVersion.'/clone';
         $result = $this->_fetch($url, \Zend_Http_Client::PUT);
+
+        if (!$result) {
+            throw new LocalizedException(__('Failed to clone active version.'));
+        }
 
         return $result;
     }
@@ -344,16 +355,17 @@ class Api
 
     /**
      * Validate the version for a particular service and version.
-     *
      * @param $version
-     * @return bool|mixed
+     * @throws LocalizedException
      */
     public function validateServiceVersion($version)
     {
         $url = $this->_getApiServiceUri() . 'version/' .$version. '/validate';
         $result = $this->_fetch($url, 'GET');
 
-        return $result;
+        if ($result->status == 'error') {
+            throw new LocalizedException(__('Failed to validate service version: ' . $result->msg));
+        }
     }
 
     /**
@@ -372,10 +384,9 @@ class Api
 
     /**
      * Creating and updating a regular VCL Snippet
-     *
      * @param $version
      * @param array $snippet
-     * @return bool|mixed*
+     * @throws LocalizedException
      */
     public function uploadSnippet($version, array $snippet)
     {
@@ -391,7 +402,9 @@ class Api
 
         $result = $this->_fetch($url, $verb, $snippet);
 
-        return $result;
+        if (!$result) {
+            throw new LocalizedException(__('Failed to upload the Snippet file.'));
+        }
     }
 
     /**
@@ -431,25 +444,26 @@ class Api
 
     /**
      * Deleting an individual regular VCL Snippet
-     *
      * @param $version
      * @param $name
-     * @return bool|mixed
+     * @throws LocalizedException
      */
     public function removeSnippet($version, $name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version. '/snippet/' . $name;
         $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
 
-        return $result;
+        if (!$result) {
+            throw new LocalizedException(__('Failed to remove the Snippet file.'));
+        }
     }
 
     /**
      * Creates a new condition
-     *
      * @param $version
-     * @param $condition
+     * @param array $condition
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function createCondition($version, array $condition)
     {
@@ -463,6 +477,10 @@ class Api
         }
 
         $result = $this->_fetch($url, $verb, $condition);
+
+        if (!$result) {
+            throw new LocalizedException(__('Failed to create a REQUEST condition.'));
+        }
 
         return $result;
     }
@@ -522,10 +540,9 @@ class Api
 
     /**
      * Creates a new Request Settings object.
-     *
      * @param $version
      * @param $request
-     * @return bool|mixed
+     * @throws LocalizedException
      */
     public function createRequest($version, $request)
     {
@@ -540,7 +557,9 @@ class Api
 
         $result = $this->_fetch($url, $verb, $request);
 
-        return $result;
+        if (!$result) {
+            throw new LocalizedException(__('Failed to create the REQUEST object.'));
+        }
     }
 
     /**
@@ -561,17 +580,18 @@ class Api
 
     /**
      * Removes the specified Request Settings object.
-     *
      * @param $version
      * @param $name
-     * @return bool|mixed
+     * @throws LocalizedException
      */
     public function deleteRequest($version, $name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version. '/request_settings/' . $name;
         $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
 
-        return $result;
+        if (!$result) {
+            throw new LocalizedException(__('Failed to delete the REQUEST object.'));
+        }
     }
 
     /**
@@ -654,17 +674,18 @@ class Api
 
     /**
      * Create named dictionary for a particular service and version.
-     *
      * @param $version
      * @param $params
-     * @return bool|mixed
+     * @throws LocalizedException
      */
     public function createDictionary($version, $params)
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version . '/dictionary';
         $result = $this->_fetch($url, \Zend_Http_Client::POST, $params);
 
-        return $result;
+        if (!$result) {
+            throw new LocalizedException(__('Failed to create Dictionary container.'));
+        }
     }
 
     /**
@@ -684,30 +705,73 @@ class Api
 
     /**
      * Get dictionary item list
-     *
      * @param $dictionaryId
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function dictionaryItemsList($dictionaryId)
     {
         $url = $this->_getApiServiceUri(). 'dictionary/'.$dictionaryId.'/items';
         $result = $this->_fetch($url, \Zend_Http_Client::GET);
 
+        if (!$result) {
+            throw new LocalizedException(__('Error fetching dictionary items for this dictionary'));
+        }
+
         return $result;
     }
 
     /**
      * Fetches dictionary by name
-     *
+     * @param $version
      * @param $dictionaryName
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function getSingleDictionary($version, $dictionaryName)
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version . '/dictionary/' . $dictionaryName;
         $result = $this->_fetch($url, \Zend_Http_Client::GET);
 
+        if (!$result) {
+            throw new LocalizedException(__('Error fetching dictionary'));
+        }
+
         return $result;
+    }
+
+    /**
+     * Get auth dictionary
+     * @param $version
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function getAuthDictionary($version)
+    {
+        $name = \Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl\CheckAuthUsersAvailable::AUTH_DICTIONARY_NAME;
+        $dictionary = $this->getSingleDictionary($version, $name);
+
+        return $dictionary;
+    }
+
+    /**
+     * Check if authentication dictionary is populated
+     * @param $version
+     * @throws LocalizedException
+     */
+    public function checkAuthDictionaryPopulation($version)
+    {
+        $dictionary = $this->getAuthDictionary($version);
+
+        if ((is_array($dictionary) && empty($dictionary)) || !isset($dictionary->id)) {
+            throw new LocalizedException(__('You must add users in order to enable Basic Authentication.'));
+        }
+
+        $authItems = $this->dictionaryItemsList($dictionary->id);
+
+        if (is_array($authItems) && empty($authItems)) {
+            throw new LocalizedException(__('You must add users in order to enable Basic Authentication.'));
+        }
     }
 
     public function createDictionaryItems($dictionaryId, $params)
@@ -749,11 +813,10 @@ class Api
 
     /**
      * Upsert single Dictionary item
-     *
      * @param $dictionaryId
      * @param $itemKey
      * @param $itemValue
-     * @return bool|mixed
+     * @throws LocalizedException
      */
     public function upsertDictionaryItem($dictionaryId, $itemKey, $itemValue)
     {
@@ -761,7 +824,9 @@ class Api
         $url = $this->_getApiServiceUri(). 'dictionary/'. $dictionaryId . '/item/' . urlencode($itemKey);
         $result = $this->_fetch($url, \Zend_Http_Client::PUT, $body);
 
-        return $result;
+        if (!$result) {
+            throw new LocalizedException(__('Failed to create Dictionary item.'));
+        }
     }
 
     /**

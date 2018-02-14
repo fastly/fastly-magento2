@@ -87,37 +87,14 @@ class Upload extends Action
      */
     public function execute()
     {
+        $result = $this->resultJson->create();
         try {
-            $result = $this->resultJson->create();
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
             $service = $this->api->checkServiceDetails();
-
-            if (!$service) {
-                return $result->setData([
-                    'status' => false,
-                    'msg' => 'Failed to check Service details.'
-                ]);
-            }
-
-            $currActiveVersion = $this->vcl->determineVersions($service->versions);
-
-            if ($currActiveVersion['active_version'] != $activeVersion) {
-                return $result->setData([
-                    'status' => false,
-                    'msg' => 'Active versions mismatch.'
-                ]);
-            }
-
-            $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
-
-            if (!$clone) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to clone active version.'
-                ]);
-            }
-
+            $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
+            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
+            $clone = $this->api->cloneVersion($currActiveVersion);
             $snippets = $this->config->getVclSnippets();
             $ignoredUrlParameters = $this->config->getIgnoredUrlParameters();
             $adminPathTimeout = $this->config->getAdminPathTimeout();
@@ -138,14 +115,7 @@ class Upload extends Action
                     'priority'  => 50,
                     'content'   => $value
                 ];
-                $status = $this->api->uploadSnippet($clone->number, $snippetData);
-
-                if (!$status) {
-                    return $result->setData([
-                        'status'    => false,
-                        'msg'       => 'Failed to upload the Snippet file.'
-                    ]);
-                }
+                $this->api->uploadSnippet($clone->number, $snippetData);
             }
 
             $condition = [
@@ -155,40 +125,17 @@ class Upload extends Action
                 'priority'  => 90
             ];
             $createCondition = $this->api->createCondition($clone->number, $condition);
-
-            if (!$createCondition) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to create a REQUEST condition.'
-                ]);
-            }
-
             $request = [
                 'action'            => 'pass',
                 'max_stale_age'     => 3600,
                 'name'              => Config::FASTLY_MAGENTO_MODULE.'_request',
                 'request_condition' => $createCondition->name,
                 'service_id'        => $service->id,
-                'version'           => $currActiveVersion['active_version']
+                'version'           => $currActiveVersion
             ];
 
-            $createReq = $this->api->createRequest($clone->number, $request);
-
-            if (!$createReq) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to create a REQUEST object.'
-                ]);
-            }
-
-            $validate = $this->api->validateServiceVersion($clone->number);
-
-            if ($validate->status == 'error') {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to validate service version: '.$validate->msg
-                ]);
-            }
+            $this->api->createRequest($clone->number, $request);
+            $this->api->validateServiceVersion($clone->number);
 
             if ($activateVcl === 'true') {
                 $this->api->activateVersion($clone->number);

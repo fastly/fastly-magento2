@@ -83,32 +83,9 @@ class ConfigureBackend extends Action
                 'first_byte_timeout'    => $this->getRequest()->getParam('first_byte_timeout'),
             ];
             $service = $this->api->checkServiceDetails();
-
-            if (!$service) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to check Service details.'
-                ]);
-            }
-
-            $currActiveVersion = $this->vcl->determineVersions($service->versions);
-
-            if ($currActiveVersion['active_version'] != $activeVersion) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg' => 'Active versions mismatch.'
-                ]);
-            }
-
-            $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
-
-            if (!$clone) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to clone active version.'
-                ]);
-            }
-
+            $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
+            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
+            $clone = $this->api->cloneVersion($currActiveVersion);
             $configureBackend = $this->api->configureBackend($params, $clone->number, $oldName);
 
             if (!$configureBackend) {
@@ -118,14 +95,7 @@ class ConfigureBackend extends Action
                 ]);
             }
 
-            $validate = $this->api->validateServiceVersion($clone->number);
-
-            if ($validate->status == 'error') {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to validate service version: ' . $validate->msg
-                ]);
-            }
+            $this->api->validateServiceVersion($clone->number);
 
             if ($activate_flag === 'true') {
                 $this->api->activateVersion($clone->number);

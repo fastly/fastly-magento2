@@ -65,7 +65,7 @@ class InstallData implements InstallDataInterface
      * @param ModuleDataSetupInterface $setup
      * @param ModuleContextInterface $context
      */
-    public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
+    public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context) // @codingStandardsIgnoreLine - unused parameter
     {
         $setup->startSetup();
         $tableName = $setup->getTable('fastly_statistics');

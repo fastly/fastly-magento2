@@ -34,23 +34,23 @@
             <button class="action-primary" type="submit" id="apply-historic-stats">Apply</button>
         </li>
         <ul id="presets">
-            <li><?php echo __("Last"); ?></li>
-            <li><a href="#" id="last-hour"><?php echo __('hour') ?></a></li>
+            <li><?php /* @noEscape */ echo __("Last"); ?></li>
+            <li><a href="#" id="last-hour"><?php /* @noEscape */ echo __('hour') ?></a></li>
             <li>/</li>
-            <li><a href="#" id="last-2hr"><?php echo __('2hr') ?></a></li>
+            <li><a href="#" id="last-2hr"><?php /* @noEscape */ echo __('2hr') ?></a></li>
             <li>/</li>
-            <li><a href="#" id="last-4hr"><?php echo __('4hr') ?></a></li>
+            <li><a href="#" id="last-4hr"><?php /* @noEscape */ echo __('4hr') ?></a></li>
             <li>/</li>
-            <li><a href="#" id="last-8hr"><?php echo __('8hr') ?></a></li>
+            <li><a href="#" id="last-8hr"><?php /* @noEscape */ echo __('8hr') ?></a></li>
             <li>/</li>
-            <li><a href="#" id="last-day"><?php echo __('day') ?></a></li>
+            <li><a href="#" id="last-day"><?php /* @noEscape */ echo __('day') ?></a></li>
             <li>/</li>
-            <li><a href="#" id="last-week"><?php echo __('week') ?></a></li>
+            <li><a href="#" id="last-week"><?php /* @noEscape */ echo __('week') ?></a></li>
             <li>/</li>
-            <li><a href="#" id="last-month"><?php echo __('month') ?></a></li>
+            <li><a href="#" id="last-month"><?php /* @noEscape */ echo __('month') ?></a></li>
             <li>/</li>
-            <li><a href="#" id="last-year"><?php echo __('year') ?></a></li>
-            <li><?php echo __('<em>UTC</em>') ?></li>
+            <li><a href="#" id="last-year"><?php /* @noEscape */ echo __('year') ?></a></li>
+            <li><?php /* @noEscape */ echo __('<em>UTC</em>') ?></li>
         </ul>
     </ul>
 </div>
@@ -114,7 +114,7 @@
 </div>
 
 <div class="no-data" style="display:none;">
-    <h1 style="text-align:center; font-weight: 300;"><?php echo __('No data.'); ?></h1>
+    <h1 style="text-align:center; font-weight: 300;"><?php /* @noEscape */ echo __('No data.'); ?></h1>
 </div>
 <?php
 $applyHistoricStatsURL = $block->getUrl('adminhtml/fastlyCdn/apply', ['form_key' => $block->getFormKey()]);

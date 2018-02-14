@@ -7,6 +7,7 @@ use Magento\Framework\App\Cache\Manager;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\ProductMetadataInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
@@ -89,6 +90,12 @@ class UpgradeData implements UpgradeDataInterface
      */
     public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
+        $version = $context->getVersion();
+
+        if (!$version) {
+            return;
+        }
+
         $oldConfigPaths = [
             'stale_ttl'                 => 'system/full_page_cache/fastly/stale_ttl',
             'stale_error_ttl'           => 'system/full_page_cache/fastly/stale_error_ttl',
@@ -124,62 +131,89 @@ class UpgradeData implements UpgradeDataInterface
 
         $setup->startSetup();
 
-        if (version_compare($context->getVersion(), '1.0.8', '<=')) {
-            foreach ($oldConfigPaths as $key => $value) {
-                $oldValue = $this->scopeConfig->getValue($value);
-                if ($oldValue != null) {
-                    $this->configWriter->save($newConfigPaths[$key], $oldValue);
-                }
-            }
+        if (version_compare($version, '1.0.8', '<=')) {
+            $this->upgrade108($oldConfigPaths, $newConfigPaths);
         }
 
-        if ($context->getVersion()) {
-            if (version_compare($context->getVersion(), '1.0.9', '<=')) {
-                $tableName = $setup->getTable('fastly_statistics');
-                if ($setup->getConnection()->isTableExists($tableName) == true) {
-                    $data = [
-                        'action' => Statistic::FASTLY_INSTALLED_FLAG,
-                        'created_at' => $this->date->date()
-                    ];
-
-                    $setup->getConnection()->insert($tableName, $data);
-                }
-
-                // Save current Fastly module version
-                $this->configWriter->save(
-                    'system/full_page_cache/fastly/current_version',
-                    $this->helper->getModuleVersion()
-                );
-
-                // Generate GA cid and store it for further use
-                $this->configWriter->save(
-                    'system/full_page_cache/fastly/fastly_ga_cid',
-                    $this->statistic->generateCid()
-                );
-                $this->cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
-                $setup->endSetup();
-            }
+        if (version_compare($version, '1.0.9', '<=')) {
+            $this->upgrade109($setup);
         }
 
-        if ($context->getVersion()) {
-            $magVer = $this->productMetadata->getVersion();
-            if (version_compare($context->getVersion(), '1.0.10', '<=') && version_compare($magVer, '2.2', '>=')) {
-                // Convert serialized data to magento supported serialized data
-
-                $oldData = $this->scopeConfig->getValue($newConfigPaths['geoip_country_mapping']);
-                $oldData = @unserialize($oldData);
-                $oldData = (is_array($oldData)) ? $oldData : [];
-
-                $newData = json_encode($oldData);
-                if (false === $newData) {
-                    throw new \InvalidArgumentException('Unable to encode data.');
-                }
-
-                $this->configWriter->save($newConfigPaths['geoip_country_mapping'], $newData);
-
-                $this->cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
-            }
+        // If Magento is upgraded later,
+        // use bin/magento fastly:format:serializetojson OR /bin/magento fastly:format:jsontoserialize to adjust format
+        $magVer = $this->productMetadata->getVersion();
+        if (version_compare($version, '1.0.10', '<=') && version_compare($magVer, '2.2', '>=')) {
+            $this->upgrade1010($newConfigPaths);
+            $setup->endSetup();
+        } elseif (version_compare($magVer, '2.2', '<')) {
             $setup->endSetup();
         }
+    }
+
+    /**
+     * Config path changes
+     * @param $oldConfigPaths
+     * @param $newConfigPaths
+     */
+    private function upgrade108($oldConfigPaths, $newConfigPaths)
+    {
+        foreach ($oldConfigPaths as $key => $value) {
+            $oldValue = $this->scopeConfig->getValue($value);
+            if ($oldValue != null) {
+                $this->configWriter->save($newConfigPaths[$key], $oldValue);
+            }
+        }
+    }
+
+    /**
+     * GA changes
+     * @param ModuleDataSetupInterface $setup
+     */
+    private function upgrade109(ModuleDataSetupInterface $setup)
+    {
+        $tableName = $setup->getTable('fastly_statistics');
+        if ($setup->getConnection()->isTableExists($tableName) == true) {
+            $data = [
+                'action' => Statistic::FASTLY_INSTALLED_FLAG,
+                'created_at' => $this->date->date()
+            ];
+
+            $setup->getConnection()->insert($tableName, $data);
+        }
+
+        // Save current Fastly module version
+        $this->configWriter->save(
+            'system/full_page_cache/fastly/current_version',
+            $this->helper->getModuleVersion()
+        );
+
+        // Generate GA cid and store it for further use
+        $this->configWriter->save(
+            'system/full_page_cache/fastly/fastly_ga_cid',
+            $this->statistic->generateCid()
+        );
+        $this->cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
+        $setup->endSetup();
+    }
+
+    /**
+     * Convert serialized data to magento supported serialized data
+     * @param $newConfigPaths
+     */
+    private function upgrade1010($newConfigPaths)
+    {
+        $oldData = $this->scopeConfig->getValue($newConfigPaths['geoip_country_mapping']);
+        try {
+            $oldData = unserialize($oldData); // @codingStandardsIgnoreLine - used for conversion of old Magento format to json_decode
+        } catch (\Exception $e) {
+            $oldData = [];
+        }
+        $oldData = (is_array($oldData)) ? $oldData : [];
+        $newData = json_encode($oldData);
+        if (false === $newData) {
+            throw new \InvalidArgumentException('Unable to encode data.');
+        }
+        $this->configWriter->save($newConfigPaths['geoip_country_mapping'], $newData);
+        $this->cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
     }
 }

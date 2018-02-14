@@ -108,7 +108,7 @@ class ListAll extends Action
             }
 
             foreach ($authItems as $key => $item) {
-                $userData = explode(':', base64_decode($item->item_key));
+                $userData = explode(':', base64_decode($item->item_key)); // @codingStandardsIgnoreLine - used for authentication
                 $username = $userData[0];
                 $item->item_key_id = $item->item_key;
                 $item->item_key = $username;

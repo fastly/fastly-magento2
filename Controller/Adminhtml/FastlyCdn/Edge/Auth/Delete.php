@@ -73,22 +73,8 @@ class Delete extends Action
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
             $service = $this->api->checkServiceDetails();
-
-            if (!$service) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to check Service details.'
-                ]);
-            }
-
-            $currActiveVersion = $this->vcl->determineVersions($service->versions);
-
-            if ($currActiveVersion['active_version'] != $activeVersion) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Active versions mismatch.'
-                ]);
-            }
+            $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
+            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
 
             // Check dictionary
             $dictionaryName = CheckAuthSetting::AUTH_DICTIONARY_NAME;
@@ -102,22 +88,14 @@ class Delete extends Action
                 ]);
             }
 
-            $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
-
-            if (!$clone) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to clone active version.'
-                ]);
-            }
-
+            $clone = $this->api->cloneVersion($currActiveVersion);
             $vclPath = CheckAuthSetting::VCL_AUTH_SNIPPET_PATH;
             $snippets = $this->config->getVclSnippets($vclPath);
 
             // Remove snippets
             foreach ($snippets as $key => $value) {
                 $name = Config::FASTLY_MAGENTO_MODULE . '_basic_auth_' . $key;
-                $status = $this->api->removeSnippet($clone->number, $name);
+                $this->api->removeSnippet($clone->number, $name);
             }
 
             $deleteDictionary = $this->api->deleteDictionary($clone->number, $dictionaryName);
@@ -129,14 +107,7 @@ class Delete extends Action
                 ]);
             }
 
-            $validate = $this->api->validateServiceVersion($clone->number);
-
-            if ($validate->status == 'error') {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to validate service version: ' . $validate->msg
-                ]);
-            }
+            $this->api->validateServiceVersion($clone->number);
 
             if ($activateVcl === 'true') {
                 $this->api->activateVersion($clone->number);

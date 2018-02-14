@@ -102,7 +102,13 @@ class SerializeToJson extends Command
             }
 
             $oldData = $this->scopeConfig->getValue($path);
-            $oldData = @unserialize($oldData);
+
+            try {
+                $oldData = unserialize($oldData); // @codingStandardsIgnoreLine - used for conversion of old Magento format to json_decode
+            } catch (\Exception $e) {
+                $oldData = false;
+            }
+
             if ($oldData === false) {
                 $output->writeln(
                     'Invalid serialization format, unable to unserialize config data : ' . $path

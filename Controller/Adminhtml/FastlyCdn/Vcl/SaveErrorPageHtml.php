@@ -82,32 +82,9 @@ class SaveErrorPageHtml extends Action
             $activateVcl = $this->getRequest()->getParam('activate_flag');
             $html = $this->getRequest()->getParam('html');
             $service = $this->api->checkServiceDetails();
-
-            if (!$service) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to check Service details.'
-                ]);
-            }
-
-            $currActiveVersion = $this->vcl->determineVersions($service->versions);
-
-            if ($currActiveVersion['active_version'] != $activeVersion) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Active versions mismatch.'
-                ]);
-            }
-
-            $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
-
-            if (!$clone) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to clone active version.'
-                ]);
-            }
-
+            $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
+            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
+            $clone = $this->api->cloneVersion($currActiveVersion);
             $snippets = $this->config->getVclSnippets(self::VCL_ERROR_SNIPPET_PATH, self::VCL_ERROR_SNIPPET);
 
             foreach ($snippets as $key => $value) {
@@ -117,14 +94,7 @@ class SaveErrorPageHtml extends Action
                     'dynamic'   => '0',
                     'content'   => $value
                 ];
-                $status = $this->api->uploadSnippet($clone->number, $snippetData);
-
-                if (!$status) {
-                    return $result->setData([
-                        'status'    => false,
-                        'msg'       => 'Failed to upload the Snippet file.'
-                    ]);
-                }
+                $this->api->uploadSnippet($clone->number, $snippetData);
             }
 
             $condition = [
@@ -134,14 +104,6 @@ class SaveErrorPageHtml extends Action
             ];
 
             $createCondition = $this->api->createCondition($clone->number, $condition);
-
-            if (!$createCondition) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to create a RESPONSE condition.'
-                ]);
-            }
-
             $response = [
                 'name'              => Config::ERROR_PAGE_RESPONSE_OBJECT,
                 'request_condition' => $createCondition->name,
@@ -159,14 +121,7 @@ class SaveErrorPageHtml extends Action
                 ]);
             }
 
-            $validate = $this->api->validateServiceVersion($clone->number);
-
-            if ($validate->status == 'error') {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to validate service version: '.$validate->msg
-                ]);
-            }
+            $this->api->validateServiceVersion($clone->number);
 
             if ($activateVcl === 'true') {
                 $this->api->activateVersion($clone->number);

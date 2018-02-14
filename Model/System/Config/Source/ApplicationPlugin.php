@@ -30,7 +30,7 @@ class ApplicationPlugin
      *
      * @return array
      */
-    public function afterToOptionArray(Application $application, array $optionArray)
+    public function afterToOptionArray(Application $application, array $optionArray) // @codingStandardsIgnoreLine - unused parameter
     {
         return array_merge($optionArray, [['value' => Config::FASTLY, 'label' => __('Fastly CDN')]]);
     }
@@ -40,7 +40,7 @@ class ApplicationPlugin
      *
      * @return array
      */
-    public function afterToArray(Application $application, array $optionArray)
+    public function afterToArray(Application $application, array $optionArray) // @codingStandardsIgnoreLine - unused parameter
     {
         $optionArray[Config::FASTLY] = __('Fastly CDN');
         return $optionArray;

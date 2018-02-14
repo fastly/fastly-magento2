@@ -6,7 +6,7 @@
              hidden="hidden"
              alt="Collecting"
              style="margin:0 5px"
-             src="<?php echo $block->getViewFileUrl('images/process_spinner.gif') ?>" />
+             src="<?php /* @noEscape */ echo $block->getViewFileUrl('images/process_spinner.gif') ?>" />
         <span style="display:none;" class="request_tls_state_span" id="force_tls_state_enabled"> enabled</span>
         <span style="display:none;" class="request_tls_state_span" id="force_tls_state_disabled"> disabled</span>
         <span style="display:none;" class="request_tls_state_span" id="force_tls_state_unknown"> unknown</span>

@@ -18,6 +18,7 @@ use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Registry;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\App\Request\Http;
 
 class Statistic extends AbstractModel implements IdentityInterface
 {
@@ -115,6 +116,11 @@ class Statistic extends AbstractModel implements IdentityInterface
     private $dateTime;
 
     /**
+     * @var Http
+     */
+    private $request;
+
+    /**
      * @var CountryFactory
      */
     private $countryFactory;
@@ -138,6 +144,7 @@ class Statistic extends AbstractModel implements IdentityInterface
      * @param StatisticRepository $statisticRepository
      * @param DateTime $dateTime
      * @param ProductMetadataInterface $productMetadata
+     * @param Http $request
      * @param AbstractResource|null $resource
      * @param AbstractDb|null $resourceCollection
      * @param array $data
@@ -157,6 +164,7 @@ class Statistic extends AbstractModel implements IdentityInterface
         DateTime $dateTime,
         Data $helper,
         ProductMetadataInterface $productMetadata,
+        Http $request,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         AbstractDb $resourceCollection = null,
         array $data = []
@@ -173,6 +181,7 @@ class Statistic extends AbstractModel implements IdentityInterface
         $this->dateTime = $dateTime;
         $this->countryFactory = $countryFactory;
         $this->helper = $helper;
+        $this->request = $request;
 
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
@@ -266,10 +275,13 @@ class Statistic extends AbstractModel implements IdentityInterface
      */
     public function isApiKeyValid()
     {
-        $apiKey = $this->scopeConfig->getValue(Config::XML_FASTLY_API_KEY);
-        $serviceId = $this->scopeConfig->getValue(Config::XML_FASTLY_SERVICE_ID);
-        $isApiKeyValid = $this->api->checkServiceDetails(true, $serviceId, $apiKey);
-
+        try {
+            $apiKey = $this->scopeConfig->getValue(Config::XML_FASTLY_API_KEY);
+            $serviceId = $this->scopeConfig->getValue(Config::XML_FASTLY_SERVICE_ID);
+            $isApiKeyValid = $this->api->checkServiceDetails(true, $serviceId, $apiKey);
+        } catch (\Exception $e) {
+            return false;
+        }
         return (bool)$isApiKeyValid;
     }
 
@@ -295,7 +307,7 @@ class Statistic extends AbstractModel implements IdentityInterface
             // Website name
             'cd3'   =>  $this->getWebsiteName(),
             // Site domain
-            'cd4'   =>  $_SERVER['HTTP_HOST'],
+            'cd4'   =>  $this->request->getServer('HTTP_HOST'),
             // Site location
             'cd5'   =>  $this->getSiteLocation(),
             // Fastly module version

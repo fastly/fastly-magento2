@@ -58,7 +58,7 @@ class ResponsePlugin
      * @param array ...$args
      * @return mixed
      */
-    public function aroundSetHeader(Http $subject, callable $proceed, ...$args)
+    public function aroundSetHeader(Http $subject, callable $proceed, ...$args) // @codingStandardsIgnoreLine - unused parameter
     {
         // Is Fastly cache enabled?
         if ($this->config->getType() !== Config::FASTLY) {

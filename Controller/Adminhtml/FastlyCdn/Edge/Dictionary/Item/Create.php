@@ -72,15 +72,7 @@ class Create extends Action
             $dictionaryId = $this->getRequest()->getParam('dictionary_id');
             $value = $this->getRequest()->getParam('item_value');
             $key = $this->getRequest()->getParam('item_key');
-
-            $createDictionaryItem = $this->api->upsertDictionaryItem($dictionaryId, $key, $value);
-
-            if (!$createDictionaryItem) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to create Dictionary item.'
-                ]);
-            }
+            $this->api->upsertDictionaryItem($dictionaryId, $key, $value);
 
             return $result->setData(['status' => true]);
         } catch (\Exception $e) {

@@ -71,36 +71,14 @@ class ForceTls extends Action
      */
     public function execute()
     {
+        $result = $this->resultJson->create();
         try {
-            $result = $this->resultJson->create();
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
             $service = $this->api->checkServiceDetails();
-
-            if (!$service) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'   => 'Failed to check Service details.'
-                ]);
-            }
-
-            $currActiveVersion = $this->vcl->determineVersions($service->versions);
-
-            if ($currActiveVersion['active_version'] != $activeVersion) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Active versions mismatch.'
-                ]);
-            }
-
-            $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
-
-            if (!$clone) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'   => 'Failed to clone active version.'
-                ]);
-            }
+            $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
+            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
+            $clone = $this->api->cloneVersion($currActiveVersion);
             $reqName = Config::FASTLY_MAGENTO_MODULE.'_force_tls';
             $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);
             $snippet = $this->config->getVclSnippets('/vcl_snippets_force_tls', 'recv.vcl');
@@ -109,18 +87,11 @@ class ForceTls extends Action
                 $request = [
                     'name'          => $reqName,
                     'service_id'    => $service->id,
-                    'version'       => $currActiveVersion['active_version'],
+                    'version'       => $currActiveVersion,
                     'force_ssl'     => true
                 ];
 
-                $createReq = $this->api->createRequest($clone->number, $request);
-
-                if (!$createReq) {
-                    return $result->setData([
-                        'status'    => false,
-                        'msg'       => 'Failed to create the REQUEST object.'
-                    ]);
-                }
+                $this->api->createRequest($clone->number, $request);
 
                 // Add force TLS snipet
                 foreach ($snippet as $key => $value) {
@@ -130,47 +101,19 @@ class ForceTls extends Action
                         'priority'  => 10,
                         'content'   => $value
                     ];
-                    $status = $this->api->uploadSnippet($clone->number, $snippetData);
-
-                    if (!$status) {
-                        return $result->setData([
-                            'status'    => false,
-                            'msg'       => 'Failed to upload the Snippet file.'
-                        ]);
-                    }
+                    $this->api->uploadSnippet($clone->number, $snippetData);
                 }
             } else {
-                $deleteRequest = $this->api->deleteRequest($clone->number, $reqName);
-
-                if (!$deleteRequest) {
-                    return $result->setData([
-                        'status'    => false,
-                        'msg'       => 'Failed to delete the REQUEST object.'
-                    ]);
-                }
+                $this->api->deleteRequest($clone->number, $reqName);
 
                 // Remove force TLS snipet
                 foreach ($snippet as $key => $value) {
                     $name = Config::FASTLY_MAGENTO_MODULE.'_force_tls_'.$key;
-                    $status = $this->api->removeSnippet($clone->number, $name);
-
-                    if (!$status) {
-                        return $result->setData([
-                            'status'    => false,
-                            'msg'       => 'Failed to remove the Snippet file.'
-                        ]);
-                    }
+                    $this->api->removeSnippet($clone->number, $name);
                 }
             }
 
-            $validate = $this->api->validateServiceVersion($clone->number);
-
-            if ($validate->status == 'error') {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to validate service version: ' . $validate->msg
-                ]);
-            }
+            $this->api->validateServiceVersion($clone->number);
 
             if ($activateVcl === 'true') {
                 $this->api->activateVersion($clone->number);

@@ -73,7 +73,7 @@ class ConfigurationSave implements ObserverInterface
      * @throws \Exception
      * @throws \Magento\Framework\Exception\AlreadyExistsException
      */
-    public function execute(Observer $observer)
+    public function execute(Observer $observer) // @codingStandardsIgnoreLine - unused parameter
     {
         if ($this->moduleManager->isEnabled(Statistic::FASTLY_MODULE_NAME) == false) {
             return;

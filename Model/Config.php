@@ -510,41 +510,57 @@ class Config extends \Magento\PageCache\Model\Config
 
     /**
      * Get store ID for country.
-     *
-     * @param $countryCode  2-digit country code
-     *
-     * @return null|int
+     * @param $countryCode 2-digit country code
+     * @return int|null
      */
     public function getGeoIpMappingForCountry($countryCode)
     {
         if ($mapping = $this->_scopeConfig->getValue(self::XML_FASTLY_GEOIP_COUNTRY_MAPPING)) {
-            $mapping = @unserialize($mapping);
+            return $this->extractMapping($mapping, $countryCode);
+        }
+        return null;
+    }
 
-            if (is_array($mapping)) {
-                $countryId = 'country_id';
-                $key = 'store_id';
+    /**
+     * Filter country code mapping by priority
+     * @param $mapping
+     * @param $countryCode
+     * @return int|null
+     */
+    private function extractMapping($mapping, $countryCode)
+    {
+        $final = null;
+        $mapping = json_decode($mapping, true);
+        if (!$mapping) {
+            try {
+                $mapping = unserialize($mapping); // @codingStandardsIgnoreLine
+            } catch (\Exception $e) {
+                $mapping = [];
+            }
+        }
 
-                // check for direct match
-                foreach ($mapping as $map) {
-                    if (is_array($map) && isset($map[$countryId])
-                        && strtolower($map[$countryId]) == strtolower($countryCode)
-                    ) {
-                        if (isset($map[$key])) {
-                            return (int)$map[$key];
-                        }
+        if (is_array($mapping)) {
+            $countryId = 'country_id';
+            $key = 'store_id';
+            // check for direct match
+            foreach ($mapping as $map) {
+                if (is_array($map) &&
+                    isset($map[$countryId]) &&
+                    strtolower($map[$countryId]) == strtolower($countryCode)) {
+                    if (isset($map[$key])) {
+                        return (int)$map[$key];
                     }
-                }
-                // check for wildcard
-                foreach ($mapping as $map) {
-                    if (is_array($map) && isset($map[$countryId]) && $map[$countryId] == '*') {
-                        if (isset($map[$key])) {
-                            return (int)$map[$key];
-                        }
-                    }
+                } elseif (is_array($map) &&
+                    isset($map[$countryId]) &&
+                    $map[$countryId] == '*' &&
+                    isset($map[$key]) &&
+                    $final === null) {
+                    // check for wildcard
+                    $final = (int)$map[$key];
                 }
             }
         }
-        return null;
+        return $final;
     }
     
     /**
@@ -624,7 +640,12 @@ class Config extends \Magento\PageCache\Model\Config
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE
         );
         if ($expressions) {
-            $rules = array_values(unserialize($expressions));
+            try {
+                $expressions = unserialize($expressions); // @codingStandardsIgnoreLine - used for conversion of old Magento format to json_decode
+            } catch (\Exception $e) {
+                $expressions = [];
+            }
+            $rules = array_values($expressions);
             foreach ($rules as $i => $rule) {
                 if (preg_match('/^[\W]{1}(.*)[\W]{1}(\w+)?$/', $rule['regexp'], $matches)) {
                     if (!empty($matches[2])) {

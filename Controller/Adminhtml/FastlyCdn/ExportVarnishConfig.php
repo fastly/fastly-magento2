@@ -1,5 +1,6 @@
 <?php
 /**
+ * @codingStandardsIgnoreFile
  * Fastly CDN for Magento
  *
  * NOTICE OF LICENSE

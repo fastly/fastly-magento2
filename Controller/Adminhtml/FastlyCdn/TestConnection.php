@@ -20,6 +20,7 @@
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn;
 
+use Braintree\Exception;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Magento\Backend\App\Action;
@@ -29,6 +30,7 @@ use Fastly\Cdn\Model\Statistic;
 use Fastly\Cdn\Model\StatisticFactory;
 use Fastly\Cdn\Model\StatisticRepository;
 use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Exception\LocalizedException;
 
 class TestConnection extends Action
 {
@@ -99,36 +101,31 @@ class TestConnection extends Action
      */
     public function execute()
     {
+        $result = $this->resultJsonFactory->create();
+        $serviceId = $this->getRequest()->getParam('service_id');
+        $apiKey = $this->getRequest()->getParam('api_key');
+
         try {
             if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
                 $this->api->sendWebHook('*initiated test connection action*');
             }
 
-            $result = $this->resultJsonFactory->create();
-            $serviceId = $this->getRequest()->getParam('service_id');
-            $apiKey = $this->getRequest()->getParam('api_key');
-
             $service = $this->api->checkServiceDetails(true, $serviceId, $apiKey);
-
-            if (!$service) {
-                $sendValidationReq = $this->statistic->sendValidationRequest(false, $serviceId);
-                $this->saveValidationState(false, $sendValidationReq);
-                return $result->setData(['status' => false]);
-            }
-            
             $sendValidationReq = $this->statistic->sendValidationRequest(true, $serviceId);
             $this->saveValidationState(true, $sendValidationReq);
-
-            return $result->setData([
-                'status'        => true,
-                'service_name'  => $service->name
-            ]);
         } catch (\Exception $e) {
+            $sendValidationReq = $this->statistic->sendValidationRequest(false, $serviceId);
+            $this->saveValidationState(false, $sendValidationReq);
             return $result->setData([
                 'status'    => false,
                 'msg'       => $e->getMessage()
             ]);
         }
+
+        return $result->setData([
+            'status'        => true,
+            'service_name'  => $service->name
+        ]);
     }
 
     private function saveValidationState($serviceStatus, $gaRequestStatus)

@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.42
+
+- Changes to achieve Magento Extension Quality Program compliance
+- Add UI to add blocking by country and ACL https://github.com/fastly/fastly-magento2/pull/137
+- Make sure the X-Magento-Tags header is less than 16kBytes in length
+
 ## 1.2.41
 
 - Allow user to override default first byte timeout for admin paths https://github.com/fastly/fastly-magento2/pull/135

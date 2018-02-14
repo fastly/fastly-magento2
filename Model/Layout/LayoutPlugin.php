@@ -111,7 +111,7 @@ class LayoutPlugin
     public function afterGetOutput(\Magento\Framework\View\Layout $subject, $result)
     {
         if ($this->config->getType() == Config::FASTLY) {
-            $this->response->setHeader("Fastly-Module-Enabled", "1.2.41", true);
+            $this->response->setHeader("Fastly-Module-Enabled", "1.2.42", true);
         }
 
         return $result;

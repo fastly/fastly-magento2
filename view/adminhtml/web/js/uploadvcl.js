@@ -10,6 +10,8 @@ define([
 
         var requestStateSpan = '';
         var requestStateMsgSpan = '';
+        var blockingStateSpan = '';
+        var blockingStateMsgSpan = '';
 
         $('#system_full_page_cache_caching_application').on('change', function () {
             if ($(this).val() == 'fastly') {
@@ -284,6 +286,9 @@ define([
             // Checking service status & presence of force_tls request setting
             requestStateSpan = $('#request_state_span');
             requestStateMsgSpan = $('#fastly_request_state_message_span');
+            // Check service status & presence of blocking request setting
+            blockingStateSpan = $('#blocking_state_span');
+            blockingStateMsgSpan = $('#fastly_blocking_state_message_span');
             // Checking service status & presence of basic auth request setting
             authStateSpan = $('#auth_state_span');
             authStateMsgSpan = $('#fastly_auth_state_message_span');
@@ -292,6 +297,7 @@ define([
                 url: config.serviceInfoUrl,
                 beforeSend: function (xhr) {
                     requestStateSpan.find('.processing').show();
+                    blockingStateSpan.find('.processing').show();
                 }
             }).done(function (checkService) {
                 if (checkService.status != false) {
@@ -299,6 +305,7 @@ define([
                     next_version = checkService.next_version;
                     // Fetch force tls req setting status
                     var tls = vcl.getTlsSetting(checkService.active_version, false);
+
                     tls.done(function (checkReqSetting) {
                         requestStateSpan.find('.processing').hide();
                         if (checkReqSetting.status != false) {
@@ -309,6 +316,20 @@ define([
                     }).fail(function () {
                         requestStateSpan.find('.processing').hide();
                         requestStateMsgSpan.find('#force_tls_state_unknown').show();
+                    });
+
+                    var blocking = vcl.getBlockingSetting(checkService.active_version, false);
+
+                    blocking.done(function (checkReqSetting) {
+                            blockingStateSpan.find('.processing').hide();
+                            if (checkReqSetting.status != false) {
+                                blockingStateMsgSpan.find('#blocking_state_enabled').show();
+                            } else {
+                                blockingStateMsgSpan.find('#blocking_state_disabled').show();
+                            }
+                    }).fail(function () {
+                        blockingStateSpan.find('.processing').hide();
+                        blockingStateMsgSpan.find('#blocking_state_unknown').show();
                     });
 
                     // Fetch basic auth setting status
@@ -385,9 +406,12 @@ define([
                 } else {
                     requestStateSpan.find('.processing').hide();
                     requestStateMsgSpan.find('#force_tls_state_unknown').show();
+                    blockingStateSpan.find('.processing').hide();
+                    blockingStateMsgSpan.find('#blocking_state_unknown').show();
                 }
             }).fail(function () {
                 requestStateMsgSpan.find('#force_tls_state_unknown').show();
+                blockingStateMsgSpan.find('#blocking_state_unknown').show();
             });
         }
 
@@ -659,6 +683,50 @@ define([
         });
 
         /**
+         * Blocking button
+         */
+
+        $('#fastly_blocking_button').on('click', function () {
+
+            if (isAlreadyConfigured != true) {
+                $(this).attr('disabled', true);
+                return alert($.mage.__('Please save config prior to continuing.'));
+            }
+
+            vcl.resetAllMessages();
+
+            $.ajax({
+                type: "GET",
+                url: config.serviceInfoUrl,
+                showLoader: true
+            }).done(function (service) {
+
+                if (service.status == false) {
+                    return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
+                }
+
+                active_version = service.active_version;
+                next_version = service.next_version;
+                service_name = service.service.name;
+                vcl.getBlockingSetting(active_version, true).done(function (response) {
+                        if (response.status == false) {
+                            $('.modal-title').text($.mage.__('We are about to turn on blocking'));
+                        } else {
+                            $('.modal-title').text($.mage.__('We are about to turn off blocking'));
+                        }
+                        blocking = response.status;
+                }).fail(function () {
+                        vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
+                });
+                vcl.showPopup('fastly-blocking-options');
+                vcl.setActiveServiceLabel(active_version, next_version, service_name);
+
+            }).fail(function (msg) {
+                return errorBlockingBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+            });
+        });
+
+        /**
          * Enable Auth button
          */
 
@@ -874,6 +942,7 @@ define([
         var next_version = '';
         var service_name;
         var forceTls = true;
+        var blocking = true;
         var isAlreadyConfigured = true;
         /* VCL button messages */
         var successVclBtnMsg = $('#fastly-success-vcl-button-msg');
@@ -883,6 +952,10 @@ define([
         var successTlsBtnMsg = $('#fastly-success-tls-button-msg');
         var errorTlsBtnMsg = $('#fastly-error-tls-button-msg');
         var warningTlsBtnMsg = $('#fastly-warning-tls-button-msg');
+        /* Blocking button messages */
+        var successBlockingBtnMsg = $('#fastly-success-blocking-button-msg');
+        var errorBlockingBtnMsg = $('#fastly-error-blocking-button-msg');
+        var warningBlockingBtnMsg = $('#fastly-warning-blocking-button-msg');
         /* Error page HTML button */
         var successHtmlBtnMsg = $('#fastly-success-html-page-button-msg');
         var errorHtmlBtnMsg = $('#fastly-error-html-page-button-msg');
@@ -958,6 +1031,16 @@ define([
                 return $.ajax({
                     type: "POST",
                     url: config.checkTlsSettingUrl,
+                    showLoader: loaderVisibility,
+                    data: {'active_version': active_version}
+                });
+            },
+
+            // Queries Fastly API to retrieve blocking setting
+            getBlockingSetting: function (active_version, loaderVisibility) {
+                return $.ajax({
+                    type: "POST",
+                    url: config.checkBlockingSettingUrl,
                     showLoader: loaderVisibility,
                     data: {'active_version': active_version}
                 });
@@ -1273,6 +1356,54 @@ define([
                 });
             },
 
+            // Toggle Blocking process
+            toggleBlocking: function (active_version) {
+                var activate_blocking_flag = false;
+
+                if ($('#fastly_activate_blocking').is(':checked')) {
+                    activate_blocking_flag = true;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: config.toggleBlockingSettingUrl,
+                    data: {
+                        'activate_flag': activate_blocking_flag,
+                        'active_version': active_version
+                    },
+                    showLoader: true,
+                    success: function (response) {
+                        if (response.status == true) {
+                            vcl.modal.modal('closeModal');
+                            var onOrOff = 'OFF';
+                            var disabledOrEnabled = 'disabled';
+                            if (blocking == false) {
+                                onOrOff = 'ON';
+                                disabledOrEnabled = 'enabled';
+                            } else {
+                                onOrOff = 'OFF';
+                                disabledOrEnabled = 'disabled';
+                            }
+                            successBlockingBtnMsg.text($.mage.__('The Blocking request setting is successfully turned ' + onOrOff + '.')).show();
+                            $('.request_blocking_state_span').hide();
+                            if (disabledOrEnabled == 'enabled') {
+                                blockingStateMsgSpan.find('#blocking_state_disabled').hide();
+                                blockingStateMsgSpan.find('#blocking_state_enabled').show();
+                            } else {
+                                blockingStateMsgSpan.find('#blocking_state_enabled').hide();
+                                blockingStateMsgSpan.find('#blocking_state_disabled').show();
+                            }
+                        } else {
+                            vcl.resetAllMessages();
+                            vcl.showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function (msg) {
+                        // error handling
+                    }
+                });
+            },
+
             // Toggle Auth process
             toggleAuth: function (active_version) {
                 var activate_auth_flag = false;
@@ -1537,6 +1668,11 @@ define([
                 errorTlsBtnMsg.hide();
                 warningTlsBtnMsg.hide();
 
+                // Blocking button messages
+                successTlsBtnMsg.hide();
+                errorTlsBtnMsg.hide();
+                warningTlsBtnMsg.hide();
+
                 // Error page button messages
                 successHtmlBtnMsg.hide();
                 errorHtmlBtnMsg.hide();
@@ -1713,6 +1849,15 @@ define([
                         vcl.toggleTls(active_version);
                     }
                 },
+                'fastly-blocking-options': {
+                    title: jQuery.mage.__(''),
+                    content: function () {
+                        return document.getElementById('fastly-blocking-template').textContent;
+                    },
+                    actionOk: function () {
+                        vcl.toggleBlocking(active_version);
+                    }
+                },
                 'fastly-auth-options': {
                     title: jQuery.mage.__(''),
                     content: function () {
@@ -1801,7 +1946,7 @@ define([
                     },
                     actionOk: function () {
                     }
-                },
+                }
             }
         };
     };

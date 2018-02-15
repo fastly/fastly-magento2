@@ -123,7 +123,7 @@ class SerializeToJson extends Command
                 throw new \InvalidArgumentException('Unable to encode data.');
             }
 
-            $this->configWriter->save($path, $newData);
+            $this->configWriter->save($path, $newData); // @codingStandardsIgnoreLine - currently best way to resolve this
             $this->cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
 
             $output->writeln('Config Cache Flushed');

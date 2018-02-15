@@ -160,7 +160,7 @@ class UpgradeData implements UpgradeDataInterface
         foreach ($oldConfigPaths as $key => $value) {
             $oldValue = $this->scopeConfig->getValue($value);
             if ($oldValue != null) {
-                $this->configWriter->save($newConfigPaths[$key], $oldValue);
+                $this->configWriter->save($newConfigPaths[$key], $oldValue); // @codingStandardsIgnoreLine - currently best way to resolve this
             }
         }
     }
@@ -178,7 +178,7 @@ class UpgradeData implements UpgradeDataInterface
                 'created_at' => $this->date->date()
             ];
 
-            $setup->getConnection()->insert($tableName, $data);
+            $setup->getConnection()->insert($tableName, $data); // @codingStandardsIgnoreLine - currently best way to resolve this
         }
 
         // Save current Fastly module version

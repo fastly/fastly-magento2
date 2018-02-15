@@ -75,7 +75,7 @@ class InstallData implements InstallDataInterface
                 'created_at' => $this->date->date()
             ];
 
-            $setup->getConnection()->insert($tableName, $data);
+            $setup->getConnection()->insert($tableName, $data); // @codingStandardsIgnoreLine - currently best way to resolve this
         }
 
         // Save current Fastly module version

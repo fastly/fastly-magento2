@@ -9,7 +9,7 @@ use Magento\Framework\Setup\SchemaSetupInterface;
 /**
  * @codeCoverageIgnore
  */
-class InstallSchema implements InstallSchemaInterface
+class InstallSchema implements InstallSchemaInterface // @codingStandardsIgnoreLine - currently best way to resolve this
 {
     /**
      * {@inheritdoc}

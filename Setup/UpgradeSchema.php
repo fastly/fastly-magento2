@@ -7,7 +7,7 @@ use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\UpgradeSchemaInterface;
 
-class UpgradeSchema implements UpgradeSchemaInterface
+class UpgradeSchema implements UpgradeSchemaInterface // @codingStandardsIgnoreLine - currently best way to resolve this
 {
     /**
      * @param SchemaSetupInterface $setup

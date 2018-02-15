@@ -97,7 +97,8 @@ class ForceTls extends Action
                 foreach ($snippet as $key => $value) {
                     $snippetData = [
                         'name'      => Config::FASTLY_MAGENTO_MODULE . '_force_tls_' . $key,
-                        'type'      => $key, 'dynamic' => "0",
+                        'type'      => $key,
+                        'dynamic' => "0",
                         'priority'  => 10,
                         'content'   => $value
                     ];

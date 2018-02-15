@@ -143,6 +143,7 @@ class Api
     {
         $uri = $this->_getApiServiceUri() . 'purge';
         $num = count($keys);
+        $result = false;
         if ($num >= self::FASTLY_MAX_HEADER_KEY_SIZE) {
             $parts = $num / self::FASTLY_MAX_HEADER_KEY_SIZE;
             $additional = ($parts > (int)$parts) ? 1 : 0;
@@ -162,7 +163,8 @@ class Api
             }
 
             if ($this->config->areWebHooksEnabled() && $this->config->canPublishKeyUrlChanges()) {
-                $this->sendWebHook('*clean by key on ' . join(" ", $keys) . '*');
+                $status = $result ? '' : 'FAILED ';
+                $this->sendWebHook($status . '*clean by key on ' . join(" ", $keys) . '*');
             }
         }
 

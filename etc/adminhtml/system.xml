@@ -134,6 +134,14 @@
                             </comment>
                             <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
                         </field>
+                        <field id="x_magento_tags_size" type="text" translate="label comment" sortOrder="31" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                            <label>X-Magento-Tags size</label>
+                            <comment>
+                                <![CDATA[Maximum X-Magento-Tags header size. System value defaults to 16384 kB.]]>
+                            </comment>
+                            <backend_model>Fastly\Cdn\Model\Config\Backend\ValidateInt</backend_model>
+                            <validate>required-entry validate-digits</validate>
+                        </field>
                         <field id="purge_catalog_category" translate="label comment" type="select" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Purge category</label>
                             <comment>Choose to purge all the category assets when saving a change to that category.</comment>

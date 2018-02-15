@@ -4,6 +4,7 @@ namespace Fastly\Cdn\Model;
 
 use Fastly\Cdn\Helper\CacheTags;
 use Magento\Framework\App\Response\Http;
+use Fastly\Cdn\Model\Config;
 
 /**
  * Fastly CDN for Magento
@@ -72,8 +73,9 @@ class ResponsePlugin
 
         // Make the necessary adjustment
         $args[1] = $this->cacheTags->convertCacheTags(str_replace(',', ' ', $args[1]));
-        if (strlen($args[1]) > 16384) {
-            $trimmedArgs = substr($args[1], 0, 16383);
+        $tagsSize = $this->config->getXMagentoTagsSize();
+        if (strlen($args[1]) > $tagsSize) {
+            $trimmedArgs = substr($args[1], 0, $tagsSize);
             $args[1] = substr($trimmedArgs, 0, strrpos($trimmedArgs, ' ', -1));
         }
 

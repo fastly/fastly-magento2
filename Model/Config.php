@@ -114,6 +114,13 @@ class Config extends \Magento\PageCache\Model\Config
         = 'system/full_page_cache/fastly/fastly_advanced_configuration/ignored_url_parameters';
 
     /**
+     * XML path to X-Magento-Tags size value
+     */
+
+    const XML_FASTLY_X_MAGENTO_TAGS_SIZE
+        = 'system/full_page_cache/fastly/fastly_advanced_configuration/x_magento_tags_size';
+
+    /**
      * XML path to purge catalog category
      */
     const XML_FASTLY_PURGE_CATALOG_CATEGORY
@@ -328,6 +335,11 @@ class Config extends \Magento\PageCache\Model\Config
     public function getAdminPathTimeout()
     {
         return (int)$this->_scopeConfig->getValue(self::XML_FASTLY_ADMIN_PATH_TIMEOUT);
+    }
+
+    public function getXMagentoTagsSize()
+    {
+        return (int)$this->_scopeConfig->getValue(self::XML_FASTLY_X_MAGENTO_TAGS_SIZE);
     }
 
     /**

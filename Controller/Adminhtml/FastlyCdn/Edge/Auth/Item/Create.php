@@ -70,7 +70,7 @@ class Create extends Action
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
 
-            $dictionary = $this->api->getSingleDictionary($activeVersion, 'magentomodule_basic_auth');
+            $dictionary = $this->api->getAuthDictionary($activeVersion);
 
             if ((is_array($dictionary) && empty($dictionary)) || !isset($dictionary->id)) {
                 return $result->setData([
@@ -82,15 +82,7 @@ class Create extends Action
             $user = $this->getRequest()->getParam('auth_user');
             $pass = $this->getRequest()->getParam('auth_pass');
             $key = base64_encode($user . ':' . $pass);
-
-            $createDictionaryItem = $this->api->upsertDictionaryItem($dictionary->id, $key, true);
-
-            if (!$createDictionaryItem) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to create Dictionary item.'
-                ]);
-            }
+            $this->api->upsertDictionaryItem($dictionary->id, $key, true);
 
             return $result->setData(['status' => true]);
         } catch (\Exception $e) {

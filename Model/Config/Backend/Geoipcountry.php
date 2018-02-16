@@ -16,7 +16,14 @@ class Geoipcountry extends ArraySerialized
     {
         $value = $this->getValue();
 
-        $oldData = @unserialize($value);
+        $oldData = json_decode($value, true);
+        if (!$oldData) {
+            try {
+                $oldData = unserialize($value); // @codingStandardsIgnoreLine - fallback to prior magento versions
+            } catch (\Exception $e) {
+                $oldData = false;
+            }
+        }
         if ($oldData) {
             $oldData = (is_array($oldData)) ? $oldData : [];
             $this->setValue(empty($oldData) ? false : $oldData);

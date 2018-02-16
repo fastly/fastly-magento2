@@ -9,13 +9,13 @@ use Magento\Framework\Setup\SchemaSetupInterface;
 /**
  * @codeCoverageIgnore
  */
-class InstallSchema implements InstallSchemaInterface
+class InstallSchema implements InstallSchemaInterface // @codingStandardsIgnoreLine - currently best way to resolve this
 {
     /**
      * {@inheritdoc}
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
+    public function install(SchemaSetupInterface $setup, ModuleContextInterface $context) // @codingStandardsIgnoreLine - unused parameter
     {
         $installer = $setup;
 

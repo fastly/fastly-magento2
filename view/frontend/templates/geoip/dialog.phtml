@@ -26,28 +26,18 @@
  * @var $block \Magento\Framework\View\Element\Template
  */
 ?>
-<script type="text/javascript">
-    require(
-        [
-            'jquery',
-            'Magento_Ui/js/modal/confirm'
-        ],
-        function($, modal) {
-            var redirectUrl = '<?php echo $block->getRedirectUrl() ?>';
-            var message = '<?php echo $block->escapeJsQuote($this->getMessage()) ?>';
-
-            if (redirectUrl.length > 0 && message.length > 0) {
-                var options = {
-                    responsive: true,
-                    content: message,
-                    actions: {
-                        confirm: function () {
-                            location.href = redirectUrl;
-                        }
-                    }
-                };
-                modal(options);
-            }
-        }
-    );
+<script type="text/x-magento-init">
+   {
+       "*": {
+           "Magento_Ui/js/core/app": {
+               "components": {
+                   "dialog": {
+                       "component": "Fastly_Cdn/js/dialog",
+                       "redirect_url": "<?php /* @noEscape */ echo $block->getRedirectUrl() ?>",
+                       "message": "<?php /* @noEscape */ echo $block->escapeJsQuote($block->getMessage())?>"
+                   }
+                }
+           }
+       }
+   }
 </script>

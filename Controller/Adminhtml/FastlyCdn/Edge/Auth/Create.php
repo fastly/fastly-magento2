@@ -73,57 +73,22 @@ class Create extends Action
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
             $service = $this->api->checkServiceDetails();
+            $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
+            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
 
-            if (!$service) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to check Service details.'
-                ]);
-            }
-
-            $currActiveVersion = $this->vcl->determineVersions($service->versions);
-
-            if ($currActiveVersion['active_version'] != $activeVersion) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Active versions mismatch.'
-                ]);
-            }
-
-            $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
-
-            if (!$clone) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to clone active version.'
-                ]);
-            }
+            $clone = $this->api->cloneVersion($currActiveVersion);
 
             // Create Auth Dictionary if needed
             $dictonaryName = CheckAuthSetting::AUTH_DICTIONARY_NAME;
-            $dictionary = $this->api->getSingleDictionary($activeVersion, $dictonaryName);
+            $dictionary = $this->api->getAuthDictionary($activeVersion);
 
             // Fetch Authentication items
             if ((is_array($dictionary) && empty($dictionary)) || $dictionary == false) {
                 $params = ['name' => $dictonaryName];
-                $createDictionary = $this->api->createDictionary($clone->number, $params);
-
-                if (!$createDictionary) {
-                    return $result->setData([
-                        'status'    => false,
-                        'msg'       => 'Failed to create Dictionary container.'
-                    ]);
-                }
+                $this->api->createDictionary($clone->number, $params);
             }
 
-            $validate = $this->api->validateServiceVersion($clone->number);
-
-            if ($validate->status == 'error') {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to validate service version: ' . $validate->msg
-                ]);
-            }
+            $this->api->validateServiceVersion($clone->number);
 
             if ($activateVcl === 'true') {
                 $this->api->activateVersion($clone->number);

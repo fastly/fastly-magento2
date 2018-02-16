@@ -49,7 +49,7 @@ class PurgeCachePlugin
      * @param callable $proceed
      * @param array ...$args
      */
-    public function aroundSendPurgeRequest(PurgeCache $subject, callable $proceed, ...$args)
+    public function aroundSendPurgeRequest(PurgeCache $subject, callable $proceed, ...$args) // @codingStandardsIgnoreLine - unused parameter
     {
         if ($this->config->isFastlyEnabled() !== true) {
             $proceed(...$args);

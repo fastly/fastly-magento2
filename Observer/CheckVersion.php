@@ -62,7 +62,7 @@ class CheckVersion implements ObserverInterface
      * @param Observer $observer
      * @return $this|void
      */
-    public function execute(Observer $observer)
+    public function execute(Observer $observer) // @codingStandardsIgnoreLine - unused parameter
     {
         if ($this->backendAuthSession->isLoggedIn() == false) {
             return;
@@ -74,7 +74,7 @@ class CheckVersion implements ObserverInterface
 
         $modulePath = $this->moduleRegistry->getPath(ComponentRegistrar::MODULE, 'Fastly_Cdn');
         $filePath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, "$modulePath/composer.json");
-        $composerData = json_decode(file_get_contents($filePath));
+        $composerData = json_decode(file_get_contents($filePath)); // @codingStandardsIgnoreLine - not user controlled
         $currentVersion = !empty($composerData->version) ? $composerData->version : false;
 
         if ($currentVersion) {

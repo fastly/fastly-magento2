@@ -42,7 +42,7 @@ class ConfigRewrite
      * Trigger purge if set
      * @param \Magento\Config\Model\Config $subject
      */
-    public function afterSave(\Magento\Config\Model\Config $subject)
+    public function afterSave(\Magento\Config\Model\Config $subject) // @codingStandardsIgnoreLine - unused parameter
     {
         if ($this->purge) {
             $this->api->cleanBySurrogateKey(['text']);

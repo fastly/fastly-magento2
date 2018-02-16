@@ -102,7 +102,13 @@ class SerializeToJson extends Command
             }
 
             $oldData = $this->scopeConfig->getValue($path);
-            $oldData = @unserialize($oldData);
+
+            try {
+                $oldData = unserialize($oldData); // @codingStandardsIgnoreLine - used for conversion of old Magento format to json_decode
+            } catch (\Exception $e) {
+                $oldData = false;
+            }
+
             if ($oldData === false) {
                 $output->writeln(
                     'Invalid serialization format, unable to unserialize config data : ' . $path
@@ -117,7 +123,7 @@ class SerializeToJson extends Command
                 throw new \InvalidArgumentException('Unable to encode data.');
             }
 
-            $this->configWriter->save($path, $newData);
+            $this->configWriter->save($path, $newData); // @codingStandardsIgnoreLine - currently best way to resolve this
             $this->cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
 
             $output->writeln('Config Cache Flushed');

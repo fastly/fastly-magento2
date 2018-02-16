@@ -80,22 +80,8 @@ class EnableAuth extends Action
             $activateVcl = $this->getRequest()->getParam('activate_flag');
             $service = $this->api->checkServiceDetails();
             $enabled = false;
-
-            if (!$service) {
-                return $result->setData([
-                    'status' => false,
-                    'msg' => 'Failed to check Service details.'
-                ]);
-            }
-
-            $currActiveVersion = $this->vcl->determineVersions($service->versions);
-
-            if ($currActiveVersion['active_version'] != $activeVersion) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Active versions mismatch.'
-                ]);
-            }
+            $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
+            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
 
             $vclPath = \Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl\CheckAuthSetting::VCL_AUTH_SNIPPET_PATH;
             $snippets = $this->config->getVclSnippets($vclPath);
@@ -113,33 +99,8 @@ class EnableAuth extends Action
 
             if (!$status) {
                 // Check if Auth has entries
-                $dictionary = $this->api->getSingleDictionary($activeVersion, 'magentomodule_basic_auth');
-
-                // Fetch Authentication items
-                if ((is_array($dictionary) && empty($dictionary)) || !isset($dictionary->id)) {
-                    return $result->setData([
-                        'status'    => 'empty',
-                        'msg'       => 'You must add users in order to enable Basic Authentication.'
-                    ]);
-                }
-
-                $authItems = $this->api->dictionaryItemsList($dictionary->id);
-
-                if (is_array($authItems) && empty($authItems)) {
-                    return $result->setData([
-                        'status'    => 'empty',
-                        'msg'       => 'You must add users in order to enable Basic Authentication.'
-                    ]);
-                }
-
-                $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
-
-                if (!$clone) {
-                    return $result->setData([
-                        'status'    => false,
-                        'msg'       => 'Failed to clone active version.'
-                    ]);
-                }
+                $this->api->checkAuthDictionaryPopulation($activeVersion);
+                $clone = $this->api->cloneVersion($currActiveVersion);
 
                 // Insert snippet
                 foreach ($snippets as $key => $value) {
@@ -150,42 +111,21 @@ class EnableAuth extends Action
                         'content' => $value,
                         'priority' => 40
                     ];
-                    $status = $this->api->uploadSnippet($clone->number, $snippetData);
-
-                    if (!$status) {
-                        return $result->setData([
-                            'status'    => false,
-                            'msg'       => 'Failed to upload the Snippet file.'
-                        ]);
-                    }
+                    $this->api->uploadSnippet($clone->number, $snippetData);
                 }
 
                 $enabled = true;
             } else {
-                $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
-
-                if (!$clone) {
-                    return $result->setData([
-                        'status'    => false,
-                        'msg'       => 'Failed to clone active version.'
-                    ]);
-                }
+                $clone = $this->api->cloneVersion($currActiveVersion);
 
                 // Remove snippets
                 foreach ($snippets as $key => $value) {
                     $name = Config::FASTLY_MAGENTO_MODULE.'_basic_auth_'.$key;
-                    $status = $this->api->removeSnippet($clone->number, $name);
+                    $this->api->removeSnippet($clone->number, $name);
                 }
             }
 
-            $validate = $this->api->validateServiceVersion($clone->number);
-
-            if ($validate->status == 'error') {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to validate service version: ' . $validate->msg
-                ]);
-            }
+            $this->api->validateServiceVersion($clone->number);
 
             if ($activateVcl === 'true') {
                 $this->api->activateVersion($clone->number);

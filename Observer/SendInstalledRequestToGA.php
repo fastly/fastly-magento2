@@ -92,7 +92,7 @@ class SendInstalledRequestToGA implements ObserverInterface
      * @throws \Exception
      * @throws \Magento\Framework\Exception\AlreadyExistsException
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function execute(\Magento\Framework\Event\Observer $observer) // @codingStandardsIgnoreLine - unused parameter
     {
         if ($this->moduleManager->isEnabled(Statistic::FASTLY_MODULE_NAME)) {
             $stat = $this->statisticRepo->getStatByAction(Statistic::FASTLY_INSTALLED_FLAG);

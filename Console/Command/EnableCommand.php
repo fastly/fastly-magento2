@@ -23,6 +23,7 @@ namespace Fastly\Cdn\Console\Command;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
+use Magento\Framework\Exception\LocalizedException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -649,116 +650,70 @@ class EnableCommand extends Command
      */
     private function uploadVcl($activate)
     {
-        $service = $this->api->checkServiceDetails();
+        try {
+            $service = $this->api->checkServiceDetails();
+            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
+            $clone = $this->api->cloneVersion($currActiveVersion);
+            $snippets = $this->config->getVclSnippets();
+            $ignoredUrlParameters = $this->config->getIgnoredUrlParameters();
+            $adminPathTimeout = $this->config->getAdminPathTimeout();
+            $adminUrl = $this->vcl->getAdminFrontName();
 
-        if (!$service) {
-            $this->output->writeln(
-                '<error>Failed to check Service details. Possible connection issues.</error>',
-                OutputInterface::OUTPUT_NORMAL
-            );
-            return;
-        }
+            $ignoredUrlParameterPieces = explode(",", $ignoredUrlParameters);
+            $filterIgnoredUrlParameterPieces = array_filter(array_map('trim', $ignoredUrlParameterPieces));
+            $queryParameters = implode('|', $filterIgnoredUrlParameterPieces);
 
-        $currActiveVersion = $this->vcl->determineVersions($service->versions);
-
-        $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
-
-        if (!$clone) {
-            $this->output->writeln(
-                '<error>Failed to clone active version.</error>',
-                OutputInterface::OUTPUT_NORMAL
-            );
-            return;
-        }
-
-        $snippets = $this->config->getVclSnippets();
-        $ignoredUrlParameters = $this->config->getIgnoredUrlParameters();
-        $adminPathTimeout = $this->config->getAdminPathTimeout();
-        $adminUrl = $this->vcl->getAdminFrontName();
-
-        $ignoredUrlParameterPieces = explode(",", $ignoredUrlParameters);
-        $filterIgnoredUrlParameterPieces = array_filter(array_map('trim', $ignoredUrlParameterPieces));
-        $queryParameters = implode('|', $filterIgnoredUrlParameterPieces);
-
-        foreach ($snippets as $key => $value) {
-            $value = str_replace('####ADMIN_PATH####', $adminUrl, $value);
-            $value = str_replace('####ADMIN_PATH_TIMEOUT####', $adminPathTimeout, $value);
-            $value = str_replace('####QUERY_PARAMETERS####', $queryParameters, $value);
-            $snippetData = [
-                'name'      => Config::FASTLY_MAGENTO_MODULE . '_' . $key,
-                'type'      => $key,
-                'dynamic'   => "0",
-                'priority'  => 50,
-                'content'   => $value
-            ];
-            $status = $this->api->uploadSnippet($clone->number, $snippetData);
-
-            if (!$status) {
-                $this->output->writeln(
-                    '<error>Failed to upload the Snippet file.</error>',
-                    OutputInterface::OUTPUT_NORMAL
-                );
-                return;
+            foreach ($snippets as $key => $value) {
+                $value = str_replace('####ADMIN_PATH####', $adminUrl, $value);
+                $value = str_replace('####ADMIN_PATH_TIMEOUT####', $adminPathTimeout, $value);
+                $value = str_replace('####QUERY_PARAMETERS####', $queryParameters, $value);
+                $snippetData = [
+                    'name'      => Config::FASTLY_MAGENTO_MODULE . '_' . $key,
+                    'type'      => $key,
+                    'dynamic'   => "0",
+                    'priority'  => 50,
+                    'content'   => $value
+                ];
+                $this->api->uploadSnippet($clone->number, $snippetData);
             }
-        }
 
-        $condition = [
-            'name'      => Config::FASTLY_MAGENTO_MODULE . '_pass',
-            'statement' => 'req.http.x-pass',
-            'type'      => 'REQUEST',
-            'priority'  => 90
-        ];
-        $createCondition = $this->api->createCondition($clone->number, $condition);
+            $condition = [
+                'name'      => Config::FASTLY_MAGENTO_MODULE . '_pass',
+                'statement' => 'req.http.x-pass',
+                'type'      => 'REQUEST',
+                'priority'  => 90
+            ];
+            $createCondition = $this->api->createCondition($clone->number, $condition);
+            $request = [
+                'action'            => 'pass',
+                'max_stale_age'     => 3600,
+                'name'              => Config::FASTLY_MAGENTO_MODULE.'_request',
+                'request_condition' => $createCondition->name,
+                'service_id'        => $service->id,
+                'version'           => $currActiveVersion
+            ];
 
-        if (!$createCondition) {
-            $this->output->writeln(
-                '<error>Failed to create a REQUEST condition.</error>',
-                OutputInterface::OUTPUT_NORMAL
-            );
+            $this->api->createRequest($clone->number, $request);
+            $this->api->validateServiceVersion($clone->number);
+            $msg = 'Successfully uploaded VCL. ';
+
+            if ($activate) {
+                $this->api->activateVersion($clone->number);
+                $msg .= 'Activated Version '. $clone->number;
+            }
+
+            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+                $this->api->sendWebHook(
+                    '*Upload VCL has been initiated and activated in version ' . $clone->number . '*'
+                );
+            }
+
+            $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
+        } catch (\Exception $e) {
+            $msg = $e->getMessage();
+            $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
             return;
         }
-
-        $request = [
-            'action'            => 'pass',
-            'max_stale_age'     => 3600,
-            'name'              => Config::FASTLY_MAGENTO_MODULE.'_request',
-            'request_condition' => $createCondition->name,
-            'service_id'        => $service->id,
-            'version'           => $currActiveVersion['active_version']
-        ];
-
-        $createReq = $this->api->createRequest($clone->number, $request);
-
-        if (!$createReq) {
-            $this->output->writeln(
-                '<error>Failed to create a REQUEST object.</error>',
-                OutputInterface::OUTPUT_NORMAL
-            );
-            return;
-        }
-
-        $validate = $this->api->validateServiceVersion($clone->number);
-
-        if ($validate->status == 'error') {
-            $this->output->writeln(
-                '<error>Failed to validate service version: '. $validate->msg . '</error>',
-                OutputInterface::OUTPUT_NORMAL
-            );
-            return;
-        }
-
-        $msg = 'Successfully uploaded VCL. ';
-
-        if ($activate) {
-            $this->api->activateVersion($clone->number);
-            $msg .= 'Activated Version '. $clone->number;
-        }
-
-        if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-            $this->api->sendWebHook('*Upload VCL has been initiated and activated in version ' . $clone->number . '*');
-        }
-
-        $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
     }
 
     /**
@@ -767,49 +722,21 @@ class EnableCommand extends Command
      */
     private function enableForceTls($activate)
     {
-        $service = $this->api->checkServiceDetails();
-
-        if (!$service) {
-            $this->output->writeln(
-                '<error>Failed to check Service details. Possible connection issues.</error>',
-                OutputInterface::OUTPUT_NORMAL
-            );
-
-            return;
-        }
-
-        $currActiveVersion = $this->vcl->determineVersions($service->versions);
-        $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
-
-        if (!$clone) {
-            $this->output->writeln(
-                '<error>Failed to clone active version.</error>',
-                OutputInterface::OUTPUT_NORMAL
-            );
-
-            return;
-        }
-
-        $reqName = Config::FASTLY_MAGENTO_MODULE.'_force_tls';
-        $snippet = $this->config->getVclSnippets('/vcl_snippets_force_tls', 'recv.vcl');
+        try {
+            $service = $this->api->checkServiceDetails();
+            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
+            $clone = $this->api->cloneVersion($currActiveVersion);
+            $reqName = Config::FASTLY_MAGENTO_MODULE.'_force_tls';
+            $snippet = $this->config->getVclSnippets('/vcl_snippets_force_tls', 'recv.vcl');
 
             $request = [
                 'name'          => $reqName,
                 'service_id'    => $service->id,
-                'version'       => $currActiveVersion['active_version'],
+                'version'       => $currActiveVersion,
                 'force_ssl'     => true
             ];
 
-            $createReq = $this->api->createRequest($clone->number, $request);
-
-            if (!$createReq) {
-                $this->output->writeln(
-                    '<error>Failed to create a REQUEST object.</error>',
-                    OutputInterface::OUTPUT_NORMAL
-                );
-
-                return;
-            }
+            $this->api->createRequest($clone->number, $request);
 
             // Add force TLS snippet
             foreach ($snippet as $key => $value) {
@@ -819,29 +746,10 @@ class EnableCommand extends Command
                     'priority'  => 10,
                     'content'   => $value
                 ];
-                $status = $this->api->uploadSnippet($clone->number, $snippetData);
-
-                if (!$status) {
-                    $this->output->writeln(
-                        '<error>Failed to upload the Snippet file.</error>',
-                        OutputInterface::OUTPUT_NORMAL
-                    );
-
-                    return;
-                }
+                $this->api->uploadSnippet($clone->number, $snippetData);
             }
 
-            $validate = $this->api->validateServiceVersion($clone->number);
-
-            if ($validate->status == 'error') {
-                $this->output->writeln(
-                    '<error>Failed to validate service version: '. $validate->msg . '</error>',
-                    OutputInterface::OUTPUT_NORMAL
-                );
-
-                return;
-            }
-
+            $this->api->validateServiceVersion($clone->number);
             $msg = 'Successfully uploaded Force TLS VCL snippet. ';
 
             if ($activate) {
@@ -850,10 +758,15 @@ class EnableCommand extends Command
             }
 
             if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-                    $this->api->sendWebHook('*Force TLS has been turned ON in Fastly version '. $clone->number . '*');
+                $this->api->sendWebHook('*Force TLS has been turned ON in Fastly version '. $clone->number . '*');
             }
 
             $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
+        } catch (\Exception $e) {
+            $msg = $e->getMessage();
+            $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
+            return;
+        }
     }
 
     /**
@@ -862,120 +775,73 @@ class EnableCommand extends Command
      */
     private function disableForceTls($activate)
     {
-        $service = $this->api->checkServiceDetails();
+        try {
+            $service = $this->api->checkServiceDetails();
+            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
+            $clone = $this->api->cloneVersion($currActiveVersion);
+            $reqName = Config::FASTLY_MAGENTO_MODULE.'_force_tls';
+            $snippet = $this->config->getVclSnippets('/vcl_snippets_force_tls', 'recv.vcl');
 
-        if (!$service) {
-            $this->output->writeln(
-                '<error>Failed to check Service details. Possible connection issues.</error>',
-                OutputInterface::OUTPUT_NORMAL
-            );
+            $request = [
+                'name'          => $reqName,
+                'service_id'    => $service->id,
+                'version'       => $currActiveVersion,
+                'force_ssl'     => true
+            ];
 
-            return;
-        }
+            $this->api->createRequest($clone->number, $request);
+            $deleteRequest = $this->api->deleteRequest($clone->number, $reqName);
 
-        $currActiveVersion = $this->vcl->determineVersions($service->versions);
-
-        $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
-
-        if (!$clone) {
-            $this->output->writeln(
-                '<error>Failed to clone active version.</error>',
-                OutputInterface::OUTPUT_NORMAL
-            );
-
-            return;
-        }
-        $reqName = Config::FASTLY_MAGENTO_MODULE.'_force_tls';
-        $snippet = $this->config->getVclSnippets('/vcl_snippets_force_tls', 'recv.vcl');
-
-        $request = [
-            'name'          => $reqName,
-            'service_id'    => $service->id,
-            'version'       => $currActiveVersion['active_version'],
-            'force_ssl'     => true
-        ];
-
-        $createReq = $this->api->createRequest($clone->number, $request);
-
-        if (!$createReq) {
-            $this->output->writeln(
-                '<error>Failed to create a REQUEST object.</error>',
-                OutputInterface::OUTPUT_NORMAL
-            );
-
-            return;
-        }
-
-        $deleteRequest = $this->api->deleteRequest($clone->number, $reqName);
-
-        if (!$deleteRequest) {
-            $this->output->writeln(
-                '<error>Failed to delete the REQUEST object.</error>',
-                OutputInterface::OUTPUT_NORMAL
-            );
-
-            return;
-        }
-
-        // Remove Force TLS snippet
-        foreach ($snippet as $key => $value) {
-            $name = Config::FASTLY_MAGENTO_MODULE.'_force_tls_'.$key;
-            $status = $this->api->removeSnippet($clone->number, $name);
-
-            if (!$status) {
+            if (!$deleteRequest) {
                 $this->output->writeln(
-                    '<error>Failed to remove the Snippet file.</error>',
+                    '<error>Failed to delete the REQUEST object.</error>',
                     OutputInterface::OUTPUT_NORMAL
                 );
 
                 return;
             }
-        }
 
-        $validate = $this->api->validateServiceVersion($clone->number);
+            // Remove Force TLS snippet
+            foreach ($snippet as $key => $value) {
+                $name = Config::FASTLY_MAGENTO_MODULE.'_force_tls_'.$key;
+                $this->api->removeSnippet($clone->number, $name);
+            }
 
-        if ($validate->status == 'error') {
-            $this->output->writeln(
-                '<error>Failed to validate service version: '. $validate->msg . '</error>',
-                OutputInterface::OUTPUT_NORMAL
-            );
+            $this->api->validateServiceVersion($clone->number);
+            $msg = 'Successfully removed Force TLS VCL snippet. ';
 
+            if ($activate) {
+                $this->api->activateVersion($clone->number);
+                $msg .= 'Activated Version '. $clone->number;
+            }
+
+            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+                $this->api->sendWebHook('*Force TLS has been turned OFF in Fastly version '. $clone->number . '*');
+            }
+
+            $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
+        } catch (\Exception $e) {
+            $msg = $e->getMessage();
+            $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
             return;
         }
-
-        $msg = 'Successfully removed Force TLS VCL snippet. ';
-
-        if ($activate) {
-            $this->api->activateVersion($clone->number);
-            $msg .= 'Activated Version '. $clone->number;
-        }
-
-        if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-            $this->api->sendWebHook('*Force TLS has been turned OFF in Fastly version '. $clone->number . '*');
-        }
-
-        $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
     }
 
     private function testConnection()
     {
-        $service = $this->api->checkServiceDetails();
-
-        if (!$service) {
+        try {
+            $service = $this->api->checkServiceDetails();
+            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $this->output->writeln(
-                '<error>Status: Connection failed, check your Token and Service ID credentials.</error>',
+                '<info>Status: Connection Successful, current active version: '
+                . $currActiveVersion
+                . '</info>',
                 OutputInterface::OUTPUT_NORMAL
             );
-
+        } catch (\Exception $e) {
+            $msg = $e->getMessage();
+            $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
             return;
         }
-
-        $currActiveVersion = $this->vcl->determineVersions($service->versions);
-        $this->output->writeln(
-            '<info>Status: Connection Successful, current active version: '
-            . $currActiveVersion['active_version']
-            . '</info>',
-            OutputInterface::OUTPUT_NORMAL
-        );
     }
 }

@@ -5,6 +5,7 @@ namespace Fastly\Cdn\Helper;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\App\DeploymentConfig\Reader;
+use Magento\Framework\Exception\LocalizedException;
 
 class Vcl extends AbstractHelper
 {
@@ -28,30 +29,55 @@ class Vcl extends AbstractHelper
     }
 
     /**
-     * Determine currently service active version and the next version in which the active version will be cloned
-     *
+     * Fetch current version
      * @param array $versions
-     * @return array
+     * @return mixed
+     * @throws LocalizedException
      */
-    public function determineVersions(array $versions)
+    public function getCurrentVersion(array $versions)
     {
-        $activeVersion = null;
-        $nextVersion = null;
-
         if (!empty($versions)) {
             foreach ($versions as $version) {
                 if ($version->active) {
-                    $activeVersion = $version->number;
+                    return $activeVersion = $version->number;
                 }
             }
-
-            $nextVersion = (int) end($versions)->number + 1;
         }
 
-        return [
-            'active_version'    => $activeVersion,
-            'next_version'      => $nextVersion
-        ];
+        throw new LocalizedException(__('Error fetching current version.'));
+    }
+
+    /**
+     * Fetch next version
+     * @param array $versions
+     * @return int
+     * @throws LocalizedException
+     */
+    public function getNextVersion(array $versions)
+    {
+        if (isset(end($versions)->number)) {
+            return (int) end($versions)->number + 1;
+        }
+
+        throw new LocalizedException(__('Error fetching next version.'));
+    }
+
+    /**
+     * Check if active versions (local and remote) are in sync
+     * @param $versions
+     * @param $activeVersion
+     * @return bool
+     * @throws LocalizedException
+     */
+    public function checkCurrentVersionActive($versions, $activeVersion)
+    {
+        $current = $this->getCurrentVersion($versions);
+
+        if ($current != $activeVersion) {
+            throw new LocalizedException(__('Active versions mismatch.'));
+        }
+
+        return true;
     }
 
     /**

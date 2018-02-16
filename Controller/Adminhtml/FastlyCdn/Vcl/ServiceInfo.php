@@ -77,20 +77,14 @@ class ServiceInfo extends Action
      */
     public function execute()
     {
+        $result = $this->resultJsonFactory->create();
         try {
-            $result = $this->resultJsonFactory->create();
             $service = $this->api->checkServiceDetails();
-
-            if (!$service) {
-                return $result->setData(['status' => false]);
-            }
-
-            $versions = $this->vcl->determineVersions($service->versions);
             return $result->setData([
                 'status'            => true,
                 'service'           => $service,
-                'active_version'    => $versions['active_version'],
-                'next_version'      => $versions['next_version']
+                'active_version'    => $this->vcl->getCurrentVersion($service->versions),
+                'next_version'      => $this->vcl->getNextVersion($service->versions),
             ]);
         } catch (\Exception $e) {
             return $result->setData([

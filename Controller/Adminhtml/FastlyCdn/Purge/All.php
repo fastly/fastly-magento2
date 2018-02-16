@@ -50,7 +50,7 @@ class All extends Action
         Manager $cacheManager
     ) {
         $this->api = $api;
-        $this->_cacheManager = $cacheManager;
+        $this->cacheManager = $cacheManager;
 
         parent::__construct($context);
     }

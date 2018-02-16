@@ -20,8 +20,8 @@
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Purge;
 
-use Fastly\Cdn\Model\PurgeCache;
 use Fastly\Cdn\Model\Config;
+use Fastly\Cdn\Model\PurgeCache;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Exception\LocalizedException;
@@ -78,19 +78,11 @@ class Quick extends Action
             if ($this->config->getType() == Config::FASTLY && $this->config->isEnabled()) {
                 // check if url is given
                 $url = $this->getRequest()->getParam('quick_purge_url', false);
-                $urlFragments = parse_url($url);
 
-                if (!$url || $urlFragments === false) {
-                    throw new LocalizedException(__('Invalid URL "'.$url.'".'));
-                }
-
-                // get url fragments
-                extract($urlFragments);
-
-                // check if host is set
-                if (!isset($host) || !isset($scheme)) {
-                    throw new LocalizedException(__('Invalid URL "'.$url.'".'));
-                }
+                $zendUri = \Zend_Uri::factory($url);
+                $host = $zendUri->getHost();
+                $scheme = $zendUri->getScheme();
+                $path = $zendUri->getPath();
 
                 // check if host is one of magento's
                 if (!$this->isHostInDomainList($host)) {
@@ -102,16 +94,6 @@ class Quick extends Action
 
                 if (isset($path)) {
                     $uri .= $path;
-                }
-
-                if (isset($query)) {
-                    $uri .= '\?';
-                    $uri .= $query;
-                }
-
-                if (isset($fragment)) {
-                    $uri .= '#';
-                    $uri .= $fragment;
                 }
 
                 // purge uri

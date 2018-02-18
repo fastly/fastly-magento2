@@ -9,6 +9,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
+use Magento\Framework\Exception\LocalizedException;
 
 class Blocking extends Action
 {
@@ -75,21 +76,7 @@ class Blocking extends Action
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
             $service = $this->api->checkServiceDetails();
-
-            if (!$service) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to check Service details.'
-                ]);
-            }
-
-            $currActiveVersion = $this->vcl->determineVersions($service->versions);
-            if ($currActiveVersion['active_version'] != $activeVersion) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Active versions mismatch.'
-                ]);
-            }
+            $currActiveVersion = $this->getActiveVersion($service, $activeVersion);
 
             $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
 
@@ -97,25 +84,8 @@ class Blocking extends Action
             $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);
             $snippet = $this->config->getVclSnippets('/vcl_snippets_blocking', 'recv.vcl');
 
-            $blockedCountries = $this->config->getBlockByCountry();
-            $blockedAcls = $this->config->getBlockByAcl();
-
-            $country_codes = '';
-            $acls = '';
-
-            if ($blockedCountries != null) {
-                $blockedCountriesPieces = explode(",", $blockedCountries);
-                foreach ($blockedCountriesPieces as $code) {
-                    $country_codes .= ' client.geo.country_code == "' . $code . '" ||';
-                }
-            }
-
-            if ($blockedAcls != null) {
-                $blockedAclsPieces = explode(",", $blockedAcls);
-                foreach ($blockedAclsPieces as $acl) {
-                    $acls .= ' client.ip ~ ' . $acl . ' ||';
-                }
-            }
+            $country_codes = $this->prepareCountryCodes($this->config->getBlockByCountry());
+            $acls = $this->prepareAcls($this->config->getBlockByAcl());
 
             $blockedItems = $country_codes . $acls;
             $strippedBlockedItems = substr($blockedItems, 0, strrpos($blockedItems, '||', -1));
@@ -193,5 +163,60 @@ class Blocking extends Action
                 'msg'       => $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * Fetches and validates active version
+     *
+     * @param $service
+     * @param $activeVersion
+     * @throws LocalizedException
+     */
+    private function getActiveVersion($service, $activeVersion)
+    {
+        $currActiveVersion = $this->vcl->determineVersions($service->versions);
+        if ($currActiveVersion['active_version'] != $activeVersion) {
+            throw new LocalizedException(__('Active versions mismatch.'));
+        }
+    }
+
+    /**
+     * Prepares ACLS VCL snippets
+     *
+     * @param $blockedAcls
+     * @return string
+     */
+    private function prepareAcls($blockedAcls)
+    {
+        $result = '';
+
+        if ($blockedAcls != null) {
+            $blockedAclsPieces = explode(",", $blockedAcls);
+            foreach ($blockedAclsPieces as $acl) {
+                $result .= ' client.ip ~ ' . $acl . ' ||';
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Prepares blocked countries VCL snippet
+     *
+     * @param $blockedCountries
+     * @return string
+     */
+    private function prepareCountryCodes($blockedCountries)
+    {
+        $result = '';
+
+        if ($blockedCountries != null) {
+            $blockedCountriesPieces = explode(",", $blockedCountries);
+            foreach ($blockedCountriesPieces as $code) {
+                $result .= ' client.geo.country_code == "' . $code . '" ||';
+            }
+        }
+
+        return $result;
     }
 }

@@ -6,7 +6,7 @@
              hidden="hidden"
              alt="Collecting"
              style="margin:0 5px"
-             src="<?php /** @escapeNotVerified */ echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/>
+             src="<?php /* @noEscape */ echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/>
         <span style="display:none;" class="blocking_state_span" id="blocking_state_enabled"> enabled</span>
         <span style="display:none;" class="blocking_state_span" id="blocking_state_disabled"> disabled</span>
         <span style="display:none;" class="blocking_state_span" id="blocking_state_unknown"> unknown</span>

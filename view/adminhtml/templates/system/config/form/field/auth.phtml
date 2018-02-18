@@ -10,9 +10,6 @@
  *
  * @see https://github.com/magento/magento2/pull/3469
  */
-
-// @codingStandardsIgnoreFile
-
 ?>
 
 <?php
@@ -20,13 +17,23 @@ $_htmlId = $block->getHtmlId() ? $block->getHtmlId() : '_' . uniqid();
 $_colspan = $block->isAddAfter() ? 2 : 1;
 ?>
 
-<button type="button" style="margin-bottom: 10px;" class="primary" id="add-auth-container-button"><?php echo __('Manage users') ?></button>
-<div class="design_theme_ua_regexp" id="grid<?php /* @escapeNotVerified */ echo $_htmlId; ?>">
+<button type="button" style="margin-bottom: 10px;" class="primary" id="add-auth-container-button">
+    <?php /* @noEscape */ echo __('Manage users') ?>
+</button>
+<div class="design_theme_ua_regexp" id="grid<?php /* @noEscape */  echo $_htmlId; ?>">
 </div>
-<button class="action-delete remove_auth_dictionary"  title="<?php echo __('Delete') ?>" type="button"><span><?php echo __('Remove all users') ?></span></button>
+<button class="action-delete remove_auth_dictionary"
+        title="<?php /* @noEscape */ echo __('Delete') ?>"
+        type="button">
+    <span><?php /* @noEscape */ echo __('Remove all users') ?></span>
+</button>
 
-<div class="message message-error fastly-button-messages" id="fastly-error-auth-list-button-msg" style="display: none"></div>
-<div class="message message-success fastly-button-messages" id="fastly-success-auth-list-button-msg" style="display: none">
+<div class="message message-error fastly-button-messages"
+     id="fastly-error-auth-list-button-msg"
+     style="display: none"></div>
+<div class="message message-success fastly-button-messages"
+     id="fastly-success-auth-list-button-msg"
+     style="display: none">
 
 <style type="text/css">
     .admin__control-table .fastly-edit-dictionary-icon::before {

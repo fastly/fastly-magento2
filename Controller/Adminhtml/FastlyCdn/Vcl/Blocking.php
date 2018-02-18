@@ -92,12 +92,6 @@ class Blocking extends Action
             }
 
             $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
-            if (!$clone) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to clone active version.'
-                ]);
-            }
 
             $reqName = Config::FASTLY_MAGENTO_MODULE . '_blocking';
             $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);
@@ -134,12 +128,6 @@ class Blocking extends Action
             ];
 
             $createCondition = $this->api->createCondition($clone->number, $condition);
-            if (!$createCondition) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to create a REQUEST condition.'
-                ]);
-            }
 
             if (!$checkIfReqExist) {
                 $request = [
@@ -150,13 +138,7 @@ class Blocking extends Action
                     'request_condition' => $createCondition->name
                 ];
 
-                $createReq = $this->api->createRequest($clone->number, $request);
-                if (!$createReq) {
-                    return $result->setData([
-                        'status'    => false,
-                        'msg'       => 'Failed to create the REQUEST object.'
-                    ]);
-                }
+                $this->api->createRequest($clone->number, $request);
 
                 // Add blocking snippet
                 foreach ($snippet as $key => $value) {
@@ -174,44 +156,21 @@ class Blocking extends Action
                         'content'   => $value
                     ];
 
-                    $status = $this->api->uploadSnippet($clone->number, $snippetData);
-
-                    if (!$status) {
-                        return $result->setData([
-                            'status'    => false,
-                            'msg'       => 'Failed to upload the Snippet file.'
-                        ]);
-                    }
+                    $this->api->uploadSnippet($clone->number, $snippetData);
                 }
             } else {
-                $deleteRequest = $this->api->deleteRequest($clone->number, $reqName);
-                if (!$deleteRequest) {
-                    return $result->setData([
-                        'status'    => false,
-                        'msg'       => 'Failed to delete the REQUEST object.'
-                    ]);
-                }
+                $this->api->deleteRequest($clone->number, $reqName);
 
                 // Remove blocking snippet
                 foreach ($snippet as $key => $value) {
                     $name = Config::FASTLY_MAGENTO_MODULE . '_blocking_' . $key;
-                    $status = $this->api->removeSnippet($clone->number, $name);
-                    if (!$status) {
-                        return $result->setData([
-                            'status'    => false,
-                            'msg'       => 'Failed to remove the Snippet file.'
-                        ]);
+                    if ($this->api->hasSnippet($clone->number, $name) == true) {
+                        $this->api->removeSnippet($clone->number, $name);
                     }
                 }
             }
 
-            $validate = $this->api->validateServiceVersion($clone->number);
-            if ($validate->status == 'error') {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to validate service version: ' . $validate->msg
-                ]);
-            }
+            $this->api->validateServiceVersion($clone->number);
 
             if ($activateVcl === 'true') {
                 $this->api->activateVersion($clone->number);

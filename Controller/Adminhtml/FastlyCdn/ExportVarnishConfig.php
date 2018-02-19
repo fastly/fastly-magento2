@@ -1,6 +1,5 @@
 <?php
 /**
- * @codingStandardsIgnoreFile
  * Fastly CDN for Magento
  *
  * NOTICE OF LICENSE
@@ -18,6 +17,7 @@
  * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
+ * @codingStandardsIgnoreFile
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn;
 

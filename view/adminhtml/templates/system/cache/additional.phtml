@@ -19,82 +19,110 @@
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 
-// @codingStandardsIgnoreFile
-
-// @TODO use Magento2 UI components for this
-
-/** @var $block \Fastly\Cdn\Block\Cache\Additional */
+/** @var \Fastly\Cdn\Block\Cache\Additional $block */
 ?>
-<?php if ($block->canShowBlock()): ?>
+<?php if ($block->canShowBlock()) : ?>
 
-    <form action="<?php echo $block->getCleanByContentTypeUrl() ?>" method="post" id="fastlycdn_clean_content_type_form">
-        <?php echo $block->getBlockHtml('formkey')?>
+    <form action="<?php /* @noEscape */ echo $block->getCleanByContentTypeUrl() ?>"
+          method="post"
+          id="fastlycdn_clean_content_type_form">
+        <?php /* @noEscape */ echo $block->getBlockHtml('formkey')?>
         <table class="form-list" style="margin-bottom:10px">
             <tr>
                 <td class="scope-label">
-                    <button type="submit" class="scalable"><span><?php /* @escapeNotVerified */ echo __('Clean Fastly CDN by content type') ?></span></button>
+                    <button type="submit" class="scalable">
+                        <span><?php /* @noEscape */ echo __('Clean Fastly CDN by content type') ?></span>
+                    </button>
                 </td>
                 <td>
-                    <select name="content_types" class="required-entry admin__control-select local-validation" style="margin:0 10px; width:150px">
-                        <?php foreach ($block->getContentTypeOptions() as $contentType => $label): ?>
-                            <option value="<?php echo $contentType ?>"><?php echo $label ?></option>
+                    <select name="content_types"
+                            class="required-entry admin__control-select local-validation"
+                            style="margin:0 10px; width:150px">
+                        <?php foreach ($block->getContentTypeOptions() as $contentType => $label) : ?>
+                            <option value="<?php /* @noEscape */ echo $contentType ?>">
+                                <?php /* @noEscape */ echo $label ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </td>
                 <td class="scope-label">
-                    <span><?php /* @escapeNotVerified */ echo __('Remove selected cache items in Fastly CDN by content type. This removes the selected content type for all stores.')?></span>
+                    <span>
+                        <?php /* @noEscape */ echo __('Remove selected cache items in Fastly CDN by content type.'
+                            . 'This removes the selected content type for all stores.')?>
+                    </span>
                 </td>
             </tr>
         </table>
     </form>
 
-    <form action="<?php echo $block->getCleanByStoreUrl() ?>" method="post" id="fastlycdn_clean_form">
-        <?php echo $block->getBlockHtml('formkey')?>
+    <form action="<?php /* @noEscape */ echo $block->getCleanByStoreUrl() ?>" method="post" id="fastlycdn_clean_form">
+        <?php /* @noEscape */ echo $block->getBlockHtml('formkey')?>
         <table class="form-list" style="margin-bottom:10px">
             <tr>
                 <td class="scope-label">
-                    <button type="submit" class="scalable"><span><?php /* @escapeNotVerified */ echo __('Clean Fastly CDN by store') ?></span></button>
+                    <button type="submit" class="scalable">
+                        <span><?php /* @noEscape */ echo __('Clean Fastly CDN by store') ?></span>
+                    </button>
                 </td>
                 <td>
-                    <select name="stores" class="required-entry admin__control-select local-validation" style="margin:0 10px; width:250px">
-                        <?php foreach ($block->getStoreOptions() as $store): ?>
-                            <option value="<?php echo $store->getId() ?>"><?php echo $block->escapeHtml($store->getName(),true) ?></option>
+                    <select name="stores"
+                            class="required-entry admin__control-select local-validation"
+                            style="margin:0 10px; width:250px">
+                        <?php foreach ($block->getStoreOptions() as $store) : ?>
+                            <option value="<?php /* @noEscape */ echo $store->getId() ?>">
+                                <?php /* @noEscape */ echo $block->escapeHtml($store->getName(), true) ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </td>
                 <td class="scope-label">
-                    <span><?php /* @escapeNotVerified */ echo __('Remove Magento generated content from selected store in Fastly CDN. This only removes store related information, not images, css or js.')?></span>
+                    <span>
+                        <?php /* @noEscape */ echo __('Remove Magento generated content from selected store in Fastly '
+                        . 'CDN. This only removes store related information, not images, css or js.')?></span>
                 </td>
             </tr>
         </table>
     </form>
 
-    <form id="quick_purge_form" action="<?php echo $block->getQuickPurgeUrl() ?>" method="post" id="fastlycdn_clean_form">
-        <?php echo $block->getBlockHtml('formkey')?>
+    <form id="quick_purge_form"
+          action="<?php /* @noEscape */ echo $block->getQuickPurgeUrl() ?>"
+          method="post"
+          id="fastlycdn_clean_form">
+        <?php /* @noEscape */ echo $block->getBlockHtml('formkey')?>
         <table class="form-list" style="margin-bottom:10px">
             <tr>
                 <td class="scope-label">
-                    <button type="submit" class="scalable"><span><?php /* @escapeNotVerified */ echo __('Quick Purge') ?></span></button>
+                    <button type="submit" class="scalable">
+                        <span><?php /* @noEscape */ echo __('Quick Purge') ?></span>
+                    </button>
                 </td>
                 <td>
-                    <input type="text" name="quick_purge_url" class="input-text required-entry" style="margin:0 10px; width:250px" />
+                    <input type="text"
+                           name="quick_purge_url"
+                           class="input-text required-entry"
+                           style="margin:0 10px; width:250px" />
                 </td>
                 <td class="scope-label">
-                    <span><?php /* @escapeNotVerified */ echo __('Purge URL in Fastly CDN.')?></span>
+                    <span><?php /* @noEscape */ echo __('Purge URL in Fastly CDN.')?></span>
                 </td>
             </tr>
         </table>
     </form>
 
-    <form id="quick_purge_form" action="<?php echo $block->getPurgeAllUrl() ?>" method="post" id="fastlycdn_clean_form">
-        <?php echo $block->getBlockHtml('formkey')?>
+    <form id="quick_purge_form"
+          action="<?php /* @noEscape */ echo $block->getPurgeAllUrl() ?>"
+          method="post"
+          id="fastlycdn_clean_form">
+        <?php /* @noEscape */ echo $block->getBlockHtml('formkey')?>
         <table class="form-list" style="margin-bottom:10px">
             <tr>
                 <td class="scope-label">
-                    <button type="submit" class="scalable"><span><?php /* @escapeNotVerified */ echo __('Purge All') ?></span></button>
+                    <button type="submit" class="scalable">
+                        <span><?php /* @noEscape */ echo __('Purge All') ?></span>
+                    </button>
                 </td>
                 <td class="scope-label">
-                    <span><?php /* @escapeNotVerified */ echo __('Purge all Magento & Fastly Cache.')?></span>
+                    <span><?php /* @noEscape */ echo __('Purge all Magento & Fastly Cache.')?></span>
                 </td>
             </tr>
         </table>

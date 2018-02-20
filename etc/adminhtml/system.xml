@@ -137,7 +137,7 @@
                         <field id="x_magento_tags_size" type="text" translate="label comment" sortOrder="33" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                             <label>X-Magento-Tags size</label>
                             <comment>
-                                <![CDATA[Maximum X-Magento-Tags header size (in kilobytes).]]>
+                                <![CDATA[Maximum X-Magento-Tags header size (in bytes).]]>
                             </comment>
                             <backend_model>Fastly\Cdn\Model\Config\Backend\ValidateInt</backend_model>
                             <validate>required-entry validate-digits</validate>

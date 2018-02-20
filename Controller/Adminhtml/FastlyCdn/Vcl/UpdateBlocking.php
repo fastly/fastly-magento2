@@ -39,7 +39,7 @@ class UpdateBlocking extends Action
     private $vcl;
 
     /**
-     * Blocking constructor.
+     * UpdateBlocking constructor.
      *
      * @param Context $context
      * @param Http $request
@@ -71,8 +71,8 @@ class UpdateBlocking extends Action
      */
     public function execute()
     {
+        $result = $this->resultJson->create();
         try {
-            $result = $this->resultJson->create();
             $service = $this->api->checkServiceDetails();
             $currActiveVersion = $this->getActiveVersion($service);
 

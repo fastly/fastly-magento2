@@ -9,6 +9,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
+use Magento\Framework\Exception\LocalizedException;
 
 class UpdateBlocking extends Action
 {
@@ -38,7 +39,7 @@ class UpdateBlocking extends Action
     private $vcl;
 
     /**
-     * UpdateBlocking constructor.
+     * Blocking constructor.
      *
      * @param Context $context
      * @param Http $request
@@ -63,59 +64,37 @@ class UpdateBlocking extends Action
         parent::__construct($context);
     }
 
+    /**
+     * Upload Blocking snippets
+     *
+     * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
+     */
     public function execute()
     {
         try {
             $result = $this->resultJson->create();
-
+            $activeVersion = $this->getRequest()->getParam('active_version');
             $service = $this->api->checkServiceDetails();
-            $versions = $this->vcl->determineVersions($service->versions);
-            $activeVersion = $versions['active_version'];
-
-            if (!$service) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to check Service details.'
-                ]);
-            }
-
-            $currActiveVersion = $this->vcl->determineVersions($service->versions);
-            if ($currActiveVersion['active_version'] != $activeVersion) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Active versions mismatch.'
-                ]);
-            }
-
-//            $reqName = Config::FASTLY_MAGENTO_MODULE . '_blocking';
-//            $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);
-//            $snippet = $this->config->getVclSnippets('/vcl_snippets_blocking', 'recv.vcl');
-
-            $blockedCountries = $this->config->getBlockByCountry();
-            $blockedAcls = $this->config->getBlockByAcl();
-
-            $country_codes = '';
-            $acls = '';
-
-            if ($blockedCountries != null) {
-                $blockedCountriesPieces = explode(",", $blockedCountries);
-                foreach ($blockedCountriesPieces as $code) {
-                    $country_codes .= ' client.geo.country_code == "' . $code . '" ||';
-                }
-            }
-
-            if ($blockedAcls != null) {
-                $blockedAclsPieces = explode(",", $blockedAcls);
-                foreach ($blockedAclsPieces as $acl) {
-                    $acls .= ' client.ip ~ ' . $acl . ' ||';
-                }
-            }
+            $currActiveVersion = $this->getActiveVersion($service, $activeVersion);
 
             $snippet = $this->config->getVclSnippets('/vcl_snippets_blocking', 'recv.vcl');
 
+            $country_codes = $this->prepareCountryCodes($this->config->getBlockByCountry());
+            $acls = $this->prepareAcls($this->config->getBlockByAcl());
+
+            $blockedItems = $country_codes . $acls;
+            $strippedBlockedItems = substr($blockedItems, 0, strrpos($blockedItems, '||', -1));
+
+            // Add blocking snippet
             foreach ($snippet as $key => $value) {
+                if ($strippedBlockedItems === '') {
+                    $value = '';
+                } else {
+                    $value = str_replace('####BLOCKED_ITEMS####', $strippedBlockedItems, $value);
+                }
+
                 $snippetName = Config::FASTLY_MAGENTO_MODULE . '_blocking_' . $key;
-                $snippetId = $this->api->getSnippet($activeVersion, $snippetName)->id;
+                $snippetId = $this->api->getSnippet($currActiveVersion, $snippetName)->id;
                 $params = [
                     'name' =>  $snippetId,
                     'content'   => $value
@@ -133,5 +112,60 @@ class UpdateBlocking extends Action
                 'msg'       => $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * Fetches and validates active version
+     *
+     * @param $service
+     * @param $activeVersion
+     * @throws LocalizedException
+     */
+    private function getActiveVersion($service, $activeVersion)
+    {
+        $currActiveVersion = $this->vcl->determineVersions($service->versions);
+        if ($currActiveVersion['active_version'] != $activeVersion) {
+            throw new LocalizedException(__('Active versions mismatch.'));
+        }
+    }
+
+    /**
+     * Prepares ACLS VCL snippets
+     *
+     * @param $blockedAcls
+     * @return string
+     */
+    private function prepareAcls($blockedAcls)
+    {
+        $result = '';
+
+        if ($blockedAcls != null) {
+            $blockedAclsPieces = explode(",", $blockedAcls);
+            foreach ($blockedAclsPieces as $acl) {
+                $result .= ' client.ip ~ ' . $acl . ' ||';
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Prepares blocked countries VCL snippet
+     *
+     * @param $blockedCountries
+     * @return string
+     */
+    private function prepareCountryCodes($blockedCountries)
+    {
+        $result = '';
+
+        if ($blockedCountries != null) {
+            $blockedCountriesPieces = explode(",", $blockedCountries);
+            foreach ($blockedCountriesPieces as $code) {
+                $result .= ' client.geo.country_code == "' . $code . '" ||';
+            }
+        }
+
+        return $result;
     }
 }

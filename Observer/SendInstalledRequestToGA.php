@@ -109,7 +109,7 @@ class SendInstalledRequestToGA implements ObserverInterface
 
         if ($this->helper->getModuleVersion() > $this->config->getFastlyVersion()) {
             $this->statistic->sendUpgradeRequest();
-            $this->configWriter->save(Config::XML_FASTLY_MODULE_VERSION, $this->_helper->getModuleVersion());
+            $this->configWriter->save(Config::XML_FASTLY_MODULE_VERSION, $this->helper->getModuleVersion());
         }
     }
 }

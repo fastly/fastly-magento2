@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.44
+
+- Updates to the blocking UI https://github.com/fastly/fastly-magento2/pull/146
+- Improvements to the limiting X-Magento-Tags https://github.com/fastly/fastly-magento2/pull/145
+- Minor bug fixes and code clean up
+
 ## 1.2.43
 
 - Bugfixes encountered when doing refactoring for MEQP2

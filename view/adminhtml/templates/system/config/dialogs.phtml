@@ -3,26 +3,33 @@
  * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-// @codingStandardsIgnoreFile
-
 ?>
 <script type="text/x-magento-template" id="fastly-uploadvcl-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @escapeNotVerified */ echo __("You are about to clone your active version #x.")?>
-            <?php /* @escapeNotVerified */ echo __("We'll upload your VCL to version #y.")?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll upload your VCL to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="vcl-upload-form" class="form-inline" enctype="multipart/form-data">
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="vcl-upload-form"
+          class="form-inline"
+          enctype="multipart/form-data">
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
-                <label for="fastly_activate_vcl" class="admin__field-label"><span><?php /* @escapeNotVerified */ echo __('Activate VCL after upload')?></span></label>
+                <label for="fastly_activate_vcl" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate VCL after upload')?></span>
+                </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
-                        <input class="admin__control-checkbox" type="checkbox" name="fastly_activate_vcl" id="fastly_activate_vcl" checked/>
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_vcl"
+                               id="fastly_activate_vcl"
+                               checked/>
                         <label class="admin__field-label" for="fastly_activate_vcl"></label>
                     </div>
                 </div>
@@ -34,19 +41,29 @@
 <script type="text/x-magento-template" id="fastly-tls-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @escapeNotVerified */ echo __("You are about to clone your active version #x.")?>
-            <?php /* @escapeNotVerified */ echo __("We'll make the changes to version #y.")?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="vcl-upload-form" class="form-inline" enctype="multipart/form-data">
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="vcl-upload-form"
+          class="form-inline"
+          enctype="multipart/form-data">
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
-                <label for="fastly_activate_vcl" class="admin__field-label"><span><?php /* @escapeNotVerified */ echo __('Activate after the change')?></span></label>
+                <label for="fastly_activate_vcl" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+                </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
-                        <input class="admin__control-checkbox" type="checkbox" name="fastly_activate_tls" id="fastly_activate_tls" checked/>
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_tls"
+                               id="fastly_activate_tls"
+                               checked/>
                         <label class="admin__field-label" for="fastly_activate_tls"></label>
                     </div>
                 </div>
@@ -58,19 +75,29 @@
 <script type="text/x-magento-template" id="fastly-blocking-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @escapeNotVerified */ echo __("You are about to clone your active version #x.")?>
-            <?php /* @escapeNotVerified */ echo __("We'll make the changes to version #y.")?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="vcl-upload-form" class="form-inline" enctype="multipart/form-data">
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="vcl-upload-form"
+          class="form-inline"
+          enctype="multipart/form-data">
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
-                <label for="fastly_activate_vcl" class="admin__field-label"><span><?php /* @escapeNotVerified */ echo __('Activate after the change')?></span></label>
+                <label for="fastly_activate_vcl" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+                </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
-                        <input class="admin__control-checkbox" type="checkbox" name="fastly_activate_blocking" id="fastly_activate_blocking" checked/>
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_blocking"
+                               id="fastly_activate_blocking"
+                               checked/>
                         <label class="admin__field-label" for="fastly_activate_blocking"></label>
                     </div>
                 </div>
@@ -82,19 +109,31 @@
 <script type="text/x-magento-template" id="fastly-auth-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @escapeNotVerified */ echo __("You are about to clone your active version #x.")?>
-            <?php /* @escapeNotVerified */ echo __("We'll make the changes to version #y.")?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
-        <div class="message message-error fastly-message-error" id="fastly-auth-toggle-message-error" style="display: none">
+        <div class="message message-error fastly-message-error"
+             id="fastly-auth-toggle-message-error"
+             style="display: none">
         </div>
     </div>
-    <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="vcl-upload-form" class="form-inline" enctype="multipart/form-data">
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="vcl-upload-form"
+          class="form-inline"
+          enctype="multipart/form-data">
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
-                <label for="fastly_activate_vcl" class="admin__field-label"><span><?php /* @escapeNotVerified */ echo __('Activate after the change')?></span></label>
+                <label for="fastly_activate_vcl" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+                </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
-                        <input class="admin__control-checkbox" type="checkbox" name="fastly_activate_auth" id="fastly_activate_auth" checked/>
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_auth"
+                               id="fastly_activate_auth"
+                               checked/>
                         <label class="admin__field-label" for="fastly_activate_auth"></label>
                     </div>
                 </div>
@@ -106,17 +145,23 @@
 <script type="text/x-magento-template" id="fastly-backend-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @escapeNotVerified */ echo __("You are about to clone your active version #x.")?>
-            <?php /* @escapeNotVerified */ echo __("Your backend will be reconfigured in version #y.")?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("Your backend will be reconfigured in version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="backend-upload-form" class="form-inline" enctype="multipart/form-data">
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="backend-upload-form"
+          class="form-inline"
+          enctype="multipart/form-data">
         <fieldset class="admin__fieldset form-list question">
             <input hidden="hidden" name="backend_name" id="backend_name" class="admin__control-text">
             <div class="admin__field field">
-                <label for="shield" class="admin__field-label"><span><?php echo __("Shield") ?></span></label>
+                <label for="shield" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Shield") ?></span>
+                </label>
                 <div class="admin__field-control">
                     <select name="shield" id="backend_shield" class="admin__control-text">
                         <option value="">(none)</option>
@@ -139,14 +184,18 @@
                         <option value="auckland-akl">NZ, Auckland</option>
                         <option value="stockholm-bma">SE, Stockholm</option>
                         <option value="singapore-sg">SG, Singapore</option>
-                        <option value="london_city-uk">UK, London - LCY - Recommended for AWS eu-west1/2 origins</option>
+                        <option value="london_city-uk">
+                            UK, London - LCY - Recommended for AWS eu-west1/2 origins
+                        </option>
                         <option value="london-uk">UK, London - LHR</option>
                         <option value="atl-ga-us">US, Atlanta, GA</option>
                         <option value="bos-ma-us">US, Boston, MA</option>
                         <option value="mdw-il-us">US, Chicago, IL - Recommended for GCP us-central1</option>
                         <option value="den-co-us">US, Denver, CO</option>
                         <option value="dallas-tx-us">US, Dallas, TX</option>
-                        <option value="iad-va-us">US, Washington, DC - Recommended for AWS us-east1/GCP us-east1 origins</option>
+                        <option value="iad-va-us">
+                            US, Washington, DC - Recommended for AWS us-east1/GCP us-east1 origins
+                        </option>
                         <option value="lax-ca-us">US, Los Angeles, CA</option>
                         <option value="miami-fl-us">US, Miami, FL</option>
                         <option value="jfk-ny-us">US, New York City, NY</option>
@@ -155,40 +204,71 @@
                         <option value="jnb-johannesburg-za">ZA, Johannesburg</option>
                     </select>
                     <div class="admin__field-note">
-                        The shield POP designated to reduce inbound load on this origin by serving the cached data to the rest of the network.
-                        <a href="https://docs.fastly.com/guides/performance-tuning/shielding" target="_blank">Click for more details.</a></div>
+                        The shield POP designated to reduce inbound load on this origin by serving the cached data to
+                        the rest of the network.
+                        <a href="https://docs.fastly.com/guides/performance-tuning/shielding"
+                           target="_blank">Click for more details.</a>
+                    </div>
                 </div>
             </div>
 
             <div class="admin__field field _required">
-                <label for="connect_timeout" class="admin__field-label"><span><?php echo __("Connect timeout") ?></span></label>
+                <label for="connect_timeout" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Connect timeout") ?></span>
+                </label>
                 <div class="admin__field-control">
-                    <input name="connect_timeout" type="number" required="required" id="backend_connect_timeout" class="admin__control-text required-entry validate-alphanum-with-spaces validate-length maximum-length-50">
+                    <input name="connect_timeout"
+                           type="number"
+                           required="required"
+                           id="backend_connect_timeout"
+                           class="admin__control-text
+                                    required-entry
+                                    validate-alphanum-with-spaces
+                                    validate-length
+                                    maximum-length-50">
                     <div class="admin__field-note">How long to wait for a timeout in milliseconds.</div>
                 </div>
             </div>
 
             <div class="admin__field field _required">
-                <label for="between_bytes_timeout" class="admin__field-label"><span><?php echo __("Between bytes timeout") ?></span></label>
+                <label for="between_bytes_timeout" class="admin__field-label">
+                    <span><?php /* @noEscape */  echo __("Between bytes timeout") ?></span>
+                </label>
                 <div class="admin__field-control">
-                    <input name="between_bytes_timeout" type="number" required="required" id="backend_between_bytes_timeout" class="admin__control-text">
+                    <input name="between_bytes_timeout"
+                           type="number"
+                           required="required"
+                           id="backend_between_bytes_timeout"
+                           class="admin__control-text">
                     <div class="admin__field-note">How long to wait between bytes in milliseconds.</div>
                 </div>
             </div>
 
             <div class="admin__field field _required">
-                <label for="first_byte_timeout " class="admin__field-label"><span><?php echo __("First byte timeout ") ?></span></label>
+                <label for="first_byte_timeout " class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("First byte timeout ") ?></span>
+                </label>
                 <div class="admin__field-control">
-                    <input name="first_byte_timeout" type="number" required="required" id="backend_first_byte_timeout" class="admin__control-text">
+                    <input name="first_byte_timeout"
+                           type="number"
+                           required="required"
+                           id="backend_first_byte_timeout"
+                           class="admin__control-text">
                     <div class="admin__field-note">How long to wait for the first bytes in milliseconds.</div>
                 </div>
             </div>
 
             <div class="admin__field field maintenance-checkbox-container">
-                <label for="fastly_activate_backend" class="admin__field-label"><span><?php /* @escapeNotVerified */ echo __('Activate after the change')?></span></label>
+                <label for="fastly_activate_backend" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+                </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
-                        <input class="admin__control-checkbox" type="checkbox" name="fastly_activate_backend" id="fastly_activate_backend" checked/>
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_backend"
+                               id="fastly_activate_backend"
+                               checked/>
                         <label class="admin__field-label" for="fastly_activate_backend"></label>
                     </div>
                 </div>
@@ -200,27 +280,44 @@
 <script type="text/x-magento-template" id="fastly-error-page-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @escapeNotVerified */ echo __("You are about to clone your active version #x.")?>
-            <?php /* @escapeNotVerified */ echo __("We'll make the changes to version #y.")?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="vcl-error-page-form" class="form-inline" enctype="multipart/form-data">
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="vcl-error-page-form"
+          class="form-inline"
+          enctype="multipart/form-data">
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
-                <label for="fastly_activate_vcl" class="admin__field-label"><span><?php /* @escapeNotVerified */ echo __('Activate after the change')?></span></label>
+                <label for="fastly_activate_vcl" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+                </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
-                        <input class="admin__control-checkbox" type="checkbox" name="fastly_activate_vcl" id="fastly_activate_vcl" checked/>
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_vcl"
+                               id="fastly_activate_vcl"
+                               checked/>
                         <label class="admin__field-label" for="fastly_activate_tls"></label>
                     </div>
                 </div>
             </div>
             <div class="admin__field field _required">
-                <label for="error_page_html" class="admin__field-label"><span><?php echo __("HTML") ?></span></label>
+                <label for="error_page_html" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("HTML") ?></span>
+                </label>
                 <div class="admin__field-control">
-                    <textarea rows="10" name="error_page_html" required="required" id="error_page_html" class="admin__control-text"></textarea>
+                    <textarea rows="10"
+                              name="error_page_html"
+                              required="required"
+                              id="error_page_html"
+                              class="admin__control-text">
+                    </textarea>
                 </div>
             </div>
         </fieldset>
@@ -230,25 +327,42 @@
 <script type="text/x-magento-template" id="fastly-dictionary-container-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @escapeNotVerified */ echo __("You are about to clone your active version #x.")?>
-            <?php /* @escapeNotVerified */ echo __("We'll make the changes to version #y.")?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="dictionary-container-form" class="form-inline" style="margin-top:25px;" enctype="multipart/form-data">
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="dictionary-container-form"
+          class="form-inline"
+          style="margin-top:25px;"
+          enctype="multipart/form-data">
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field _required">
-                <label for="dictionary_name" class="admin__field-label"><span><?php echo __("Dictionary name") ?></span></label>
+                <label for="dictionary_name" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Dictionary name") ?></span>
+                </label>
                 <div class="admin__field-control">
-                    <input name="dictionary_name" type="text" required="required" id="dictionary_name" class="admin__control-text">
+                    <input name="dictionary_name"
+                           type="text"
+                           required="required"
+                           id="dictionary_name"
+                           class="admin__control-text">
                 </div>
             </div>
             <div class="admin__field field maintenance-checkbox-container">
-                <label for="fastly_activate_vcl" class="admin__field-label"><span><?php /* @escapeNotVerified */ echo __('Activate after the change')?></span></label>
+                <label for="fastly_activate_vcl" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+                </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
-                        <input class="admin__control-checkbox" type="checkbox" name="fastly_activate_vcl" id="fastly_activate_vcl" checked/>
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_vcl"
+                               id="fastly_activate_vcl"
+                               checked/>
                         <label class="admin__field-label" for="fastly_activate_tls"></label>
                     </div>
                 </div>
@@ -262,24 +376,43 @@
         <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
         <div class="message message-success fastly-message-success" style="display: none;"></div>
     </div>
-    <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="fastly-dictionary-form" class="form-inline" enctype="multipart/form-data">
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="fastly-dictionary-form"
+          class="form-inline"
+          enctype="multipart/form-data">
 
         <fieldset class="admin__fieldset form-list question">
             <table class="admin__control-table" id="dictionary-items-table">
                 <thead>
                 <tr>
-                    <th><?php echo __('Key') ?></th>
-                    <th><?php echo __('Value') ?></th>
-                    <th class="col-actions" colspan="1"><?php echo __('Action') ?></th>
+                    <th><?php /* @noEscape */ echo __('Key') ?></th>
+                    <th><?php /* @noEscape */ echo __('Value') ?></th>
+                    <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Action') ?></th>
                 </tr>
                 </thead>
                 <tbody class="item-container">
                 <tr>
-                    <td><input name="key" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>
-                    <td><input name="value" data-type="dictionary" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>
+                    <td>
+                        <input name="key"
+                               required="required"
+                               class="input-text admin__control-text dictionary-items-field"
+                               type="text">
+                    </td>
+                    <td>
+                        <input name="value"
+                               data-type="dictionary"
+                               required="required"
+                               class="input-text admin__control-text dictionary-items-field"
+                               type="text">
+                    </td>
                     <td class="col-actions">
-                        <button class="action-delete fastly-save-action save_item" title="Save" type="button"><span>Save</span></button>
-                        <button class="action-delete remove_item"  title="Delete" type="button"><span>Delete</span></button>
+                        <button class="action-delete fastly-save-action save_item" title="Save" type="button">
+                            <span>Save</span>
+                        </button>
+                        <button class="action-delete remove_item"  title="Delete" type="button">
+                            <span>Delete</span>
+                        </button>
                     </td>
                 </tr>
                 </tbody>
@@ -287,7 +420,7 @@
                 <tr>
                     <td colspan="3" class="col-actions-add">
                         <button id="add-dictionary-item" class="action-add" title="Add new item" type="button">
-                            <span><?php echo __('Add new item') ?></span>
+                            <span><?php /* @noEscape */ echo __('Add new item') ?></span>
                         </button>
                     </td>
                 </tr>
@@ -300,25 +433,38 @@
 <script type="text/x-magento-template" id="fastly-acl-container-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @escapeNotVerified */ echo __("You are about to clone your active version #x.")?>
-            <?php /* @escapeNotVerified */ echo __("We'll make the changes to version #y.")?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="acl-container-form" class="form-inline" style="margin-top:25px;" enctype="multipart/form-data">
+    <form action="<?php /* @noEscape */  echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="acl-container-form"
+          class="form-inline"
+          style="margin-top:25px;"
+          enctype="multipart/form-data">
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field _required">
-                <label for="acl_name" class="admin__field-label"><span><?php echo __("Acl name") ?></span></label>
+                <label for="acl_name" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Acl name") ?></span>
+                </label>
                 <div class="admin__field-control">
                     <input name="acl_name" type="text" required="required" id="acl_name" class="admin__control-text">
                 </div>
             </div>
             <div class="admin__field field maintenance-checkbox-container">
-                <label for="fastly_activate_vcl" class="admin__field-label"><span><?php /* @escapeNotVerified */ echo __('Activate after the change')?></span></label>
+                <label for="fastly_activate_vcl" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+                </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
-                        <input class="admin__control-checkbox" type="checkbox" name="fastly_activate_vcl" id="fastly_activate_vcl" checked/>
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_vcl"
+                               id="fastly_activate_vcl"
+                               checked/>
                         <label class="admin__field-label" for="fastly_activate_tls"></label>
                     </div>
                 </div>
@@ -332,25 +478,36 @@
         <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
         <div class="message message-success fastly-message-success" style="display: none;"></div>
     </div>
-    <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="fastly-acl-form" class="form-inline" enctype="multipart/form-data">
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST" id="fastly-acl-form"
+          class="form-inline"
+          enctype="multipart/form-data">
 
         <fieldset class="admin__fieldset form-list question">
             <table class="admin__control-table" id="acl-items-table">
                 <thead>
                 <tr>
-                    <th><?php echo __('IP Value') ?></th>
-                    <th><?php echo __('Negated') ?></th>
-                    <th class="col-actions" colspan="1"><?php echo __('Action') ?></th>
+                    <th><?php /* @noEscape */ echo __('IP Value') ?></th>
+                    <th><?php /* @noEscape */ echo __('Negated') ?></th>
+                    <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Action') ?></th>
                 </tr>
                 </thead>
                 <tbody class="item-container">
                 <tr>
                     <td>
-                        <input name="value" data-type="acl" data-id="" required="required" class="input-text admin__control-text dictionary-items-field" type="text">
+                        <input name="value"
+                               data-type="acl"
+                               data-id=""
+                               required="required"
+                               class="input-text admin__control-text dictionary-items-field"
+                               type="text">
                     </td>
                     <td>
                         <div class="admin__field-option" title="'+acl_negated_title+'">
-                            <input name="negated" class="admin__control-checkbox" type="checkbox" id="acl_entry_'+ aclTimestamp +'">
+                            <input name="negated"
+                                   class="admin__control-checkbox"
+                                   type="checkbox"
+                                   id="acl_entry_'+ aclTimestamp +'">
                             <label class="admin__field-label" for="acl_entry_'+ aclTimestamp +'"></label>
                         </div>
                     </td>
@@ -368,7 +525,7 @@
                 <tr>
                     <td colspan="3" class="col-actions-add">
                         <button id="add-acl-item" class="action-add" title="Add new item" type="button">
-                            <span><?php echo __('Add new item') ?></span>
+                            <span><?php /* @noEscape */ echo __('Add new item') ?></span>
                         </button>
                     </td>
                 </tr>
@@ -381,19 +538,30 @@
 <script type="text/x-magento-template" id="fastly-auth-container-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @escapeNotVerified */ echo __("You are about to clone your active version #x.")?>
-            <?php /* @escapeNotVerified */ echo __("We'll make the changes to version #y.")?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="auth-container-form" class="form-inline" style="margin-top:25px;" enctype="multipart/form-data">
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="auth-container-form"
+          class="form-inline"
+          style="margin-top:25px;"
+          enctype="multipart/form-data">
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
-                <label for="fastly_activate_vcl" class="admin__field-label"><span><?php /* @escapeNotVerified */ echo __('Activate after the change')?></span></label>
+                <label for="fastly_activate_vcl" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+                </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
-                        <input class="admin__control-checkbox" type="checkbox" name="fastly_activate_vcl" id="fastly_activate_vcl" checked/>
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_vcl"
+                               id="fastly_activate_vcl"
+                               checked/>
                         <label class="admin__field-label" for="fastly_activate_tls"></label>
                     </div>
                 </div>
@@ -405,19 +573,30 @@
 <script type="text/x-magento-template" id="fastly-auth-delete-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @escapeNotVerified */ echo __("You are about to clone your active version #x.")?>
-            <?php /* @escapeNotVerified */ echo __("We'll make the changes to version #y.")?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="auth-delete-container-form" class="form-inline" style="margin-top:25px;" enctype="multipart/form-data">
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="auth-delete-container-form"
+          class="form-inline"
+          style="margin-top:25px;"
+          enctype="multipart/form-data">
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
-                <label for="fastly_activate_vcl" class="admin__field-label"><span><?php /* @escapeNotVerified */ echo __('Activate after the change')?></span></label>
+                <label for="fastly_activate_vcl" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+                </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
-                        <input class="admin__control-checkbox" type="checkbox" name="fastly_activate_vcl" id="fastly_activate_vcl" checked/>
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_vcl"
+                               id="fastly_activate_vcl"
+                               checked/>
                         <label class="admin__field-label" for="fastly_activate_tls"></label>
                     </div>
                 </div>
@@ -431,24 +610,42 @@
         <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
         <div class="message message-success fastly-message-success" style="display: none;"></div>
     </div>
-    <form action="<?php echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>" method="POST" id="fastly-auth-form" class="form-inline" enctype="multipart/form-data">
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="fastly-auth-form"
+          class="form-inline"
+          enctype="multipart/form-data">
 
         <fieldset class="admin__fieldset form-list question">
             <table class="admin__control-table" id="auth-items-table">
                 <thead>
                 <tr>
-                    <th><?php echo __('Username') ?></th>
-                    <th><?php echo __('Password') ?></th>
-                    <th class="col-actions" colspan="1"><?php echo __('Action') ?></th>
+                    <th><?php /* @noEscape */ echo __('Username') ?></th>
+                    <th><?php /* @noEscape */ echo __('Password') ?></th>
+                    <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Action') ?></th>
                 </tr>
                 </thead>
                 <tbody class="item-container">
                 <tr>
-                    <td><input name="auth_user" required="required" class="input-text admin__control-text auth-users-field" type="text"></td>
-                    <td><input name="auth_pass" required="required" class="input-text admin__control-text auth-users-field" type="text"></td>
+                    <td>
+                        <input name="auth_user"
+                               required="required"
+                               class="input-text admin__control-text auth-users-field"
+                               type="text">
+                    </td>
+                    <td>
+                        <input name="auth_pass"
+                               required="required"
+                               class="input-text admin__control-text auth-users-field"
+                               type="text">
+                    </td>
                     <td class="col-actions">
-                        <button class="action-delete fastly-save-action save_item_auth" title="Save" type="button"><span>Save</span></button>
-                        <button class="action-delete remove_item"  title="Delete" type="button"><span>Delete</span></button>
+                        <button class="action-delete fastly-save-action save_item_auth" title="Save" type="button">
+                            <span>Save</span>
+                        </button>
+                        <button class="action-delete remove_item"  title="Delete" type="button">
+                            <span>Delete</span>
+                        </button>
                     </td>
                 </tr>
                 </tbody>
@@ -456,7 +653,7 @@
                 <tr>
                     <td colspan="3" class="col-actions-add">
                         <button id="add-auth-item" class="action-add" title="Add new user" type="button">
-                            <span><?php echo __('Add new user') ?></span>
+                            <span><?php /* @noEscape */ echo __('Add new user') ?></span>
                         </button>
                     </td>
                 </tr>

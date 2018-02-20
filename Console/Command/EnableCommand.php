@@ -780,31 +780,24 @@ class EnableCommand extends Command
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
             $reqName = Config::FASTLY_MAGENTO_MODULE.'_force_tls';
-            $snippet = $this->config->getVclSnippets('/vcl_snippets_force_tls', 'recv.vcl');
+            $snippets = $this->config->getVclSnippets('/vcl_snippets_force_tls', 'recv.vcl');
 
             $request = [
                 'name'          => $reqName,
                 'service_id'    => $service->id,
                 'version'       => $currActiveVersion,
-                'force_ssl'     => true
+                'force_ssl'     => false
             ];
 
             $this->api->createRequest($clone->number, $request);
-            $deleteRequest = $this->api->deleteRequest($clone->number, $reqName);
-
-            if (!$deleteRequest) {
-                $this->output->writeln(
-                    '<error>Failed to delete the REQUEST object.</error>',
-                    OutputInterface::OUTPUT_NORMAL
-                );
-
-                return;
-            }
 
             // Remove Force TLS snippet
-            foreach ($snippet as $key => $value) {
+            foreach ($snippets as $key => $value) {
                 $name = Config::FASTLY_MAGENTO_MODULE.'_force_tls_'.$key;
-                $this->api->removeSnippet($clone->number, $name);
+
+                if ($this->api->hasSnippet($clone->number, $name)) {
+                    $this->api->removeSnippet($clone->number, $name);
+                }
             }
 
             $this->api->validateServiceVersion($clone->number);

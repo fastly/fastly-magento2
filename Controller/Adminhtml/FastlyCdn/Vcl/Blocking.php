@@ -9,6 +9,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
+use Magento\Framework\Exception\LocalizedException;
 
 class Blocking extends Action
 {
@@ -75,53 +76,16 @@ class Blocking extends Action
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
             $service = $this->api->checkServiceDetails();
-
-            if (!$service) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to check Service details.'
-                ]);
-            }
-
-            $currActiveVersion = $this->vcl->determineVersions($service->versions);
-            if ($currActiveVersion['active_version'] != $activeVersion) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Active versions mismatch.'
-                ]);
-            }
+            $currActiveVersion = $this->getActiveVersion($service, $activeVersion);
 
             $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
-            if (!$clone) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to clone active version.'
-                ]);
-            }
 
             $reqName = Config::FASTLY_MAGENTO_MODULE . '_blocking';
             $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);
             $snippet = $this->config->getVclSnippets('/vcl_snippets_blocking', 'recv.vcl');
 
-            $blockedCountries = $this->config->getBlockByCountry();
-            $blockedAcls = $this->config->getBlockByAcl();
-
-            $country_codes = '';
-            $acls = '';
-
-            if ($blockedCountries != null) {
-                $blockedCountriesPieces = explode(",", $blockedCountries);
-                foreach ($blockedCountriesPieces as $code) {
-                    $country_codes .= ' client.geo.country_code == "' . $code . '" ||';
-                }
-            }
-
-            if ($blockedAcls != null) {
-                $blockedAclsPieces = explode(",", $blockedAcls);
-                foreach ($blockedAclsPieces as $acl) {
-                    $acls .= ' client.ip ~ ' . $acl . ' ||';
-                }
-            }
+            $country_codes = $this->prepareCountryCodes($this->config->getBlockByCountry());
+            $acls = $this->prepareAcls($this->config->getBlockByAcl());
 
             $blockedItems = $country_codes . $acls;
             $strippedBlockedItems = substr($blockedItems, 0, strrpos($blockedItems, '||', -1));
@@ -134,12 +98,6 @@ class Blocking extends Action
             ];
 
             $createCondition = $this->api->createCondition($clone->number, $condition);
-            if (!$createCondition) {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to create a REQUEST condition.'
-                ]);
-            }
 
             if (!$checkIfReqExist) {
                 $request = [
@@ -150,13 +108,7 @@ class Blocking extends Action
                     'request_condition' => $createCondition->name
                 ];
 
-                $createReq = $this->api->createRequest($clone->number, $request);
-                if (!$createReq) {
-                    return $result->setData([
-                        'status'    => false,
-                        'msg'       => 'Failed to create the REQUEST object.'
-                    ]);
-                }
+                $this->api->createRequest($clone->number, $request);
 
                 // Add blocking snippet
                 foreach ($snippet as $key => $value) {
@@ -174,44 +126,21 @@ class Blocking extends Action
                         'content'   => $value
                     ];
 
-                    $status = $this->api->uploadSnippet($clone->number, $snippetData);
-
-                    if (!$status) {
-                        return $result->setData([
-                            'status'    => false,
-                            'msg'       => 'Failed to upload the Snippet file.'
-                        ]);
-                    }
+                    $this->api->uploadSnippet($clone->number, $snippetData);
                 }
             } else {
-                $deleteRequest = $this->api->deleteRequest($clone->number, $reqName);
-                if (!$deleteRequest) {
-                    return $result->setData([
-                        'status'    => false,
-                        'msg'       => 'Failed to delete the REQUEST object.'
-                    ]);
-                }
+                $this->api->deleteRequest($clone->number, $reqName);
 
                 // Remove blocking snippet
                 foreach ($snippet as $key => $value) {
                     $name = Config::FASTLY_MAGENTO_MODULE . '_blocking_' . $key;
-                    $status = $this->api->removeSnippet($clone->number, $name);
-                    if (!$status) {
-                        return $result->setData([
-                            'status'    => false,
-                            'msg'       => 'Failed to remove the Snippet file.'
-                        ]);
+                    if ($this->api->hasSnippet($clone->number, $name) == true) {
+                        $this->api->removeSnippet($clone->number, $name);
                     }
                 }
             }
 
-            $validate = $this->api->validateServiceVersion($clone->number);
-            if ($validate->status == 'error') {
-                return $result->setData([
-                    'status'    => false,
-                    'msg'       => 'Failed to validate service version: ' . $validate->msg
-                ]);
-            }
+            $this->api->validateServiceVersion($clone->number);
 
             if ($activateVcl === 'true') {
                 $this->api->activateVersion($clone->number);
@@ -234,5 +163,60 @@ class Blocking extends Action
                 'msg'       => $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * Fetches and validates active version
+     *
+     * @param $service
+     * @param $activeVersion
+     * @throws LocalizedException
+     */
+    private function getActiveVersion($service, $activeVersion)
+    {
+        $currActiveVersion = $this->vcl->determineVersions($service->versions);
+        if ($currActiveVersion['active_version'] != $activeVersion) {
+            throw new LocalizedException(__('Active versions mismatch.'));
+        }
+    }
+
+    /**
+     * Prepares ACLS VCL snippets
+     *
+     * @param $blockedAcls
+     * @return string
+     */
+    private function prepareAcls($blockedAcls)
+    {
+        $result = '';
+
+        if ($blockedAcls != null) {
+            $blockedAclsPieces = explode(",", $blockedAcls);
+            foreach ($blockedAclsPieces as $acl) {
+                $result .= ' client.ip ~ ' . $acl . ' ||';
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Prepares blocked countries VCL snippet
+     *
+     * @param $blockedCountries
+     * @return string
+     */
+    private function prepareCountryCodes($blockedCountries)
+    {
+        $result = '';
+
+        if ($blockedCountries != null) {
+            $blockedCountriesPieces = explode(",", $blockedCountries);
+            foreach ($blockedCountriesPieces as $code) {
+                $result .= ' client.geo.country_code == "' . $code . '" ||';
+            }
+        }
+
+        return $result;
     }
 }

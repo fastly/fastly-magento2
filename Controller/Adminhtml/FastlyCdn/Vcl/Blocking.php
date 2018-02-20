@@ -121,7 +121,7 @@ class Blocking extends Action
                     $snippetData = [
                         'name'      => Config::FASTLY_MAGENTO_MODULE . '_blocking_' . $key,
                         'type'      => $key,
-                        'dynamic'   => "0",
+                        'dynamic'   => 1,
                         'priority'  => 5,
                         'content'   => $value
                     ];
@@ -170,6 +170,7 @@ class Blocking extends Action
      *
      * @param $service
      * @param $activeVersion
+     * @return array
      * @throws LocalizedException
      */
     private function getActiveVersion($service, $activeVersion)
@@ -178,6 +179,7 @@ class Blocking extends Action
         if ($currActiveVersion['active_version'] != $activeVersion) {
             throw new LocalizedException(__('Active versions mismatch.'));
         }
+        return $currActiveVersion;
     }
 
     /**

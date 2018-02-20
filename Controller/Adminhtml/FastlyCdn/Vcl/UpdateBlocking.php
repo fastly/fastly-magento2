@@ -73,9 +73,8 @@ class UpdateBlocking extends Action
     {
         try {
             $result = $this->resultJson->create();
-            $activeVersion = $this->getRequest()->getParam('active_version');
             $service = $this->api->checkServiceDetails();
-            $currActiveVersion = $this->getActiveVersion($service, $activeVersion);
+            $currActiveVersion = $this->getActiveVersion($service);
 
             $snippet = $this->config->getVclSnippets('/vcl_snippets_blocking', 'recv.vcl');
 
@@ -94,7 +93,7 @@ class UpdateBlocking extends Action
                 }
 
                 $snippetName = Config::FASTLY_MAGENTO_MODULE . '_blocking_' . $key;
-                $snippetId = $this->api->getSnippet($currActiveVersion, $snippetName)->id;
+                $snippetId = $this->api->getSnippet($currActiveVersion['active_version'], $snippetName)->id;
                 $params = [
                     'name' =>  $snippetId,
                     'content'   => $value
@@ -115,18 +114,15 @@ class UpdateBlocking extends Action
     }
 
     /**
-     * Fetches and validates active version
+     * Get the current active version
      *
      * @param $service
-     * @param $activeVersion
-     * @throws LocalizedException
+     * @return array
      */
-    private function getActiveVersion($service, $activeVersion)
+    private function getActiveVersion($service)
     {
         $currActiveVersion = $this->vcl->determineVersions($service->versions);
-        if ($currActiveVersion['active_version'] != $activeVersion) {
-            throw new LocalizedException(__('Active versions mismatch.'));
-        }
+        return $currActiveVersion;
     }
 
     /**

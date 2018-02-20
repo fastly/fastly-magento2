@@ -9,6 +9,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
+use Magento\Framework\HTTP\Client\Curl;
 
 class Blocking extends Action
 {
@@ -37,6 +38,8 @@ class Blocking extends Action
      */
     private $vcl;
 
+    private $curl;
+
     /**
      * Blocking constructor.
      *
@@ -53,13 +56,15 @@ class Blocking extends Action
         JsonFactory $resultJsonFactory,
         Config $config,
         Api $api,
-        Vcl $vcl
+        Vcl $vcl,
+        Curl $curl
     ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
         $this->config = $config;
         $this->api = $api;
         $this->vcl = $vcl;
+        $this->curl = $curl;
         parent::__construct($context);
     }
 
@@ -169,7 +174,7 @@ class Blocking extends Action
                     $snippetData = [
                         'name'      => Config::FASTLY_MAGENTO_MODULE . '_blocking_' . $key,
                         'type'      => $key,
-                        'dynamic'   => "0",
+                        'dynamic'   => 1,
                         'priority'  => 5,
                         'content'   => $value
                     ];

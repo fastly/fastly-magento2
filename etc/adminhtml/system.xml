@@ -199,6 +199,10 @@
                             </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\BlockingBtn</frontend_model>
                         </field>
+                        <field id="update_blocking_snippet" translate="label comment" sortOrder="6" showInDefault="1" showInStore="0" showInWebsite="0">
+                            <label><![CDATA[Update snippet]]></label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\UpdateBlockingBtn</frontend_model>
+                        </field>
                         <field id="block_by_country" translate="label comment" type="multiselect" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Block by country</label>
                             <comment>

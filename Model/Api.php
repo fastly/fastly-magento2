@@ -425,6 +425,20 @@ class Api
     }
 
     /**
+     * Update a dynamic snippet
+     *
+     * @param array $snippet
+     * @return bool|mixed
+     */
+    public function updateSnippet(array $snippet)
+    {
+        $url = $this->_getApiServiceUri(). 'snippet' . '/'.$snippet['name'];
+        $result = $this->_fetch($url, \Zend_Http_Client::PUT, $snippet);
+
+        return $result;
+    }
+
+    /**
      * Performs a lookup to determine if VCL snippet exists
      *
      * @param string    $version    Fastly version

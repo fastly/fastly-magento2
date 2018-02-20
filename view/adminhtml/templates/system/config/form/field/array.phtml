@@ -15,6 +15,36 @@
 <?php
 $_htmlId = $block->getHtmlId() ? $block->getHtmlId() : '_' . uniqid();
 $_colspan = $block->isAddAfter() ? 2 : 1;
+$columns = $block->getColumns();
+
+$html = '<tr id="<%- _id %>">';
+foreach ($columns as $columnName => $column) {
+    $render = $block->renderCellTemplate($columnName);
+    $html .= "<td>$render</td>";
+}
+
+if ($block->isAddAfter()) {
+    $html .= '<td><button class="action-add" type="button" id="addAfterBtn<%- _id %>">';
+    $html .= '<span>Add after</span></button></td>';
+}
+
+$html .= '<td class="col-actions">';
+$html .= '<button onclick="window[\'arrayRow'. $_htmlId.'\'].del(\'<%- _id %>\')" class="action-delete" type="button">';
+$html .= '<span>Delete</span></button></td></tr>';
+$html = json_encode($html);
+
+$templateValues = [];
+foreach ($block->getColumns() as $columnName => $column) {
+    $templateValues[] = $columnName;
+}
+$templateValues = json_encode($templateValues, JSON_FORCE_OBJECT);
+$disabled = (int)$block->getElement()->getDisabled();
+$arrayRows = [];
+foreach ($block->getArrayRows() as $_rowId => $_row) {
+    $arrayRows[] = $_row->toArray();
+}
+$arrayRows = json_encode($arrayRows, JSON_FORCE_OBJECT);
+$isAddAfter = (int)$block->isAddAfter();
 ?>
 
 <div class="design_theme_ua_regexp" id="grid<?php /* @noEscape */ echo $_htmlId; ?>">
@@ -38,7 +68,6 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
                             type="button">
                         <span>
                             <?php /* @noEscape */ echo $block->getAddButtonLabel(); ?>
-                            <?php /* @noEscape */ echo __('Add'); ?>
                         </span>
                     </button>
                 </td>
@@ -48,102 +77,23 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
         </table>
     </div>
     <input type="hidden" name="<?php /* @noEscape */ echo $block->getElement()->getName(); ?>[__empty]" value="" />
-
-    <script>
-        require([
-            'mage/template',
-            'prototype'
-        ], function (mageTemplate) {
-        // create row creator
-        window.arrayRow<?php /* @noEscape */ echo $_htmlId ?> = {
-
-            // define row prototypeJS template
-            template: mageTemplate(
-                    '<tr id="<%- _id %>">'
-                    <?php foreach ($block->getColumns() as $columnName => $column) : ?>
-                            + '<td>'
-                            + '<?php /* @noEscape */ echo $block->renderCellTemplate($columnName)?>'
-                            + '<\/td>'
-                        <?php endforeach; ?>
-
-                    <?php if ($block->isAddAfter()) : ?>
-                            + '<td><button class="action-add" type="button" id="addAfterBtn<%- _id %>">'
-                            + '<span><?php /* @noEscape */ echo __('Add after'); ?><\/span><\/button><\/td>'
-                        <?php endif; ?>
-
-                            + '<td class="col-actions"><button onclick="'
-                            + 'arrayRow<?php /* @noEscape */ echo $_htmlId ?>'
-                            + '.del(\'<%- _id %>\')" class="action-delete" type="button">'
-                            + '<span><?php /* @noEscape */ echo __('Delete'); ?><\/span><\/button><\/td>'
-                            + '<\/tr>'
-            ),
-
-            add: function(rowData, insertAfterId) {
-                // generate default template data
-                var templateValues;
-
-                // Prepare template values
-                if (rowData) {
-                    templateValues = rowData;
-                } else {
-                    var d = new Date();
-                    templateValues = {
-                <?php foreach ($block->getColumns() as $columnName => $column) : ?>
-                    <?php /* @noEscape */ echo $columnName ?>: '',
-                        'option_extra_attrs': {},
-                    <?php endforeach; ?>
-                        _id: '_' + d.getTime() + '_' + d.getMilliseconds()
-                };
-            }
-
-            // Insert new row after specified row or at the bottom
-            if (insertAfterId) {
-            Element.insert($(insertAfterId), {after: this.template(templateValues)});
-        } else {
-            Element.insert($('addRow<?php /* @noEscape */ echo $_htmlId ?>'), {bottom: this.template(templateValues)});
-        }
-
-        // Fill controls with data
-        if (rowData) {
-            var rowInputElementNames = Object.keys(rowData.column_values);
-            for (var i = 0; i < rowInputElementNames.length; i++) {
-                if ($(rowInputElementNames[i])) {
-                    $(rowInputElementNames[i]).value = rowData.column_values[rowInputElementNames[i]];
-                }
-            }
-        }
-
-        // Add event for {addAfterBtn} button
-        <?php if ($block->isAddAfter()) : ?>
-        Event.observe('addAfterBtn' + templateValues._id, 'click', this.add.bind(this, false, templateValues._id));
-            <?php endif; ?>
-        },
-
-        del: function(rowId) {
-            $(rowId).remove();
-        }
-        }
-
-        // bind add action to "Add" button in last row
-        Event.observe(
-            'addToEndBtn<?php /* @noEscape */ echo $_htmlId ?>',
-            'click',
-            arrayRow<?php /* @noEscape */ echo $_htmlId ?>.add.bind(
-                arrayRow<?php /* @noEscape */ echo $_htmlId ?>, false, false
-            )
-        );
-
-        // add existing rows
-        <?php
-        foreach ($block->getArrayRows() as $_rowId => $_row) {
-            /* @noEscape */ echo "arrayRow{$_htmlId}.add(" . $_row->toJson() . ");\n";
-        }
-        ?>
-
-        // Toggle the grid availability, if element is disabled (depending on scope)
-        <?php if ($block->getElement()->getDisabled()) :?>
-        toggleValueElements({checked: true}, $('grid<?php /* @noEscape */ echo $_htmlId; ?>').parentNode);
-            <?php endif;?>
-        });
+    <script type="text/x-magento-init">
+       {
+           "*": {
+               "Magento_Ui/js/core/app": {
+                   "components": {
+                       "array": {
+                           "component": "Fastly_Cdn/js/system/config/form/field/array",
+                           "htmlId": "<?php /* @noEscape */ echo $_htmlId; ?>",
+                           "disabled": "<?php /* @noEscape */ echo $disabled ?>",
+                           "arrayRows": <?php /* @noEscape */ echo $arrayRows ?>,
+                           "templateValues": <?php /* @noEscape */ echo $templateValues; ?>,
+                           "isAddAfter": "<?php /* @noEscape */ echo $isAddAfter; ?>",
+                           "html": <?php /* @noEscape */ echo $html; ?>
+                       }
+                   }
+               }
+           }
+       }
     </script>
 </div>

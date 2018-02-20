@@ -128,10 +128,18 @@
         </table>
     </form>
 
-    <script>
-        require(["jquery","mage/mage"],function($){
-            $('#quick_purge_form').mage('form').mage('validation');
-        });
+    <script type="text/x-magento-init">
+       {
+           "*": {
+               "Magento_Ui/js/core/app": {
+                   "components": {
+                       "additional": {
+                           "component": "Fastly_Cdn/js/system/cache/additional"
+                       }
+                    }
+               }
+           }
+       }
     </script>
     
 <?php endif; ?>

@@ -195,12 +195,15 @@
                         <field id="block" translate="label comment" sortOrder="5" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Blocking]]></label>
                             <comment>
-                                <![CDATA[Block traffic from selected Acl IPs and Countries. Please save config prior to toggling.]]>
+                                <![CDATA[Block traffic from selected Acl IPs and Countries. Please Save Config prior to enabling.]]>
                             </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\BlockingBtn</frontend_model>
                         </field>
                         <field id="update_blocking_snippet" translate="label comment" sortOrder="6" showInDefault="1" showInStore="0" showInWebsite="0">
-                            <label><![CDATA[Update snippet]]></label>
+                            <label><![CDATA[Update blocking]]></label>
+                            <comment>
+                                <![CDATA[Please Save Config first before updating.]]>
+                            </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\UpdateBlockingBtn</frontend_model>
                         </field>
                         <field id="block_by_country" translate="label comment" type="multiselect" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">

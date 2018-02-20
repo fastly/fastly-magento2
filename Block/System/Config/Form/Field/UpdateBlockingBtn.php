@@ -58,7 +58,7 @@ class UpdateBlockingBtn extends Field
             'Magento\Backend\Block\Widget\Button'
         )->setData([
             'id'    => 'fastly_update_blocking_button',
-            'label' => __('Update Snippet')
+            'label' => __('Update Blocking Config')
         ]);
 
         return $button->toHtml();

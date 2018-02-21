@@ -41,14 +41,24 @@ class UpdateBlocking extends Action
      */
     private $vcl;
 
+    /**
+     * @var ConfigWriter
+     */
     private $configWriter;
 
+    /**
+     * @var CacheTypeList
+     */
     private $cacheTypeList;
 
+    /**
+     * @var SystemConfig
+     */
     private $systemConfig;
 
     /**
      * UpdateBlocking constructor.
+     *
      * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
@@ -57,6 +67,7 @@ class UpdateBlocking extends Action
      * @param Vcl $vcl
      * @param ConfigWriter $configWriter
      * @param CacheTypeList $cacheTypeList
+     * @param SystemConfig $systemConfig
      */
     public function __construct(
         Context $context,

@@ -101,6 +101,7 @@ class SaveErrorPageHtml extends Action
                 'name' => Config::FASTLY_MAGENTO_MODULE.'_error_page_condition',
                 'statement' => 'req.http.ResponseObject == "970"',
                 'type' => 'REQUEST',
+                'priority' => '9'
             ];
 
             $createCondition = $this->api->createCondition($clone->number, $condition);

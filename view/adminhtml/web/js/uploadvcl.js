@@ -660,7 +660,7 @@ define([
                 vcl.checkImageSetting(active_version, true).done(function (response) {
                     if(response.status === false) {
                         errorImageBtnMsg.text($.mage.__('Something went wrong. Please check log files.')).show();
-                        return; // Error occured, escape
+                        return; // Error occurred, escape
                     }
 
                     vcl.showPopup('fastly-image-options');

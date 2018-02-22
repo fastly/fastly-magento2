@@ -9,12 +9,12 @@ use Magento\Framework\Data\Form\Element\AbstractElement;
 
 class ImageBtn extends Field
 {
-    protected $_template = 'Fastly_Cdn::system/config/form/field/imageBtn.phtml';
+    private $template = 'Fastly_Cdn::system/config/form/field/imageBtn.phtml';
 
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
      * ImageBtn constructor.
@@ -36,10 +36,9 @@ class ImageBtn extends Field
     /**
      * Return element html
      *
-     * @param  AbstractElement $element
      * @return string
      */
-    protected function _getElementHtml(AbstractElement $element)
+    private function getElementHtml()
     {
         return $this->_toHtml();
     }
@@ -60,9 +59,8 @@ class ImageBtn extends Field
     }
 
     /**
-     * Generate upload button html
-     *
-     * @return string
+     * @return mixed
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getButtonHtml()
     {
@@ -74,7 +72,6 @@ class ImageBtn extends Field
                 'label' => __('Enable/Disable'),
             ]
         );
-
         return $button->toHtml();
     }
 }

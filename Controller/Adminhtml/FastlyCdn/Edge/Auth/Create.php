@@ -2,43 +2,46 @@
 
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Auth;
 
-use \Magento\Framework\App\Request\Http;
-use \Magento\Framework\Controller\Result\JsonFactory;
-use \Fastly\Cdn\Model\Config;
+use Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl\CheckAuthSetting;
 use Fastly\Cdn\Model\Api;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Request\Http;
+use Magento\Framework\Controller\Result\JsonFactory;
+use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Helper\Vcl;
 
-class Create extends \Magento\Backend\App\Action
+class Create extends Action
 {
     /**
      * @var Http
      */
-    protected $request;
+    private $request;
 
     /**
      * @var JsonFactory
      */
-    protected $resultJson;
+    private $resultJson;
 
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
-    protected $api;
+    private $api;
 
     /**
      * @var Vcl
      */
-    protected $vcl;
+    private $vcl;
 
     /**
      * ForceTls constructor.
      *
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
      * @param Config $config
@@ -46,19 +49,19 @@ class Create extends \Magento\Backend\App\Action
      * @param Vcl $vcl
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
         Config $config,
         Api $api,
         Vcl $vcl
-    )
-    {
+    ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
         $this->config = $config;
         $this->api = $api;
         $this->vcl = $vcl;
+
         parent::__construct($context);
     }
 
@@ -70,51 +73,36 @@ class Create extends \Magento\Backend\App\Action
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
             $service = $this->api->checkServiceDetails();
+            $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
+            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
 
-            if(!$service) {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to check Service details.'));
-            }
-
-            $currActiveVersion = $this->vcl->determineVersions($service->versions);
-
-            if($currActiveVersion['active_version'] != $activeVersion) {
-                return $result->setData(array('status' => false, 'msg' => 'Active versions mismatch.'));
-            }
-
-            $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
-
-            if(!$clone) {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to clone active version.'));
-            }
+            $clone = $this->api->cloneVersion($currActiveVersion);
 
             // Create Auth Dictionary if needed
-            $dictonaryName = \Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl\CheckAuthSetting::AUTH_DICTIONARY_NAME;
-            $dictionary = $this->api->getSingleDictionary($activeVersion, $dictonaryName);
+            $dictonaryName = CheckAuthSetting::AUTH_DICTIONARY_NAME;
+            $dictionary = $this->api->getAuthDictionary($activeVersion);
 
             // Fetch Authentication items
-            if((is_array($dictionary) && empty($dictionary)) || $dictionary == false)
-            {
+            if ((is_array($dictionary) && empty($dictionary)) || $dictionary == false) {
                 $params = ['name' => $dictonaryName];
-                $createDictionary = $this->api->createDictionary($clone->number, $params);
-
-                if(!$createDictionary) {
-                    return $result->setData(array('status' => false, 'msg' => 'Failed to create Dictionary container.'));
-                }
+                $this->api->createDictionary($clone->number, $params);
             }
 
-            $validate = $this->api->validateServiceVersion($clone->number);
+            $this->api->validateServiceVersion($clone->number);
 
-            if($validate->status == 'error') {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to validate service version: '.$validate->msg));
-            }
-
-            if($activateVcl === 'true') {
+            if ($activateVcl === 'true') {
                 $this->api->activateVersion($clone->number);
             }
 
-            return $result->setData(array('status' => true, 'active_version' => $clone->number));
+            return $result->setData([
+                'status'            => true,
+                'active_version'    => $clone->number
+            ]);
         } catch (\Exception $e) {
-            return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
+            return $result->setData([
+                'status'    => false,
+                'msg'       => $e->getMessage()
+            ]);
         }
     }
 }

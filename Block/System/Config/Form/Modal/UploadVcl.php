@@ -2,14 +2,12 @@
 
 namespace Fastly\Cdn\Block\System\Config\Form\Modal;
 
-use Magento\Framework\View\Element\AbstractBlock;
-
-
 class UploadVcl extends \Magento\Backend\Block\Template
 {
-    protected function _prepareLayout()
+    protected function _prepareLayout() // @codingStandardsIgnoreLine - required by parent class
     {
         parent::_prepareLayout();
+
         $this->addChild('dialogs', 'Fastly\Cdn\Block\System\Config\Form\Dialogs');
     }
 

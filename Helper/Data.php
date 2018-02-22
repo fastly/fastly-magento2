@@ -2,10 +2,10 @@
 
 namespace Fastly\Cdn\Helper;
 
-use \Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\Module\ModuleListInterface;
-use \Magento\Store\Model\StoreManagerInterface;
+use Magento\Store\Model\StoreManagerInterface;
 
 class Data extends AbstractHelper
 {
@@ -14,12 +14,12 @@ class Data extends AbstractHelper
     /**
      * @var ModuleListInterface
      */
-    protected $_moduleList;
+    private $moduleList;
 
     /**
      * @var StoreManagerInterface
      */
-    protected $_storeManager;
+    private $storeManager;
 
     /**
      * Data constructor.
@@ -31,10 +31,9 @@ class Data extends AbstractHelper
         Context $context,
         ModuleListInterface $moduleList,
         StoreManagerInterface $storeManager
-    )
-    {
-        $this->_moduleList = $moduleList;
-        $this->_storeManager = $storeManager;
+    ) {
+        $this->moduleList = $moduleList;
+        $this->storeManager = $storeManager;
 
         parent::__construct($context);
     }
@@ -46,7 +45,7 @@ class Data extends AbstractHelper
      */
     public function getModuleVersion()
     {
-        return $this->_moduleList->getOne(self::FASTLY_MODULE_NAME)['setup_version'];
+        return $this->moduleList->getOne(self::FASTLY_MODULE_NAME)['setup_version'];
     }
 
     /**
@@ -56,7 +55,7 @@ class Data extends AbstractHelper
      */
     public function getStoreName()
     {
-        return $this->_storeManager->getStore()->getName();
+        return $this->storeManager->getStore()->getName();
     }
 
     /**
@@ -66,6 +65,6 @@ class Data extends AbstractHelper
      */
     public function getStoreUrl()
     {
-        return $this->_storeManager->getStore()->getBaseUrl();
+        return $this->storeManager->getStore()->getBaseUrl();
     }
 }

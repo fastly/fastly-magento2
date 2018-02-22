@@ -20,7 +20,6 @@
  */
 namespace Fastly\Cdn\Console\Command;
 
-use Fastly\Cdn\Model\Config;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -28,33 +27,22 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GenerateVclCommand extends Command
 {
     /**
-     * @var Config
-     */
-    protected $_config;
-
-    /**
      * @inheritdoc
      */
-    protected function configure()
+    protected function configure() // @codingStandardsIgnoreLine - required by parent class
     {
         $this->setName('fastly:vcl:generate')
-            ->setDescription('Generates Fastly VCL and echos it to the command line');
-    }
-
-    /**
-     * @param Config $config
-     */
-    public function __construct(Config $config) {
-        parent::__construct();
-        $this->_config = $config;
+            ->setDescription('DEPRECATED: Generates Fastly VCL and echos it to the command line');
     }
 
     /**
      * @inheritdoc
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output) // @codingStandardsIgnoreLine - required by parent class
     {
-        $vcl = $this->_config->getVclFile(\Magento\PageCache\Model\Config::VARNISH_4_CONFIGURATION_PATH);
-        $output->writeln($vcl);
+        $output->writeln(
+            "Fastly custom VCL use been deprecated."
+                . "Please upload VCL snippets from the Magento admin UI or using the CLI commands."
+        );
     }
 }

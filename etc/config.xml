@@ -29,6 +29,9 @@
                     <fastly_advanced_configuration>
                         <stale_ttl>86400</stale_ttl>
                         <stale_error_ttl>86400</stale_error_ttl>
+                        <admin_path_timeout>180</admin_path_timeout>
+                        <ignored_url_parameters>utm_.*, gclid, gdftrk, _ga, mc_.*</ignored_url_parameters>
+                        <preserve_static>0</preserve_static>
                         <soft_purge>1</soft_purge>
                         <purge_catalog_category>0</purge_catalog_category>
                         <purge_catalog_product>1</purge_catalog_product>
@@ -40,6 +43,7 @@
                         <enable_webhooks>0</enable_webhooks>
                         <publish_key_url_purge_events>1</publish_key_url_purge_events>
                         <publish_purge_all_items_events>1</publish_purge_all_items_events>
+                        <publish_purge_all_trace>0</publish_purge_all_trace>
                         <publish_config_change_events>1</publish_config_change_events>
                     </fastly_web_hooks>
                 </fastly>

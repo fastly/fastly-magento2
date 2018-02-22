@@ -23,33 +23,44 @@ namespace Fastly\Cdn\Model;
 class PurgeCache
 {
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
-    protected $api;
+    private $api;
+
+    /**
+     * @var Config
+     */
+    private $config;
 
     /**
      * Constructor
      *
      * @param Api $api
+     * @param Config $config
      */
-    public function __construct(Api $api)
+    public function __construct(Api $api, Config $config)
     {
         $this->api = $api;
+        $this->config = $config;
     }
 
     /**
      * Send API purge request to invalidate cache by pattern
      *
-     * @param string or array $pattern
+     * @param string|array $pattern
      * @return bool Return true if successful; otherwise return false
      */
     public function sendPurgeRequest($pattern = '')
     {
         if (empty($pattern)) {
-            $result = $this->api->cleanAll();
+            if ($this->config->canPreserveStatic()) {
+                $result = $this->api->cleanBySurrogateKey(['text']);
+            } else {
+                $result = $this->api->cleanAll();
+            }
         } elseif (!is_array($pattern) && strpos($pattern, 'http') === 0) {
             $result = $this->api->cleanUrl($pattern);
-        } else if (is_array($pattern)) {
+        } elseif (is_array($pattern)) {
             $result = $this->api->cleanBySurrogateKey($pattern);
         } else {
             return false;

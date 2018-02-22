@@ -2,7 +2,7 @@
     "name": "fastly/magento2",
     "description": "Fastly CDN Module for Magento 2.x",
     "require": {
-        "php": "~5.5.0|~5.6.0|~7.0.0",
+        "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0",
         "magento/module-config": ">=100.0.0",
         "magento/module-store": ">=100.0.0",
         "magento/module-page-cache": ">=100.0.0",
@@ -10,10 +10,8 @@
         "magento/framework": ">=100.0.0"
     },
     "type": "magento2-module",
-    "version": "1.2.31",
-    "license": [
-        "BSD"
-    ],
+    "version": "1.2.42",
+    "license": "BSD-3-Clause",
     "autoload": {
         "files": [ "registration.php" ],
         "psr-4": {

@@ -41,17 +41,17 @@ class CheckAuthSetting extends Action
     /**
      * @var \Fastly\Cdn\Model\Api
      */
-    protected $api;
+    private $api;
 
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
      * @var JsonFactory
      */
-    protected $resultJsonFactory;
+    private $resultJsonFactory;
 
     /**
      * CheckTlsSetting constructor.
@@ -87,11 +87,11 @@ class CheckAuthSetting extends Action
             $activeVersion = $this->getRequest()->getParam('active_version');
             $snippets = $this->config->getVclSnippets(self::VCL_AUTH_SNIPPET_PATH);
 
-            foreach($snippets as $key => $value) {
+            foreach ($snippets as $key => $value) {
                 $name = Config::FASTLY_MAGENTO_MODULE . '_basic_auth_' . $key;
                 $status = $this->api->hasSnippet($activeVersion, $name);
 
-                if($status == false) {
+                if ($status == false) {
                     return $result->setData(['status' => false]);
                 }
             }

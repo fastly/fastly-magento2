@@ -31,41 +31,35 @@ use \Magento\Framework\App\Config\Storage\WriterInterface;
 
 class SendInstalledRequestToGA implements ObserverInterface
 {
-
     /**
      * @var Manager
      */
-    protected $_moduleManager;
+    private $moduleManager;
 
     /**
      * @var StatisticRepository
      */
-    protected $_statisticRepo;
+    private $statisticRepo;
 
     /**
      * @var Statistic
      */
-    protected $_statistic;
-
-    /**
-     * @var StatisticFactory
-     */
-    protected $_statisticFactory;
+    private $statistic;
 
     /**
      * @var Data
      */
-    protected $_helper;
+    private $helper;
 
     /**
      * @var Config
      */
-    protected $_config;
+    private $config;
 
     /**
      * @var \Magento\Framework\App\Config\Storage\WriterInterface
      */
-    protected $_configWriter;
+    private $configWriter;
 
     /**
      * SendInstalledRequestToGA constructor
@@ -73,44 +67,49 @@ class SendInstalledRequestToGA implements ObserverInterface
      * @param Manager $manager
      * @param StatisticRepository $statisticRepository
      * @param Statistic $statistic
-     * @param StatisticFactory $statisticFactory
      * @param Data $helper
      * @param Config $config
      * @param WriterInterface $configWriter
      */
-    public function __construct(Manager $manager, StatisticRepository $statisticRepository, Statistic $statistic,
-                                StatisticFactory $statisticFactory, Data $helper, Config $config, WriterInterface $configWriter)
-    {
-        $this->_moduleManager = $manager;
-        $this->_statisticRepo = $statisticRepository;
-        $this->_statistic = $statistic;
-        $this->_statisticFactory = $statisticFactory;
-        $this->_helper = $helper;
-        $this->_config = $config;
-        $this->_configWriter = $configWriter;
+    public function __construct(
+        Manager $manager,
+        StatisticRepository $statisticRepository,
+        Statistic $statistic,
+        Data $helper,
+        Config $config,
+        WriterInterface $configWriter
+    ) {
+        $this->moduleManager = $manager;
+        $this->statisticRepo = $statisticRepository;
+        $this->statistic = $statistic;
+        $this->helper = $helper;
+        $this->config = $config;
+        $this->configWriter = $configWriter;
     }
 
     /**
      * @param \Magento\Framework\Event\Observer $observer
+     * @throws \Exception
+     * @throws \Magento\Framework\Exception\AlreadyExistsException
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function execute(\Magento\Framework\Event\Observer $observer) // @codingStandardsIgnoreLine - unused parameter
     {
-        if ($this->_moduleManager->isEnabled(Statistic::FASTLY_MODULE_NAME)) {
-            $stat = $this->_statisticRepo->getStatByAction(Statistic::FASTLY_INSTALLED_FLAG);
-            if($stat->getSent() == false) {
-                $sendGAReq = $this->_statistic->sendInstalledReq();
-                if($sendGAReq) {
+        if ($this->moduleManager->isEnabled(Statistic::FASTLY_MODULE_NAME)) {
+            $stat = $this->statisticRepo->getStatByAction(Statistic::FASTLY_INSTALLED_FLAG);
+            if ($stat->getSent() == false) {
+                $sendGAReq = $this->statistic->sendInstalledReq();
+                if ($sendGAReq) {
                     $stat->setState(false);
                     $stat->setAction(Statistic::FASTLY_INSTALLED_FLAG);
                     $stat->setSent($sendGAReq);
-                    $this->_statisticRepo->save($stat);
+                    $this->statisticRepo->save($stat);
                 }
             }
         }
 
-        if ($this->_helper->getModuleVersion() > $this->_config->getFastlyVersion()) {
-            $this->_statistic->sendUpgradeRequest();
-            $this->_configWriter->save(Config::XML_FASTLY_MODULE_VERSION, $this->_helper->getModuleVersion());
+        if ($this->helper->getModuleVersion() > $this->config->getFastlyVersion()) {
+            $this->statistic->sendUpgradeRequest();
+            $this->configWriter->save(Config::XML_FASTLY_MODULE_VERSION, $this->_helper->getModuleVersion());
         }
     }
 }

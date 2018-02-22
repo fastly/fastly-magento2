@@ -1,23 +1,12 @@
 <?php
+
 namespace Fastly\Cdn\Block\System\Config\Form\Field\Export;
 
-use Magento\Backend\Block\Template\Context;
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 
 class Fastly extends Field
 {
-    /**
-     * @param Context $context
-     * @param array $data
-     */
-    public function __construct(
-        Context $context,
-        array $data = []
-    ) {
-        parent::__construct($context, $data);
-    }
-
     /**
      * Remove scope label
      *
@@ -31,12 +20,13 @@ class Fastly extends Field
     }
 
     /**
-     * Return element html
+     * Return element HTML
      *
-     * @param  AbstractElement $element
-     * @return string
+     * @param AbstractElement $element
+     * @return mixed|string
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    protected function _getElementHtml(AbstractElement $element)
+    protected function _getElementHtml(AbstractElement $element) // @codingStandardsIgnoreLine - required by parent class
     {
         return $this->getButtonHtml();
     }
@@ -48,13 +38,14 @@ class Fastly extends Field
      */
     public function getExportUrl()
     {
-       return $this->getUrl('adminhtml/fastlyCdn/exportVarnishConfig');
+        return $this->getUrl('adminhtml/fastlyCdn/exportVarnishConfig');
     }
 
     /**
-     * Generate upload button html
+     * Generate Edge button HTML
      *
-     * @return string
+     * @return mixed
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getButtonHtml()
     {

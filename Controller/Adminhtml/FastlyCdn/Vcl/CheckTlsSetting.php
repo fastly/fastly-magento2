@@ -34,17 +34,17 @@ class CheckTlsSetting extends Action
     /**
      * @var \Fastly\Cdn\Model\Api
      */
-    protected $api;
+    private $api;
 
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
      * @var JsonFactory
      */
-    protected $resultJsonFactory;
+    private $resultJsonFactory;
 
     /**
      * CheckTlsSetting constructor.
@@ -80,7 +80,7 @@ class CheckTlsSetting extends Action
             $activeVersion = $this->getRequest()->getParam('active_version');
             $req = $this->api->getRequest($activeVersion, self::FORCE_TLS_SETTING_NAME);
 
-            if($req == false) {
+            if ($req == false) {
                 return $result->setData(['status' => false]);
             }
 

@@ -16,7 +16,7 @@
 
     # Remove Set-Cookies from responses for static content
     # to match the cookie removal in recv.
-    if (req.url ~ "^/(pub/)?(media|static)/") {
+    if (req.http.x-long-cache || req.url ~ "^/(pub/)?(media|static)/") {
         unset beresp.http.set-cookie;
 
         # Set a short TTL for 404's since those can be temporary during the site build/index
@@ -24,6 +24,12 @@
             set beresp.ttl = 300s;
         }
 
+    }
+
+    # Force caching for signed cached assets.
+    if (req.http.x-long-cache) {
+        set beresp.ttl = 31536000s;
+        set beresp.http.Cache-Control = "max-age=31536000, immutable";
     }
 
     if (beresp.http.Content-Type ~ "text/(html|xml)") {
@@ -40,8 +46,8 @@
         # compress it
         set beresp.http.x-compress-hint = "on";
     } else {
-        # enable gzip for all static content
-        if (http_status_matches(beresp.status, "200,404") && (beresp.http.content-type ~ "^(application\/x\-javascript|text\/css|application\/javascript|text\/javascript|application\/json|application\/vnd\.ms\-fontobject|application\/x\-font\-opentype|application\/x\-font\-truetype|application\/x\-font\-ttf|application\/xml|font\/eot|font\/opentype|font\/otf|image\/svg\+xml|image\/vnd\.microsoft\.icon|text\/plain)\s*($|;)" || req.url.ext ~ "(?i)(css|js|html|eot|ico|otf|ttf|json)" ) ) {
+        # enable gzip for all static content except
+        if ( http_status_matches(beresp.status, "200,404") && (beresp.http.content-type ~ "^(application\/x\-javascript|text\/css|application\/javascript|text\/javascript|application\/json|application\/vnd\.ms\-fontobject|application\/x\-font\-opentype|application\/x\-font\-truetype|application\/x\-font\-ttf|application\/xml|font\/eot|font\/opentype|font\/otf|image\/svg\+xml|image\/vnd\.microsoft\.icon|text\/plain)\s*($|;)" || req.url.ext ~ "(?i)(css|js|html|eot|ico|otf|ttf|json)" ) ) {
             # always set vary to make sure uncompressed versions dont always win
             if (!beresp.http.Vary ~ "Accept-Encoding") {
                 if (beresp.http.Vary) {
@@ -96,5 +102,4 @@
         if (beresp.http.Content-Type ~ "(image|script|css)") {
             set beresp.http.Surrogate-Key = re.group.1;
         }
-        return (deliver);
     }

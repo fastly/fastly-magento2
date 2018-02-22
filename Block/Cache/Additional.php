@@ -32,9 +32,11 @@ class Additional extends \Magento\Backend\Block\Template
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
+     * Additional constructor.
+     *
      * @param \Magento\Backend\Block\Template\Context $context
      * @param Config $config
      * @param array $data
@@ -45,6 +47,7 @@ class Additional extends \Magento\Backend\Block\Template
         array $data = []
     ) {
         $this->config = $config;
+
         parent::__construct($context, $data);
     }
 
@@ -78,6 +81,14 @@ class Additional extends \Magento\Backend\Block\Template
     }
 
     /**
+     * @return string
+     */
+    public function getPurgeAllUrl()
+    {
+        return $this->getUrl('*/fastlyCdn_purge/all');
+    }
+
+    /**
      *
      *
      * @return string
@@ -94,7 +105,6 @@ class Additional extends \Magento\Backend\Block\Template
     {
         return $this->_storeManager->getStores();
     }
-
 
     /**
      * Get content types as option array

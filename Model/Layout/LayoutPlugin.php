@@ -30,17 +30,17 @@ class LayoutPlugin
     /**
      * @var \Magento\PageCache\Model\Config
      */
-    protected $config;
+    private $config;
 
     /**
      * @var \Magento\Framework\App\ResponseInterface
      */
-    protected $response;
+    private $response;
 
     /**
      * @var \Fastly\Cdn\Helper\CacheTags
      */
-    protected $cacheTags;
+    private $cacheTags;
 
     /**
      * Constructor
@@ -87,9 +87,11 @@ class LayoutPlugin
             }
         }
 
-        # Surface the cacheability of a page. This may expose things like page blocks being set to
-        # cacheable = false which makes the whole page uncacheable
-        if ($subject->isCacheable() ) {
+        /*
+         * Surface the cacheability of a page. This may expose things like page blocks being set to
+         * cacheable = false which makes the whole page uncacheable
+         */
+        if ($subject->isCacheable()) {
             $this->response->setHeader("fastly-page-cacheable", "YES");
         } else {
             $this->response->setHeader("fastly-page-cacheable", "NO");
@@ -106,13 +108,12 @@ class LayoutPlugin
      * @param mixed $result
      * @return mixed
      */
-    public function afterGetOutput(\Magento\Framework\View\Layout $subject, $result)
+    public function afterGetOutput(\Magento\Framework\View\Layout $subject, $result) // @codingStandardsIgnoreLine - unused parameter
     {
         if ($this->config->getType() == Config::FASTLY) {
-            $this->response->setHeader("Fastly-Module-Enabled", "1.2.31", true);
+            $this->response->setHeader("Fastly-Module-Enabled", "1.2.42", true);
         }
 
         return $result;
     }
 }
-

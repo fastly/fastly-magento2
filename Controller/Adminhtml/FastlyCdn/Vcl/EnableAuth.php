@@ -2,43 +2,47 @@
 
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
 
-use \Magento\Framework\App\Request\Http;
-use \Magento\Framework\Controller\Result\JsonFactory;
-use \Fastly\Cdn\Model\Config;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Request\Http;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\Result\JsonFactory;
+use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
+use Magento\Framework\Controller\ResultInterface;
 
-class EnableAuth extends \Magento\Backend\App\Action
+class EnableAuth extends Action
 {
     /**
      * @var Http
      */
-    protected $request;
+    private $request;
 
     /**
      * @var JsonFactory
      */
-    protected $resultJson;
+    private $resultJson;
 
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
      * @var \Fastly\Cdn\Model\Api
      */
-    protected $api;
+    private $api;
 
     /**
      * @var Vcl
      */
-    protected $vcl;
+    private $vcl;
 
     /**
      * ForceTls constructor.
      *
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
      * @param Config $config
@@ -46,140 +50,105 @@ class EnableAuth extends \Magento\Backend\App\Action
      * @param Vcl $vcl
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
         Config $config,
         Api $api,
         Vcl $vcl
-    )
-    {
+    ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
         $this->config = $config;
         $this->api = $api;
         $this->vcl = $vcl;
+
         parent::__construct($context);
     }
 
     /**
      * Upload Auth VCL snippets
      *
-     * @return $resultJsonFactory
+     * @return $this|ResponseInterface|ResultInterface
      */
     public function execute()
     {
         $result = $this->resultJson->create();
+
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
             $service = $this->api->checkServiceDetails();
             $enabled = false;
-
-            if(!$service) {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to check Service details.'));
-            }
-
-            $currActiveVersion = $this->vcl->determineVersions($service->versions);
-
-            if($currActiveVersion['active_version'] != $activeVersion) {
-                return $result->setData(array('status' => false, 'msg' => 'Active versions mismatch.'));
-            }
+            $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
+            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
 
             $vclPath = \Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl\CheckAuthSetting::VCL_AUTH_SNIPPET_PATH;
             $snippets = $this->config->getVclSnippets($vclPath);
 
             // Check if snippets exist
             $status = true;
-            foreach($snippets as $key => $value)
-            {
+            foreach ($snippets as $key => $value) {
                 $name = Config::FASTLY_MAGENTO_MODULE.'_basic_auth_'.$key;
                 $status = $this->api->getSnippet($activeVersion, $name);
 
-                if(!$status) {
+                if (!$status) {
                     break;
                 }
             }
 
-            if(!$status)
-            {
+            if (!$status) {
                 // Check if Auth has entries
-                $dictionary = $this->api->getSingleDictionary($activeVersion, 'magentomodule_basic_auth');
-
-                // Fetch Authentication items
-                if((is_array($dictionary) && empty($dictionary)) || !isset($dictionary->id))
-                {
-                    return $result->setData(array('status' => 'empty', 'msg' => 'You must add users in order to enable Basic Authentication.'));
-                }
-
-                $authItems = $this->api->dictionaryItemsList($dictionary->id);
-
-                if(is_array($authItems) && empty($authItems))
-                {
-                    return $result->setData(array('status' => 'empty', 'msg' => 'You must add users in order to enable Basic Authentication.'));
-                }
-
-                $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
-
-                if(!$clone) {
-                    return $result->setData(array('status' => false, 'msg' => 'Failed to clone active version.'));
-                }
+                $this->api->checkAuthDictionaryPopulation($activeVersion);
+                $clone = $this->api->cloneVersion($currActiveVersion);
 
                 // Insert snippet
-                foreach($snippets as $key => $value)
-                {
-                    $snippetData = array(
+                foreach ($snippets as $key => $value) {
+                    $snippetData = [
                         'name' => Config::FASTLY_MAGENTO_MODULE.'_basic_auth_'.$key,
                         'type' => $key,
                         'dynamic' => "0",
                         'content' => $value,
                         'priority' => 40
-                    );
-                    $status = $this->api->uploadSnippet($clone->number, $snippetData);
-
-                    if(!$status) {
-                        return $result->setData(array('status' => false, 'msg' => 'Failed to upload the Snippet file.'));
-                    }
+                    ];
+                    $this->api->uploadSnippet($clone->number, $snippetData);
                 }
 
                 $enabled = true;
             } else {
-
-                $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
-
-                if(!$clone) {
-                    return $result->setData(array('status' => false, 'msg' => 'Failed to clone active version.'));
-                }
+                $clone = $this->api->cloneVersion($currActiveVersion);
 
                 // Remove snippets
-                foreach($snippets as $key => $value)
-                {
+                foreach ($snippets as $key => $value) {
                     $name = Config::FASTLY_MAGENTO_MODULE.'_basic_auth_'.$key;
-                    $status = $this->api->removeSnippet($clone->number, $name);
+                    $this->api->removeSnippet($clone->number, $name);
                 }
             }
 
-            $validate = $this->api->validateServiceVersion($clone->number);
+            $this->api->validateServiceVersion($clone->number);
 
-            if($validate->status == 'error') {
-                return $result->setData(array('status' => false, 'msg' => 'Failed to validate service version: '.$validate->msg));
-            }
-
-            if($activateVcl === 'true') {
+            if ($activateVcl === 'true') {
                 $this->api->activateVersion($clone->number);
             }
 
             if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-                if(!$enabled) {
-                    $this->api->sendWebHook('*Basic Authentication has been turned OFF in Fastly version '. $clone->number . '*');
+                if (!$enabled) {
+                    $this->api->sendWebHook(
+                        '*Basic Authentication has been turned OFF in Fastly version ' . $clone->number . '*'
+                    );
                 } else {
-                    $this->api->sendWebHook('*Basic Authentication has been turned ON in Fastly version '. $clone->number . '*');
+                    $this->api->sendWebHook(
+                        '*Basic Authentication has been turned ON in Fastly version '. $clone->number . '*'
+                    );
                 }
             }
 
-            return $result->setData(array('status' => true));
+            return $result->setData(['status' => true]);
         } catch (\Exception $e) {
-            return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
+            return $result->setData([
+                'status'    => false,
+                'msg'       => $e->getMessage()
+            ]);
         }
     }
 }

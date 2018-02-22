@@ -20,6 +20,7 @@
  */
 namespace Fastly\Cdn\Model;
 
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\Adapter\CurlFactory;
 use Magento\Framework\Cache\InvalidateLogger;
 use Fastly\Cdn\Helper\Data;
@@ -32,31 +33,37 @@ class Api
     const FASTLY_HEADER_SOFT_PURGE = 'Fastly-Soft-Purge';
     const PURGE_TIMEOUT        = 10;
     const PURGE_TOKEN_LIFETIME = 30;
+    const FASTLY_MAX_HEADER_KEY_SIZE = 256;
 
     /**
      * @var Config $config,
      */
-    protected $config;
+    private $config;
 
     /**
      * @var \Magento\Framework\HTTP\Adapter\CurlFactory
      */
-    protected $curlFactory;
+    private $curlFactory;
 
     /**
      * @var InvalidateLogger
      */
-    protected $logger;
+    private $logger;
 
     /**
      * @var Data
      */
-    protected $helper;
+    private $helper;
 
     /**
      * @var LoggerInterface
      */
-    protected $log;
+    private $log;
+
+    /**
+     * @var bool Purge all flag
+     */
+    private $purged = false;
 
     /**
      * Api constructor.
@@ -85,7 +92,7 @@ class Api
      *
      * @return string
      */
-    protected function _getApiServiceUri()
+    private function _getApiServiceUri()
     {
         $uri = $this->config->getApiEndpoint()
             . 'service/'
@@ -100,7 +107,7 @@ class Api
      *
      * @return string
      */
-    protected function _getHistoricalEndpoint()
+    private function _getHistoricalEndpoint()
     {
         $uri = $this->config->getApiEndpoint() . 'stats/service/' . $this->config->getServiceId();
 
@@ -135,27 +142,48 @@ class Api
     public function cleanBySurrogateKey($keys)
     {
         $uri = $this->_getApiServiceUri() . 'purge';
-        $payload = json_encode(['surrogate_keys' => $keys]);
-        if ($result = $this->_purge($uri, \Zend_Http_Client::POST, $payload)) {
-            foreach ($keys as $key) {
-                $this->logger->execute('surrogate key: ' . $key);
-            }
+        $num = count($keys);
+        $result = false;
+        if ($num >= self::FASTLY_MAX_HEADER_KEY_SIZE) {
+            $parts = $num / self::FASTLY_MAX_HEADER_KEY_SIZE;
+            $additional = ($parts > (int)$parts) ? 1 : 0;
+            $parts = (int)$parts + (int)$additional;
+            $chunks = ceil($num/$parts);
+            $collection = array_chunk($keys, $chunks);
+        } else {
+            $collection = [$keys];
         }
 
-        if ($this->config->areWebHooksEnabled() && $this->config->canPublishKeyUrlChanges()) {
-            $this->sendWebHook('*clean by key on ' . join(" ", $keys) . '*');
+        foreach ($collection as $keys) {
+            $payload = json_encode(['surrogate_keys' => $keys]);
+            if ($result = $this->_purge($uri, \Zend_Http_Client::POST, $payload)) {
+                foreach ($keys as $key) {
+                    $this->logger->execute('surrogate key: ' . $key);
+                }
+            }
+
+            if ($this->config->areWebHooksEnabled() && $this->config->canPublishKeyUrlChanges()) {
+                $status = $result ? '' : 'FAILED ';
+                $this->sendWebHook($status . '*clean by key on ' . join(" ", $keys) . '*');
+            }
         }
 
         return $result;
     }
 
     /**
-     * Purge all of Fastly's CDN content
+     * Purge all of Fastly's CDN content. Can be called only once per request
      *
      * @return bool
      */
     public function cleanAll()
     {
+        // Check if purge has been requested on this request
+        if ($this->purged == true) {
+            return true;
+        }
+        $this->purged = true;
+
         $uri = $this->_getApiServiceUri() . 'purge_all';
         if ($result = $this->_purge($uri)) {
             $this->logger->execute('clean all items');
@@ -163,6 +191,18 @@ class Api
 
         if ($this->config->areWebHooksEnabled() && $this->config->canPublishPurgeAllChanges()) {
             $this->sendWebHook('*initiated clean/purge all*');
+
+            if ($this->config->canPublishDebugBacktrace() == false) {
+                return $result;
+            }
+            
+            $stackTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+            $trace = [];
+            foreach ($stackTrace as $row => $data) {
+                $trace[] = "#{$row} {$data['file']}:{$data['line']} -> {$data['function']}()";
+            }
+
+            $this->sendWebHook('*Purge all backtrace:*```' .  implode("\n", $trace) . '```');
         }
 
         return $result;
@@ -176,37 +216,40 @@ class Api
      * @param null $payload
      * @return bool
      */
-    protected function _purge($uri, $method = \Zend_Http_Client::POST, $payload = null)
+    private function _purge($uri, $method = \Zend_Http_Client::POST, $payload = null)
     {
 
-        if($method == 'PURGE') {
+        if ($method == 'PURGE') {
             // create purge token
             $expiration   = time() + self::PURGE_TOKEN_LIFETIME;
-            $stringToSign = parse_url($uri, PHP_URL_PATH) . $expiration;
+
+            $zendUri = \Zend_Uri::factory($uri);
+            $path = $zendUri->getPath();
+            $stringToSign = $path . $expiration;
             $signature    = hash_hmac('sha1', $stringToSign, $this->config->getServiceId());
             $token        = $expiration . '_' . urlencode($signature);
             $headers = [
                 self::FASTLY_HEADER_TOKEN . ': ' . $token
             ];
-
         } else {
-
             // set headers
             $headers = [
                 self::FASTLY_HEADER_AUTH  . ': ' . $this->config->getApiKey()
             ];
-
         }
 
         // soft purge if needed
         if ($this->config->canUseSoftPurge()) {
-            array_push( $headers, self::FASTLY_HEADER_SOFT_PURGE . ': 1' );
+            array_push(
+                $headers,
+                self::FASTLY_HEADER_SOFT_PURGE . ': 1'
+            );
         }
 
         try {
             $client = $this->curlFactory->create();
             $client->setConfig(['timeout' => self::PURGE_TIMEOUT]);
-            if($method == 'PURGE') {
+            if ($method == 'PURGE') {
                 $client->addOption(CURLOPT_CUSTOMREQUEST, 'PURGE');
             }
             $client->write($method, $uri, '1.1', $headers, $payload);
@@ -216,7 +259,7 @@ class Api
 
             // check response
             if ($responseCode != '200') {
-                throw new \Exception('Return status ' . $responseCode);
+                throw new LocalizedException(__('Return status ' . $responseCode));
             }
         } catch (\Exception $e) {
             $this->logger->critical($e->getMessage(), $uri);
@@ -225,7 +268,6 @@ class Api
 
         return true;
     }
-
 
     /**
      * Get the logged in customer details
@@ -242,15 +284,15 @@ class Api
 
     /**
      * List detailed information on a specified service
-     *
      * @param bool $test
-     * @param $serviceId
-     * @param $apiKey
+     * @param null $serviceId
+     * @param null $apiKey
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function checkServiceDetails($test = false, $serviceId = null, $apiKey = null)
     {
-        if(!$test) {
+        if (!$test) {
             $uri = rtrim($this->_getApiServiceUri(), '/');
             $result = $this->_fetch($uri);
         } else {
@@ -258,19 +300,27 @@ class Api
             $result = $this->_fetch($uri, \Zend_Http_Client::GET, null, true, $apiKey);
         }
 
+        if (!$result) {
+            throw new LocalizedException(__('Failed to check Service details.'));
+        }
+
         return $result;
     }
 
     /**
      * Clone the current configuration into a new version.
-     *
      * @param $curVersion
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function cloneVersion($curVersion)
     {
         $url = $this->_getApiServiceUri() . 'version/'.$curVersion.'/clone';
         $result = $this->_fetch($url, \Zend_Http_Client::PUT);
+
+        if (!$result) {
+            throw new LocalizedException(__('Failed to clone active version.'));
+        }
 
         return $result;
     }
@@ -307,16 +357,17 @@ class Api
 
     /**
      * Validate the version for a particular service and version.
-     *
      * @param $version
-     * @return bool|mixed
+     * @throws LocalizedException
      */
     public function validateServiceVersion($version)
     {
         $url = $this->_getApiServiceUri() . 'version/' .$version. '/validate';
         $result = $this->_fetch($url, 'GET');
 
-        return $result;
+        if ($result->status == 'error') {
+            throw new LocalizedException(__('Failed to validate service version: ' . $result->msg));
+        }
     }
 
     /**
@@ -335,17 +386,15 @@ class Api
 
     /**
      * Creating and updating a regular VCL Snippet
-     *
      * @param $version
      * @param array $snippet
-     * @return bool|mixed*
+     * @throws LocalizedException
      */
     public function uploadSnippet($version, array $snippet)
     {
         $checkIfExists = $this->hasSnippet($version, $snippet['name']);
         $url = $this->_getApiServiceUri(). 'version/' .$version. '/snippet';
-        if(!$checkIfExists)
-        {
+        if (!$checkIfExists) {
             $verb = \Zend_Http_Client::POST;
         } else {
             $verb = \Zend_Http_Client::PUT;
@@ -355,7 +404,9 @@ class Api
 
         $result = $this->_fetch($url, $verb, $snippet);
 
-        return $result;
+        if (!$result) {
+            throw new LocalizedException(__('Failed to upload the Snippet file.'));
+        }
     }
 
     /**
@@ -369,6 +420,20 @@ class Api
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version. '/snippet/' . $name;
         $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    /**
+     * Update a dynamic snippet
+     *
+     * @param array $snippet
+     * @return bool|mixed
+     */
+    public function updateSnippet(array $snippet)
+    {
+        $url = $this->_getApiServiceUri(). 'snippet' . '/'.$snippet['name'];
+        $result = $this->_fetch($url, \Zend_Http_Client::PUT, $snippet);
 
         return $result;
     }
@@ -395,32 +460,32 @@ class Api
 
     /**
      * Deleting an individual regular VCL Snippet
-     *
      * @param $version
      * @param $name
-     * @return bool|mixed
+     * @throws LocalizedException
      */
     public function removeSnippet($version, $name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version. '/snippet/' . $name;
         $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
 
-        return $result;
+        if (!$result) {
+            throw new LocalizedException(__('Failed to remove the Snippet file.'));
+        }
     }
 
     /**
      * Creates a new condition
-     *
      * @param $version
-     * @param $condition
+     * @param array $condition
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function createCondition($version, array $condition)
     {
         $checkIfExists = $this->getCondition($version, $condition['name']);
         $url = $this->_getApiServiceUri(). 'version/' .$version. '/condition';
-        if(!$checkIfExists)
-        {
+        if (!$checkIfExists) {
             $verb = \Zend_Http_Client::POST;
         } else {
             $verb = \Zend_Http_Client::PUT;
@@ -428,6 +493,10 @@ class Api
         }
 
         $result = $this->_fetch($url, $verb, $condition);
+
+        if (!$result) {
+            throw new LocalizedException(__('Failed to create a REQUEST condition.'));
+        }
 
         return $result;
     }
@@ -497,8 +566,7 @@ class Api
     {
         $checkIfExists = $this->getResponse($version, $response['name']);
         $url = $this->_getApiServiceUri(). 'version/' .$version. '/response_object';
-        if(!$checkIfExists)
-        {
+        if (!$checkIfExists) {
             $verb = \Zend_Http_Client::POST;
         } else {
             $verb = \Zend_Http_Client::PUT;
@@ -527,17 +595,15 @@ class Api
 
     /**
      * Creates a new Request Settings object.
-     *
      * @param $version
      * @param $request
-     * @return bool|mixed
+     * @throws LocalizedException
      */
     public function createRequest($version, $request)
     {
         $checkIfExists = $this->getRequest($version, $request['name']);
         $url = $this->_getApiServiceUri(). 'version/' .$version. '/request_settings';
-        if(!$checkIfExists)
-        {
+        if (!$checkIfExists) {
             $verb = \Zend_Http_Client::POST;
         } else {
             $verb = \Zend_Http_Client::PUT;
@@ -546,7 +612,9 @@ class Api
 
         $result = $this->_fetch($url, $verb, $request);
 
-        return $result;
+        if (!$result) {
+            throw new LocalizedException(__('Failed to create the REQUEST object.'));
+        }
     }
 
     /**
@@ -567,17 +635,18 @@ class Api
 
     /**
      * Removes the specified Request Settings object.
-     *
      * @param $version
      * @param $name
-     * @return bool|mixed
+     * @throws LocalizedException
      */
     public function deleteRequest($version, $name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version. '/request_settings/' . $name;
         $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
 
-        return $result;
+        if (!$result) {
+            throw new LocalizedException(__('Failed to delete the REQUEST object.'));
+        }
     }
 
     /**
@@ -604,8 +673,17 @@ class Api
      */
     public function configureBackend($params, $version, $old_name)
     {
-        $url = $this->_getApiServiceUri(). 'version/'. $version . '/backend/' . str_replace ( ' ', '%20', $old_name);
-        $result = $this->_fetch($url, \Zend_Http_Client::PUT, $params);
+        $url = $this->_getApiServiceUri()
+            . 'version/'
+            . $version
+            . '/backend/'
+            . str_replace(' ', '%20', $old_name);
+
+        $result = $this->_fetch(
+            $url,
+            \Zend_Http_Client::PUT,
+            $params
+        );
 
         return $result;
     }
@@ -629,11 +707,11 @@ class Api
             'Content-type: application/json'
         ];
 
-        $body = json_encode(array(
+        $body = json_encode([
             "text"  =>  $text,
             "username" => "fastly-magento-bot",
             "icon_emoji"=> ":airplane:"
-        ));
+        ]);
 
         $client = $this->curlFactory->create();
         $client->addOption(CURLOPT_CONNECTTIMEOUT, 2);
@@ -651,17 +729,18 @@ class Api
 
     /**
      * Create named dictionary for a particular service and version.
-     *
      * @param $version
      * @param $params
-     * @return bool|mixed
+     * @throws LocalizedException
      */
     public function createDictionary($version, $params)
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version . '/dictionary';
         $result = $this->_fetch($url, \Zend_Http_Client::POST, $params);
 
-        return $result;
+        if (!$result) {
+            throw new LocalizedException(__('Failed to create Dictionary container.'));
+        }
     }
 
     /**
@@ -681,29 +760,73 @@ class Api
 
     /**
      * Get dictionary item list
-     *
      * @param $dictionaryId
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function dictionaryItemsList($dictionaryId)
     {
         $url = $this->_getApiServiceUri(). 'dictionary/'.$dictionaryId.'/items';
         $result = $this->_fetch($url, \Zend_Http_Client::GET);
 
+        if (!$result) {
+            throw new LocalizedException(__('Error fetching dictionary items for this dictionary'));
+        }
+
         return $result;
     }
 
     /**
      * Fetches dictionary by name
-     *
+     * @param $version
      * @param $dictionaryName
      * @return bool|mixed
+     * @throws LocalizedException
      */
-    public function getSingleDictionary($version, $dictionaryName) {
+    public function getSingleDictionary($version, $dictionaryName)
+    {
         $url = $this->_getApiServiceUri(). 'version/'. $version . '/dictionary/' . $dictionaryName;
         $result = $this->_fetch($url, \Zend_Http_Client::GET);
 
+        if (!$result) {
+            throw new LocalizedException(__('Error fetching dictionary'));
+        }
+
         return $result;
+    }
+
+    /**
+     * Get auth dictionary
+     * @param $version
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function getAuthDictionary($version)
+    {
+        $name = \Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl\CheckAuthUsersAvailable::AUTH_DICTIONARY_NAME;
+        $dictionary = $this->getSingleDictionary($version, $name);
+
+        return $dictionary;
+    }
+
+    /**
+     * Check if authentication dictionary is populated
+     * @param $version
+     * @throws LocalizedException
+     */
+    public function checkAuthDictionaryPopulation($version)
+    {
+        $dictionary = $this->getAuthDictionary($version);
+
+        if ((is_array($dictionary) && empty($dictionary)) || !isset($dictionary->id)) {
+            throw new LocalizedException(__('You must add users in order to enable Basic Authentication.'));
+        }
+
+        $authItems = $this->dictionaryItemsList($dictionary->id);
+
+        if (is_array($authItems) && empty($authItems)) {
+            throw new LocalizedException(__('You must add users in order to enable Basic Authentication.'));
+        }
     }
 
     public function createDictionaryItems($dictionaryId, $params)
@@ -745,11 +868,10 @@ class Api
 
     /**
      * Upsert single Dictionary item
-     *
      * @param $dictionaryId
      * @param $itemKey
      * @param $itemValue
-     * @return bool|mixed
+     * @throws LocalizedException
      */
     public function upsertDictionaryItem($dictionaryId, $itemKey, $itemValue)
     {
@@ -757,7 +879,9 @@ class Api
         $url = $this->_getApiServiceUri(). 'dictionary/'. $dictionaryId . '/item/' . urlencode($itemKey);
         $result = $this->_fetch($url, \Zend_Http_Client::PUT, $body);
 
-        return $result;
+        if (!$result) {
+            throw new LocalizedException(__('Failed to create Dictionary item.'));
+        }
     }
 
     /**
@@ -813,11 +937,16 @@ class Api
      */
     public function upsertAclItem($aclId, $itemValue, $negated, $subnet = false)
     {
-        if($subnet) {
-            $body = ['ip' => $itemValue, 'negated' => $negated, 'comment' => 'Added by Magento Module', 'subnet' => $subnet];
-        } else {
-            $body = ['ip' => $itemValue, 'negated' => $negated, 'comment' => 'Added by Magento Module'];
+        $body = [
+            'ip' => $itemValue,
+            'negated' => $negated,
+            'comment' => 'Added by Magento Module'
+        ];
+
+        if ($subnet) {
+            $body['subnet'] = $subnet;
         }
+
         $url = $this->_getApiServiceUri(). 'acl/'. $aclId . '/entry';
         $result = $this->_fetch($url, \Zend_Http_Client::POST, $body);
 
@@ -846,7 +975,11 @@ class Api
     public function queryHistoricStats(array $parameters)
     {
         $uri = $this->_getHistoricalEndpoint()
-                        .'?region='.$parameters['region'].'&from='.$parameters['from'].'&to='.$parameters['to'].'&by='.$parameters['sample_rate'];
+            . '?region='.$parameters['region']
+            . '&from='.$parameters['from']
+            . '&to='.$parameters['to']
+            . '&by='
+            . $parameters['sample_rate'];
 
         $result = $this->_fetch($uri);
 
@@ -865,7 +998,7 @@ class Api
      *
      * @return bool|mixed   Returns false on failiure
      */
-    protected function _fetch(
+    private function _fetch(
         $uri,
         $method = \Zend_Http_Client::GET,
         $body = '',

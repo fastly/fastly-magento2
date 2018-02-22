@@ -1,0 +1,41 @@
+<?php echo $block->getButtonHtml() ?>
+
+<div class="message message-error fastly-button-messages"
+     id="fastly-update-blocking-error-button-msg"
+     style="display: none">
+</div>
+
+<div class="message message-success fastly-button-messages"
+     id="fastly-update-blocking-success-button-msg"
+     style="display: none">
+</div>
+
+<div class="message message-warning fastly-button-messages"
+     id="fastly-update-blocking-warning-button-msg"
+     style="display: none">
+</div>
+
+<style type="text/css">
+    .fastly-button-messages {
+        font-size: 1.2rem;
+        margin-top: 5px;
+        padding: 1.4rem 4rem 1.4rem 5.5rem;
+    }
+</style>
+
+<?php
+$updateBlockingUrl = $block->getUrl('admin/fastlyCdn_Vcl/updateBlocking')
+?>
+
+<script type="text/x-magento-init">
+        {
+            "*": {
+                "Fastly_Cdn/js/updateblocking": {
+                    "updateBlockingUrl": "<?php echo $block->escapeJsQuote($updateBlockingUrl);?>"
+                }
+            }
+        }
+</script>
+
+
+

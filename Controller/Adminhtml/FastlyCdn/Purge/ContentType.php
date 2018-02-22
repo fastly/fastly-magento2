@@ -22,27 +22,31 @@ namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Purge;
 
 use Fastly\Cdn\Model\PurgeCache;
 use Fastly\Cdn\Model\Config;
-use Magento\Framework\App\ResponseInterface;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\Exception\LocalizedException;
 
-class ContentType extends \Magento\Backend\App\Action
+class ContentType extends Action
 {
     /**
      * @var PurgeCache
      */
-    protected $purgeCache;
+    private $purgeCache;
 
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
-     * @param \Magento\Backend\App\Action\Context $context
+     * ContentType constructor.
+     *
+     * @param Context $context
      * @param PurgeCache $purgeCache
      * @param Config $config
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         PurgeCache $purgeCache,
         Config $config
     ) {
@@ -64,7 +68,7 @@ class ContentType extends \Magento\Backend\App\Action
                 // check if content type is given
                 $contentType = $this->getRequest()->getParam('content_types', false);
                 if (!$contentType) {
-                    throw new \Exception(__('Invalid content type "'.$contentType.'".'));
+                    throw new LocalizedException(__('Invalid content type "'.$contentType.'".'));
                 }
 
                 $result = $this->purgeCache->sendPurgeRequest([$contentType]);

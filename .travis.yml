@@ -1,0 +1,17 @@
+language: php
+
+sudo: false
+
+php:
+    - 7.0
+    - 7.1
+
+install:
+    - composer config -a -g http-basic.repo.magento.com $MAGE_USER $MAGE_PASS
+    - composer config repositories.meqp git https://github.com/magento/marketplace-eqp
+    - composer config repositories.meqp2 composer https://repo.magento.com/
+    - composer require --dev magento/marketplace-eqp:1.*
+    - php vendor/bin/phpcs --config-set installed_paths vendor/magento/marketplace-eqp/
+
+script:
+    - php vendor/bin/phpcs --ignore=./vendor/*,*/Unit/* --standard=MEQP2 --extensions=php,phtml,js .

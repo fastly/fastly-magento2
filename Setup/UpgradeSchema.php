@@ -2,19 +2,23 @@
 
 namespace Fastly\Cdn\Setup;
 
+use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\UpgradeSchemaInterface;
 
-
-class UpgradeSchema implements UpgradeSchemaInterface
+class UpgradeSchema implements UpgradeSchemaInterface // @codingStandardsIgnoreLine - currently best way to resolve this
 {
-
+    /**
+     * @param SchemaSetupInterface $setup
+     * @param ModuleContextInterface $context
+     * @throws \Zend_Db_Exception
+     */
     public function upgrade(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
         $installer = $setup;
 
-        /* @var $connection \Magento\Framework\DB\Adapter\AdapterInterface */
+        /** @var AdapterInterface $connection */
         $connection = $installer->getConnection();
 
         $installer->startSetup();
@@ -58,6 +62,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     [],
                     'Action date'
                 );
+
                 $connection->createTable($table);
                 $installer->endSetup();
             }

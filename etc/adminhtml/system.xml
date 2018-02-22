@@ -118,6 +118,22 @@
                             </comment>
                             <backend_model>Magento\PageCache\Model\System\Config\Backend\Ttl</backend_model>
                         </field>
+                        <field id="admin_path_timeout" type="text" translate="label comment" sortOrder="31" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Admin path timeout</label>
+                            <comment>
+                                <![CDATA[Time in seconds for the admin path first byte timeout. Please reupload VCL after making changes.]]>
+                            </comment>
+                            <backend_model>Fastly\Cdn\Model\Config\Backend\ValidateInt</backend_model>
+                            <validate>required-entry validate-digits</validate>
+                        </field>
+                        <field id="ignored_url_parameters" type="text" translate="label comment" sortOrder="32" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Ignored URL Parameters</label>
+                            <comment>
+                                <![CDATA[A comma separated list of ignored query string parameters.<br /><br />
+                                Please reupload VCL after making changes to Ignored URL Parameters.]]>
+                            </comment>
+                            <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
+                        </field>
                         <field id="purge_catalog_category" translate="label comment" type="select" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Purge category</label>
                             <comment>Choose to purge all the category assets when saving a change to that category.</comment>
@@ -131,6 +147,13 @@
                         <field id="purge_cms_page" translate="label comment" type="select" sortOrder="45" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Purge CMS page</label>
                             <comment>Choose to purge page content when updating or adding a new page in the Magento CMS.</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="preserve_static" translate="label comment" type="select" sortOrder="47" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Preserve static assets on purge</label>
+                            <comment>
+                                When flushing cache, flush only dynamic content and preserve static assets.
+                            </comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="soft_purge" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
@@ -158,7 +181,7 @@
                         <field id="geoip_country_mapping" translate="label comment tooltip" sortOrder="71" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>GeoIP Country Mapping</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\CountryMapping</frontend_model>
-                            <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                            <backend_model>Fastly\Cdn\Model\Config\Backend\Geoipcountry</backend_model>
                             <comment>
                                 <![CDATA[Use capitalized <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2" target="_blank">two-letter country codes</a> to map countries to store views. Use * to define a default fallback.]]>
                             </comment>
@@ -169,6 +192,39 @@
                         <field id="fastly_push_image_config" translate="label comment" sortOrder="90" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Fastly image optimization]]></label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ImageBtn</frontend_model>
+                        </field>
+                    </group>
+                    <group id="fastly_blocking" sortOrder="350" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Blocking</label>
+                        <field id="block" translate="label comment" sortOrder="5" showInDefault="1" showInStore="0" showInWebsite="0">
+                            <label><![CDATA[Blocking]]></label>
+                            <comment>
+                                <![CDATA[Block traffic from selected Acl IPs and Countries. Please Save Config prior to enabling.]]>
+                            </comment>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\BlockingBtn</frontend_model>
+                        </field>
+                        <field id="update_blocking_snippet" translate="label comment" sortOrder="6" showInDefault="1" showInStore="0" showInWebsite="0">
+                            <label><![CDATA[Update blocking]]></label>
+                            <comment>
+                                <![CDATA[Please Save Config first before updating.]]>
+                            </comment>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\UpdateBlockingBtn</frontend_model>
+                        </field>
+                        <field id="block_by_country" translate="label comment" type="multiselect" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Block by country</label>
+                            <comment>
+                                <![CDATA[List of countries that can be blocked.]]>
+                            </comment>
+                            <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                            <can_be_empty>1</can_be_empty>
+                        </field>
+                        <field id="block_by_acl" translate="label comment" type="multiselect" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Block by ACL</label>
+                            <comment>
+                                <![CDATA[List of Acls that can be blocked.]]>
+                            </comment>
+                            <source_model>Fastly\Cdn\Model\Config\Backend\ListAcl</source_model>
+                            <can_be_empty>1</can_be_empty>
                         </field>
                     </group>
                     <group id="fastly_error_maintenance_page" sortOrder="400" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -205,6 +261,14 @@
                         </field>
                         <field id="publish_purge_all_items_events" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Publish Purge All/Clean All Items Events</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="enable_webhooks">1</field>
+                            </depends>
+                        </field>
+                        <field id="publish_purge_all_trace" translate="label comment" type="select" sortOrder="32" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Publish stack trace on purge all event</label>
+                            <comment>Submits the stack trace when the purge all event is created, for debugging purposes</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                             <depends>
                                 <field id="enable_webhooks">1</field>

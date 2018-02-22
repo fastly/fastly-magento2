@@ -22,38 +22,42 @@ namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
 
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
-use \Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Controller\ResultInterface;
 
-class IsAlreadyConfigured extends \Magento\Backend\App\Action
+class IsAlreadyConfigured extends Action
 {
     /**
      * @var \Fastly\Cdn\Model\Api
      */
-    protected $api;
+    private $api;
 
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
-     * @var \Magento\Framework\Controller\Result\JsonFactory
+     * @var JsonFactory
      */
-    protected $resultJsonFactory;
+    private $resultJsonFactory;
 
     /**
      * IsAlreadyConfigured constructor.
      *
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param Context $context
      * @param Config $config
      * @param Api $api
      * @param JsonFactory $resultJsonFactory
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         Config $config,
         Api $api,
-        \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
+        JsonFactory $resultJsonFactory
     ) {
         $this->api = $api;
         $this->config = $config;
@@ -62,7 +66,7 @@ class IsAlreadyConfigured extends \Magento\Backend\App\Action
     }
 
     /**
-     * @return $this
+     * @return $this|ResponseInterface|ResultInterface
      */
     public function execute()
     {
@@ -71,13 +75,22 @@ class IsAlreadyConfigured extends \Magento\Backend\App\Action
             $serviceId = $this->config->getServiceId();
             $apiKey = $this->config->getApiKey();
 
-            if($serviceId == null && $apiKey == null) {
-                return $result->setData(array('status' => true, 'flag' => false));
+            if ($serviceId == null && $apiKey == null) {
+                return $result->setData([
+                    'status'    => true,
+                    'flag'      => false
+                ]);
             }
 
-            return $result->setData(array('status' => true, 'flag' => true));
+            return $result->setData([
+                'status'    => true,
+                'flag'      => true
+            ]);
         } catch (\Exception $e) {
-            return $result->setData(array('status' => false, 'msg' => $e->getMessage()));
+            return $result->setData([
+                'status'    => false,
+                'msg'       => $e->getMessage()
+            ]);
         }
     }
 }

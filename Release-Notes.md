@@ -1,5 +1,59 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.42
+
+- Changes to achieve Magento Extension Quality Program compliance
+- Add UI to add blocking by country and ACL https://github.com/fastly/fastly-magento2/pull/137
+- Make sure the X-Magento-Tags header is less than 16kBytes in length
+
+## 1.2.41
+
+- Allow user to override default first byte timeout for admin paths https://github.com/fastly/fastly-magento2/pull/135
+
+## 1.2.40
+
+- Allow user to override default list of query arguments to strip out https://github.com/fastly/fastly-magento2/pull/134
+
+## 1.2.39
+
+- Use frontName from app/etc/env.php to generate VCL statements for handling /admin/ URLS https://github.com/fastly/fastly-magento2/pull/132
+- Handle cases where more than 256 surrogate keys are being purged. Those need to be broken up into multiple transactions https://github.com/fastly/fastly-magento2/pull/133/files
+
+## 1.2.38
+
+- Fix for Edit Backends where due to improper escaping in certain situations backends would not show
+
+## 1.2.37
+
+- Add ability to see full stack trace of purge all requests. Often times 3rd party modules will invoke purge all
+needlessly and this allows you to track down who is making the calls. By default this functionality is off.
+
+## 1.2.36
+
+- Added shell functionality for setting Service ID, Token, enabling/disabling Fastly, uploading default VCL, testing connection and cleaning configuration cache.
+
+## 1.2.35
+
+- VCL optimizations and fixes https://github.com/fastly/fastly-magento2/pull/117
+
+## 1.2.34
+
+- Fix for serialization issue regarding old config data for GeoIP Country Mapping (Magento version above 2.2)
+- Added shell function for converting Fastly config data to JSON manually (Magento version above 2.2), executed by: fastly:format:serializetojson
+- Added shell function for converting Fastly config data to serialize format manually (Should be used only to revert changes made from fastly:format:serializetojson), executed by: fastly:format:jsontoserialize
+
+## 1.2.33
+
+- Don't cache /customer/section/load. This works around core bug where Cache-Control headers are set to cache https://github.com/fastly/fastly-magento2/pull/111
+- Due to the way Fastly plugin is implemented we are still sending Varnish like purges which don't do anything https://github.com/fastly/fastly-magento2/pull/110. This fixes it so it doesn't send those
+- When Force TLS is enabled if a user request comes in with Google Analytics arguments those will be stripped before issuing a redirect. https://github.com/fastly/fastly-magento2/pull/112 fixes it so redirect is issued immediately before any other logic executes
+
+## 1.2.32
+
+- Remove errant logging when checking if a feature is enabled or not https://github.com/fastly/fastly-magento2/pull/108
+- Enable long caching of signed assets https://github.com/fastly/fastly-magento2/pull/109
+- Fix for Surrogate Keys not being set on HTML assets when shielding is turned on
+
 ## 1.2.31
 
 - Fix for when adding first entry to an ACL modal is incorrectly displayed https://github.com/fastly/fastly-magento2/pull/105

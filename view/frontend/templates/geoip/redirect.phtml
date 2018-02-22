@@ -26,11 +26,17 @@
  * @var $block Magento\Framework\View\Element\Template
  */
 ?>
-<script type="text/javascript">
-    //<![CDATA[
-        var redirectUrl = '<?php echo $block->escapeJsQuote($block->getRedirectUrl()) ?>';
-        if (redirectUrl.length > 0) {
-            document.location.href = redirectUrl;
-        }
-    //]]>
+<script type="text/x-magento-init">
+   {
+       "*": {
+           "Magento_Ui/js/core/app": {
+               "components": {
+                   "redirect": {
+                       "component": "Fastly_Cdn/js/redirect",
+                       "redirect_url": "<?php /* @noEscape */ echo $block->getRedirectUrl() ?>"
+                   }
+                }
+           }
+       }
+   }
 </script>

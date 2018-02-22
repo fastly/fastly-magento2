@@ -38,7 +38,7 @@ class Image extends ImageModel
     private $isFastlyEnabled = null;
 
     /**
-     * On/Off switch based on conffig value
+     * On/Off switch based on config value
      *
      * @return bool
      */
@@ -84,7 +84,7 @@ class Image extends ImageModel
      */
     private function fastlyRotate($angle)
     {
-        $angle = intval($angle);
+        $angle = (int) $angle;
 
         $orient = null;
         if ($angle == 90) {
@@ -138,7 +138,7 @@ class Image extends ImageModel
         return $this;
     }
 
-    protected function adjustSize()
+    private function adjustSize()
     {
         $originalImage = $this->_mediaDirectory->getAbsolutePath($this->getBaseFile());
         $originalSize = getimagesize($originalImage);

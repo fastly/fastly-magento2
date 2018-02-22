@@ -650,7 +650,7 @@ define([
                 url: config.serviceInfoUrl,
                 showLoader: true
             }).done(function (service) {
-                if(service.status == false) {
+                if (service.status == false) {
                     return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
 
@@ -658,7 +658,7 @@ define([
                 next_version = service.next_version;
                 service_name = service.service.name;
                 vcl.checkImageSetting(active_version, true).done(function (response) {
-                    if(response.status === false) {
+                    if (response.status === false) {
                         errorImageBtnMsg.text($.mage.__('Something went wrong. Please check log files.')).show();
                         return; // Error occurred, escape
                     }
@@ -1079,7 +1079,7 @@ define([
             },
 
             // Queries Fastly API to retrieve Tls setting
-            checkImageSetting: function(active_version, loaderVisibility) {
+            checkImageSetting: function (active_version, loaderVisibility) {
                 return $.ajax({
                     type: "POST",
                     url: config.pushImageSettingsUrl,
@@ -1374,7 +1374,7 @@ define([
             pushImageConfig: function (active_version) {
                 var activate_vcl_flag = false;
 
-                if($('#fastly_activate_image_vcl').is(':checked')) {
+                if ($('#fastly_activate_image_vcl').is(':checked')) {
                     activate_vcl_flag = true;
                 }
 
@@ -1386,8 +1386,8 @@ define([
                         'active_version': active_version
                     },
                     showLoader: true,
-                    success: function(response) {
-                        if(response.status == true) {
+                    success: function (response) {
+                        if (response.status == true) {
                             vcl.modal.modal('closeModal');
                             successImageBtnMsg.text($.mage.__('Image optimization settings are successfully pushed.')).show();
                             $('#image-optimization-status').text((response.new_state === true) ? 'enabled' : 'disabled')
@@ -1398,8 +1398,7 @@ define([
                             errorImageBtnMsg.text(response.msg).show();
                         }
                     },
-                    error: function(msg)
-                    {
+                    error: function (msg) {
                         vcl.modal.modal('closeModal');
                     }
                 });

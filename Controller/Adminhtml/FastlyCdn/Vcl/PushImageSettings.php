@@ -25,41 +25,41 @@ class PushImageSettings extends Action
     /**
      * @var Http
      */
-    protected $request;
+    private $request;
 
     /**
      * @var JsonFactory
      */
-    protected $resultJson;
+    private $resultJson;
 
     /**
      * @var Config
      */
-    protected $config;
+    private $config;
 
     /**
      * @var WriterInterface
      */
-    protected $configWriter;
+    private $configWriter;
 
     /**
      * @var ManagerFactory
      */
-    protected $cacheFactory;
+    private $cacheFactory;
     /**
      * @var \Fastly\Cdn\Model\Api
      */
-    protected $api;
+    private $api;
 
     /**
      * @var Vcl
      */
-    protected $vcl;
+    private $vcl;
 
     /**
      * @var int Current Fastly version
      */
-    protected $currentVersion;
+    private $currentVersion;
 
     /**
      * PushImageSettings constructor.
@@ -148,32 +148,32 @@ class PushImageSettings extends Action
     }
 
     /**
-     * Push image optimiaztion related snippets
+     * Push image optimization related snippets
      *
      * @param $activateVcl
      * @throws LocalizedException
      */
-    protected function pushSnippets($activateVcl)
+    private function pushSnippets($activateVcl)
     {
         // Lets clone it and push the required config
         $clone = $this->api->cloneVersion($this->currentVersion);
-        if($clone === false) {
+        if ($clone === false) {
             throw new LocalizedException(__('Failed to clone active version.'));
         }
 
         // Load image optimization related snippets and push them
         $snippets = $this->config->getVclSnippets(self::VCL_SNIPPET_PATH);
-        foreach($snippets as $key => $value) {
-            $snippetData =[
-                'name' => Config::FASTLY_MAGENTO_MODULE . '_image_optimization_' . $key,
-                'type' => $key,
-                'dynamic' => "0",
-                'content' => $value,
-                'priority' => 10
+        foreach ($snippets as $key => $value) {
+            $snippetData = [
+                'name'      => Config::FASTLY_MAGENTO_MODULE . '_image_optimization_' . $key,
+                'type'      => $key,
+                'dynamic'   => "0",
+                'content'   => $value,
+                'priority'  => 10
             ];
 
             $status = $this->api->uploadSnippet($clone->number, $snippetData);
-            if($status == false) {
+            if ($status == false) {
                 throw new LocalizedException(__('Failed to upload the Snippet file.'));
             }
         }
@@ -187,33 +187,33 @@ class PushImageSettings extends Action
         // Validate before sending success
         $validate = $this->api->validateServiceVersion($clone->number);
 
-        if($validate->status == 'error') {
+        if ($validate->status == 'error') {
             throw new LocalizedException(__('Failed to validate service version: ' . $validate->msg));
         }
 
         // Attempt to activate the new Fastly version
-        if($activateVcl === 'true') {
+        if ($activateVcl === 'true') {
             $this->api->activateVersion($clone->number);
         }
     }
 
     /**
-     * Removes image optimiaztion related snippets
+     * Removes image optimization related snippets
      *
      * @param $activateVcl
      * @throws LocalizedException
      */
-    protected function removeSnippets($activateVcl)
+    private function removeSnippets($activateVcl)
     {
         // Lets clone it and push the required config
         $clone = $this->api->cloneVersion($this->currentVersion);
-        if($clone === false) {
+        if ($clone === false) {
             throw new LocalizedException(__('Failed to clone active version.'));
         }
 
         // Load image optimization related snippets and push them
         $snippets = $this->config->getVclSnippets(self::VCL_SNIPPET_PATH);
-        foreach($snippets as $key => $value) {
+        foreach ($snippets as $key => $value) {
             $snippetName = Config::FASTLY_MAGENTO_MODULE . '_image_optimization_' . $key;
             $this->api->removeSnippet($clone->number, $snippetName);
         }
@@ -227,12 +227,12 @@ class PushImageSettings extends Action
         // Validate before sending success
         $validate = $this->api->validateServiceVersion($clone->number);
 
-        if($validate->status == 'error') {
+        if ($validate->status == 'error') {
             throw new LocalizedException(__('Failed to validate service version: ' . $validate->msg));
         }
 
         // Attempt to activate the new Fastly version
-        if($activateVcl === 'true') {
+        if ($activateVcl === 'true') {
             $this->api->activateVersion($clone->number);
         }
     }
@@ -243,17 +243,17 @@ class PushImageSettings extends Action
      * @return bool
      * @throws LocalizedException
      */
-    protected function validateRequest()
+    private function validateRequest()
     {
         // Check if service has been initialized
         $service = $this->api->checkServiceDetails();
-        if($service === false) {
+        if ($service === false) {
             throw new LocalizedException(__('Failed to check Service details.'));
         }
 
         // Get the current version
         $currActiveVersion = $this->vcl->determineVersions($service->versions);
-        if($currActiveVersion['active_version'] != $this->currentVersion) {
+        if ($currActiveVersion['active_version'] != $this->currentVersion) {
             throw new LocalizedException(__('Active versions mismatch.'));
         }
 
@@ -265,7 +265,7 @@ class PushImageSettings extends Action
      *
      * @param bool $status
      */
-    protected function setStatus($status)
+    private function setStatus($status)
     {
         $this->configWriter->save(Config::XML_FASTLY_IMAGE_OPTIMIZATIONS, (bool)$status);
 

@@ -528,7 +528,7 @@ class Api
         $checkIfExists = $this->getHeader($version, $condition['name']);
         $url = $this->_getApiServiceUri(). 'version/' .$version. '/header';
 
-        if($checkIfExists === false) {
+        if ($checkIfExists === false) {
             $verb = \Zend_Http_Client::POST;
         } else {
             $verb = \Zend_Http_Client::PUT;

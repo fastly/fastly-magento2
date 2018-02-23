@@ -106,19 +106,19 @@
                                 Moved Permanently</strong> response to any unencrypted request, and redirect to the TLS equivalent.]]></comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\TlsBtn</frontend_model>
                         </field>
-                        <field id="stale_ttl" type="text" translate="label comment" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="stale_ttl" type="text" translate="label comment" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                             <label>Stale content delivery time</label>
                             <comment><![CDATA[Time in seconds that Fastly will serve <a href="https://docs.fastly.com/guides/performance-tuning/serving-stale-content" target="_blank">stale content</a> while fresh content is being requested. Set to 0 to disable this feature.]]></comment>
                             <backend_model>Magento\PageCache\Model\System\Config\Backend\Ttl</backend_model>
                         </field>
-                        <field id="stale_error_ttl" type="text" translate="label comment" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="stale_error_ttl" type="text" translate="label comment" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                             <label>Stale content delivery time in case of backend error</label>
                             <comment>
                                 <![CDATA[Time in seconds that Fastly will continue to serve <a href="https://docs.fastly.com/guides/performance-tuning/serving-stale-content#serving-stale-content-on-errors" target="_blank">stale content​</a> if your origin is unavailable. Set to 0 to disable this feature.]]>
                             </comment>
                             <backend_model>Magento\PageCache\Model\System\Config\Backend\Ttl</backend_model>
                         </field>
-                        <field id="admin_path_timeout" type="text" translate="label comment" sortOrder="31" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <field id="admin_path_timeout" type="text" translate="label comment" sortOrder="31" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                             <label>Admin path timeout</label>
                             <comment>
                                 <![CDATA[Time in seconds for the admin path first byte timeout. Please reupload VCL after making changes.]]>
@@ -126,13 +126,21 @@
                             <backend_model>Fastly\Cdn\Model\Config\Backend\ValidateInt</backend_model>
                             <validate>required-entry validate-digits</validate>
                         </field>
-                        <field id="ignored_url_parameters" type="text" translate="label comment" sortOrder="32" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <field id="ignored_url_parameters" type="text" translate="label comment" sortOrder="32" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                             <label>Ignored URL Parameters</label>
                             <comment>
                                 <![CDATA[A comma separated list of ignored query string parameters.<br /><br />
                                 Please reupload VCL after making changes to Ignored URL Parameters.]]>
                             </comment>
                             <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
+                        </field>
+                        <field id="x_magento_tags_size" type="text" translate="label comment" sortOrder="33" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                            <label>X-Magento-Tags size</label>
+                            <comment>
+                                <![CDATA[Maximum X-Magento-Tags header size (in bytes).]]>
+                            </comment>
+                            <backend_model>Fastly\Cdn\Model\Config\Backend\ValidateInt</backend_model>
+                            <validate>required-entry validate-digits</validate>
                         </field>
                         <field id="purge_catalog_category" translate="label comment" type="select" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Purge category</label>

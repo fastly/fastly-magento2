@@ -18,9 +18,9 @@ class PushImageSettings extends Action
     /**
      * VCL snippet names
      */
-    const CONDITION_NAME    = 'fastly-image-optimizer-condition';
-    const HEADER_NAME       = 'fastly-image-optimizer-header';
-    const VCL_SNIPPET_PATH  = '/vcl_snippets_image_optimizations';
+    const CONDITION_NAME = 'fastly-image-optimizer-condition';
+    const HEADER_NAME = 'fastly-image-optimizer-header';
+    const VCL_SNIPPET_PATH = '/vcl_snippets_image_optimizations';
 
     /**
      * @var Http
@@ -83,181 +83,134 @@ class PushImageSettings extends Action
         Api $api,
         Vcl $vcl
     ) {
-        $this->request      = $request;
-        $this->resultJson   = $resultJsonFactory;
-        $this->config       = $config;
+        $this->request = $request;
+        $this->resultJson = $resultJsonFactory;
+        $this->config = $config;
         $this->configWriter = $configWriter;
         $this->cacheFactory = $cacheManagerFactory;
-        $this->api          = $api;
-        $this->vcl          = $vcl;
+        $this->api = $api;
+        $this->vcl = $vcl;
 
         parent::__construct($context);
     }
 
-    /**
-     * Upload VCL snippets for image optimizations
-     *
-     * @return \Magento\Framework\Controller\Result\Json
-     */
     public function execute()
     {
         $result = $this->resultJson->create();
-        $checkOnly = $this->getRequest()->getParam('check_only');
-        $status = $this->config->isImageOptimizationEnabled();
-
-        if ($checkOnly == true) {
-            $result->setData([
-                'status'        => true,
-                'setting_value' => $status
-            ]);
-
-            return $result;
-        }
-
-        $this->currentVersion = $this->getRequest()->getParam('active_version');
-        $activateVcl = $this->getRequest()->getParam('activate_flag');
-
         try {
-            // Check status of config
-            $this->validateRequest();
+            $activeVersion = $this->getRequest()->getParam('active_version');
+            $service = $this->api->checkServiceDetails();
+            $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
+            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
+            $checkOnly = $this->getRequest()->getParam('check_only');
+            $status = $this->config->isImageOptimizationEnabled();
 
-            // Adjust snippet
+            if ($checkOnly == true) {
+                $result->setData([
+                    'status' => true,
+                    'setting_value' => $status
+                ]);
+
+                return $result;
+            }
+
             if ($status == true) {
-                $this->removeSnippets($activateVcl);
+                $this->removeSnippets($currActiveVersion, $result, $status);
                 $status = false;
             } else {
-                $this->pushSnippets($activateVcl);
+                $this->pushSnippets($currActiveVersion, $result, $status);
                 $status = true;
             }
-        } catch (\Exception $e) {
+
+            $this->setStatus($status);
             $result->setData([
-                'status'    => false,
-                'msg'       => $e->getMessage()
+                'status' => true,
+                'new_state' => $status
             ]);
 
             return $result;
+        } catch (\Exception $e) {
+            return $result->setData([
+                'status' => false,
+                'msg' => $e->getMessage()
+            ]);
         }
-
-        $this->setStatus($status);
-        $result->setData([
-            'status'    => true,
-            'new_state' => $status
-        ]);
-
-        return $result;
     }
 
-    /**
-     * Push image optimization related snippets
-     *
-     * @param $activateVcl
-     * @throws LocalizedException
-     */
-    private function pushSnippets($activateVcl)
+    private function pushSnippets($currActiveVersion, $result, $status)
     {
-        // Lets clone it and push the required config
-        $clone = $this->api->cloneVersion($this->currentVersion);
-        if ($clone === false) {
-            throw new LocalizedException(__('Failed to clone active version.'));
-        }
+        try {
+            $activateVcl = $this->getRequest()->getParam('activate_flag');
+            $clone = $this->api->cloneVersion($currActiveVersion);
+            $snippet = $this->config->getVclSnippets(self::VCL_SNIPPET_PATH, 'recv.vcl');
 
-        // Load image optimization related snippets and push them
-        $snippets = $this->config->getVclSnippets(self::VCL_SNIPPET_PATH);
-        foreach ($snippets as $key => $value) {
-            $snippetData = [
-                'name'      => Config::FASTLY_MAGENTO_MODULE . '_image_optimization_' . $key,
-                'type'      => $key,
-                'dynamic'   => "0",
-                'content'   => $value,
-                'priority'  => 10
-            ];
-
-            $status = $this->api->uploadSnippet($clone->number, $snippetData);
-            if ($status == false) {
-                throw new LocalizedException(__('Failed to upload the Snippet file.'));
+            foreach ($snippet as $key => $value) {
+                $snippetData = [
+                    'name' => Config::FASTLY_MAGENTO_MODULE . '_image_optimization_' . $key,
+                    'type' => $key,
+                    'dynamic' => "0",
+                    'content' => $value,
+                    'priority' => 10
+                ];
+                $this->api->uploadSnippet($clone->number, $snippetData);
             }
-        }
 
-        if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-            $this->api->sendWebHook(
-                '*Image optimization snippet has been pushed in Fastly version '. $clone->number . '*'
-            );
-        }
+            $this->api->validateServiceVersion($clone->number);
 
-        // Validate before sending success
-        $validate = $this->api->validateServiceVersion($clone->number);
+            if ($activateVcl === 'true') {
+                $this->api->activateVersion($clone->number);
+            }
 
-        if ($validate->status == 'error') {
-            throw new LocalizedException(__('Failed to validate service version: ' . $validate->msg));
-        }
+            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+                $this->api->sendWebHook(
+                    '*Image optimization snippet has been pushed in Fastly version ' . $clone->number . '*'
+                );
+            }
 
-        // Attempt to activate the new Fastly version
-        if ($activateVcl === 'true') {
-            $this->api->activateVersion($clone->number);
-        }
-    }
-
-    /**
-     * Removes image optimization related snippets
-     *
-     * @param $activateVcl
-     * @throws LocalizedException
-     */
-    private function removeSnippets($activateVcl)
-    {
-        // Lets clone it and push the required config
-        $clone = $this->api->cloneVersion($this->currentVersion);
-        if ($clone === false) {
-            throw new LocalizedException(__('Failed to clone active version.'));
-        }
-
-        // Load image optimization related snippets and push them
-        $snippets = $this->config->getVclSnippets(self::VCL_SNIPPET_PATH);
-        foreach ($snippets as $key => $value) {
-            $snippetName = Config::FASTLY_MAGENTO_MODULE . '_image_optimization_' . $key;
-            $this->api->removeSnippet($clone->number, $snippetName);
-        }
-
-        if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-            $this->api->sendWebHook(
-                '*Image optimization snippet has been removed in Fastly version '. $clone->number . '*'
-            );
-        }
-
-        // Validate before sending success
-        $validate = $this->api->validateServiceVersion($clone->number);
-
-        if ($validate->status == 'error') {
-            throw new LocalizedException(__('Failed to validate service version: ' . $validate->msg));
-        }
-
-        // Attempt to activate the new Fastly version
-        if ($activateVcl === 'true') {
-            $this->api->activateVersion($clone->number);
+            // Validate before sending success
+            $this->api->validateServiceVersion($clone->number);
+            $this->setStatus($status);
+            return $result->setData(['status' => true]);
+        } catch (\Exception $e) {
+            return $result->setData([
+                'status' => false,
+                'msg' => $e->getMessage()
+            ]);
         }
     }
 
-    /**
-     * Validates that current state of service configuration is good
-     *
-     * @return bool
-     * @throws LocalizedException
-     */
-    private function validateRequest()
+    private function removeSnippets($currActiveVersion, $result, $status)
     {
-        // Check if service has been initialized
-        $service = $this->api->checkServiceDetails();
-        if ($service === false) {
-            throw new LocalizedException(__('Failed to check Service details.'));
-        }
+        try {
+            $activateVcl = $this->getRequest()->getParam('activate_flag');
+            $clone = $this->api->cloneVersion($currActiveVersion);
+            $snippet = $this->config->getVclSnippets(self::VCL_SNIPPET_PATH, 'recv.vcl');
 
-        // Get the current version
-        $currActiveVersion = $this->vcl->determineVersions($service->versions);
-        if ($currActiveVersion['active_version'] != $this->currentVersion) {
-            throw new LocalizedException(__('Active versions mismatch.'));
-        }
+            foreach ($snippet as $key => $value) {
+                $snippetName = Config::FASTLY_MAGENTO_MODULE . '_image_optimization_' . $key;
+                $this->api->removeSnippet($clone->number, $snippetName);
+            }
 
-        return true;
+            $this->api->validateServiceVersion($clone->number);
+
+            if ($activateVcl === 'true') {
+                $this->api->activateVersion($clone->number);
+            }
+
+            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+                $this->api->sendWebHook(
+                    '*Image optimization snippet has been removed in Fastly version ' . $clone->number . '*'
+                );
+            }
+
+            $this->setStatus($status);
+            return $result->setData(['status' => true]);
+        } catch (\Exception $e) {
+            return $result->setData([
+                'status' => false,
+                'msg' => $e->getMessage()
+            ]);
+        }
     }
 
     /**

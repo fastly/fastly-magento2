@@ -2,14 +2,16 @@
 
 namespace Fastly\Cdn\Block\System\Config\Form\Field;
 
+use Fastly\Cdn\Model\Config;
+use Magento\Backend\Block\Template\Context;
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 
-class BlockingBtn extends Field
+class ImageBtn extends Field
 {
     protected function _construct() // @codingStandardsIgnoreLine - required by parent class
     {
-        $this->_template = 'Fastly_Cdn::system/config/form/field/blockingBtn.phtml';
+        $this->_template = 'Fastly_Cdn::system/config/form/field/imageBtn.phtml';
 
         parent::_construct();
     }
@@ -57,7 +59,7 @@ class BlockingBtn extends Field
         $button = $this->getLayout()->createBlock(
             'Magento\Backend\Block\Widget\Button'
         )->setData([
-            'id'    => 'fastly_blocking_button',
+            'id'    => 'fastly_push_image_config',
             'label' => __('Enable/Disable')
         ]);
 

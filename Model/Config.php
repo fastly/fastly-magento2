@@ -164,6 +164,12 @@ class Config extends \Magento\PageCache\Model\Config
         = 'system/full_page_cache/fastly/fastly_advanced_configuration/geoip_country_mapping';
 
     /**
+     * XML path to image optimizations flag
+     */
+    const XML_FASTLY_IMAGE_OPTIMIZATIONS
+        = 'system/full_page_cache/fastly/fastly_advanced_configuration/image_optimizations';
+
+    /**
      * XML path to Google analytics CID
      */
     const XML_FASTLY_GA_CID = 'system/full_page_cache/fastly/fastly_ga_cid';
@@ -443,7 +449,18 @@ class Config extends \Magento\PageCache\Model\Config
     }
 
     /**
+     * Determines should Image optimization be used
+     *
+     * @return bool
+     */
+    public function isImageOptimizationEnabled()
+    {
+        return $this->_scopeConfig->isSetFlag(self::XML_FASTLY_IMAGE_OPTIMIZATIONS);
+    }
+
+    /**
      * Return blocked countries
+     *
      * @return mixed
      */
     public function getBlockByCountry()
@@ -453,6 +470,7 @@ class Config extends \Magento\PageCache\Model\Config
 
     /**
      * Return blocked Acls
+     *
      * @return mixed
      */
     public function getBlockByAcl()

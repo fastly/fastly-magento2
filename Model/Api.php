@@ -392,7 +392,7 @@ class Api
      */
     public function uploadSnippet($version, array $snippet)
     {
-        $checkIfExists = $this->getSnippet($version, $snippet['name']);
+        $checkIfExists = $this->hasSnippet($version, $snippet['name']);
         $url = $this->_getApiServiceUri(). 'version/' .$version. '/snippet';
         if (!$checkIfExists) {
             $verb = \Zend_Http_Client::POST;
@@ -511,6 +511,45 @@ class Api
     public function getCondition($version, $name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version. '/condition/' . $name;
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    /**
+     * Creates a new header
+     *
+     * @param $version
+     * @param $condition
+     * @return bool|mixed
+     */
+    public function createHeader($version, array $condition)
+    {
+        $checkIfExists = $this->getHeader($version, $condition['name']);
+        $url = $this->_getApiServiceUri(). 'version/' .$version. '/header';
+
+        if ($checkIfExists === false) {
+            $verb = \Zend_Http_Client::POST;
+        } else {
+            $verb = \Zend_Http_Client::PUT;
+            $url .= '/'.$condition['name'];
+        }
+
+        $result = $this->_fetch($url, $verb, $condition);
+
+        return $result;
+    }
+
+    /**
+     * Gets the specified header.
+     *
+     * @param $version
+     * @param $name
+     * @return bool|mixed
+     */
+    public function getHeader($version, $name)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version. '/header/' . $name;
         $result = $this->_fetch($url, \Zend_Http_Client::GET);
 
         return $result;

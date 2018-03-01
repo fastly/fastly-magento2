@@ -716,7 +716,8 @@ $vclUploadUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/upload');
 $testServiceUrl = $block->getUrl('adminhtml/fastlyCdn/testConnection');
 $checkTlsSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkTlsSetting');
 $toggleTlsSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/forceTls');
-$pushImageSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/pushImageSettings');
+$checkImageSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkImageSetting');
+$toggleImageSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/pushImageSettings');
 $checkBlockingSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkBlockingSetting');
 $toggleBlockingSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/blocking');
 $fetchBackendsUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/getBackends');
@@ -758,7 +759,8 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "testServiceUrl": "<?php echo $block->escapeJsQuote($testServiceUrl);?>",
                     "checkTlsSettingUrl": "<?php echo $block->escapeJsQuote($checkTlsSettingUrl);?>",
                     "toggleTlsSettingUrl": "<?php echo $block->escapeJsQuote($toggleTlsSettingUrl);?>",
-                    "pushImageSettingsUrl": "<?php echo $block->escapeJsQuote($pushImageSettingUrl);?>",
+                    "checkImageSettingUrl": "<?php echo $block->escapeJsQuote($checkImageSettingUrl);?>",
+                    "toggleImageSettingUrl": "<?php echo $block->escapeJsQuote($toggleImageSettingUrl);?>",
                     "checkBlockingSettingUrl": "<?php echo $block->escapeJsQuote($checkBlockingSettingUrl);?>",
                     "toggleBlockingSettingUrl": "<?php echo $block->escapeJsQuote($toggleBlockingSettingUrl);?>",
                     "isFastlyEnabled": "<?php echo $block->escapeJsQuote($isFastlyEnabled);?>",

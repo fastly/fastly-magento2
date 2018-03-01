@@ -12,6 +12,8 @@ define([
         var requestStateMsgSpan = '';
         var blockingStateSpan = '';
         var blockingStateMsgSpan = '';
+        var imageStateSpan = '';
+        var imageStateMsgSpan = '';
 
         $('#system_full_page_cache_caching_application').on('change', function () {
             if ($(this).val() == 'fastly') {
@@ -289,6 +291,9 @@ define([
             // Check service status & presence of blocking request setting
             blockingStateSpan = $('#blocking_state_span');
             blockingStateMsgSpan = $('#fastly_blocking_state_message_span');
+            // Check service status & presence of image optimization request setting
+            imageStateSpan = $('#imgopt_state_span');
+            imageStateMsgSpan = $('#fastly_imgopt_state_message_span');
             // Checking service status & presence of basic auth request setting
             authStateSpan = $('#auth_state_span');
             authStateMsgSpan = $('#fastly_auth_state_message_span');
@@ -298,6 +303,7 @@ define([
                 beforeSend: function (xhr) {
                     requestStateSpan.find('.processing').show();
                     blockingStateSpan.find('.processing').show();
+                    imageStateSpan.find('.processing').show();
                 }
             }).done(function (checkService) {
                 if (checkService.status != false) {
@@ -330,6 +336,20 @@ define([
                     }).fail(function () {
                         blockingStateSpan.find('.processing').hide();
                         blockingStateMsgSpan.find('#blocking_state_unknown').show();
+                    });
+
+                    var imageOptimization = vcl.getImageSetting(checkService.active_version, false);
+
+                    imageOptimization.done(function (checkReqSetting) {
+                        imageStateSpan.find('.processing').hide();
+                        if (checkReqSetting.status != false) {
+                            imageStateMsgSpan.find('#imgopt_state_enabled').show();
+                        } else {
+                            imageStateMsgSpan.find('#imgopt_state_disabled').show();
+                        }
+                    }).fail(function () {
+                        imageStateSpan.find('.processing').hide();
+                        imageStateMsgSpan.find('#imgopt_state_unknown').show();
                     });
 
                     // Fetch basic auth setting status
@@ -408,10 +428,12 @@ define([
                     requestStateMsgSpan.find('#force_tls_state_unknown').show();
                     blockingStateSpan.find('.processing').hide();
                     blockingStateMsgSpan.find('#blocking_state_unknown').show();
+                    imageStateSpan.find('.processing').hide();
+                    imageStateMsgSpan.find('#imgopt_state_unknown').show();
                 }
             }).fail(function () {
                 requestStateMsgSpan.find('#force_tls_state_unknown').show();
-                blockingStateMsgSpan.find('#blocking_state_unknown').show();
+                imageStateMsgSpan.find('#imgopt_state_unknown').show();
             });
         }
 
@@ -639,10 +661,12 @@ define([
         });
 
 
-        /**
-         * Activate image optimizations button
-         */
         $('#fastly_push_image_config').on('click', function () {
+            if (isAlreadyConfigured != true) {
+                $(this).attr('disabled', true);
+                return alert($.mage.__('Please save config prior to continuing.'));
+            }
+
             vcl.resetAllMessages();
 
             $.ajax({
@@ -650,6 +674,7 @@ define([
                 url: config.serviceInfoUrl,
                 showLoader: true
             }).done(function (service) {
+
                 if (service.status == false) {
                     return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
@@ -657,35 +682,21 @@ define([
                 active_version = service.active_version;
                 next_version = service.next_version;
                 service_name = service.service.name;
-                vcl.checkImageSetting(active_version, true).done(function (response) {
-                    if (response.status === false) {
-                        errorImageBtnMsg.text($.mage.__('Something went wrong. Please check log files.')).show();
-                        return; // Error occurred, escape
-                    }
-
-                    vcl.showPopup('fastly-image-options');
-                    vcl.setActiveServiceLabel(active_version, next_version, service_name);
-
-                    if (typeof(response.setting_value) === 'undefined') {
-                        return;
-                    }
-
-                    if (response.setting_value === true) {
-                        $('#fastly-image-template-notifications').text(
-                            $.mage.__('Image optimization will be disabled.')
-                        ).show();
+                vcl.getImageSetting(active_version, true).done(function (response) {
+                    if (response.status == false) {
+                        $('.modal-title').text($.mage.__('We are about to upload the Fastly image optimization snippet'));
                     } else {
-                        $('#fastly-image-template-notifications').text(
-                            $.mage.__('Image optimization will be enabled.')
-                        ).show();
+                        $('.modal-title').text($.mage.__('We are about to remove the Fastly image optimization snippet'));
                     }
+                    imageOptimization = response.status;
                 }).fail(function () {
-                    vcl.modal.modal('closeModal');
-                    errorImageBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
                 });
+                vcl.showPopup('fastly-image-options');
+                vcl.setActiveServiceLabel(active_version, next_version, service_name);
 
             }).fail(function (msg) {
-                vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
+                return errorImageBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
             });
         });
 
@@ -992,10 +1003,12 @@ define([
         var service_name;
         var forceTls = true;
         var blocking = true;
+        var imageOptimization = true;
         var isAlreadyConfigured = true;
         /* Image button message */
-        var successImageBtnMsg = $('#fastly-success-image-button-msg');
-        var errorImageBtnMsg = $('#fastly-error-image-button-msg');
+        var successImageBtnMsg = $('#fastly-success-imgopt-button-msg');
+        var errorImageBtnMsg = $('#fastly-error-imgopt-button-msg');
+        var warningImageBtnMsg = $('#fastly-warning-imgopt-button-msg');
         /* VCL button messages */
         var successVclBtnMsg = $('#fastly-success-vcl-button-msg');
         var errorVclBtnMsg = $('#fastly-error-vcl-button-msg');
@@ -1078,13 +1091,13 @@ define([
                 });
             },
 
-            // Queries Fastly API to retrieve Tls setting
-            checkImageSetting: function (active_version, loaderVisibility) {
+            // Queries Fastly API to retrieve image optimization setting
+            getImageSetting: function (active_version, loaderVisibility) {
                 return $.ajax({
                     type: "POST",
-                    url: config.pushImageSettingsUrl,
+                    url: config.checkImageSettingUrl,
                     showLoader: loaderVisibility,
-                    data: {'active_version': active_version, 'check_only': true}
+                    data: {'active_version': active_version}
                 });
             },
 
@@ -1370,36 +1383,50 @@ define([
                 });
             },
 
-            // Toggle Tls process
+            // Toggle image optimization process
             pushImageConfig: function (active_version) {
-                var activate_vcl_flag = false;
+                var activate_image_flag = false;
 
                 if ($('#fastly_activate_image_vcl').is(':checked')) {
-                    activate_vcl_flag = true;
+                    activate_image_flag = true;
                 }
 
                 $.ajax({
                     type: "POST",
-                    url: config.pushImageSettingsUrl,
+                    url: config.toggleImageSettingUrl,
                     data: {
-                        'activate_flag': activate_vcl_flag,
+                        'activate_flag': activate_image_flag,
                         'active_version': active_version
                     },
                     showLoader: true,
                     success: function (response) {
                         if (response.status == true) {
                             vcl.modal.modal('closeModal');
-                            successImageBtnMsg.text($.mage.__('Image optimization settings are successfully pushed.')).show();
-                            $('#image-optimization-status').text((response.new_state === true) ? 'enabled' : 'disabled')
+                            var onOrOff = 'removed';
+                            var disabledOrEnabled = 'disabled';
+                            if (imageOptimization == false) {
+                                onOrOff = 'uploaded';
+                                disabledOrEnabled = 'enabled';
+                            } else {
+                                onOrOff = 'removed';
+                                disabledOrEnabled = 'disabled';
+                            }
+                            successImageBtnMsg.text($.mage.__('The image optimization snippet has been successfully ' + onOrOff + '.')).show();
+                            $('.request_imgopt_state_span').hide();
+                            if (disabledOrEnabled == 'enabled') {
+                                imageStateMsgSpan.find('#imgopt_state_disabled').hide();
+                                imageStateMsgSpan.find('#imgopt_state_enabled').show();
+                            } else {
+                                imageStateMsgSpan.find('#imgopt_state_enabled').hide();
+                                imageStateMsgSpan.find('#imgopt_state_disabled').show();
+                            }
                         } else {
-                            vcl.modal.modal('closeModal');
                             vcl.resetAllMessages();
-
-                            errorImageBtnMsg.text(response.msg).show();
+                            vcl.showErrorMessage(response.msg);
                         }
                     },
                     error: function (msg) {
-                        vcl.modal.modal('closeModal');
+                        // error handling
                     }
                 });
             },
@@ -1952,7 +1979,7 @@ define([
                     }
                 },
                 'fastly-image-options': {
-                    title: jQuery.mage.__('Actiate image optimization'),
+                    title: jQuery.mage.__('Activate image optimization'),
                     content: function () {
                         return document.getElementById('fastly-image-template').textContent;
                     },

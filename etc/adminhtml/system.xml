@@ -198,8 +198,16 @@
                             </depends>
                         </field>
                         <field id="fastly_push_image_config" translate="label comment" sortOrder="90" showInDefault="1" showInStore="0" showInWebsite="0">
-                            <label><![CDATA[Fastly image optimization]]></label>
+                            <label><![CDATA[Enable Fastly image optimization snippet]]></label>
+                            <comment>
+                                <![CDATA[Enable the Fastly image optimization snippet.]]>
+                            </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ImageBtn</frontend_model>
+                        </field>
+                        <field id="image_optimizations" translate="label comment" type="select" sortOrder="95" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Enable Fastly image optimization</label>
+                            <comment><![CDATA[<a href="https://docs.fastly.com/guides/imageopto-setup-use/setup" target="_blank">Image optimization</a> needs to be enabled for your Fastly service.]]></comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                     </group>
                     <group id="fastly_blocking" sortOrder="350" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">

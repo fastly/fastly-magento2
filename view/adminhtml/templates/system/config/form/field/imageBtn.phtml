@@ -1,20 +1,49 @@
-<?php echo $block->getButtonHtml(); ?>
+<?php echo $block->getButtonHtml() ?>
 
-<b>Current state: </b>
-<span id="image-optimization-status">
-    <?php echo ($block->getState() == true) ? 'enabled' : 'disabled' ?>
+<span class="collect-indicator" id="imgopt_state_span">
+    <span id="fastly_imgopt_state_message_span"><b>Current state:</b>
+        <img class="processing"
+             hidden="hidden"
+             alt="Collecting"
+             style="margin:0 5px"
+             src="<?php /* @noEscape */ echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/>
+        <span style="display:none;" class="imgopt_state_span" id="imgopt_state_enabled"> enabled</span>
+        <span style="display:none;" class="imgopt_state_span" id="imgopt_state_disabled"> disabled</span>
+        <span style="display:none;" class="imgopt_state_span" id="imgopt_state_unknown"> unknown</span>
+    </span>
 </span>
 
-<p class="note">
-    <span>
-        <a href="https://docs.fastly.com/guides/imageopto-setup-use/setup"
-           target="_blank">Image optimization
-        </a> needs to be enabled for your Fastly service.
-    </span>
-</p>
-
-<div class="message message-error fastly-button-messages" id="fastly-error-image-button-msg" style="display: none">
+<div class="message message-error fastly-button-messages"
+     id="fastly-error-imgopt-button-msg"
+     style="display: none">
 </div>
 
-<div class="message message-success fastly-button-messages" id="fastly-success-image-button-msg" style="display: none">
+<div class="message message-success fastly-button-messages"
+     id="fastly-success-imgopt-button-msg"
+     style="display: none">
 </div>
+
+<div class="message message-warning fastly-button-messages"
+     id="fastly-warning-imgopt-button-msg"
+     style="display: none">
+</div>
+
+<style type="text/css">
+    .fastly-button-messages {
+        font-size: 1.2rem;
+        margin-top: 5px;
+        padding: 1.4rem 4rem 1.4rem 5.5rem;
+    }
+
+    #imgopt_state_enabled {
+        color: #008000;
+    }
+
+    #imgopt_state_disabled {
+        color: #808080;
+    }
+
+    #imgopt_state_unknown {
+        color: #ff0000;
+    }
+</style>

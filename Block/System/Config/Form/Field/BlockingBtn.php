@@ -58,7 +58,7 @@ class BlockingBtn extends Field
             'Magento\Backend\Block\Widget\Button'
         )->setData([
             'id'    => 'fastly_blocking_button',
-            'label' => __('Toggle Blocking')
+            'label' => __('Enable/Disable')
         ]);
 
         return $button->toHtml();

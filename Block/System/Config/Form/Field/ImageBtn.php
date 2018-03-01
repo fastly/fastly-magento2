@@ -17,28 +17,6 @@ class ImageBtn extends Field
     }
 
     /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * ImageBtn constructor.
-     *
-     * @param Config $config
-     * @param Context $context
-     * @param array $data
-     */
-    public function __construct(
-        Config $config,
-        Context $context,
-        array $data = []
-    ) {
-        $this->config = $config;
-
-        parent::__construct($context, $data);
-    }
-
-    /**
      * Remove scope label
      *
      * @param  AbstractElement $element
@@ -69,11 +47,6 @@ class ImageBtn extends Field
     public function getAjaxUrl()
     {
         return $this->getUrl('adminhtml/fastlyCdn/vcl/serviceinfo');
-    }
-
-    public function getState()
-    {
-        return $this->config->isImageOptimizationEnabled();
     }
 
     /**

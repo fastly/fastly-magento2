@@ -10,6 +10,9 @@ use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\App\Config\Storage\WriterInterface as ConfigWriter;
+use Magento\Framework\App\Cache\TypeListInterface as CacheTypeList;
+use Magento\Config\App\Config\Type\System as SystemConfig;
 
 class UpdateBlocking extends Action
 {
@@ -39,6 +42,21 @@ class UpdateBlocking extends Action
     private $vcl;
 
     /**
+     * @var ConfigWriter
+     */
+    private $configWriter;
+
+    /**
+     * @var CacheTypeList
+     */
+    private $cacheTypeList;
+
+    /**
+     * @var SystemConfig
+     */
+    private $systemConfig;
+
+    /**
      * UpdateBlocking constructor.
      *
      * @param Context $context
@@ -47,6 +65,9 @@ class UpdateBlocking extends Action
      * @param Config $config
      * @param Api $api
      * @param Vcl $vcl
+     * @param ConfigWriter $configWriter
+     * @param CacheTypeList $cacheTypeList
+     * @param SystemConfig $systemConfig
      */
     public function __construct(
         Context $context,
@@ -54,13 +75,19 @@ class UpdateBlocking extends Action
         JsonFactory $resultJsonFactory,
         Config $config,
         Api $api,
-        Vcl $vcl
+        Vcl $vcl,
+        ConfigWriter $configWriter,
+        CacheTypeList $cacheTypeList,
+        SystemConfig $systemConfig
     ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
         $this->config = $config;
         $this->api = $api;
         $this->vcl = $vcl;
+        $this->configWriter = $configWriter;
+        $this->cacheTypeList = $cacheTypeList;
+        $this->systemConfig = $systemConfig;
         parent::__construct($context);
     }
 
@@ -78,8 +105,8 @@ class UpdateBlocking extends Action
 
             $snippet = $this->config->getVclSnippets('/vcl_snippets_blocking', 'recv.vcl');
 
-            $country_codes = $this->prepareCountryCodes($this->config->getBlockByCountry());
-            $acls = $this->prepareAcls($this->config->getBlockByAcl());
+            $country_codes = $this->prepareCountryCodes($this->request->getParam('countries'));
+            $acls = $this->prepareAcls($this->request->getParam('acls'));
 
             $blockedItems = $country_codes . $acls;
             $strippedBlockedItems = substr($blockedItems, 0, strrpos($blockedItems, '||', -1));
@@ -95,12 +122,15 @@ class UpdateBlocking extends Action
                 $snippetName = Config::FASTLY_MAGENTO_MODULE . '_blocking_' . $key;
                 $snippetId = $this->api->getSnippet($currActiveVersion['active_version'], $snippetName)->id;
                 $params = [
-                    'name' =>  $snippetId,
+                    'name'      =>  $snippetId,
                     'content'   => $value
                 ];
 
                 $this->api->updateSnippet($params);
             }
+
+            $this->cacheTypeList->cleanType('config');
+            $this->systemConfig->clean();
 
             return $result->setData([
                 'status' => true
@@ -134,9 +164,25 @@ class UpdateBlocking extends Action
     private function prepareAcls($blockedAcls)
     {
         $result = '';
+        $aclsArray = [];
+        $acls = '';
 
         if ($blockedAcls != null) {
-            $blockedAclsPieces = explode(",", $blockedAcls);
+            foreach ($blockedAcls as $key => $value) {
+                $aclsArray[] = $value['value'];
+            }
+            $acls = implode(',', $aclsArray);
+        }
+
+        $this->configWriter->save(
+            Config::XML_FASTLY_BLOCK_BY_ACL,
+            $acls,
+            'default',
+            '0'
+        );
+
+        if ($acls != '') {
+            $blockedAclsPieces = explode(",", $acls);
             foreach ($blockedAclsPieces as $acl) {
                 $result .= ' client.ip ~ ' . $acl . ' ||';
             }
@@ -154,9 +200,25 @@ class UpdateBlocking extends Action
     private function prepareCountryCodes($blockedCountries)
     {
         $result = '';
+        $countriesArray = [];
+        $countries = '';
 
         if ($blockedCountries != null) {
-            $blockedCountriesPieces = explode(",", $blockedCountries);
+            foreach ($blockedCountries as $key => $value) {
+                $countriesArray[] = $value['value'];
+            }
+            $countries = implode(',', $countriesArray);
+        }
+
+        $this->configWriter->save(
+            Config::XML_FASTLY_BLOCK_BY_COUNTRY,
+            $countries,
+            'default',
+            '0'
+        );
+
+        if ($countries != '') {
+            $blockedCountriesPieces = explode(",", $countries);
             foreach ($blockedCountriesPieces as $code) {
                 $result .= ' client.geo.country_code == "' . $code . '" ||';
             }

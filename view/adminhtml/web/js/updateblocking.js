@@ -17,7 +17,9 @@ define([
                 showLoader: true,
                 data: {
                     'service_id': $('#system_full_page_cache_fastly_fastly_service_id').val(),
-                    'api_key': $('#system_full_page_cache_fastly_fastly_api_key').val()
+                    'api_key': $('#system_full_page_cache_fastly_fastly_api_key').val(),
+                    'acls': $('#system_full_page_cache_fastly_fastly_blocking_block_by_acl').serializeArray(),
+                    'countries': $('#system_full_page_cache_fastly_fastly_blocking_block_by_country').serializeArray()
                 },
                 cache: false,
                 success: function (response) {

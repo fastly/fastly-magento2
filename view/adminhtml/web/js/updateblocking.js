@@ -5,12 +5,16 @@ define([
     'mage/translate'
 ], function ($) {
     return function (config) {
-        successBtnMsg = $('#fastly-update-blocking-success-button-msg');
-        errorBtnMsg = $('#fastly-update-blocking-error-button-msg');
-        warningBtnMsg = $('#fastly-update-blocking-warning-button-msg');
+        var blockingSuccessBtnMsg = $('#fastly-update-blocking-success-button-msg');
+        var blockingErrorBtnMsg = $('#fastly-update-blocking-error-button-msg');
 
         $('#fastly_update_blocking_button').on('click', function () {
-            resetAllMessages();
+
+            blockingSuccessBtnMsg.text();
+            blockingSuccessBtnMsg.hide();
+            blockingErrorBtnMsg.text();
+            blockingErrorBtnMsg.hide();
+
             $.ajax({
                 type: "POST",
                 url: config.updateBlockingUrl,
@@ -24,25 +28,15 @@ define([
                 cache: false,
                 success: function (response) {
                     if (response.status == false) {
-                        return errorBtnMsg.text($.mage.__('Please make sure that blocking is enabled.')).show();
+                        return blockingErrorBtnMsg.text($.mage.__('Please make sure that blocking is enabled.')).show();
                     } else {
-                        return successBtnMsg.text($.mage.__('Blocking snippet has been updated successfully.')).show();
+                        return blockingSuccessBtnMsg.text($.mage.__('Blocking snippet has been updated successfully.')).show();
                     }
                 },
                 error: function (msg) {
-                    return errorBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                    return blockingErrorBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                 }
             });
         });
     };
-
-    function resetAllMessages()
-    {
-        successBtnMsg.text();
-        successBtnMsg.hide();
-        errorBtnMsg.text();
-        errorBtnMsg.hide();
-        warningBtnMsg.text();
-        warningBtnMsg.hide();
-    }
 });

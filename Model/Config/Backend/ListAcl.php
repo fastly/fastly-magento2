@@ -45,25 +45,25 @@ class ListAcl implements ArrayInterface
      */
     public function toOptionArray()
     {
-        $service = $this->api->checkServiceDetails();
         $options = [];
-        if ($service === false) {
-            return $options;
-        } else {
+        try {
+            $service = $this->api->checkServiceDetails();
+            if ($service === false) {
+                return $options;
+            }
+
             $currActiveVersion = $this->acl->determineVersions($service->versions);
             $acls = $this->api->getAcls($currActiveVersion['active_version']);
 
-            try {
-                foreach ($acls as $value) {
-                    $options[] = [
-                        'value' => $value->name,
-                        'label' => $value->name
-                    ];
-                }
-                return $options;
-            } catch (\Exception $e) {
-                return $options;
+            foreach ($acls as $value) {
+                $options[] = [
+                    'value' => $value->name,
+                    'label' => $value->name
+                ];
             }
+            return $options;
+        } catch (\Exception $e) {
+            return $options;
         }
     }
 }

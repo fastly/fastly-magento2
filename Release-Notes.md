@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.45
+
+- Add preliminary implementation for Image Optimization
+- Fix for system configuration bar being broken https://github.com/fastly/fastly-magento2/pull/152
+
 ## 1.2.44
 
 - Updates to the blocking UI https://github.com/fastly/fastly-magento2/pull/146

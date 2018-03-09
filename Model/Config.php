@@ -604,7 +604,7 @@ class Config extends \Magento\PageCache\Model\Config
             foreach ($mapping as $map) {
                 if (is_array($map) &&
                     isset($map[$countryId]) &&
-                    strtolower($map[$countryId]) == strtolower($countryCode)) {
+                    strtolower(str_replace(' ', '', $map[$countryId])) == strtolower($countryCode)) {
                     if (isset($map[$key])) {
                         return (int)$map[$key];
                     }

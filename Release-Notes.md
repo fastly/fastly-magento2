@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.46
+
+- Stop treating every HTML file as potentially having ESIs. We'll mark all Magento documents as ESIs
+
 ## 1.2.45
 
 - Add preliminary implementation for Image Optimization

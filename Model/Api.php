@@ -402,7 +402,7 @@ class Api
     public function uploadSnippet($version, array $snippet)
     {
         // Perform replacements vcl template replacements
-        if(isset($snippet['content'])) {
+        if (isset($snippet['content'])) {
             $adminUrl = $this->vcl->getAdminFrontName();
             $adminPathTimeout = $this->config->getAdminPathTimeout();
             $ignoredUrlParameters = $this->config->getIgnoredUrlParameters();

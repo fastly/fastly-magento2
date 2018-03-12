@@ -24,6 +24,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\Adapter\CurlFactory;
 use Magento\Framework\Cache\InvalidateLogger;
 use Fastly\Cdn\Helper\Data;
+use Fastly\Cdn\Helper\Vcl;
 use Psr\Log\LoggerInterface;
 
 class Api
@@ -66,25 +67,33 @@ class Api
     private $purged = false;
 
     /**
+     * @var Vcl
+     */
+    private $vcl;
+
+    /**
      * Api constructor.
      * @param Config $config
      * @param CurlFactory $curlFactory
      * @param InvalidateLogger $logger
      * @param Data $helper
      * @param LoggerInterface $log
+     * @param Vcl $vcl
      */
     public function __construct(
         Config $config,
         CurlFactory $curlFactory,
         InvalidateLogger $logger,
         Data $helper,
-        LoggerInterface $log
+        LoggerInterface $log,
+        Vcl $vcl
     ) {
         $this->config = $config;
         $this->curlFactory = $curlFactory;
         $this->logger = $logger;
         $this->helper = $helper;
         $this->log = $log;
+        $this->vcl = $vcl;
     }
 
     /**
@@ -392,6 +401,21 @@ class Api
      */
     public function uploadSnippet($version, array $snippet)
     {
+        // Perform replacements vcl template replacements
+        if (isset($snippet['content'])) {
+            $adminUrl = $this->vcl->getAdminFrontName();
+            $adminPathTimeout = $this->config->getAdminPathTimeout();
+            $ignoredUrlParameters = $this->config->getIgnoredUrlParameters();
+
+            $ignoredUrlParameterPieces = explode(",", $ignoredUrlParameters);
+            $filterIgnoredUrlParameterPieces = array_filter(array_map('trim', $ignoredUrlParameterPieces));
+            $queryParameters = implode('|', $filterIgnoredUrlParameterPieces);
+
+            $snippet['content'] = str_replace('####ADMIN_PATH####', $adminUrl, $snippet['content']);
+            $snippet['content'] = str_replace('####ADMIN_PATH_TIMEOUT####', $adminPathTimeout, $snippet['content']);
+            $snippet['content'] = str_replace('####QUERY_PARAMETERS####', $queryParameters, $snippet['content']);
+        }
+
         $checkIfExists = $this->hasSnippet($version, $snippet['name']);
         $url = $this->_getApiServiceUri(). 'version/' .$version. '/snippet';
         if (!$checkIfExists) {

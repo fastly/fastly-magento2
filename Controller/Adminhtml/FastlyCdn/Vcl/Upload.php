@@ -96,18 +96,7 @@ class Upload extends Action
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
             $snippets = $this->config->getVclSnippets();
-            $ignoredUrlParameters = $this->config->getIgnoredUrlParameters();
-            $adminPathTimeout = $this->config->getAdminPathTimeout();
-            $adminUrl = $this->vcl->getAdminFrontName();
-
-            $ignoredUrlParameterPieces = explode(",", $ignoredUrlParameters);
-            $filterIgnoredUrlParameterPieces = array_filter(array_map('trim', $ignoredUrlParameterPieces));
-            $queryParameters = implode('|', $filterIgnoredUrlParameterPieces);
-
             foreach ($snippets as $key => $value) {
-                $value = str_replace('####ADMIN_PATH####', $adminUrl, $value);
-                $value = str_replace('####ADMIN_PATH_TIMEOUT####', $adminPathTimeout, $value);
-                $value = str_replace('####QUERY_PARAMETERS####', $queryParameters, $value);
                 $snippetData = [
                     'name'      => Config::FASTLY_MAGENTO_MODULE . '_' . $key,
                     'type'      => $key,

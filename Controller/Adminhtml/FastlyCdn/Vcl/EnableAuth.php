@@ -82,8 +82,6 @@ class EnableAuth extends Action
             $enabled = false;
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
-            $adminUrl = $this->vcl->getAdminFrontName();
-
             $vclPath = \Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl\CheckAuthSetting::VCL_AUTH_SNIPPET_PATH;
             $snippets = $this->config->getVclSnippets($vclPath);
 
@@ -105,7 +103,6 @@ class EnableAuth extends Action
 
                 // Insert snippet
                 foreach ($snippets as $key => $value) {
-                    $value = str_replace('####ADMIN_PATH####', $adminUrl, $value);
                     $snippetData = [
                         'name' => Config::FASTLY_MAGENTO_MODULE.'_basic_auth_'.$key,
                         'type' => $key,

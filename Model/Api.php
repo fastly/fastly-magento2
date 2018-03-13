@@ -486,16 +486,14 @@ class Api
      * Deleting an individual regular VCL Snippet
      * @param $version
      * @param $name
-     * @throws LocalizedException
+     * @return bool|mixed
      */
     public function removeSnippet($version, $name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version. '/snippet/' . $name;
         $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
 
-        if (!$result) {
-            throw new LocalizedException(__('Failed to remove the Snippet file.'));
-        }
+        return $result;
     }
 
     /**
@@ -801,7 +799,6 @@ class Api
      * @param $version
      * @param $dictionaryName
      * @return bool|mixed
-     * @throws LocalizedException
      */
     public function getSingleDictionary($version, $dictionaryName)
     {
@@ -815,7 +812,6 @@ class Api
      * Get auth dictionary
      * @param $version
      * @return bool|mixed
-     * @throws LocalizedException
      */
     public function getAuthDictionary($version)
     {

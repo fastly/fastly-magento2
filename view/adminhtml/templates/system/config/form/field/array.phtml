@@ -68,6 +68,9 @@ $isAddAfter = (int)$block->isAddAfter();
                             type="button">
                         <span>
                             <?php /* @noEscape */ echo $block->getAddButtonLabel(); ?>
+                            <?php if (empty($block->getAddButtonLabel())) : ?>
+                                <?php /* @noEscape */ echo __('Add'); ?>
+                            <?php endif; ?>
                         </span>
                     </button>
                 </td>

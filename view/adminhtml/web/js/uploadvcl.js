@@ -210,7 +210,7 @@ define([
                             $(self).closest('tr').find("input[name='value']").prop('disabled', true);
                             var newElement = $(self).closest('tr').find("input[name='value']")[0];
                             newElement.setAttribute('data-id', response.id);
-                            
+
                             vcl.showSuccessMessage($.mage.__('Acl item is successfully saved.'));
                         } else {
                             vcl.showErrorMessage(response.msg);
@@ -327,12 +327,12 @@ define([
                     var blocking = vcl.getBlockingSetting(checkService.active_version, false);
 
                     blocking.done(function (checkReqSetting) {
-                            blockingStateSpan.find('.processing').hide();
-                            if (checkReqSetting.status != false) {
-                                blockingStateMsgSpan.find('#blocking_state_enabled').show();
-                            } else {
-                                blockingStateMsgSpan.find('#blocking_state_disabled').show();
-                            }
+                        blockingStateSpan.find('.processing').hide();
+                        if (checkReqSetting.status != false) {
+                            blockingStateMsgSpan.find('#blocking_state_enabled').show();
+                        } else {
+                            blockingStateMsgSpan.find('#blocking_state_disabled').show();
+                        }
                     }).fail(function () {
                         blockingStateSpan.find('.processing').hide();
                         blockingStateMsgSpan.find('#blocking_state_unknown').show();
@@ -572,56 +572,54 @@ define([
 
             vcl.resetAllMessages();
 
-            $.when(
-                $.ajax({
-                    type: "GET",
-                    url: config.serviceInfoUrl,
-                    showLoader: true
-                })
-            ).done(function (service) {
+            $.ajax({
+                type: "GET",
+                url: config.serviceInfoUrl,
+                showLoader: true,
+                success: function (service) {
 
-                if (service.status == false) {
-                    return errorHtmlBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
-                }
-
-                active_version = service.active_version;
-                next_version = service.next_version;
-                service_name = service.service.name;
-
-                vcl.getErrorPageRespObj(active_version, true).done(function (response) {
-                    if (response.status == true) {
-                        $('#error_page_html').text(response.errorPageResp.content).html();
+                    if (service.status == false) {
+                        return errorHtmlBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                     }
-                }).fail(function () {
-                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
-                });
 
+                    active_version = service.active_version;
+                    next_version = service.next_version;
+                    service_name = service.service.name;
 
-            }).fail(function () {
-                return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-            });
-
-            if (authDictStatus != false) {
-                vcl.listAuths(active_version, false).done(function (authResp) {
-                    $('.loading-dictionaries').hide();
-                    if (authResp.status === true) {
-                        if (authResp.auths.length > 0) {
-                            auths = authResp.auths;
-                            vcl.processAuths(authResp.auths);
-                        } else {
-                            $('.no-dictionaries').show();
+                    vcl.getErrorPageRespObj(active_version, true).done(function (response) {
+                        if (response.status == true) {
+                            $('#error_page_html').text(response.errorPageResp.content).html();
                         }
-                    } else if (authResp.status == 'empty') {
-                        auths = authResp.auths;
-                        vcl.processAuths([]);
+                    }).fail(function () {
+                        vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
+                    });
+
+                    if (authDictStatus != false) {
+                        vcl.listAuths(active_version, false).done(function (authResp) {
+                            $('.loading-dictionaries').hide();
+                            if (authResp.status === true) {
+                                if (authResp.auths.length > 0) {
+                                    auths = authResp.auths;
+                                    vcl.processAuths(authResp.auths);
+                                } else {
+                                    $('.no-dictionaries').show();
+                                }
+                            } else if (authResp.status == 'empty') {
+                                auths = authResp.auths;
+                                vcl.processAuths([]);
+                            }
+                        }).fail(function () {
+                            return errorAuthBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                        });
+                    } else {
+                        vcl.showPopup('fastly-auth-container-options');
+                        vcl.setActiveServiceLabel(active_version, next_version, service_name);
                     }
-                }).fail(function () {
-                    return errorAuthBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-                });
-            } else {
-                vcl.showPopup('fastly-auth-container-options');
-                vcl.setActiveServiceLabel(active_version, next_version, service_name);
-            }
+                },
+                fail: function () {
+                    return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                }
+            });
         });
 
         /**
@@ -769,14 +767,14 @@ define([
                 next_version = service.next_version;
                 service_name = service.service.name;
                 vcl.getBlockingSetting(active_version, true).done(function (response) {
-                        if (response.status == false) {
-                            $('.modal-title').text($.mage.__('We are about to turn on blocking'));
-                        } else {
-                            $('.modal-title').text($.mage.__('We are about to turn off blocking'));
-                        }
-                        blocking = response.status;
+                    if (response.status == false) {
+                        $('.modal-title').text($.mage.__('We are about to turn on blocking'));
+                    } else {
+                        $('.modal-title').text($.mage.__('We are about to turn off blocking'));
+                    }
+                    blocking = response.status;
                 }).fail(function () {
-                        vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
+                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
                 });
                 vcl.showPopup('fastly-blocking-options');
                 vcl.setActiveServiceLabel(active_version, next_version, service_name);
@@ -1816,6 +1814,9 @@ define([
                 successAuthBtnMsg.hide();
                 errorAuthBtnMsg.hide();
                 warningAuthBtnMsg.hide();
+
+                deleteAuthBtnMsgError.hide();
+                deleteAuthBtnMsgSuccess.hide();
             },
 
             // CreateAcl
@@ -1940,7 +1941,7 @@ define([
                             authStateMsgSpan.find('#enable_auth_state_enabled').hide();
                             authStateMsgSpan.find('#enable_auth_state_disabled').show();
                             active_version = response.active_version;
-                            authDictStatus = true;
+                            authDictStatus = false;
                             vcl.modal.modal('closeModal');
                             return deleteAuthBtnMsgSuccess.text($.mage.__('Authentication users removed.')).show();
                         } else {

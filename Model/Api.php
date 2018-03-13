@@ -204,7 +204,7 @@ class Api
             if ($this->config->canPublishDebugBacktrace() == false) {
                 return $result;
             }
-            
+
             $stackTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
             $trace = [];
             foreach ($stackTrace as $row => $data) {
@@ -793,10 +793,6 @@ class Api
         $url = $this->_getApiServiceUri(). 'dictionary/'.$dictionaryId.'/items';
         $result = $this->_fetch($url, \Zend_Http_Client::GET);
 
-        if (!$result) {
-            throw new LocalizedException(__('Error fetching dictionary items for this dictionary'));
-        }
-
         return $result;
     }
 
@@ -811,10 +807,6 @@ class Api
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version . '/dictionary/' . $dictionaryName;
         $result = $this->_fetch($url, \Zend_Http_Client::GET);
-
-        if (!$result) {
-            throw new LocalizedException(__('Error fetching dictionary'));
-        }
 
         return $result;
     }

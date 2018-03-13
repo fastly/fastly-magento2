@@ -588,20 +588,20 @@ class Config extends \Magento\PageCache\Model\Config
     private function extractMapping($mapping, $countryCode)
     {
         $final = null;
-        $mapping = json_decode($mapping, true);
-        if (!$mapping) {
+        $extractMapping = json_decode($mapping, true);
+        if (!$extractMapping) {
             try {
-                $mapping = unserialize($mapping); // @codingStandardsIgnoreLine
+                $extractMapping = unserialize($mapping); // @codingStandardsIgnoreLine
             } catch (\Exception $e) {
-                $mapping = [];
+                $extractMapping = [];
             }
         }
 
-        if (is_array($mapping)) {
+        if (is_array($extractMapping)) {
             $countryId = 'country_id';
             $key = 'store_id';
             // check for direct match
-            foreach ($mapping as $map) {
+            foreach ($extractMapping as $map) {
                 if (is_array($map) &&
                     isset($map[$countryId]) &&
                     strtolower(str_replace(' ', '', $map[$countryId])) == strtolower($countryCode)) {

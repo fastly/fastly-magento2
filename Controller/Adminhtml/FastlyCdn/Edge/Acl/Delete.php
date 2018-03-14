@@ -9,6 +9,7 @@ use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Helper\Vcl;
+use Magento\Framework\Exception\LocalizedException;
 
 class Delete extends Action
 {
@@ -76,6 +77,10 @@ class Delete extends Action
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
+
+            if ($acls == null) {
+                throw new LocalizedException(__('At least one ACL container needs to be selected.'));
+            }
 
             foreach ($acls as $acl) {
                 $this->api->deleteAcl($clone->number, $acl);

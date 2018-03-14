@@ -399,6 +399,7 @@ define([
                                     dictionaries = dictResp.dictionaries;
                                     vcl.processDictionaries(dictResp.dictionaries);
                                 } else {
+                                    $('#delete-dictionary-container-button').hide();
                                     $('.no-dictionaries').show();
                                 }
                             }
@@ -409,14 +410,15 @@ define([
 
                     // Fetch ACLs
                     vcl.listAcls(active_version, false).done(function (aclResp) {
-                        $('.loading-dictionaries').hide();
+                        $('.loading-acls').hide();
                         if (aclResp.status != false) {
                             if (aclResp.status != false) {
                                 if (aclResp.acls.length > 0) {
                                     acls = aclResp.acls;
                                     vcl.processAcls(aclResp.acls);
                                 } else {
-                                    $('.no-dictionaries').show();
+                                    $('#delete-acl-container-button').hide();
+                                    $('.no-acls').show();
                                 }
                             }
                         }
@@ -502,6 +504,7 @@ define([
                     }
 
                     vcl.showPopup('fastly-delete-dictionary-container-options');
+                    vcl.setActiveServiceLabel(active_version, next_version, service_name);
 
                     if (dictionariesHtml != '') {
                         $('#delete-dictionary-table > tbody').html(dictionariesHtml);
@@ -547,6 +550,7 @@ define([
                     }
 
                     vcl.showPopup('fastly-delete-acl-container-options');
+                    vcl.setActiveServiceLabel(active_version, next_version, service_name);
 
                     if (aclsHtml != '') {
                         $('#delete-acl-table > tbody').html(aclsHtml);
@@ -1281,6 +1285,7 @@ define([
                 });
                 if (html != '') {
                     $('.no-dictionaries').hide();
+                    $('#delete-dictionary-container-button').show();
                 }
                 $('#fastly-dictionaries-list').html(html);
             },
@@ -1306,7 +1311,7 @@ define([
                     showLoader: loaderVisibility,
                     data: {'active_version': active_version},
                     beforeSend: function (xhr) {
-                        $('.loading-dictionaries').show();
+                        $('.loading-acls').show();
                     }
                 });
             },
@@ -1333,7 +1338,8 @@ define([
                     html += "<td class='col-actions'><button class='action-delete fastly-edit-dictionary-icon' data-acl-id='" + acl.id + "' id='fastly-edit-acl_"+ index + "' title='Edit Acl' type='button'></td></tr>";
                 });
                 if (html != '') {
-                    $('.no-dictionaries').hide();
+                    $('#delete-acl-container-button').show();
+                    $('.no-acls').hide();
                 }
                 $('#fastly-acls-list').html(html);
             },
@@ -1782,6 +1788,7 @@ define([
                                         if (dictResp.dictionaries.length > 0) {
                                             dictionaries = dictResp.dictionaries;
                                             vcl.processDictionaries(dictResp.dictionaries);
+                                            $('.no-dictionaries').hide();
                                         } else {
                                             $('.no-dictionaries').show();
                                         }
@@ -1831,13 +1838,13 @@ define([
                             vcl.listDictionaries(active_version, false).done(function (dictResp) {
                                 $('.loading-dictionaries').hide();
                                 if (dictResp.status != false) {
-                                    if (dictResp.status != false) {
-                                        if (dictResp.dictionaries.length > 0) {
-                                            dictionaries = dictResp.dictionaries;
-                                            vcl.processDictionaries(dictResp.dictionaries);
-                                        } else {
-                                            $('.no-dictionaries').show();
-                                        }
+                                    if (dictResp.dictionaries.length > 0) {
+                                        dictionaries = dictResp.dictionaries;
+                                        vcl.processDictionaries(dictResp.dictionaries);
+                                    } else {
+                                        $('#fastly-dictionaries-list').html('');
+                                        $('#delete-dictionary-container-button').hide();
+                                        $('.no-dictionaries').show();
                                     }
                                 }
                             }).fail(function () {
@@ -1882,15 +1889,15 @@ define([
                             active_version = response.active_version;
                             // Fetch dictionaries
                             vcl.listAcls(active_version, false).done(function (aclResp) {
-                                $('.loading-dictionaries').hide();
+                                $('.loading-acls').hide();
                                 if (aclResp.status != false) {
-                                    if (aclResp.status != false) {
-                                        if (aclResp.acls.length > 0) {
-                                            acls = aclResp.acls;
-                                            vcl.processAcls(aclResp.acls);
-                                        } else {
-                                            $('.no-acls').show();
-                                        }
+                                    if (aclResp.acls.length > 0) {
+                                        acls = aclResp.acls;
+                                        vcl.processAcls(aclResp.acls);
+                                    } else {
+                                        $('#fastly-acls-list').html('');
+                                        $('#delete-acl-container-button').hide();
+                                        $('.no-acls').show();
                                     }
                                 }
                             }).fail(function () {
@@ -2046,12 +2053,13 @@ define([
                             successAclBtnMsg.text($.mage.__('Acl is successfully created.')).show();
                             active_version = response.active_version;
                             vcl.listAcls(active_version, false).done(function (aclResp) {
-                                $('.loading-dictionaries').hide();
+                                $('.loading-acls').hide();
                                 if (aclResp.status != false) {
                                     if (aclResp.status != false) {
                                         if (aclResp.acls.length > 0) {
                                             acls = aclResp.acls;
                                             vcl.processAcls(aclResp.acls);
+                                            $('.no-acls').hide();
                                         } else {
                                             $('.no-acls').show();
                                         }

@@ -488,7 +488,6 @@ define([
                 if (response.status == true) {
                     edgeDictionaries = response.dictionaries;
                     var dictionariesHtml = '';
-                    console.log(response);
                     if (edgeDictionaries.length > 0) {
                         $.each(edgeDictionaries, function (index, item) {
                             dictionariesHtml += '<tr>' +
@@ -534,7 +533,6 @@ define([
                 if (response.status == true) {
                     edgeAcls = response.acls;
                     var aclsHtml = '';
-                    console.log(response);
                     if (edgeAcls.length > 0) {
                         $.each(edgeAcls, function (index, item) {
                             aclsHtml += '<tr>' +
@@ -1891,7 +1889,7 @@ define([
                                             acls = aclResp.acls;
                                             vcl.processAcls(aclResp.acls);
                                         } else {
-                                            $('.no-dictionaries').show();
+                                            $('.no-acls').show();
                                         }
                                     }
                                 }
@@ -2055,7 +2053,7 @@ define([
                                             acls = aclResp.acls;
                                             vcl.processAcls(aclResp.acls);
                                         } else {
-                                            $('.no-dictionaries').show();
+                                            $('.no-acls').show();
                                         }
                                     }
                                 }

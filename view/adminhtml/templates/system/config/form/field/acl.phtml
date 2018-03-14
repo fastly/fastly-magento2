@@ -53,8 +53,8 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
              src="<?php /* @noEscape */ echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/>
         <?php /* @noEscape */ echo __('Loading acl...'); ?>
     </p>
-    <p class="no-dictionaries" style="display: none;">
-        <?php /* @noEscape */ echo __('There are no acl-s configured yet.'); ?>
+    <p class="no-acls" style="display: none;">
+        <?php /* @noEscape */ echo __('There are no ACLs configured yet.'); ?>
     </p>
 </div>
 
@@ -76,7 +76,7 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
         font-size: 2rem;
     }
 
-    .no-dictionaries, .loading-dictionaries {
+    .no-acls, .loading-dictionaries {
         text-align: center;
     }
 </style>

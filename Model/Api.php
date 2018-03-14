@@ -914,6 +914,21 @@ class Api
     }
 
     /**
+     * Delete named acl for a particular service and version.
+     *
+     * @param $version
+     * @param $name
+     * @return bool|mixed
+     */
+    public function deleteAcl($version, $name)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/acl/' . $name;
+        $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
+
+        return $result;
+    }
+
+    /**
      * Fetch ACL entry list for particular ACL
      *
      * @param $aclId

@@ -23,6 +23,12 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
         id="add-acl-container-button">
     <?php /* @noEscape */ echo __('Add ACL') ?>
 </button>
+<button type="button"
+        style="margin-bottom: 10px;"
+        class=""
+        id="delete-acl-container-button">
+    <?php /* @noEscape */ echo __('Delete ACL') ?>
+</button>
 <div class="design_theme_ua_regexp" id="grid<?php /* @noEscape */ echo $_htmlId; ?>">
     <div class="admin__control-table-wrapper">
         <table class="admin__control-table" id="<?php /* @noEscape */ echo $block->getElement()->getId(); ?>">
@@ -53,15 +59,15 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
 </div>
 
 <div class="message message-error fastly-button-messages"
-     id="fastly-error-edge-button-msg"
+     id="fastly-error-acl-button-msg"
      style="display: none"></div>
 
 <div class="message message-success fastly-button-messages"
-     id="fastly-success-edge-button-msg"
+     id="fastly-success-acl-button-msg"
      style="display: none"></div>
 
 <div class="message message-warning fastly-button-messages"
-     id="fastly-warning-edge-button-msg"
+     id="fastly-warning-acl-button-msg"
      style="display: none"></div>
 
 <style type="text/css">

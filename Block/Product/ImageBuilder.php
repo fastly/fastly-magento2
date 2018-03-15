@@ -75,10 +75,14 @@ class ImageBuilder extends \Magento\Catalog\Block\Product\ImageBuilder
     {
         $parsedUrl = parse_url($url); // @codingStandardsIgnoreLine - used only for query check
         if (isset($parsedUrl['query'])) {
-            $url = $url . '&dpr=1.5 1.5x';
+            $url1x = $url . '&dpr=1.5 1.5x';
+            $url2x = $url . '&dpr=2 2x';
         } else {
-            $url = $url . '?dpr=1.5 1.5x';
+            $url1x = $url . '?dpr=1.5 1.5x';
+            $url2x = $url . '?dpr=2 2x';
         }
+
+        $url = $url1x . ',' . $url2x;
 
         $fastlyAttributes = ['srcset' => $url];
         $attributes = $this->getAttributes();

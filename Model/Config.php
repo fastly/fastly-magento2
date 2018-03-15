@@ -167,13 +167,13 @@ class Config extends \Magento\PageCache\Model\Config
      * XML path to image optimizations flag
      */
     const XML_FASTLY_IMAGE_OPTIMIZATIONS
-        = 'system/full_page_cache/fastly/fastly_advanced_configuration/image_optimizations';
+        = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimizations';
 
     /**
      * XML path to image optimizations pixel ratio flag
      */
     const XML_FASTLY_IMAGE_OPTIMIZATIONS_PIXEL_RATIO
-        = 'system/full_page_cache/fastly/fastly_advanced_configuration/image_optimizations_pixel_ratio';
+        = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimizations_pixel_ratio';
 
     /**
      * XML path to Google analytics CID

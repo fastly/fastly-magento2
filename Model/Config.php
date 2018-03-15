@@ -461,6 +461,10 @@ class Config extends \Magento\PageCache\Model\Config
      */
     public function isImageOptimizationEnabled()
     {
+        if ($this->isFastlyEnabled() !== true) {
+            return false;
+        }
+
         return $this->_scopeConfig->isSetFlag(self::XML_FASTLY_IMAGE_OPTIMIZATIONS);
     }
 
@@ -471,6 +475,10 @@ class Config extends \Magento\PageCache\Model\Config
      */
     public function isImageOptimizationPixelRatioEnabled()
     {
+        if ($this->isImageOptimizationEnabled() !== true) {
+            return false;
+        }
+
         return $this->_scopeConfig->isSetFlag(self::XML_FASTLY_IMAGE_OPTIMIZATIONS_PIXEL_RATIO);
     }
 

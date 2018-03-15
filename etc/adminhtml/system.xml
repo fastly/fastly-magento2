@@ -200,7 +200,7 @@
                         <field id="fastly_push_image_config" translate="label comment" sortOrder="90" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Enable Fastly image optimization snippet]]></label>
                             <comment>
-                                <![CDATA[Enable the Fastly image optimization snippet.]]>
+                                <![CDATA[Push VCL snippet required for image optimization.]]>
                             </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ImageBtn</frontend_model>
                         </field>
@@ -210,8 +210,8 @@
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="image_optimizations_pixel_ratio" translate="label comment" type="select" sortOrder="95" showInDefault="1" showInWebsite="1" showInStore="1">
-                            <label>Enable Fastly image optimization</label>
-                            <comment><![CDATA[Enable adaptive device pixel ratios for images]]></comment>
+                            <label>Enable adaptive device pixel ratios</label>
+                            <comment><![CDATA[Magento will use <a href="https://docs.fastly.com/guides/imageopto-setup-use/serving-responsive-images#adaptive-device-pixel-ratios" target="_blank">Adaptive device pixel rations</a> through Fastly service.]]></comment>
                             <depends>
                                 <field id="image_optimizations">1</field>
                             </depends>

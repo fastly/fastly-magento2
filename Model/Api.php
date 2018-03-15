@@ -24,6 +24,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\Adapter\CurlFactory;
 use Magento\Framework\Cache\InvalidateLogger;
 use Fastly\Cdn\Helper\Data;
+use Fastly\Cdn\Helper\Vcl;
 use Psr\Log\LoggerInterface;
 
 class Api
@@ -66,25 +67,33 @@ class Api
     private $purged = false;
 
     /**
+     * @var Vcl
+     */
+    private $vcl;
+
+    /**
      * Api constructor.
      * @param Config $config
      * @param CurlFactory $curlFactory
      * @param InvalidateLogger $logger
      * @param Data $helper
      * @param LoggerInterface $log
+     * @param Vcl $vcl
      */
     public function __construct(
         Config $config,
         CurlFactory $curlFactory,
         InvalidateLogger $logger,
         Data $helper,
-        LoggerInterface $log
+        LoggerInterface $log,
+        Vcl $vcl
     ) {
         $this->config = $config;
         $this->curlFactory = $curlFactory;
         $this->logger = $logger;
         $this->helper = $helper;
         $this->log = $log;
+        $this->vcl = $vcl;
     }
 
     /**
@@ -195,7 +204,7 @@ class Api
             if ($this->config->canPublishDebugBacktrace() == false) {
                 return $result;
             }
-            
+
             $stackTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
             $trace = [];
             foreach ($stackTrace as $row => $data) {
@@ -404,6 +413,21 @@ class Api
      */
     public function uploadSnippet($version, array $snippet)
     {
+        // Perform replacements vcl template replacements
+        if (isset($snippet['content'])) {
+            $adminUrl = $this->vcl->getAdminFrontName();
+            $adminPathTimeout = $this->config->getAdminPathTimeout();
+            $ignoredUrlParameters = $this->config->getIgnoredUrlParameters();
+
+            $ignoredUrlParameterPieces = explode(",", $ignoredUrlParameters);
+            $filterIgnoredUrlParameterPieces = array_filter(array_map('trim', $ignoredUrlParameterPieces));
+            $queryParameters = implode('|', $filterIgnoredUrlParameterPieces);
+
+            $snippet['content'] = str_replace('####ADMIN_PATH####', $adminUrl, $snippet['content']);
+            $snippet['content'] = str_replace('####ADMIN_PATH_TIMEOUT####', $adminPathTimeout, $snippet['content']);
+            $snippet['content'] = str_replace('####QUERY_PARAMETERS####', $queryParameters, $snippet['content']);
+        }
+
         $checkIfExists = $this->hasSnippet($version, $snippet['name']);
         $url = $this->_getApiServiceUri(). 'version/' .$version. '/snippet';
         if (!$checkIfExists) {
@@ -474,16 +498,14 @@ class Api
      * Deleting an individual regular VCL Snippet
      * @param $version
      * @param $name
-     * @throws LocalizedException
+     * @return bool|mixed
      */
     public function removeSnippet($version, $name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version. '/snippet/' . $name;
         $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
 
-        if (!$result) {
-            throw new LocalizedException(__('Failed to remove the Snippet file.'));
-        }
+        return $result;
     }
 
     /**
@@ -781,10 +803,6 @@ class Api
         $url = $this->_getApiServiceUri(). 'dictionary/'.$dictionaryId.'/items';
         $result = $this->_fetch($url, \Zend_Http_Client::GET);
 
-        if (!$result) {
-            throw new LocalizedException(__('Error fetching dictionary items for this dictionary'));
-        }
-
         return $result;
     }
 
@@ -793,16 +811,11 @@ class Api
      * @param $version
      * @param $dictionaryName
      * @return bool|mixed
-     * @throws LocalizedException
      */
     public function getSingleDictionary($version, $dictionaryName)
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version . '/dictionary/' . $dictionaryName;
         $result = $this->_fetch($url, \Zend_Http_Client::GET);
-
-        if (!$result) {
-            throw new LocalizedException(__('Error fetching dictionary'));
-        }
 
         return $result;
     }
@@ -811,7 +824,6 @@ class Api
      * Get auth dictionary
      * @param $version
      * @return bool|mixed
-     * @throws LocalizedException
      */
     public function getAuthDictionary($version)
     {

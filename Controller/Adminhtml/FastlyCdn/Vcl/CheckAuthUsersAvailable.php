@@ -88,10 +88,7 @@ class CheckAuthUsersAvailable extends Action
             $dictonaryName = CheckAuthSetting::AUTH_DICTIONARY_NAME;
             $dictionary = $this->api->getSingleDictionary($activeVersion, $dictonaryName);
 
-            if ((is_array($dictionary) && empty($dictionary))
-                || $dictionary == false
-                || !isset($dictionary->id)
-            ) {
+            if ((is_array($dictionary) && empty($dictionary)) || $dictionary == false || !isset($dictionary->id)) {
                 return $result->setData([
                     'status'    => 'empty',
                     'msg'       => 'Basic Authentication cannot be enabled because there are no users assigned to it.'

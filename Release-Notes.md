@@ -3,6 +3,8 @@
 ## 1.2.46
 
 - Stop treating every HTML file as potentially having ESIs. We'll mark all Magento documents as ESIs
+- Fix broken Basic Auth upload
+- Fix broken GeoIP
 
 ## 1.2.45
 

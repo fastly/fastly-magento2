@@ -197,7 +197,7 @@
                             </depends>
                         </field>
                     </group>
-                    <group id="fastly_image_optimization_configuration" sortOrder="310" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <group id="fastly_image_optimization_configuration" sortOrder="450" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Image optimization</label>
                         <field id="fastly_push_image_config" translate="label comment" sortOrder="90" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Enable Fastly image optimization snippet]]></label>

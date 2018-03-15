@@ -86,7 +86,7 @@ class Delete extends Action
             }
             if ($used != '') {
                 throw new LocalizedException(__(
-                    'Failed to validate service, the container "' . $used . '" is in use. '
+                    'Failed to validate service, the container "' . $used . '" may be in use. '
                 ));
             }
 

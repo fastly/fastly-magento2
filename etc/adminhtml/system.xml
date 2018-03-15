@@ -79,7 +79,7 @@
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Auth</frontend_model>
                         </field>
                     </group>
-                    <group id="fastly_edge_dictionaries" sortOrder="250" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <group id="fastly_edge_dictionaries" sortOrder="260" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Edge dictionaries</label>
                         <comment>
                             <![CDATA[Edge Dictionaries are made up of dictionary containers and the dictionary items within them. In combination, containers and items allow you to store data as key-value pairs on Fastly Edge nodes. <a href="https://docs.fastly.com/guides/edge-dictionaries/about-edge-dictionaries">Click here for more details.</a>. This interface only allows management of containers and entries. To invoke them you will need to configure your Fastly service.]]></comment>
@@ -88,7 +88,7 @@
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Edge</frontend_model>
                         </field>
                     </group>
-                    <group id="fastly_edge_acl" sortOrder="260" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <group id="fastly_edge_acl" sortOrder="250" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Edge acl</label>
                         <comment>
                             <![CDATA[Edge ACLs are access control lists that allow you to manage IP addresses that are used in allowing or blocking access to resources. <a href="https://docs.fastly.com/guides/access-control-lists/creating-and-manipulating-edge-acl-entries">Click here for more details.</a> This interface only allows management of containers and entries. To invoke them you will need to configure your Fastly service.]]></comment>
@@ -97,7 +97,7 @@
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Acl</frontend_model>
                         </field>
                     </group>
-                    <group id="fastly_advanced_configuration" sortOrder="300" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <group id="fastly_advanced_configuration" sortOrder="190" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Advanced Configuration</label>
                         <field id="force_tls" translate="label comment" sortOrder="10" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Force TLS]]></label>
@@ -118,7 +118,7 @@
                             </comment>
                             <backend_model>Magento\PageCache\Model\System\Config\Backend\Ttl</backend_model>
                         </field>
-                        <field id="admin_path_timeout" type="text" translate="label comment" sortOrder="31" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <field id="admin_path_timeout" type="text" translate="label comment" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                             <label>Admin path timeout</label>
                             <comment>
                                 <![CDATA[Time in seconds for the admin path first byte timeout. Please reupload VCL after making changes.]]>
@@ -126,11 +126,10 @@
                             <backend_model>Fastly\Cdn\Model\Config\Backend\ValidateInt</backend_model>
                             <validate>required-entry validate-digits</validate>
                         </field>
-                        <field id="ignored_url_parameters" type="text" translate="label comment" sortOrder="32" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <field id="ignored_url_parameters" type="text" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                             <label>Ignored URL Parameters</label>
                             <comment>
-                                <![CDATA[A comma separated list of ignored query string parameters.<br /><br />
-                                Please reupload VCL after making changes to Ignored URL Parameters.]]>
+                                <![CDATA[A comma separated list of ignored query string parameters. Please reupload VCL after making changes.]]>
                             </comment>
                             <backend_model>Magento\PageCache\Model\System\Config\Backend\Varnish</backend_model>
                         </field>
@@ -210,7 +209,7 @@
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                     </group>
-                    <group id="fastly_blocking" sortOrder="350" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <group id="fastly_blocking" sortOrder="245" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Blocking</label>
                         <field id="block" translate="label comment" sortOrder="5" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Blocking]]></label>

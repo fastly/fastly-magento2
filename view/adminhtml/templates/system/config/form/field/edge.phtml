@@ -21,7 +21,7 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
         style="margin-bottom: 10px;"
         class="primary"
         id="add-dictionary-container-button">
-    <?php /* @noEscape */ echo __('Add container') ?>
+    <?php /* @noEscape */ echo __('Add dictionary') ?>
 </button>
 <div class="design_theme_ua_regexp" id="grid<?php /* @noEscape */ echo $_htmlId; ?>">
     <div class="admin__control-table-wrapper">
@@ -66,6 +66,11 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
 <style type="text/css">
     .admin__control-table .fastly-edit-dictionary-icon::before {
         content: '\e610';
+        font-size: 2rem;
+    }
+
+    .admin__control-table .fastly-delete-dictionary-icon::before {
+        content: '\e630';
         font-size: 2rem;
     }
 

@@ -40,28 +40,28 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
             <tbody id="fastly-acls-list"></tbody>
         </table>
     </div>
-    <p class="loading-dictionaries" style="display: none;">
+    <p class="loading-acls" style="display: none;">
         <img class="processing"
              alt="Collecting"
              style="margin:0 5px"
              src="<?php /* @noEscape */ echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/>
         <?php /* @noEscape */ echo __('Loading acl...'); ?>
     </p>
-    <p class="no-dictionaries" style="display: none;">
-        <?php /* @noEscape */ echo __('There are no acl-s configured yet.'); ?>
+    <p class="no-acls" style="display: none;">
+        <?php /* @noEscape */ echo __('There are no ACLs configured yet.'); ?>
     </p>
 </div>
 
 <div class="message message-error fastly-button-messages"
-     id="fastly-error-edge-button-msg"
+     id="fastly-error-acl-button-msg"
      style="display: none"></div>
 
 <div class="message message-success fastly-button-messages"
-     id="fastly-success-edge-button-msg"
+     id="fastly-success-acl-button-msg"
      style="display: none"></div>
 
 <div class="message message-warning fastly-button-messages"
-     id="fastly-warning-edge-button-msg"
+     id="fastly-warning-acl-button-msg"
      style="display: none"></div>
 
 <style type="text/css">
@@ -70,7 +70,12 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
         font-size: 2rem;
     }
 
-    .no-dictionaries, .loading-dictionaries {
+    .admin__control-table .fastly-delete-acl-icon::before {
+        content: '\e630';
+        font-size: 2rem;
+    }
+
+    .no-acls, .loading-dictionaries {
         text-align: center;
     }
 </style>

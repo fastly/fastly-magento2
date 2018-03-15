@@ -380,6 +380,18 @@ class Api
     }
 
     /**
+     * @param $version
+     * @return bool|mixed
+     */
+    public function containerValidateServiceVersion($version)
+    {
+        $url = $this->_getApiServiceUri() . 'version/' .$version. '/validate';
+        $result = $this->_fetch($url, 'GET');
+
+        return $result;
+    }
+
+    /**
      * Activate the current version.
      *
      * @param $version
@@ -921,6 +933,21 @@ class Api
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version . '/acl';
         $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    /**
+     * Delete named acl for a particular service and version.
+     *
+     * @param $version
+     * @param $name
+     * @return bool|mixed
+     */
+    public function deleteAcl($version, $name)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/acl/' . $name;
+        $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
 
         return $result;
     }

@@ -409,14 +409,14 @@ define([
 
                     // Fetch ACLs
                     vcl.listAcls(active_version, false).done(function (aclResp) {
-                        $('.loading-dictionaries').hide();
+                        $('.loading-acls').hide();
                         if (aclResp.status != false) {
                             if (aclResp.status != false) {
                                 if (aclResp.acls.length > 0) {
                                     acls = aclResp.acls;
                                     vcl.processAcls(aclResp.acls);
                                 } else {
-                                    $('.no-dictionaries').show();
+                                    $('.no-acls').show();
                                 }
                             }
                         }
@@ -462,6 +462,105 @@ define([
                 $('#backend_connect_timeout').val(backends[backend_id].connect_timeout);
                 $('#backend_between_bytes_timeout').val(backends[backend_id].between_bytes_timeout);
                 $('#backend_first_byte_timeout').val(backends[backend_id].first_byte_timeout);
+            }
+        });
+
+        /**
+         * delete dictionary button
+         */
+        $('body').on('click', 'button#delete-dictionary-container-button', function () {
+            $.ajax({
+                type: "GET",
+                url: config.serviceInfoUrl
+            }).done(function (checkService) {
+                active_version = checkService.active_version;
+                next_version = checkService.next_version;
+                service_name = checkService.service.name;
+                vcl.setActiveServiceLabel(active_version, next_version, service_name);
+            });
+
+            $.ajax({
+                type: "POST",
+                url: config.getDictionaries,
+                showLoader: true,
+                data: {'active_version': active_version}
+            }).done(function (response) {
+                if (response.status == true) {
+                    edgeDictionaries = response.dictionaries;
+                    var dictionariesHtml = '';
+                    if (edgeDictionaries.length > 0) {
+                        $.each(edgeDictionaries, function (index, item) {
+                            dictionariesHtml += '<tr>' +
+                                '<td><input name="key" value="'+ item.id +'" class="input-text admin__control-text dictionary-items-field" type="hidden" disabled>' +
+                                '<input name="value" data-type="dictionary" value="'+ item.name +'" class="input-text admin__control-text dictionary-items-field" type="text" disabled></td>' +
+                                '<td class="col-actions">' +
+                                '<input name="dictionary-delete[]" class="admin__control-checkbox" type="checkbox" value="'+ item.name +'"><label class="admin__field-label"></label>' +
+                                '</td></tr>';
+                        });
+                    } else {
+                        edgeDictionaries = [];
+                    }
+
+                    vcl.showPopup('fastly-delete-dictionary-container-options');
+                    vcl.setActiveServiceLabel(active_version, next_version, service_name);
+
+                    if (dictionariesHtml != '') {
+                        $('#delete-dictionary-table > tbody').html(dictionariesHtml);
+                    }
+                }
+            });
+        });
+        // delete dictionary container button
+        $('body').on('click', 'button.fastly-delete-dictionary-icon', function () {
+            $.ajax({
+                type: "GET",
+                url: config.serviceInfoUrl
+            }).done(function (checkService) {
+                active_version = checkService.active_version;
+                next_version = checkService.next_version;
+                service_name = checkService.service.name;
+                vcl.setActiveServiceLabel(active_version, next_version, service_name);
+            });
+
+            dictionary_id = $(this).data('dictionary-id');
+
+            if (dictionaries != null && dictionary_id != null) {
+                var dictionaryHtml = '<input name="dictionary" value="' + dictionary_id + '" class="input-text admin__control-text dictionary-field" type="hidden" disabled>';
+                vcl.showPopup('fastly-delete-dictionary-container-options');
+                vcl.setActiveServiceLabel(active_version, next_version, service_name);
+                var containerWarning = $('#fastly-container-warning');
+                containerWarning.text($.mage.__('You are about to delete the "' + dictionary_id + '" dictionary container.'));
+                containerWarning.show();
+                if (dictionaryHtml != '') {
+                    $('#delete-dictionary-container').html(dictionaryHtml);
+                }
+            }
+        });
+
+        // delete acl container button
+        $('body').on('click', 'button.fastly-delete-acl-icon', function () {
+            $.ajax({
+                type: "GET",
+                url: config.serviceInfoUrl
+            }).done(function (checkService) {
+                active_version = checkService.active_version;
+                next_version = checkService.next_version;
+                service_name = checkService.service.name;
+                vcl.setActiveServiceLabel(active_version, next_version, service_name);
+            });
+
+            acl_id = $(this).data('acl-id');
+
+            if (acls != null && acl_id != null) {
+                var aclHtml = '<input name="acl" value="' + acl_id + '" class="input-text admin__control-text acl-field" type="hidden" disabled>';
+                vcl.showPopup('fastly-delete-acl-container-options');
+                vcl.setActiveServiceLabel(active_version, next_version, service_name);
+                var containerWarning = $('#fastly-container-warning');
+                containerWarning.text($.mage.__('You are about to delete the "' + acl_id + '" ACL container.'));
+                containerWarning.show();
+                if (aclHtml != '') {
+                    $('#delete-acl-container').html(aclHtml);
+                }
             }
         });
 
@@ -988,6 +1087,8 @@ define([
         var authDictStatus = null;
         var authDict = null;
         var enableAuthBtn = null;
+        var edgeDictionaries = null;
+        var edgeAcls = null;
         var authStatus = true;
         var backends = null;
         var dictionaries = null;
@@ -1026,6 +1127,9 @@ define([
         /* Dictionary button */
         var successDictionaryBtnMsg = $('#fastly-success-edge-button-msg');
         var errorDictionaryBtnMsg = $('#fastly-error-edge-button-msg');
+        /* Acl button */
+        var successAclBtnMsg = $('#fastly-success-acl-button-msg');
+        var errorAclBtnMsg = $('#fastly-error-acl-button-msg');
         /* ACL negated checkbox title */
         var acl_negated_title = "Negates another ACL entry.\n\n" +
             "Example: If you have a purge_allow_acl that has "+
@@ -1179,7 +1283,10 @@ define([
                 $.each(dictionaries, function (index, dictionary) {
                     html += "<tr id='fastly_dict_" + index + "'>";
                     html += "<td><input data-dictionaryId='"+ dictionary.id + "' id='dict_" + index + "' value='"+ dictionary.name +"' disabled='disabled' class='input-text' type='text'></td>";
-                    html += "<td class='col-actions'><button class='action-delete fastly-edit-dictionary-icon' data-dictionary-id='" + dictionary.id + "' id='fastly-edit-dictionary_"+ index + "' title='Edit dictionary' type='button'></td></tr>";
+                    html += "<td class='col-actions'>" +
+                        "<button class='action-delete fastly-edit-dictionary-icon' data-dictionary-id='" + dictionary.id + "' id='fastly-edit-dictionary_"+ index + "' title='Edit dictionary' type='button'>" +
+                        "<button class='action-delete fastly-delete-dictionary-icon' data-dictionary-id='" + dictionary.name + "' id='fastly-delete-dictionary_"+ index + "' title='Delete dictionary' type='button'>" +
+                        "</td></tr>";
                 });
                 if (html != '') {
                     $('.no-dictionaries').hide();
@@ -1187,7 +1294,7 @@ define([
                 $('#fastly-dictionaries-list').html(html);
             },
 
-            // Queries Fastly API to retrive Dictionaries
+            // Queries Fastly API to retrieve Dictionaries
             listDictionaries: function (active_version, loaderVisibility) {
                 return $.ajax({
                     type: "GET",
@@ -1200,7 +1307,7 @@ define([
                 });
             },
 
-            // Queries Fastly API to retrive ACLs
+            // Queries Fastly API to retrieve ACLs
             listAcls: function (active_version, loaderVisibility) {
                 return $.ajax({
                     type: "GET",
@@ -1208,12 +1315,12 @@ define([
                     showLoader: loaderVisibility,
                     data: {'active_version': active_version},
                     beforeSend: function (xhr) {
-                        $('.loading-dictionaries').show();
+                        $('.loading-acls').show();
                     }
                 });
             },
 
-            // Queries Fastly API to retrive ACLs
+            // Queries Fastly API to retrieve ACLs
             listAuths: function (active_version, loaderVisibility) {
                 return $.ajax({
                     type: "GET",
@@ -1232,10 +1339,13 @@ define([
                 $.each(acls, function (index, acl) {
                     html += "<tr id='fastly_acl_" + index + "'>";
                     html += "<td><input data-aclId='"+ acl.id + "' id='acl_" + index + "' value='"+ acl.name +"' disabled='disabled' class='input-text' type='text'></td>";
-                    html += "<td class='col-actions'><button class='action-delete fastly-edit-dictionary-icon' data-acl-id='" + acl.id + "' id='fastly-edit-acl_"+ index + "' title='Edit Acl' type='button'></td></tr>";
+                    html += "<td class='col-actions'>" +
+                        "<button class='action-delete fastly-edit-dictionary-icon' data-acl-id='" + acl.id + "' id='fastly-edit-acl_"+ index + "' title='Edit Acl' type='button'>" +
+                        "<button class='action-delete fastly-delete-acl-icon' data-acl-id='" + acl.name + "' id='fastly-delete-acl_"+ index + "' title='Delete Acl' type='button'>" +
+                        "</td></tr>";
                 });
                 if (html != '') {
-                    $('.no-dictionaries').hide();
+                    $('.no-acls').hide();
                 }
                 $('#fastly-acls-list').html(html);
             },
@@ -1684,6 +1794,7 @@ define([
                                         if (dictResp.dictionaries.length > 0) {
                                             dictionaries = dictResp.dictionaries;
                                             vcl.processDictionaries(dictResp.dictionaries);
+                                            $('.no-dictionaries').hide();
                                         } else {
                                             $('.no-dictionaries').show();
                                         }
@@ -1700,6 +1811,106 @@ define([
                     },
                     error: function (msg) {
                         return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                    }
+                });
+            },
+
+            // delete dictionary
+            deleteDictionary: function () {
+                var activate_vcl = false;
+
+                if ($('#fastly_activate_vcl').is(':checked')) {
+                    activate_vcl = true;
+                }
+
+                var del_dictionary = $("input[name='dictionary").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: config.deleteDictionary,
+                    data: {
+                        'active_version': active_version,
+                        'activate_flag': activate_vcl,
+                        'dictionary': del_dictionary
+                    },
+                    showLoader: true,
+                    success: function (response) {
+                        if (response.status == true) {
+                            successDictionaryBtnMsg.text($.mage.__('Dictionary successfully deleted.')).show();
+                            active_version = response.active_version;
+                            // Fetch dictionaries
+                            vcl.listDictionaries(active_version, false).done(function (dictResp) {
+                                $('.loading-dictionaries').hide();
+                                if (dictResp.status != false) {
+                                    if (dictResp.dictionaries.length > 0) {
+                                        dictionaries = dictResp.dictionaries;
+                                        vcl.processDictionaries(dictResp.dictionaries);
+                                    } else {
+                                        $('#fastly-dictionaries-list').html('');
+                                        $('.no-dictionaries').show();
+                                    }
+                                }
+                            }).fail(function () {
+                                return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                            });
+                            vcl.modal.modal('closeModal');
+                        } else {
+                            vcl.resetAllMessages();
+                            vcl.showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function (msg) {
+                        return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                    }
+                });
+            },
+
+            // delete acl
+            deleteAcl: function () {
+                var activate_vcl = false;
+
+                if ($('#fastly_activate_vcl').is(':checked')) {
+                    activate_vcl = true;
+                }
+
+                var del_acl = $("input[name='acl']").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: config.deleteAcl,
+                    data: {
+                        'active_version': active_version,
+                        'activate_flag': activate_vcl,
+                        'acl': del_acl
+                    },
+                    showLoader: true,
+                    success: function (response) {
+                        if (response.status == true) {
+                            successAclBtnMsg.text($.mage.__('ACL successfully deleted.')).show();
+                            active_version = response.active_version;
+                            // Fetch dictionaries
+                            vcl.listAcls(active_version, false).done(function (aclResp) {
+                                $('.loading-acls').hide();
+                                if (aclResp.status != false) {
+                                    if (aclResp.acls.length > 0) {
+                                        acls = aclResp.acls;
+                                        vcl.processAcls(aclResp.acls);
+                                    } else {
+                                        $('#fastly-acls-list').html('');
+                                        $('.no-acls').show();
+                                    }
+                                }
+                            }).fail(function () {
+                                return errorAclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                            });
+                            vcl.modal.modal('closeModal');
+                        } else {
+                            vcl.resetAllMessages();
+                            vcl.showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function (msg) {
+                        return errorAclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                     }
                 });
             },
@@ -1810,6 +2021,10 @@ define([
                 successDictionaryBtnMsg.hide();
                 errorDictionaryBtnMsg.hide();
 
+                // Acl button messages
+                successAclBtnMsg.hide();
+                errorAclBtnMsg.hide();
+
                 // Auth messages
                 successAuthBtnMsg.hide();
                 errorAuthBtnMsg.hide();
@@ -1838,22 +2053,23 @@ define([
                     showLoader: true,
                     success: function (response) {
                         if (response.status == true) {
-                            successDictionaryBtnMsg.text($.mage.__('Acl is successfully created.')).show();
+                            successAclBtnMsg.text($.mage.__('Acl is successfully created.')).show();
                             active_version = response.active_version;
                             vcl.listAcls(active_version, false).done(function (aclResp) {
-                                $('.loading-dictionaries').hide();
+                                $('.loading-acls').hide();
                                 if (aclResp.status != false) {
                                     if (aclResp.status != false) {
                                         if (aclResp.acls.length > 0) {
                                             acls = aclResp.acls;
                                             vcl.processAcls(aclResp.acls);
+                                            $('.no-acls').hide();
                                         } else {
-                                            $('.no-dictionaries').show();
+                                            $('.no-acls').show();
                                         }
                                     }
                                 }
                             }).fail(function () {
-                                return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                                return errorAclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                             });
                             vcl.modal.modal('closeModal');
                         } else {
@@ -1862,7 +2078,7 @@ define([
                         }
                     },
                     error: function (msg) {
-                        return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                        return errorAclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                     }
                 });
             },
@@ -2033,6 +2249,24 @@ define([
                     },
                     actionOk: function () {
                         vcl.createDictionary(active_version);
+                    }
+                },
+                'fastly-delete-dictionary-container-options': {
+                    title: jQuery.mage.__('Delete dictionary containers'),
+                    content: function () {
+                        return document.getElementById('fastly-delete-dictionary-container-template').textContent;
+                    },
+                    actionOk: function () {
+                        vcl.deleteDictionary(active_version);
+                    }
+                },
+                'fastly-delete-acl-container-options': {
+                    title: jQuery.mage.__('Delete ACL container'),
+                    content: function () {
+                        return document.getElementById('fastly-delete-acl-container-template').textContent;
+                    },
+                    actionOk: function () {
+                        vcl.deleteAcl(active_version);
                     }
                 },
                 'fastly-acl-container-options': {

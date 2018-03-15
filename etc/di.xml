@@ -41,4 +41,5 @@
             </argument>
         </arguments>
     </type>
+    <preference for="Magento\Catalog\Block\Product\ImageBuilder" type="Fastly\Cdn\Block\Product\ImageBuilder" />
 </config>

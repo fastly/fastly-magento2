@@ -143,10 +143,6 @@ class Image extends ImageModel
         $originalImage = $this->_mediaDirectory->getAbsolutePath($this->getBaseFile());
         $originalSize = getimagesize($originalImage);
 
-        if ($this->_keepFrame) {
-            $this->fastlyParameters['canvas'] = implode(',', [$this->getWidth(), $this->getHeight()]);
-        }
-
         if ($this->getWidth() > $originalSize[0]) {
             $this->setWidth($originalSize[0]);
         }

@@ -72,20 +72,23 @@ class Delete extends Action
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
-            $dictionaries = $this->getRequest()->getParam('dictionaries');
+            $dictionary = $this->getRequest()->getParam('dictionary');
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
+            $used = '';
 
-            if ($dictionaries == null) {
-                throw new LocalizedException(__('At least one dictionary container needs to be selected.'));
+            $this->api->deleteDictionary($clone->number, $dictionary);
+            $validation = $this->api->containerValidateServiceVersion($clone->number);
+            if ($validation->status == 'error') {
+                $used = $dictionary;
             }
-
-            foreach ($dictionaries as $dictionary) {
-                $this->api->deleteDictionary($clone->number, $dictionary);
+            if ($used != '') {
+                throw new LocalizedException(__(
+                    'Failed to validate service, the container "' . $used . '" is in use. '
+                ));
             }
-            $this->api->validateServiceVersion($clone->number);
 
             if ($activateVcl === 'true') {
                 $this->api->activateVersion($clone->number);

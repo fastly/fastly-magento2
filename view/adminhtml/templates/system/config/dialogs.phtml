@@ -524,6 +524,8 @@
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
+        <div class="message message-warning" id="fastly-container-warning" style="display: none">
+        </div>
     </div>
     <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST" id="fastly-delete-dictionary-form"
@@ -546,22 +548,8 @@
                     </div>
                 </div>
             </div>
-            <table class="admin__control-table" id="delete-dictionary-table">
-                <thead>
-                <tr>
-                    <th><?php /* @noEscape */ echo __('Dictionary name') ?></th>
-                    <th><?php /* @noEscape */ echo __('Delete') ?></th>
-                </tr>
-                </thead>
-                <tbody class="item-container">
-                <tr>
-                    <td>
-                        There are no dictionaries configured yet.
-                    </td>
-                    <td></td>
-                </tr>
-                </tbody>
-            </table>
+            <div id="delete-dictionary-container">
+            </div>
         </fieldset>
     </form>
 </script>
@@ -573,6 +561,8 @@
             <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+        <div class="message message-warning" id="fastly-container-warning" style="display: none">
         </div>
     </div>
     <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
@@ -596,22 +586,8 @@
                     </div>
                 </div>
             </div>
-            <table class="admin__control-table" id="delete-acl-table">
-                <thead>
-                <tr>
-                    <th><?php /* @noEscape */ echo __('Acl name') ?></th>
-                    <th><?php /* @noEscape */ echo __('Delete') ?></th>
-                </tr>
-                </thead>
-                <tbody class="item-container">
-                <tr>
-                    <td>
-                        There are no ACLs configured yet.
-                    </td>
-                    <td></td>
-                </tr>
-                </tbody>
-            </table>
+            <div id="delete-acl-container">
+            </div>
         </fieldset>
     </form>
 </script>

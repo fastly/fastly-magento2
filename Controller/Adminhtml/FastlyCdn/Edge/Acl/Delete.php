@@ -72,20 +72,23 @@ class Delete extends Action
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
-            $acls = $this->getRequest()->getParam('acls');
+            $acl = $this->getRequest()->getParam('acl');
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
+            $used = '';
 
-            if ($acls == null) {
-                throw new LocalizedException(__('At least one ACL container needs to be selected.'));
+            $this->api->deleteAcl($clone->number, $acl);
+            $validation = $this->api->containerValidateServiceVersion($clone->number);
+            if ($validation->status == 'error') {
+                $used = $acl;
             }
-
-            foreach ($acls as $acl) {
-                $this->api->deleteAcl($clone->number, $acl);
+            if ($used != '') {
+                throw new LocalizedException(__(
+                    'Failed to validate service, the container "' . $used . '" is in use. '
+                ));
             }
-            $this->api->validateServiceVersion($clone->number);
 
             if ($activateVcl === 'true') {
                 $this->api->activateVersion($clone->number);

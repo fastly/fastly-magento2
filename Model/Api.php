@@ -371,6 +371,18 @@ class Api
     }
 
     /**
+     * @param $version
+     * @return bool|mixed
+     */
+    public function containerValidateServiceVersion($version)
+    {
+        $url = $this->_getApiServiceUri() . 'version/' .$version. '/validate';
+        $result = $this->_fetch($url, 'GET');
+
+        return $result;
+    }
+
+    /**
      * Activate the current version.
      *
      * @param $version

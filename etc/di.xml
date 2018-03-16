@@ -30,6 +30,9 @@
     <type name="Magento\CacheInvalidate\Model\PurgeCache">
         <plugin name="fastly_disable_varnish_calls" type="Fastly\Cdn\Model\PageCache\PurgeCachePlugin" />
     </type>
+    <type name="Magento\Catalog\Block\Product\Image">
+        <plugin name="fastly_adaptive_pixel_ratio" type="Fastly\Cdn\Plugin\AdaptivePixelRationPlugin" />
+    </type>
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">

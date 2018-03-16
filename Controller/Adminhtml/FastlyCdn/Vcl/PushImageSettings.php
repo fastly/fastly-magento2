@@ -104,7 +104,6 @@ class PushImageSettings extends Action
                     'name' => $reqName,
                     'service_id' => $service->id,
                     'version' => $currActiveVersion['active_version'],
-                    'force_ssl' => true,
                     'request_condition' => $createCondition->name
                 ];
 

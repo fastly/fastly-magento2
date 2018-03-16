@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.47
+
+- Add ability to remove edge dictionaries and ACLs https://github.com/fastly/fastly-magento2/pull/157
+- Resort ordering of config tabs
+- Add adaptive pixel https://github.com/fastly/fastly-magento2/pull/160
+
 ## 1.2.46
 
 - Stop treating every HTML file as potentially having ESIs. We'll mark all Magento documents as ESIs

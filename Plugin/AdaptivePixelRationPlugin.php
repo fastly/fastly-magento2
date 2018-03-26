@@ -36,9 +36,12 @@ class AdaptivePixelRationPlugin
 
         $imageUrl = $subject->getData('image_url');
         $glue = (strpos($imageUrl, '?') !== false) ? '&' : '?';
+        # Pixel ratios defaults are based on the table from https://mydevice.io/devices/
+        # Bulk of devices are 2x however many new devices like Samsung S8, iPhone X etc are 3x and 4x
         $srcSet = [
-            $imageUrl . $glue . 'dpr=1.5 1.5x',
-            $imageUrl . $glue . 'dpr=2 2x'
+            $imageUrl . $glue . 'dpr=2 2x',
+            $imageUrl . $glue . 'dpr=3 3x',
+            $imageUrl . $glue . 'dpr=4 4x'
         ];
 
         $subject->setData('custom_attributes', 'srcset="' . implode(',', $srcSet) . '"');

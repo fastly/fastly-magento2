@@ -3,6 +3,7 @@
     <?php foreach ($block->getValues() as $name => $label) : ?>
         <li>
             <input type="checkbox" value="<?php /* @noEscape */ echo $name?>"
+                   data-validate="{required:true}"
                    name="<?php /* @noEscape */ echo $block->getNamePrefix() ?>[]"
                    id="<?php /* @noEscape */ echo $block->getHtmlId() . '_' . $name ?>"
                 <?php /* @noEscape */ echo ($block->getIsChecked($name) ? ' checked="checked"' : '') ?>/>

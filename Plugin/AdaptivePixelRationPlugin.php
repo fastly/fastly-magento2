@@ -34,12 +34,15 @@ class AdaptivePixelRationPlugin
             return;
         }
 
+        $srcSet = [];
         $imageUrl = $subject->getData('image_url');
+        $pixelRatios = $this->config->getImageOptimizationRatios();
+        $pixelRatiosArray = explode(',', $pixelRatios);
         $glue = (strpos($imageUrl, '?') !== false) ? '&' : '?';
-        $srcSet = [
-            $imageUrl . $glue . 'dpr=1.5 1.5x',
-            $imageUrl . $glue . 'dpr=2 2x'
-        ];
+        foreach ($pixelRatiosArray as $pr) {
+            $ratio = 'dpr=' . $pr . ' ' . $pr . 'x';
+            $srcSet[] = $imageUrl . $glue . $ratio;
+        }
 
         $subject->setData('custom_attributes', 'srcset="' . implode(',', $srcSet) . '"');
     }

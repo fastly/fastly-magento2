@@ -176,6 +176,12 @@ class Config extends \Magento\PageCache\Model\Config
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimizations_pixel_ratio';
 
     /**
+     * XML path to image optimizations pixel ratios
+     */
+    const XML_FASTLY_IMAGE_OPTIMIZATIONS_RATIOS
+        = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimizations_ratios';
+
+    /**
      * XML path to Google analytics CID
      */
     const XML_FASTLY_GA_CID = 'system/full_page_cache/fastly/fastly_ga_cid';
@@ -480,6 +486,16 @@ class Config extends \Magento\PageCache\Model\Config
         }
 
         return $this->_scopeConfig->isSetFlag(self::XML_FASTLY_IMAGE_OPTIMIZATIONS_PIXEL_RATIO);
+    }
+
+    /**
+     * Return image optimization pixel ratios
+     *
+     * @return mixed
+     */
+    public function getImageOptimizationRatios()
+    {
+        return $this->_scopeConfig->getvalue(self::XML_FASTLY_IMAGE_OPTIMIZATIONS_RATIOS);
     }
 
     /**

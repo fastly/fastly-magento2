@@ -213,11 +213,20 @@
                         </field>
                         <field id="image_optimizations_pixel_ratio" translate="label comment" type="select" sortOrder="95" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enable adaptive device pixel ratios</label>
-                            <comment><![CDATA[Magento will use <a href="https://docs.fastly.com/guides/imageopto-setup-use/serving-responsive-images#adaptive-device-pixel-ratios" target="_blank">Adaptive device pixel rations</a> through Fastly service.]]></comment>
+                            <comment><![CDATA[Magento will use <a href="https://docs.fastly.com/guides/imageopto-setup-use/serving-responsive-images#adaptive-device-pixel-ratios" target="_blank">Adaptive device pixel ratios</a> through Fastly service.]]></comment>
                             <depends>
                                 <field id="image_optimizations">1</field>
                             </depends>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="image_optimizations_ratios" translate="label" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                            <label>Device Pixel Ratios</label>
+                            <comment><![CDATA[Using a higher <a href="https://medium.com/@pnowelldesign/pixel-density-demystified-a4db63ba2922" target="_blank">Device Pixel Ratio</a> means serving larger images.]]></comment>
+                            <depends>
+                                <field id="image_optimizations">1</field>
+                                <field id="image_optimizations_pixel_ratio">1</field>
+                            </depends>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Checkbox</frontend_model>
                         </field>
                     </group>
                     <group id="fastly_blocking" sortOrder="245" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">

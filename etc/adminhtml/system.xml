@@ -221,7 +221,7 @@
                         </field>
                         <field id="image_optimizations_ratios" translate="label" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0">
                             <label>Device Pixel Ratios</label>
-                            <comment><![CDATA[Using a higher <a href="https://medium.com/@pnowelldesign/pixel-density-demystified-a4db63ba2922" target="_blank">Device Pixel Ratio</a> means serving larger images.]]></comment>
+                            <comment><![CDATA[Using a higher <a href="https://www.html5rocks.com/en/mobile/high-dpi/" target="_blank">Device Pixel Ratio</a> means serving larger images.]]></comment>
                             <depends>
                                 <field id="image_optimizations">1</field>
                                 <field id="image_optimizations_pixel_ratio">1</field>

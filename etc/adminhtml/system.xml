@@ -219,14 +219,15 @@
                             </depends>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
-                        <field id="image_optimizations_ratios" translate="label" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="image_optimizations_ratios" type="multiselect" translate="label" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
                             <label>Device Pixel Ratios</label>
                             <comment><![CDATA[Using a higher <a href="https://www.html5rocks.com/en/mobile/high-dpi/" target="_blank">Device Pixel Ratio</a> means serving larger images.]]></comment>
                             <depends>
                                 <field id="image_optimizations">1</field>
                                 <field id="image_optimizations_pixel_ratio">1</field>
                             </depends>
-                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Checkbox</frontend_model>
+                            <source_model>Fastly\Cdn\Model\Config\Backend\PixelRatios</source_model>
+                            <validate>required_entry</validate>
                         </field>
                     </group>
                     <group id="fastly_blocking" sortOrder="245" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">

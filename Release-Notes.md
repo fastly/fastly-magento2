@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.49
+
+- Changed device pixel ratios checkboxes to multiselect https://github.com/fastly/fastly-magento2/pull/165
+
 ## 1.2.48
 
 - Enhancement to adaptive pixel ratios to allow users to select ratios they want to support https://github.com/fastly/fastly-magento2/pull/161

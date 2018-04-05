@@ -227,7 +227,6 @@
                                 <field id="image_optimizations_pixel_ratio">1</field>
                             </depends>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Checkbox</frontend_model>
-                            <backend_model>Fastly\Cdn\Model\Config\Backend\PixelRatios</backend_model>
                         </field>
                     </group>
                     <group id="fastly_blocking" sortOrder="245" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">

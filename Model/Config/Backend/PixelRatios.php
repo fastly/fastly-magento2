@@ -2,14 +2,12 @@
 
 namespace Fastly\Cdn\Model\Config\Backend;
 
-use Magento\Framework\App\Config\Value;
-
 /**
  * Class PixelRatios
  *
  * @package Fastly\Cdn\Model\Config\Backend
  */
-class PixelRatios extends Value
+class PixelRatios
 {
     /**
      * Options getter

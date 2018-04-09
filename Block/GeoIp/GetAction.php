@@ -67,7 +67,7 @@ class GetAction extends AbstractBlock
      */
     protected function _toHtml() // @codingStandardsIgnoreLine - required by parent class
     {
-        if ($this->config->isGeoIpEnabled() == false) {
+        if ($this->config->isGeoIpEnabled() == false || $this->config->isFastlyEnabled() == false) {
             return parent::_toHtml();
         }
 

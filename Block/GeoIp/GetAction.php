@@ -74,8 +74,12 @@ class GetAction extends AbstractBlock
         /** @var string $actionUrl */
         $actionUrl = $this->getUrl('fastlyCdn/geoip/getaction');
 
-        // This page has ESIs so as a first cut let's mark it as such
-        $this->response->setHeader("x-esi", "1");
+        // This page has an esi tag
+        // Set x-esi header if it is not already set
+        $header = $this->response->getHeader('x-esi');
+        if (empty($header)) {
+            $this->response->setHeader("x-esi", "1");
+        }
 
         // HTTPS ESIs are not supported so we need to turn them into HTTP
         return sprintf(

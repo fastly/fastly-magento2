@@ -3,9 +3,6 @@
 namespace Fastly\Cdn\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
-use Magento\Framework\Serialize\Serializer\Base64Json;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\View\EntitySpecificHandlesList;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\App\ResponseInterface as Response;
@@ -27,21 +24,6 @@ class MarkEsiPage implements ObserverInterface
     private $fastlyConfig;
 
     /**
-     * @var EntitySpecificHandlesList
-     */
-    private $entitySpecificHandlesList;
-
-    /**
-     * @var Base64Json
-     */
-    private $base64jsonSerializer;
-
-    /**
-     * @var Json
-     */
-    private $jsonSerializer;
-
-    /**
      * @var Response
      */
     private $response;
@@ -51,26 +33,14 @@ class MarkEsiPage implements ObserverInterface
      * @param Config $config
      * @param Response $response
      * @param FastlyConfig $fastlyConfig
-     * @param EntitySpecificHandlesList|null $entitySpecificHandlesList
-     * @param Json|null $jsonSerializer
-     * @param Base64Json|null $base64jsonSerializer
      */
-    public function __construct( // @codingStandardsIgnoreLine
+    public function __construct(
         Config $config,
         Response $response,
-        FastlyConfig $fastlyConfig,
-        EntitySpecificHandlesList $entitySpecificHandlesList = null,
-        Json $jsonSerializer = null,
-        Base64Json $base64jsonSerializer = null
+        FastlyConfig $fastlyConfig
     ) {
         $this->config = $config;
         $this->fastlyConfig = $fastlyConfig;
-        $this->entitySpecificHandlesList = $entitySpecificHandlesList
-            ?: \Magento\Framework\App\ObjectManager::getInstance()->get(EntitySpecificHandlesList::class);
-        $this->jsonSerializer = $jsonSerializer
-            ?: \Magento\Framework\App\ObjectManager::getInstance()->get(Json::class);
-        $this->base64jsonSerializer = $base64jsonSerializer
-            ?: \Magento\Framework\App\ObjectManager::getInstance()->get(Base64Json::class);
         $this->response = $response;
     }
 

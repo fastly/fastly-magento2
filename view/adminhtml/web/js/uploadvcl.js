@@ -1253,14 +1253,6 @@ define([
                 });
             },
 
-            // Queries Fastly Api to retrieve the Fastly service image optimization setting
-            getFastlyIoSetting: function () {
-                return $.ajax({
-                    type: "GET",
-                    url: config.checkFastlyIoSettingUrl
-                });
-            },
-
             // Queries Fastly API to retrieve Tls setting
             getTlsSetting: function (active_version, loaderVisibility) {
                 return $.ajax({

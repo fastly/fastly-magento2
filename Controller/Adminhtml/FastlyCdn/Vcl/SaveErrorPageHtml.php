@@ -110,6 +110,7 @@ class SaveErrorPageHtml extends Action
                 'request_condition' => $createCondition->name,
                 'content'           =>  $html,
                 'status'            => "503",
+                'content_type'      => "text/html; charset=utf-8",
                 'response'          => "Service Temporarily Unavailable"
             ];
 

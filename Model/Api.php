@@ -1026,6 +1026,19 @@ class Api
     }
 
     /**
+     * Check if image optimization is enabled for the Fastly service
+     *
+     * @return bool|mixed
+     */
+    public function checkImageOptimizationStatus()
+    {
+        $url = $this->_getApiServiceUri(). 'dynamic_io_settings';
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    /**
      * Wrapper for API calls towards Fastly service
      *
      * @param string    $uri    API Endpoint

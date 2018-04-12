@@ -338,14 +338,50 @@ define([
                         blockingStateMsgSpan.find('#blocking_state_unknown').show();
                     });
 
+                    var fastlyIo = vcl.getFastlyIoSetting(false);
                     var imageOptimization = vcl.getImageSetting(checkService.active_version, false);
+
+                    fastlyIo.done(function (checkIoSetting) {
+                        if (checkIoSetting.status == false) {
+                            if (config.isIoEnabled) {
+                                ioToggle.removeAttrs('disabled');
+                            } else {
+                                ioToggle.attr('disabled', 'disabled');
+                            }
+                        }
+                    });
 
                     imageOptimization.done(function (checkReqSetting) {
                         imageStateSpan.find('.processing').hide();
                         if (checkReqSetting.status != false) {
                             imageStateMsgSpan.find('#imgopt_state_enabled').show();
+                            fastlyIo.done(function (checkIoSetting) {
+                                if (checkIoSetting.status == true) {
+                                    imgBtn.removeClass('disabled');
+                                    warningIoMsg.hide();
+                                } else {
+                                    warningIoMsg.text(
+                                        $.mage.__(
+                                            'Please contact your sales rep or send an email to support@fastly.com to request image optimization activation for your Fastly service.'
+                                        )
+                                    ).show();
+                                }
+                            });
                         } else {
                             imageStateMsgSpan.find('#imgopt_state_disabled').show();
+                            fastlyIo.done(function (checkIoSetting) {
+                                if (checkIoSetting.status == true) {
+                                    imgBtn.removeClass('disabled');
+                                    warningIoMsg.hide();
+                                } else {
+                                    imgBtn.addClass('disabled');
+                                    warningIoMsg.text(
+                                        $.mage.__(
+                                            'Please contact your sales rep or send an email to support@fastly.com to request image optimization activation for your Fastly service.'
+                                        )
+                                    ).show();
+                                }
+                            });
                         }
                     }).fail(function () {
                         imageStateSpan.find('.processing').hide();
@@ -1108,6 +1144,10 @@ define([
         var successImageBtnMsg = $('#fastly-success-imgopt-button-msg');
         var errorImageBtnMsg = $('#fastly-error-imgopt-button-msg');
         var warningImageBtnMsg = $('#fastly-warning-imgopt-button-msg');
+        /* IO setting status message */
+        var successIoMsg = $('#fastly-success-io-msg');
+        var errorIoMsg = $('#fastly-error-io-msg');
+        var warningIoMsg = $('#fastly-warning-io-msg');
         /* VCL button messages */
         var successVclBtnMsg = $('#fastly-success-vcl-button-msg');
         var errorVclBtnMsg = $('#fastly-error-vcl-button-msg');
@@ -1141,6 +1181,8 @@ define([
         var warningAuthBtnMsg = $('#fastly-warning-auth-button-msg');
         var deleteAuthBtnMsgError = $('#fastly-error-auth-list-button-msg');
         var deleteAuthBtnMsgSuccess = $('#fastly-success-auth-list-button-msg');
+        var imgBtn = $('#fastly_push_image_config');
+        var ioToggle = $('#system_full_page_cache_fastly_fastly_image_optimization_configuration_image_optimizations');
 
         var vcl = {
 
@@ -1193,13 +1235,21 @@ define([
                 });
             },
 
-            // Queries Fastly API to retrieve image optimization setting
+            // Queries Fastly API to retrieve image optimization snippet setting
             getImageSetting: function (active_version, loaderVisibility) {
                 return $.ajax({
                     type: "POST",
                     url: config.checkImageSettingUrl,
                     showLoader: loaderVisibility,
                     data: {'active_version': active_version}
+                });
+            },
+
+            // Queries Fastly Api to retrieve the Fastly service image optimization setting
+            getFastlyIoSetting: function () {
+                return $.ajax({
+                    type: "GET",
+                    url: config.checkFastlyIoSettingUrl
                 });
             },
 
@@ -1519,14 +1569,28 @@ define([
                                 onOrOff = 'removed';
                                 disabledOrEnabled = 'disabled';
                             }
+                            var fastlyIo = vcl.getFastlyIoSetting(false);
+                            var ioStatus = false;
+
+                            fastlyIo.done(function (checkIoSetting) {
+                                if (checkIoSetting.status != false) {
+                                    ioStatus = true;
+                                }
+                            });
                             successImageBtnMsg.text($.mage.__('The image optimization snippet has been successfully ' + onOrOff + '.')).show();
                             $('.request_imgopt_state_span').hide();
                             if (disabledOrEnabled == 'enabled') {
                                 imageStateMsgSpan.find('#imgopt_state_disabled').hide();
                                 imageStateMsgSpan.find('#imgopt_state_enabled').show();
+                                if (ioStatus === true) {
+                                    imgBtn.removeClass('disabled');
+                                }
                             } else {
                                 imageStateMsgSpan.find('#imgopt_state_enabled').hide();
                                 imageStateMsgSpan.find('#imgopt_state_disabled').show();
+                                if (ioStatus === false) {
+                                    imgBtn.addClass('disabled');
+                                }
                             }
                         } else {
                             vcl.resetAllMessages();

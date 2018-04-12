@@ -793,6 +793,7 @@ $testServiceUrl = $block->getUrl('adminhtml/fastlyCdn/testConnection');
 $checkTlsSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkTlsSetting');
 $toggleTlsSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/forceTls');
 $checkImageSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkImageSetting');
+$checkFastlyIoSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkFastlyIoSetting');
 $toggleImageSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/pushImageSettings');
 $checkBlockingSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkBlockingSetting');
 $toggleBlockingSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/blocking');
@@ -822,6 +823,7 @@ $checkAuthSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkAuthSetting'
 $checkAuthDictionaryUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkAuthDictionary');
 $toggleAuthSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/enableAuth');
 $checkAuthUsersAvailable = $block->getUrl('adminhtml/fastlyCdn_Vcl/CheckAuthUsersAvailable');
+$isIoEnabled = $block->getConfig()->isImageOptimizationEnabled();
 
 /* This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application  */
 $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
@@ -838,10 +840,12 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "checkTlsSettingUrl": "<?php echo $block->escapeJsQuote($checkTlsSettingUrl);?>",
                     "toggleTlsSettingUrl": "<?php echo $block->escapeJsQuote($toggleTlsSettingUrl);?>",
                     "checkImageSettingUrl": "<?php echo $block->escapeJsQuote($checkImageSettingUrl);?>",
+                    "checkFastlyIoSettingUrl": "<?php echo $block->escapeJsQuote($checkFastlyIoSettingUrl);?>",
                     "toggleImageSettingUrl": "<?php echo $block->escapeJsQuote($toggleImageSettingUrl);?>",
                     "checkBlockingSettingUrl": "<?php echo $block->escapeJsQuote($checkBlockingSettingUrl);?>",
                     "toggleBlockingSettingUrl": "<?php echo $block->escapeJsQuote($toggleBlockingSettingUrl);?>",
                     "isFastlyEnabled": "<?php echo $block->escapeJsQuote($isFastlyEnabled);?>",
+                    "isIoEnabled": "<?php echo $block->escapeJsQuote($isIoEnabled);?>",
                     "fetchBackendsUrl": "<?php echo $block->escapeJsQuote($fetchBackendsUrl);?>",
                     "configureBackendUrl": "<?php echo $block->escapeJsQuote($configureBackendUrl);?>",
                     "isAlreadyConfiguredUrl": "<?php echo $block->escapeJsQuote($isAlreadyConfiguredUrl);?>",

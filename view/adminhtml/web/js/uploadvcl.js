@@ -1739,7 +1739,14 @@ define([
                 if ($('#fastly_activate_vcl').is(':checked')) {
                     activate_vcl = true;
                 }
-
+                var errorHtmlChars = $('#error_page_html').val().length;
+                var maxChars = 65535;
+                if (errorHtmlChars >= maxChars) {
+                    var msgWarning = $('.fastly-message-error');
+                    msgWarning.text($.mage.__('The HTML must contain less than ' + maxChars + ' characters. Current number of characters: ' + errorHtmlChars));
+                    msgWarning.show();
+                    return;
+                }
                 $.ajax({
                     type: "POST",
                     url: config.saveErrorPageHtmlUrl,

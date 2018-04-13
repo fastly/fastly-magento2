@@ -22,7 +22,7 @@ For example
 recv_10_block_except_allowlist.vcl
 ```
 
-Will create a VCL snippet of type *recv*, priority *10* named *magentomodule_block_except_allowlist*.
+Will create a VCL snippet of type *recv*, priority *10* named *magentomodule_custom_block_except_allowlist*.
 Magentomodule will be prepended to any snippet uploaded by the Magento admin.
 
 Please note any time you reupload VCL from the Magento admin it will overwrite any changes.

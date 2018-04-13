@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.50
+
+- Feature/check if io is enabled https://github.com/fastly/fastly-magento2/pull/167
+- Added check for the error/maintenance page HTML character count https://github.com/fastly/fastly-magento2/pull/168
+
 ## 1.2.49
 
 - Changed device pixel ratios checkboxes to multiselect https://github.com/fastly/fastly-magento2/pull/165

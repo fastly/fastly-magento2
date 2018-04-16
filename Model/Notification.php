@@ -105,7 +105,7 @@ class Notification extends Feed
     {
         $lastVersion = $this->getLastVersion();
 
-        if (!$lastVersion || version_compare($lastVersion, $currentVersion, '<')) {
+        if (!$lastVersion || version_compare($lastVersion, $currentVersion, '<=')) {
             return;
         }
 

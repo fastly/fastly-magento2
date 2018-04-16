@@ -19,29 +19,33 @@
         unset req.http.X-Magento-Vary;
     }
 
-    # auth for purging
+    ############################################################################################################
+    # Following code block controls purge by URL. By default we want to protect all URL purges. In general this
+    # is addressed by adding Fastly-Purge-Requires-Auth request header in vcl_recv however this runs the risk of
+    # exposing API tokens if user attempts to purge non-https URLs. For this reason inside the Magento module
+    # we use X-Purge-Token. Unfortunately this breaks purge from the Fastly UI. Therefore in the next code block
+    # we check for presence of X-Purge-Token. If it's not present we force the Fastly-Purge-Requires-Auth
     if (req.request == "FASTLYPURGE") {
-      # extract token signature and expiration
-      if (!req.http.X-Purge-Token ~ "^([^_]+)_(.*)" ) {
-        error 403;
-      }
+        # extract token signature and expiration
+        if (req.http.X-Purge-Token && req.http.X-Purge-Token ~ "^([^_]+)_(.*)" ) {
 
-      declare local var.X-Exp STRING;
-      declare local var.X-Sig STRING;
-      /* extract token expiration and signature */
-      set var.X-Exp = re.group.1;
-      set var.X-Sig = re.group.2;
+            declare local var.X-Exp STRING;
+            declare local var.X-Sig STRING;
+            /* extract token expiration and signature */
+            set var.X-Exp = re.group.1;
+            set var.X-Sig = re.group.2;
 
-      /* validate signature */
-      if (var.X-Sig == regsub(digest.hmac_sha1(req.service_id, req.url.path var.X-Exp), "^0x", "")) {
-        /* check that expiration time has not elapsed */
-        if (time.is_after(now, std.integer2time(std.atoi(var.X-Exp)))) {
-          error 410;
+            /* validate signature */
+            if (var.X-Sig == regsub(digest.hmac_sha1(req.service_id, req.url.path var.X-Exp), "^0x", "")) {
+            /* check that expiration time has not elapsed */
+            if (time.is_after(now, std.integer2time(std.atoi(var.X-Exp)))) {
+                error 410;
+            }
+            }
+
+        } else {
+            set req.http.Fastly-Purge-Requires-Auth = "1";
         }
-
-      } else {
-        error 403;
-      }
     }
 
     # set HTTPS header for offloaded TLS
@@ -70,7 +74,7 @@
     } else {
         # Per suggestions in https://github.com/sdinteractive/SomethingDigital_PageCacheParams
         # we'll strip out query parameters used in Google AdWords, Mailchimp tracking by default
-        # and allow custom parameters to be set
+        # and allow custom parameters to be set. List of parameters is configurable in admin
         set req.http.Magento-Original-URL = req.url;
         set req.url = querystring.regfilter(req.url, "^(####QUERY_PARAMETERS####)");
     }

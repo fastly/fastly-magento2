@@ -1039,6 +1039,20 @@ class Api
     }
 
     /**
+     * Get the image optimization default config options
+     *
+     * @param $version
+     * @return bool|mixed
+     */
+    public function getImageOptimizationDefaultConfigOptions($version)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/io_settings';
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    /**
      * Wrapper for API calls towards Fastly service
      *
      * @param string    $uri    API Endpoint

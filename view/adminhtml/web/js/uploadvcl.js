@@ -1121,39 +1121,69 @@ define([
         });
 
         $('#fastly_io_default_config').on('click', function () {
-
-            if (isAlreadyConfigured != true) {
-                $(this).attr('disabled', true);
-                return alert($.mage.__('Please save config prior to continuing.'));
-            }
-
-            vcl.resetAllMessages();
-
             $.ajax({
                 type: "GET",
-                url: config.serviceInfoUrl,
-                showLoader: true
-            }).done(function (service) {
-
-                if (service.status == false) {
-                    return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
-                }
-
-                active_version = service.active_version;
-                next_version = service.next_version;
-                service_name = service.service.name;
-                vcl.getErrorPageRespObj(active_version, true).done(function (response) {
-                    if (response.status == true) {
-                        $('#error_page_html').text(response.errorPageResp.content).html();
-                    }
-                }).fail(function () {
-                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
-                });
-                vcl.showPopup('fastly-io-default-config-options');
+                url: config.serviceInfoUrl
+            }).done(function (checkService) {
+                active_version = checkService.active_version;
+                next_version = checkService.next_version;
+                service_name = checkService.service.name;
                 vcl.setActiveServiceLabel(active_version, next_version, service_name);
+            });
 
-            }).fail(function (msg) {
-                return errorBlockingBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+            $.ajax({
+                type: "POST",
+                url: config.listIoDefaultConfigOptions,
+                showLoader: true,
+                data: {'active_version': active_version}
+            }).done(function (response) {
+                 if (response.status == true) {
+                    ioOptions = response.io_options;
+
+                     vcl.showPopup('fastly-io-default-config-options');
+                     vcl.setActiveServiceLabel(active_version, next_version, service_name);
+
+                    if (ioOptions.webp === false) {
+                        $('#webp-no').prop('checked', true);
+                    } else {
+                        $('#webp-yes').prop('checked', true);
+                    }
+
+                    $('#webp_quality').val(ioOptions.webp_quality);
+
+                    if (ioOptions.jpeg_type == 'auto') {
+                        $('#jpeg-format-auto').prop('checked', true);
+                    }
+                    else if (ioOptions.jpeg_type == 'baseline') {
+                        $('#jpeg-format-baseline').prop('checked', true);
+                    } else {
+                        $('#jpeg-format-progressive').prop('checked', true);
+                    }
+
+                     $('#jpeg_quality').val(ioOptions.jpeg_quality);
+
+                     if (ioOptions.upscale === false) {
+                         $('#upscaling-no').prop('checked', true);
+                     } else {
+                         $('#upscaling-yes').prop('checked', true);
+                     }
+
+                     if (ioOptions.resize_filter == 'lanczos3') {
+                         $('#resize-filter-lancsoz3').prop('checked', true);
+                     }
+                     else if (ioOptions.resize_filter == 'lanczos2') {
+                         $('#resize-filter-lancsoz2').prop('checked', true);
+                     }
+                     else if (ioOptions.resize_filter == 'bicubic') {
+                         $('#resize-filter-bicubic').prop('checked', true);
+                     }
+                     else if (ioOptions.resize_filter == 'bilinear') {
+                         $('#resize-filter-bilinear').prop('checked', true);
+                     }
+                     else {
+                         $('#resize-filter-nearest').prop('checked', true);
+                     }
+                }
             });
         });
 
@@ -1161,6 +1191,7 @@ define([
         var authDict = null;
         var enableAuthBtn = null;
         var edgeDictionaries = null;
+        var ioOptions = null;
         var edgeAcls = null;
         var authStatus = true;
         var backends = null;

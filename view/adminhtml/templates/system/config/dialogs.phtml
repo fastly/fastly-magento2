@@ -981,6 +981,7 @@ $checkAuthSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkAuthSetting'
 $checkAuthDictionaryUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkAuthDictionary');
 $toggleAuthSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/enableAuth');
 $checkAuthUsersAvailable = $block->getUrl('adminhtml/fastlyCdn_Vcl/CheckAuthUsersAvailable');
+$listIoDefaultConfigOptions = $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/ListAll');
 $isIoEnabled = $block->getConfig()->isImageOptimizationEnabled();
 
 /* This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application  */
@@ -1029,7 +1030,8 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "checkAuthSettingUrl": "<?php echo $block->escapeJsQuote($checkAuthSettingUrl);?>",
                     "checkAuthDictionaryUrl": "<?php echo $block->escapeJsQuote($checkAuthDictionaryUrl);?>",
                     "toggleAuthSettingUrl": "<?php echo $block->escapeJsQuote($toggleAuthSettingUrl);?>",
-                    "checkAuthUsersAvailable": "<?php echo $block->escapeJsQuote($checkAuthUsersAvailable);?>"
+                    "checkAuthUsersAvailable": "<?php echo $block->escapeJsQuote($checkAuthUsersAvailable);?>",
+                    "listIoDefaultConfigOptions": "<?php echo $block->escapeJsQuote($listIoDefaultConfigOptions);?>"
                 }
             }
         }

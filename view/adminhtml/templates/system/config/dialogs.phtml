@@ -781,6 +781,164 @@
         </fieldset>
     </form>
 </script>
+
+<script type="text/x-magento-template" id="fastly-io-default-config-options-template">
+    <div class="messages">
+        <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
+        <div class="message message-success fastly-message-success" style="display: none;"></div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="fastly-io-default-config-options-form"
+          class="form-inline"
+          enctype="multipart/form-data">
+
+        <fieldset class="admin__fieldset form-list question">
+            <table class="admin__control-table" id="io-default-config-options-table">
+                <tbody class="item-container">
+                <tr>
+                    <td>
+                        <label class="admin__field-label">
+                            <span><?php /* @noEscape */ echo __("Auto WebP?") ?></span>
+                        </label>
+                    </td>
+                    <td>
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" id="webp-no" class="admin__control-radio" name="webp-radio"/>
+                            <label class="admin__field-label" for="webp-no"><b>No (default)</b> - Use the origin image file type or chosen format.</label>
+                        </div>
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" id="webp-yes" class="admin__control-radio" name="webp-radio"/>
+                            <label class="admin__field-label" for="webp-yes"><b>Yes</b> - Deliver WebP images to supported browsers.</label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="webp_quality" class="admin__field-label">
+                            <span><?php /* @noEscape */ echo __("Default WebP (lossy) quality") ?></span>
+                        </label>
+                    </td>
+                    <td>
+                        <div class="admin__field field">
+                            <input name="webp_quality"
+                                   type="text"
+                                   required="required"
+                                   id="webp_quality"
+                                   class="admin__control-text">
+                            <label for="webp_quality" class="admin__field-label">
+                                <span><?php /* @noEscape */ echo __("%") ?></span>
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="admin__field-label">
+                            <span><?php /* @noEscape */ echo __("Default JPEG format") ?></span>
+                        </label>
+                    </td>
+                    <td>
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" id="jpeg-format-auto" class="admin__control-radio" name="jpeg-format"/>
+                            <label class="admin__field-label" for="jpeg-format-auto">
+                                <b>Auto (default)</b> - Preserve the origin image JPEG format.
+                            </label>
+                        </div>
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" id="jpeg-format-baseline" class="admin__control-radio" name="jpeg-format"/>
+                            <label class="admin__field-label" for="jpeg-format-baseline">
+                                <b>Baseline</b> - Display the image when it has fully downloaded.
+                            </label>
+                        </div>
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" id="jpeg-format-progressive" class="admin__control-radio" name="jpeg-format"/>
+                            <label class="admin__field-label" for="jpeg-format-progressive">
+                                <b>Progressive</b> - Display the image using low resolution first, then incrementally improve the quality as downloading continues.
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="jpeg_quality" class="admin__field-label">
+                            <span><?php /* @noEscape */ echo __("Default JPEG quality") ?></span>
+                        </label>
+                    </td>
+                    <td>
+                        <div class="admin__field field">
+                            <input name="jpeg_quality"
+                                   type="text"
+                                   required="required"
+                                   id="jpeg_quality"
+                                   class="admin__control-text">
+                            <label for="jpeg_quality" class="admin__field-label">
+                                <span><?php /* @noEscape */ echo __("%") ?></span>
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="admin__field-label">
+                            <span><?php /* @noEscape */ echo __("Allow upscaling?") ?></span>
+                        </label>
+                    </td>
+                    <td>
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" id="upscaling-no" class="admin__control-radio" name="upscaling-radio"/>
+                            <label class="admin__field-label" for="upscaling-no"><b>No (default)</b> - Recommended.</label>
+                        </div>
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" id="upscaling-yes" class="admin__control-radio" name="upscaling-radio"/>
+                            <label class="admin__field-label" for="upscaling-yes"><b>Yes</b> - Allow upscaling.</label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="admin__field-label">
+                            <span><?php /* @noEscape */ echo __("Resize filter") ?></span>
+                        </label>
+                    </td>
+                    <td>
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" id="resize-filter-lancsoz3" class="admin__control-radio" name="resize-filter-radio"/>
+                            <label class="admin__field-label" for="resize-filter-lancsoz3">
+                                <b>Lancsoz3 (default)</b> - Use the Lanczos3 filter to increase the ability to detect edges and linear features within an image
+                                and uses sinc resampling to provide the best possible reconstruction.</label>
+                        </div>
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" id="resize-filter-lancsoz2" class="admin__control-radio" name="resize-filter-radio"/>
+                            <label class="admin__field-label" for="resize-filter-lancsoz2">
+                                <b>Lanczos2</b> - Use the same filter as Lancsoz3 but with a less accurate approximation of the sinc resampling function.
+                            </label>
+                        </div>
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" id="resize-filter-bicubic" class="admin__control-radio" name="resize-filter-radio"/>
+                            <label class="admin__field-label" for="resize-filter-bicubic">
+                                <b>Bicubic</b> - Use an average of a 4x4 environment of pixels, weighing the innermost pixels higher.
+                            </label>
+                        </div>
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" id="resize-filter-bilinear" class="admin__control-radio" name="resize-filter-radio"/>
+                            <label class="admin__field-label" for="resize-filter-bilinear">
+                                <b>Bilinear</b> - Use an average of a 2x2 environment of pixels.
+                            </label>
+                        </div>
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" id="resize-filter-nearest" class="admin__control-radio" name="resize-filter-radio"/>
+                            <label class="admin__field-label" for="resize-filter-nearest">
+                                <b>Nearest</b> - Use the value of nearby translated pixel values.
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </fieldset>
+    </form>
+</script>
 <?php
 
 /**

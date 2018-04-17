@@ -1120,6 +1120,43 @@ define([
             });
         });
 
+        $('#fastly_io_default_config').on('click', function () {
+
+            if (isAlreadyConfigured != true) {
+                $(this).attr('disabled', true);
+                return alert($.mage.__('Please save config prior to continuing.'));
+            }
+
+            vcl.resetAllMessages();
+
+            $.ajax({
+                type: "GET",
+                url: config.serviceInfoUrl,
+                showLoader: true
+            }).done(function (service) {
+
+                if (service.status == false) {
+                    return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
+                }
+
+                active_version = service.active_version;
+                next_version = service.next_version;
+                service_name = service.service.name;
+                vcl.getErrorPageRespObj(active_version, true).done(function (response) {
+                    if (response.status == true) {
+                        $('#error_page_html').text(response.errorPageResp.content).html();
+                    }
+                }).fail(function () {
+                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
+                });
+                vcl.showPopup('fastly-io-default-config-options');
+                vcl.setActiveServiceLabel(active_version, next_version, service_name);
+
+            }).fail(function (msg) {
+                return errorBlockingBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+            });
+        });
+
         var authDictStatus = null;
         var authDict = null;
         var enableAuthBtn = null;
@@ -2387,6 +2424,14 @@ define([
                     title: jQuery.mage.__('Basic Auth users'),
                     content: function () {
                         return document.getElementById('fastly-auth-items-template').textContent;
+                    },
+                    actionOk: function () {
+                    }
+                },
+                'fastly-io-default-config-options': {
+                    title: jQuery.mage.__('Image optimization default config options'),
+                    content: function () {
+                        return document.getElementById('fastly-io-default-config-options-template').textContent;
                     },
                     actionOk: function () {
                     }

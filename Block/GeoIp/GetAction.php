@@ -23,7 +23,6 @@ namespace Fastly\Cdn\Block\GeoIp;
 use Fastly\Cdn\Model\Config;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Context;
-use Magento\Framework\App\ResponseInterface as Response;
 
 /**
  * This is a just a place holder to insert the ESI tag for GeoIP lookup.
@@ -36,26 +35,18 @@ class GetAction extends AbstractBlock
     private $config;
 
     /**
-     * @var Response
-     */
-    private $response;
-
-    /**
      * GetAction constructor.
      *
      * @param Config $config
      * @param Context $context
-     * @param Response $response
      * @param array $data
      */
     public function __construct(
         Config $config,
         Context $context,
-        Response $response,
         array $data = []
     ) {
         $this->config = $config;
-        $this->response = $response;
 
         parent::__construct($context, $data);
     }
@@ -67,19 +58,12 @@ class GetAction extends AbstractBlock
      */
     protected function _toHtml() // @codingStandardsIgnoreLine - required by parent class
     {
-        if ($this->config->isGeoIpEnabled() == false || $this->config->isFastlyEnabled() == false) {
+        if ($this->config->isGeoIpEnabled() == false) {
             return parent::_toHtml();
         }
 
         /** @var string $actionUrl */
         $actionUrl = $this->getUrl('fastlyCdn/geoip/getaction');
-
-        // This page has an esi tag
-        // Set x-esi header if it is not already set
-        $header = $this->response->getHeader('x-esi');
-        if (empty($header)) {
-            $this->response->setHeader("x-esi", "1");
-        }
 
         // HTTPS ESIs are not supported so we need to turn them into HTTP
         return sprintf(

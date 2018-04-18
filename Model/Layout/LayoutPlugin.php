@@ -96,7 +96,10 @@ class LayoutPlugin
         } else {
             $this->response->setHeader("fastly-page-cacheable", "NO");
         }
-        
+
+        // This page potentially has ESIs so as a first cut let's mark it as such
+        $this->response->setHeader("x-esi", "1");
+
         return $result;
     }
 

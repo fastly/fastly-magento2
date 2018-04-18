@@ -1153,8 +1153,7 @@ define([
 
                     if (ioOptions.jpeg_type == 'auto') {
                         $('#jpeg-format-auto').prop('checked', true);
-                    }
-                    else if (ioOptions.jpeg_type == 'baseline') {
+                    } else if (ioOptions.jpeg_type == 'baseline') {
                         $('#jpeg-format-baseline').prop('checked', true);
                     } else {
                         $('#jpeg-format-progressive').prop('checked', true);
@@ -1170,17 +1169,13 @@ define([
 
                      if (ioOptions.resize_filter == 'lanczos3') {
                          $('#resize-filter-lancsoz3').prop('checked', true);
-                     }
-                     else if (ioOptions.resize_filter == 'lanczos2') {
+                     } else if (ioOptions.resize_filter == 'lanczos2') {
                          $('#resize-filter-lancsoz2').prop('checked', true);
-                     }
-                     else if (ioOptions.resize_filter == 'bicubic') {
+                     } else if (ioOptions.resize_filter == 'bicubic') {
                          $('#resize-filter-bicubic').prop('checked', true);
-                     }
-                     else if (ioOptions.resize_filter == 'bilinear') {
+                     } else if (ioOptions.resize_filter == 'bilinear') {
                          $('#resize-filter-bilinear').prop('checked', true);
-                     }
-                     else {
+                     } else {
                          $('#resize-filter-nearest').prop('checked', true);
                      }
                 }
@@ -2314,6 +2309,8 @@ define([
                     }
                 });
             },
+
+            // Configure IO default config options
             configureIo: function () {
                 var activate_vcl = false;
 

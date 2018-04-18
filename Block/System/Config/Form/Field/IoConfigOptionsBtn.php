@@ -50,7 +50,7 @@ class IoConfigOptionsBtn extends Field
     }
 
     /**
-     * Render Blocking button HTML
+     * Render IO config button HTML
      * @return mixed
      * @throws \Magento\Framework\Exception\LocalizedException
      */

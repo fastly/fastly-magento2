@@ -38,7 +38,7 @@ class IoDefaultConfigOptions extends Action
     private $config;
 
     /**
-     * ConfigureBackend constructor
+     * IoDefaultConfigOptions constructor.
      *
      * @param Context $context
      * @param Http $request

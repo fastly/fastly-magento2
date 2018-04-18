@@ -786,7 +786,7 @@
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
             <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
-            <?php /* @noEscape */ echo __("Your backend will be reconfigured in version #y.")?>
+            <?php /* @noEscape */ echo __("Your image configuration will be reconfigured in version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
@@ -824,11 +824,15 @@
                     <td>
                         <div class="admin__field admin__field-option">
                             <input type="radio" id="webp-no" class="admin__control-radio" name="webp-radio" value="0"/>
-                            <label class="admin__field-label" for="webp-no"><b>No (default)</b> - Use the origin image file type or chosen format.</label>
+                            <label class="admin__field-label" for="webp-no">
+                                <b>No (default)</b> - Use the origin image file type or chosen format.
+                            </label>
                         </div>
                         <div class="admin__field admin__field-option">
                             <input type="radio" id="webp-yes" class="admin__control-radio" name="webp-radio" value="1"/>
-                            <label class="admin__field-label" for="webp-yes"><b>Yes</b> - Deliver WebP images to supported browsers.</label>
+                            <label class="admin__field-label" for="webp-yes">
+                                <b>Yes</b> - Deliver WebP images to supported browsers.
+                            </label>
                         </div>
                     </td>
                 </tr>
@@ -859,21 +863,34 @@
                     </td>
                     <td>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="jpeg-format-auto" class="admin__control-radio" name="jpeg-format" value="auto"/>
+                            <input type="radio"
+                                   id="jpeg-format-auto"
+                                   class="admin__control-radio"
+                                   name="jpeg-format"
+                                   value="auto"/>
                             <label class="admin__field-label" for="jpeg-format-auto">
                                 <b>Auto (default)</b> - Preserve the origin image JPEG format.
                             </label>
                         </div>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="jpeg-format-baseline" class="admin__control-radio" name="jpeg-format" value="baseline"/>
+                            <input type="radio"
+                                   id="jpeg-format-baseline"
+                                   class="admin__control-radio"
+                                   name="jpeg-format"
+                                   value="baseline"/>
                             <label class="admin__field-label" for="jpeg-format-baseline">
                                 <b>Baseline</b> - Display the image when it has fully downloaded.
                             </label>
                         </div>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="jpeg-format-progressive" class="admin__control-radio" name="jpeg-format" value="progressive"/>
+                            <input type="radio"
+                                   id="jpeg-format-progressive"
+                                   class="admin__control-radio"
+                                   name="jpeg-format"
+                                   value="progressive"/>
                             <label class="admin__field-label" for="jpeg-format-progressive">
-                                <b>Progressive</b> - Display the image using low resolution first, then incrementally improve the quality as downloading continues.
+                                <b>Progressive</b> - Display the image using low resolution first,
+                                then incrementally improve the quality as downloading continues.
                             </label>
                         </div>
                     </td>
@@ -905,12 +922,25 @@
                     </td>
                     <td>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="upscaling-no" class="admin__control-radio" name="upscaling-radio" value="0"/>
-                            <label class="admin__field-label" for="upscaling-no"><b>No (default)</b> - Recommended.</label>
+                            <input type="radio"
+                                   id="upscaling-no"
+                                   class="admin__control-radio"
+                                   name="upscaling-radio"
+                                   value="0"/>
+                            <label class="admin__field-label"
+                                   for="upscaling-no">
+                                <b>No (default)</b> - Recommended.
+                            </label>
                         </div>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="upscaling-yes" class="admin__control-radio" name="upscaling-radio" value="1"/>
-                            <label class="admin__field-label" for="upscaling-yes"><b>Yes</b> - Allow upscaling.</label>
+                            <input type="radio"
+                                   id="upscaling-yes"
+                                   class="admin__control-radio"
+                                   name="upscaling-radio"
+                                   value="1"/>
+                            <label class="admin__field-label" for="upscaling-yes">
+                                <b>Yes</b> - Allow upscaling.
+                            </label>
                         </div>
                     </td>
                 </tr>
@@ -922,31 +952,53 @@
                     </td>
                     <td>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="resize-filter-lancsoz3" class="admin__control-radio" name="resize-filter-radio" value="lancsoz3"/>
+                            <input type="radio"
+                                   id="resize-filter-lancsoz3"
+                                   class="admin__control-radio"
+                                   name="resize-filter-radio"
+                                   value="lancsoz3"/>
                             <label class="admin__field-label" for="resize-filter-lancsoz3">
-                                <b>Lancsoz3 (default)</b> - Use the Lanczos3 filter to increase the ability to detect edges and linear features within an image
+                                <b>Lancsoz3 (default)</b> - Use the Lanczos3 filter to increase the
+                                ability to detect edges and linear features within an image
                                 and uses sinc resampling to provide the best possible reconstruction.</label>
                         </div>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="resize-filter-lancsoz2" class="admin__control-radio" name="resize-filter-radio" value="lancsoz2"/>
+                            <input type="radio"
+                                   id="resize-filter-lancsoz2"
+                                   class="admin__control-radio"
+                                   name="resize-filter-radio"
+                                   value="lancsoz2"/>
                             <label class="admin__field-label" for="resize-filter-lancsoz2">
-                                <b>Lanczos2</b> - Use the same filter as Lancsoz3 but with a less accurate approximation of the sinc resampling function.
+                                <b>Lanczos2</b> - Use the same filter as Lancsoz3 but with
+                                a less accurate approximation of the sinc resampling function.
                             </label>
                         </div>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="resize-filter-bicubic" class="admin__control-radio" name="resize-filter-radio" value="bicubic"/>
+                            <input type="radio"
+                                   id="resize-filter-bicubic"
+                                   class="admin__control-radio"
+                                   name="resize-filter-radio"
+                                   value="bicubic"/>
                             <label class="admin__field-label" for="resize-filter-bicubic">
-                                <b>Bicubic</b> - Use an average of a 4x4 environment of pixels, weighing the innermost pixels higher.
+                                <b>Bicubic</b> - Use an average of a 4x4 environment of pixels,
+                                weighing the innermost pixels higher.
                             </label>
                         </div>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="resize-filter-bilinear" class="admin__control-radio" name="resize-filter-radio" value="bilinear"/>
+                            <input type="radio"
+                                   id="resize-filter-bilinear"
+                                   class="admin__control-radio"
+                                   name="resize-filter-radio"
+                                   value="bilinear"/>
                             <label class="admin__field-label" for="resize-filter-bilinear">
                                 <b>Bilinear</b> - Use an average of a 2x2 environment of pixels.
                             </label>
                         </div>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="resize-filter-nearest" class="admin__control-radio" name="resize-filter-radio" value="nearest"/>
+                            <input type="radio"
+                                   id="resize-filter-nearest"
+                                   class="admin__control-radio"
+                                   name="resize-filter-radio" value="nearest"/>
                             <label class="admin__field-label" for="resize-filter-nearest">
                                 <b>Nearest</b> - Use the value of nearby translated pixel values.
                             </label>

@@ -128,6 +128,7 @@ class Api
      *
      * @param string $url
      * @return bool
+     * @throws \Zend_Uri_Exception
      */
     public function cleanUrl($url)
     {
@@ -147,6 +148,7 @@ class Api
      *
      * @param $keys
      * @return bool
+     * @throws \Zend_Uri_Exception
      */
     public function cleanBySurrogateKey($keys)
     {
@@ -184,6 +186,7 @@ class Api
      * Purge all of Fastly's CDN content. Can be called only once per request
      *
      * @return bool
+     * @throws \Zend_Uri_Exception
      */
     public function cleanAll()
     {
@@ -224,6 +227,7 @@ class Api
      * @param string $method
      * @param null $payload
      * @return bool
+     * @throws \Zend_Uri_Exception
      */
     private function _purge($uri, $method = \Zend_Http_Client::POST, $payload = null)
     {
@@ -407,9 +411,12 @@ class Api
 
     /**
      * Creating and updating a regular VCL Snippet
+     *
      * @param $version
      * @param array $snippet
      * @throws LocalizedException
+     * @throws \Exception
+     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function uploadSnippet($version, array $snippet)
     {
@@ -794,9 +801,9 @@ class Api
 
     /**
      * Get dictionary item list
+     *
      * @param $dictionaryId
      * @return bool|mixed
-     * @throws LocalizedException
      */
     public function dictionaryItemsList($dictionaryId)
     {
@@ -972,6 +979,7 @@ class Api
      * @param $aclId
      * @param $itemValue
      * @param $negated
+     * @param bool $subnet
      * @return bool|mixed
      */
     public function upsertAclItem($aclId, $itemValue, $negated, $subnet = false)
@@ -1053,6 +1061,21 @@ class Api
     }
 
     /**
+     * Configure the image optimization default config options
+     *
+     * @param $params
+     * @param $version
+     * @return bool|mixed
+     */
+    public function configureImageOptimizationDefaultConfigOptions($params, $version)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/io_settings';
+        $result = $this->_fetch($url, \Zend_Http_Client::PATCH, $params);
+
+        return $result;
+    }
+
+    /**
      * Wrapper for API calls towards Fastly service
      *
      * @param string    $uri    API Endpoint
@@ -1074,7 +1097,7 @@ class Api
     ) {
         $apiKey = ($test == true) ? $testApiKey : $this->config->getApiKey();
 
-        // Corectly format $body string
+        // Correctly format $body string
         if (is_array($body) == true) {
             $body = http_build_query($body);
         }

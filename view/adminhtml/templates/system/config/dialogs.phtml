@@ -784,8 +784,12 @@
 
 <script type="text/x-magento-template" id="fastly-io-default-config-options-template">
     <div class="messages">
-        <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
-        <div class="message message-success fastly-message-success" style="display: none;"></div>
+        <div class="message message-warning fastly-message-warning" style="display: none">
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("Your backend will be reconfigured in version #y.")?>
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
     </div>
     <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
@@ -794,6 +798,21 @@
           enctype="multipart/form-data">
 
         <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field maintenance-checkbox-container">
+                <label for="fastly_activate_io_vcl" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate VCL after upload')?></span>
+                </label>
+                <div class="admin__field-control">
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_io_vcl"
+                               id="fastly_activate_io_vcl"
+                               checked/>
+                        <label class="admin__field-label" for="fastly_activate_io_vcl"></label>
+                    </div>
+                </div>
+            </div>
             <table class="admin__control-table" id="io-default-config-options-table">
                 <tbody class="item-container">
                 <tr>
@@ -804,11 +823,11 @@
                     </td>
                     <td>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="webp-no" class="admin__control-radio" name="webp-radio"/>
+                            <input type="radio" id="webp-no" class="admin__control-radio" name="webp-radio" value="0"/>
                             <label class="admin__field-label" for="webp-no"><b>No (default)</b> - Use the origin image file type or chosen format.</label>
                         </div>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="webp-yes" class="admin__control-radio" name="webp-radio"/>
+                            <input type="radio" id="webp-yes" class="admin__control-radio" name="webp-radio" value="1"/>
                             <label class="admin__field-label" for="webp-yes"><b>Yes</b> - Deliver WebP images to supported browsers.</label>
                         </div>
                     </td>
@@ -821,7 +840,7 @@
                     </td>
                     <td>
                         <div class="admin__field field">
-                            <input name="webp_quality"
+                            <input name="webp-quality"
                                    type="text"
                                    required="required"
                                    id="webp_quality"
@@ -840,19 +859,19 @@
                     </td>
                     <td>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="jpeg-format-auto" class="admin__control-radio" name="jpeg-format"/>
+                            <input type="radio" id="jpeg-format-auto" class="admin__control-radio" name="jpeg-format" value="auto"/>
                             <label class="admin__field-label" for="jpeg-format-auto">
                                 <b>Auto (default)</b> - Preserve the origin image JPEG format.
                             </label>
                         </div>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="jpeg-format-baseline" class="admin__control-radio" name="jpeg-format"/>
+                            <input type="radio" id="jpeg-format-baseline" class="admin__control-radio" name="jpeg-format" value="baseline"/>
                             <label class="admin__field-label" for="jpeg-format-baseline">
                                 <b>Baseline</b> - Display the image when it has fully downloaded.
                             </label>
                         </div>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="jpeg-format-progressive" class="admin__control-radio" name="jpeg-format"/>
+                            <input type="radio" id="jpeg-format-progressive" class="admin__control-radio" name="jpeg-format" value="progressive"/>
                             <label class="admin__field-label" for="jpeg-format-progressive">
                                 <b>Progressive</b> - Display the image using low resolution first, then incrementally improve the quality as downloading continues.
                             </label>
@@ -867,7 +886,7 @@
                     </td>
                     <td>
                         <div class="admin__field field">
-                            <input name="jpeg_quality"
+                            <input name="jpeg-quality"
                                    type="text"
                                    required="required"
                                    id="jpeg_quality"
@@ -886,11 +905,11 @@
                     </td>
                     <td>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="upscaling-no" class="admin__control-radio" name="upscaling-radio"/>
+                            <input type="radio" id="upscaling-no" class="admin__control-radio" name="upscaling-radio" value="0"/>
                             <label class="admin__field-label" for="upscaling-no"><b>No (default)</b> - Recommended.</label>
                         </div>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="upscaling-yes" class="admin__control-radio" name="upscaling-radio"/>
+                            <input type="radio" id="upscaling-yes" class="admin__control-radio" name="upscaling-radio" value="1"/>
                             <label class="admin__field-label" for="upscaling-yes"><b>Yes</b> - Allow upscaling.</label>
                         </div>
                     </td>
@@ -903,31 +922,31 @@
                     </td>
                     <td>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="resize-filter-lancsoz3" class="admin__control-radio" name="resize-filter-radio"/>
+                            <input type="radio" id="resize-filter-lancsoz3" class="admin__control-radio" name="resize-filter-radio" value="lancsoz3"/>
                             <label class="admin__field-label" for="resize-filter-lancsoz3">
                                 <b>Lancsoz3 (default)</b> - Use the Lanczos3 filter to increase the ability to detect edges and linear features within an image
                                 and uses sinc resampling to provide the best possible reconstruction.</label>
                         </div>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="resize-filter-lancsoz2" class="admin__control-radio" name="resize-filter-radio"/>
+                            <input type="radio" id="resize-filter-lancsoz2" class="admin__control-radio" name="resize-filter-radio" value="lancsoz2"/>
                             <label class="admin__field-label" for="resize-filter-lancsoz2">
                                 <b>Lanczos2</b> - Use the same filter as Lancsoz3 but with a less accurate approximation of the sinc resampling function.
                             </label>
                         </div>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="resize-filter-bicubic" class="admin__control-radio" name="resize-filter-radio"/>
+                            <input type="radio" id="resize-filter-bicubic" class="admin__control-radio" name="resize-filter-radio" value="bicubic"/>
                             <label class="admin__field-label" for="resize-filter-bicubic">
                                 <b>Bicubic</b> - Use an average of a 4x4 environment of pixels, weighing the innermost pixels higher.
                             </label>
                         </div>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="resize-filter-bilinear" class="admin__control-radio" name="resize-filter-radio"/>
+                            <input type="radio" id="resize-filter-bilinear" class="admin__control-radio" name="resize-filter-radio" value="bilinear"/>
                             <label class="admin__field-label" for="resize-filter-bilinear">
                                 <b>Bilinear</b> - Use an average of a 2x2 environment of pixels.
                             </label>
                         </div>
                         <div class="admin__field admin__field-option">
-                            <input type="radio" id="resize-filter-nearest" class="admin__control-radio" name="resize-filter-radio"/>
+                            <input type="radio" id="resize-filter-nearest" class="admin__control-radio" name="resize-filter-radio" value="nearest"/>
                             <label class="admin__field-label" for="resize-filter-nearest">
                                 <b>Nearest</b> - Use the value of nearby translated pixel values.
                             </label>
@@ -982,6 +1001,7 @@ $checkAuthDictionaryUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkAuthDicti
 $toggleAuthSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/enableAuth');
 $checkAuthUsersAvailable = $block->getUrl('adminhtml/fastlyCdn_Vcl/CheckAuthUsersAvailable');
 $listIoDefaultConfigOptions = $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/ListAll');
+$configureIoUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/IoDefaultConfigOptions');
 $isIoEnabled = $block->getConfig()->isImageOptimizationEnabled();
 
 /* This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application  */
@@ -1031,7 +1051,8 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "checkAuthDictionaryUrl": "<?php echo $block->escapeJsQuote($checkAuthDictionaryUrl);?>",
                     "toggleAuthSettingUrl": "<?php echo $block->escapeJsQuote($toggleAuthSettingUrl);?>",
                     "checkAuthUsersAvailable": "<?php echo $block->escapeJsQuote($checkAuthUsersAvailable);?>",
-                    "listIoDefaultConfigOptions": "<?php echo $block->escapeJsQuote($listIoDefaultConfigOptions);?>"
+                    "listIoDefaultConfigOptions": "<?php echo $block->escapeJsQuote($listIoDefaultConfigOptions);?>",
+                    "configureIoUrl": "<?php echo $block->escapeJsQuote($configureIoUrl);?>"
                 }
             }
         }

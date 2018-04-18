@@ -2314,6 +2314,50 @@ define([
                     }
                 });
             },
+            configureIo: function () {
+                var activate_vcl = false;
+
+                if ($('#fastly_activate_io_vcl').is(':checked')) {
+                    activate_vcl = true;
+                }
+                var webp = $('input[name=webp-radio]:checked').val();
+                var webp_quality = $('#webp_quality').val();
+                var jpeg_type = $('input[name=jpeg-format]:checked').val();
+                var jpeg_quality = $('#jpeg_quality').val();
+                var upscale = $('input[name=upscaling-radio]:checked').val();
+                var resize_filter = $('input[name=resize-filter-radio]:checked').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: config.configureIoUrl,
+                    data: {
+                        'active_version': active_version,
+                        'activate_flag': activate_vcl,
+                        'webp': webp,
+                        'webp_quality': webp_quality,
+                        'jpeg_type': jpeg_type,
+                        'jpeg_quality': jpeg_quality,
+                        'upscale': upscale,
+                        'resize_filter': resize_filter
+                    },
+                    showLoader: true,
+                    success: function (response) {
+                        if (response.status == true) {
+                            $('#fastly-success-io-default-config-btn-msg').text($.mage.__(
+                                'Image optimization default configuration is successfully updated.'
+                            )).show();
+                            active_version = response.active_version;
+                            vcl.modal.modal('closeModal');
+                        } else {
+                            vcl.resetAllMessages();
+                            vcl.showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function (msg) {
+                        // error handling
+                    }
+                });
+            },
 
             uploadVclConfig: {
                 'fastly-uploadvcl-options': {
@@ -2465,6 +2509,7 @@ define([
                         return document.getElementById('fastly-io-default-config-options-template').textContent;
                     },
                     actionOk: function () {
+                        vcl.configureIo(active_version);
                     }
                 }
             }

@@ -817,9 +817,11 @@
                 <tbody class="item-container">
                 <tr>
                     <td>
-                        <label class="admin__field-label">
-                            <span><?php /* @noEscape */ echo __("Auto WebP?") ?></span>
-                        </label>
+                        <div class="admin__field field _required">
+                            <label class="admin__field-label">
+                                <span><?php /* @noEscape */ echo __("Auto WebP?") ?></span>
+                            </label>
+                        </div>
                     </td>
                     <td>
                         <div class="admin__field admin__field-option">
@@ -838,9 +840,11 @@
                 </tr>
                 <tr>
                     <td>
-                        <label for="webp_quality" class="admin__field-label">
-                            <span><?php /* @noEscape */ echo __("Default WebP (lossy) quality") ?></span>
-                        </label>
+                        <div class="admin__field field _required">
+                            <label for="webp_quality" class="admin__field-label">
+                                <span><?php /* @noEscape */ echo __("Default WebP (lossy) quality") ?></span>
+                            </label>
+                        </div>
                     </td>
                     <td>
                         <div class="admin__field field">
@@ -848,7 +852,11 @@
                                    type="text"
                                    required="required"
                                    id="webp_quality"
-                                   class="admin__control-text">
+                                   class="admin__control-text
+                                    required-entry
+                                    validate-alphanum-with-spaces
+                                    validate-length
+                                    maximum-length-3">
                             <label for="webp_quality" class="admin__field-label">
                                 <span><?php /* @noEscape */ echo __("%") ?></span>
                             </label>
@@ -857,9 +865,11 @@
                 </tr>
                 <tr>
                     <td>
-                        <label class="admin__field-label">
-                            <span><?php /* @noEscape */ echo __("Default JPEG format") ?></span>
-                        </label>
+                        <div class="admin__field field _required">
+                            <label class="admin__field-label">
+                                <span><?php /* @noEscape */ echo __("Default JPEG format") ?></span>
+                            </label>
+                        </div>
                     </td>
                     <td>
                         <div class="admin__field admin__field-option">
@@ -897,9 +907,11 @@
                 </tr>
                 <tr>
                     <td>
-                        <label for="jpeg_quality" class="admin__field-label">
-                            <span><?php /* @noEscape */ echo __("Default JPEG quality") ?></span>
-                        </label>
+                        <div class="admin__field field _required">
+                            <label for="jpeg_quality" class="admin__field-label">
+                                <span><?php /* @noEscape */ echo __("Default JPEG quality") ?></span>
+                            </label>
+                        </div>
                     </td>
                     <td>
                         <div class="admin__field field">
@@ -907,7 +919,11 @@
                                    type="text"
                                    required="required"
                                    id="jpeg_quality"
-                                   class="admin__control-text">
+                                   class="admin__control-text
+                                    required-entry
+                                    validate-alphanum-with-spaces
+                                    validate-length
+                                    maximum-length-3">
                             <label for="jpeg_quality" class="admin__field-label">
                                 <span><?php /* @noEscape */ echo __("%") ?></span>
                             </label>
@@ -916,9 +932,11 @@
                 </tr>
                 <tr>
                     <td>
-                        <label class="admin__field-label">
-                            <span><?php /* @noEscape */ echo __("Allow upscaling?") ?></span>
-                        </label>
+                        <div class="admin__field field _required">
+                            <label class="admin__field-label">
+                                <span><?php /* @noEscape */ echo __("Allow upscaling?") ?></span>
+                            </label>
+                        </div>
                     </td>
                     <td>
                         <div class="admin__field admin__field-option">
@@ -946,9 +964,11 @@
                 </tr>
                 <tr>
                     <td>
-                        <label class="admin__field-label">
-                            <span><?php /* @noEscape */ echo __("Resize filter") ?></span>
-                        </label>
+                        <div class="admin__field field _required">
+                            <label class="admin__field-label">
+                                <span><?php /* @noEscape */ echo __("Resize filter") ?></span>
+                            </label>
+                        </div>
                     </td>
                     <td>
                         <div class="admin__field admin__field-option">
@@ -956,7 +976,7 @@
                                    id="resize-filter-lancsoz3"
                                    class="admin__control-radio"
                                    name="resize-filter-radio"
-                                   value="lancsoz3"/>
+                                   value="lanczos3"/>
                             <label class="admin__field-label" for="resize-filter-lancsoz3">
                                 <b>Lancsoz3 (default)</b> - Use the Lanczos3 filter to increase the
                                 ability to detect edges and linear features within an image
@@ -967,7 +987,7 @@
                                    id="resize-filter-lancsoz2"
                                    class="admin__control-radio"
                                    name="resize-filter-radio"
-                                   value="lancsoz2"/>
+                                   value="lanczos2"/>
                             <label class="admin__field-label" for="resize-filter-lancsoz2">
                                 <b>Lanczos2</b> - Use the same filter as Lancsoz3 but with
                                 a less accurate approximation of the sinc resampling function.

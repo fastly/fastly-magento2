@@ -345,8 +345,10 @@ define([
                         if (checkIoSetting.status == false) {
                             if (config.isIoEnabled) {
                                 ioToggle.removeAttrs('disabled');
+                                imgConfigBtn.addClass('disabled');
                             } else {
                                 ioToggle.attr('disabled', 'disabled');
+                                imgConfigBtn.removeClass('disabled');
                             }
                         }
                     });
@@ -1245,6 +1247,7 @@ define([
         var deleteAuthBtnMsgError = $('#fastly-error-auth-list-button-msg');
         var deleteAuthBtnMsgSuccess = $('#fastly-success-auth-list-button-msg');
         var imgBtn = $('#fastly_push_image_config');
+        var imgConfigBtn = $('#fastly_io_default_config');
         var ioToggle = $('#system_full_page_cache_fastly_fastly_image_optimization_configuration_image_optimizations');
 
         var vcl = {

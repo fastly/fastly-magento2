@@ -74,6 +74,13 @@ class IoDefaultConfigOptions extends Action
             $result = $this->resultJson->create();
             $activate_flag = $this->getRequest()->getParam('activate_flag');
             $activeVersion = $this->getRequest()->getParam('active_version');
+            $formData = $this->getRequest()->getParams();
+            if (in_array("", $formData)) {
+                return $result->setData([
+                    'status'    => false,
+                    'msg'       => 'Please fill in the required fields.'
+                ]);
+            }
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);

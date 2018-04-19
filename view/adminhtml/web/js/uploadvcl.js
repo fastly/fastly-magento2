@@ -1610,9 +1610,13 @@ define([
             // Toggle image optimization process
             pushImageConfig: function (active_version) {
                 var activate_image_flag = false;
+                var image_quality_flag = false;
 
                 if ($('#fastly_activate_image_vcl').is(':checked')) {
                     activate_image_flag = true;
+                }
+                if ($('#fastly_image_quality_flag').is(':checked')) {
+                   image_quality_flag = true;
                 }
 
                 $.ajax({
@@ -1620,6 +1624,7 @@ define([
                     url: config.toggleImageSettingUrl,
                     data: {
                         'activate_flag': activate_image_flag,
+                        'image_quality_flag': image_quality_flag,
                         'active_version': active_version
                     },
                     showLoader: true,
@@ -1636,27 +1641,25 @@ define([
                                 disabledOrEnabled = 'disabled';
                             }
                             var fastlyIo = vcl.getFastlyIoSetting(false);
-                            var ioStatus = false;
 
-                            fastlyIo.done(function (checkIoSetting) {
-                                if (checkIoSetting.status != false) {
-                                    ioStatus = true;
-                                }
-                            });
                             successImageBtnMsg.text($.mage.__('The image optimization snippet has been successfully ' + onOrOff + '.')).show();
                             $('.request_imgopt_state_span').hide();
                             if (disabledOrEnabled == 'enabled') {
                                 imageStateMsgSpan.find('#imgopt_state_disabled').hide();
                                 imageStateMsgSpan.find('#imgopt_state_enabled').show();
-                                if (ioStatus === true) {
-                                    imgBtn.removeClass('disabled');
-                                }
+                                fastlyIo.done(function (checkIoSetting) {
+                                    if (checkIoSetting.status != false) {
+                                        imgBtn.removeClass('disabled');
+                                    }
+                                });
                             } else {
                                 imageStateMsgSpan.find('#imgopt_state_enabled').hide();
                                 imageStateMsgSpan.find('#imgopt_state_disabled').show();
-                                if (ioStatus === false) {
-                                    imgBtn.addClass('disabled');
-                                }
+                                fastlyIo.done(function (checkIoSetting) {
+                                    if (checkIoSetting.status == false) {
+                                        imgBtn.addClass('disabled');
+                                    }
+                                });
                             }
                         } else {
                             vcl.resetAllMessages();

@@ -62,8 +62,6 @@ class MarkEsiPage implements ObserverInterface
         /** @var \Magento\Framework\View\Layout $layout */
         $layout = $event->getLayout();
 
-
-
         /** @var AbstractBlock $block */
         $block = $layout->getBlock($name);
 

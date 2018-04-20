@@ -39,7 +39,7 @@ class MarkEsiBlock implements ObserverInterface
      * @param \Magento\Framework\Event\Observer $observer
      * @return void
      */
-    public function execute(Observer $observer)
+    public function execute(Observer $observer) // @codingStandardsIgnoreLine - required, but not needed
     {
         if ($this->fastlyConfig->isFastlyEnabled() != true) {
             return;

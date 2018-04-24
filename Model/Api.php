@@ -126,8 +126,9 @@ class Api
     /**
      * Purge a single URL
      *
-     * @param string $url
+     * @param $url
      * @return bool
+     * @throws \Zend_Uri_Exception
      */
     public function cleanUrl($url)
     {
@@ -147,6 +148,7 @@ class Api
      *
      * @param $keys
      * @return bool
+     * @throws \Zend_Uri_Exception
      */
     public function cleanBySurrogateKey($keys)
     {
@@ -184,6 +186,7 @@ class Api
      * Purge all of Fastly's CDN content. Can be called only once per request
      *
      * @return bool
+     * @throws \Zend_Uri_Exception
      */
     public function cleanAll()
     {
@@ -224,6 +227,7 @@ class Api
      * @param string $method
      * @param null $payload
      * @return bool
+     * @throws \Zend_Uri_Exception
      */
     private function _purge($uri, $method = \Zend_Http_Client::POST, $payload = null)
     {
@@ -406,10 +410,13 @@ class Api
     }
 
     /**
-     * Creating and updating a regular VCL Snippet
+     * Creating and updating regular VCL snippets
+     *
      * @param $version
      * @param array $snippet
      * @throws LocalizedException
+     * @throws \Exception
+     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function uploadSnippet($version, array $snippet)
     {
@@ -796,7 +803,6 @@ class Api
      * Get dictionary item list
      * @param $dictionaryId
      * @return bool|mixed
-     * @throws LocalizedException
      */
     public function dictionaryItemsList($dictionaryId)
     {

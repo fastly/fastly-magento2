@@ -678,7 +678,53 @@ class Config extends \Magento\PageCache\Model\Config
         return strtr($data, $this->getReplacements());
     }
 
+    /**
+     * Returns VCL snippet data
+     *
+     * @param string $path
+     * @param null $specificFile
+     * @return array
+     * @throws \Magento\Framework\Exception\FileSystemException
+     */
     public function getVclSnippets($path = '/vcl_snippets', $specificFile = null)
+    {
+        $snippetsData = [];
+
+        $moduleEtcPath = $this->reader->getModuleDir(Dir::MODULE_ETC_DIR, 'Fastly_Cdn') . $path;
+        $directoryRead = $this->readFactory->create($moduleEtcPath);
+        if (!$specificFile) {
+            $files = $directoryRead->read();
+
+            if (is_array($files)) {
+                foreach ($files as $file) {
+                    if (substr($file, strpos($file, ".") + 1) !== 'vcl') {
+                        continue;
+                    }
+                    $snippetFilePath = $moduleEtcPath . '/' . $file;
+                    $snippetFilePath = $directoryRead->getRelativePath($snippetFilePath);
+                    $type = explode('.', $file)[0];
+                    $snippetsData[$type] = $directoryRead->readFile($snippetFilePath);
+                }
+            }
+        } else {
+            $snippetFilePath = $moduleEtcPath . '/' . $specificFile;
+            $snippetFilePath = $directoryRead->getRelativePath($snippetFilePath);
+            $type = explode('.', $specificFile)[0];
+            $snippetsData[$type] = $directoryRead->readFile($snippetFilePath);
+        }
+
+        return $snippetsData;
+    }
+
+    /**
+     * Returns custom VCL snippet data
+     *
+     * @param string $path
+     * @param null $specificFile
+     * @return array
+     * @throws \Magento\Framework\Exception\FileSystemException
+     */
+    public function getCustomVclSnippets($path = '/vcl_snippets_custom', $specificFile = null)
     {
         $snippetsData = [];
 

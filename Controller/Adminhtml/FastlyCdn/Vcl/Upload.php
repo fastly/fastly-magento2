@@ -97,7 +97,7 @@ class Upload extends Action
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
             $snippets = $this->config->getVclSnippets();
-            $customSnippets = $this->config->getCustomVclSnippets();
+            $customSnippets = $this->config->getVclSnippets('/vcl_snippets_custom');
 
             foreach ($snippets as $key => $value) {
                 $snippetData = [

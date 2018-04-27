@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="core_layout_render_element">
+        <observer name="fastly_mark_esi_page" instance="Fastly\Cdn\Observer\MarkEsiPage" />
+    </event>
+
+    <event name="controller_action_postdispatch_magento_pagecache_block_esi">
+        <observer name="fastly_mark_esi_block" instance="Fastly\Cdn\Observer\MarkEsiBlock" />
+    </event>
+</config>

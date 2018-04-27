@@ -211,7 +211,7 @@
                             <comment><![CDATA[<a href="https://docs.fastly.com/guides/imageopto-setup-use/setup" target="_blank">Image optimization</a> needs to be enabled for your Fastly service.]]></comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
-                        <field id="image_optimizations_pixel_ratio" translate="label comment" type="select" sortOrder="95" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="image_optimizations_pixel_ratio" translate="label comment" type="select" sortOrder="97" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enable adaptive device pixel ratios</label>
                             <comment><![CDATA[Magento will use <a href="https://docs.fastly.com/guides/imageopto-setup-use/serving-responsive-images#adaptive-device-pixel-ratios" target="_blank">Adaptive device pixel ratios</a> through Fastly service.]]></comment>
                             <depends>
@@ -228,6 +228,13 @@
                             </depends>
                             <source_model>Fastly\Cdn\Model\Config\Backend\PixelRatios</source_model>
                             <validate>required_entry</validate>
+                        </field>
+                        <field id="image_optimizations_default_config_options" translate="label comment" sortOrder="105" showInDefault="1" showInStore="1" showInWebsite="1">
+                            <label><![CDATA[Default image optimization config options]]></label>
+                            <comment>
+                                <![CDATA[Configure the default image optimization options.]]>
+                            </comment>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\IoConfigOptionsBtn</frontend_model>
                         </field>
                     </group>
                     <group id="fastly_blocking" sortOrder="245" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">

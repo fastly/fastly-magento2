@@ -345,8 +345,10 @@ define([
                         if (checkIoSetting.status == false) {
                             if (config.isIoEnabled) {
                                 ioToggle.removeAttrs('disabled');
+                                imgConfigBtn.addClass('disabled');
                             } else {
                                 ioToggle.attr('disabled', 'disabled');
+                                imgConfigBtn.removeClass('disabled');
                             }
                         }
                     });
@@ -1120,10 +1122,73 @@ define([
             });
         });
 
+        $('#fastly_io_default_config').on('click', function () {
+            $.ajax({
+                type: "GET",
+                url: config.serviceInfoUrl
+            }).done(function (checkService) {
+                active_version = checkService.active_version;
+                next_version = checkService.next_version;
+                service_name = checkService.service.name;
+                vcl.setActiveServiceLabel(active_version, next_version, service_name);
+            });
+
+            $.ajax({
+                type: "POST",
+                url: config.listIoDefaultConfigOptions,
+                showLoader: true,
+                data: {'active_version': active_version}
+            }).done(function (response) {
+                 if (response.status == true) {
+                    ioOptions = response.io_options;
+
+                     vcl.showPopup('fastly-io-default-config-options');
+                     vcl.setActiveServiceLabel(active_version, next_version, service_name);
+
+                    if (ioOptions.webp === false) {
+                        $('#webp-no').prop('checked', true);
+                    } else {
+                        $('#webp-yes').prop('checked', true);
+                    }
+
+                    $('#webp_quality').val(ioOptions.webp_quality);
+
+                    if (ioOptions.jpeg_type == 'auto') {
+                        $('#jpeg-format-auto').prop('checked', true);
+                    } else if (ioOptions.jpeg_type == 'baseline') {
+                        $('#jpeg-format-baseline').prop('checked', true);
+                    } else {
+                        $('#jpeg-format-progressive').prop('checked', true);
+                    }
+
+                     $('#jpeg_quality').val(ioOptions.jpeg_quality);
+
+                     if (ioOptions.upscale === false) {
+                         $('#upscaling-no').prop('checked', true);
+                     } else {
+                         $('#upscaling-yes').prop('checked', true);
+                     }
+
+                     if (ioOptions.resize_filter == 'lanczos3') {
+                         $('#resize-filter-lancsoz3').prop('checked', true);
+                     } else if (ioOptions.resize_filter == 'lanczos2') {
+                         $('#resize-filter-lancsoz2').prop('checked', true);
+                     } else if (ioOptions.resize_filter == 'bicubic') {
+                         $('#resize-filter-bicubic').prop('checked', true);
+                     } else if (ioOptions.resize_filter == 'bilinear') {
+                         $('#resize-filter-bilinear').prop('checked', true);
+                     } else {
+                         $('#resize-filter-nearest').prop('checked', true);
+                     }
+                }
+            });
+        });
+
         var authDictStatus = null;
         var authDict = null;
         var enableAuthBtn = null;
         var edgeDictionaries = null;
+        var ioOptions = null;
         var edgeAcls = null;
         var authStatus = true;
         var backends = null;
@@ -1182,6 +1247,7 @@ define([
         var deleteAuthBtnMsgError = $('#fastly-error-auth-list-button-msg');
         var deleteAuthBtnMsgSuccess = $('#fastly-success-auth-list-button-msg');
         var imgBtn = $('#fastly_push_image_config');
+        var imgConfigBtn = $('#fastly_io_default_config');
         var ioToggle = $('#system_full_page_cache_fastly_fastly_image_optimization_configuration_image_optimizations');
 
         var vcl = {
@@ -1544,9 +1610,13 @@ define([
             // Toggle image optimization process
             pushImageConfig: function (active_version) {
                 var activate_image_flag = false;
+                var image_quality_flag = false;
 
                 if ($('#fastly_activate_image_vcl').is(':checked')) {
                     activate_image_flag = true;
+                }
+                if ($('#fastly_image_quality_flag').is(':checked')) {
+                   image_quality_flag = true;
                 }
 
                 $.ajax({
@@ -1554,6 +1624,7 @@ define([
                     url: config.toggleImageSettingUrl,
                     data: {
                         'activate_flag': activate_image_flag,
+                        'image_quality_flag': image_quality_flag,
                         'active_version': active_version
                     },
                     showLoader: true,
@@ -1570,27 +1641,25 @@ define([
                                 disabledOrEnabled = 'disabled';
                             }
                             var fastlyIo = vcl.getFastlyIoSetting(false);
-                            var ioStatus = false;
 
-                            fastlyIo.done(function (checkIoSetting) {
-                                if (checkIoSetting.status != false) {
-                                    ioStatus = true;
-                                }
-                            });
                             successImageBtnMsg.text($.mage.__('The image optimization snippet has been successfully ' + onOrOff + '.')).show();
                             $('.request_imgopt_state_span').hide();
                             if (disabledOrEnabled == 'enabled') {
                                 imageStateMsgSpan.find('#imgopt_state_disabled').hide();
                                 imageStateMsgSpan.find('#imgopt_state_enabled').show();
-                                if (ioStatus === true) {
-                                    imgBtn.removeClass('disabled');
-                                }
+                                fastlyIo.done(function (checkIoSetting) {
+                                    if (checkIoSetting.status != false) {
+                                        imgBtn.removeClass('disabled');
+                                    }
+                                });
                             } else {
                                 imageStateMsgSpan.find('#imgopt_state_enabled').hide();
                                 imageStateMsgSpan.find('#imgopt_state_disabled').show();
-                                if (ioStatus === false) {
-                                    imgBtn.addClass('disabled');
-                                }
+                                fastlyIo.done(function (checkIoSetting) {
+                                    if (checkIoSetting.status == false) {
+                                        imgBtn.addClass('disabled');
+                                    }
+                                });
                             }
                         } else {
                             vcl.resetAllMessages();
@@ -2247,6 +2316,52 @@ define([
                 });
             },
 
+            // Configure IO default config options
+            configureIo: function () {
+                var activate_vcl = false;
+
+                if ($('#fastly_activate_io_vcl').is(':checked')) {
+                    activate_vcl = true;
+                }
+                var webp = $('input[name=webp-radio]:checked').val();
+                var webp_quality = $('#webp_quality').val();
+                var jpeg_type = $('input[name=jpeg-format]:checked').val();
+                var jpeg_quality = $('#jpeg_quality').val();
+                var upscale = $('input[name=upscaling-radio]:checked').val();
+                var resize_filter = $('input[name=resize-filter-radio]:checked').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: config.configureIoUrl,
+                    data: {
+                        'active_version': active_version,
+                        'activate_flag': activate_vcl,
+                        'webp': webp,
+                        'webp_quality': webp_quality,
+                        'jpeg_type': jpeg_type,
+                        'jpeg_quality': jpeg_quality,
+                        'upscale': upscale,
+                        'resize_filter': resize_filter
+                    },
+                    showLoader: true,
+                    success: function (response) {
+                        if (response.status == true) {
+                            $('#fastly-success-io-default-config-btn-msg').text($.mage.__(
+                                'Image optimization default configuration is successfully updated.'
+                            )).show();
+                            active_version = response.active_version;
+                            vcl.modal.modal('closeModal');
+                        } else {
+                            vcl.resetAllMessages();
+                            vcl.showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function (msg) {
+                        // error handling
+                    }
+                });
+            },
+
             uploadVclConfig: {
                 'fastly-uploadvcl-options': {
                     title: jQuery.mage.__('You are about to upload VCL to Fastly '),
@@ -2389,6 +2504,15 @@ define([
                         return document.getElementById('fastly-auth-items-template').textContent;
                     },
                     actionOk: function () {
+                    }
+                },
+                'fastly-io-default-config-options': {
+                    title: jQuery.mage.__('Image optimization default config options'),
+                    content: function () {
+                        return document.getElementById('fastly-io-default-config-options-template').textContent;
+                    },
+                    actionOk: function () {
+                        vcl.configureIo(active_version);
                     }
                 }
             }

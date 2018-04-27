@@ -801,6 +801,7 @@ class Api
 
     /**
      * Get dictionary item list
+     *
      * @param $dictionaryId
      * @return bool|mixed
      */
@@ -978,6 +979,7 @@ class Api
      * @param $aclId
      * @param $itemValue
      * @param $negated
+     * @param bool $subnet
      * @return bool|mixed
      */
     public function upsertAclItem($aclId, $itemValue, $negated, $subnet = false)
@@ -1045,6 +1047,35 @@ class Api
     }
 
     /**
+     * Get the image optimization default config options
+     *
+     * @param $version
+     * @return bool|mixed
+     */
+    public function getImageOptimizationDefaultConfigOptions($version)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/io_settings';
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    /**
+     * Configure the image optimization default config options
+     *
+     * @param $params
+     * @param $version
+     * @return bool|mixed
+     */
+    public function configureImageOptimizationDefaultConfigOptions($params, $version)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/io_settings';
+        $result = $this->_fetch($url, \Zend_Http_Client::PATCH, $params);
+
+        return $result;
+    }
+
+    /**
      * Wrapper for API calls towards Fastly service
      *
      * @param string    $uri    API Endpoint
@@ -1066,7 +1097,7 @@ class Api
     ) {
         $apiKey = ($test == true) ? $testApiKey : $this->config->getApiKey();
 
-        // Corectly format $body string
+        // Correctly format $body string
         if (is_array($body) == true) {
             $body = http_build_query($body);
         }

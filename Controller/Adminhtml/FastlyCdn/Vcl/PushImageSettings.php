@@ -9,6 +9,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
+use Fastly\Cdn\Model\Product\Image;
 use Magento\Framework\Exception\LocalizedException;
 
 class PushImageSettings extends Action
@@ -46,6 +47,11 @@ class PushImageSettings extends Action
     private $vcl;
 
     /**
+     * @var Image
+     */
+    private $image;
+
+    /**
      * PushImageSettings constructor.
      *
      * @param Context $context
@@ -54,6 +60,7 @@ class PushImageSettings extends Action
      * @param Config $config
      * @param Api $api
      * @param Vcl $vcl
+     * @param Image $image
      */
     public function __construct(
         Context $context,
@@ -61,13 +68,15 @@ class PushImageSettings extends Action
         JsonFactory $resultJsonFactory,
         Config $config,
         Api $api,
-        Vcl $vcl
+        Vcl $vcl,
+        Image $image
     ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
         $this->config = $config;
         $this->api = $api;
         $this->vcl = $vcl;
+        $this->image = $image;
 
         parent::__construct($context);
     }
@@ -81,6 +90,8 @@ class PushImageSettings extends Action
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
+            $imageQualityFlag = $this->getRequest()->getParam('image_quality_flag');
+            $imageQuality = $this->image->getQuality();
             $service = $this->api->checkServiceDetails();
             $currActiveVersion = $this->getActiveVersion($service, $activeVersion);
 
@@ -119,6 +130,21 @@ class PushImageSettings extends Action
                     ];
 
                     $this->api->uploadSnippet($clone->number, $snippetData);
+
+                    $id = $service->id . '-' . $clone->number . '-imageopto';
+                    $imageParams = json_encode([
+                        'data' => [
+                            'id' => $id,
+                            'type' => 'io_settings',
+                            'attributes' => [
+                                'jpeg_quality'  => $imageQuality
+                            ]
+                        ]
+                    ]);
+
+                    if ($imageQualityFlag === 'true') {
+                        $this->api->configureImageOptimizationDefaultConfigOptions($imageParams, $clone->number);
+                    }
                 }
             } else {
                 $this->api->deleteRequest($clone->number, $reqName);

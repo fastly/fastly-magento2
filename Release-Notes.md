@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.52
+
+- We are marking any pages with ESIs as such https://github.com/fastly/fastly-magento2/pull/172. This avoids issues
+with slow pages waiting for full payload to be processed by ESI engine
+- Add ability to tweak default Image Optimization settings https://github.com/fastly/fastly-magento2/pull/171
+
 ## 1.2.51
 
 - Revert since it caused issues with ESIs https://github.com/fastly/fastly-magento2/pull/166

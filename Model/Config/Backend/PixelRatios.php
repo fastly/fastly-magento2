@@ -17,6 +17,7 @@ class PixelRatios
     public function toOptionArray()
     {
         return [
+            ['value' => '1', 'label'=>__('1x')],
             ['value' => '1.5', 'label'=>__('1.5x')],
             ['value' => '2', 'label'=>__('2x')],
             ['value' => '3', 'label'=>__('3x')],

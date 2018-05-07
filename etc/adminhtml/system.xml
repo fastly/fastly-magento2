@@ -206,7 +206,7 @@
                             </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ImageBtn</frontend_model>
                         </field>
-                        <field id="image_optimizations_default_config_options" translate="label comment" sortOrder="105" showInDefault="1" showInStore="1" showInWebsite="1">
+                        <field id="image_optimizations_default_config_options" translate="label comment" sortOrder="92" showInDefault="1" showInStore="1" showInWebsite="1">
                             <label><![CDATA[Default IO config options]]></label>
                             <comment>
                                 <![CDATA[Allows you to configure items such as default quality levels, auto WebP, JPG types]]>

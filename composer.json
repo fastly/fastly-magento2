@@ -10,7 +10,7 @@
         "magento/framework": ">=100.0.0"
     },
     "type": "magento2-module",
-    "version": "1.2.52",
+    "version": "1.2.53",
     "license": "BSD-3-Clause",
     "autoload": {
         "files": [ "registration.php" ],

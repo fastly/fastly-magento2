@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.53
+
+- Minor wording changes around Image Optimization
+
 ## 1.2.52
 
 - We are marking any pages with ESIs as such https://github.com/fastly/fastly-magento2/pull/172. This avoids issues

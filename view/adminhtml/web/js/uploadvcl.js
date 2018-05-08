@@ -338,6 +338,14 @@ define([
                         blockingStateMsgSpan.find('#blocking_state_unknown').show();
                     });
 
+                    var wafPage = vcl.getWafPageRespObj(checkService.active_version, false);
+
+                    wafPage.done(function (checkWafResponse) {
+                        if (checkWafResponse.status == false) {
+                            wafPageRow.hide();
+                        }
+                    });
+
                     var fastlyIo = vcl.getFastlyIoSetting(false);
                     var imageOptimization = vcl.getImageSetting(checkService.active_version, false);
 
@@ -1033,6 +1041,52 @@ define([
         });
 
         /**
+         * Set WAF Page HTML button
+         */
+        $('#fastly_waf_page_button').on('click', function () {
+
+            if (isAlreadyConfigured != true) {
+                $(this).attr('disabled', true);
+                return alert($.mage.__('Please save config prior to continuing.'));
+            }
+
+            vcl.resetAllMessages();
+
+            $.when(
+                $.ajax({
+                    type: "GET",
+                    url: config.serviceInfoUrl,
+                    showLoader: true
+                })
+            ).done(function (service) {
+
+                if (service.status == false) {
+                    return errorWafBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
+                }
+
+                active_version = service.active_version;
+                next_version = service.next_version;
+                service_name = service.service.name;
+
+                vcl.getWafPageRespObj(active_version, true).done(function (response) {
+                    if (response.status == true) {
+                        $('#waf_page_content').text(response.wafPageResp.content).html();
+                        $('#waf_page_status').val(response.wafPageResp.status);
+                        $('#waf_page_type').val(response.wafPageResp.content_type);
+                    }
+                }).fail(function () {
+                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
+                });
+
+                vcl.showPopup('fastly-waf-page-options');
+                vcl.setActiveServiceLabel(active_version, next_version, service_name);
+
+            }).fail(function () {
+                return errorWafBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+            });
+        });
+
+        /**
          * Add dictionary container button
          */
 
@@ -1229,6 +1283,10 @@ define([
         var successHtmlBtnMsg = $('#fastly-success-html-page-button-msg');
         var errorHtmlBtnMsg = $('#fastly-error-html-page-button-msg');
         var warningHtmlBtnMsg = $('#fastly-warning-html-page-button-msg');
+        /* WAF page HTML button */
+        var successWafBtnMsg = $('#fastly-success-waf-page-button-msg');
+        var errorWafBtnMsg = $('#fastly-error-waf-page-button-msg');
+        var warningWafBtnMsg = $('#fastly-warning-waf-page-button-msg');
         /* Dictionary button */
         var successDictionaryBtnMsg = $('#fastly-success-edge-button-msg');
         var errorDictionaryBtnMsg = $('#fastly-error-edge-button-msg');
@@ -1249,6 +1307,7 @@ define([
         var imgBtn = $('#fastly_push_image_config');
         var imgConfigBtn = $('#fastly_io_default_config');
         var ioToggle = $('#system_full_page_cache_fastly_fastly_image_optimization_configuration_image_optimizations');
+        var wafPageRow = $('#row_system_full_page_cache_fastly_fastly_error_maintenance_page_waf_page');
 
         var vcl = {
 
@@ -1372,11 +1431,21 @@ define([
                 });
             },
 
-            // Queries Fastly API to retrive Backends
+            // Queries Fastly API to retrieve error page response object
             getErrorPageRespObj: function (active_version, loaderVisibility) {
                 return $.ajax({
                     type: "GET",
                     url: config.getErrorPageRespObj,
+                    showLoader: loaderVisibility,
+                    data: {'active_version': active_version}
+                });
+            },
+
+            // Queries Fastly API to retrieve WAF page response object
+            getWafPageRespObj: function (active_version, loaderVisibility) {
+                return $.ajax({
+                    type: "GET",
+                    url: config.getWafPageRespObj,
                     showLoader: loaderVisibility,
                     data: {'active_version': active_version}
                 });
@@ -1905,6 +1974,48 @@ define([
                 });
             },
 
+            // Save WAF Page Html
+            saveWafHtml: function () {
+                var activate_vcl = false;
+
+                if ($('#fastly_activate_vcl').is(':checked')) {
+                    activate_vcl = true;
+                }
+                var wafHtmlChars = $('#waf_page_content').val().length;
+                var maxChars = 65535;
+                if (wafHtmlChars >= maxChars) {
+                    var msgWarning = $('.fastly-message-error');
+                    msgWarning.text($.mage.__('The content must contain less than ' + maxChars + ' characters. Current number of characters: ' + wafHtmlChars));
+                    msgWarning.show();
+                    return;
+                }
+                $.ajax({
+                    type: "POST",
+                    url: config.saveWafPageUrl,
+                    data: {
+                        'active_version': active_version,
+                        'activate_flag': activate_vcl,
+                        'content': $('#waf_page_content').val(),
+                        'status': $('#waf_page_status').val(),
+                        'content_type': $('#waf_page_type').val()
+                    },
+                    showLoader: true,
+                    success: function (response) {
+                        if (response.status == true) {
+                            successWafBtnMsg.text($.mage.__('WAF page is successfully updated.')).show();
+                            active_version = response.active_version;
+                            vcl.modal.modal('closeModal');
+                        } else {
+                            vcl.resetAllMessages();
+                            vcl.showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function (msg) {
+                        return errorWafBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                    }
+                });
+            },
+
             // CreateDictionary
             createDictionary: function () {
                 var activate_vcl = false;
@@ -2155,6 +2266,11 @@ define([
                 successHtmlBtnMsg.hide();
                 errorHtmlBtnMsg.hide();
                 warningHtmlBtnMsg.hide();
+
+                // WAF page button messages
+                successWafBtnMsg.hide();
+                errorWafBtnMsg.hide();
+                warningWafBtnMsg.hide();
 
 
                 // Edge button messages
@@ -2426,6 +2542,15 @@ define([
                     },
                     actionOk: function () {
                         vcl.saveErrorHtml(active_version);
+                    }
+                },
+                'fastly-waf-page-options': {
+                    title: jQuery.mage.__('Update WAF Page Content'),
+                    content: function () {
+                        return document.getElementById('fastly-waf-page-template').textContent;
+                    },
+                    actionOk: function () {
+                        vcl.saveWafHtml(active_version);
                     }
                 },
                 'fastly-dictionary-container-options': {

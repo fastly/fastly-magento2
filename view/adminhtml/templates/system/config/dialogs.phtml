@@ -376,6 +376,140 @@
     </form>
 </script>
 
+<script type="text/x-magento-template" id="fastly-waf-page-template">
+    <div class="messages">
+        <div class="message message-warning fastly-message-warning" style="display: none">
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="vcl-waf-page-form"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field maintenance-checkbox-container">
+                <label for="fastly_activate_vcl" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+                </label>
+                <div class="admin__field-control">
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_vcl"
+                               id="fastly_activate_vcl"
+                               checked/>
+                        <label class="admin__field-label" for="fastly_activate_vcl"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="waf_page_status" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Status") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="waf_page_status" id="waf_page_status" class="admin__control-text">
+                        <option value="100">100 Continue</option>
+                        <option value="101">101 Switching Protocols</option>
+                        <option value="102">102 Processing</option>
+                        <option value="103">103 Checkpoint</option>
+                        <option value="200">200 OK</option>
+                        <option value="201">201 Created</option>
+                        <option value="202">202 Accepted</option>
+                        <option value="203">203 Non-Authoritative Information</option>
+                        <option value="204">204 No Content</option>
+                        <option value="205">205 Reset Content</option>
+                        <option value="206">206 Partial Content</option>
+                        <option value="207">207 Multi-Status</option>
+                        <option value="300">300 Multiple Choices</option>
+                        <option value="301">301 Moved Permanently</option>
+                        <option value="302">302 Found</option>
+                        <option value="303">303 See Other</option>
+                        <option value="304">304 Not Modified</option>
+                        <option value="305">305 Use Proxy</option>
+                        <option value="306">306 Switch Proxy</option>
+                        <option value="307">307 Temporary Redirect</option>
+                        <option value="400">400 Bad Request</option>
+                        <option value="401">401 Unauthorized</option>
+                        <option value="402">402 Payment Required</option>
+                        <option value="403">403 Forbidden</option>
+                        <option value="404">404 Not Found</option>
+                        <option value="405">405 Method Not Allowed</option>
+                        <option value="406">406 Not Acceptable</option>
+                        <option value="407">407 Proxy Authentication Required</option>
+                        <option value="408">408 Request Timeout</option>
+                        <option value="409">409 Conflict</option>
+                        <option value="410">410 Gone</option>
+                        <option value="411">411 Length Required</option>
+                        <option value="412">412 Precondition Failed</option>
+                        <option value="413">413 Request Entity Too Large</option>
+                        <option value="414">414 Request-URI Too Long</option>
+                        <option value="415">415 Unsupported Media Type</option>
+                        <option value="416">416 Requested Range Not Satisfiable</option>
+                        <option value="417">417 Expectation Failed</option>
+                        <option value="418">418 I'm a teapot</option>
+                        <option value="422">422 Unprocessable Entity</option>
+                        <option value="423">423 Locked</option>
+                        <option value="424">424 Failed Dependency</option>
+                        <option value="425">425 Unordered Collection</option>
+                        <option value="426">426 Upgrade Required</option>
+                        <option value="449">449 Retry With</option>
+                        <option value="450">450 Blocked by Windows Parental Controls</option>
+                        <option value="500">500 Internal Server Error</option>
+                        <option value="501">501 Not Implemented</option>
+                        <option value="502">502 Bad Gateway</option>
+                        <option value="503">503 Service Unavailable</option>
+                        <option value="504">504 Gateway Timeout</option>
+                        <option value="505">505 HTTP Version Not Supported</option>
+                        <option value="506">506 Variant Also Negotiates</option>
+                        <option value="507">507 Insufficient Storage</option>
+                        <option value="509">509 Bandwidth Limit Exceeded</option>
+                        <option value="510">510 Not Extended</option>
+                    </select>
+                    <div class="admin__field-note">
+                        The HTTP status code to include in the header of the response.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="waf_page_type" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("MIME Type") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input type="text"
+                           name="waf_page_type"
+                           required="required"
+                           id="waf_page_type"
+                           class="admin__control-text required-entry">
+                    <div class="admin__field-note">
+                        The media type to put into the Content-Type header which informs the browser how to
+                        display the response. Common MIME types are application/json, text/plain, text/html.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="waf_page_content" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Content (max 65535 characters)") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <textarea rows="10"
+                              name="waf_page_content"
+                              required="required"
+                              id="waf_page_content"
+                              class="admin__control-text required-entry">
+                    </textarea>
+                    <div class="admin__field-note">
+                        The content to be served when delivering the response.
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</script>
+
 <script type="text/x-magento-template" id="fastly-dictionary-container-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -1069,6 +1203,8 @@ $configureBackendUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/configureBackend'
 $isAlreadyConfiguredUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/isAlreadyConfigured');
 $savePageErrorHtml = $block->getUrl('adminhtml/fastlyCdn_Vcl/SaveErrorPageHtml');
 $getErrorPageRespObjUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/GetErrorPageRespObj');
+$getWafPageRespObjUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/GetWafPageRespObj');
+$saveWafPage = $block->getUrl('adminhtml/fastlyCdn_Vcl/SaveWafPage');
 $createDictionary = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary/Create');
 $deleteDictionary = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary/Delete');
 $listDictionaries = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary/ListAll');
@@ -1119,7 +1255,9 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "configureBackendUrl": "<?php echo $block->escapeJsQuote($configureBackendUrl);?>",
                     "isAlreadyConfiguredUrl": "<?php echo $block->escapeJsQuote($isAlreadyConfiguredUrl);?>",
                     "saveErrorPageHtmlUrl": "<?php echo $block->escapeJsQuote($savePageErrorHtml);?>",
+                    "saveWafPageUrl": "<?php echo $block->escapeJsQuote($saveWafPage);?>",
                     "getErrorPageRespObj": "<?php echo $block->escapeJsQuote($getErrorPageRespObjUrl);?>",
+                    "getWafPageRespObj": "<?php echo $block->escapeJsQuote($getWafPageRespObjUrl);?>",
                     "createDictionary": "<?php echo $block->escapeJsQuote($createDictionary);?>",
                     "deleteDictionary": "<?php echo $block->escapeJsQuote($deleteDictionary);?>",
                     "getDictionaries": "<?php echo $block->escapeJsQuote($listDictionaries);?>",

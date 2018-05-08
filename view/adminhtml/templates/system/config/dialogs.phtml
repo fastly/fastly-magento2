@@ -469,11 +469,14 @@
                         <option value="509">509 Bandwidth Limit Exceeded</option>
                         <option value="510">510 Not Extended</option>
                     </select>
+                    <div class="admin__field-note">
+                        The HTTP status code to include in the header of the response.
+                    </div>
                 </div>
             </div>
             <div class="admin__field field _required">
                 <label for="waf_page_type" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __("Content type") ?></span>
+                    <span><?php /* @noEscape */ echo __("MIME Type") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input type="text"
@@ -481,6 +484,10 @@
                            required="required"
                            id="waf_page_type"
                            class="admin__control-text required-entry">
+                    <div class="admin__field-note">
+                        The media type to put into the Content-Type header which informs the browser how to
+                        display the response. Common MIME types are application/json, text/plain, text/html.
+                    </div>
                 </div>
             </div>
             <div class="admin__field field _required">
@@ -494,6 +501,9 @@
                               id="waf_page_content"
                               class="admin__control-text required-entry">
                     </textarea>
+                    <div class="admin__field-note">
+                        The content to be served when delivering the response.
+                    </div>
                 </div>
             </div>
         </fieldset>

@@ -1985,7 +1985,7 @@ define([
                 var maxChars = 65535;
                 if (wafHtmlChars >= maxChars) {
                     var msgWarning = $('.fastly-message-error');
-                    msgWarning.text($.mage.__('The HTML must contain less than ' + maxChars + ' characters. Current number of characters: ' + wafHtmlChars));
+                    msgWarning.text($.mage.__('The content must contain less than ' + maxChars + ' characters. Current number of characters: ' + wafHtmlChars));
                     msgWarning.show();
                     return;
                 }
@@ -2002,7 +2002,7 @@ define([
                     showLoader: true,
                     success: function (response) {
                         if (response.status == true) {
-                            successWafBtnMsg.text($.mage.__('WAF page HTML is successfully updated.')).show();
+                            successWafBtnMsg.text($.mage.__('WAF page is successfully updated.')).show();
                             active_version = response.active_version;
                             vcl.modal.modal('closeModal');
                         } else {

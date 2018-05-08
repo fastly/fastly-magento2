@@ -9,6 +9,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
+use Magento\Framework\Exception\LocalizedException;
 
 class SaveWafPage extends Action
 {
@@ -78,6 +79,9 @@ class SaveWafPage extends Action
             $wafStatus = $this->getRequest()->getParam('status');
             $wafContentType = $this->getRequest()->getParam('content_type');
             $wafResponse = '';
+            if (!$wafContent || !$wafStatus || !$wafContentType) {
+                throw new LocalizedException(__('Please fill in the required fields.'));
+            }
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);

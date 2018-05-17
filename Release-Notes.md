@@ -1,5 +1,12 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.54
+
+- Fix for Redis sessions contention when where Fastly module makes multiple parallel requests 
+  to find out when certain features are enabled. This change changes it to be on demand versus bulk 
+  https://github.com/fastly/fastly-magento2/pull/177
+- Add ability to customize WAF blocking page https://github.com/fastly/fastly-magento2/pull/175
+
 ## 1.2.53
 
 - Minor wording changes around Image Optimization

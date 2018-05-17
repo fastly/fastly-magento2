@@ -14,10 +14,10 @@ define([
         var blockingStateMsgSpan = '';
         var imageStateSpan = '';
         var imageStateMsgSpan = '';
-        
+
         $(document).ready(function () {
             $('#system_full_page_cache_fastly-head').on('click', function () {
-                if ($(this).attr("class") === "open"){
+                if ($(this).attr("class") === "open") {
                     init();
                 }
             });

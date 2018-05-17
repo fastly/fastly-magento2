@@ -1064,6 +1064,7 @@ $toggleImageSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/pushImageSettin
 $checkBlockingSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkBlockingSetting');
 $toggleBlockingSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/blocking');
 $fetchBackendsUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/getBackends');
+$getCustomSnippetsUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/getCustomSnippets');
 $configureBackendUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/configureBackend');
 $isAlreadyConfiguredUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/isAlreadyConfigured');
 $savePageErrorHtml = $block->getUrl('adminhtml/fastlyCdn_Vcl/SaveErrorPageHtml');
@@ -1076,6 +1077,7 @@ $createDictionaryItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item
 $deleteDictionaryItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item/Delete');
 $createAcl = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/Create');
 $deleteAcl = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/Delete');
+$deleteCustomSnippet = $block->getUrl('adminhtml/fastlyCdn_Vcl/DeleteCustomSnippet');
 $listAcls = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/ListAll');
 $aclItems = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/ListAll');
 $createAclItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/Create');
@@ -1127,6 +1129,7 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "deleteDictionaryItem": "<?php echo $block->escapeJsQuote($deleteDictionaryItem);?>",
                     "createAcl": "<?php echo $block->escapeJsQuote($createAcl);?>",
                     "deleteAcl": "<?php echo $block->escapeJsQuote($deleteAcl);?>",
+                    "deleteCustomSnippet": "<?php echo $block->escapeJsQuote($deleteCustomSnippet);?>",
                     "getAcls": "<?php echo $block->escapeJsQuote($listAcls);?>",
                     "getAclItems": "<?php echo $block->escapeJsQuote($aclItems);?>",
                     "createAclItem": "<?php echo $block->escapeJsQuote($createAclItem);?>",
@@ -1141,7 +1144,8 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "toggleAuthSettingUrl": "<?php echo $block->escapeJsQuote($toggleAuthSettingUrl);?>",
                     "checkAuthUsersAvailable": "<?php echo $block->escapeJsQuote($checkAuthUsersAvailable);?>",
                     "listIoDefaultConfigOptions": "<?php echo $block->escapeJsQuote($listIoDefaultConfigOptions);?>",
-                    "configureIoUrl": "<?php echo $block->escapeJsQuote($configureIoUrl);?>"
+                    "configureIoUrl": "<?php echo $block->escapeJsQuote($configureIoUrl);?>",
+                    "getCustomSnippetsUrl": "<?php echo $block->escapeJsQuote($getCustomSnippetsUrl);?>"
                 }
             }
         }

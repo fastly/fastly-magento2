@@ -428,6 +428,21 @@ define([
                         // TO DO: implement
                     });
 
+                    // Fetch custom snippets
+                    vcl.getCustomSnippets(false).done(function (snippetsResp) {
+                        $('.loading-backends').hide();
+                        if (snippetsResp.status != false) {
+                            if (snippetsResp.snippets.length > 0) {
+                                backends = snippetsResp.snippets;
+                                vcl.processCustomSnippets(snippetsResp.snippets);
+                            } else {
+                                $('.no-snippets').show();
+                            }
+                        }
+                    }).fail(function () {
+                        // TO DO: implement
+                    });
+
                     // Fetch dictionaries
                     vcl.listDictionaries(active_version, false).done(function (dictResp) {
                         $('.loading-dictionaries').hide();
@@ -572,6 +587,20 @@ define([
                 if (dictionaryHtml != '') {
                     $('#delete-dictionary-container').html(dictionaryHtml);
                 }
+            }
+        });
+
+        $('body').on('click', 'button.fastly-delete-snippet-icon', function () {
+            var snippet_id = $(this).data('snippet-id');
+            if (confirm("Are you sure you want to delete "+ snippet_id +"?")) {
+                vcl.deleteCustomSnippet(snippet_id, true).done(function (response) {
+                    if (response.status == true) {
+                        $(self).closest('tr').remove();
+                        vcl.showSuccessMessage($.mage.__('Custom snippet successfully deleted.'));
+                    }
+                }).fail(function () {
+                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
+                });
             }
         });
 
@@ -1372,6 +1401,18 @@ define([
                 });
             },
 
+            // Retrieve custom snippets
+            getCustomSnippets: function (loaderVisibility) {
+                return $.ajax({
+                    type: "GET",
+                    url: config.getCustomSnippetsUrl,
+                    showLoader: loaderVisibility,
+                    beforeSend: function (xhr) {
+                        $('.loading-backends').show();
+                    }
+                });
+            },
+
             // Queries Fastly API to retrive Backends
             getErrorPageRespObj: function (active_version, loaderVisibility) {
                 return $.ajax({
@@ -1390,6 +1431,16 @@ define([
                     html += "<td class='col-actions'><button class='action-delete fastly-edit-backend-icon' data-backend-id='" + index + "' id='fastly-edit-backend_"+ index + "' title='Edit backend' type='button'></td></tr>";
                     $('#fastly-backends-list').append(html);
 
+                });
+            },
+
+            // Process custom snippets
+            processCustomSnippets: function (snippets) {
+                $.each(snippets, function (index, snippet) {
+                    var html = "<tr id='fastly_" + index + "'>";
+                    html += "<td><input data-snippetId='"+ index + "' id='snippet_" + index + "' value='"+ snippet +"' disabled='disabled' class='input-text' type='text'></td>";
+                    html += "<td class='col-actions'><button class='action-delete fastly-delete-snippet-icon' data-snippet-id='" + snippet + "' id='fastly-delete-snippet"+ index + "' title='Delete custom snippet' type='button'></td></tr>";
+                    $('#fastly-snippets-list').append(html);
                 });
             },
 
@@ -1509,6 +1560,18 @@ define([
                     url: config.createDictionaryItem,
                     showLoader: loaderVisibility,
                     data: {'dictionary_id': dictionary_id, 'item_key': item_key, 'item_value': item_value},
+                    beforeSend: function (xhr) {
+                        vcl.resetAllMessages();
+                    }
+                });
+            },
+
+            deleteCustomSnippet: function (snippet_id, loaderVisibility) {
+                return $.ajax({
+                    type: "GET",
+                    url: config.deleteCustomSnippet,
+                    showLoader: loaderVisibility,
+                    data: {'snippet_id': snippet_id},
                     beforeSend: function (xhr) {
                         vcl.resetAllMessages();
                     }

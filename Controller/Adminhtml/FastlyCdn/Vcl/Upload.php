@@ -9,6 +9,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
+use Fastly\Cdn\Model\Config\Backend\CustomSnippetUpload;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\Exception\LocalizedException;
@@ -41,6 +42,11 @@ class Upload extends Action
     private $vcl;
 
     /**
+     * @var CustomSnippetUpload
+     */
+    private $customSnippetUpload;
+
+    /**
      * @var DateTime
      */
     private $time;
@@ -51,13 +57,16 @@ class Upload extends Action
     private $timezone;
 
     /**
+     *
      * Upload constructor.
+     *
      * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
      * @param Config $config
      * @param Api $api
      * @param Vcl $vcl
+     * @param CustomSnippetUpload $customSnippetUpload
      * @param DateTime $time
      * @param TimezoneInterface $timezone
      */
@@ -68,6 +77,7 @@ class Upload extends Action
         Config $config,
         Api $api,
         Vcl $vcl,
+        CustomSnippetUpload $customSnippetUpload,
         DateTime $time,
         TimezoneInterface $timezone
     ) {
@@ -76,6 +86,7 @@ class Upload extends Action
         $this->config = $config;
         $this->api = $api;
         $this->vcl = $vcl;
+        $this->customSnippetUpload = $customSnippetUpload;
         $this->time = $time;
         $this->timezone = $timezone;
         parent::__construct($context);
@@ -97,7 +108,8 @@ class Upload extends Action
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
             $snippets = $this->config->getVclSnippets();
-            $customSnippets = $this->config->getVclSnippets('/vcl_snippets_custom');
+            $customSnippetPath = $this->customSnippetUpload->getUploadDirPath('vcl_snippets_custom');
+            $customSnippets = $this->config->getCustomSnippets($customSnippetPath);
 
             foreach ($snippets as $key => $value) {
                 $snippetData = [

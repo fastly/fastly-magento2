@@ -16,9 +16,19 @@ define([
         var imageStateMsgSpan = '';
 
         $(document).ready(function () {
+            var allOpen = '';
+            var allActive = '';
             $('#system_full_page_cache_fastly-head').on('click', function () {
                 if ($(this).attr("class") === "open") {
                     init();
+                    if (allOpen != ''){
+                        allOpen.trigger('click');
+                    }
+                } else {
+                    allOpen = $('#system_full_page_cache_fastly').find(".open");
+                    allActive = $('#system_full_page_cache_fastly').find(".active");
+                    allOpen.removeClass("open").removeClass("open");
+                    allActive.find(".active").removeClass("active");
                 }
             });
 
@@ -313,10 +323,16 @@ define([
 
                             tls.done(function (checkReqSetting) {
                                 requestStateSpan.find('.processing').hide();
+                                var tlsStateEnabled = requestStateMsgSpan.find('#force_tls_state_enabled');
+                                var tlsStateDisabled = requestStateMsgSpan.find('#force_tls_state_disabled');
                                 if (checkReqSetting.status != false) {
-                                    requestStateMsgSpan.find('#force_tls_state_enabled').show();
+                                    if (tlsStateDisabled.is(":hidden")) {
+                                        tlsStateEnabled.show();
+                                    }
                                 } else {
-                                    requestStateMsgSpan.find('#force_tls_state_disabled').show();
+                                    if (tlsStateEnabled.is(":hidden")) {
+                                        tlsStateDisabled.show();
+                                    }
                                 }
                             }).fail(function () {
                                 requestStateSpan.find('.processing').hide();
@@ -331,10 +347,16 @@ define([
 
                             blocking.done(function (checkReqSetting) {
                                 blockingStateSpan.find('.processing').hide();
+                                var blockingStateEnabled = blockingStateMsgSpan.find('#blocking_state_enabled');
+                                var blockingStateDisabled = blockingStateMsgSpan.find('#blocking_state_disabled');
                                 if (checkReqSetting.status != false) {
-                                    blockingStateMsgSpan.find('#blocking_state_enabled').show();
+                                    if (blockingStateDisabled.is(":hidden")) {
+                                        blockingStateEnabled.show();
+                                    }
                                 } else {
-                                    blockingStateMsgSpan.find('#blocking_state_disabled').show();
+                                    if (blockingStateEnabled.is(":hidden")) {
+                                        blockingStateDisabled.show();
+                                    }
                                 }
                             }).fail(function () {
                                 blockingStateSpan.find('.processing').hide();
@@ -346,10 +368,10 @@ define([
                     $('#system_full_page_cache_fastly_fastly_error_maintenance_page-head').on('click', function () {
                         if ($(this).attr("class") === "open") {
                             var wafPage = vcl.getWafPageRespObj(checkService.active_version, false);
-
+                            wafPageRow.hide();
                             wafPage.done(function (checkWafResponse) {
-                                if (checkWafResponse.status == false) {
-                                    wafPageRow.hide();
+                                if (checkWafResponse.status != false) {
+                                    wafPageRow.show();
                                 }
                             });
                         }
@@ -374,8 +396,13 @@ define([
 
                             imageOptimization.done(function (checkReqSetting) {
                                 imageStateSpan.find('.processing').hide();
+                                var imageStateEnabled = imageStateMsgSpan.find('#imgopt_state_enabled');
+                                var imageStateDisabled = imageStateMsgSpan.find('#imgopt_state_disabled');
                                 if (checkReqSetting.status != false) {
-                                    imageStateMsgSpan.find('#imgopt_state_enabled').show();
+                                    if (imageStateDisabled.is(":hidden")) {
+                                        imageStateEnabled.show();
+                                    }
+                                    imageStateEnabled.show();
                                     fastlyIo.done(function (checkIoSetting) {
                                         if (checkIoSetting.status == true) {
                                             imgBtn.removeClass('disabled');
@@ -389,7 +416,9 @@ define([
                                         }
                                     });
                                 } else {
-                                    imageStateMsgSpan.find('#imgopt_state_disabled').show();
+                                    if (imageStateEnabled.is(":hidden")) {
+                                        imageStateDisabled.show();
+                                    }
                                     fastlyIo.done(function (checkIoSetting) {
                                         if (checkIoSetting.status == true) {
                                             imgBtn.removeClass('disabled');
@@ -417,10 +446,16 @@ define([
                             var auth = vcl.getAuthSetting(checkService.active_version, false);
                             auth.done(function (checkReqSetting) {
                                 authStateSpan.find('.processing').hide();
+                                var authStateEnabled = authStateMsgSpan.find('#enable_auth_state_enabled');
+                                var authStateDisabled = authStateMsgSpan.find('#enable_auth_state_disabled');
                                 if (checkReqSetting.status != false) {
-                                    authStateMsgSpan.find('#enable_auth_state_enabled').show();
+                                    if (authStateDisabled.is(":hidden")) {
+                                        authStateEnabled.show();
+                                    }
                                 } else {
-                                    authStateMsgSpan.find('#enable_auth_state_disabled').show();
+                                    if (authStateEnabled.is(":hidden")) {
+                                        authStateDisabled.show();
+                                    }
                                 }
                             }).fail(function () {
                                 authStateSpan.find('.processing').hide();
@@ -1482,6 +1517,7 @@ define([
 
             // Process backends
             processBackends: function (backends) {
+                $('#fastly-backends-list').html('');
                 $.each(backends, function (index, backend) {
                     var html = "<tr id='fastly_" + index + "'>";
                     html += "<td><input data-backendId='"+ index + "' id='backend_" + index + "' value='"+ backend.name +"' disabled='disabled' class='input-text' type='text'></td>";

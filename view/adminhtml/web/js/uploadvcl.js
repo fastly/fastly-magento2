@@ -14,17 +14,13 @@ define([
         var blockingStateMsgSpan = '';
         var imageStateSpan = '';
         var imageStateMsgSpan = '';
-
-        $('#system_full_page_cache_caching_application').on('change', function () {
-            if ($(this).val() == 'fastly') {
-                init();
-            }
-        });
-
+        
         $(document).ready(function () {
-            if (config.isFastlyEnabled) {
-                init();
-            }
+            $('#system_full_page_cache_fastly-head').on('click', function () {
+                if ($(this).attr("class") === "open"){
+                    init();
+                }
+            });
 
             /**
              * Add new dictionary item

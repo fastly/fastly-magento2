@@ -21,7 +21,7 @@ define([
             $('#system_full_page_cache_fastly-head').on('click', function () {
                 if ($(this).attr("class") === "open") {
                     init();
-                    if (allOpen != ''){
+                    if (allOpen != '') {
                         allOpen.trigger('click');
                     }
                 } else {
@@ -317,7 +317,7 @@ define([
                     next_version = checkService.next_version;
                     // Fetch force tls req setting status
 
-                    $('#system_full_page_cache_fastly_fastly_advanced_configuration-head').on('click', function () {
+                    $('#system_full_page_cache_fastly_fastly_advanced_configuration-head').unbind('click').on('click', function () {
                         if ($(this).attr("class") === "open") {
                             var tls = vcl.getTlsSetting(checkService.active_version, false);
 
@@ -341,7 +341,7 @@ define([
                         }
                     });
 
-                    $('#system_full_page_cache_fastly_fastly_blocking-head').on('click', function () {
+                    $('#system_full_page_cache_fastly_fastly_blocking-head').unbind('click').on('click', function () {
                         if ($(this).attr("class") === "open") {
                             var blocking = vcl.getBlockingSetting(checkService.active_version, false);
 
@@ -365,7 +365,7 @@ define([
                         }
                     });
 
-                    $('#system_full_page_cache_fastly_fastly_error_maintenance_page-head').on('click', function () {
+                    $('#system_full_page_cache_fastly_fastly_error_maintenance_page-head').unbind('click').on('click', function () {
                         if ($(this).attr("class") === "open") {
                             var wafPage = vcl.getWafPageRespObj(checkService.active_version, false);
                             wafPageRow.hide();
@@ -377,7 +377,7 @@ define([
                         }
                     });
 
-                    $('#system_full_page_cache_fastly_fastly_image_optimization_configuration-head').on('click', function () {
+                    $('#system_full_page_cache_fastly_fastly_image_optimization_configuration-head').unbind('click').on('click', function () {
                         if ($(this).attr("class") === "open") {
                             var fastlyIo = vcl.getFastlyIoSetting(false);
                             var imageOptimization = vcl.getImageSetting(checkService.active_version, false);
@@ -441,7 +441,7 @@ define([
                     });
 
                     // Fetch basic auth setting status
-                    $('#system_full_page_cache_fastly_fastly_basic_auth-head').on('click', function () {
+                    $('#system_full_page_cache_fastly_fastly_basic_auth-head').unbind('click').on('click', function () {
                         if ($(this).attr("class") === "open") {
                             var auth = vcl.getAuthSetting(checkService.active_version, false);
                             auth.done(function (checkReqSetting) {
@@ -474,7 +474,7 @@ define([
                     });
 
                     // Fetch dictionaries
-                    $('#system_full_page_cache_fastly_fastly_edge_dictionaries-head').on('click', function () {
+                    $('#system_full_page_cache_fastly_fastly_edge_dictionaries-head').unbind('click').on('click', function () {
                         if ($(this).attr("class") === "open") {
                             vcl.listDictionaries(active_version, false).done(function (dictResp) {
                                 $('.loading-dictionaries').hide();
@@ -495,7 +495,7 @@ define([
                     });
 
                     // Fetch backends
-                    $('#system_full_page_cache_fastly_fastly_backend_settings-head').on('click', function () {
+                    $('#system_full_page_cache_fastly_fastly_backend_settings-head').unbind('click').on('click', function () {
                         if ($(this).attr("class") === "open") {
                             vcl.getBackends(active_version, false).done(function (backendsResp) {
                                 $('.loading-backends').hide();
@@ -514,7 +514,7 @@ define([
                     });
 
                     // Fetch ACLs
-                    $('#system_full_page_cache_fastly_fastly_edge_acl-head').on('click', function () {
+                    $('#system_full_page_cache_fastly_fastly_edge_acl-head').unbind('click').on('click', function () {
                         if ($(this).attr("class") === "open") {
                             vcl.listAcls(active_version, false).done(function (aclResp) {
                                 $('.loading-acls').hide();

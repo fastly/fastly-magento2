@@ -267,7 +267,7 @@
                             <can_be_empty>1</can_be_empty>
                         </field>
                     </group>
-                    <group id="fastly_custom_snippets" sortOrder="100" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <group id="fastly_custom_snippets" sortOrder="249" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Custom VCL snippets</label>
                         <field id="fastly_custom_snippets_upload" type="Magento\Config\Block\System\Config\Form\Field\File" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Upload custom snippet</label>

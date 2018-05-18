@@ -52,6 +52,11 @@ class Config extends \Magento\PageCache\Model\Config
     const ERROR_PAGE_RESPONSE_OBJECT = 'magentomodule_error_page_response_object';
 
     /**
+     * WAF Page Response Object Name
+     */
+    const WAF_PAGE_RESPONSE_OBJECT = 'WAF_Response';
+
+    /**
      * GeoIP action "dialog"
      */
     const GEOIP_ACTION_DIALOG = 'dialog';

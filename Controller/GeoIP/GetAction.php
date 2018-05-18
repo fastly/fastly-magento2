@@ -82,6 +82,8 @@ class GetAction extends \Magento\Framework\App\Action\Action
     private $logger;
 
     /**
+     * GetAction constructor.
+     *
      * @param Context $context
      * @param Config $config
      * @param StoreRepositoryInterface $storeRepository
@@ -100,18 +102,17 @@ class GetAction extends \Magento\Framework\App\Action\Action
         LoggerInterface $logger
     ) {
         parent::__construct($context);
-        $this->config = $config;
-        $this->storeRepository = $storeRepository;
-        $this->storeManager = $storeManager;
-        $this->resultLayoutFactory = $resultLayoutFactory;
-        $this->localeResolver = $localeResolver;
-        $this->url = $context->getUrl();
-        $this->logger = $logger;
+        $this->config               = $config;
+        $this->storeRepository      = $storeRepository;
+        $this->storeManager         = $storeManager;
+        $this->resultLayoutFactory  = $resultLayoutFactory;
+        $this->localeResolver       = $localeResolver;
+        $this->logger               = $logger;
+
+        $this->url  = $context->getUrl();
     }
 
     /**
-     * Return country action.
-     *
      * @return ResponseInterface|ResultInterface|Layout|null
      */
     public function execute()
@@ -161,6 +162,7 @@ class GetAction extends \Magento\Framework\App\Action\Action
             // do not generate output on errors. this is similar to an empty GeoIP mapping for the country.
         }
 
+        $resultLayout->setHeader("x-esi", "1");
         return $resultLayout;
     }
 

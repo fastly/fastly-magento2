@@ -15,16 +15,22 @@ define([
         var imageStateSpan = '';
         var imageStateMsgSpan = '';
 
-        $('#system_full_page_cache_caching_application').on('change', function () {
-            if ($(this).val() == 'fastly') {
-                init();
-            }
-        });
-
         $(document).ready(function () {
-            if (config.isFastlyEnabled) {
-                init();
-            }
+            var allOpen = '';
+            var allActive = '';
+            $('#system_full_page_cache_fastly-head').on('click', function () {
+                if ($(this).attr("class") === "open") {
+                    init();
+                    if (allOpen != '') {
+                        allOpen.trigger('click');
+                    }
+                } else {
+                    allOpen = $('#system_full_page_cache_fastly').find(".open");
+                    allActive = $('#system_full_page_cache_fastly').find(".active");
+                    allOpen.removeClass("open").removeClass("open");
+                    allActive.find(".active").removeClass("active");
+                }
+            });
 
             /**
              * Add new dictionary item
@@ -310,171 +316,239 @@ define([
                     active_version = checkService.active_version;
                     next_version = checkService.next_version;
                     // Fetch force tls req setting status
-                    var tls = vcl.getTlsSetting(checkService.active_version, false);
 
-                    tls.done(function (checkReqSetting) {
-                        requestStateSpan.find('.processing').hide();
-                        if (checkReqSetting.status != false) {
-                            requestStateMsgSpan.find('#force_tls_state_enabled').show();
-                        } else {
-                            requestStateMsgSpan.find('#force_tls_state_disabled').show();
-                        }
-                    }).fail(function () {
-                        requestStateSpan.find('.processing').hide();
-                        requestStateMsgSpan.find('#force_tls_state_unknown').show();
-                    });
+                    $('#system_full_page_cache_fastly_fastly_advanced_configuration-head').unbind('click').on('click', function () {
+                        if ($(this).attr("class") === "open") {
+                            var tls = vcl.getTlsSetting(checkService.active_version, false);
 
-                    var blocking = vcl.getBlockingSetting(checkService.active_version, false);
-
-                    blocking.done(function (checkReqSetting) {
-                        blockingStateSpan.find('.processing').hide();
-                        if (checkReqSetting.status != false) {
-                            blockingStateMsgSpan.find('#blocking_state_enabled').show();
-                        } else {
-                            blockingStateMsgSpan.find('#blocking_state_disabled').show();
-                        }
-                    }).fail(function () {
-                        blockingStateSpan.find('.processing').hide();
-                        blockingStateMsgSpan.find('#blocking_state_unknown').show();
-                    });
-
-                    var fastlyIo = vcl.getFastlyIoSetting(false);
-                    var imageOptimization = vcl.getImageSetting(checkService.active_version, false);
-
-                    fastlyIo.done(function (checkIoSetting) {
-                        if (checkIoSetting.status == false) {
-                            if (config.isIoEnabled) {
-                                ioToggle.removeAttrs('disabled');
-                                imgConfigBtn.addClass('disabled');
-                            } else {
-                                ioToggle.attr('disabled', 'disabled');
-                                imgConfigBtn.removeClass('disabled');
-                            }
-                        }
-                    });
-
-                    imageOptimization.done(function (checkReqSetting) {
-                        imageStateSpan.find('.processing').hide();
-                        if (checkReqSetting.status != false) {
-                            imageStateMsgSpan.find('#imgopt_state_enabled').show();
-                            fastlyIo.done(function (checkIoSetting) {
-                                if (checkIoSetting.status == true) {
-                                    imgBtn.removeClass('disabled');
-                                    warningIoMsg.hide();
+                            tls.done(function (checkReqSetting) {
+                                requestStateSpan.find('.processing').hide();
+                                var tlsStateEnabled = requestStateMsgSpan.find('#force_tls_state_enabled');
+                                var tlsStateDisabled = requestStateMsgSpan.find('#force_tls_state_disabled');
+                                if (checkReqSetting.status != false) {
+                                    if (tlsStateDisabled.is(":hidden")) {
+                                        tlsStateEnabled.show();
+                                    }
                                 } else {
-                                    warningIoMsg.text(
-                                        $.mage.__(
-                                            'Please contact your sales rep or send an email to support@fastly.com to request image optimization activation for your Fastly service.'
-                                        )
-                                    ).show();
+                                    if (tlsStateEnabled.is(":hidden")) {
+                                        tlsStateDisabled.show();
+                                    }
                                 }
+                            }).fail(function () {
+                                requestStateSpan.find('.processing').hide();
+                                requestStateMsgSpan.find('#force_tls_state_unknown').show();
                             });
-                        } else {
-                            imageStateMsgSpan.find('#imgopt_state_disabled').show();
-                            fastlyIo.done(function (checkIoSetting) {
-                                if (checkIoSetting.status == true) {
-                                    imgBtn.removeClass('disabled');
-                                    warningIoMsg.hide();
+                        }
+                    });
+
+                    $('#system_full_page_cache_fastly_fastly_blocking-head').unbind('click').on('click', function () {
+                        if ($(this).attr("class") === "open") {
+                            var blocking = vcl.getBlockingSetting(checkService.active_version, false);
+
+                            blocking.done(function (checkReqSetting) {
+                                blockingStateSpan.find('.processing').hide();
+                                var blockingStateEnabled = blockingStateMsgSpan.find('#blocking_state_enabled');
+                                var blockingStateDisabled = blockingStateMsgSpan.find('#blocking_state_disabled');
+                                if (checkReqSetting.status != false) {
+                                    if (blockingStateDisabled.is(":hidden")) {
+                                        blockingStateEnabled.show();
+                                    }
                                 } else {
-                                    imgBtn.addClass('disabled');
-                                    warningIoMsg.text(
-                                        $.mage.__(
-                                            'Please contact your sales rep or send an email to support@fastly.com to request image optimization activation for your Fastly service.'
-                                        )
-                                    ).show();
+                                    if (blockingStateEnabled.is(":hidden")) {
+                                        blockingStateDisabled.show();
+                                    }
+                                }
+                            }).fail(function () {
+                                blockingStateSpan.find('.processing').hide();
+                                blockingStateMsgSpan.find('#blocking_state_unknown').show();
+                            });
+                        }
+                    });
+
+                    $('#system_full_page_cache_fastly_fastly_error_maintenance_page-head').unbind('click').on('click', function () {
+                        if ($(this).attr("class") === "open") {
+                            var wafPage = vcl.getWafPageRespObj(checkService.active_version, false);
+                            wafPageRow.hide();
+                            wafPage.done(function (checkWafResponse) {
+                                if (checkWafResponse.status != false) {
+                                    wafPageRow.show();
                                 }
                             });
                         }
-                    }).fail(function () {
-                        imageStateSpan.find('.processing').hide();
-                        imageStateMsgSpan.find('#imgopt_state_unknown').show();
+                    });
+
+                    $('#system_full_page_cache_fastly_fastly_image_optimization_configuration-head').unbind('click').on('click', function () {
+                        if ($(this).attr("class") === "open") {
+                            var fastlyIo = vcl.getFastlyIoSetting(false);
+                            var imageOptimization = vcl.getImageSetting(checkService.active_version, false);
+
+                            fastlyIo.done(function (checkIoSetting) {
+                                if (checkIoSetting.status == false) {
+                                    if (config.isIoEnabled) {
+                                        ioToggle.removeAttrs('disabled');
+                                        imgConfigBtn.addClass('disabled');
+                                    } else {
+                                        ioToggle.attr('disabled', 'disabled');
+                                        imgConfigBtn.removeClass('disabled');
+                                    }
+                                }
+                            });
+
+                            imageOptimization.done(function (checkReqSetting) {
+                                imageStateSpan.find('.processing').hide();
+                                var imageStateEnabled = imageStateMsgSpan.find('#imgopt_state_enabled');
+                                var imageStateDisabled = imageStateMsgSpan.find('#imgopt_state_disabled');
+                                if (checkReqSetting.status != false) {
+                                    if (imageStateDisabled.is(":hidden")) {
+                                        imageStateEnabled.show();
+                                    }
+                                    imageStateEnabled.show();
+                                    fastlyIo.done(function (checkIoSetting) {
+                                        if (checkIoSetting.status == true) {
+                                            imgBtn.removeClass('disabled');
+                                            warningIoMsg.hide();
+                                        } else {
+                                            warningIoMsg.text(
+                                                $.mage.__(
+                                                    'Please contact your sales rep or send an email to support@fastly.com to request image optimization activation for your Fastly service.'
+                                                )
+                                            ).show();
+                                        }
+                                    });
+                                } else {
+                                    if (imageStateEnabled.is(":hidden")) {
+                                        imageStateDisabled.show();
+                                    }
+                                    fastlyIo.done(function (checkIoSetting) {
+                                        if (checkIoSetting.status == true) {
+                                            imgBtn.removeClass('disabled');
+                                            warningIoMsg.hide();
+                                        } else {
+                                            imgBtn.addClass('disabled');
+                                            warningIoMsg.text(
+                                                $.mage.__(
+                                                    'Please contact your sales rep or send an email to support@fastly.com to request image optimization activation for your Fastly service.'
+                                                )
+                                            ).show();
+                                        }
+                                    });
+                                }
+                            }).fail(function () {
+                                imageStateSpan.find('.processing').hide();
+                                imageStateMsgSpan.find('#imgopt_state_unknown').show();
+                            });
+                        }
                     });
 
                     // Fetch basic auth setting status
-                    var auth = vcl.getAuthSetting(checkService.active_version, false);
-                    auth.done(function (checkReqSetting) {
-                        authStateSpan.find('.processing').hide();
-                        if (checkReqSetting.status != false) {
-                            authStateMsgSpan.find('#enable_auth_state_enabled').show();
-                        } else {
-                            authStateMsgSpan.find('#enable_auth_state_disabled').show();
-                        }
-                    }).fail(function () {
-                        authStateSpan.find('.processing').hide();
-                        authStateMsgSpan.find('#enable_auth_state_unknown').show();
-                    });
+                    $('#system_full_page_cache_fastly_fastly_basic_auth-head').unbind('click').on('click', function () {
+                        if ($(this).attr("class") === "open") {
+                            var auth = vcl.getAuthSetting(checkService.active_version, false);
+                            auth.done(function (checkReqSetting) {
+                                authStateSpan.find('.processing').hide();
+                                var authStateEnabled = authStateMsgSpan.find('#enable_auth_state_enabled');
+                                var authStateDisabled = authStateMsgSpan.find('#enable_auth_state_disabled');
+                                if (checkReqSetting.status != false) {
+                                    if (authStateDisabled.is(":hidden")) {
+                                        authStateEnabled.show();
+                                    }
+                                } else {
+                                    if (authStateEnabled.is(":hidden")) {
+                                        authStateDisabled.show();
+                                    }
+                                }
+                            }).fail(function () {
+                                authStateSpan.find('.processing').hide();
+                                authStateMsgSpan.find('#enable_auth_state_unknown').show();
+                            });
 
-                    // Fetch basic auth dictionary status
-                    var authDict = vcl.getAuthDictionary(checkService.active_version, true);
-                    authDict.done(function (checkReqSetting) {
-                        authStateSpan.find('.processing').hide();
-                        authDictStatus = checkReqSetting.status;
-                    }).fail(function () {
-                        authStateSpan.find('.processing').hide();
-                    });
-
-                    // Fetch backends
-                    vcl.getBackends(active_version, false).done(function (backendsResp) {
-                        $('.loading-backends').hide();
-                        if (backendsResp.status != false) {
-                            if (backendsResp.backends.length > 0) {
-                                backends = backendsResp.backends;
-                                vcl.processBackends(backendsResp.backends);
-                            } else {
-                                $('.no-backends').show();
-                            }
+                            // Fetch basic auth dictionary status
+                            var authDict = vcl.getAuthDictionary(checkService.active_version, true);
+                            authDict.done(function (checkReqSetting) {
+                                authStateSpan.find('.processing').hide();
+                                authDictStatus = checkReqSetting.status;
+                            }).fail(function () {
+                                authStateSpan.find('.processing').hide();
+                            });
                         }
-                    }).fail(function () {
-                        // TO DO: implement
-                    });
-
-                    // Fetch custom snippets
-                    vcl.getCustomSnippets(false).done(function (snippetsResp) {
-                        $('.loading-backends').hide();
-                        if (snippetsResp.status != false) {
-                            if (snippetsResp.snippets.length > 0) {
-                                backends = snippetsResp.snippets;
-                                vcl.processCustomSnippets(snippetsResp.snippets);
-                            } else {
-                                $('.no-snippets').show();
-                            }
-                        }
-                    }).fail(function () {
-                        // TO DO: implement
                     });
 
                     // Fetch dictionaries
-                    vcl.listDictionaries(active_version, false).done(function (dictResp) {
-                        $('.loading-dictionaries').hide();
-                        if (dictResp.status != false) {
-                            if (dictResp.status != false) {
-                                if (dictResp.dictionaries.length > 0) {
-                                    dictionaries = dictResp.dictionaries;
-                                    vcl.processDictionaries(dictResp.dictionaries);
+                    $('#system_full_page_cache_fastly_fastly_edge_dictionaries-head').unbind('click').on('click', function () {
+                        if ($(this).attr("class") === "open") {
+                            vcl.listDictionaries(active_version, false).done(function (dictResp) {
+                                $('.loading-dictionaries').hide();
+                                if (dictResp.status != false) {
+                                    if (dictResp.status != false) {
+                                        if (dictResp.dictionaries.length > 0) {
+                                            dictionaries = dictResp.dictionaries;
+                                            vcl.processDictionaries(dictResp.dictionaries);
+                                        } else {
+                                            $('.no-dictionaries').show();
+                                        }
+                                    }
+                                }
+                            }).fail(function () {
+                                return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                            });
+                        }
+                    });
+                    
+                    $('#system_full_page_cache_fastly_fastly_custom_snippets-head').unbind('click').on('click', function () {
+                        // Fetch custom snippets
+                        vcl.getCustomSnippets(false).done(function (snippetsResp) {
+                            $('.loading-backends').hide();
+                            if (snippetsResp.status != false) {
+                                if (snippetsResp.snippets.length > 0) {
+                                    backends = snippetsResp.snippets;
+                                    vcl.processCustomSnippets(snippetsResp.snippets);
                                 } else {
-                                    $('.no-dictionaries').show();
+                                    $('.no-snippets').show();
                                 }
                             }
+                        }).fail(function () {
+                            // TO DO: implement
+                        });
+                    });
+
+                    // Fetch backends
+                    $('#system_full_page_cache_fastly_fastly_backend_settings-head').unbind('click').on('click', function () {
+                        if ($(this).attr("class") === "open") {
+                            vcl.getBackends(active_version, false).done(function (backendsResp) {
+                                $('.loading-backends').hide();
+                                if (backendsResp.status != false) {
+                                    if (backendsResp.backends.length > 0) {
+                                        backends = backendsResp.backends;
+                                        vcl.processBackends(backendsResp.backends);
+                                    } else {
+                                        $('.no-backends').show();
+                                    }
+                                }
+                            }).fail(function () {
+                                // TO DO: implement
+                            });
                         }
-                    }).fail(function () {
-                        return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                     });
 
                     // Fetch ACLs
-                    vcl.listAcls(active_version, false).done(function (aclResp) {
-                        $('.loading-acls').hide();
-                        if (aclResp.status != false) {
-                            if (aclResp.status != false) {
-                                if (aclResp.acls.length > 0) {
-                                    acls = aclResp.acls;
-                                    vcl.processAcls(aclResp.acls);
-                                } else {
-                                    $('.no-acls').show();
+                    $('#system_full_page_cache_fastly_fastly_edge_acl-head').unbind('click').on('click', function () {
+                        if ($(this).attr("class") === "open") {
+                            vcl.listAcls(active_version, false).done(function (aclResp) {
+                                $('.loading-acls').hide();
+                                if (aclResp.status != false) {
+                                    if (aclResp.status != false) {
+                                        if (aclResp.acls.length > 0) {
+                                            acls = aclResp.acls;
+                                            vcl.processAcls(aclResp.acls);
+                                        } else {
+                                            $('.no-acls').show();
+                                        }
+                                    }
                                 }
-                            }
+                            }).fail(function () {
+                                return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                            });
                         }
-                    }).fail(function () {
-                        return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                     });
                 } else {
                     requestStateSpan.find('.processing').hide();
@@ -1062,6 +1136,52 @@ define([
         });
 
         /**
+         * Set WAF Page HTML button
+         */
+        $('#fastly_waf_page_button').on('click', function () {
+
+            if (isAlreadyConfigured != true) {
+                $(this).attr('disabled', true);
+                return alert($.mage.__('Please save config prior to continuing.'));
+            }
+
+            vcl.resetAllMessages();
+
+            $.when(
+                $.ajax({
+                    type: "GET",
+                    url: config.serviceInfoUrl,
+                    showLoader: true
+                })
+            ).done(function (service) {
+
+                if (service.status == false) {
+                    return errorWafBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
+                }
+
+                active_version = service.active_version;
+                next_version = service.next_version;
+                service_name = service.service.name;
+
+                vcl.getWafPageRespObj(active_version, true).done(function (response) {
+                    if (response.status == true) {
+                        $('#waf_page_content').text(response.wafPageResp.content).html();
+                        $('#waf_page_status').val(response.wafPageResp.status);
+                        $('#waf_page_type').val(response.wafPageResp.content_type);
+                    }
+                }).fail(function () {
+                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
+                });
+
+                vcl.showPopup('fastly-waf-page-options');
+                vcl.setActiveServiceLabel(active_version, next_version, service_name);
+
+            }).fail(function () {
+                return errorWafBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+            });
+        });
+
+        /**
          * Add dictionary container button
          */
 
@@ -1258,6 +1378,10 @@ define([
         var successHtmlBtnMsg = $('#fastly-success-html-page-button-msg');
         var errorHtmlBtnMsg = $('#fastly-error-html-page-button-msg');
         var warningHtmlBtnMsg = $('#fastly-warning-html-page-button-msg');
+        /* WAF page HTML button */
+        var successWafBtnMsg = $('#fastly-success-waf-page-button-msg');
+        var errorWafBtnMsg = $('#fastly-error-waf-page-button-msg');
+        var warningWafBtnMsg = $('#fastly-warning-waf-page-button-msg');
         /* Dictionary button */
         var successDictionaryBtnMsg = $('#fastly-success-edge-button-msg');
         var errorDictionaryBtnMsg = $('#fastly-error-edge-button-msg');
@@ -1278,6 +1402,7 @@ define([
         var imgBtn = $('#fastly_push_image_config');
         var imgConfigBtn = $('#fastly_io_default_config');
         var ioToggle = $('#system_full_page_cache_fastly_fastly_image_optimization_configuration_image_optimizations');
+        var wafPageRow = $('#row_system_full_page_cache_fastly_fastly_error_maintenance_page_waf_page');
 
         var vcl = {
 
@@ -1413,7 +1538,7 @@ define([
                 });
             },
 
-            // Queries Fastly API to retrive Backends
+            // Queries Fastly API to retrieve error page response object
             getErrorPageRespObj: function (active_version, loaderVisibility) {
                 return $.ajax({
                     type: "GET",
@@ -1423,8 +1548,19 @@ define([
                 });
             },
 
+            // Queries Fastly API to retrieve WAF page response object
+            getWafPageRespObj: function (active_version, loaderVisibility) {
+                return $.ajax({
+                    type: "GET",
+                    url: config.getWafPageRespObj,
+                    showLoader: loaderVisibility,
+                    data: {'active_version': active_version}
+                });
+            },
+
             // Process backends
             processBackends: function (backends) {
+                $('#fastly-backends-list').html('');
                 $.each(backends, function (index, backend) {
                     var html = "<tr id='fastly_" + index + "'>";
                     html += "<td><input data-backendId='"+ index + "' id='backend_" + index + "' value='"+ backend.name +"' disabled='disabled' class='input-text' type='text'></td>";
@@ -1968,6 +2104,48 @@ define([
                 });
             },
 
+            // Save WAF Page Html
+            saveWafHtml: function () {
+                var activate_vcl = false;
+
+                if ($('#fastly_activate_vcl').is(':checked')) {
+                    activate_vcl = true;
+                }
+                var wafHtmlChars = $('#waf_page_content').val().length;
+                var maxChars = 65535;
+                if (wafHtmlChars >= maxChars) {
+                    var msgWarning = $('.fastly-message-error');
+                    msgWarning.text($.mage.__('The content must contain less than ' + maxChars + ' characters. Current number of characters: ' + wafHtmlChars));
+                    msgWarning.show();
+                    return;
+                }
+                $.ajax({
+                    type: "POST",
+                    url: config.saveWafPageUrl,
+                    data: {
+                        'active_version': active_version,
+                        'activate_flag': activate_vcl,
+                        'content': $('#waf_page_content').val(),
+                        'status': $('#waf_page_status').val(),
+                        'content_type': $('#waf_page_type').val()
+                    },
+                    showLoader: true,
+                    success: function (response) {
+                        if (response.status == true) {
+                            successWafBtnMsg.text($.mage.__('WAF page is successfully updated.')).show();
+                            active_version = response.active_version;
+                            vcl.modal.modal('closeModal');
+                        } else {
+                            vcl.resetAllMessages();
+                            vcl.showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function (msg) {
+                        return errorWafBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                    }
+                });
+            },
+
             // CreateDictionary
             createDictionary: function () {
                 var activate_vcl = false;
@@ -2218,6 +2396,11 @@ define([
                 successHtmlBtnMsg.hide();
                 errorHtmlBtnMsg.hide();
                 warningHtmlBtnMsg.hide();
+
+                // WAF page button messages
+                successWafBtnMsg.hide();
+                errorWafBtnMsg.hide();
+                warningWafBtnMsg.hide();
 
 
                 // Edge button messages
@@ -2489,6 +2672,15 @@ define([
                     },
                     actionOk: function () {
                         vcl.saveErrorHtml(active_version);
+                    }
+                },
+                'fastly-waf-page-options': {
+                    title: jQuery.mage.__('Update WAF Page Content'),
+                    content: function () {
+                        return document.getElementById('fastly-waf-page-template').textContent;
+                    },
+                    actionOk: function () {
+                        vcl.saveWafHtml(active_version);
                     }
                 },
                 'fastly-dictionary-container-options': {

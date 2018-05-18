@@ -31,6 +31,6 @@
         </arguments>
     </type>
     <type name="Magento\Config\Model\Config">
-        <plugin name="inchoo_config_after_save" type="Fastly\Cdn\Model\Config\ConfigRewrite"/>
+        <plugin name="fastly_config_after_save" type="Fastly\Cdn\Model\Config\ConfigRewrite"/>
     </type>
 </config>

@@ -12,7 +12,7 @@ class CustomSnippetUpload extends File
      */
     public function getAllowedExtensions()
     {
-        return [];
+        return ['vcl'];
     }
 
     public function _getUploadDir()

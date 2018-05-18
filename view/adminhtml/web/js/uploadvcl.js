@@ -282,6 +282,7 @@ define([
 
         function init()
         {
+            $('body').loader('show');
             $.ajax({
                 type: "GET",
                 url: config.isAlreadyConfiguredUrl
@@ -313,6 +314,7 @@ define([
                 }
             }).done(function (checkService) {
                 if (checkService.status != false) {
+                    $('body').loader('hide');
                     active_version = checkService.active_version;
                     next_version = checkService.next_version;
                     // Fetch force tls req setting status
@@ -494,6 +496,26 @@ define([
                         }
                     });
 
+                    $('#system_full_page_cache_fastly_fastly_custom_snippets-head').unbind('click').on('click', function () {
+                        // Fetch custom snippets
+                        if ($(this).attr("class") === "open") {
+                            $('#row_system_full_page_cache_fastly_fastly_custom_snippets_fastly_custom_snippets_upload > .value > div').hide();
+                            vcl.getCustomSnippets(false).done(function (snippetsResp) {
+                                $('.loading-snippets').hide();
+                                if (snippetsResp.status != false) {
+                                    if (snippetsResp.snippets.length > 0) {
+                                        snippets = snippetsResp.snippets;
+                                        vcl.processCustomSnippets(snippets);
+                                    } else {
+                                        $('.no-snippets').show();
+                                    }
+                                }
+                            }).fail(function () {
+                                // TO DO: implement
+                            });
+                        }
+                    });
+
                     // Fetch backends
                     $('#system_full_page_cache_fastly_fastly_backend_settings-head').unbind('click').on('click', function () {
                         if ($(this).attr("class") === "open") {
@@ -644,6 +666,21 @@ define([
                 if (dictionaryHtml != '') {
                     $('#delete-dictionary-container').html(dictionaryHtml);
                 }
+            }
+        });
+
+        $('body').on('click', 'button.fastly-delete-snippet-icon', function () {
+            var snippet_id = $(this).data('snippet-id');
+            var closestTr = $(this).closest('tr');
+            if (confirm("Are you sure you want to delete "+ snippet_id +"?")) {
+                vcl.deleteCustomSnippet(snippet_id, true).done(function (response) {
+                    if (response.status == true) {
+                        closestTr.remove();
+                        $('#fastly-success-snippet-button-msg').text($.mage.__('Custom snippet successfully deleted.')).show();
+                    }
+                }).fail(function () {
+                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
+                });
             }
         });
 
@@ -1495,6 +1532,18 @@ define([
                 });
             },
 
+            // Retrieve custom snippets
+            getCustomSnippets: function (loaderVisibility) {
+                return $.ajax({
+                    type: "GET",
+                    url: config.getCustomSnippetsUrl,
+                    showLoader: loaderVisibility,
+                    beforeSend: function (xhr) {
+                        $('.loading-snippets').show();
+                    }
+                });
+            },
+
             // Queries Fastly API to retrieve error page response object
             getErrorPageRespObj: function (active_version, loaderVisibility) {
                 return $.ajax({
@@ -1523,8 +1572,21 @@ define([
                     html += "<td><input data-backendId='"+ index + "' id='backend_" + index + "' value='"+ backend.name +"' disabled='disabled' class='input-text' type='text'></td>";
                     html += "<td class='col-actions'><button class='action-delete fastly-edit-backend-icon' data-backend-id='" + index + "' id='fastly-edit-backend_"+ index + "' title='Edit backend' type='button'></td></tr>";
                     $('#fastly-backends-list').append(html);
-
                 });
+            },
+
+            // Process custom snippets
+            processCustomSnippets: function (snippets) {
+                var html = '';
+                $.each(snippets, function (index, snippet) {
+                    html += "<tr id='fastly_" + index + "'>";
+                    html += "<td><input data-snippetId='"+ index + "' id='snippet_" + index + "' value='"+ snippet +"' disabled='disabled' class='input-text' type='text'></td>";
+                    html += "<td class='col-actions'><button class='action-delete fastly-delete-snippet-icon' data-snippet-id='" + snippet + "' id='fastly-delete-snippet"+ index + "' title='Delete custom snippet' type='button'></td></tr>";
+                });
+                if (html != '') {
+                    $('.no-snippets').hide();
+                }
+                $('#fastly-snippets-list').html(html);
             },
 
             // Process dictionaries
@@ -1643,6 +1705,18 @@ define([
                     url: config.createDictionaryItem,
                     showLoader: loaderVisibility,
                     data: {'dictionary_id': dictionary_id, 'item_key': item_key, 'item_value': item_value},
+                    beforeSend: function (xhr) {
+                        vcl.resetAllMessages();
+                    }
+                });
+            },
+
+            deleteCustomSnippet: function (snippet_id, loaderVisibility) {
+                return $.ajax({
+                    type: "GET",
+                    url: config.deleteCustomSnippet,
+                    showLoader: loaderVisibility,
+                    data: {'snippet_id': snippet_id},
                     beforeSend: function (xhr) {
                         vcl.resetAllMessages();
                     }

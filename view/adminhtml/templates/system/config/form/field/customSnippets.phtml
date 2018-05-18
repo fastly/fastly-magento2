@@ -31,14 +31,14 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
             <tbody id="fastly-snippets-list"></tbody>
         </table>
     </div>
-    <p class="loading-backends" style="display: none;">
+    <p class="loading-snippets" style="">
         <img class="processing"
              alt="Collecting"
              style="margin:0 5px"
              src="<?php /* @noEscape */ echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/>
         <?php /* @noEscape */ echo __('Loading snippets...'); ?>
     </p>
-    <p class="no-backends" style="display: none;">
+    <p class="no-snippets" style="">
         <?php /* @noEscape */ echo __('There are no custom snippets yet.'); ?>
     </p>
 </div>
@@ -66,7 +66,7 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
         font-size: 2rem;
     }
 
-    .no-backends, .loading-backends {
+    .no-snippets, .loading-snippets {
         text-align: center;
     }
 </style>

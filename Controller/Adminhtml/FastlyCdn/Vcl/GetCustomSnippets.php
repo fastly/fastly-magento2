@@ -67,7 +67,7 @@ class GetCustomSnippets extends Action
             if (!$customSnippets) {
                 return $result->setData([
                     'status'    => false,
-                    'msg'       => 'Failed to check custom snippet details.'
+                    'msg'       => 'No snippets found.'
                 ]);
             }
 

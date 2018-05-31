@@ -21,6 +21,7 @@
         # Set a short TTL for 404's since those can be temporary during the site build/index
         if (beresp.status == 404) {
             set beresp.ttl = 300s;
+            set beresp.http.Cache-Control = "max-age=0";
         } else if (req.http.x-long-cache) {
             # Force caching for signed cached assets.
             set beresp.ttl = 31536000s;

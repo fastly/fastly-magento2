@@ -14,22 +14,19 @@
         error beresp.status beresp.response;
     }
 
-    # Remove Set-Cookies from responses for static content
-    # to match the cookie removal in recv.
+    # Remove Set-Cookies from responses for static content to match the cookie removal in recv.
     if (req.http.x-long-cache || req.url ~ "^/(pub/)?(media|static)/") {
         unset beresp.http.set-cookie;
 
         # Set a short TTL for 404's since those can be temporary during the site build/index
         if (beresp.status == 404) {
             set beresp.ttl = 300s;
+        } else if (req.http.x-long-cache) {
+            # Force caching for signed cached assets.
+            set beresp.ttl = 31536000s;
+            # Add immutable as it avoids IMS and INM revalidations
+            set beresp.http.Cache-Control = "max-age=31536000, immutable";
         }
-
-    }
-
-    # Force caching for signed cached assets.
-    if (req.http.x-long-cache) {
-        set beresp.ttl = 31536000s;
-        set beresp.http.Cache-Control = "max-age=31536000, immutable";
     }
 
     # All the Magento responses should emit X-Esi headers

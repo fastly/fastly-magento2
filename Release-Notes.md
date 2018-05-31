@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.55
+
+- VCL reordering to address caching of 404s during site rebuilds https://github.com/fastly/fastly-magento2/issues/174
+
 ## 1.2.54
 
 - Fix for Redis sessions contention when where Fastly module makes multiple parallel requests 

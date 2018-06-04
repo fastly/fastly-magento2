@@ -24,6 +24,15 @@
     <system>
         <section id="system">
             <group id="full_page_cache">
+                <group id="fastly_edge_modules" sortOrder="630" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Fastly Edge Modules</label>
+                    <comment><![CDATA[Here goes short description of Modly functionality]]></comment>
+                    <field id="fetch_modly" translate="label comment" sortOrder="0" showInDefault="1" showInStore="0" showInWebsite="0">
+                        <label><![CDATA[Refresh manifest]]></label>
+                        <comment><![CDATA[Downloads new manifest of features.]]></comment>
+                        <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\UploadVclBtn</frontend_model>
+                    </field>
+                </group>
                 <group id="fastly" translate="label" showInDefault="1" showInWebsite="0" showInStore="0" sortOrder="615">
                     <label>Fastly Configuration</label>
                     <comment>

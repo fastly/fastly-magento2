@@ -13,7 +13,7 @@ composer config repositories.fastly-magento2 git "https://github.com/fastly/fast
 
 Then:
 ```
-composer config repositories.fastly-magento2 git "https://github.com/fastly/fastly-magento2.git"
+composer require fastly/magento2
 ```
 
 Once the installation is completed, enable the Fastly CDN module:

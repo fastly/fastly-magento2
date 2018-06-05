@@ -30,6 +30,16 @@
         }
     }
 
+    # Fix Vary Header in some cases. In 99.9% of cases Varying on User-Agent is counterproductive
+    # https://www.varnish-cache.org/trac/wiki/VCLExampleFixupVary
+    if (beresp.http.Vary ~ "User-Agent") {
+        set beresp.http.Vary = regsub(beresp.http.Vary, ",? *User-Agent *", "");
+        set beresp.http.Vary = regsub(beresp.http.Vary, "^, *", "");
+        if (beresp.http.Vary == "") {
+            unset beresp.http.Vary;
+        }
+    }
+
     # All the Magento responses should emit X-Esi headers
     if (beresp.http.x-esi) {
         # enable ESI feature for Magento response by default

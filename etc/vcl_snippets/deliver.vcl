@@ -23,8 +23,8 @@
         set resp.http.X-XSS-Protection = "1; mode=block";
         set resp.http.X-Content-Type-Options = "nosniff";
 
-        # CORS policy. Consider checking this against an allowlist
-        if (req.http.Origin) {
+        # CORS policy. Sets them only if they have not been set already
+        if (req.http.Origin && !resp.http.Access-Control-Allow-Origin && !resp.http.Access-Control-Allow-Methods) {
           set resp.http.Access-Control-Allow-Origin = req.http.Origin;
           set resp.http.Access-Control-Allow-Methods = "GET,HEAD,POST,OPTIONS";
         }

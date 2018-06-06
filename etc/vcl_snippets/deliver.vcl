@@ -18,10 +18,7 @@
         remove resp.http.X-Magento-Tags;
 
         # Set headers based on suggestions in https://www.fastly.com/blog/headers-we-want
-        set resp.http.Content-Security-Policy = "default-src 'self'; frame-ancestors 'self'";
-        set resp.http.Referer-Policy = "origin-when-cross-origin";
-        set resp.http.X-XSS-Protection = "1; mode=block";
-        set resp.http.X-Content-Type-Options = "nosniff";
+        set resp.http.Referrer-Policy = "origin-when-cross-origin";
 
         # CORS policy. Sets them only if they have not been set already
         if (req.http.Origin && !resp.http.Access-Control-Allow-Origin && !resp.http.Access-Control-Allow-Methods) {

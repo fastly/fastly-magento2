@@ -37,12 +37,17 @@ There are four main categories
 
 IO Snippet Upload is required in order to enable IO on your images. It inserts a VCL snippet in your Fastly service
 which instructs Fastly to process all images through our Image optimizers. This snippet will use default IO config
-options to process images. It will not do any other transformations e.g. cropping, rotations etc. For the curious
-clicking Enable will
+options to process images. Things to note
+
+* It will not do any other transformations e.g. cropping, rotations etc.
+* It will not do any image format changes except for browsers supporting WebP (Chrome etc.)
+* PNG images will not see much improvement since they are lossless and it's generally hard to compress them further
+
+For the curious clicking Enable will
 
 * Upload [https://github.com/fastly/fastly-magento2/blob/master/etc/vcl_snippets_image_optimizations/recv.vcl](https://github.com/fastly/fastly-magento2/blob/master/etc/vcl_snippets_image_optimizations/recv.vcl) snippet
-* Configure default IO config options to use WebP for browsers supporting it (auto=webp) and optionally set the image
-quality levels to the value set in Magento
+* Configure default IO config options to use WebP for browsers supporting it (auto=webp) and optionally set the JPEG and WebP image
+quality levels to the value set in Magento. If the option is not set we'll default to quality 85 for lossy images.
 
 ## Default IO config options
 
@@ -50,7 +55,7 @@ Default IO config options allow you to tweak default settings that Image optimiz
 
 <img alt="IO Default Config Options" title="IO Default Config Options" src="../images/guides/image-optimization/io_default_config_dialog.png" width="800px"/>
 
-Things you may commonly change are WebP and JPEG quality levels or whether to serve Progressive or Baseline JPEGs.
+Things you may commonly change are WebP and JPEG quality levels for lossy formats or whether to serve Progressive or Baseline JPEGs.
 
 ## Deep image optimization
 
@@ -60,7 +65,8 @@ completely to Fastly IO. It only applies to *product* images. CMS images are not
 Please note that deep image optimization will add background color definition to every image as defined in your
 theme. This will result in WebP images switching from WebP lossless to WebP lossy. One of the major differences
 between lossless and lossy is that it drops the alpha channel from PNG images. This will result in much smaller
-images however may it may clash with your background theme.
+images however may result in images with transparencies looking odd on product and campaign pages that use a
+different background.
 
 As an example an image from the Luma theme that originally looked like this
 

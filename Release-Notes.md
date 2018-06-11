@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.56
+
+- Wording/documentation changes
+- By default remove User-Agent Vary from backend responses https://github.com/fastly/fastly-magento2/pull/181
+
 ## 1.2.55
 
 - VCL reordering to address caching of 404s during site rebuilds https://github.com/fastly/fastly-magento2/issues/174

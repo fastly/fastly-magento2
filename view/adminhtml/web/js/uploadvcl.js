@@ -787,7 +787,16 @@ define([
                     showLoader: true
                 })
             ).done(function (service) {
-                
+
+                if (service.status == false) {
+                    return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
+                }
+
+                active_version = service.active_version;
+                next_version = service.next_version;
+                service_name = service.service.name;
+                vcl.showPopup('fastly-uploadvcl-options');
+                vcl.setActiveServiceLabel(active_version, next_version, service_name);
 
             }).fail(function () {
                 return errorVclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();

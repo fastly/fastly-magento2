@@ -70,24 +70,25 @@ class Create extends Action
                 $name = strtolower($value['name']);
                 $content = $value['content'];
                 $strippedNonAlphaName = preg_replace("/[^A-Za-z0-9 ]/", '', $name);
-                $replacedSpaceName = preg_replace('/\s+/', '_', $strippedNonAlphaName);
+                $id = preg_replace('/\s+/', '_', $strippedNonAlphaName);
 
-                $manifest->setManifestId($replacedSpaceName);
+                $manifest->setManifestId($id);
                 $manifest->setManifestVersion($version);
                 $manifest->setManifestName($name);
                 $manifest->setManifestContent($content);
                 $this->saveManifest($manifest);
                 $manifest->unsetData();
             }
+
+            return $result->setData([
+                'status' => true
+            ]);
         } catch (\Exception $e) {
             return $result->setData([
                 'status'    => false,
                 'msg'       => $e->getMessage()
             ]);
         }
-        return $result->setData([
-            'status' => true
-        ]);
     }
 
     /**

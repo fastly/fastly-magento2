@@ -76,19 +76,26 @@ class Create extends Action
                 $manifest->setManifestVersion($version);
                 $manifest->setManifestName($name);
                 $manifest->setManifestContent($content);
-
-                $this->manifestResource->save($manifest);
+                $this->saveManifest($manifest);
                 $manifest->unsetData();
             }
-
-            return $result->setData([
-                'status' => true
-            ]);
         } catch (\Exception $e) {
             return $result->setData([
                 'status'    => false,
                 'msg'       => $e->getMessage()
             ]);
         }
+        return $result->setData([
+            'status' => true
+        ]);
+    }
+
+    /**
+     * @param $manifest
+     * @throws \Exception
+     */
+    private function saveManifest($manifest)
+    {
+        $this->manifestResource->save($manifest);
     }
 }

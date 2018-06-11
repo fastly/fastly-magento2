@@ -55,6 +55,11 @@
                     </field>
                     <field id="upload_vcl" translate="label comment" sortOrder="30" showInDefault="1" showInStore="0" showInWebsite="0">
                         <label><![CDATA[Automatic upload & service activation]]></label>
+                        <comment>
+                            <![CDATA[Uploads stock Magento VCL. Magento VCL required in order to take advantage of Fastly full page caching.
+                            Read about details <a href="https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/INSTALLATION.md#vcl-upload" target="_blank">here</a>. Recommended: Re-upload VCL periodically as newer versions of the plugin may contain VCL improvements/fixes.
+                            ]]>
+                        </comment>
                         <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\UploadVclBtn</frontend_model>
                     </field>
                     <group id="fastly_backend_settings" sortOrder="200" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -202,25 +207,25 @@
                         <field id="fastly_push_image_config" translate="label comment" sortOrder="90" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Fastly IO snippet]]></label>
                             <comment>
-                                <![CDATA[VCL snippet is required to enable IO in your Fastly service.]]>
+                                <![CDATA[VCL snippet upload is required in order to funnel image requests to Fastly optimizers.]]>
                             </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ImageBtn</frontend_model>
                         </field>
                         <field id="image_optimizations_default_config_options" translate="label comment" sortOrder="92" showInDefault="1" showInStore="1" showInWebsite="1">
                             <label><![CDATA[Default IO config options]]></label>
                             <comment>
-                                <![CDATA[Allows you to configure items such as default quality levels, auto WebP, JPG types]]>
+                                <![CDATA[Allows you to (re)configure items such as default quality levels lossy image formats, auto WebP, JPG types]]>
                             </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\IoConfigOptionsBtn</frontend_model>
                         </field>
                         <field id="image_optimizations" translate="label comment" type="select" sortOrder="95" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enable deep image optimization</label>
-                            <comment><![CDATA[Turns off Magento built-in image resizing and manipulation and offloads it onto Fastly IO.]]></comment>
+                            <comment><![CDATA[Turns off Magento built-in image resizing and manipulation and offloads it onto Fastly IO. Please read the <a href="https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/IMAGE-OPTIMIZATION.md" target="_blank">image optimization guide</a> for caveats and details.]]></comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="image_optimizations_pixel_ratio" translate="label comment" type="select" sortOrder="97" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enable adaptive device pixel ratios</label>
-                            <comment><![CDATA[Magento will use <a href="https://docs.fastly.com/guides/imageopto-setup-use/serving-responsive-images#adaptive-device-pixel-ratios" target="_blank">Adaptive device pixel ratios</a> through Fastly service. Useful for Progressive Web Apps.]]></comment>
+                            <comment><![CDATA[Image sources will be rewritten to use srcsets supporting <a href="https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/IMAGE-OPTIMIZATION.md#adaptive-pixel-ratios" target="_blank">adaptive device pixel ratios</a>. Useful for Progressive Web Apps.]]></comment>
                             <depends>
                                 <field id="image_optimizations">1</field>
                             </depends>

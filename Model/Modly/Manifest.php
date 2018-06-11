@@ -3,6 +3,7 @@
 namespace Fastly\Cdn\Model\Modly;
 
 use Magento\Framework\HTTP\Client\Curl;
+use Fastly\Cdn\Helper\Manifest as Manifests;
 
 class Manifest
 {
@@ -10,6 +11,11 @@ class Manifest
      * @var Curl
      */
     private $curl;
+
+    /**
+     * @var Manifests
+     */
+    private $manifests;
 
     /**
      * @var array List of Modly manifests
@@ -35,9 +41,13 @@ class Manifest
      * Manifest constructor.
      *
      * @param Curl $curl
+     * @param Manifests $manifests
      */
-    public function __construct(Curl $curl)
-    {
+    public function __construct(
+        Curl $curl,
+        Manifests $manifests
+    ) {
+        $this->manifests = $manifests;
         $this->curl = $curl;
     }
 
@@ -54,12 +64,26 @@ class Manifest
     }
 
     /**
+     * Returns a list of Modly manifests
+     *
+     * @return array
+     */
+    public function getModlyManifests()
+    {
+        $manifests = $this->manifests->getManifests();
+        return $manifests;
+    }
+
+    /**
      * Fetches the fresh data from source
      */
     public function reloadModlyManifest()
     {
         foreach ($this->urlList as $modlyUrl) {
-            $this->modlyModules[] = $this->fetchManifest($modlyUrl);
+            $encodedContent = $this->fetchManifest($modlyUrl);
+            $decodedContent = json_decode($encodedContent, true);
+            $content = ['content' => $encodedContent];
+            $this->modlyModules[] = array_merge($decodedContent, $content);
         }
     }
 
@@ -68,7 +92,6 @@ class Manifest
         $this->curl->get($url);
 
         $content = $this->curl->getBody();
-
-        return json_decode($content, true);
+        return $content;
     }
 }

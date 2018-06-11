@@ -787,16 +787,35 @@ define([
                     showLoader: true
                 })
             ).done(function (service) {
+                
 
-                if (service.status == false) {
-                    return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
+            }).fail(function () {
+                return errorVclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+            });
+        });
+
+        $('#fastly_manifest_btn').on('click', function () {
+
+            if (isAlreadyConfigured != true) {
+                $(this).attr('disabled', true);
+                return alert($.mage.__('Please save config prior to continuing.'));
+            }
+
+            vcl.resetAllMessages();
+
+            $.when(
+                $.ajax({
+                    type: "GET",
+                    url: config.saveManifests,
+                    showLoader: true
+                })
+            ).done(function (response) {
+
+                if (response.status == false) {
+                    return errorManifestBtnMsg.text($.mage.__('Could not refresh manifests.')).show();
                 }
 
-                active_version = service.active_version;
-                next_version = service.next_version;
-                service_name = service.service.name;
-                vcl.showPopup('fastly-uploadvcl-options');
-                vcl.setActiveServiceLabel(active_version, next_version, service_name);
+                return successManifestBtnMsg.text($.mage.__('Manifests refreshed successfully.')).show();
 
             }).fail(function () {
                 return errorVclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
@@ -1271,6 +1290,10 @@ define([
         var successVclBtnMsg = $('#fastly-success-vcl-button-msg');
         var errorVclBtnMsg = $('#fastly-error-vcl-button-msg');
         var warningVclBtnMsg = $('#fastly-warning-vcl-button-msg');
+        /* Manifest refresh button message */
+        var successManifestBtnMsg = $('#fastly-success-manifest-button-msg');
+        var errorManifestBtnMsg = $('#fastly-error-manifest-button-msg');
+        var warningManifestBtnMsg = $('#fastly-warning-manifest-button-msg');
         /* TLS button messages */
         var successTlsBtnMsg = $('#fastly-success-tls-button-msg');
         var errorTlsBtnMsg = $('#fastly-error-tls-button-msg');

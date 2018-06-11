@@ -4,6 +4,7 @@ namespace Fastly\Cdn\Plugin\Config;
 
 use Fastly\Cdn\Model\Modly\Manifest;
 use Fastly\Cdn\Model\Modly\NodeFactory;
+use Fastly\Cdn\Helper\Manifest as ManifestData;
 use Magento\Config\Model\Config\ScopeDefiner;
 use Magento\Config\Model\Config\Structure;
 use Magento\Config\Model\Config\Structure\Element\Section;
@@ -31,6 +32,8 @@ class StructurePlugin
      */
     private $isLoaded = false;
 
+    private $manifestData;
+
     /**
      * StructurePlugin constructor.
      *
@@ -41,11 +44,13 @@ class StructurePlugin
     public function __construct(
         ScopeDefiner $scopeDefiner,
         NodeFactory $nodeFactory,
-        Manifest $manifest
+        Manifest $manifest,
+        ManifestData $manifestData
     ) {
         $this->scopeDefiner = $scopeDefiner;
         $this->nodeFactory  = $nodeFactory;
         $this->manifest     = $manifest;
+        $this->manifestData = $manifestData;
     }
 
     /**
@@ -98,7 +103,7 @@ class StructurePlugin
 
     private function loadModlyData()
     {
-        $sampleData = $this->manifest->getModlyModules();
+        $sampleData = $this->manifest->getModlyManifests();
         $result = [];
 
         foreach ($sampleData as $nodeData) {

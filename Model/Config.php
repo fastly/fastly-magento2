@@ -496,7 +496,7 @@ class Config extends \Magento\PageCache\Model\Config
         return $this->_scopeConfig->isSetFlag(self::XML_FASTLY_IMAGE_OPTIMIZATIONS_PIXEL_RATIO);
     }
 
-    public function IsForceLossyEnabled()
+    public function isForceLossyEnabled()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_FORCE_LOSSY);
     }

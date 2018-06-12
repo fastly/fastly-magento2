@@ -38,6 +38,26 @@ class Image extends ImageModel
     private $isFastlyEnabled = null;
 
     /**
+     * @var null
+     */
+    private $isForceLossyEnabled = null;
+
+    /**
+     * @var null
+     */
+    private $lossyParam = null;
+
+    /**
+     * @var null
+     */
+    private $lossyUrl = null;
+
+    /**
+     * @var null
+     */
+    private $fastlyUrl = null;
+
+    /**
      * On/Off switch based on config value
      *
      * @return bool
@@ -59,6 +79,28 @@ class Image extends ImageModel
         }
 
         return $this->isFastlyEnabled;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function isForceLossyEnabled()
+    {
+        if ($this->isForceLossyEnabled !== null) {
+            return $this->isForceLossyEnabled;
+        }
+
+        $this->isForceLossyEnabled = true;
+
+        if ($this->_scopeConfig->isSetFlag(Config::XML_FASTLY_FORCE_LOSSY) == false) {
+            $this->isForceLossyEnabled = false;
+        }
+
+        if ($this->_scopeConfig->getValue(PageCacheConfig::XML_PAGECACHE_TYPE) !== Config::FASTLY) {
+            $this->isForceLossyEnabled = false;
+        }
+
+        return $this->isForceLossyEnabled;
     }
 
     /**
@@ -208,21 +250,63 @@ class Image extends ImageModel
      */
     public function getUrl()
     {
-        if ($this->isFastlyImageOptimizationEnabled() == false) {
+        // returns original url if IO and force lossy are disabled
+        if ($this->isFastlyImageOptimizationEnabled() == false && $this->isForceLossyEnabled() == false) {
             return parent::getUrl();
         }
-
-        return $this->getFastlyUrl();
+        // retrieves force lossy url or param if force lossy is enabled
+        if ($this->isForceLossyEnabled() != false) {
+            $this->getForceLossyUrl();
+        }
+        // retrieves Fastly url if force lossy url is not set
+        if (!$this->lossyUrl) {
+            $this->getFastlyUrl();
+        }
+        // returns url with set parameters
+        if ($this->lossyParam) {
+            return $this->fastlyUrl . $this->lossyParam;
+        } elseif ($this->lossyUrl) {
+            return $this->lossyUrl;
+        } else {
+            return $this->fastlyUrl;
+        }
     }
 
     /**
-     * Builds URL used for fastly service
-     *
-     * @return string
+     * Creates a force lossy url param or url + param depending if IO is disabled or enabled
+     */
+    public function getForceLossyUrl()
+    {
+        $baseFile = $this->getBaseFile();
+        $extension = pathinfo($baseFile, PATHINFO_EXTENSION); // @codingStandardsIgnoreLine
+        $url = $this->getBaseFileUrl($baseFile);
+        if ($extension == 'png' || $extension == 'bmp') {
+            if ($this->isFastlyImageOptimizationEnabled() == false) {
+                $this->lossyUrl = $url . '?format=jpeg';
+            } else {
+                $this->lossyParam = '&format=jpeg';
+            }
+        }
+    }
+
+    /**
+     * Creates a url with fastly parameters
      */
     public function getFastlyUrl()
     {
         $baseFile = $this->getBaseFile();
+        $url = $this->getBaseFileUrl($baseFile);
+
+        $this->fastlyParameters['quality'] = $this->_quality;
+        $this->fastlyParameters['bg-color'] = implode(',', $this->_backgroundColor);
+        if ($this->_keepAspectRatio == true) {
+            $this->fastlyParameters['fit'] = 'bounds';
+        }
+        $this->fastlyUrl = $url . '?' . $this->compileFastlyParameters();
+    }
+
+    public function getBaseFileUrl($baseFile)
+    {
         if ($baseFile === null) {
             $url = $this->_assetRepo->getUrl(
                 "Magento_Catalog::images/product/placeholder/{$this->getDestinationSubdir()}.jpg"
@@ -233,15 +317,6 @@ class Image extends ImageModel
             );
             $url .= $baseFile;
         }
-
-        // Add some default parameters
-        $this->fastlyParameters['quality'] = $this->_quality;
-        $this->fastlyParameters['bg-color'] = implode(',', $this->_backgroundColor);
-        if ($this->_keepAspectRatio == true) {
-            $this->fastlyParameters['fit'] = 'bounds';
-        }
-
-        $url .= '?' . $this->compileFastlyParameters();
 
         return $url;
     }

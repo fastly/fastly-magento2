@@ -174,6 +174,9 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_IMAGE_OPTIMIZATIONS
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimizations';
 
+    const XML_FASTLY_FORCE_LOSSY
+        = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimization_force_lossy';
+
     /**
      * XML path to image optimizations pixel ratio flag
      */
@@ -491,6 +494,11 @@ class Config extends \Magento\PageCache\Model\Config
         }
 
         return $this->_scopeConfig->isSetFlag(self::XML_FASTLY_IMAGE_OPTIMIZATIONS_PIXEL_RATIO);
+    }
+
+    public function IsForceLossyEnabled()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_FORCE_LOSSY);
     }
 
     /**

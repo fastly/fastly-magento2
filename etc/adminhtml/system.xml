@@ -219,8 +219,9 @@
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\IoConfigOptionsBtn</frontend_model>
                         </field>
                         <field id="image_optimization_force_lossy" translate="label comment" type="select" sortOrder="93" showInDefault="1" showInWebsite="1" showInStore="1">
-                            <label>Enable Force Lossy conversion</label>
-                            <comment>Enables using lossy conversion when original image is lossless.</comment>
+                            <label>Force Lossy conversion</label>
+                            <comment>Certain image types are lossless e.g. PNG and BMP and will not compress well. By default Fastly IO will retain
+                            original format. This option forces those images to be converted to lossy JPG or WEBP. Applies only to product/catalog images.</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="image_optimizations" translate="label comment" type="select" sortOrder="95" showInDefault="1" showInWebsite="1" showInStore="1">

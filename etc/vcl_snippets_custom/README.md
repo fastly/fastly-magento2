@@ -1,8 +1,9 @@
 Customer provided VCL snippets
 ==============================
 
-In this directory please add any customer provided 
+Please add any
 [VCL snippets](https://docs.fastly.com/guides/vcl-snippets/using-regular-vcl-snippets) 
+to $MAGENTO_HOME/var/vcl_snippets_custom
 that should be uploaded any time you click upload custom VCL in the Magento admin.
 
 Snippets need to follow this naming convention

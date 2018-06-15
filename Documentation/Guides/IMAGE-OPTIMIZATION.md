@@ -4,7 +4,8 @@ This guide will show how enable Fastly Image Optimization from the Magento admin
 
 ## Prerequisite
 
-* You have to have IO feature enabled for your Fastly service. IO is a contracted add-on.
+* You have to have IO feature enabled for your Fastly service. IO is a paid add-on.
+* It's recommended you run the latest version of the Fastly module
  
 ## Enablement
  
@@ -24,12 +25,13 @@ If instead you receive this message
 
 <img alt="IO Not Enabled" title="IO Not Enabled" src="../images/guides/image-optimization/io_not_enabled.png" width="600px"/>
 
-it means you do not have the IO feature enabled and need to talk to our sales team.
+it means you do not have the IO feature enabled and need to talk to the Fastly support team.
 
 There are four main categories
 
 * Fastly IO Snippet Upload
-* Default IO config options
+* Default IO config options (available in 1.2.52+)
+* Force lossy conversion (available in 1.2.57+)
 * Deep image optimization
 * Adaptive pixel ratios
 
@@ -40,7 +42,7 @@ which instructs Fastly to process all images through our Image optimizers. This 
 options to process images. Things to note
 
 * It will not do any other transformations e.g. cropping, rotations etc.
-* It will not do any image format changes except for browsers supporting WebP (Chrome etc.)
+* It will not do any image format changes except for browsers supporting WebP (Chrome etc.) it converts JPEG to WEBP
 * PNG images will not see much improvement since they are lossless and it's generally hard to compress them further
 
 For the curious clicking Enable will
@@ -56,6 +58,21 @@ Default IO config options allow you to tweak default settings that Image optimiz
 <img alt="IO Default Config Options" title="IO Default Config Options" src="../images/guides/image-optimization/io_default_config_dialog.png" width="800px"/>
 
 Things you may commonly change are WebP and JPEG quality levels for lossy formats or whether to serve Progressive or Baseline JPEGs.
+
+## Force lossy conversion
+
+By default Fastly IO makes no image format changes except for JPEG to WEBP for compatible browser. If the original image is PNG
+the output will be PNG, etc. This option forces conversion of lossless formats such as PNG, BMP or WEBP into JPEG/WEBP.
+
+Pros
+
+* Much smaller images e.g. size may be reduced 60-70% depending on quality level by using JPEG/WEBP over using PNG
+
+Cons
+
+* Depending on your quality setting images you may perceive visual differences
+* Alpha channel/transparencies will be stripped out and replaced by white background unless you use Deep image optimization which uses
+the background color of your theme
 
 ## Deep image optimization
 

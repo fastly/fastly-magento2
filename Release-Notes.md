@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.57
+
+- Add ability to force lossy conversions of lossless image formats https://github.com/fastly/fastly-magento2/pull/186
+
 ## 1.2.56
 
 - Wording/documentation changes

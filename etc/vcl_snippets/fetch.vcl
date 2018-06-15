@@ -44,13 +44,6 @@
     if (beresp.http.x-esi) {
         # enable ESI feature for Magento response by default
         esi;
-        if (!beresp.http.Vary ~ "X-Magento-Vary,Https") {
-            if (beresp.http.Vary) {
-                set beresp.http.Vary = beresp.http.Vary ",X-Magento-Vary,Https";
-            } else {
-                set beresp.http.Vary = "X-Magento-Vary,Https";
-            }
-        }
         # Since varnish doesn't compress ESIs we need to hint to the HTTP/2 terminators to
         # compress it
         set beresp.http.x-compress-hint = "on";
@@ -67,6 +60,17 @@
             }
             if (req.http.Accept-Encoding == "gzip") {
                 set beresp.gzip = true;
+            }
+        }
+    }
+
+    # Add Varying on X-Magento-Vary
+    if (beresp.http.Content-Type ~ "text/(html|xml)") {
+        if (!beresp.http.Vary ~ "X-Magento-Vary,Https") {
+            if (beresp.http.Vary) {
+                set beresp.http.Vary = beresp.http.Vary ",X-Magento-Vary,Https";
+            } else {
+                set beresp.http.Vary = "X-Magento-Vary,Https";
             }
         }
     }

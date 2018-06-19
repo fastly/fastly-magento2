@@ -94,7 +94,7 @@
                         </field>
                     </group>
                     <group id="fastly_edge_acl" sortOrder="250" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Edge acl</label>
+                        <label>Edge ACLs</label>
                         <comment>
                             <![CDATA[Edge ACLs are access control lists that allow you to manage IP addresses that are used in allowing or blocking access to resources. <a href="https://docs.fastly.com/guides/access-control-lists/creating-and-manipulating-edge-acl-entries">Click here for more details.</a> This interface only allows management of containers and entries. To invoke them you will need to configure your Fastly service.]]></comment>
                         <field id="acl" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">

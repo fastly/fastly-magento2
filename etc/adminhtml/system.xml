@@ -32,6 +32,10 @@
                         <comment><![CDATA[Downloads new manifest of features.]]></comment>
                         <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ManifestBtn</frontend_model>
                     </field>
+                    <depends>
+                        <field id="caching_application">fastly</field>
+                        <field id="system/full_page_cache/fastly/fastly_advanced_configuration/enable_fastly_edge_modules">1</field>
+                    </depends>
                 </group>
                 <group id="fastly" translate="label" showInDefault="1" showInWebsite="0" showInStore="0" sortOrder="615">
                     <label>Fastly Configuration</label>
@@ -204,6 +208,10 @@
                             <depends>
                                 <field id="enable_geoip">1</field>
                             </depends>
+                        </field>
+                        <field id="enable_fastly_edge_modules" translate="label comment" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Enable Fastly Edge Modules</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                     </group>
                     <group id="fastly_image_optimization_configuration" sortOrder="450" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">

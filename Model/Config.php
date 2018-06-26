@@ -33,6 +33,7 @@ use Magento\Framework\Module\Dir;
 /**
  * Class Config
  *
+ * @package Fastly\Cdn\Model
  */
 class Config extends \Magento\PageCache\Model\Config
 {

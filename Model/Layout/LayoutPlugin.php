@@ -24,6 +24,8 @@ use \Fastly\Cdn\Model\Config;
 
 /**
  * Class LayoutPlugin
+ *
+ * @package Fastly\Cdn\Model\Layout
  */
 class LayoutPlugin
 {

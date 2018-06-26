@@ -26,6 +26,11 @@ use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
 
+/**
+ * Class CheckAuthSetting
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
+ */
 class CheckAuthSetting extends Action
 {
     /**
@@ -75,14 +80,13 @@ class CheckAuthSetting extends Action
     }
 
     /**
-     * Verifes weather or not auth settings snippet existis on specified Faslty version
+     * Verifies weather or not auth settings snippet exists on specified Fastly version
      *
      * @return \Magento\Framework\Controller\Result\Json
      */
     public function execute()
     {
         $result = $this->resultJsonFactory->create();
-
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
             $snippets = $this->config->getVclSnippets(self::VCL_AUTH_SNIPPET_PATH);

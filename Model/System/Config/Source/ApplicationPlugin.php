@@ -23,6 +23,11 @@ namespace Fastly\Cdn\Model\System\Config\Source;
 use Magento\PageCache\Model\System\Config\Source\Application;
 use Fastly\Cdn\Model\Config;
 
+/**
+ * Class ApplicationPlugin
+ *
+ * @package Fastly\Cdn\Model\System\Config\Source
+ */
 class ApplicationPlugin
 {
     /**

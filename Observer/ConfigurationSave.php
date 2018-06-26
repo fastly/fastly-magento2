@@ -27,6 +27,11 @@ use Fastly\Cdn\Model\StatisticRepository;
 use Fastly\Cdn\Model\Statistic;
 use Fastly\Cdn\Model\StatisticFactory;
 
+/**
+ * Class ConfigurationSave
+ *
+ * @package Fastly\Cdn\Observer
+ */
 class ConfigurationSave implements ObserverInterface
 {
     /**

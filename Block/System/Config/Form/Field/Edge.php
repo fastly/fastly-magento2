@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Fastly CDN for Magento
  *
@@ -25,7 +24,9 @@ use Magento\Backend\Block\Template\Context;
 use Magento\Framework\Data\Form\Element\Factory;
 
 /**
- * Backend system config array field renderer
+ * Class Edge
+ *
+ * @package Fastly\Cdn\Block\System\Config\Form\Field
  */
 class Edge extends \Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray
 {
@@ -102,11 +103,17 @@ class Edge extends \Magento\Config\Block\System\Config\Form\Field\FieldArray\Abs
     {
         $options = [];
         foreach ($this->_storeManager->getStores() as $store) {
-            $options[] = ['value' => $store->getId(), 'label' => $store->getName()];
+            $options[] = [
+                'value' => $store->getId(),
+                'label' => $store->getName()
+            ];
         }
 
         if ($label) {
-            array_unshift($options, ['value' => '', 'label' => $label]);
+            array_unshift($options, [
+                'value' => '',
+                'label' => $label
+            ]);
         }
 
         return $options;

@@ -27,6 +27,11 @@ use Fastly\Cdn\Helper\Data;
 use Fastly\Cdn\Helper\Vcl;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Class Api
+ *
+ * @package Fastly\Cdn\Model
+ */
 class Api
 {
     const FASTLY_HEADER_AUTH   = 'Fastly-Key';

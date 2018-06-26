@@ -27,6 +27,11 @@ use Magento\Backend\App\Action\Context;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Store\Model\StoreManagerInterface;
 
+/**
+ * Class Store
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Purge
+ */
 class Store extends Action
 {
     /**

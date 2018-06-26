@@ -22,6 +22,11 @@ namespace Fastly\Cdn\Test\Unit\Model;
 
 use Fastly\Cdn\Model\Config;
 
+/**
+ * Class ConfigTest
+ *
+ * @package Fastly\Cdn\Test\Unit\Model
+ */
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
     /**

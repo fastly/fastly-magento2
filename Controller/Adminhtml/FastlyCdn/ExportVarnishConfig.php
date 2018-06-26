@@ -21,7 +21,14 @@
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn;
 
-class ExportVarnishConfig extends \Magento\PageCache\Controller\Adminhtml\PageCache\ExportVarnishConfig
+use Magento\PageCache\Controller\Adminhtml\PageCache\ExportVarnishConfig as ExportVarnish;
+
+/**
+ * Class ExportVarnishConfig
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn
+ */
+class ExportVarnishConfig extends ExportVarnish
 {
     /**
      * This empty controller is necessary to inject \Fastly\Cdn\Model\Config to the parent controller using DI.

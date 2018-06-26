@@ -22,6 +22,11 @@ namespace Fastly\Cdn\Test\Unit\Model\PageCache;
 
 use \Fastly\Cdn\Model\Config;
 
+/**
+ * Class ConfigPluginTest
+ *
+ * @package Fastly\Cdn\Test\Unit\Model\PageCache
+ */
 class ConfigPluginTest extends \PHPUnit_Framework_TestCase
 {
     /**

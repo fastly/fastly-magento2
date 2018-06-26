@@ -20,18 +20,20 @@
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn;
 
-use Braintree\Exception;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use Fastly\Cdn\Helper\Vcl;
 use Fastly\Cdn\Model\Statistic;
 use Fastly\Cdn\Model\StatisticFactory;
 use Fastly\Cdn\Model\StatisticRepository;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Framework\Exception\LocalizedException;
 
+/**
+ * Class TestConnection
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn
+ */
 class TestConnection extends Action
 {
     /**

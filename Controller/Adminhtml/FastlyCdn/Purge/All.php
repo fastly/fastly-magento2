@@ -25,6 +25,11 @@ use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Cache\Manager;
 
+/**
+ * Class All
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Purge
+ */
 class All extends Action
 {
     /**
@@ -59,7 +64,8 @@ class All extends Action
      * Performs cache cleanup and purge all on Fastly service.
      * Should be used when "Preserve static assets on purge" is enabled.
      *
-     * @return \Magento\Framework\App\ResponseInterface
+     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
+     * @throws \Zend_Uri_Exception
      */
     public function execute()
     {

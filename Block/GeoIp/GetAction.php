@@ -26,7 +26,9 @@ use Magento\Framework\View\Element\Context;
 use Magento\Framework\App\ResponseInterface as Response;
 
 /**
- * This is a just a place holder to insert the ESI tag for GeoIP lookup.
+ * Class GetAction
+ *
+ * @package Fastly\Cdn\Block\GeoIp
  */
 class GetAction extends AbstractBlock
 {

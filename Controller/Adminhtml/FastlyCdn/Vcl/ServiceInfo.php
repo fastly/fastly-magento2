@@ -27,6 +27,11 @@ use Magento\Backend\App\Action\Context;
 use Fastly\Cdn\Helper\Vcl;
 use Magento\Framework\Controller\Result\JsonFactory;
 
+/**
+ * Class ServiceInfo
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
+ */
 class ServiceInfo extends Action
 {
     /**
@@ -51,10 +56,12 @@ class ServiceInfo extends Action
 
     /**
      * ServiceInfo constructor.
+     *
      * @param Context $context
      * @param Config $config
      * @param Api $api
      * @param JsonFactory $resultJsonFactory
+     * @param Vcl $vcl
      */
     public function __construct(
         Context $context,

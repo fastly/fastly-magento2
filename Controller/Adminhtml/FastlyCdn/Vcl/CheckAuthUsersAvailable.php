@@ -26,6 +26,11 @@ use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
 
+/**
+ * Class CheckAuthUsersAvailable
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
+ */
 class CheckAuthUsersAvailable extends Action
 {
     /**
@@ -76,17 +81,16 @@ class CheckAuthUsersAvailable extends Action
 
     /**
      * Checking request setting
+     *
      * @return \Magento\Framework\Controller\Result\Json
      */
     public function execute()
     {
         $result = $this->resultJsonFactory->create();
-
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
-
-            $dictonaryName = CheckAuthSetting::AUTH_DICTIONARY_NAME;
-            $dictionary = $this->api->getSingleDictionary($activeVersion, $dictonaryName);
+            $dictionaryName = CheckAuthSetting::AUTH_DICTIONARY_NAME;
+            $dictionary = $this->api->getSingleDictionary($activeVersion, $dictionaryName);
 
             if ((is_array($dictionary) && empty($dictionary)) || $dictionary == false || !isset($dictionary->id)) {
                 return $result->setData([

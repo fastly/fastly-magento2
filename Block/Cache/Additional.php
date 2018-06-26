@@ -21,8 +21,15 @@
 namespace Fastly\Cdn\Block\Cache;
 
 use Fastly\Cdn\Model\Config;
+use Magento\Backend\Block\Template;
+use Magento\Backend\Block\Template\Context;
 
-class Additional extends \Magento\Backend\Block\Template
+/**
+ * Class Additional
+ *
+ * @package Fastly\Cdn\Block\Cache
+ */
+class Additional extends Template
 {
     const CONTENT_TYPE_HTML    = 'text';
     const CONTENT_TYPE_CSS     = 'css';
@@ -42,7 +49,7 @@ class Additional extends \Magento\Backend\Block\Template
      * @param array $data
      */
     public function __construct(
-        \Magento\Backend\Block\Template\Context $context,
+        Context $context,
         Config $config,
         array $data = []
     ) {

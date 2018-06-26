@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Fastly CDN for Magento
  *
@@ -26,7 +25,9 @@ use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
 use Magento\Framework\Data\Form\Element\Factory;
 
 /**
- * Backend system config array field renderer
+ * Class Auth
+ *
+ * @package Fastly\Cdn\Block\System\Config\Form\Field
  */
 class Auth extends AbstractFieldArray
 {
@@ -103,11 +104,17 @@ class Auth extends AbstractFieldArray
     {
         $options = [];
         foreach ($this->_storeManager->getStores() as $store) {
-            $options[] = ['value' => $store->getId(), 'label' => $store->getName()];
+            $options[] = [
+                'value' => $store->getId(),
+                'label' => $store->getName()
+            ];
         }
 
         if ($label) {
-            array_unshift($options, ['value' => '', 'label' => $label]);
+            array_unshift($options, [
+                'value' => '',
+                'label' => $label
+            ]);
         }
 
         return $options;

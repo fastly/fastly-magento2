@@ -25,6 +25,11 @@ use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\PurgeCache;
 use Magento\Framework\Event\ObserverInterface;
 
+/**
+ * Class InvalidateVarnishObserver
+ *
+ * @package Fastly\Cdn\Observer
+ */
 class InvalidateVarnishObserver implements ObserverInterface
 {
     /**

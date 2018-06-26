@@ -28,6 +28,11 @@ use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultInterface;
 
+/**
+ * Class IsAlreadyConfigured
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
+ */
 class IsAlreadyConfigured extends Action
 {
     /**
@@ -70,8 +75,8 @@ class IsAlreadyConfigured extends Action
      */
     public function execute()
     {
+        $result = $this->resultJsonFactory->create();
         try {
-            $result = $this->resultJsonFactory->create();
             $serviceId = $this->config->getServiceId();
             $apiKey = $this->config->getApiKey();
 

@@ -33,13 +33,14 @@ use Magento\Store\Model\StoreManagerInterface;
 use Magento\Store\Model\StoreResolver;
 use Magento\Store\Api\Data\StoreInterface;
 use Psr\Log\LoggerInterface;
+use Magento\Framework\App\Action\Action;
 
 /**
  * Class GetAction
  *
  * @package Fastly\Cdn\Controller\GeoIP
  */
-class GetAction extends \Magento\Framework\App\Action\Action
+class GetAction extends Action
 {
     /**
      * Request parameter for the country code.

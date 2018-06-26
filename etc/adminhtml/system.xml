@@ -231,7 +231,7 @@
                         <!-- ==================
                              Backends field
                         =================== -->
-                        <field id="backends" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="backends" translate="label comment tooltip" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Backends</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Backend</frontend_model>
                             <comment>
@@ -251,14 +251,14 @@
                         <!-- ======================================
                              Basic Authentication Status button
                         ======================================= -->
-                        <field id="enable_basic_auth" translate="label comment" type="select" sortOrder="80" showInDefault="1">
+                        <field id="enable_basic_auth" translate="label comment" type="select" sortOrder="5" showInDefault="1">
                             <label>Basic Authentication Status</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\EnableAuth</frontend_model>
                         </field>
                         <!-- ==========================
                              Authentication buttons
                         =========================== -->
-                        <field id="authentication" translate="label comment tooltip" sortOrder="80" showInDefault="1">
+                        <field id="authentication" translate="label comment tooltip" sortOrder="10" showInDefault="1">
                             <label>Authentication</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Auth</frontend_model>
                         </field>
@@ -320,7 +320,7 @@
                         <!-- ======================================
                              Error/Maintenance Page HTML button
                         ======================================= -->
-                        <field id="force_tls" translate="label comment" sortOrder="10" showInDefault="1" showInStore="0" showInWebsite="0">
+                        <field id="force_tls" translate="label comment" sortOrder="5" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Error/Maintenance Page HTML]]></label>
                             <comment>
                                 <![CDATA[Configures an error/sorry page that will be sent to all users if Fastly is about to serve an error page (HTTP 500/503) e.g. backend timeouts, backend servers errors etc.]]>
@@ -330,7 +330,7 @@
                         <!-- ============================
                              WAF Page button (hidden)
                         ============================= -->
-                        <field id="waf_page" translate="label comment" sortOrder="20" showInDefault="1" showInStore="0" showInWebsite="0">
+                        <field id="waf_page" translate="label comment" sortOrder="10" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[WAF Page]]></label>
                             <comment>
                                 <![CDATA[Customize output of the page served to users blocked by the Web Application Firewall (WAF).]]>
@@ -351,7 +351,7 @@
                         <!-- ==============
                              ACL button
                         =============== -->
-                        <field id="acl" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="acl" translate="label comment tooltip" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Acl</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Acl</frontend_model>
                         </field>
@@ -370,7 +370,7 @@
                         <!-- =======================
                              Dictionaries button
                         ======================== -->
-                        <field id="dictionaries" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="dictionaries" translate="label comment tooltip" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Dictionaries</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Edge</frontend_model>
                         </field>
@@ -383,7 +383,7 @@
                         <!-- ============================
                              Fastly IO Snippet button
                         ============================= -->
-                        <field id="fastly_push_image_config" translate="label comment" sortOrder="90" showInDefault="1" showInStore="0" showInWebsite="0">
+                        <field id="fastly_push_image_config" translate="label comment" sortOrder="5" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Fastly IO Snippet]]></label>
                             <comment>
                                 <![CDATA[VCL snippet upload is required in order to funnel image requests to Fastly optimizers.]]>
@@ -393,7 +393,7 @@
                         <!-- ====================================
                              Default IO Config Options button
                         ===================================== -->
-                        <field id="image_optimizations_default_config_options" translate="label comment" sortOrder="92" showInDefault="1" showInStore="1" showInWebsite="1">
+                        <field id="image_optimizations_default_config_options" translate="label comment" sortOrder="10" showInDefault="1" showInStore="1" showInWebsite="1">
                             <label><![CDATA[Default IO Config Options]]></label>
                             <comment>
                                 <![CDATA[Allows you to (re)configure items such as default quality levels lossy image formats, auto WebP, JPG types]]>
@@ -403,7 +403,7 @@
                         <!-- =======================================
                              Force Lossy Conversion select field
                         ======================================== -->
-                        <field id="image_optimization_force_lossy" translate="label comment" type="select" sortOrder="93" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="image_optimization_force_lossy" translate="label comment" type="select" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Force Lossy conversion</label>
                             <comment>Certain image types are lossless e.g. PNG and BMP and will not compress well. By default Fastly IO will retain
                             original format. This option forces those images to be converted to lossy JPG or WEBP. Applies only to product/catalog images.</comment>
@@ -412,7 +412,7 @@
                         <!-- ===============================================
                              Enable Deep Image Optimization select field
                         ================================================ -->
-                        <field id="image_optimizations" translate="label comment" type="select" sortOrder="95" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="image_optimizations" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enable Deep Image Optimization</label>
                             <comment><![CDATA[Turns off Magento built-in image resizing and manipulation and offloads it onto Fastly IO.
                             Please read the <a href="https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/IMAGE-OPTIMIZATION.md#deep-image-optimization"
@@ -422,7 +422,7 @@
                         <!-- ====================================================
                              Enable Adaptive Device Pixel Ratios select field
                         ===================================================== -->
-                        <field id="image_optimizations_pixel_ratio" translate="label comment" type="select" sortOrder="97" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="image_optimizations_pixel_ratio" translate="label comment" type="select" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enable Adaptive Device Pixel Ratios</label>
                             <comment><![CDATA[Image sources will be rewritten to use srcsets supporting
                             <a href="https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/IMAGE-OPTIMIZATION.md#adaptive-pixel-ratios"
@@ -435,7 +435,7 @@
                         <!-- =========================================
                              Device Pixel Ratios multiselect field
                         ========================================== -->
-                        <field id="image_optimizations_ratios" type="multiselect" translate="label" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                        <field id="image_optimizations_ratios" type="multiselect" translate="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
                             <label>Device Pixel Ratios</label>
                             <comment><![CDATA[Using a higher <a href="https://www.html5rocks.com/en/mobile/high-dpi/" target="_blank">Device Pixel Ratio</a> means serving larger images.]]></comment>
                             <depends>
@@ -458,7 +458,7 @@
                         <!-- ========================
                              Enabled select field
                         ========================= -->
-                        <field id="enable_webhooks" translate="label comment" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="enable_webhooks" translate="label comment" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enabled</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
@@ -474,7 +474,7 @@
                         <!-- =================================================
                              Publish Key and URL Purge Events select field
                         ================================================== -->
-                        <field id="publish_key_url_purge_events" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="publish_key_url_purge_events" translate="label comment" type="select" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Publish Key and URL Purge Events</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                             <depends>
@@ -484,7 +484,7 @@
                         <!-- =========================================================
                              Publish Purge All/CLean All Items Events select field
                         ========================================================== -->
-                        <field id="publish_purge_all_items_events" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="publish_purge_all_items_events" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Publish Purge All/Clean All Items Events</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                             <depends>
@@ -494,7 +494,7 @@
                         <!-- =======================================================
                              Publish Stack Trace on Purge All Event select field
                         ======================================================== -->
-                        <field id="publish_purge_all_trace" translate="label comment" type="select" sortOrder="32" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="publish_purge_all_trace" translate="label comment" type="select" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Publish Stack Trace on Purge All Event</label>
                             <comment>Submits the stack trace when the purge all event is created, for debugging purposes</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -505,7 +505,7 @@
                         <!-- =============================================
                              Publish Config Change Events select field
                         ============================================== -->
-                        <field id="publish_config_change_events" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="publish_config_change_events" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Publish Config Change Events</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                             <depends>
@@ -515,7 +515,7 @@
                         <!-- ==============================
                              Message Prefix input field
                         =============================== -->
-                        <field id="webhook_message_prefix" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="webhook_message_prefix" translate="label comment" type="text" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Message Prefix</label>
                             <depends>
                                 <field id="enable_webhooks">1</field>

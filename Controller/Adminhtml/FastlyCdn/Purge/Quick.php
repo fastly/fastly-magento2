@@ -28,6 +28,11 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
+/**
+ * Class Quick
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Purge
+ */
 class Quick extends Action
 {
     /**
@@ -117,8 +122,9 @@ class Quick extends Action
     /**
      * Checks if host is one of Magento's configured domains.
      *
-     * @param string $host
+     * @param $host
      * @return bool
+     * @throws \Zend_Uri_Exception
      */
     private function isHostInDomainList($host)
     {
@@ -142,7 +148,6 @@ class Quick extends Action
                 }
             }
         }
-
         return false;
     }
 }

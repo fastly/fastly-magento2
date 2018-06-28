@@ -67,11 +67,6 @@ class Config extends \Magento\PageCache\Model\Config
     const GEOIP_ACTION_REDIRECT = 'redirect';
 
     /**
-     * GeoIP processed cookie name
-     */
-    const GEOIP_PROCESSED_COOKIE_NAME = 'FASTLY_CDN_GEOIP_PROCESSED';
-
-    /**
      * XML path to Fastly config template path
      */
     const FASTLY_CONFIGURATION_PATH = 'system/full_page_cache/fastly/path';

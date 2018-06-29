@@ -904,6 +904,41 @@ define([
             });
         });
 
+        /**
+         * Custom snippet upload
+         */
+
+        $('#fastly_custom_vcl_button').on('click', function () {
+
+            if (isAlreadyConfigured != true) {
+                $(this).attr('disabled', true);
+                return alert($.mage.__('Please save config prior to continuing.'));
+            }
+
+            vcl.resetAllMessages();
+
+            $.when(
+                $.ajax({
+                    type: "GET",
+                    url: config.serviceInfoUrl,
+                    showLoader: true
+                })
+            ).done(function (service) {
+
+                if (service.status == false) {
+                    return errorCustomSnippetBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
+                }
+
+                active_version = service.active_version;
+                next_version = service.next_version;
+                service_name = service.service.name;
+                vcl.showPopup('fastly-custom-snippet-options');
+
+            }).fail(function () {
+                return errorCustomSnippetBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+            });
+        });
+
 
         $('#fastly_push_image_config').on('click', function () {
             if (isAlreadyConfigured != true) {
@@ -1372,6 +1407,10 @@ define([
         var successVclBtnMsg = $('#fastly-success-vcl-button-msg');
         var errorVclBtnMsg = $('#fastly-error-vcl-button-msg');
         var warningVclBtnMsg = $('#fastly-warning-vcl-button-msg');
+        /* Custom snippet button messages */
+        var successCustomSnippetBtnMsg = $('#fastly-success-custom-snippet-button-msg');
+        var errorCustomSnippetBtnMsg = $('#fastly-error-custom-snippet-button-msg');
+        var warningCUstomSnippetBtnMsg = $('#fastly-warning-custom-snippet-button-msg');
         /* TLS button messages */
         var successTlsBtnMsg = $('#fastly-success-tls-button-msg');
         var errorTlsBtnMsg = $('#fastly-error-tls-button-msg');
@@ -1811,6 +1850,56 @@ define([
                     },
                     error: function (msg) {
                         // error handling
+                    }
+                });
+            },
+            // custom snippet creation
+            setCustomSnippet: function () {
+                var custom_name = $('#custom_snippet_name').val();
+                var custom_type = $('#custom_snippet_type').val();
+                var custom_priority = $('#custom_snippet_priority').val();
+                var custom_vcl = $('#custom_snippet_content').val();
+                var msgWarning = $('.fastly-message-error');
+
+                if (!custom_name || !custom_type || !custom_priority || !custom_vcl) {
+                    msgWarning.text($.mage.__('Please fill out the required fields.')).show();
+                    return;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: config.createCustomSnippetUrl,
+                    data: {
+                        'name': custom_name,
+                        'type': custom_type,
+                        'priority': custom_priority,
+                        'vcl': custom_vcl
+                    },
+                    showLoader: true,
+                    success: function (response) {
+                        if (response.status == true) {
+                            active_version = response.active_version;
+                            vcl.modal.modal('closeModal');
+                            successCustomSnippetBtnMsg.text($.mage.__('Custom snippet successfully created.')).show();
+                            vcl.getCustomSnippets(false).done(function (snippetsResp) {
+                                $('.loading-snippets').hide();
+                                if (snippetsResp.status != false) {
+                                    if (snippetsResp.snippets.length > 0) {
+                                        snippets = snippetsResp.snippets;
+                                        vcl.processCustomSnippets(snippets);
+                                    } else {
+                                        $('.no-snippets').show();
+                                    }
+                                }
+                            }).fail(function () {
+                                // TO DO: implement
+                            });
+                        } else {
+                            msgWarning.text($.mage.__(response.msg)).show();
+                        }
+                    },
+                    error: function (msg) {
+                        return errorCustomSnippetBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                     }
                 });
             },
@@ -2625,6 +2714,15 @@ define([
                     },
                     actionOk: function () {
                         vcl.submitVcl(active_version);
+                    }
+                },
+                'fastly-custom-snippet-options': {
+                    title: jQuery.mage.__('You are about to create a custom snippet '),
+                    content: function () {
+                        return document.getElementById('fastly-custom-snippet-template').textContent;
+                    },
+                    actionOk: function () {
+                        vcl.setCustomSnippet();
                     }
                 },
                 'fastly-tls-options': {

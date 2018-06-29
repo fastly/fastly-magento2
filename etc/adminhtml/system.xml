@@ -269,10 +269,9 @@
                     </group>
                     <group id="fastly_custom_snippets" sortOrder="249" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Custom VCL snippets</label>
-                        <field id="fastly_custom_snippets_upload" type="Magento\Config\Block\System\Config\Form\Field\File" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
-                            <label>Upload custom snippet</label>
-                            <backend_model>Fastly\Cdn\Model\Config\Backend\CustomSnippetUpload</backend_model>
-                            <upload_dir config="system">vcl_snippets_custom</upload_dir>
+                        <field id="fastly_custom_snippet_upload" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Create custom snippet</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\CustomSnippetBtn</frontend_model>
                         </field>
                         <field id="fastly_custom_snippet_files" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Custom snippets</label>

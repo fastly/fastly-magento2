@@ -11,6 +11,11 @@ use Magento\Framework\Controller\ResultInterface;
 use Fastly\Cdn\Model\Config\Backend\CustomSnippetUpload;
 use \Magento\Framework\Filesystem\Directory\ReadFactory;
 
+/**
+ * Class GetCustomSnippets
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
+ */
 class GetCustomSnippets extends Action
 {
     /**
@@ -32,10 +37,12 @@ class GetCustomSnippets extends Action
 
     /**
      * GetCustomSnippets constructor.
+     *
      * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
      * @param CustomSnippetUpload $customSnippetUpload
+     * @param ReadFactory $readFactory
      */
     public function __construct(
         Context $context,

@@ -111,7 +111,7 @@ class LayoutPlugin
     public function afterGetOutput(\Magento\Framework\View\Layout $subject, $result) // @codingStandardsIgnoreLine - unused parameter
     {
         if ($this->config->getType() == Config::FASTLY) {
-            $this->response->setHeader("Fastly-Module-Enabled", "1.2.57", true);
+            $this->response->setHeader("Fastly-Module-Enabled", "1.2.58", true);
         }
 
         return $result;

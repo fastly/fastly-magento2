@@ -124,7 +124,7 @@
                             <backend_model>Magento\PageCache\Model\System\Config\Backend\Ttl</backend_model>
                         </field>
                         <field id="admin_path_timeout" type="text" translate="label comment" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
-                            <label>Admin path timeout</label>
+                            <label>Admin path timeout (1-600)</label>
                             <comment>
                                 <![CDATA[Time in seconds for the admin path first byte timeout. Please reupload VCL after making changes.]]>
                             </comment>
@@ -282,7 +282,7 @@
                         <label>Custom VCL snippets</label>
                         <comment>
                             <![CDATA[This option allows you to manage your own custom VCL snippets. You can learn 
-                            <a href="https://github.com/fastly/fastly-magento2/tree/master/etc/vcl_snippets_custom" target="_blank">more about snippets here</a>.
+                            <a href="https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/CUSTOM-VCL-SNIPPETS.md" target="_blank">more here</a>.
                             <b>Please note</b> after you have created your snippets you have to click on Upload Fastly VCL to upload them along
                             side stock Fastly VCL.
                             ]]>

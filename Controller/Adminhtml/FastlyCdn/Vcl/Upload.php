@@ -9,8 +9,10 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
+use Fastly\Cdn\Model\Config\Backend\CustomSnippetUpload;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
+use Magento\Framework\Exception\LocalizedException;
 
 class Upload extends Action
 {
@@ -40,6 +42,11 @@ class Upload extends Action
     private $vcl;
 
     /**
+     * @var CustomSnippetUpload
+     */
+    private $customSnippetUpload;
+
+    /**
      * @var DateTime
      */
     private $time;
@@ -50,13 +57,16 @@ class Upload extends Action
     private $timezone;
 
     /**
+     *
      * Upload constructor.
+     *
      * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
      * @param Config $config
      * @param Api $api
      * @param Vcl $vcl
+     * @param CustomSnippetUpload $customSnippetUpload
      * @param DateTime $time
      * @param TimezoneInterface $timezone
      */
@@ -67,6 +77,7 @@ class Upload extends Action
         Config $config,
         Api $api,
         Vcl $vcl,
+        CustomSnippetUpload $customSnippetUpload,
         DateTime $time,
         TimezoneInterface $timezone
     ) {
@@ -75,6 +86,7 @@ class Upload extends Action
         $this->config = $config;
         $this->api = $api;
         $this->vcl = $vcl;
+        $this->customSnippetUpload = $customSnippetUpload;
         $this->time = $time;
         $this->timezone = $timezone;
         parent::__construct($context);
@@ -83,7 +95,7 @@ class Upload extends Action
     /**
      * Upload VCL snippets
      *
-     * @return $resultJsonFactory
+     * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
@@ -96,6 +108,9 @@ class Upload extends Action
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
             $snippets = $this->config->getVclSnippets();
+            $customSnippetPath = $this->customSnippetUpload->getUploadDirPath('vcl_snippets_custom');
+            $customSnippets = $this->config->getCustomSnippets($customSnippetPath);
+
             foreach ($snippets as $key => $value) {
                 $snippetData = [
                     'name'      => Config::FASTLY_MAGENTO_MODULE . '_' . $key,
@@ -105,6 +120,22 @@ class Upload extends Action
                     'content'   => $value
                 ];
                 $this->api->uploadSnippet($clone->number, $snippetData);
+            }
+
+            foreach ($customSnippets as $key => $value) {
+                $snippetNameData = $this->validateCustomSnippet($key);
+                $snippetType = $snippetNameData[0];
+                $snippetPriority = $snippetNameData[1];
+                $snippetShortName = $snippetNameData[2];
+
+                $customSnippetData = [
+                    'name'      => Config::FASTLY_MAGENTO_MODULE . '_' . $snippetShortName,
+                    'type'      => $snippetType,
+                    'priority'  => $snippetPriority,
+                    'content'   => $value,
+                    'dynamic'   => '0'
+                ];
+                $this->api->uploadSnippet($clone->number, $customSnippetData);
             }
 
             $condition = [
@@ -146,5 +177,36 @@ class Upload extends Action
                 'msg'       => $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * Validate custom snippet naming convention
+     * [vcl_snippet_type]_[priority]_[short_name_description].vcl
+     *
+     * @param $customSnippet
+     * @return array
+     * @throws LocalizedException
+     */
+    private function validateCustomSnippet($customSnippet)
+    {
+        $snippetName = str_replace(' ', '', $customSnippet);
+        $snippetNameData = explode('_', $snippetName, 3);
+        $containsEmpty = in_array("", $snippetNameData, true);
+        $types = ['init', 'recv', 'hit', 'miss', 'pass', 'fetch', 'error', 'log', 'deliver', 'none'];
+        $exception = 'Failed to upload VCL snippets. Please make sure the custom VCL snippets 
+            follow this naming convention: [vcl_snippet_type]_[priority]_[short_name_description].vcl';
+
+        if (count($snippetNameData) < 3) {
+            throw new LocalizedException(__($exception));
+        }
+
+        $inArray = in_array($snippetNameData[0], $types);
+        $isNumeric = is_numeric($snippetNameData[1]);
+        $isAlphanumeric = preg_match('/^[\w]+$/', $snippetNameData[2]);
+
+        if ($containsEmpty || !$inArray || !$isNumeric || !$isAlphanumeric) {
+            throw new LocalizedException(__($exception));
+        }
+        return $snippetNameData;
     }
 }

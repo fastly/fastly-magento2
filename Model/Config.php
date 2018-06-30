@@ -108,6 +108,11 @@ class Config extends \Magento\PageCache\Model\Config
         = 'system/full_page_cache/fastly/fastly_advanced_configuration/admin_path_timeout';
 
     /**
+     * Max first byte timeout value
+     */
+    const XML_FASTLY_MAX_FIRST_BYTE_TIMEOUT = 600;
+
+    /**
      * XML path to Fastly ignored url parameters
      */
     const XML_FASTLY_IGNORED_URL_PARAMETERS

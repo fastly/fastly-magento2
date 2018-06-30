@@ -5,6 +5,7 @@
 - Remove GeoIP processed cookie constant as it's not used and may be interpreted as tracking for GDPR https://github.com/fastly/fastly-magento2/pull/188
 - Add ability to upload custom VCL snippets https://github.com/fastly/fastly-magento2/pull/179
 - Add validation for Admin path timeout. It needs to be between 0 and 600 seconds. https://github.com/fastly/fastly-magento2/pull/189
+- Add HSTS headers when force TLS is enabled https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
 
 ## 1.2.57
 

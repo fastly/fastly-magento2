@@ -25,9 +25,9 @@ class ValidateInt extends Value
 
         if ($field == 'admin_path_timeout') {
             $maxValue = Config::XML_FASTLY_MAX_FIRST_BYTE_TIMEOUT;
-            if ($value > $maxValue) {
+            if ($value > $maxValue || $value < 0) {
                 throw new LocalizedException(
-                    __('%1 field value must not be greater than ' . $maxValue, $this->getFieldConfig('label'))
+                    __('%1 field value must be larger than 0 and smaller or equal to ' . $maxValue, $this->getFieldConfig('label'))
                 );
             }
         }

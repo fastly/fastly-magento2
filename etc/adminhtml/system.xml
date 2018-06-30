@@ -280,6 +280,13 @@
                     </group>
                     <group id="fastly_custom_snippets" sortOrder="249" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Custom VCL snippets</label>
+                        <comment>
+                            <![CDATA[This option allows you to manage your own custom VCL snippets. You can learn 
+                            <a href="https://github.com/fastly/fastly-magento2/tree/master/etc/vcl_snippets_custom" target="_blank">more about snippets here</a>.
+                            <b>Please note</b> after you have created your snippets you have to click on Upload Fastly VCL to upload them along
+                            side stock Fastly VCL.
+                            ]]>
+                        </comment>
                         <field id="fastly_custom_snippet_upload" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Create custom snippet</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\CustomSnippetBtn</frontend_model>

@@ -716,7 +716,7 @@ class EnableCommand extends Command
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
             $reqName = Config::FASTLY_MAGENTO_MODULE.'_force_tls';
-            $snippet = $this->config->getVclSnippets('/vcl_snippets_force_tls');
+            $snippets = $this->config->getVclSnippets('/vcl_snippets_force_tls');
 
             $request = [
                 'name'          => $reqName,
@@ -728,7 +728,7 @@ class EnableCommand extends Command
             $this->api->createRequest($clone->number, $request);
 
             // Add force TLS snippet
-            foreach ($snippet as $key => $value) {
+            foreach ($snippets as $key => $value) {
                 $snippetData = [
                     'name'      => Config::FASTLY_MAGENTO_MODULE.'_force_tls_'.$key,
                     'type'      => $key,
@@ -740,7 +740,7 @@ class EnableCommand extends Command
             }
 
             $this->api->validateServiceVersion($clone->number);
-            $msg = 'Successfully uploaded Force TLS VCL snippet. ';
+            $msg = 'Successfully enabled Force TLS. ';
 
             if ($activate) {
                 $this->api->activateVersion($clone->number);
@@ -791,7 +791,7 @@ class EnableCommand extends Command
             }
 
             $this->api->validateServiceVersion($clone->number);
-            $msg = 'Successfully removed Force TLS VCL snippet. ';
+            $msg = 'Successfully disabled Force TLS. ';
 
             if ($activate) {
                 $this->api->activateVersion($clone->number);

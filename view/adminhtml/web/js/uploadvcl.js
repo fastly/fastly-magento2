@@ -933,6 +933,7 @@ define([
                 next_version = service.next_version;
                 service_name = service.service.name;
                 vcl.showPopup('fastly-custom-snippet-options');
+                $('.upload-button span').text('Create');
 
             }).fail(function () {
                 return errorCustomSnippetBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();

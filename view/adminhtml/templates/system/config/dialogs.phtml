@@ -1176,6 +1176,88 @@
         </fieldset>
     </form>
 </script>
+
+<script type="text/x-magento-template" id="fastly-custom-snippet-template">
+    <div class="messages">
+        <div class="message message-warning fastly-message-warning" style="display: none">
+            <?php /* @noEscape */ echo __("You are about to create a custom snippet.")?>
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/createCustomSnippet'); ?>"
+          method="POST"
+          id="fastly-custom-snippet-form"
+          class="form-inline"
+          enctype="multipart/form-data">
+
+        <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field _required">
+                <label for="custom_snippet_name" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Name") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input type="text"
+                           name="custom_snippet_name"
+                           required="required"
+                           id="custom_snippet_name"
+                           class="admin__control-text required-entry">
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="custom_snippet_type" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Type") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="custom_snippet_type" id="custom_snippet_type" class="admin__control-text">
+                        <option value="init">init</option>
+                        <option value="recv">recv</option>
+                        <option value="hit">hit</option>
+                        <option value="miss">miss</option>
+                        <option value="pass">pass</option>
+                        <option value="fetch">fetch</option>
+                        <option value="error">error</option>
+                        <option value="deliver">deliver</option>
+                        <option value="log">log</option>
+                        <option value="hash">hash</option>
+                        <option value="none">none</option>
+                    </select>
+                    <div class="admin__field-note">
+                        This specifies the location in which to place the snippet when uploaded to Fastly.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="custom_snippet_priority" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Priority") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input type="text"
+                           name="custom_snippet_priority"
+                           required="required"
+                           id="custom_snippet_priority"
+                           class="admin__control-text required-entry">
+                    <div class="admin__field-note">
+                        For most configurations, the default (100) is best. Priority determines the ordering for
+                        multiple snippets. Lower numbers execute first.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="custom_snippet_content" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("VCL") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <textarea rows="10"
+                              name="custom_snippet_content"
+                              required="required"
+                              id="custom_snippet_content"
+                              class="admin__control-text required-entry"></textarea>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</script>
 <?php
 
 /**
@@ -1193,6 +1275,8 @@ $toggleImageSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/pushImageSettin
 $checkBlockingSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkBlockingSetting');
 $toggleBlockingSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/blocking');
 $fetchBackendsUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/getBackends');
+$createCustomSnippetUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/createCustomSnippet');
+$getCustomSnippetsUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/getCustomSnippets');
 $configureBackendUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/configureBackend');
 $isAlreadyConfiguredUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/isAlreadyConfigured');
 $savePageErrorHtml = $block->getUrl('adminhtml/fastlyCdn_Vcl/SaveErrorPageHtml');
@@ -1207,6 +1291,7 @@ $createDictionaryItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item
 $deleteDictionaryItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item/Delete');
 $createAcl = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/Create');
 $deleteAcl = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/Delete');
+$deleteCustomSnippet = $block->getUrl('adminhtml/fastlyCdn_Vcl/DeleteCustomSnippet');
 $listAcls = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/ListAll');
 $aclItems = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/ListAll');
 $createAclItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/Create');
@@ -1260,6 +1345,7 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "deleteDictionaryItem": "<?php echo $block->escapeJsQuote($deleteDictionaryItem);?>",
                     "createAcl": "<?php echo $block->escapeJsQuote($createAcl);?>",
                     "deleteAcl": "<?php echo $block->escapeJsQuote($deleteAcl);?>",
+                    "deleteCustomSnippet": "<?php echo $block->escapeJsQuote($deleteCustomSnippet);?>",
                     "getAcls": "<?php echo $block->escapeJsQuote($listAcls);?>",
                     "getAclItems": "<?php echo $block->escapeJsQuote($aclItems);?>",
                     "createAclItem": "<?php echo $block->escapeJsQuote($createAclItem);?>",
@@ -1274,7 +1360,9 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "toggleAuthSettingUrl": "<?php echo $block->escapeJsQuote($toggleAuthSettingUrl);?>",
                     "checkAuthUsersAvailable": "<?php echo $block->escapeJsQuote($checkAuthUsersAvailable);?>",
                     "listIoDefaultConfigOptions": "<?php echo $block->escapeJsQuote($listIoDefaultConfigOptions);?>",
-                    "configureIoUrl": "<?php echo $block->escapeJsQuote($configureIoUrl);?>"
+                    "configureIoUrl": "<?php echo $block->escapeJsQuote($configureIoUrl);?>",
+                    "createCustomSnippetUrl": "<?php echo $block->escapeJsQuote($createCustomSnippetUrl);?>",
+                    "getCustomSnippetsUrl": "<?php echo $block->escapeJsQuote($getCustomSnippetsUrl);?>"
                 }
             }
         }

@@ -1,9 +1,10 @@
 # Force TLS guide
 
 This guide will show how to setup Secure base URL in Magento and turn on Force TLS option. 
-For this, you will need to have a TLS certificate. You can read [here](https://docs.fastly.com/guides/securing-communications/) on how to order a TLS certificate through Fastly and then set it up.
+For this, you will need to have a TLS certificate. You can read [here](https://docs.fastly.com/guides/securing-communications/)
+on how to order a TLS certificate through Fastly and then set it up.
  
-Once you're ready, go to: 
+Once your certificate has been deployed on Fastly go to:
 
 ```
 Magento admin > Stores > Configuration > General > Web
@@ -18,7 +19,11 @@ Once you're done, press the Save config button in the upper right corner.
 ### Allowing only TLS connections to your site
 
 If you want to only allow TLS on your site, we have you covered. 
-There is an option built into the Fastly module that will allow you to force unencrypted requests over to TLS. It works by returning a 301 Moved Permanently response to any unencrypted request, which redirects to the TLS equivalent. For instance, making a request for http://www.example.com/foo.jpeg would redirect to https://www.example.com/foo.jpeg.
+There is an option built into the Fastly module that will allow you to force unencrypted requests over to TLS.
+It works by returning a 301 Moved Permanently response to any unencrypted request, which redirects to the TLS equivalent.
+For instance, making a request for http://www.example.com/foo.jpeg would redirect to https://www.example.com/foo.jpeg.
+In addition we'll set [HSTS headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security)
+which instruct web users not to even attempt insecure methods.
 
 To enable Force TLS option, go to:
 

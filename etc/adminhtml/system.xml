@@ -84,17 +84,16 @@
                              Force TLS button
                         ===================== -->
                         <field id="force_tls" translate="label comment" sortOrder="10" showInDefault="1" showInStore="0" showInWebsite="0">
-                            <label><![CDATA[Force TLS]]></label>
+                            <label><![CDATA[Enable/Disable]]></label>
                             <comment>
-                                <![CDATA[Force unencrypted requests over to TLS, return a <strong>301
-                                Moved Permanently</strong> response to any unencrypted request, and redirect to the TLS equivalent.]]></comment>
+                                <![CDATA[Return a <strong>301 Moved Permanently</strong> redirect to any unencrypted request, and redirect to the TLS equivalent. Also sets <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security" target="_blank">HSTS headers</a>.]]></comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\TlsBtn</frontend_model>
                         </field>
                         <!-- ==================================
                              Admin Path Timeout input field
                         =================================== -->
                         <field id="admin_path_timeout" type="text" translate="label comment" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
-                            <label>Admin Path Timeout</label>
+                            <label>Admin path timeout (1-600)</label>
                             <comment>
                                 <![CDATA[Time in seconds for the admin path first byte timeout. Please reupload VCL after making changes.]]>
                             </comment>
@@ -338,10 +337,40 @@
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\WafPageBtn</frontend_model>
                         </field>
                     </group>
+                    <!-- =============================
+                         Custom VCL Snippets group
+                    ============================== -->
+                    <group id="fastly_custom_snippets" sortOrder="300" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Custom VCL Snippets</label>
+                        <comment>
+                            <![CDATA[This option allows you to manage your own custom VCL snippets. You can learn
+                            <a href="https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/CUSTOM-VCL-SNIPPETS.md" target="_blank">more here</a>.
+                            <b>Please note</b> after you have created your snippets you have to click on Upload Fastly VCL to upload them along
+                            side stock Fastly VCL.
+                            ]]>
+                        </comment>
+                        <!-- ================================
+                             Create Custom Snippet button
+                        ============================= -->
+                        <field id="fastly_custom_snippet_upload" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Create Custom Snippet</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\CustomSnippetBtn</frontend_model>
+                        </field>
+                        <!-- ==============================
+                             Custom Snippets list field
+                        =========================== -->
+                        <field id="fastly_custom_snippet_files" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Custom Snippets</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\CustomSnippets</frontend_model>
+                            <comment>
+                                <![CDATA[]]>
+                            </comment>
+                        </field>
+                    </group>
                     <!-- ==================
                          Edge ACL group
                     =================== -->
-                    <group id="fastly_edge_acl" sortOrder="300" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <group id="fastly_edge_acl" sortOrder="350" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Edge ACL</label>
                         <comment>
                             <![CDATA[Edge ACLs are access control lists that allow you to manage IP addresses that are used in allowing or blocking access to resources.
@@ -359,7 +388,7 @@
                     <!-- ===========================
                          Edge Dictionaries group
                     ============================ -->
-                    <group id="fastly_edge_dictionaries" sortOrder="350" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <group id="fastly_edge_dictionaries" sortOrder="400" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Edge Dictionaries</label>
                         <comment>
                             <![CDATA[Edge Dictionaries are made up of dictionary containers and the dictionary items within them.
@@ -378,7 +407,7 @@
                     <!-- ============================
                          Image Optimization group
                     ============================= -->
-                    <group id="fastly_image_optimization_configuration" sortOrder="400" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <group id="fastly_image_optimization_configuration" sortOrder="450" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Image Optimization</label>
                         <!-- ============================
                              Fastly IO Snippet button
@@ -449,7 +478,7 @@
                     <!-- ===============================
                          Webhook Notifications group
                     ================================ -->
-                    <group id="fastly_web_hooks" sortOrder="450" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <group id="fastly_web_hooks" sortOrder="500" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Webhook Notifications</label>
                         <comment>
                             <![CDATA[Webhooks are a simple way to post messages to external sources. This integration is geared for Slack however you can use it for anything else.

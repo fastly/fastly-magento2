@@ -15,16 +15,22 @@ define([
         var imageStateSpan = '';
         var imageStateMsgSpan = '';
 
-        $('#system_full_page_cache_caching_application').on('change', function () {
-            if ($(this).val() == 'fastly') {
-                init();
-            }
-        });
-
         $(document).ready(function () {
-            if (config.isFastlyEnabled) {
-                init();
-            }
+            var allOpen = '';
+            var allActive = '';
+            $('#system_full_page_cache_fastly-head').on('click', function () {
+                if ($(this).attr("class") === "open") {
+                    init();
+                    if (allOpen != '') {
+                        allOpen.trigger('click');
+                    }
+                } else {
+                    allOpen = $('#system_full_page_cache_fastly').find(".open");
+                    allActive = $('#system_full_page_cache_fastly').find(".active");
+                    allOpen.removeClass("open").removeClass("open");
+                    allActive.find(".active").removeClass("active");
+                }
+            });
 
             /**
              * Add new dictionary item
@@ -276,6 +282,7 @@ define([
 
         function init()
         {
+            $('body').loader('show');
             $.ajax({
                 type: "GET",
                 url: config.isAlreadyConfiguredUrl
@@ -307,167 +314,246 @@ define([
                 }
             }).done(function (checkService) {
                 if (checkService.status != false) {
+                    $('body').loader('hide');
                     active_version = checkService.active_version;
                     next_version = checkService.next_version;
                     // Fetch force tls req setting status
-                    var tls = vcl.getTlsSetting(checkService.active_version, false);
 
-                    tls.done(function (checkReqSetting) {
-                        requestStateSpan.find('.processing').hide();
-                        if (checkReqSetting.status != false) {
-                            requestStateMsgSpan.find('#force_tls_state_enabled').show();
-                        } else {
-                            requestStateMsgSpan.find('#force_tls_state_disabled').show();
+                    $('#system_full_page_cache_fastly_fastly_advanced_configuration-head').unbind('click').on('click', function () {
+                        if ($(this).attr("class") === "open") {
+                            var tls = vcl.getTlsSetting(checkService.active_version, false);
+
+                            tls.done(function (checkReqSetting) {
+                                requestStateSpan.find('.processing').hide();
+                                var tlsStateEnabled = requestStateMsgSpan.find('#force_tls_state_enabled');
+                                var tlsStateDisabled = requestStateMsgSpan.find('#force_tls_state_disabled');
+                                if (checkReqSetting.status != false) {
+                                    if (tlsStateDisabled.is(":hidden")) {
+                                        tlsStateEnabled.show();
+                                    }
+                                } else {
+                                    if (tlsStateEnabled.is(":hidden")) {
+                                        tlsStateDisabled.show();
+                                    }
+                                }
+                            }).fail(function () {
+                                requestStateSpan.find('.processing').hide();
+                                requestStateMsgSpan.find('#force_tls_state_unknown').show();
+                            });
                         }
-                    }).fail(function () {
-                        requestStateSpan.find('.processing').hide();
-                        requestStateMsgSpan.find('#force_tls_state_unknown').show();
                     });
 
-                    var blocking = vcl.getBlockingSetting(checkService.active_version, false);
+                    $('#system_full_page_cache_fastly_fastly_blocking-head').unbind('click').on('click', function () {
+                        if ($(this).attr("class") === "open") {
+                            var blocking = vcl.getBlockingSetting(checkService.active_version, false);
 
-                    blocking.done(function (checkReqSetting) {
-                        blockingStateSpan.find('.processing').hide();
-                        if (checkReqSetting.status != false) {
-                            blockingStateMsgSpan.find('#blocking_state_enabled').show();
-                        } else {
-                            blockingStateMsgSpan.find('#blocking_state_disabled').show();
+                            blocking.done(function (checkReqSetting) {
+                                blockingStateSpan.find('.processing').hide();
+                                var blockingStateEnabled = blockingStateMsgSpan.find('#blocking_state_enabled');
+                                var blockingStateDisabled = blockingStateMsgSpan.find('#blocking_state_disabled');
+                                if (checkReqSetting.status != false) {
+                                    if (blockingStateDisabled.is(":hidden")) {
+                                        blockingStateEnabled.show();
+                                    }
+                                } else {
+                                    if (blockingStateEnabled.is(":hidden")) {
+                                        blockingStateDisabled.show();
+                                    }
+                                }
+                            }).fail(function () {
+                                blockingStateSpan.find('.processing').hide();
+                                blockingStateMsgSpan.find('#blocking_state_unknown').show();
+                            });
                         }
-                    }).fail(function () {
-                        blockingStateSpan.find('.processing').hide();
-                        blockingStateMsgSpan.find('#blocking_state_unknown').show();
                     });
 
-                    var wafPage = vcl.getWafPageRespObj(checkService.active_version, false);
-
-                    wafPage.done(function (checkWafResponse) {
-                        if (checkWafResponse.status == false) {
+                    $('#system_full_page_cache_fastly_fastly_error_maintenance_page-head').unbind('click').on('click', function () {
+                        if ($(this).attr("class") === "open") {
+                            var wafPage = vcl.getWafPageRespObj(checkService.active_version, false);
                             wafPageRow.hide();
-                        }
-                    });
-
-                    var fastlyIo = vcl.getFastlyIoSetting(false);
-                    var imageOptimization = vcl.getImageSetting(checkService.active_version, false);
-
-                    fastlyIo.done(function (checkIoSetting) {
-                        if (checkIoSetting.status == false) {
-                            if (config.isIoEnabled) {
-                                ioToggle.removeAttrs('disabled');
-                                imgConfigBtn.addClass('disabled');
-                            } else {
-                                ioToggle.attr('disabled', 'disabled');
-                                imgConfigBtn.removeClass('disabled');
-                            }
-                        }
-                    });
-
-                    imageOptimization.done(function (checkReqSetting) {
-                        imageStateSpan.find('.processing').hide();
-                        if (checkReqSetting.status != false) {
-                            imageStateMsgSpan.find('#imgopt_state_enabled').show();
-                            fastlyIo.done(function (checkIoSetting) {
-                                if (checkIoSetting.status == true) {
-                                    imgBtn.removeClass('disabled');
-                                    warningIoMsg.hide();
-                                } else {
-                                    warningIoMsg.text(
-                                        $.mage.__(
-                                            'Please contact your sales rep or send an email to support@fastly.com to request image optimization activation for your Fastly service.'
-                                        )
-                                    ).show();
-                                }
-                            });
-                        } else {
-                            imageStateMsgSpan.find('#imgopt_state_disabled').show();
-                            fastlyIo.done(function (checkIoSetting) {
-                                if (checkIoSetting.status == true) {
-                                    imgBtn.removeClass('disabled');
-                                    warningIoMsg.hide();
-                                } else {
-                                    imgBtn.addClass('disabled');
-                                    warningIoMsg.text(
-                                        $.mage.__(
-                                            'Please contact your sales rep or send an email to support@fastly.com to request image optimization activation for your Fastly service.'
-                                        )
-                                    ).show();
+                            wafPage.done(function (checkWafResponse) {
+                                if (checkWafResponse.status != false) {
+                                    wafPageRow.show();
                                 }
                             });
                         }
-                    }).fail(function () {
-                        imageStateSpan.find('.processing').hide();
-                        imageStateMsgSpan.find('#imgopt_state_unknown').show();
+                    });
+
+                    $('#system_full_page_cache_fastly_fastly_image_optimization_configuration-head').unbind('click').on('click', function () {
+                        if ($(this).attr("class") === "open") {
+                            var fastlyIo = vcl.getFastlyIoSetting(false);
+                            var imageOptimization = vcl.getImageSetting(checkService.active_version, false);
+
+                            fastlyIo.done(function (checkIoSetting) {
+                                if (checkIoSetting.status == false) {
+                                    if (config.isIoEnabled) {
+                                        ioToggle.removeAttrs('disabled');
+                                        imgConfigBtn.addClass('disabled');
+                                    } else {
+                                        ioToggle.attr('disabled', 'disabled');
+                                        imgConfigBtn.removeClass('disabled');
+                                    }
+                                }
+                            });
+
+                            imageOptimization.done(function (checkReqSetting) {
+                                imageStateSpan.find('.processing').hide();
+                                var imageStateEnabled = imageStateMsgSpan.find('#imgopt_state_enabled');
+                                var imageStateDisabled = imageStateMsgSpan.find('#imgopt_state_disabled');
+                                if (checkReqSetting.status != false) {
+                                    if (imageStateDisabled.is(":hidden")) {
+                                        imageStateEnabled.show();
+                                    }
+                                    imageStateEnabled.show();
+                                    fastlyIo.done(function (checkIoSetting) {
+                                        if (checkIoSetting.status == true) {
+                                            imgBtn.removeClass('disabled');
+                                            warningIoMsg.hide();
+                                        } else {
+                                            warningIoMsg.text(
+                                                $.mage.__(
+                                                    'Please contact your sales rep or send an email to support@fastly.com to request image optimization activation for your Fastly service.'
+                                                )
+                                            ).show();
+                                        }
+                                    });
+                                } else {
+                                    if (imageStateEnabled.is(":hidden")) {
+                                        imageStateDisabled.show();
+                                    }
+                                    fastlyIo.done(function (checkIoSetting) {
+                                        if (checkIoSetting.status == true) {
+                                            imgBtn.removeClass('disabled');
+                                            warningIoMsg.hide();
+                                        } else {
+                                            imgBtn.addClass('disabled');
+                                            warningIoMsg.text(
+                                                $.mage.__(
+                                                    'Please contact your sales rep or send an email to support@fastly.com to request image optimization activation for your Fastly service.'
+                                                )
+                                            ).show();
+                                        }
+                                    });
+                                }
+                            }).fail(function () {
+                                imageStateSpan.find('.processing').hide();
+                                imageStateMsgSpan.find('#imgopt_state_unknown').show();
+                            });
+                        }
                     });
 
                     // Fetch basic auth setting status
-                    var auth = vcl.getAuthSetting(checkService.active_version, false);
-                    auth.done(function (checkReqSetting) {
-                        authStateSpan.find('.processing').hide();
-                        if (checkReqSetting.status != false) {
-                            authStateMsgSpan.find('#enable_auth_state_enabled').show();
-                        } else {
-                            authStateMsgSpan.find('#enable_auth_state_disabled').show();
-                        }
-                    }).fail(function () {
-                        authStateSpan.find('.processing').hide();
-                        authStateMsgSpan.find('#enable_auth_state_unknown').show();
-                    });
+                    $('#system_full_page_cache_fastly_fastly_basic_auth-head').unbind('click').on('click', function () {
+                        if ($(this).attr("class") === "open") {
+                            var auth = vcl.getAuthSetting(checkService.active_version, false);
+                            auth.done(function (checkReqSetting) {
+                                authStateSpan.find('.processing').hide();
+                                var authStateEnabled = authStateMsgSpan.find('#enable_auth_state_enabled');
+                                var authStateDisabled = authStateMsgSpan.find('#enable_auth_state_disabled');
+                                if (checkReqSetting.status != false) {
+                                    if (authStateDisabled.is(":hidden")) {
+                                        authStateEnabled.show();
+                                    }
+                                } else {
+                                    if (authStateEnabled.is(":hidden")) {
+                                        authStateDisabled.show();
+                                    }
+                                }
+                            }).fail(function () {
+                                authStateSpan.find('.processing').hide();
+                                authStateMsgSpan.find('#enable_auth_state_unknown').show();
+                            });
 
-                    // Fetch basic auth dictionary status
-                    var authDict = vcl.getAuthDictionary(checkService.active_version, true);
-                    authDict.done(function (checkReqSetting) {
-                        authStateSpan.find('.processing').hide();
-                        authDictStatus = checkReqSetting.status;
-                    }).fail(function () {
-                        authStateSpan.find('.processing').hide();
-                    });
-
-                    // Fetch backends
-                    vcl.getBackends(active_version, false).done(function (backendsResp) {
-                        $('.loading-backends').hide();
-                        if (backendsResp.status != false) {
-                            if (backendsResp.backends.length > 0) {
-                                backends = backendsResp.backends;
-                                vcl.processBackends(backendsResp.backends);
-                            } else {
-                                $('.no-backends').show();
-                            }
+                            // Fetch basic auth dictionary status
+                            var authDict = vcl.getAuthDictionary(checkService.active_version, true);
+                            authDict.done(function (checkReqSetting) {
+                                authStateSpan.find('.processing').hide();
+                                authDictStatus = checkReqSetting.status;
+                            }).fail(function () {
+                                authStateSpan.find('.processing').hide();
+                            });
                         }
-                    }).fail(function () {
-                        // TO DO: implement
                     });
 
                     // Fetch dictionaries
-                    vcl.listDictionaries(active_version, false).done(function (dictResp) {
-                        $('.loading-dictionaries').hide();
-                        if (dictResp.status != false) {
-                            if (dictResp.status != false) {
-                                if (dictResp.dictionaries.length > 0) {
-                                    dictionaries = dictResp.dictionaries;
-                                    vcl.processDictionaries(dictResp.dictionaries);
-                                } else {
-                                    $('.no-dictionaries').show();
+                    $('#system_full_page_cache_fastly_fastly_edge_dictionaries-head').unbind('click').on('click', function () {
+                        if ($(this).attr("class") === "open") {
+                            vcl.listDictionaries(active_version, false).done(function (dictResp) {
+                                $('.loading-dictionaries').hide();
+                                if (dictResp.status != false) {
+                                    if (dictResp.status != false) {
+                                        if (dictResp.dictionaries.length > 0) {
+                                            dictionaries = dictResp.dictionaries;
+                                            vcl.processDictionaries(dictResp.dictionaries);
+                                        } else {
+                                            $('.no-dictionaries').show();
+                                        }
+                                    }
                                 }
-                            }
+                            }).fail(function () {
+                                return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                            });
                         }
-                    }).fail(function () {
-                        return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                    });
+
+                    $('#system_full_page_cache_fastly_fastly_custom_snippets-head').unbind('click').on('click', function () {
+                        // Fetch custom snippets
+                        if ($(this).attr("class") === "open") {
+                            $('#row_system_full_page_cache_fastly_fastly_custom_snippets_fastly_custom_snippets_upload > .value > div').hide();
+                            vcl.getCustomSnippets(false).done(function (snippetsResp) {
+                                $('.loading-snippets').hide();
+                                if (snippetsResp.status != false) {
+                                    if (snippetsResp.snippets.length > 0) {
+                                        snippets = snippetsResp.snippets;
+                                        vcl.processCustomSnippets(snippets);
+                                    } else {
+                                        $('.no-snippets').show();
+                                    }
+                                }
+                            }).fail(function () {
+                                // TO DO: implement
+                            });
+                        }
+                    });
+
+                    // Fetch backends
+                    $('#system_full_page_cache_fastly_fastly_backend_settings-head').unbind('click').on('click', function () {
+                        if ($(this).attr("class") === "open") {
+                            vcl.getBackends(active_version, false).done(function (backendsResp) {
+                                $('.loading-backends').hide();
+                                if (backendsResp.status != false) {
+                                    if (backendsResp.backends.length > 0) {
+                                        backends = backendsResp.backends;
+                                        vcl.processBackends(backendsResp.backends);
+                                    } else {
+                                        $('.no-backends').show();
+                                    }
+                                }
+                            }).fail(function () {
+                                // TO DO: implement
+                            });
+                        }
                     });
 
                     // Fetch ACLs
-                    vcl.listAcls(active_version, false).done(function (aclResp) {
-                        $('.loading-acls').hide();
-                        if (aclResp.status != false) {
-                            if (aclResp.status != false) {
-                                if (aclResp.acls.length > 0) {
-                                    acls = aclResp.acls;
-                                    vcl.processAcls(aclResp.acls);
-                                } else {
-                                    $('.no-acls').show();
+                    $('#system_full_page_cache_fastly_fastly_edge_acl-head').unbind('click').on('click', function () {
+                        if ($(this).attr("class") === "open") {
+                            vcl.listAcls(active_version, false).done(function (aclResp) {
+                                $('.loading-acls').hide();
+                                if (aclResp.status != false) {
+                                    if (aclResp.status != false) {
+                                        if (aclResp.acls.length > 0) {
+                                            acls = aclResp.acls;
+                                            vcl.processAcls(aclResp.acls);
+                                        } else {
+                                            $('.no-acls').show();
+                                        }
+                                    }
                                 }
-                            }
+                            }).fail(function () {
+                                return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                            });
                         }
-                    }).fail(function () {
-                        return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                     });
                 } else {
                     requestStateSpan.find('.processing').hide();
@@ -580,6 +666,21 @@ define([
                 if (dictionaryHtml != '') {
                     $('#delete-dictionary-container').html(dictionaryHtml);
                 }
+            }
+        });
+
+        $('body').on('click', 'button.fastly-delete-snippet-icon', function () {
+            var snippet_id = $(this).data('snippet-id');
+            var closestTr = $(this).closest('tr');
+            if (confirm("Are you sure you want to delete "+ snippet_id +"?")) {
+                vcl.deleteCustomSnippet(snippet_id, true).done(function (response) {
+                    if (response.status == true) {
+                        closestTr.remove();
+                        $('#fastly-success-snippet-button-msg').text($.mage.__('Custom snippet successfully deleted.')).show();
+                    }
+                }).fail(function () {
+                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
+                });
             }
         });
 
@@ -800,6 +901,42 @@ define([
 
             }).fail(function () {
                 return errorVclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+            });
+        });
+
+        /**
+         * Custom snippet upload
+         */
+
+        $('#fastly_custom_vcl_button').on('click', function () {
+
+            if (isAlreadyConfigured != true) {
+                $(this).attr('disabled', true);
+                return alert($.mage.__('Please save config prior to continuing.'));
+            }
+
+            vcl.resetAllMessages();
+
+            $.when(
+                $.ajax({
+                    type: "GET",
+                    url: config.serviceInfoUrl,
+                    showLoader: true
+                })
+            ).done(function (service) {
+
+                if (service.status == false) {
+                    return errorCustomSnippetBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
+                }
+
+                active_version = service.active_version;
+                next_version = service.next_version;
+                service_name = service.service.name;
+                vcl.showPopup('fastly-custom-snippet-options');
+                $('.upload-button span').text('Create');
+
+            }).fail(function () {
+                return errorCustomSnippetBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
             });
         });
 
@@ -1303,6 +1440,10 @@ define([
         var successManifestBtnMsg = $('#fastly-success-manifest-button-msg');
         var errorManifestBtnMsg = $('#fastly-error-manifest-button-msg');
         var warningManifestBtnMsg = $('#fastly-warning-manifest-button-msg');
+        /* Custom snippet button messages */
+        var successCustomSnippetBtnMsg = $('#fastly-success-custom-snippet-button-msg');
+        var errorCustomSnippetBtnMsg = $('#fastly-error-custom-snippet-button-msg');
+        var warningCUstomSnippetBtnMsg = $('#fastly-warning-custom-snippet-button-msg');
         /* TLS button messages */
         var successTlsBtnMsg = $('#fastly-success-tls-button-msg');
         var errorTlsBtnMsg = $('#fastly-error-tls-button-msg');
@@ -1463,6 +1604,18 @@ define([
                 });
             },
 
+            // Retrieve custom snippets
+            getCustomSnippets: function (loaderVisibility) {
+                return $.ajax({
+                    type: "GET",
+                    url: config.getCustomSnippetsUrl,
+                    showLoader: loaderVisibility,
+                    beforeSend: function (xhr) {
+                        $('.loading-snippets').show();
+                    }
+                });
+            },
+
             // Queries Fastly API to retrieve error page response object
             getErrorPageRespObj: function (active_version, loaderVisibility) {
                 return $.ajax({
@@ -1485,13 +1638,27 @@ define([
 
             // Process backends
             processBackends: function (backends) {
+                $('#fastly-backends-list').html('');
                 $.each(backends, function (index, backend) {
                     var html = "<tr id='fastly_" + index + "'>";
                     html += "<td><input data-backendId='"+ index + "' id='backend_" + index + "' value='"+ backend.name +"' disabled='disabled' class='input-text' type='text'></td>";
                     html += "<td class='col-actions'><button class='action-delete fastly-edit-backend-icon' data-backend-id='" + index + "' id='fastly-edit-backend_"+ index + "' title='Edit backend' type='button'></td></tr>";
                     $('#fastly-backends-list').append(html);
-
                 });
+            },
+
+            // Process custom snippets
+            processCustomSnippets: function (snippets) {
+                var html = '';
+                $.each(snippets, function (index, snippet) {
+                    html += "<tr id='fastly_" + index + "'>";
+                    html += "<td><input data-snippetId='"+ index + "' id='snippet_" + index + "' value='"+ snippet +"' disabled='disabled' class='input-text' type='text'></td>";
+                    html += "<td class='col-actions'><button class='action-delete fastly-delete-snippet-icon' data-snippet-id='" + snippet + "' id='fastly-delete-snippet"+ index + "' title='Delete custom snippet' type='button'></td></tr>";
+                });
+                if (html != '') {
+                    $('.no-snippets').hide();
+                }
+                $('#fastly-snippets-list').html(html);
             },
 
             // Process dictionaries
@@ -1616,6 +1783,18 @@ define([
                 });
             },
 
+            deleteCustomSnippet: function (snippet_id, loaderVisibility) {
+                return $.ajax({
+                    type: "GET",
+                    url: config.deleteCustomSnippet,
+                    showLoader: loaderVisibility,
+                    data: {'snippet_id': snippet_id},
+                    beforeSend: function (xhr) {
+                        vcl.resetAllMessages();
+                    }
+                });
+            },
+
             // Delete Acl entry item
             deleteAclItem: function (acl_id, acl_item_id, loaderVisibility) {
                 return $.ajax({
@@ -1704,6 +1883,56 @@ define([
                     },
                     error: function (msg) {
                         // error handling
+                    }
+                });
+            },
+            // custom snippet creation
+            setCustomSnippet: function () {
+                var custom_name = $('#custom_snippet_name').val();
+                var custom_type = $('#custom_snippet_type').val();
+                var custom_priority = $('#custom_snippet_priority').val();
+                var custom_vcl = $('#custom_snippet_content').val();
+                var msgWarning = $('.fastly-message-error');
+
+                if (!custom_name || !custom_type || !custom_priority || !custom_vcl) {
+                    msgWarning.text($.mage.__('Please fill out the required fields.')).show();
+                    return;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: config.createCustomSnippetUrl,
+                    data: {
+                        'name': custom_name,
+                        'type': custom_type,
+                        'priority': custom_priority,
+                        'vcl': custom_vcl
+                    },
+                    showLoader: true,
+                    success: function (response) {
+                        if (response.status == true) {
+                            active_version = response.active_version;
+                            vcl.modal.modal('closeModal');
+                            successCustomSnippetBtnMsg.text($.mage.__('Custom snippet successfully created.')).show();
+                            vcl.getCustomSnippets(false).done(function (snippetsResp) {
+                                $('.loading-snippets').hide();
+                                if (snippetsResp.status != false) {
+                                    if (snippetsResp.snippets.length > 0) {
+                                        snippets = snippetsResp.snippets;
+                                        vcl.processCustomSnippets(snippets);
+                                    } else {
+                                        $('.no-snippets').show();
+                                    }
+                                }
+                            }).fail(function () {
+                                // TO DO: implement
+                            });
+                        } else {
+                            msgWarning.text($.mage.__(response.msg)).show();
+                        }
+                    },
+                    error: function (msg) {
+                        return errorCustomSnippetBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                     }
                 });
             },
@@ -2518,6 +2747,15 @@ define([
                     },
                     actionOk: function () {
                         vcl.submitVcl(active_version);
+                    }
+                },
+                'fastly-custom-snippet-options': {
+                    title: jQuery.mage.__('You are about to create a custom snippet '),
+                    content: function () {
+                        return document.getElementById('fastly-custom-snippet-template').textContent;
+                    },
+                    actionOk: function () {
+                        vcl.setCustomSnippet();
                     }
                 },
                 'fastly-tls-options': {

@@ -17,12 +17,6 @@ $_htmlId = $block->getHtmlId() ? $block->getHtmlId() : '_' . uniqid();
 $_colspan = $block->isAddAfter() ? 2 : 1;
 ?>
 
-<button type="button"
-        style="margin-bottom: 10px;"
-        class="primary"
-        id="add-acl-container-button">
-    <?php /* @noEscape */ echo __('Add ACL') ?>
-</button>
 <div class="design_theme_ua_regexp" id="grid<?php /* @noEscape */ echo $_htmlId; ?>">
     <div class="admin__control-table-wrapper">
         <table class="admin__control-table" id="<?php /* @noEscape */ echo $block->getElement()->getId(); ?>">
@@ -31,51 +25,48 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
                 <?php foreach ($block->getColumns() as $columnName => $column) : ?>
                     <th><?php /* @noEscape */ echo $column['label']; ?></th>
                 <?php endforeach;?>
-                <th class="col-actions"
-                    colspan="<?php /* @noEscape */ echo $_colspan; ?>">
-                    <?php /* @noEscape */ echo __('Actions') ?>
-                </th>
+                <th class="col-actions" colspan="<?php /* @noEscape */ echo $_colspan; ?>">Action</th>
             </tr>
             </thead>
-            <tbody id="fastly-acls-list"></tbody>
+            <tbody id="fastly-snippets-list"></tbody>
         </table>
     </div>
-    <p class="loading-acls" style="display: none;">
+    <p class="loading-snippets" style="">
         <img class="processing"
              alt="Collecting"
              style="margin:0 5px"
              src="<?php /* @noEscape */ echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/>
-        <?php /* @noEscape */ echo __('Loading acl...'); ?>
+        <?php /* @noEscape */ echo __('Loading snippets...'); ?>
     </p>
-    <p class="no-acls" style="display: none;">
-        <?php /* @noEscape */ echo __('There are no ACLs configured yet.'); ?>
+    <p class="no-snippets" style="">
+        <?php /* @noEscape */ echo __('There are no custom snippets yet.'); ?>
     </p>
 </div>
 
 <div class="message message-error fastly-button-messages"
-     id="fastly-error-acl-button-msg"
+     id="fastly-error-snippet-button-msg"
      style="display: none"></div>
 
 <div class="message message-success fastly-button-messages"
-     id="fastly-success-acl-button-msg"
+     id="fastly-success-snippet-button-msg"
      style="display: none"></div>
 
 <div class="message message-warning fastly-button-messages"
-     id="fastly-warning-acl-button-msg"
+     id="fastly-warning-snippet-button-msg"
      style="display: none"></div>
 
 <style type="text/css">
-    .admin__control-table .fastly-edit-dictionary-icon::before {
+    .admin__control-table .fastly-edit-snippet-icon::before {
         content: '\e610';
         font-size: 2rem;
     }
 
-    .admin__control-table .fastly-delete-acl-icon::before {
+    .admin__control-table .fastly-delete-snippet-icon::before {
         content: '\e630';
         font-size: 2rem;
     }
 
-    .no-acls, .loading-acls {
+    .no-snippets, .loading-snippets {
         text-align: center;
     }
 </style>

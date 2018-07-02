@@ -2,18 +2,26 @@
 
 This guide will show you how to install and configure Fastly CDN extension for Magento 2.
 
-You may choose between three installation methods – composer installation, installation through the Magento Marketplace and manual installation by downloading the zip file.
+You may choose between three installation methods
 
-We will use composer as installation method.
+* composer installation
+* installation via the Magento Marketplace
+* manual installation by downloading the zip file.
+
+## INSTALLATION
+
+Preferred method of installation is via the composer
 
 Open terminal \ console, go to your Magento installation directory and type these two commands in the following order:
+
 ```
 composer config repositories.fastly-magento2 git "https://github.com/fastly/fastly-magento2.git"
 ```
 
 Then:
+
 ```
-composer config repositories.fastly-magento2 git "https://github.com/fastly/fastly-magento2.git"
+composer require fastly/magento2
 ```
 
 Once the installation is completed, enable the Fastly CDN module:
@@ -22,6 +30,7 @@ bin/magento module:enable Fastly_Cdn
 ```
 
 Immediately after that, run the **setup:upgrade** command:
+
 ```
 bin/magento setup:upgrade
 ```
@@ -32,11 +41,11 @@ bin/magento cache:clean
 
 You can read more detailed step by step instructions [here](../INSTALLATION.md).
 
-That’s it, you have successfully installed the Fastly CDN extension. Let’s move to configuration.
+That’s it, you have successfully installed the Fastly CDN extension. Let’s move on to configuration.
 
-###Configuration
+## Configuration
 
-In order to use the Fastly Cdn extension, you will have to [register a free Fastly account](https://www.fastly.com/signup).
+Before you can continue onto the configuration if you do not have an Fastly account you will have to [register a free Fastly account](https://www.fastly.com/signup).
 
 Once you register and verify your account, login to Fastly:
 
@@ -58,6 +67,7 @@ On the final screen, you will have to **point your CNAME to Fastly.** Doing this
 Once you’ve finished with pointing your CNAME to Fastly, let’s configure Magento.
 
 Login to you Magento admin and go to:
+
 ```
 Stores > Configuration > Advanced > System
 ```
@@ -84,7 +94,11 @@ If you have received a success message, press the **Save Config** button and cle
 
 ![Clear cache](../images/guides/installation/clearcache.png "Clear cache")
 
-Once you have cleared the cache, go back to Stores > Configuration > Advanced > System and click on the **Fastly Configuration.** The final step is to upload the **VCL to Fastly.** You can do this by pressing the **Upload VCL to Fastly** button.
+### VCL Upload
+
+Once you have cleared the cache, go back to Stores > Configuration > Advanced > System and click on the **Fastly Configuration.** The final step is to upload the **VCL to Fastly.** This will upload stock Magento VCL to Fastly. This is required if you want Full Page Caching to work.
+
+You will upload VCL by pressing the **Upload VCL to Fastly** button.
 
 The modal window will pop up, make sure that the **Activate VCL after upload** is ticked and press the **Upload** button in the top right corner:
 

@@ -76,6 +76,7 @@
         # we'll strip out query parameters used in Google AdWords, Mailchimp tracking by default
         # and allow custom parameters to be set. List of parameters is configurable in admin
         set req.http.Magento-Original-URL = req.url;
+        # Change the list of ignored parameters by configuring them in the Advanced section
         set req.url = querystring.regfilter(req.url, "^(####QUERY_PARAMETERS####)");
     }
 

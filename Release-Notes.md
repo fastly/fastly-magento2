@@ -1,5 +1,32 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.58
+
+- Remove GeoIP processed cookie constant as it's not used and may be interpreted as tracking for GDPR https://github.com/fastly/fastly-magento2/pull/188
+- Add ability to upload custom VCL snippets https://github.com/fastly/fastly-magento2/pull/179
+- Add validation for Admin path timeout. It needs to be between 0 and 600 seconds. https://github.com/fastly/fastly-magento2/pull/189
+- Add HSTS headers when force TLS is enabled https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
+
+## 1.2.57
+
+- Add ability to force lossy conversions of lossless image formats https://github.com/fastly/fastly-magento2/pull/186
+
+## 1.2.56
+
+- Wording/documentation changes
+- By default remove User-Agent Vary from backend responses https://github.com/fastly/fastly-magento2/pull/181
+
+## 1.2.55
+
+- VCL reordering to address caching of 404s during site rebuilds https://github.com/fastly/fastly-magento2/issues/174
+
+## 1.2.54
+
+- Fix for Redis sessions contention when where Fastly module makes multiple parallel requests 
+  to find out when certain features are enabled. This change changes it to be on demand versus bulk 
+  https://github.com/fastly/fastly-magento2/pull/177
+- Add ability to customize WAF blocking page https://github.com/fastly/fastly-magento2/pull/175
+
 ## 1.2.53
 
 - Minor wording changes around Image Optimization

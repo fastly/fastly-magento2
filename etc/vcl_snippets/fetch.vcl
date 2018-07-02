@@ -14,35 +14,36 @@
         error beresp.status beresp.response;
     }
 
-    # Remove Set-Cookies from responses for static content
-    # to match the cookie removal in recv.
+    # Remove Set-Cookies from responses for static content to match the cookie removal in recv.
     if (req.http.x-long-cache || req.url ~ "^/(pub/)?(media|static)/") {
         unset beresp.http.set-cookie;
 
         # Set a short TTL for 404's since those can be temporary during the site build/index
         if (beresp.status == 404) {
             set beresp.ttl = 300s;
+            set beresp.http.Cache-Control = "max-age=0";
+        } else if (req.http.x-long-cache) {
+            # Force caching for signed cached assets.
+            set beresp.ttl = 31536000s;
+            # Add immutable as it avoids IMS and INM revalidations
+            set beresp.http.Cache-Control = "max-age=31536000, immutable";
         }
-
     }
 
-    # Force caching for signed cached assets.
-    if (req.http.x-long-cache) {
-        set beresp.ttl = 31536000s;
-        set beresp.http.Cache-Control = "max-age=31536000, immutable";
+    # Fix Vary Header in some cases. In 99.9% of cases Varying on User-Agent is counterproductive
+    # https://www.varnish-cache.org/trac/wiki/VCLExampleFixupVary
+    if (beresp.http.Vary ~ "User-Agent") {
+        set beresp.http.Vary = regsub(beresp.http.Vary, ",? *User-Agent *", "");
+        set beresp.http.Vary = regsub(beresp.http.Vary, "^, *", "");
+        if (beresp.http.Vary == "") {
+            unset beresp.http.Vary;
+        }
     }
 
     # All the Magento responses should emit X-Esi headers
     if (beresp.http.x-esi) {
         # enable ESI feature for Magento response by default
         esi;
-        if (!beresp.http.Vary ~ "X-Magento-Vary,Https") {
-            if (beresp.http.Vary) {
-                set beresp.http.Vary = beresp.http.Vary ",X-Magento-Vary,Https";
-            } else {
-                set beresp.http.Vary = "X-Magento-Vary,Https";
-            }
-        }
         # Since varnish doesn't compress ESIs we need to hint to the HTTP/2 terminators to
         # compress it
         set beresp.http.x-compress-hint = "on";
@@ -59,6 +60,17 @@
             }
             if (req.http.Accept-Encoding == "gzip") {
                 set beresp.gzip = true;
+            }
+        }
+    }
+
+    # Add Varying on X-Magento-Vary
+    if (beresp.http.Content-Type ~ "text/(html|xml)") {
+        if (!beresp.http.Vary ~ "X-Magento-Vary,Https") {
+            if (beresp.http.Vary) {
+                set beresp.http.Vary = beresp.http.Vary ",X-Magento-Vary,Https";
+            } else {
+                set beresp.http.Vary = "X-Magento-Vary,Https";
             }
         }
     }

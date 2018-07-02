@@ -126,7 +126,7 @@ class Api
     /**
      * Purge a single URL
      *
-     * @param string $url
+     * @param $url
      * @return bool
      * @throws \Zend_Uri_Exception
      */
@@ -410,7 +410,7 @@ class Api
     }
 
     /**
-     * Creating and updating a regular VCL Snippet
+     * Creating and updating regular VCL snippets
      *
      * @param $version
      * @param array $snippet

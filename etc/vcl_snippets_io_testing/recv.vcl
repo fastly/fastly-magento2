@@ -14,10 +14,6 @@ if ( req.http.Cookie:fastly-io-test && req.url.ext ~ "(?i)^(gif|png|jpg|jpeg|web
 
   set req.http.X-Fastly-Imageopto-Api = "fastly";
 
-  if (req.url.qs == "") {
-    set req.url = req.url "?" req.http.Cookie:fastly-io-test "&auto=webp";
-  } else {
-    set req.url = req.url "&" req.http.Cookie:fastly-io-test "&auto=webp";
-  }
+  set req.url = querystring.set(req.url, "auto", "webp") + "&" + req.http.Cookie:fastly-io-test;
   
 }

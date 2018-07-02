@@ -67,11 +67,6 @@ class Config extends \Magento\PageCache\Model\Config
     const GEOIP_ACTION_REDIRECT = 'redirect';
 
     /**
-     * GeoIP processed cookie name
-     */
-    const GEOIP_PROCESSED_COOKIE_NAME = 'FASTLY_CDN_GEOIP_PROCESSED';
-
-    /**
      * XML path to Fastly config template path
      */
     const FASTLY_CONFIGURATION_PATH = 'system/full_page_cache/fastly/path';
@@ -111,6 +106,11 @@ class Config extends \Magento\PageCache\Model\Config
      */
     const XML_FASTLY_ADMIN_PATH_TIMEOUT
         = 'system/full_page_cache/fastly/fastly_advanced_configuration/admin_path_timeout';
+
+    /**
+     * Max first byte timeout value
+     */
+    const XML_FASTLY_MAX_FIRST_BYTE_TIMEOUT = 600;
 
     /**
      * XML path to Fastly ignored url parameters
@@ -173,6 +173,9 @@ class Config extends \Magento\PageCache\Model\Config
      */
     const XML_FASTLY_IMAGE_OPTIMIZATIONS
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimizations';
+
+    const XML_FASTLY_FORCE_LOSSY
+        = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimization_force_lossy';
 
     /**
      * XML path to image optimizations pixel ratio flag
@@ -493,6 +496,11 @@ class Config extends \Magento\PageCache\Model\Config
         return $this->_scopeConfig->isSetFlag(self::XML_FASTLY_IMAGE_OPTIMIZATIONS_PIXEL_RATIO);
     }
 
+    public function isForceLossyEnabled()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_FORCE_LOSSY);
+    }
+
     /**
      * Return image optimization pixel ratios
      *
@@ -683,6 +691,14 @@ class Config extends \Magento\PageCache\Model\Config
         return strtr($data, $this->getReplacements());
     }
 
+    /**
+     * Returns VCL snippet data
+     *
+     * @param string $path
+     * @param null $specificFile
+     * @return array
+     * @throws \Magento\Framework\Exception\FileSystemException
+     */
     public function getVclSnippets($path = '/vcl_snippets', $specificFile = null)
     {
         $snippetsData = [];
@@ -705,6 +721,34 @@ class Config extends \Magento\PageCache\Model\Config
             }
         } else {
             $snippetFilePath = $moduleEtcPath . '/' . $specificFile;
+            $snippetFilePath = $directoryRead->getRelativePath($snippetFilePath);
+            $type = explode('.', $specificFile)[0];
+            $snippetsData[$type] = $directoryRead->readFile($snippetFilePath);
+        }
+
+        return $snippetsData;
+    }
+
+    public function getCustomSnippets($path, $specificFile = null)
+    {
+        $snippetsData = [];
+        $directoryRead = $this->readFactory->create($path);
+        if (!$specificFile) {
+            $files = $directoryRead->read();
+
+            if (is_array($files)) {
+                foreach ($files as $file) {
+                    if (substr($file, strpos($file, ".") + 1) !== 'vcl') {
+                        continue;
+                    }
+                    $snippetFilePath = $path . '/' . $file;
+                    $snippetFilePath = $directoryRead->getRelativePath($snippetFilePath);
+                    $type = explode('.', $file)[0];
+                    $snippetsData[$type] = $directoryRead->readFile($snippetFilePath);
+                }
+            }
+        } else {
+            $snippetFilePath = $path . '/' . $specificFile;
             $snippetFilePath = $directoryRead->getRelativePath($snippetFilePath);
             $type = explode('.', $specificFile)[0];
             $snippetsData[$type] = $directoryRead->readFile($snippetFilePath);

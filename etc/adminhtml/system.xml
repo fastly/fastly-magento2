@@ -68,6 +68,11 @@
                     </field>
                     <field id="upload_vcl" translate="label comment" sortOrder="30" showInDefault="1" showInStore="0" showInWebsite="0">
                         <label><![CDATA[Automatic upload & service activation]]></label>
+                        <comment>
+                            <![CDATA[Uploads stock Magento VCL. Magento VCL is required in order to take advantage of Fastly full page caching.
+                            More details <a href="https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/INSTALLATION.md#vcl-upload" target="_blank">here</a>. Recommended: Re-upload VCL periodically as newer versions of the plugin may contain VCL improvements/fixes.
+                            ]]>
+                        </comment>
                         <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\UploadVclBtn</frontend_model>
                     </field>
                     <group id="fastly_backend_settings" sortOrder="200" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -102,7 +107,7 @@
                         </field>
                     </group>
                     <group id="fastly_edge_acl" sortOrder="250" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Edge acl</label>
+                        <label>Edge ACLs</label>
                         <comment>
                             <![CDATA[Edge ACLs are access control lists that allow you to manage IP addresses that are used in allowing or blocking access to resources. <a href="https://docs.fastly.com/guides/access-control-lists/creating-and-manipulating-edge-acl-entries">Click here for more details.</a> This interface only allows management of containers and entries. To invoke them you will need to configure your Fastly service.]]></comment>
                         <field id="acl" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -113,10 +118,9 @@
                     <group id="fastly_advanced_configuration" sortOrder="190" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Advanced Configuration</label>
                         <field id="force_tls" translate="label comment" sortOrder="10" showInDefault="1" showInStore="0" showInWebsite="0">
-                            <label><![CDATA[Force TLS]]></label>
+                            <label><![CDATA[Enable/Disable]]></label>
                             <comment>
-                                <![CDATA[Force unencrypted requests over to TLS, return a <strong>301
-                                Moved Permanently</strong> response to any unencrypted request, and redirect to the TLS equivalent.]]></comment>
+                                <![CDATA[Return a <strong>301 Moved Permanently</strong> redirect to any unencrypted request, and redirect to the TLS equivalent. Also sets <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security" target="_blank">HSTS headers</a>.]]></comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\TlsBtn</frontend_model>
                         </field>
                         <field id="stale_ttl" type="text" translate="label comment" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
@@ -132,7 +136,7 @@
                             <backend_model>Magento\PageCache\Model\System\Config\Backend\Ttl</backend_model>
                         </field>
                         <field id="admin_path_timeout" type="text" translate="label comment" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
-                            <label>Admin path timeout</label>
+                            <label>Admin path timeout (1-600)</label>
                             <comment>
                                 <![CDATA[Time in seconds for the admin path first byte timeout. Please reupload VCL after making changes.]]>
                             </comment>
@@ -219,25 +223,31 @@
                         <field id="fastly_push_image_config" translate="label comment" sortOrder="90" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Fastly IO snippet]]></label>
                             <comment>
-                                <![CDATA[VCL snippet is required to enable IO in your Fastly service.]]>
+                                <![CDATA[VCL snippet upload is required in order to funnel image requests to Fastly optimizers.]]>
                             </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ImageBtn</frontend_model>
                         </field>
                         <field id="image_optimizations_default_config_options" translate="label comment" sortOrder="92" showInDefault="1" showInStore="1" showInWebsite="1">
                             <label><![CDATA[Default IO config options]]></label>
                             <comment>
-                                <![CDATA[Allows you to configure items such as default quality levels, auto WebP, JPG types]]>
+                                <![CDATA[Allows you to (re)configure items such as default quality levels lossy image formats, auto WebP, JPG types]]>
                             </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\IoConfigOptionsBtn</frontend_model>
                         </field>
+                        <field id="image_optimization_force_lossy" translate="label comment" type="select" sortOrder="93" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Force Lossy conversion</label>
+                            <comment>Certain image types are lossless e.g. PNG and BMP and will not compress well. By default Fastly IO will retain
+                            original format. This option forces those images to be converted to lossy JPG or WEBP. Applies only to product/catalog images.</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
                         <field id="image_optimizations" translate="label comment" type="select" sortOrder="95" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enable deep image optimization</label>
-                            <comment><![CDATA[Turns off Magento built-in image resizing and manipulation and offloads it onto Fastly IO.]]></comment>
+                            <comment><![CDATA[Turns off Magento built-in image resizing and manipulation and offloads it onto Fastly IO. Please read the <a href="https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/IMAGE-OPTIMIZATION.md#deep-image-optimization" target="_blank">image optimization guide</a> for caveats and details.]]></comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="image_optimizations_pixel_ratio" translate="label comment" type="select" sortOrder="97" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enable adaptive device pixel ratios</label>
-                            <comment><![CDATA[Magento will use <a href="https://docs.fastly.com/guides/imageopto-setup-use/serving-responsive-images#adaptive-device-pixel-ratios" target="_blank">Adaptive device pixel ratios</a> through Fastly service. Useful for Progressive Web Apps.]]></comment>
+                            <comment><![CDATA[Image sources will be rewritten to use srcsets supporting <a href="https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/IMAGE-OPTIMIZATION.md#adaptive-pixel-ratios" target="_blank">adaptive device pixel ratios</a>. Useful for Progressive Web Apps.]]></comment>
                             <depends>
                                 <field id="image_optimizations">1</field>
                             </depends>
@@ -284,17 +294,45 @@
                             <can_be_empty>1</can_be_empty>
                         </field>
                     </group>
+                    <group id="fastly_custom_snippets" sortOrder="249" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Custom VCL snippets</label>
+                        <comment>
+                            <![CDATA[This option allows you to manage your own custom VCL snippets. You can learn 
+                            <a href="https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/CUSTOM-VCL-SNIPPETS.md" target="_blank">more here</a>.
+                            <b>Please note</b> after you have created your snippets you have to click on Upload Fastly VCL to upload them along
+                            side stock Fastly VCL.
+                            ]]>
+                        </comment>
+                        <field id="fastly_custom_snippet_upload" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Create custom snippet</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\CustomSnippetBtn</frontend_model>
+                        </field>
+                        <field id="fastly_custom_snippet_files" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Custom snippets</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\CustomSnippets</frontend_model>
+                            <comment>
+                                <![CDATA[]]>
+                            </comment>
+                        </field>
+                    </group>
                     <group id="fastly_error_maintenance_page" sortOrder="246" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Custom Synthetic Pages</label>
                         <comment>
-                            <![CDATA[This option allows you to define an error/sorry page that will be sent to all users if Fastly is about to serve an error page (HTTP 500/503). It allows you to paste your own HTML which will override any backend or Fastly responses.]]>
+                            <![CDATA[This option allows you to define synthetic pages. It allows you to paste your own HTML.
+                            ]]>
                         </comment>
                         <field id="force_tls" translate="label comment" sortOrder="10" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Error/Maintenance Page HTML]]></label>
+                            <comment>
+                                 <![CDATA[Configures an error/sorry page that will be sent to all users if Fastly is about to serve an error page (HTTP 500/503) e.g. backend timeouts, backend servers errors etc.]]>
+                            </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ErrorPageBtn</frontend_model>
                         </field>
                         <field id="waf_page" translate="label comment" sortOrder="20" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[WAF Page]]></label>
+                            <comment>
+                                 <![CDATA[Customize output of the page served to users blocked by the Web Application Firewall (WAF).]]>
+                            </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\WafPageBtn</frontend_model>
                         </field>
                     </group>

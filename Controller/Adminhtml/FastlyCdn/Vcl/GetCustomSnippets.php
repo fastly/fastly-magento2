@@ -65,8 +65,8 @@ class GetCustomSnippets extends Action
      */
     public function execute()
     {
+        $result = $this->resultJson->create();
         try {
-            $result = $this->resultJson->create();
             $customSnippetPath = $this->customSnippetUpload->getUploadDirPath('vcl_snippets_custom');
             $directoryRead = $this->readFactory->create($customSnippetPath);
             $customSnippets = $directoryRead->read();

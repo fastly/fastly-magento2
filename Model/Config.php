@@ -724,29 +724,34 @@ class Config extends \Magento\PageCache\Model\Config
     public function getCustomSnippets($path, $specificFile = null)
     {
         $snippetsData = [];
-        $directoryRead = $this->readFactory->create($path);
-        if (!$specificFile) {
-            $files = $directoryRead->read();
+        try {
+            $directoryRead = $this->readFactory->create($path);
+            if (!$specificFile) {
+                $files = $directoryRead->read();
 
-            if (is_array($files)) {
-                foreach ($files as $file) {
-                    if (substr($file, strpos($file, ".") + 1) !== 'vcl') {
-                        continue;
+                if (is_array($files)) {
+                    foreach ($files as $file) {
+                        if (substr($file, strpos($file, ".") + 1) !== 'vcl') {
+                            continue;
+                        }
+                        $snippetFilePath = $path . '/' . $file;
+                        $snippetFilePath = $directoryRead->getRelativePath($snippetFilePath);
+                        $type = explode('.', $file)[0];
+                        $snippetsData[$type] = $directoryRead->readFile($snippetFilePath);
                     }
-                    $snippetFilePath = $path . '/' . $file;
-                    $snippetFilePath = $directoryRead->getRelativePath($snippetFilePath);
-                    $type = explode('.', $file)[0];
-                    $snippetsData[$type] = $directoryRead->readFile($snippetFilePath);
                 }
+            } else {
+                $snippetFilePath = $path . '/' . $specificFile;
+                $snippetFilePath = $directoryRead->getRelativePath($snippetFilePath);
+                $type = explode('.', $specificFile)[0];
+                $snippetsData[$type] = $directoryRead->readFile($snippetFilePath);
             }
-        } else {
-            $snippetFilePath = $path . '/' . $specificFile;
-            $snippetFilePath = $directoryRead->getRelativePath($snippetFilePath);
-            $type = explode('.', $specificFile)[0];
-            $snippetsData[$type] = $directoryRead->readFile($snippetFilePath);
-        }
 
-        return $snippetsData;
+            return $snippetsData;
+
+        } catch (\Exception $e) {
+            return $snippetsData;
+        }
     }
 
     /**

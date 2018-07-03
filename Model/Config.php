@@ -746,9 +746,7 @@ class Config extends \Magento\PageCache\Model\Config
                 $type = explode('.', $specificFile)[0];
                 $snippetsData[$type] = $directoryRead->readFile($snippetFilePath);
             }
-
             return $snippetsData;
-
         } catch (\Exception $e) {
             return $snippetsData;
         }

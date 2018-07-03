@@ -20,12 +20,15 @@ class UpgradeSchema implements UpgradeSchemaInterface // @codingStandardsIgnoreL
         $installer = $setup;
         $installer->startSetup();
 
-        if (version_compare($context->getVersion(), '1.1.0', '<=')) {
+        if (version_compare($context->getVersion(), '1.0.11', '<=')) {
             $this->createFastlyStatisticsTable($installer);
-            $this->createModlyManifestTable($installer);
-
-            $installer->endSetup();
         }
+
+        if (version_compare($context->getVersion(), '1.0.12', '<=')) {
+            $this->createModlyManifestTable($installer);
+        }
+
+        $installer->endSetup();
     }
 
     /**

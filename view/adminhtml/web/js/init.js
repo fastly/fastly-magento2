@@ -21,6 +21,7 @@ define([
             var fastlyFieldset = $('#system_full_page_cache_fastly');
             var active_version = '';
             var next_version = '';
+            var isAlreadyConfigured = true;
 
             $('#system_full_page_cache_fastly-head').on('click', function () {
                 if ($(this).attr("class") === "open") {
@@ -44,7 +45,7 @@ define([
                     url: config.isAlreadyConfiguredUrl
                 }).done(function (response) {
                     if (response.status === true) {
-                        var isAlreadyConfigured = response.flag;
+                        isAlreadyConfigured = response.flag;
                     }
                 });
 
@@ -75,7 +76,7 @@ define([
                         active_version = checkService.active_version;
                         next_version = checkService.next_version;
 
-                        tls(config, checkService);
+                        tls(config, checkService, isAlreadyConfigured);
                         blocking(config, checkService);
 
                         $('#system_full_page_cache_fastly_fastly_blocking-head').unbind('click').on('click', function () {

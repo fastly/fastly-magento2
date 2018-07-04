@@ -76,7 +76,7 @@ define([
                         active_version = checkService.active_version;
                         next_version = checkService.next_version;
 
-                        tls(config, checkService, isAlreadyConfigured);
+                        tls(config, checkService, isAlreadyConfigured, active_version);
                         blocking(config, checkService);
 
                         $('#system_full_page_cache_fastly_fastly_blocking-head').unbind('click').on('click', function () {
@@ -87,7 +87,7 @@ define([
                                     blockingStateSpan.find('.processing').hide();
                                     var blockingStateEnabled = blockingStateMsgSpan.find('#blocking_state_enabled');
                                     var blockingStateDisabled = blockingStateMsgSpan.find('#blocking_state_disabled');
-                                    if (checkReqSetting.status != false) {
+                                    if (checkReqSetting.status !== false) {
                                         if (blockingStateDisabled.is(":hidden")) {
                                             blockingStateEnabled.show();
                                         }

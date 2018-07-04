@@ -2,11 +2,12 @@ define([
     "jquery",
     "message",
     "popup",
-    'mage/template',
+    "resetAllMessages",
+    "showErrorMessage",
     "Magento_Ui/js/modal/modal",
     'mage/translate'
-], function ($, message, popup) {
-    return function (config, checkService, isAlreadyConfigured) {
+], function ($, message, popup, resetAllMessages, showErrorMessage) {
+    return function (config, checkService, isAlreadyConfigured, active_version) {
 
             var requestStateSpan = $('#request_state_span');
             var requestStateMsgSpan = $('#fastly_request_state_message_span');
@@ -15,6 +16,7 @@ define([
             var successTlsBtnMsg = $('#fastly-success-tls-button-msg');
             var errorTlsBtnMsg = $('#fastly-error-tls-button-msg');
             var warningTlsBtnMsg = $('#fastly-warning-tls-button-msg');
+
             var tlsOptions = {
                     id: 'fastly-uploadvcl-options',
                     title: jQuery.mage.__(''),
@@ -123,11 +125,11 @@ define([
                 },
                 showLoader: true,
                 success: function (response) {
-                    if (response.status == true) {
-                        vcl.modal.modal('closeModal');
+                    if (response.status === true) {
+                        modal.modal('closeModal');
                         var onOrOff = 'off';
                         var disabledOrEnabled = 'disabled';
-                        if (forceTls == false) {
+                        if (forceTls === false) {
                             onOrOff = 'on';
                             disabledOrEnabled = 'enabled';
                         } else {
@@ -136,7 +138,7 @@ define([
                         }
                         successTlsBtnMsg.text($.mage.__('The Force TLS request setting is successfully turned ' + onOrOff + '.')).show();
                         $('.request_tls_state_span').hide();
-                        if (disabledOrEnabled == 'enabled') {
+                        if (disabledOrEnabled === 'enabled') {
                             requestStateMsgSpan.find('#force_tls_state_disabled').hide();
                             requestStateMsgSpan.find('#force_tls_state_enabled').show();
                         } else {
@@ -144,8 +146,8 @@ define([
                             requestStateMsgSpan.find('#force_tls_state_disabled').show();
                         }
                     } else {
-                        vcl.resetAllMessages();
-                        vcl.showErrorMessage(response.msg);
+                        resetAllMessages();
+                        showErrorMessage(response.msg);
                     }
                 },
                 error: function (msg) {

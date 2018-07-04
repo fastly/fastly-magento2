@@ -131,7 +131,7 @@ class ForceTls extends Action
                 $this->api->deleteRequest($clone->number, $reqName);
 
                 // Remove force TLS snippet
-                foreach ($snippet as $key => $value) {
+                foreach ($snippets as $key => $value) {
                     $name = Config::FASTLY_MAGENTO_MODULE.'_force_tls_'.$key;
                     $this->api->removeSnippet($clone->number, $name);
                 }

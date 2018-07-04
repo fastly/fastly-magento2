@@ -9,68 +9,82 @@ define([
 ], function ($, message, popup, resetAllMessages, showErrorMessage) {
     return function (config, checkService, isAlreadyConfigured, active_version) {
 
-            var requestStateSpan = $('#request_state_span');
-            var requestStateMsgSpan = $('#fastly_request_state_message_span');
-            var forceTls = true;
-            /* TLS button messages */
-            var successTlsBtnMsg = $('#fastly-success-tls-button-msg');
-            var errorTlsBtnMsg = $('#fastly-error-tls-button-msg');
-            var warningTlsBtnMsg = $('#fastly-warning-tls-button-msg');
-
-            var tlsOptions = {
-                    id: 'fastly-uploadvcl-options',
-                    title: jQuery.mage.__(''),
-                    content: function () {
-                        return document.getElementById('fastly-tls-template').textContent;
-                    },
-                    actionOk: function () {
-                        toggleTls(active_version);
-                    }
-                };
-
-                $('#system_full_page_cache_fastly_fastly_advanced_configuration-head').unbind('click').on('click', function () {
-                    if ($(this).attr("class") === "open") {
-                        var tls = getTlsSetting(checkService.active_version, false);
-
-                        tls.done(function (checkReqSetting) {
-                            requestStateSpan.find('.processing').hide();
-                            var tlsStateEnabled = requestStateMsgSpan.find('#force_tls_state_enabled');
-                            var tlsStateDisabled = requestStateMsgSpan.find('#force_tls_state_disabled');
-                            if (checkReqSetting.status !== false) {
-                                if (tlsStateDisabled.is(":hidden")) {
-                                    tlsStateEnabled.show();
-                                }
-                            } else {
-                                if (tlsStateEnabled.is(":hidden")) {
-                                    tlsStateDisabled.show();
-                                }
-                            }
-                        }).fail(function () {
-                            requestStateSpan.find('.processing').hide();
-                            requestStateMsgSpan.find('#force_tls_state_unknown').show();
-                        });
-                    }
-                });
-
-            function getTlsSetting (active_version, loaderVisibility) {
-                return $.ajax({
-                    type: "POST",
-                    url: config.checkTlsSettingUrl,
-                    showLoader: loaderVisibility,
-                    data: {'active_version': active_version}
-                });
-            }
+        /* Force TLS state elements*/
+        var requestStateSpan = $('#request_state_span');
+        var requestStateMsgSpan = $('#fastly_request_state_message_span');
+        var forceTls = true;
+        /* Force TLS button messages */
+        var successTlsBtnMsg = $('#fastly-success-tls-button-msg');
+        var errorTlsBtnMsg = $('#fastly-error-tls-button-msg');
+        var warningTlsBtnMsg = $('#fastly-warning-tls-button-msg');
 
         /**
-         * Force TLS button
+         * Force TLS options for the modal popup
+         *
+         * @type {{id: string, title: *, content: content, actionOk: actionOk}}
          */
+        var tlsOptions = {
+                id: 'fastly-uploadvcl-options',
+                title: jQuery.mage.__(''),
+                content: function () {
+                    return document.getElementById('fastly-tls-template').textContent;
+                },
+                actionOk: function () {
+                    toggleTls(active_version);
+                }
+            };
+
+
+            /* Onclick event that triggers the Force TLS state lookup and shows the current state */
+            $('#system_full_page_cache_fastly_fastly_advanced_configuration-head').unbind('click').on('click', function () {
+                if ($(this).attr("class") === "open") {
+                    var tls = getTlsSetting(checkService.active_version, false);
+
+                    tls.done(function (checkReqSetting) {
+                        requestStateSpan.find('.processing').hide();
+
+                        var tlsStateEnabled = requestStateMsgSpan.find('#force_tls_state_enabled');
+                        var tlsStateDisabled = requestStateMsgSpan.find('#force_tls_state_disabled');
+
+                        if (checkReqSetting.status !== false) {
+                            if (tlsStateDisabled.is(":hidden")) {
+                                tlsStateEnabled.show();
+                            }
+                        } else {
+                            if (tlsStateEnabled.is(":hidden")) {
+                                tlsStateDisabled.show();
+                            }
+                        }
+                    }).fail(function () {
+                        requestStateSpan.find('.processing').hide();
+                        requestStateMsgSpan.find('#force_tls_state_unknown').show();
+                    });
+                }
+            });
+
+        /**
+         * Queries Fastly API to retrieve TLS setting
+         *
+         * @param active_version
+         * @param loaderVisibility
+         * @returns {*}
+         */
+        function getTlsSetting (active_version, loaderVisibility) {
+            return $.ajax({
+                type: "POST",
+                url: config.checkTlsSettingUrl,
+                showLoader: loaderVisibility,
+                data: {'active_version': active_version}
+            });
+        }
+
+        /* Force TLS button on click event that triggers the modal popup*/
         $('#fastly_force_tls_button').on('click', function () {
             if (isAlreadyConfigured !== true) {
                 $(this).attr('disabled', true);
                 return alert($.mage.__('Please save config prior to continuing.'));
             }
 
-            // Tls button messages
             successTlsBtnMsg.hide();
             errorTlsBtnMsg.hide();
             warningTlsBtnMsg.hide();
@@ -108,7 +122,7 @@ define([
             });
         });
 
-        // Toggle TLS process
+        // Toggles the Force TLS enable/disable process and displays the relevant message
         function toggleTls(active_version) {
             var activate_tls_flag = false;
 
@@ -129,6 +143,7 @@ define([
                         modal.modal('closeModal');
                         var onOrOff = 'off';
                         var disabledOrEnabled = 'disabled';
+
                         if (forceTls === false) {
                             onOrOff = 'on';
                             disabledOrEnabled = 'enabled';
@@ -138,6 +153,7 @@ define([
                         }
                         successTlsBtnMsg.text($.mage.__('The Force TLS request setting is successfully turned ' + onOrOff + '.')).show();
                         $('.request_tls_state_span').hide();
+
                         if (disabledOrEnabled === 'enabled') {
                             requestStateMsgSpan.find('#force_tls_state_disabled').hide();
                             requestStateMsgSpan.find('#force_tls_state_enabled').show();
@@ -149,9 +165,6 @@ define([
                         resetAllMessages();
                         showErrorMessage(response.msg);
                     }
-                },
-                error: function (msg) {
-                    // error handling
                 }
             });
         }

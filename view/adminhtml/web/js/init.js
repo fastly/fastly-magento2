@@ -1,29 +1,25 @@
 define([
     "jquery",
-    'tls',
-    'blocking',
     'mage/template',
     "Magento_Ui/js/modal/modal",
     'mage/translate'
-], function ($, tls, blocking) {
+], function ($) {
     return function (config) {
         $(document).ready(function () {
             var allOpen = '';
             var allActive = '';
-            var requestStateSpan = '';
             var requestStateMsgSpan = '';
-            var blockingStateSpan = '';
-            var blockingStateMsgSpan = '';
             var imageStateSpan = '';
             var imageStateMsgSpan = '';
             var authStateSpan = '';
             var authStateMsgSpan = '';
-            var fastlyFieldset = $('#system_full_page_cache_fastly');
             var active_version = '';
             var next_version = '';
+            var fastlyFieldset = $('#system_full_page_cache_fastly');
             var isAlreadyConfigured = true;
+            var serviceStatus = false;
 
-            $('#system_full_page_cache_fastly-head').on('click', function () {
+            $('#system_full_page_cache_fastly-head').one('click', function () {
                 if ($(this).attr("class") === "open") {
                     init();
                     if (allOpen !== '') {
@@ -49,58 +45,29 @@ define([
                     }
                 });
 
-                // Checking service status & presence of force_tls request setting
-                requestStateSpan = $('#request_state_span');
-                requestStateMsgSpan = $('#fastly_request_state_message_span');
-                // Check service status & presence of blocking request setting
-                blockingStateSpan = $('#blocking_state_span');
-                blockingStateMsgSpan = $('#fastly_blocking_state_message_span');
-                // Check service status & presence of image optimization request setting
-                imageStateSpan = $('#imgopt_state_span');
-                imageStateMsgSpan = $('#fastly_imgopt_state_message_span');
-                // Checking service status & presence of basic auth request setting
-                authStateSpan = $('#auth_state_span');
-                authStateMsgSpan = $('#fastly_auth_state_message_span');
+                var advancedConfigurationHead = $('#system_full_page_cache_fastly_fastly_advanced_configuration-head');
+                var blockingConfigurationHead = $('#system_full_page_cache_fastly_fastly_blocking-head');
 
                 $.ajax({
                     type: "GET",
-                    url: config.serviceInfoUrl,
-                    beforeSend: function (xhr) {
-                        requestStateSpan.find('.processing').show();
-                        blockingStateSpan.find('.processing').show();
-                        imageStateSpan.find('.processing').show();
-                    }
+                    url: config.serviceInfoUrl
                 }).done(function (checkService) {
                     if (checkService.status !== false) {
                         $('body').loader('hide');
                         active_version = checkService.active_version;
                         next_version = checkService.next_version;
+                        serviceStatus = checkService;
 
-                        tls(config, checkService, isAlreadyConfigured, active_version);
-                        blocking(config, checkService);
+                        advancedConfigurationHead.one('click', function () {
+                            requirejs(['tls'], function (tls) {
+                                tls(config, serviceStatus, isAlreadyConfigured);
+                            });
+                        });
 
-                        $('#system_full_page_cache_fastly_fastly_blocking-head').unbind('click').on('click', function () {
-                            if ($(this).attr("class") === "open") {
-                                var blocking = vcl.getBlockingSetting(checkService.active_version, false);
-
-                                blocking.done(function (checkReqSetting) {
-                                    blockingStateSpan.find('.processing').hide();
-                                    var blockingStateEnabled = blockingStateMsgSpan.find('#blocking_state_enabled');
-                                    var blockingStateDisabled = blockingStateMsgSpan.find('#blocking_state_disabled');
-                                    if (checkReqSetting.status !== false) {
-                                        if (blockingStateDisabled.is(":hidden")) {
-                                            blockingStateEnabled.show();
-                                        }
-                                    } else {
-                                        if (blockingStateEnabled.is(":hidden")) {
-                                            blockingStateDisabled.show();
-                                        }
-                                    }
-                                }).fail(function () {
-                                    blockingStateSpan.find('.processing').hide();
-                                    blockingStateMsgSpan.find('#blocking_state_unknown').show();
-                                });
-                            }
+                        blockingConfigurationHead.one('click', function () {
+                            requirejs(['blocking'], function (blocking) {
+                                blocking(config, serviceStatus, isAlreadyConfigured);
+                            });
                         });
 
                         $('#system_full_page_cache_fastly_fastly_error_maintenance_page-head').unbind('click').on('click', function () {
@@ -292,12 +259,10 @@ define([
                             }
                         });
                     } else {
-                        requestStateSpan.find('.processing').hide();
-                        requestStateMsgSpan.find('#force_tls_state_unknown').show();
-                        blockingStateSpan.find('.processing').hide();
-                        blockingStateMsgSpan.find('#blocking_state_unknown').show();
-                        imageStateSpan.find('.processing').hide();
-                        imageStateMsgSpan.find('#imgopt_state_unknown').show();
+                        // blockingStateSpan.find('.processing').hide();
+                        // blockingStateMsgSpan.find('#blocking_state_unknown').show();
+                        // imageStateSpan.find('.processing').hide();
+                        // imageStateMsgSpan.find('#imgopt_state_unknown').show();
                     }
                 }).fail(function () {
                     requestStateMsgSpan.find('#force_tls_state_unknown').show();

@@ -29,7 +29,7 @@ define([
                     },
                     cache: false,
                     success: function (response) {
-                        if (response.status == false) {
+                        if (response.status === false) {
                             return blockingErrorBtnMsg.text($.mage.__('Please make sure that blocking is enabled.')).show();
                         } else {
                             return blockingSuccessBtnMsg.text($.mage.__('Blocking snippet has been updated successfully.')).show();

@@ -47,6 +47,7 @@ define([
 
                 var advancedConfigurationHead = $('#system_full_page_cache_fastly_fastly_advanced_configuration-head');
                 var blockingConfigurationHead = $('#system_full_page_cache_fastly_fastly_blocking-head');
+                var imageOptimizationConfigurationHead = $('#system_full_page_cache_fastly_fastly_image_optimization_configuration-head');
 
                 $.ajax({
                     type: "GET",
@@ -70,6 +71,12 @@ define([
                             });
                         });
 
+                        imageOptimizationConfigurationHead.one('click', function () {
+                            requirejs(['imageOptimization'], function (imageOptimization) {
+                                imageOptimization(config, serviceStatus, isAlreadyConfigured);
+                            });
+                        });
+
                         $('#system_full_page_cache_fastly_fastly_error_maintenance_page-head').unbind('click').on('click', function () {
                             if ($(this).attr("class") === "open") {
                                 var wafPage = vcl.getWafPageRespObj(checkService.active_version, false);
@@ -78,69 +85,6 @@ define([
                                     if (checkWafResponse.status != false) {
                                         wafPageRow.show();
                                     }
-                                });
-                            }
-                        });
-
-                        $('#system_full_page_cache_fastly_fastly_image_optimization_configuration-head').unbind('click').on('click', function () {
-                            if ($(this).attr("class") === "open") {
-                                var fastlyIo = vcl.getFastlyIoSetting(false);
-                                var imageOptimization = vcl.getImageSetting(checkService.active_version, false);
-
-                                fastlyIo.done(function (checkIoSetting) {
-                                    if (checkIoSetting.status == false) {
-                                        if (config.isIoEnabled) {
-                                            ioToggle.removeAttrs('disabled');
-                                            imgConfigBtn.addClass('disabled');
-                                        } else {
-                                            ioToggle.attr('disabled', 'disabled');
-                                            imgConfigBtn.removeClass('disabled');
-                                        }
-                                    }
-                                });
-
-                                imageOptimization.done(function (checkReqSetting) {
-                                    imageStateSpan.find('.processing').hide();
-                                    var imageStateEnabled = imageStateMsgSpan.find('#imgopt_state_enabled');
-                                    var imageStateDisabled = imageStateMsgSpan.find('#imgopt_state_disabled');
-                                    if (checkReqSetting.status != false) {
-                                        if (imageStateDisabled.is(":hidden")) {
-                                            imageStateEnabled.show();
-                                        }
-                                        imageStateEnabled.show();
-                                        fastlyIo.done(function (checkIoSetting) {
-                                            if (checkIoSetting.status == true) {
-                                                imgBtn.removeClass('disabled');
-                                                warningIoMsg.hide();
-                                            } else {
-                                                warningIoMsg.text(
-                                                    $.mage.__(
-                                                        'Please contact your sales rep or send an email to support@fastly.com to request image optimization activation for your Fastly service.'
-                                                    )
-                                                ).show();
-                                            }
-                                        });
-                                    } else {
-                                        if (imageStateEnabled.is(":hidden")) {
-                                            imageStateDisabled.show();
-                                        }
-                                        fastlyIo.done(function (checkIoSetting) {
-                                            if (checkIoSetting.status == true) {
-                                                imgBtn.removeClass('disabled');
-                                                warningIoMsg.hide();
-                                            } else {
-                                                imgBtn.addClass('disabled');
-                                                warningIoMsg.text(
-                                                    $.mage.__(
-                                                        'Please contact your sales rep or send an email to support@fastly.com to request image optimization activation for your Fastly service.'
-                                                    )
-                                                ).show();
-                                            }
-                                        });
-                                    }
-                                }).fail(function () {
-                                    imageStateSpan.find('.processing').hide();
-                                    imageStateMsgSpan.find('#imgopt_state_unknown').show();
                                 });
                             }
                         });

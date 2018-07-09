@@ -7,7 +7,8 @@ var config = {
             setServiceLabel: 'Fastly_Cdn/js/service-label',
             popup: 'Fastly_Cdn/js/popup',
             resetAllMessages: 'Fastly_Cdn/js/reset-all-messages',
-            showErrorMessage: 'Fastly_Cdn/js/error-message'
+            showErrorMessage: 'Fastly_Cdn/js/error-message',
+            imageOptimization: 'Fastly_Cdn/js/image-optimization'
         }
     }
 };

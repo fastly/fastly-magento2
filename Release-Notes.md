@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.60
+
+- Fix for https://github.com/fastly/fastly-magento2/issues/193
+
 ## 1.2.59
 
 - Fix for https://github.com/fastly/fastly-magento2/issues/191

@@ -1258,6 +1258,22 @@
         </fieldset>
     </form>
 </script>
+
+<script type="text/x-magento-template" id="modly-active-module-template">
+    <div class="messages">
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/setActiveModuleConfig'); ?>"
+          method="POST"
+          id="fastly-active-module-config-form"
+          class="form-inline"
+          enctype="multipart/form-data"
+          style="margin-top: 25px;">
+        <fieldset class="admin__fieldset form-list question">
+        </fieldset>
+    </form>
+</script>
 <?php
 
 /**
@@ -1308,6 +1324,7 @@ $checkAuthUsersAvailable = $block->getUrl('adminhtml/fastlyCdn_Vcl/CheckAuthUser
 $listIoDefaultConfigOptions = $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/ListAll');
 $configureIoUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/IoDefaultConfigOptions');
 $manifestUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/Create');
+$getActiveModulesUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getActiveModules');
 $isIoEnabled = $block->getConfig()->isImageOptimizationEnabled();
 
 /* This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application  */
@@ -1364,7 +1381,8 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "saveManifests": "<?php echo $block->escapeJsQuote($manifestUrl);?>",
                     "configureIoUrl": "<?php echo $block->escapeJsQuote($configureIoUrl);?>",
                     "createCustomSnippetUrl": "<?php echo $block->escapeJsQuote($createCustomSnippetUrl);?>",
-                    "getCustomSnippetsUrl": "<?php echo $block->escapeJsQuote($getCustomSnippetsUrl);?>"
+                    "getCustomSnippetsUrl": "<?php echo $block->escapeJsQuote($getCustomSnippetsUrl);?>",
+                    "getActiveModulesUrl": "<?php echo $block->escapeJsQuote($getActiveModulesUrl);?>"
                 }
             }
         }

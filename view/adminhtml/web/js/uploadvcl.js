@@ -32,6 +32,25 @@ define([
                 }
             });
 
+            $('#system_full_page_cache_fastly_edge_modules-head').on('click', function () {
+                // Fetch active modules
+                if ($(this).attr("class") === "open") {
+                    vcl.getActiveModules(false).done(function (response) {
+                        $('.loading-modules').hide();
+                        if (response.status !== false) {
+                            if (response.modules.length > 0) {
+                                modules = response.modules;
+                                vcl.processActiveModules(modules);
+                            } else {
+                                $('.no-modules').show();
+                            }
+                        }
+                    }).fail(function () {
+                        // TO DO: implement
+                    });
+                }
+            });
+
             /**
              * Add new dictionary item
              */
@@ -596,6 +615,115 @@ define([
                 $('#backend_first_byte_timeout').val(backends[backend_id].first_byte_timeout);
             }
         });
+
+        $('body').on('click', 'button.fastly-edit-active-modules-icon', function () {
+            // $.ajax({
+            //     type: "GET",
+            //     url: config.serviceInfoUrl
+            // }).done(function (checkService) {
+            //     active_version = checkService.active_version;
+            //     next_version = checkService.next_version;
+            //     service_name = checkService.service.name;
+            //     vcl.setActiveServiceLabel(active_version, next_version, service_name);
+            // });
+
+            var module_id = $(this).data('module-id');
+            var properties = [];
+            var field = '';
+            var message = '';
+            var title = '';
+            $.each(modules, function (index, module) {
+                if (module.manifest_id === module_id) {
+                    properties = JSON.parse(module.manifest_properties);
+                     message = '<div class="message">' + module.manifest_description + '</div>';
+                     title = module.manifest_name;
+                    console.log(properties);
+                    $.each(properties, function (key, property) {
+                        if (property.type === 'group') {
+                            $.each(property.properties, function(i, prop){
+                                field += renderFields(prop, module.manifest_values);
+                            });
+                        } else {
+                            field += renderFields(property, module.manifest_values);
+                        }
+                    });
+                }
+            });
+            if (modules != null && module_id != null) {
+                vcl.showPopup('modly-active-module-options');
+                $('#modly-active-module-options > .messages').prepend(message);
+                $('.question').html(field);
+                $('.modal-title').html(title);
+            }
+        });
+
+        function renderFields(property, value) {
+            var html = '';
+            var description = '';
+            if (property.description) {
+                description = property.description;
+            }
+
+            if (property.type === 'string' || property.type === 'integer' || property.type === 'rtime' || property.type === 'domain') {
+                html += '<div class="admin__field field _required">';
+                html += '<label for="' + property.name + '" class="admin__field-label">';
+                html += '<span>' + property.label + '</span>';
+                html += '</label>';
+                html += '<div class="admin__field-control">';
+                html += '<input type="text" name="' + property.name + '" required="required" id="' + property.name + '" value="' + value + '" class="admin__control-text required-entry">';
+                html += '<div class="admin__field-note">' + description + '</div>';
+                html += '</div></div>';
+                return html;
+            } else if (property.type === 'longstring') {
+                html += '<div class="admin__field field _required">';
+                html += '<label for="' + property.name + '" class="admin__field-label">';
+                html += '<span>' + property.label + '</span>';
+                html += '</label>';
+                html += '<div class="admin__field-control">';
+                html += '<textarea rows="10" name="' + property.name + '" required="required" id="' + property.name + '" class="admin__control-text required-entry">';
+                html += value + '</textarea>';
+                html += '<div class="admin__field-note">' + description + '</div>';
+                html += '</div></div>';
+                return html;
+            } else if (property.type === 'select') {
+                html += '<div class="admin__field field _required">';
+                html += '<label for="' + property.name + '" class="admin__field-label">';
+                html += '<span>' + property.label + '</span>';
+                html += '</label>';
+                html += '<div class="admin__field-control">';
+                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text">';
+                $.each(property.options, function (key, option) {
+                    html += '<option value="' + key + '">' + option + '</option>';
+                });
+                html += '</select>';
+                html += '<div class="admin__field-note">' + description + '</div>';
+                html += '</div></div>';
+                return html;
+            } else if (property.type === 'boolean') {
+                var def = '';
+                if (property.default) {
+                    def = property.default;
+                }
+                html += '<div class="admin__field field _required">';
+                html += '<label for="' + property.name + '" class="admin__field-label">';
+                html += '<span>' + property.label + '</span>';
+                html += '</label>';
+                html += '<div class="admin__field-control">';
+                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text">';
+                html += '<option value="false"';
+                if (def === 'false') html += 'selected';
+                html += '>No</option>';
+                html += '<option value="true"';
+                if (def === 'true') html += 'selected';
+                html += '>Yes</option>';
+                html += '</select>';
+                html += '<div class="admin__field-note">' + description + '</div>';
+                html += '</div></div>';
+                return html;
+            } else {
+                return html;
+            }
+        }
 
         /**
          * delete dictionary button
@@ -1411,6 +1539,7 @@ define([
         var edgeAcls = null;
         var authStatus = true;
         var backends = null;
+        var modules = null;
         var dictionaries = null;
         var dictionary_id = null;
         var acls = null;
@@ -1616,6 +1745,17 @@ define([
                 });
             },
 
+            getActiveModules: function (loaderVisibility) {
+                return $.ajax({
+                    type: "GET",
+                    url: config.getActiveModulesUrl,
+                    showLoader: loaderVisibility,
+                    beforeSend: function (xhr) {
+                        $('.loading-modules').show();
+                    }
+                });
+            },
+
             // Queries Fastly API to retrieve error page response object
             getErrorPageRespObj: function (active_version, loaderVisibility) {
                 return $.ajax({
@@ -1659,6 +1799,20 @@ define([
                     $('.no-snippets').hide();
                 }
                 $('#fastly-snippets-list').html(html);
+            },
+
+            processActiveModules: function (modules) {
+                var html = '';
+                $.each(modules, function (index, module) {
+                    html += "<tr id='fastly_" + index + "'>";
+                    html += "<td><span data-moduleId='" + index + "' id='module_" + index + "' disabled='disabled' class='active-modules' type='text'><b>" + module.manifest_name + "</b></span>";
+                    html += "<p class='note'><span>" + module.manifest_description + "</span></p></td>";
+                    html += "<td class='col-actions'><button class='action-delete fastly-edit-active-modules-icon' data-module-id='" + module.manifest_id + "' id='fastly-edit-active-modules"+ index + "' title='Edit module' type='button'></td></tr>";
+                });
+                if (html != '') {
+                    $('.no-modules').hide();
+                }
+                $('#modly-active-modules-list').html(html);
             },
 
             // Process dictionaries
@@ -2908,6 +3062,14 @@ define([
                     },
                     actionOk: function () {
                         vcl.configureIo(active_version);
+                    }
+                },
+                'modly-active-module-options': {
+                    title: jQuery.mage.__(' '),
+                    content: function () {
+                        return document.getElementById('modly-active-module-template').textContent;
+                    },
+                    actionOk: function () {
                     }
                 }
             }

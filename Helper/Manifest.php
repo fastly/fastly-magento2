@@ -72,4 +72,14 @@ class Manifest extends AbstractHelper
         }
         return $manifests;
     }
+
+    public function getModules()
+    {
+        $moduleCollection = $this->collectionFactory->create()->getData();
+        $modules = [];
+        foreach ($moduleCollection as $module) {
+            $modules[] = $module;
+        }
+        return $modules;
+    }
 }

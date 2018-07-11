@@ -112,17 +112,35 @@ class UpgradeSchema implements UpgradeSchemaInterface // @codingStandardsIgnoreL
                 ['nullable' => false],
                 'Manifest name'
             )->addColumn(
+                'manifest_description',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                \Magento\Framework\DB\Ddl\Table::DEFAULT_TEXT_SIZE,
+                ['nullable' => false],
+                'Manifest description'
+            )->addColumn(
                 'manifest_version',
                 \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
                 12,
                 ['nullable' => false],
                 'Manifest version'
             )->addColumn(
+                'manifest_properties',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                \Magento\Framework\DB\Ddl\Table::DEFAULT_TEXT_SIZE,
+                ['nullable' => false],
+                'Manifest properties'
+            )->addColumn(
                 'manifest_content',
                 \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
                 \Magento\Framework\DB\Ddl\Table::DEFAULT_TEXT_SIZE,
                 ['nullable' => false],
                 'Manifest content'
+            )->addColumn(
+                'manifest_values',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                \Magento\Framework\DB\Ddl\Table::DEFAULT_TEXT_SIZE,
+                ['nullable' => false],
+                'Manifest configuration values'
             );
 
             $connection->createTable($table);

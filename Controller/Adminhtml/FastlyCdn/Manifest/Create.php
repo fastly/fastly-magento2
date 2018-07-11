@@ -67,15 +67,19 @@ class Create extends Action
 
             foreach ($manifests as $key => $value) {
                 $version = $value['version'];
-                $name = strtolower($value['name']);
+                $name = $value['name'];
+                $description = $value['description'];
                 $content = $value['content'];
-                $strippedNonAlphaName = preg_replace("/[^A-Za-z0-9 ]/", '', $name);
+                $properties = json_encode($value['properties']);
+                $strippedNonAlphaName = preg_replace("/[^A-Za-z0-9 ]/", '', strtolower($name));
                 $id = preg_replace('/\s+/', '_', $strippedNonAlphaName);
 
                 $manifest->setManifestId($id);
                 $manifest->setManifestVersion($version);
                 $manifest->setManifestName($name);
+                $manifest->setmanifestDescription($description);
                 $manifest->setManifestContent($content);
+                $manifest->setManifestProperties($properties);
                 $this->saveManifest($manifest);
                 $manifest->unsetData();
             }

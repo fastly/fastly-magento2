@@ -18,6 +18,10 @@ define([
         $(document).ready(function () {
             var allOpen = '';
             var allActive = '';
+            if ($('#system_full_page_cache_fastly_edge_modules-head').attr("class") === "open") {
+                $('#system_full_page_cache_fastly_edge_modules-head').trigger('click');
+            }
+
             $('#system_full_page_cache_fastly-head').on('click', function () {
                 if ($(this).attr("class") === "open") {
                     init();
@@ -617,44 +621,46 @@ define([
         });
 
         $('body').on('click', 'button.fastly-edit-active-modules-icon', function () {
-            // $.ajax({
-            //     type: "GET",
-            //     url: config.serviceInfoUrl
-            // }).done(function (checkService) {
-            //     active_version = checkService.active_version;
-            //     next_version = checkService.next_version;
-            //     service_name = checkService.service.name;
-            //     vcl.setActiveServiceLabel(active_version, next_version, service_name);
-            // });
 
             var module_id = $(this).data('module-id');
             var properties = [];
             var field = '';
             var message = '';
             var title = '';
-            $.each(modules, function (index, module) {
-                if (module.manifest_id === module_id) {
-                    properties = JSON.parse(module.manifest_properties);
-                     message = '<div class="message">' + module.manifest_description + '</div>';
-                     title = module.manifest_name;
-                    console.log(properties);
-                    $.each(properties, function (key, property) {
-                        if (property.type === 'group') {
-                            $.each(property.properties, function(i, prop){
-                                field += renderFields(prop, module.manifest_values);
-                            });
-                        } else {
-                            field += renderFields(property, module.manifest_values);
-                        }
-                    });
+
+            vcl.getActiveModules(false).done(function (response) {
+                if (response.status !== false) {
+                    if (response.modules.length > 0) {
+                        modules = response.modules;
+                    }
+                }
+
+                $('.loading-modules').hide();
+
+                $.each(modules, function (index, module) {
+                    if (module.manifest_id === module_id) {
+                        properties = JSON.parse(module.manifest_properties);
+                        message = '<div class="message">' + module.manifest_description + '</div>';
+                        title = module.manifest_name;
+                        $.each(properties, function (key, property) {
+                            if (property.type === 'group') {
+                                $.each(property.properties, function(i, prop){
+                                    field += renderFields(prop, module.manifest_values);
+                                });
+                            } else {
+                                field += renderFields(property, module.manifest_values);
+                            }
+                        });
+                    }
+                });
+                if (modules != null && module_id != null) {
+                    vcl.showPopup('modly-active-module-options');
+                    $('#modly-active-module-options > .messages').prepend(message);
+                    $('.question').append(field);
+                    $('.modal-title').html(title);
+                    $('#module-id').val(module_id);
                 }
             });
-            if (modules != null && module_id != null) {
-                vcl.showPopup('modly-active-module-options');
-                $('#modly-active-module-options > .messages').prepend(message);
-                $('.question').html(field);
-                $('.modal-title').html(title);
-            }
         });
 
         function renderFields(property, value) {
@@ -663,6 +669,16 @@ define([
             if (property.description) {
                 description = property.description;
             }
+            var fieldName = property.name;
+            var fieldValue = '';
+            if (value){
+                var parsedValues = JSON.parse(value);
+                $.each(parsedValues, function(index, data) {
+                    if (index === fieldName) {
+                        fieldValue = data;
+                    }
+                });
+            }
 
             if (property.type === 'string' || property.type === 'integer' || property.type === 'rtime' || property.type === 'domain') {
                 html += '<div class="admin__field field _required">';
@@ -670,7 +686,7 @@ define([
                 html += '<span>' + property.label + '</span>';
                 html += '</label>';
                 html += '<div class="admin__field-control">';
-                html += '<input type="text" name="' + property.name + '" required="required" id="' + property.name + '" value="' + value + '" class="admin__control-text required-entry">';
+                html += '<input type="text" name="' + property.name + '" required="required" id="' + property.name + '" value="' + fieldValue + '" class="admin__control-text modly-field required-entry">';
                 html += '<div class="admin__field-note">' + description + '</div>';
                 html += '</div></div>';
                 return html;
@@ -680,8 +696,8 @@ define([
                 html += '<span>' + property.label + '</span>';
                 html += '</label>';
                 html += '<div class="admin__field-control">';
-                html += '<textarea rows="10" name="' + property.name + '" required="required" id="' + property.name + '" class="admin__control-text required-entry">';
-                html += value + '</textarea>';
+                html += '<textarea rows="10" name="' + property.name + '" required="required" id="' + property.name + '" class="admin__control-text modly-field required-entry">';
+                html += fieldValue + '</textarea>';
                 html += '<div class="admin__field-note">' + description + '</div>';
                 html += '</div></div>';
                 return html;
@@ -691,9 +707,13 @@ define([
                 html += '<span>' + property.label + '</span>';
                 html += '</label>';
                 html += '<div class="admin__field-control">';
-                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text">';
+                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
                 $.each(property.options, function (key, option) {
-                    html += '<option value="' + key + '">' + option + '</option>';
+                    html += '<option value="' + key + '"';
+                    if (key === fieldValue) {
+                        html += ' selected';
+                    }
+                    html += '>' + option + '</option>';
                 });
                 html += '</select>';
                 html += '<div class="admin__field-note">' + description + '</div>';
@@ -709,12 +729,14 @@ define([
                 html += '<span>' + property.label + '</span>';
                 html += '</label>';
                 html += '<div class="admin__field-control">';
-                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text">';
+                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
                 html += '<option value="false"';
-                if (def === 'false') html += 'selected';
+                if (fieldValue === 'false') html += 'selected';
+                //if (def === 'false') html += 'selected';
                 html += '>No</option>';
                 html += '<option value="true"';
-                if (def === 'true') html += 'selected';
+                if (fieldValue === 'true') html += 'selected';
+                //if (def === 'true') html += 'selected';
                 html += '>Yes</option>';
                 html += '</select>';
                 html += '<div class="admin__field-note">' + description + '</div>';
@@ -1068,9 +1090,45 @@ define([
             });
         });
 
+        $('#modly_all_modules_btn').on('click', function () {
+            $.when(
+                $.ajax({
+                    type:"GET",
+                    url: config.getAllModulesUrl,
+                    showLoader: true
+                })
+            ).done(function (response) {
+                if (response.status === false) {
+                    return warningAllModulesBtnMsg.text($.mage.__(response.msg)).show();
+                }
+
+                if (response.modules.length > 0) {
+                    var allModules = response.modules;
+                    var html = '';
+                    $.each(allModules, function (index, module) {
+                        html += '<tr';
+                        if (module.manifest_status === '1') {
+                            html += ' class="highlighted"';
+                        }
+                        html +=  '><td><b>' + module.manifest_name + '</b></td>';
+                        html += '<td>' + module.manifest_description + '</td>';
+                        html += '<td><div class="admin__field-option" title="'+module.manifest_id+'"><input name="'+module.manifest_id+'" class="admin__control-checkbox module" type="checkbox" id="'+module.manifest_id+'"';
+                        if (module.manifest_status === '1') {
+                            html += ' checked';
+                        }
+                        html += '>';
+                        html += '<label class="admin__field-label" for="'+module.manifest_id+'"></label></div></td></tr>';
+                    });
+                    vcl.showPopup('modly-all-module-options');
+                    $('.upload-button span').text('Save');
+                    $('#modly-all-modules-table > tbody').append(html);
+                }
+            });
+        });
+
         $('#fastly_manifest_btn').on('click', function () {
 
-            if (isAlreadyConfigured != true) {
+            if (isAlreadyConfigured !== true) {
                 $(this).attr('disabled', true);
                 return alert($.mage.__('Please save config prior to continuing.'));
             }
@@ -1080,12 +1138,12 @@ define([
             $.when(
                 $.ajax({
                     type: "GET",
-                    url: config.saveManifests,
+                    url: config.createManifestsUrl,
                     showLoader: true
                 })
             ).done(function (response) {
 
-                if (response.status == false) {
+                if (response.status === false) {
                     return errorManifestBtnMsg.text($.mage.__('Could not refresh manifests.')).show();
                 }
 
@@ -1569,6 +1627,10 @@ define([
         var successManifestBtnMsg = $('#fastly-success-manifest-button-msg');
         var errorManifestBtnMsg = $('#fastly-error-manifest-button-msg');
         var warningManifestBtnMsg = $('#fastly-warning-manifest-button-msg');
+
+        var successAllModulesBtnMsg = $('#fastly-success-all-modules-button-msg');
+        var errorAllModulesBtnMsg = $('#fastly-error-all-modules-button-msg');
+        var warningAllModulesBtnMsg = $('#fastly-warning-all-modules-button-msg');
         /* Custom snippet button messages */
         var successCustomSnippetBtnMsg = $('#fastly-success-custom-snippet-button-msg');
         var errorCustomSnippetBtnMsg = $('#fastly-error-custom-snippet-button-msg');
@@ -1752,6 +1814,68 @@ define([
                     showLoader: loaderVisibility,
                     beforeSend: function (xhr) {
                         $('.loading-modules').show();
+                    }
+                });
+            },
+
+            saveActiveModules: function (loaderVisibility) {
+                var checkedModules = [];
+                $('.module:checked').each(function(){
+                    checkedModules.push($(this).attr('name'));
+                });
+                $.ajax({
+                    type: "POST",
+                    url: config.toggleModulesUrl,
+                    data: {
+                        'checked_modules': checkedModules
+                    },
+                    showLoader: true,
+                    success: function (data) {
+                        if (data.status === true) {
+                            vcl.modal.modal('closeModal');
+                            vcl.getActiveModules(false).done(function (response) {
+                                $('.loading-modules').hide();
+                                if (response.status !== false) {
+                                    if (response.modules.length > 0) {
+                                        modules = response.modules;
+                                        vcl.processActiveModules(modules);
+                                    } else {
+                                        $('#modly-active-modules-list').html('');
+                                        $('.no-modules').show();
+                                    }
+                                } else {
+                                    $('#modly-active-modules-list').html('');
+                                    $('.no-modules').show();
+                                }
+                            })
+                        }
+                    }
+                });
+            },
+
+            saveModuleConfig: function () {
+                var fieldData = [];
+                var name = '';
+                var value = '';
+                var data = {};
+                $('.modly-field').each(function(){
+                    name = $(this).attr('name');
+                    value = $(this).val();
+                    data[name] = value;
+                });
+                fieldData.push(data);
+                $.ajax({
+                    type: "POST",
+                    url: config.saveModuleConfigUrl,
+                    data: {
+                        'module_id': $('#module-id').val(),
+                        'field_data': fieldData
+                    },
+                    showLoader: true,
+                    success: function (data) {
+                        if (data.status === true) {
+                            vcl.modal.modal('closeModal');
+                        }
                     }
                 });
             },
@@ -3070,6 +3194,16 @@ define([
                         return document.getElementById('modly-active-module-template').textContent;
                     },
                     actionOk: function () {
+                        vcl.saveModuleConfig();
+                    }
+                },
+                'modly-all-module-options': {
+                    title: jQuery.mage.__(' '),
+                    content: function () {
+                        return document.getElementById('modly-all-modules-template').textContent;
+                    },
+                    actionOk: function () {
+                        vcl.saveActiveModules();
                     }
                 }
             }

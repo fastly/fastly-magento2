@@ -103,10 +103,11 @@ class StructurePlugin
 
     private function loadModlyData()
     {
-        $sampleData = $this->manifest->getModlyManifests();
+        $sampleData = $this->manifest->getActiveModlyManifests();
         $result = [];
 
-        foreach ($sampleData as $nodeData) {
+        foreach ($sampleData as $data) {
+            $nodeData = json_decode($data['manifest_content']);
             /** @var \Fastly\Cdn\Model\Modly\Node $node */
             $node = $this->nodeFactory->create(
                 [

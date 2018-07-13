@@ -52,46 +52,36 @@ class Manifest
     }
 
     /**
-     * Returns list of Modly modules manifests
+     * Returns a list of Modly modules and their data stored in the database
      *
      * @return array
      */
-    public function getModlyModules()
+    public function getAllModlyManifests()
     {
-        $this->reloadModlyManifest();
-
-        return $this->modlyModules;
+        $manifests = $this->manifests->getAllModules();
+        return $manifests;
     }
 
-    /**
-     * Returns a list of Modly manifests
-     *
-     * @return array
-     */
-    public function getModlyManifests()
+    public function getActiveModlyManifests()
     {
-        $manifests = $this->manifests->getManifests();
+        $manifests = $this->manifests->getActiveModules();
         return $manifests;
     }
 
     /**
-     * Fetches the fresh data from source
+     * Fetch all manifests from the repository
+     *
+     * @return array
      */
-    public function reloadModlyManifest()
+    public function getAllRepoManifests()
     {
-        foreach ($this->urlList as $modlyUrl) {
-            $encodedContent = $this->fetchManifest($modlyUrl);
-            $decodedContent = json_decode($encodedContent, true);
-            $content = ['content' => $encodedContent];
-            $this->modlyModules[] = array_merge($decodedContent, $content);
+        $manifests = [];
+        foreach ($this->urlList as $url) {
+            $this->curl->get($url);
+            $manifestData = $this->curl->getBody();
+            $decodedManifestData = json_decode($manifestData, true);
+            $manifests[] = $decodedManifestData;
         }
-    }
-
-    private function fetchManifest($url)
-    {
-        $this->curl->get($url);
-
-        $content = $this->curl->getBody();
-        return $content;
+        return $manifests;
     }
 }

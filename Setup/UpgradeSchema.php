@@ -141,6 +141,12 @@ class UpgradeSchema implements UpgradeSchemaInterface // @codingStandardsIgnoreL
                 \Magento\Framework\DB\Ddl\Table::DEFAULT_TEXT_SIZE,
                 ['nullable' => false],
                 'Manifest configuration values'
+            )->addColumn(
+                'manifest_status',
+                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                1,
+                ['nullable' => false],
+                'Manifest status'
             );
 
             $connection->createTable($table);

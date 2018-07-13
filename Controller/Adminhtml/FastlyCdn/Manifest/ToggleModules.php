@@ -9,13 +9,15 @@ use Fastly\Cdn\Model\Modly\Manifest as Modly;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\Request\Http;
+use Fastly\Cdn\Model\ResourceModel\Manifest\CollectionFactory;
 
 /**
  * Class Create
  *
  * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Manifest
  */
-class Create extends Action
+class ToggleModules extends Action
 {
     /**
      * @var ManifestFactory
@@ -42,19 +44,27 @@ class Create extends Action
      */
     private $resultJson;
 
+    private $request;
+
+    private $collectionFactory;
+
     public function __construct(
         Context $context,
         ManifestFactory $manifestFactory,
         ManifestResource $manifestResource,
         Manifest $manifest,
         Modly $modly,
-        JsonFactory $resultJsonFactory
+        JsonFactory $resultJsonFactory,
+        Http $request,
+        CollectionFactory $collectionFactory
     ) {
         $this->manifestFactory = $manifestFactory;
         $this->manifestResource = $manifestResource;
         $this->manifest = $manifest;
         $this->modly = $modly;
         $this->resultJson = $resultJsonFactory;
+        $this->request = $request;
+        $this->collectionFactory = $collectionFactory;
         parent::__construct($context);
     }
 
@@ -62,25 +72,23 @@ class Create extends Action
     {
         $result = $this->resultJson->create();
         try {
-            $manifests = $this->modly->getAllRepoManifests();
-            $manifest = $this->manifestFactory->create();
+            $checkedModules = $this->getRequest()->getParam('checked_modules');
+            if ($checkedModules == null) {
+                $checkedModules = [];
+            }
+            $moduleCollection = $this->collectionFactory->create()->getData();
 
-            foreach ($manifests as $key => $value) {
-                $id = $value['id'];
-                $version = $value['version'];
-                $name = $value['name'];
-                $description = $value['description'];
-                $content = json_encode($value);
-                $properties = json_encode($value['properties']);
-
-                $manifest->setManifestId($id);
-                $manifest->setManifestVersion($version);
-                $manifest->setManifestName($name);
-                $manifest->setManifestDescription($description);
-                $manifest->setManifestContent($content);
-                $manifest->setManifestProperties($properties);
+            foreach ($moduleCollection as $module) {
+                $manifest = $this->manifestFactory->create();
+                $moduleId = $module['manifest_id'];
+                if (in_array($moduleId, $checkedModules)) {
+                    $manifest->setManifestId($moduleId);
+                    $manifest->setManifestStatus(1);
+                } else {
+                    $manifest->setManifestId($moduleId);
+                    $manifest->setManifestStatus(0);
+                }
                 $this->saveManifest($manifest);
-                $manifest->unsetData();
             }
 
             return $result->setData([

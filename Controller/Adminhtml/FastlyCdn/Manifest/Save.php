@@ -9,13 +9,15 @@ use Fastly\Cdn\Model\Modly\Manifest as Modly;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\Request\Http;
+use Fastly\Cdn\Model\ResourceModel\Manifest\CollectionFactory;
 
 /**
  * Class Create
  *
  * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Manifest
  */
-class Create extends Action
+class Save extends Action
 {
     /**
      * @var ManifestFactory
@@ -42,19 +44,27 @@ class Create extends Action
      */
     private $resultJson;
 
+    private $request;
+
+    private $collectionFactory;
+
     public function __construct(
         Context $context,
         ManifestFactory $manifestFactory,
         ManifestResource $manifestResource,
         Manifest $manifest,
         Modly $modly,
-        JsonFactory $resultJsonFactory
+        JsonFactory $resultJsonFactory,
+        Http $request,
+        CollectionFactory $collectionFactory
     ) {
         $this->manifestFactory = $manifestFactory;
         $this->manifestResource = $manifestResource;
         $this->manifest = $manifest;
         $this->modly = $modly;
         $this->resultJson = $resultJsonFactory;
+        $this->request = $request;
+        $this->collectionFactory = $collectionFactory;
         parent::__construct($context);
     }
 
@@ -62,25 +72,15 @@ class Create extends Action
     {
         $result = $this->resultJson->create();
         try {
-            $manifests = $this->modly->getAllRepoManifests();
-            $manifest = $this->manifestFactory->create();
+            $fieldData = $this->getRequest()->getParam('field_data');
+            $moduleId = $this->getRequest()->getParam('module_id');
 
-            foreach ($manifests as $key => $value) {
-                $id = $value['id'];
-                $version = $value['version'];
-                $name = $value['name'];
-                $description = $value['description'];
-                $content = json_encode($value);
-                $properties = json_encode($value['properties']);
+            foreach ($fieldData as $data) {
+                $manifest = $this->manifestFactory->create();
+                    $manifest->setManifestId($moduleId);
+                    $manifest->setManifestValues(json_encode($data));
 
-                $manifest->setManifestId($id);
-                $manifest->setManifestVersion($version);
-                $manifest->setManifestName($name);
-                $manifest->setManifestDescription($description);
-                $manifest->setManifestContent($content);
-                $manifest->setManifestProperties($properties);
                 $this->saveManifest($manifest);
-                $manifest->unsetData();
             }
 
             return $result->setData([

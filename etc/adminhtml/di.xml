@@ -33,7 +33,7 @@
     <type name="Magento\Config\Model\Config">
         <plugin name="fastly_config_after_save" type="Fastly\Cdn\Model\Config\ConfigRewrite"/>
     </type>
-    <type name="Magento\Config\Model\Config\Structure">
-        <plugin name="fastly_cdn_system_configuration" type="Fastly\Cdn\Plugin\Config\StructurePlugin"/>
-    </type>
+    <!--<type name="Magento\Config\Model\Config\Structure">-->
+        <!--<plugin name="fastly_cdn_system_configuration" type="Fastly\Cdn\Plugin\Config\StructurePlugin"/>-->
+    <!--</type>-->
 </config>

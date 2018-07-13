@@ -59,26 +59,34 @@ class Manifest extends AbstractHelper
     }
 
     /**
-     * Retrieves manifests from the database
+     * Returns all module data from database
      *
      * @return array
      */
-    public function getManifests()
+    public function getAllModules()
     {
-        $manifestCollection = $this->collectionFactory->create()->getData();
-        $manifests = [];
-        foreach ($manifestCollection as $manifest) {
-            $manifests[] = json_decode($manifest['manifest_content'], true);
-        }
-        return $manifests;
-    }
-
-    public function getModules()
-    {
-        $moduleCollection = $this->collectionFactory->create()->getData();
         $modules = [];
+        $moduleCollection = $this->collectionFactory->create()->getData();
         foreach ($moduleCollection as $module) {
             $modules[] = $module;
+        }
+        return $modules;
+    }
+
+    /**
+     * Returns active module data from database
+     *
+     * @return array
+     */
+    public function getActiveModules()
+    {
+        $modules = [];
+        $moduleCollection = $this->collectionFactory->create()->getData();
+
+        foreach ($moduleCollection as $module) {
+            if ($module['manifest_status'] == '1') {
+                $modules[] = $module;
+            }
         }
         return $modules;
     }

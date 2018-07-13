@@ -15,7 +15,7 @@ use Fastly\Cdn\Model\Modly\Manifest;
  *
  * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
  */
-class GetActiveModules extends Action
+class GetAllModules extends Action
 {
     /**
      * @var Http
@@ -29,8 +29,9 @@ class GetActiveModules extends Action
 
     private $manifest;
 
+
     /**
-     * GetActiveModules constructor.
+     * GetAllModules constructor.
      *
      * @param Context $context
      * @param Http $request
@@ -50,7 +51,7 @@ class GetActiveModules extends Action
     }
 
     /**
-     * Get all active modules
+     * Gte a list of all modules
      *
      * @return $this|ResponseInterface|ResultInterface
      */
@@ -58,12 +59,12 @@ class GetActiveModules extends Action
     {
         $result = $this->resultJson->create();
         try {
-            $modules = $this->manifest->getActiveModlyManifests();
+            $modules = $this->manifest->getAllModlyManifests();
 
             if (!$modules) {
                 return $result->setData([
                     'status'    => false,
-                    'msg'       => 'No active modules found.'
+                    'msg'       => 'Could not fetch modules.'
                 ]);
             }
 

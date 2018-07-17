@@ -90,4 +90,10 @@ class Manifest extends AbstractHelper
         }
         return $modules;
     }
+
+    public function getModuleData($id)
+    {
+        $moduleData = $this->collectionFactory->create()->getItemById($id);
+        return $moduleData;
+    }
 }

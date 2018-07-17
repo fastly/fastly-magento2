@@ -68,6 +68,12 @@ class Manifest
         return $manifests;
     }
 
+    public function getModule($id)
+    {
+        $module = $this->manifests->getModuleData($id);
+        return $module;
+    }
+
     /**
      * Fetch all manifests from the repository
      *

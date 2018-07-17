@@ -664,7 +664,15 @@ define([
         });
 
         function renderFields(property, value) {
-            var html = '';
+            var html = '<div class="admin__field field';
+            if (property.required == true) {
+                html+= ' _required';
+            }
+            html +=   '">';
+            html += '<label for="' + property.name + '" class="admin__field-label">';
+            html += '<span>' + property.label + '</span>';
+            html += '</label>';
+            html += '<div class="admin__field-control">';
             var description = '';
             if (property.description) {
                 description = property.description;
@@ -680,33 +688,16 @@ define([
                 });
             }
 
-            if (property.type === 'string' || property.type === 'integer' || property.type === 'rtime' || property.type === 'domain') {
-                html += '<div class="admin__field field _required">';
-                html += '<label for="' + property.name + '" class="admin__field-label">';
-                html += '<span>' + property.label + '</span>';
-                html += '</label>';
-                html += '<div class="admin__field-control">';
-                html += '<input type="text" name="' + property.name + '" required="required" id="' + property.name + '" value="' + fieldValue + '" class="admin__control-text modly-field required-entry">';
-                html += '<div class="admin__field-note">' + description + '</div>';
-                html += '</div></div>';
-                return html;
+            if (property.type === 'string' || property.type === 'rtime' || property.type === 'path' || property.type === 'url') {
+                html += '<input type="text" name="' + property.name + '" required="required" id="' + property.name + '" value="' + fieldValue + '" class="admin__control-text modly-field">';
+            } else if (property.type === 'integer' || property.type === 'float') {
+                html += '<input type="number" name="' + property.name + '" required="required" id="' + property.name + '" value="' + fieldValue + '" class="admin__control-text modly-field">';
+            } else if (property.type === 'time') {
+                html += '<input type="time" name="' + property.name + '" required="required" id="' + property.name + '" value="' + fieldValue + '" class="admin__control-text modly-field">';
             } else if (property.type === 'longstring') {
-                html += '<div class="admin__field field _required">';
-                html += '<label for="' + property.name + '" class="admin__field-label">';
-                html += '<span>' + property.label + '</span>';
-                html += '</label>';
-                html += '<div class="admin__field-control">';
-                html += '<textarea rows="10" name="' + property.name + '" required="required" id="' + property.name + '" class="admin__control-text modly-field required-entry">';
+                html += '<textarea rows="10" name="' + property.name + '" required="required" id="' + property.name + '" class="admin__control-text modly-field">';
                 html += fieldValue + '</textarea>';
-                html += '<div class="admin__field-note">' + description + '</div>';
-                html += '</div></div>';
-                return html;
             } else if (property.type === 'select') {
-                html += '<div class="admin__field field _required">';
-                html += '<label for="' + property.name + '" class="admin__field-label">';
-                html += '<span>' + property.label + '</span>';
-                html += '</label>';
-                html += '<div class="admin__field-control">';
                 html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
                 $.each(property.options, function (key, option) {
                     html += '<option value="' + key + '"';
@@ -716,19 +707,11 @@ define([
                     html += '>' + option + '</option>';
                 });
                 html += '</select>';
-                html += '<div class="admin__field-note">' + description + '</div>';
-                html += '</div></div>';
-                return html;
             } else if (property.type === 'boolean') {
                 var def = '';
                 if (property.default) {
                     def = property.default;
                 }
-                html += '<div class="admin__field field _required">';
-                html += '<label for="' + property.name + '" class="admin__field-label">';
-                html += '<span>' + property.label + '</span>';
-                html += '</label>';
-                html += '<div class="admin__field-control">';
                 html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
                 html += '<option value="false"';
                 if (fieldValue === 'false') html += 'selected';
@@ -739,12 +722,12 @@ define([
                 //if (def === 'true') html += 'selected';
                 html += '>Yes</option>';
                 html += '</select>';
-                html += '<div class="admin__field-note">' + description + '</div>';
-                html += '</div></div>';
-                return html;
             } else {
-                return html;
+                html = ''
             }
+            html += '<div class="admin__field-note">' + description + '</div>';
+            html += '</div></div>';
+            return html;
         }
 
         /**
@@ -1875,6 +1858,9 @@ define([
                     success: function (data) {
                         if (data.status === true) {
                             vcl.modal.modal('closeModal');
+                        } else {
+                            vcl.resetAllMessages();
+                            vcl.showErrorMessage(data.msg);
                         }
                     }
                 });

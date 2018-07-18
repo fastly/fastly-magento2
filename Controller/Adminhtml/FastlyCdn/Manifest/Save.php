@@ -68,7 +68,7 @@ class Save extends Action
         $this->collectionFactory = $collectionFactory;
         parent::__construct($context);
     }
-// TODO: reduce cyclomatic complexity
+
     public function execute()
     {
         $result = $this->resultJson->create();
@@ -80,54 +80,18 @@ class Save extends Action
 
             foreach ($fieldData as $key => $value) {
                 foreach ($moduleProperties as $properties) {
-                    if (property_exists($properties, 'name')) {
-                        $name = $properties->name;
-                    }
-                    if (property_exists($properties, 'required')) {
-                        $required = $properties->required;
-                    }
-                    if (property_exists($properties, 'type')) {
-                        $type = $properties->type;
-                    }
-                    if (property_exists($properties, 'validation')) {
-                        $validation = '/^' . $properties->validation . '/';
-                    }
+                    $name = $this->getName($properties);
 
                     if (isset($name) && $key == $name) {
-                        if (isset($required) && $required == true && empty($value)) {
-                            throw new LocalizedException(__('Please fill out the required fields.'));
-                        }
-                        if (!empty($value)) {
-                            if ($type == 'string' && isset($validation) && !preg_match($validation, $value)) {
-                                throw new LocalizedException(
-                                    __('The "%1" field value contains invalid characters.', $properties->label)
-                                );
-                            } elseif ($type == 'integer' && ctype_digit($value) == false) {
-                                throw new LocalizedException(
-                                    __('The "%1" field must contain a numeric value.', $properties->label)
-                                );
-                            } elseif ($type == 'float' && is_float($value) == false) {
-                                throw new LocalizedException(
-                                    __('The "%1" field must contain a float value.', $properties->label)
-                                );
-                            } elseif ($type == 'ip' && !filter_var($value, FILTER_VALIDATE_IP)) {
-                                throw new LocalizedException(
-                                    __('The "%1" field must contain a valid IP format.', $properties->label)
-                                );
-                            } elseif ($type == 'path' && !filter_var(
-                                $value,
-                                FILTER_VALIDATE_URL,
-                                FILTER_FLAG_PATH_REQUIRED
-                            )
-                            ) {
-                                throw new LocalizedException(
-                                    __('The "%1" field must have a valid URL path format.', $properties->label)
-                                );
-                            } elseif ($type == 'url' && !filter_var($value, FILTER_VALIDATE_URL)) {
-                                throw new LocalizedException(
-                                    __('The "%1" field value must be a valid URL format.', $properties->label)
-                                );
-                            }
+                        $type = $this->getType($properties);
+                        $label = $this->getLabel($properties);
+                        $validation = $this->getValidation($properties);
+                        $required = $this->getRequired($properties);
+
+                        $isValid = $this->validateField($type, $validation, $value, $label, $required);
+
+                        if (!empty($isValid)) {
+                            throw new LocalizedException(__($isValid));
                         }
                     }
                 }
@@ -157,5 +121,76 @@ class Save extends Action
     private function saveManifest($manifest)
     {
         $this->manifestResource->save($manifest);
+    }
+
+    private function validateField($type, $validation, $value, $label, $required)
+    {
+        $message = '';
+        if (!empty($required) && $required == true && empty($value)) {
+            $message = 'Please fill out the required fields.';
+        } elseif ($type == 'string' && !empty($validation) && !preg_match($validation, $value)) {
+            $message = sprintf('The "%s" field value contains invalid characters.', $label);
+        } elseif ($type == 'integer' && ctype_digit($value) == false) {
+            $message = sprintf('The "%s" field must contain a numeric value.', $label);
+        } elseif ($type == 'float' && is_float($value) == false) {
+            $message = sprintf('The "%s" field must contain a float value.', $label);
+        } elseif ($type == 'ip' && !filter_var($value, FILTER_VALIDATE_IP)) {
+            $message = sprintf('The "%s" field must contain a valid IP format.', $label);
+        } elseif ($type == 'path' && !filter_var(
+            $value,
+            FILTER_VALIDATE_URL,
+            FILTER_FLAG_PATH_REQUIRED
+        )
+        ) {
+            $message = sprintf('The "%s" field must have a valid URL path format.', $label);
+        } elseif ($type == 'url' && !filter_var($value, FILTER_VALIDATE_URL)) {
+            $message = sprintf('The "%s" field value must be a valid URL format.', $label);
+        }
+        return $message;
+    }
+
+    private function getName($properties)
+    {
+        if (property_exists($properties, 'name')) {
+            return $properties->name;
+        } else {
+            return null;
+        }
+    }
+
+    private function getType($properties)
+    {
+        if (property_exists($properties, 'type')) {
+            return $properties->type;
+        } else {
+            return null;
+        }
+    }
+
+    private function getRequired($properties)
+    {
+        if (property_exists($properties, 'required')) {
+            return $properties->required;
+        } else {
+            return null;
+        }
+    }
+
+    private function getValidation($properties)
+    {
+        if (property_exists($properties, 'validation')) {
+            return '/^' . $properties->validation . '/';
+        } else {
+            return null;
+        }
+    }
+
+    private function getLabel($properties)
+    {
+        if (property_exists($properties, 'label')) {
+            return $properties->label;
+        } else {
+            return null;
+        }
     }
 }

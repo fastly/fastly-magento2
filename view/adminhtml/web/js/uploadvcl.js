@@ -627,33 +627,29 @@ define([
             var field = '';
             var message = '';
             var title = '';
+            var module = '';
 
-            vcl.getActiveModules(false).done(function (response) {
+            vcl.getModuleData(module_id).done(function (response) {
                 if (response.status !== false) {
-                    if (response.modules.length > 0) {
-                        modules = response.modules;
-                    }
+                        module = response.module;
                 }
 
-                $('.loading-modules').hide();
+                if (module.manifest_id === module_id) {
+                    properties = JSON.parse(module.manifest_properties);
+                    message = '<div class="message">' + module.manifest_description + '</div>';
+                    title = module.manifest_name;
+                    $.each(properties, function (key, property) {
+                        if (property.type === 'group') {
+                            $.each(property.properties, function(i, prop){
+                                field += renderFields(prop, module.manifest_values);
+                            });
+                        } else {
+                            field += renderFields(property, module.manifest_values);
+                        }
+                    });
+                }
 
-                $.each(modules, function (index, module) {
-                    if (module.manifest_id === module_id) {
-                        properties = JSON.parse(module.manifest_properties);
-                        message = '<div class="message">' + module.manifest_description + '</div>';
-                        title = module.manifest_name;
-                        $.each(properties, function (key, property) {
-                            if (property.type === 'group') {
-                                $.each(property.properties, function(i, prop){
-                                    field += renderFields(prop, module.manifest_values);
-                                });
-                            } else {
-                                field += renderFields(property, module.manifest_values);
-                            }
-                        });
-                    }
-                });
-                if (modules != null && module_id != null) {
+                if (module != null && module_id != null) {
                     vcl.showPopup('modly-active-module-options');
                     $('#modly-active-module-options > .messages').prepend(message);
                     $('.question').append(field);
@@ -1798,6 +1794,17 @@ define([
                     beforeSend: function (xhr) {
                         $('.loading-modules').show();
                     }
+                });
+            },
+
+            getModuleData: function (module_id) {
+                return $.ajax({
+                    type: "GET",
+                    url: config.getModuleDataUrl,
+                    data: {
+                        'module_id': module_id
+                    },
+                    showLoader: true
                 });
             },
 

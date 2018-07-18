@@ -1356,6 +1356,7 @@ $toggleModulesUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/ToggleModules')
 $getAllModulesUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getAllModules');
 $saveModuleConfigUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/save');
 $getActiveModulesUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getActiveModules');
+$getModuleDataUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getModuleData');
 $isIoEnabled = $block->getConfig()->isImageOptimizationEnabled();
 
 /* This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application  */
@@ -1416,7 +1417,8 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "createManifestsUrl": "<?php echo $block->escapeJsQuote($createManifestsUrl);?>",
                     "getAllModulesUrl": "<?php echo $block->escapeJsQuote($getAllModulesUrl);?>",
                     "saveModuleConfigUrl": "<?php echo $block->escapeJsQuote($saveModuleConfigUrl);?>",
-                    "getActiveModulesUrl": "<?php echo $block->escapeJsQuote($getActiveModulesUrl);?>"
+                    "getActiveModulesUrl": "<?php echo $block->escapeJsQuote($getActiveModulesUrl);?>",
+                    "getModuleDataUrl": "<?php echo $block->escapeJsQuote($getModuleDataUrl);?>"
                 }
             }
         }

@@ -634,6 +634,16 @@ define([
                         module = response.module;
                 }
 
+                $.ajax({
+                    type: "GET",
+                    url: config.serviceInfoUrl
+                }).done(function (checkService) {
+                    active_version = checkService.active_version;
+                    next_version = checkService.next_version;
+                    service_name = checkService.service.name;
+                    vcl.setActiveServiceLabel(active_version, next_version, service_name);
+                });
+
                 if (module.manifest_id === module_id) {
                     properties = JSON.parse(module.manifest_properties);
                     message = '<div class="message">' + module.manifest_description + '</div>';
@@ -641,10 +651,10 @@ define([
                     $.each(properties, function (key, property) {
                         if (property.type === 'group') {
                             $.each(property.properties, function(i, prop){
-                                field += renderFields(prop, module.manifest_values);
+                                field += renderFields(prop, module.manifest_values, active_version);
                             });
                         } else {
-                            field += renderFields(property, module.manifest_values);
+                            field += renderFields(property, module.manifest_values, active_version);
                         }
                     });
                 }
@@ -659,7 +669,7 @@ define([
             });
         });
 
-        function renderFields(property, value) {
+        function renderFields(property, value, active_version) {
             var html = '<div class="admin__field field';
             if (property.required == true) {
                 html+= ' _required';
@@ -717,6 +727,40 @@ define([
                 if (fieldValue === 'true') html += 'selected';
                 //if (def === 'true') html += 'selected';
                 html += '>Yes</option>';
+                html += '</select>';
+            } else if (property.type === 'cond-req') {
+                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
+                vcl.getAllRequests(active_version).done(function (response) {
+                    if (response.status !== false) {
+                        var requests = response.requests;
+                        var options = '';
+                        $.each(requests, function (index, request) {
+                            options += '<option value="' + request.name + '"';
+                            if (request.name === fieldValue) {
+                                options += ' selected';
+                            }
+                            options += '>' + request.name + '</option>';
+                        });
+                        $('#'+ property.name).append(options);
+                    }
+                });
+                html += '</select>';
+            } else if (property.type === 'domain') {
+                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
+                vcl.getAllDomains(active_version).done(function (response) {
+                    if (response.status !== false) {
+                        var domains = response.domains;
+                        var options = '';
+                        $.each(domains, function (index, domain) {
+                            options += '<option value="' + domain.name + '"';
+                            if (domain.name === fieldValue) {
+                                options += ' selected';
+                            }
+                            options += '>' + domain.name + '</option>';
+                        });
+                        $('#'+ property.name).append(options);
+                    }
+                });
                 html += '</select>';
             } else {
                 html = ''
@@ -2270,6 +2314,28 @@ define([
                     error: function (msg) {
                         // error handling
                     }
+                });
+            },
+
+            getAllRequests: function (active_version) {
+                return $.ajax({
+                    type: "POST",
+                    url: config.getAllRequestsUrl,
+                    data: {
+                        'active_version': active_version
+                    },
+                    showLoader: true
+                });
+            },
+
+            getAllDomains: function (active_version) {
+                return $.ajax({
+                    type: "POST",
+                    url: config.getAllDomainsUrl,
+                    data: {
+                        'active_version': active_version
+                    },
+                    showLoader: true
                 });
             },
 

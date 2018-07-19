@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.61
+
+- Rework how snippets are written to disk. Addresses issues with Magento Cloud https://github.com/fastly/fastly-magento2/pull/194
+
 ## 1.2.60
 
 - Fix for https://github.com/fastly/fastly-magento2/issues/193

@@ -96,7 +96,7 @@ class CreateCustomSnippet extends Action
     private function validateCustomSnippet($name, $type, $priority)
     {
         $snippetName = str_replace(' ', '', $name);
-        $types = ['init', 'recv', 'hit', 'miss', 'pass', 'fetch', 'error', 'deliver', 'log', 'none'];
+        $types = ['init', 'recv', 'hit', 'miss', 'pass', 'fetch', 'error', 'deliver', 'log', 'hash', 'none'];
 
         $inArray = in_array($type, $types);
         $isNumeric = is_numeric($priority);

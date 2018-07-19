@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.59
+
+- Fix for https://github.com/fastly/fastly-magento2/issues/191
+
 ## 1.2.58
 
 - Remove GeoIP processed cookie constant as it's not used and may be interpreted as tracking for GDPR https://github.com/fastly/fastly-magento2/pull/188

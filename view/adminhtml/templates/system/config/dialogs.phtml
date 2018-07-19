@@ -1211,7 +1211,7 @@
                 <div class="admin__field-control">
                     <select name="custom_snippet_type" id="custom_snippet_type" class="admin__control-text">
                         <option value="init">init</option>
-                        <option value="recv">recv</option>
+                        <option value="recv" selected>recv</option>
                         <option value="hit">hit</option>
                         <option value="miss">miss</option>
                         <option value="pass">pass</option>
@@ -1236,6 +1236,7 @@
                            name="custom_snippet_priority"
                            required="required"
                            id="custom_snippet_priority"
+			   value="100"
                            class="admin__control-text required-entry">
                     <div class="admin__field-note">
                         For most configurations, the default (100) is best. Priority determines the ordering for

@@ -192,7 +192,7 @@ class Upload extends Action
         $snippetName = str_replace(' ', '', $customSnippet);
         $snippetNameData = explode('_', $snippetName, 3);
         $containsEmpty = in_array("", $snippetNameData, true);
-        $types = ['init', 'recv', 'hit', 'miss', 'pass', 'fetch', 'error', 'log', 'deliver', 'none'];
+        $types = ['init', 'recv', 'hit', 'miss', 'pass', 'fetch', 'error', 'log', 'deliver', 'hash', 'none'];
         $exception = 'Failed to upload VCL snippets. Please make sure the custom VCL snippets 
             follow this naming convention: [vcl_snippet_type]_[priority]_[short_name_description].vcl';
 

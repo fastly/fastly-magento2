@@ -10,6 +10,7 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Filesystem\Directory\WriteFactory;
 use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Filesystem;
 
 /**
  * Class CreateCustomSnippet
@@ -38,20 +39,37 @@ class CreateCustomSnippet extends Action
      * @var JsonFactory
      */
     private $resultJson;
+    /**
+     * @var Filesystem
+     */
+    private $filesystem;
 
+    /**
+     * CreateCustomSnippet constructor.
+     *
+     * @param Context $context
+     * @param RawFactory $resultRawFactory
+     * @param FileFactory $fileFactory
+     * @param DirectoryList $directoryList
+     * @param WriteFactory $writeFactory
+     * @param JsonFactory $resultJsonFactory
+     * @param Filesystem $filesystem
+     */
     public function __construct(
         Context $context,
         RawFactory $resultRawFactory,
         FileFactory $fileFactory,
         DirectoryList $directoryList,
         WriteFactory $writeFactory,
-        JsonFactory $resultJsonFactory
+        JsonFactory $resultJsonFactory,
+        Filesystem $filesystem
     ) {
         $this->resultRawFactory = $resultRawFactory;
         $this->fileFactory = $fileFactory;
         $this->directoryList = $directoryList;
         $this->writeFactory = $writeFactory;
         $this->resultJson = $resultJsonFactory;
+        $this->filesystem = $filesystem;
 
         parent::__construct($context);
     }
@@ -68,12 +86,11 @@ class CreateCustomSnippet extends Action
             $priority = $this->getRequest()->getParam('priority');
             $vcl = $this->getRequest()->getParam('vcl');
 
-            $fileDirectory = DirectoryList::VAR_DIR;
             $snippetName = $this->validateCustomSnippet($name, $type, $priority);
             $fileName = $type . '_' . $priority . '_' . $snippetName . '.vcl';
 
-            $write = $this->writeFactory->create($fileDirectory . '/vcl_snippets_custom/');
-            $write->writeFile($fileName, $vcl);
+            $write = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
+            $write->writeFile('/vcl_snippets_custom/' . $fileName, $vcl);
 
             return $result->setData([
                 'status'    => true

@@ -13,6 +13,8 @@ use Fastly\Cdn\Model\Config\Backend\CustomSnippetUpload;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Filesystem;
+use Magento\Framework\App\Filesystem\DirectoryList;
 
 class Upload extends Action
 {
@@ -57,7 +59,11 @@ class Upload extends Action
     private $timezone;
 
     /**
-     *
+     * @var Filesystem
+     */
+    private $filesystem;
+
+    /**
      * Upload constructor.
      *
      * @param Context $context
@@ -69,6 +75,7 @@ class Upload extends Action
      * @param CustomSnippetUpload $customSnippetUpload
      * @param DateTime $time
      * @param TimezoneInterface $timezone
+     * @param Filesystem $filesystem
      */
     public function __construct(
         Context $context,
@@ -79,7 +86,8 @@ class Upload extends Action
         Vcl $vcl,
         CustomSnippetUpload $customSnippetUpload,
         DateTime $time,
-        TimezoneInterface $timezone
+        TimezoneInterface $timezone,
+        Filesystem $filesystem
     ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
@@ -89,6 +97,7 @@ class Upload extends Action
         $this->customSnippetUpload = $customSnippetUpload;
         $this->time = $time;
         $this->timezone = $timezone;
+        $this->filesystem = $filesystem;
         parent::__construct($context);
     }
 
@@ -108,7 +117,8 @@ class Upload extends Action
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
             $snippets = $this->config->getVclSnippets();
-            $customSnippetPath = $this->customSnippetUpload->getUploadDirPath('vcl_snippets_custom');
+            $read = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR);
+            $customSnippetPath = $read->getAbsolutePath('vcl_snippets_custom');
             $customSnippets = $this->config->getCustomSnippets($customSnippetPath);
 
             foreach ($snippets as $key => $value) {

@@ -39,6 +39,7 @@ define([
             $('#system_full_page_cache_fastly_edge_modules-head').on('click', function () {
                 // Fetch active modules
                 if ($(this).attr("class") === "open") {
+                    init();
                     vcl.getActiveModules(false).done(function (response) {
                         $('.loading-modules').hide();
                         if (response.status !== false) {
@@ -308,7 +309,8 @@ define([
             $('body').loader('show');
             $.ajax({
                 type: "GET",
-                url: config.isAlreadyConfiguredUrl
+                url: config.isAlreadyConfiguredUrl,
+                showLoader: true
             }).done(function (response) {
                 if (response.status == true) {
                     isAlreadyConfigured = response.flag;
@@ -330,6 +332,7 @@ define([
             $.ajax({
                 type: "GET",
                 url: config.serviceInfoUrl,
+                showLoader: true,
                 beforeSend: function (xhr) {
                     requestStateSpan.find('.processing').show();
                     blockingStateSpan.find('.processing').show();
@@ -501,7 +504,7 @@ define([
                     // Fetch dictionaries
                     $('#system_full_page_cache_fastly_fastly_edge_dictionaries-head').unbind('click').on('click', function () {
                         if ($(this).attr("class") === "open") {
-                            vcl.listDictionaries(active_version, false).done(function (dictResp) {
+                            vcl.listDictionaries(active_version).done(function (dictResp) {
                                 $('.loading-dictionaries').hide();
                                 if (dictResp.status != false) {
                                     if (dictResp.status != false) {
@@ -561,7 +564,7 @@ define([
                     // Fetch ACLs
                     $('#system_full_page_cache_fastly_fastly_edge_acl-head').unbind('click').on('click', function () {
                         if ($(this).attr("class") === "open") {
-                            vcl.listAcls(active_version, false).done(function (aclResp) {
+                            vcl.listAcls(active_version).done(function (aclResp) {
                                 $('.loading-acls').hide();
                                 if (aclResp.status != false) {
                                     if (aclResp.status != false) {
@@ -671,7 +674,7 @@ define([
 
         function renderFields(property, value, active_version) {
             var html = '<div class="admin__field field';
-            if (property.required == true) {
+            if (property.required === true) {
                 html+= ' _required';
             }
             html +=   '">';
@@ -685,6 +688,9 @@ define([
             }
             var fieldName = property.name;
             var fieldValue = '';
+            if (property.default) {
+                fieldValue = property.default;
+            }
             if (value){
                 var parsedValues = JSON.parse(value);
                 $.each(parsedValues, function(index, data) {
@@ -705,6 +711,7 @@ define([
                 html += fieldValue + '</textarea>';
             } else if (property.type === 'select') {
                 html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
+                html += '<option value="">--Please Select--</option>';
                 $.each(property.options, function (key, option) {
                     html += '<option value="' + key + '"';
                     if (key === fieldValue) {
@@ -714,32 +721,118 @@ define([
                 });
                 html += '</select>';
             } else if (property.type === 'boolean') {
-                var def = '';
-                if (property.default) {
-                    def = property.default;
-                }
                 html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
                 html += '<option value="false"';
                 if (fieldValue === 'false') html += 'selected';
-                //if (def === 'false') html += 'selected';
                 html += '>No</option>';
                 html += '<option value="true"';
                 if (fieldValue === 'true') html += 'selected';
-                //if (def === 'true') html += 'selected';
                 html += '>Yes</option>';
+                html += '</select>';
+            } else if (property.type === 'acl') {
+                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
+                vcl.listAcls(active_version).done(function (response) {
+                    if (response.status !== false) {
+                        var acls = response.acls;
+                        var options = '<option value="">--Please Select--</option>';
+                        $.each(acls, function (index, acl) {
+                            options += '<option value="' + acl.name + '"';
+                            if (acl.name === fieldValue) {
+                                options += ' selected';
+                            }
+                            options += '>' + acl.name + '</option>';
+                        });
+                        $('#' + property.name).append(options);
+                    }
+                });
+                html += '</select>';
+            } else if (property.type === 'dict') {
+                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
+                vcl.listDictionaries(active_version).done(function (response) {
+                    if (response.status !== false) {
+                        var dictionaries = response.dictionaries;
+                        var options = '<option value="">--Please Select--</option>';
+                        $.each(dictionaries, function (index, dictionary) {
+                            options += '<option value="' + dictionary.name + '"';
+                            if (dictionary.name === fieldValue) {
+                                options += ' selected';
+                            }
+                            options += '>' + dictionary.name + '</option>';
+                        });
+                        $('#' + property.name).append(options);
+                    }
+                });
+                html += '</select>';
+            } else if (property.type === 'origin') {
+                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
+                vcl.getBackends(active_version).done(function (response) {
+                    if (response.status !== false) {
+                        var backends = response.backends;
+                        var options = '<option value="">--Please Select--</option>';
+                        $.each(backends, function (index, backend) {
+                            options += '<option value="' + backend.name + '"';
+                            if (backend.name === fieldValue) {
+                                options += ' selected';
+                            }
+                            options += '>' + backend.name + '</option>';
+                        });
+                        $('#' + property.name).append(options);
+                    }
+                });
                 html += '</select>';
             } else if (property.type === 'cond-req') {
                 html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
-                vcl.getAllRequests(active_version).done(function (response) {
+                vcl.getAllConditions(active_version).done(function (response) {
                     if (response.status !== false) {
-                        var requests = response.requests;
-                        var options = '';
-                        $.each(requests, function (index, request) {
-                            options += '<option value="' + request.name + '"';
-                            if (request.name === fieldValue) {
-                                options += ' selected';
+                        var conditions = response.conditions;
+                        var options = '<option value="">--Please Select--</option>';
+                        $.each(conditions, function (index, condition) {
+                            console.log(condition.type);
+                            if (condition.type === 'REQUEST') {
+                                options += '<option value="' + condition.name + '"';
+                                if (condition.name === fieldValue) {
+                                    options += ' selected';
+                                }
+                                options += '>' + condition.name + '</option>';
                             }
-                            options += '>' + request.name + '</option>';
+                        });
+                        $('#'+ property.name).append(options);
+                    }
+                });
+                html += '</select>';
+            } else if (property.type === 'cond-resp') {
+                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
+                vcl.getAllConditions(active_version).done(function (response) {
+                    if (response.status !== false) {
+                        var conditions = response.conditions;
+                        var options = '<option value="">--Please Select--</option>';
+                        $.each(conditions, function (index, condition) {
+                            if (condition.type === 'RESPONSE') {
+                                options += '<option value="' + condition.name + '"';
+                                if (condition.name === fieldValue) {
+                                    options += ' selected';
+                                }
+                                options += '>' + condition.name + '</option>';
+                            }
+                        });
+                        $('#'+ property.name).append(options);
+                    }
+                });
+                html += '</select>';
+            } else if (property.type === 'cond-cache') {
+                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
+                vcl.getAllConditions(active_version).done(function (response) {
+                    if (response.status !== false) {
+                        var conditions = response.conditions;
+                        var options = '<option value="">--Please Select--</option>';
+                        $.each(conditions, function (index, condition) {
+                            if (condition.type === 'CACHE') {
+                                options += '<option value="' + condition.name + '"';
+                                if (condition.name === fieldValue) {
+                                    options += ' selected';
+                                }
+                                options += '>' + condition.name + '</option>';
+                            }
                         });
                         $('#'+ property.name).append(options);
                     }
@@ -750,13 +843,30 @@ define([
                 vcl.getAllDomains(active_version).done(function (response) {
                     if (response.status !== false) {
                         var domains = response.domains;
-                        var options = '';
+                        var options = '<option value="">--Please Select--</option>';
                         $.each(domains, function (index, domain) {
                             options += '<option value="' + domain.name + '"';
                             if (domain.name === fieldValue) {
                                 options += ' selected';
                             }
                             options += '>' + domain.name + '</option>';
+                        });
+                        $('#' + property.name).append(options);
+                    }
+                });
+                html += '</select>';
+            } else if (property.type === 'iso3166-1a2') {
+                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
+                vcl.getCountries(active_version).done(function (response) {
+                    if (response.status !== false) {
+                        var countries = response.countries;
+                        var options = '';
+                        $.each(countries, function (index, country) {
+                            options += '<option value="' + country.value + '"';
+                            if (country.value === fieldValue) {
+                                options += ' selected';
+                            }
+                            options += '>' + country.label + '</option>';
                         });
                         $('#'+ property.name).append(options);
                     }
@@ -1810,7 +1920,7 @@ define([
                 return $.ajax({
                     type: "GET",
                     url: config.fetchBackendsUrl,
-                    showLoader: loaderVisibility,
+                    showLoader: true,
                     data: {'active_version': active_version},
                     beforeSend: function (xhr) {
                         $('.loading-backends').show();
@@ -1998,7 +2108,7 @@ define([
                 return $.ajax({
                     type: "GET",
                     url: config.getDictionaries,
-                    showLoader: loaderVisibility,
+                    showLoader: true,
                     data: {'active_version': active_version},
                     beforeSend: function (xhr) {
                         $('.loading-dictionaries').show();
@@ -2007,15 +2117,12 @@ define([
             },
 
             // Queries Fastly API to retrieve ACLs
-            listAcls: function (active_version, loaderVisibility) {
+            listAcls: function (active_version) {
                 return $.ajax({
                     type: "GET",
                     url: config.getAcls,
-                    showLoader: loaderVisibility,
-                    data: {'active_version': active_version},
-                    beforeSend: function (xhr) {
-                        $('.loading-acls').show();
-                    }
+                    showLoader: true,
+                    data: {'active_version': active_version}
                 });
             },
 
@@ -2317,10 +2424,10 @@ define([
                 });
             },
 
-            getAllRequests: function (active_version) {
+            getAllConditions: function (active_version) {
                 return $.ajax({
                     type: "POST",
-                    url: config.getAllRequestsUrl,
+                    url: config.getAllConditionsUrl,
                     data: {
                         'active_version': active_version
                     },
@@ -2332,6 +2439,17 @@ define([
                 return $.ajax({
                     type: "POST",
                     url: config.getAllDomainsUrl,
+                    data: {
+                        'active_version': active_version
+                    },
+                    showLoader: true
+                });
+            },
+
+            getCountries: function (active_version) {
+                return $.ajax({
+                    type: "POST",
+                    url: config.getCountriesUrl,
                     data: {
                         'active_version': active_version
                     },
@@ -2636,7 +2754,7 @@ define([
                             successDictionaryBtnMsg.text($.mage.__('Dictionary is successfully created.')).show();
                             active_version = response.active_version;
                             // Fetch dictionaries
-                            vcl.listDictionaries(active_version, false).done(function (dictResp) {
+                            vcl.listDictionaries(active_version).done(function (dictResp) {
                                 $('.loading-dictionaries').hide();
                                 if (dictResp.status != false) {
                                     if (dictResp.status != false) {
@@ -2688,7 +2806,7 @@ define([
                             successDictionaryBtnMsg.text($.mage.__('Dictionary successfully deleted.')).show();
                             active_version = response.active_version;
                             // Fetch dictionaries
-                            vcl.listDictionaries(active_version, false).done(function (dictResp) {
+                            vcl.listDictionaries(active_version).done(function (dictResp) {
                                 $('.loading-dictionaries').hide();
                                 if (dictResp.status != false) {
                                     if (dictResp.dictionaries.length > 0) {
@@ -2738,7 +2856,7 @@ define([
                             successAclBtnMsg.text($.mage.__('ACL successfully deleted.')).show();
                             active_version = response.active_version;
                             // Fetch dictionaries
-                            vcl.listAcls(active_version, false).done(function (aclResp) {
+                            vcl.listAcls(active_version).done(function (aclResp) {
                                 $('.loading-acls').hide();
                                 if (aclResp.status != false) {
                                     if (aclResp.acls.length > 0) {
@@ -2909,7 +3027,7 @@ define([
                         if (response.status == true) {
                             successAclBtnMsg.text($.mage.__('Acl is successfully created.')).show();
                             active_version = response.active_version;
-                            vcl.listAcls(active_version, false).done(function (aclResp) {
+                            vcl.listAcls(active_version).done(function (aclResp) {
                                 $('.loading-acls').hide();
                                 if (aclResp.status != false) {
                                     if (aclResp.status != false) {

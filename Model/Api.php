@@ -678,9 +678,9 @@ class Api
      * @param $version
      * @return bool|mixed
      */
-    public function getAllRequests($version)
+    public function getAllConditions($version)
     {
-        $url = $this->_getApiServiceUri(). 'version/'. $version . '/request_settings';
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/condition';
         $result = $this->_fetch($url, \Zend_Http_Client::GET, '', false, null, false);
 
         return $result;

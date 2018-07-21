@@ -11,7 +11,7 @@ use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
 use Magento\Framework\Exception\LocalizedException;
 
-class GetAllRequests extends Action
+class GetAllConditions extends Action
 {
     /**
      * @var Http
@@ -39,7 +39,7 @@ class GetAllRequests extends Action
     private $vcl;
 
     /**
-     * GetAllRequests constructor.
+     * GetAllConditions constructor.
      * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
@@ -74,11 +74,11 @@ class GetAllRequests extends Action
             $service = $this->api->checkServiceDetails();
             $currActiveVersion = $this->getActiveVersion($service, $activeVersion);
 
-            $requests = $this->api->getAllRequests($currActiveVersion['active_version']);
+            $conditions = $this->api->getAllConditions($currActiveVersion['active_version']);
 
             return $result->setData([
                 'status' => true,
-                'requests' => $requests
+                'conditions' => $conditions
             ]);
         } catch (\Exception $e) {
             return $result->setData([

@@ -73,25 +73,47 @@ class Save extends Action
     {
         $result = $this->resultJson->create();
         try {
-            $fieldData = $this->getRequest()->getParam('field_data')[0];
+            $fieldData = $this->getRequest()->getParam('field_data');
             $moduleId = $this->getRequest()->getParam('module_id');
             $moduleData = $this->modly->getModule($moduleId);
             $moduleProperties = json_decode($moduleData->getManifestProperties());
 
-            foreach ($fieldData as $key => $value) {
-                foreach ($moduleProperties as $properties) {
-                    $name = $this->getName($properties);
+            foreach ($fieldData as $index => $data) {
+                foreach ($data as $key => $value) {
+                    foreach ($moduleProperties as $properties) {
+                        $name = $this->getName($properties);
 
-                    if (isset($name) && $key == $name) {
-                        $type = $this->getType($properties);
-                        $label = $this->getLabel($properties);
-                        $validation = $this->getValidation($properties);
-                        $required = $this->getRequired($properties);
+                        $groupProperties = $this->getGroupProperties($properties);
+                        if ($groupProperties) {
+                            foreach ($groupProperties as $props) {
+                                $name = $this->getName($props);
 
-                        $isValid = $this->validateField($type, $validation, $value, $label, $required);
+                                if (isset($name) && $key == $name) {
+                                    $type = $this->getType($props);
+                                    $label = $this->getLabel($props);
+                                    $validation = $this->getValidation($props);
+                                    $required = $this->getRequired($props);
 
-                        if (!empty($isValid)) {
-                            throw new LocalizedException(__($isValid));
+                                    $isValid = $this->validateField($type, $validation, $value, $label, $required);
+
+                                    if (!empty($isValid)) {
+                                        throw new LocalizedException(__($isValid));
+                                    }
+                                }
+                            }
+                        }
+
+                        if (isset($name) && $key == $name) {
+                            $type = $this->getType($properties);
+                            $label = $this->getLabel($properties);
+                            $validation = $this->getValidation($properties);
+                            $required = $this->getRequired($properties);
+
+                            $isValid = $this->validateField($type, $validation, $value, $label, $required);
+
+                            if (!empty($isValid)) {
+                                throw new LocalizedException(__($isValid));
+                            }
                         }
                     }
                 }
@@ -189,6 +211,15 @@ class Save extends Action
     {
         if (property_exists($properties, 'label')) {
             return $properties->label;
+        } else {
+            return null;
+        }
+    }
+
+    private function getGroupProperties($properties)
+    {
+        if (property_exists($properties, 'properties')) {
+            return $properties->properties;
         } else {
             return null;
         }

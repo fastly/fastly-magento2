@@ -634,7 +634,7 @@ define([
 
             vcl.getModuleData(module_id).done(function (response) {
                 if (response.status !== false) {
-                        module = response.module;
+                    module = response.module;
                 }
 
                 $.ajax({
@@ -647,17 +647,39 @@ define([
                     vcl.setActiveServiceLabel(active_version, next_version, service_name);
                 });
 
+                var isGroup = false;
+
                 if (module.manifest_id === module_id) {
                     properties = JSON.parse(module.manifest_properties);
                     message = '<div class="message">' + module.manifest_description + '</div>';
                     title = module.manifest_name;
+                    var moduleValues = module.manifest_values;
+                    var parsedValues = '';
+
+                    if (moduleValues) {
+                        parsedValues = JSON.parse(moduleValues);
+                    }
+
                     $.each(properties, function (key, property) {
                         if (property.type === 'group') {
-                            $.each(property.properties, function(i, prop){
-                                field += renderFields(prop, module.manifest_values, active_version);
+                            isGroup = true;
+                            if (parsedValues === '') {
+                                parsedValues = [{}];
+                            }
+
+                            $.each(parsedValues, function (num, values) {
+                                field += '<div class="admin__fieldset form-list modly-group">';
+                                $.each(property.properties, function (i, prop) {
+                                    field += renderFields(prop, values, active_version);
+                                });
+                                field += '<div class="admin__field field"><div class="admin__field-label"></div><div class="admin__field-control"><button class="action remove-group-button" type="button" data-role="action"><span>Remove group</span></button></div></div>';
+                                field += '<div class="admin__field field"><div class="admin__field-label"></div><div class="admin__field-control"><hr></div></div>';
+                                field += '</div>';
                             });
                         } else {
-                            field += renderFields(property, module.manifest_values, active_version);
+                            field += '<div class="admin__fieldset form-list modly-group">';
+                            field += renderFields(property, parsedValues[0], active_version);
+                            field += '</div>';
                         }
                     });
                 }
@@ -668,6 +690,23 @@ define([
                     $('.question').append(field);
                     $('.modal-title').html(title);
                     $('#module-id').val(module_id);
+                    var groupBtn = '<button class="action-secondary group-button" type="button" data-role="action"><span>Add group</span></button>';
+                    if (isGroup === true) {
+                        $('.modal-header').find(".page-actions-buttons").append(groupBtn);
+                        $('.question').find('.modly-group:first').find('.remove-group-button').closest('.field').hide();
+                        $('.group-button').unbind('click').on('click', function () {
+                            var question = $('.question');
+                            question.find('.modly-group:last').clone().appendTo('.question');
+                            question.find('.modly-group:last').find('.modly-field').val('');
+                            question.find('.modly-group:last').find('.remove-group-button').closest('.field').show();
+                            $('.remove-group-button').unbind('click').on('click', function () {
+                                $(this).closest('.modly-group').remove();
+                            });
+                        });
+                        $('.remove-group-button').unbind('click').on('click', function () {
+                            $(this).closest('.modly-group').remove();
+                        });
+                    }
                 }
             });
         });
@@ -692,8 +731,7 @@ define([
                 fieldValue = property.default;
             }
             if (value){
-                var parsedValues = JSON.parse(value);
-                $.each(parsedValues, function(index, data) {
+                $.each(value, function(index, data) {
                     if (index === fieldName) {
                         fieldValue = data;
                     }
@@ -2002,12 +2040,16 @@ define([
                 var name = '';
                 var value = '';
                 var data = {};
-                $('.modly-field').each(function(){
-                    name = $(this).attr('name');
-                    value = $(this).val();
-                    data[name] = value;
+                $('.modly-group').each(function() {
+                    $($(this).find('.modly-field')).each(function () {
+                        name = $(this).attr('name');
+                        value = $(this).val();
+                        data[name] = value;
+                    });
+                    fieldData.push(data);
+                    console.log(fieldData);
+                    data = {};
                 });
-                fieldData.push(data);
                 $.ajax({
                     type: "POST",
                     url: config.saveModuleConfigUrl,

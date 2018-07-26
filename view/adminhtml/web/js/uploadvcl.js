@@ -648,6 +648,8 @@ define([
                     vcl.setActiveServiceLabel(active_version, next_version, service_name);
                 });
 
+                var isGroup = false;
+
                 if (module.manifest_id === module_id) {
                     message = '<div class="message">' + module.manifest_description + '</div>';
                     title = module.manifest_name;
@@ -1775,7 +1777,6 @@ define([
         var modules = null;
         var module = '';
         var groupName = '';
-        var isGroup = false;
         var dictionaries = null;
         var dictionary_id = null;
         var acls = null;
@@ -2068,8 +2069,12 @@ define([
                     success: function (data) {
                         if (data.status === true) {
                             var parsedVcl = JSON.stringify(vcl.parseVcl(fieldData));
-                            vcl.uploadModuleConfig(moduleId, parsedVcl, active_version);
-                            //vcl.modal.modal('closeModal');
+                            vcl.uploadModuleConfig(moduleId, parsedVcl, active_version).done(function (response) {
+                                if (response.status === true) {
+                                    vcl.modal.modal('closeModal');
+                                }
+                            }
+                            );
                         } else {
                             vcl.resetAllMessages();
                             vcl.showErrorMessage(data.msg);
@@ -2079,14 +2084,15 @@ define([
             },
 
             uploadModuleConfig: function (moduleId, parsedVcl, active_version) {
-                $.ajax({
+                return $.ajax({
                     type: "POST",
                     url: config.uploadModuleSnippetUrl,
                     data: {
                         'module_id': moduleId,
                         'active_version': active_version,
                         'snippets': parsedVcl
-                    }
+                    },
+                    showLoader: true
                 });
             },
 

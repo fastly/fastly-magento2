@@ -71,7 +71,13 @@ class Create extends Action
                 $name = $value['name'];
                 $description = $value['description'];
                 $content = json_encode($value);
-                $properties = json_encode($value['properties']);
+                if (array_key_exists('properties', $value)) {
+                    $properties = json_encode($value['properties']);
+                } else {
+                    $properties = '';
+                }
+
+                $vcl = json_encode($value['vcl']);
 
                 $manifest->setManifestId($id);
                 $manifest->setManifestVersion($version);
@@ -79,6 +85,7 @@ class Create extends Action
                 $manifest->setManifestDescription($description);
                 $manifest->setManifestContent($content);
                 $manifest->setManifestProperties($properties);
+                $manifest->setManifestVcl($vcl);
                 $this->saveManifest($manifest);
                 $manifest->unsetData();
             }

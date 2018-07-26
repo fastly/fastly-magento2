@@ -54,7 +54,7 @@ class GetAllModules extends Action
     }
 
     /**
-     * Gte a list of all modules
+     * Get a list of all modules
      *
      * @return $this|ResponseInterface|ResultInterface
      */

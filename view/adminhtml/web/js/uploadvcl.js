@@ -1,10 +1,11 @@
 define([
     "jquery",
+    'handlebars',
     'mage/template',
     "Magento_Ui/js/modal/modal",
     'mage/translate',
     'mage/validation'
-], function ($) {
+], function ($, Handlebars) {
 
     return function (config) {
 
@@ -627,11 +628,11 @@ define([
 
             var module_id = $(this).data('module-id');
             var properties = [];
-            var field = '';
+            var field = '<div class="admin__fieldset form-list modly-group">';
             var message = '';
             var title = '';
-            var module = '';
 
+            // call getModule data function to retrieve a specific module's data
             vcl.getModuleData(module_id).done(function (response) {
                 if (response.status !== false) {
                     module = response.module;
@@ -647,10 +648,7 @@ define([
                     vcl.setActiveServiceLabel(active_version, next_version, service_name);
                 });
 
-                var isGroup = false;
-
                 if (module.manifest_id === module_id) {
-                    properties = JSON.parse(module.manifest_properties);
                     message = '<div class="message">' + module.manifest_description + '</div>';
                     title = module.manifest_name;
                     var moduleValues = module.manifest_values;
@@ -659,35 +657,42 @@ define([
                     if (moduleValues) {
                         parsedValues = JSON.parse(moduleValues);
                     }
+                    if (module.manifest_properties !== '') {
+                        properties = JSON.parse(module.manifest_properties);
+                        $.each(properties, function (key, property) {
+                            if (property.type === 'group') {
+                                groupName = property.name;
+                                isGroup = true;
+                                if (parsedValues === '') {
+                                    parsedValues = [{}];
+                                }
 
-                    $.each(properties, function (key, property) {
-                        if (property.type === 'group') {
-                            isGroup = true;
-                            if (parsedValues === '') {
-                                parsedValues = [{}];
-                            }
+                                field = '';
 
-                            $.each(parsedValues, function (num, values) {
-                                field += '<div class="admin__fieldset form-list modly-group">';
-                                $.each(property.properties, function (i, prop) {
-                                    field += renderFields(prop, values, active_version);
+                                $.each(parsedValues, function (num, values) {
+                                    field += '<div class="admin__fieldset form-list modly-group">';
+                                    $.each(property.properties, function (i, prop) {
+                                        field += renderFields(prop, values, active_version);
+                                    });
+                                    field += '<div class="admin__field field"><div class="admin__field-label"></div><div class="admin__field-control"><button class="action remove-group-button" type="button" data-role="action"><span>Remove group</span></button></div></div>';
+                                    field += '<div class="admin__field field"><div class="admin__field-label"></div><div class="admin__field-control"><hr></div></div>';
+                                    field += '</div>';
                                 });
-                                field += '<div class="admin__field field"><div class="admin__field-label"></div><div class="admin__field-control"><button class="action remove-group-button" type="button" data-role="action"><span>Remove group</span></button></div></div>';
-                                field += '<div class="admin__field field"><div class="admin__field-label"></div><div class="admin__field-control"><hr></div></div>';
-                                field += '</div>';
-                            });
-                        } else {
-                            field += '<div class="admin__fieldset form-list modly-group">';
-                            field += renderFields(property, parsedValues[0], active_version);
-                            field += '</div>';
-                        }
-                    });
+                            } else {
+                                field += renderFields(property, parsedValues[0], active_version);
+                            }
+                        });
+                    }
                 }
 
                 if (module != null && module_id != null) {
                     vcl.showPopup('modly-active-module-options');
                     $('#modly-active-module-options > .messages').prepend(message);
-                    $('.question').append(field);
+                    var question = $('.question');
+                    if (isGroup === false) {
+                        field += '</div>';
+                    }
+                    question.append(field);
                     $('.modal-title').html(title);
                     $('#module-id').val(module_id);
                     var groupBtn = '<button class="action-secondary group-button" type="button" data-role="action"><span>Add group</span></button>';
@@ -695,7 +700,6 @@ define([
                         $('.modal-header').find(".page-actions-buttons").append(groupBtn);
                         $('.question').find('.modly-group:first').find('.remove-group-button').closest('.field').hide();
                         $('.group-button').unbind('click').on('click', function () {
-                            var question = $('.question');
                             question.find('.modly-group:last').clone().appendTo('.question');
                             question.find('.modly-group:last').find('.modly-field').val('');
                             question.find('.modly-group:last').find('.remove-group-button').closest('.field').show();
@@ -738,7 +742,7 @@ define([
                 });
             }
 
-            if (property.type === 'string' || property.type === 'rtime' || property.type === 'path' || property.type === 'url') {
+            if (property.type === 'string' || property.type === 'rtime' || property.type === 'path' || property.type === 'url' || !property.type) {
                 html += '<input type="text" name="' + property.name + '" required="required" id="' + property.name + '" value="' + fieldValue + '" class="admin__control-text modly-field">';
             } else if (property.type === 'integer' || property.type === 'float') {
                 html += '<input type="number" name="' + property.name + '" required="required" id="' + property.name + '" value="' + fieldValue + '" class="admin__control-text modly-field">';
@@ -1769,6 +1773,9 @@ define([
         var authStatus = true;
         var backends = null;
         var modules = null;
+        var module = '';
+        var groupName = '';
+        var isGroup = false;
         var dictionaries = null;
         var dictionary_id = null;
         var acls = null;
@@ -2040,6 +2047,7 @@ define([
                 var name = '';
                 var value = '';
                 var data = {};
+                var moduleId = $('#module-id').val();
                 $('.modly-group').each(function() {
                     $($(this).find('.modly-field')).each(function () {
                         name = $(this).attr('name');
@@ -2047,26 +2055,69 @@ define([
                         data[name] = value;
                     });
                     fieldData.push(data);
-                    console.log(fieldData);
                     data = {};
                 });
                 $.ajax({
                     type: "POST",
                     url: config.saveModuleConfigUrl,
                     data: {
-                        'module_id': $('#module-id').val(),
+                        'module_id': moduleId,
                         'field_data': fieldData
                     },
                     showLoader: true,
                     success: function (data) {
                         if (data.status === true) {
-                            vcl.modal.modal('closeModal');
+                            var parsedVcl = JSON.stringify(vcl.parseVcl(fieldData));
+                            vcl.uploadModuleConfig(moduleId, parsedVcl, active_version);
+                            //vcl.modal.modal('closeModal');
                         } else {
                             vcl.resetAllMessages();
                             vcl.showErrorMessage(data.msg);
                         }
                     }
                 });
+            },
+
+            uploadModuleConfig: function (moduleId, parsedVcl, active_version) {
+                $.ajax({
+                    type: "POST",
+                    url: config.uploadModuleSnippetUrl,
+                    data: {
+                        'module_id': moduleId,
+                        'active_version': active_version,
+                        'snippets': parsedVcl
+                    }
+                });
+            },
+
+            parseVcl: function (fieldData) {
+                var moduleVcl = JSON.parse(module.manifest_vcl);
+                var templates = [];
+
+                // TODO: write proper ifEq helper
+                Handlebars.registerHelper('ifEq', function (a, b, options){
+                    if (a === b) {
+                        return options.fn(this)
+                    }
+                        return options.inverse(this)
+                });
+
+                // TODO: write extract helper
+
+                Handlebars.registerHelper('replace', function (string, replace, replacement){
+                    var regEx = new RegExp(replace, "g");
+                    return string.replace(regEx, replacement);
+                });
+
+                 $.each(fieldData, function (key, fields) {
+                     $.each(moduleVcl, function (index, value) {
+                         var vclTemplate = Handlebars.compile(value.template);
+                         var result = vclTemplate(fields);
+                             templates.push({"type": value.type, "snippet": result})
+                     });
+                 });
+
+                 return templates;
             },
 
             // Queries Fastly API to retrieve error page response object

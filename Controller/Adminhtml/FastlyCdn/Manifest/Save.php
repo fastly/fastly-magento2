@@ -78,53 +78,54 @@ class Save extends Action
             $moduleData = $this->modly->getModule($moduleId);
             $moduleProperties = json_decode($moduleData->getManifestProperties());
 
-            foreach ($fieldData as $index => $data) {
-                foreach ($data as $key => $value) {
-                    foreach ($moduleProperties as $properties) {
-                        $name = $this->getName($properties);
+            if ($fieldData) {
+                foreach ($fieldData as $index => $data) {
+                    foreach ($data as $key => $value) {
+                        foreach ($moduleProperties as $properties) {
+                            $name = $this->getName($properties);
 
-                        $groupProperties = $this->getGroupProperties($properties);
-                        if ($groupProperties) {
-                            foreach ($groupProperties as $props) {
-                                $name = $this->getName($props);
+                            $groupProperties = $this->getGroupProperties($properties);
+                            if ($groupProperties) {
+                                foreach ($groupProperties as $props) {
+                                    $name = $this->getName($props);
 
-                                if (isset($name) && $key == $name) {
-                                    $type = $this->getType($props);
-                                    $label = $this->getLabel($props);
-                                    $validation = $this->getValidation($props);
-                                    $required = $this->getRequired($props);
+                                    if (isset($name) && $key == $name) {
+                                        $type = $this->getType($props);
+                                        $label = $this->getLabel($props);
+                                        $validation = $this->getValidation($props);
+                                        $required = $this->getRequired($props);
 
-                                    $isValid = $this->validateField($type, $validation, $value, $label, $required);
+                                        $isValid = $this->validateField($type, $validation, $value, $label, $required);
 
-                                    if (!empty($isValid)) {
-                                        throw new LocalizedException(__($isValid));
+                                        if (!empty($isValid)) {
+                                            throw new LocalizedException(__($isValid));
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        if (isset($name) && $key == $name) {
-                            $type = $this->getType($properties);
-                            $label = $this->getLabel($properties);
-                            $validation = $this->getValidation($properties);
-                            $required = $this->getRequired($properties);
+                            if (isset($name) && $key == $name) {
+                                $type = $this->getType($properties);
+                                $label = $this->getLabel($properties);
+                                $validation = $this->getValidation($properties);
+                                $required = $this->getRequired($properties);
 
-                            $isValid = $this->validateField($type, $validation, $value, $label, $required);
+                                $isValid = $this->validateField($type, $validation, $value, $label, $required);
 
-                            if (!empty($isValid)) {
-                                throw new LocalizedException(__($isValid));
+                                if (!empty($isValid)) {
+                                    throw new LocalizedException(__($isValid));
+                                }
                             }
                         }
                     }
                 }
+
+                $manifest = $this->manifestFactory->create();
+                $manifest->setManifestId($moduleId);
+                $manifest->setManifestValues(json_encode($fieldData));
+
+                $this->saveManifest($manifest);
             }
-
-            $manifest = $this->manifestFactory->create();
-            $manifest->setManifestId($moduleId);
-            $manifest->setManifestValues(json_encode($fieldData));
-
-            $this->saveManifest($manifest);
-
             return $result->setData([
                 'status' => true
             ]);

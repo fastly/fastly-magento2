@@ -34,8 +34,13 @@ class Manifest
         'https://gist.githubusercontent.com/udovicic/893e416af84f4e914697b1698e72485c/raw/1b0f018bc697d171cd4e5bea077740605d5cacf6/hostoverride.json',
         'https://gist.githubusercontent.com/udovicic/893e416af84f4e914697b1698e72485c/raw/1b0f018bc697d171cd4e5bea077740605d5cacf6/forcetls.json',
         'https://gist.githubusercontent.com/udovicic/893e416af84f4e914697b1698e72485c/raw/1b0f018bc697d171cd4e5bea077740605d5cacf6/error.json',
-        'https://gist.githubusercontent.com/udovicic/893e416af84f4e914697b1698e72485c/raw/1b0f018bc697d171cd4e5bea077740605d5cacf6/countryblock.json'
-    ];
+        'https://gist.githubusercontent.com/udovicic/893e416af84f4e914697b1698e72485c/raw/1b0f018bc697d171cd4e5bea077740605d5cacf6/countryblock.json',
+        'https://gist.githubusercontent.com/deninchoo/0f3d7d8fa3668b842962e491964f65c8/raw/7e32c1fca5b4e669ed445e078ae55739ef938847/aclblacklist.json',
+        'https://gist.githubusercontent.com/deninchoo/0f3d7d8fa3668b842962e491964f65c8/raw/7edde40f1b3045b773868253d0d58e731f2a25f9/esi.json',
+        'https://gist.githubusercontent.com/deninchoo/0f3d7d8fa3668b842962e491964f65c8/raw/7edde40f1b3045b773868253d0d58e731f2a25f9/gzip.json',
+        'https://gist.githubusercontent.com/deninchoo/0f3d7d8fa3668b842962e491964f65c8/raw/7edde40f1b3045b773868253d0d58e731f2a25f9/nocache.json',
+        'https://gist.githubusercontent.com/deninchoo/0f3d7d8fa3668b842962e491964f65c8/raw/7edde40f1b3045b773868253d0d58e731f2a25f9/redirects.json'
+        ];
 
     /**
      * Manifest constructor.

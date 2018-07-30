@@ -28,7 +28,7 @@ class Manifest
      * @var array
      */
     private $urlList = [
-        'https://gist.githubusercontent.com/udovicic/893e416af84f4e914697b1698e72485c/raw/1b0f018bc697d171cd4e5bea077740605d5cacf6/ttl.json',
+        'https://gist.githubusercontent.com/deninchoo/0f3d7d8fa3668b842962e491964f65c8/raw/7edde40f1b3045b773868253d0d58e731f2a25f9/ttloverride.json',
         'https://gist.githubusercontent.com/udovicic/893e416af84f4e914697b1698e72485c/raw/1b0f018bc697d171cd4e5bea077740605d5cacf6/stale.json',
         'https://gist.githubusercontent.com/udovicic/893e416af84f4e914697b1698e72485c/raw/1b0f018bc697d171cd4e5bea077740605d5cacf6/normalise.json',
         'https://gist.githubusercontent.com/udovicic/893e416af84f4e914697b1698e72485c/raw/1b0f018bc697d171cd4e5bea077740605d5cacf6/hostoverride.json',

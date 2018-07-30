@@ -2091,6 +2091,10 @@ define([
                             vcl.uploadModuleConfig(moduleId, parsedVcl, active_version).done(function (response) {
                                 if (response.status === true) {
                                     vcl.modal.modal('closeModal');
+                                    successAllModulesBtnMsg.text($.mage.__('The '+ moduleId +' module has been successfully uploaded to the Fastly service.')).show();
+                                } else {
+                                    vcl.resetAllMessages();
+                                    vcl.showErrorMessage(response.msg);
                                 }
                             });
                         } else {

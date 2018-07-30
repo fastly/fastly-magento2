@@ -655,6 +655,7 @@ define([
                     title = module.manifest_name;
                     var moduleValues = module.manifest_values;
                     var parsedValues = '';
+                    groupName = '';
 
                     if (moduleValues) {
                         parsedValues = JSON.parse(moduleValues);
@@ -666,19 +667,25 @@ define([
                                 groupName = property.name;
                                 isGroup = true;
                                 if (parsedValues === '') {
-                                    parsedValues = [{}];
+                                    parsedValues = [{"":""}];
                                 }
 
                                 field = '';
-
-                                $.each(parsedValues, function (num, values) {
-                                    field += '<div class="admin__fieldset form-list modly-group">';
-                                    $.each(property.properties, function (i, prop) {
-                                        field += renderFields(prop, values, active_version);
+                                // for each group object property ie. {"responses": [{...}]}}
+                                $.each(parsedValues, function (moduleIndex, groupData) {
+                                    // for each group data property
+                                    $.each(groupData, function (groupIndex, groupValues) {
+                                        // open the modly-group class element
+                                        field += '<div class="admin__fieldset form-list modly-group">';
+                                        // for each manifest defined config property, render fields with group values
+                                        $.each(property.properties, function (propertyIndex, propertyValues) {
+                                            field += renderFields(propertyValues, groupValues, active_version);
+                                        });
+                                        field += '<div class="admin__field field"><div class="admin__field-label"></div><div class="admin__field-control"><button class="action remove-group-button" type="button" data-role="action"><span>Remove group</span></button></div></div>';
+                                        field += '<div class="admin__field field"><div class="admin__field-label"></div><div class="admin__field-control"><hr></div></div>';
+                                        field += '</div>';
                                     });
-                                    field += '<div class="admin__field field"><div class="admin__field-label"></div><div class="admin__field-control"><button class="action remove-group-button" type="button" data-role="action"><span>Remove group</span></button></div></div>';
-                                    field += '<div class="admin__field field"><div class="admin__field-label"></div><div class="admin__field-control"><hr></div></div>';
-                                    field += '</div>';
+
                                 });
                             } else {
                                 field += renderFields(property, parsedValues[0], active_version);
@@ -700,7 +707,7 @@ define([
                     var groupBtn = '<button class="action-secondary group-button" type="button" data-role="action"><span>Add group</span></button>';
                     if (isGroup === true) {
                         $('.modal-header').find(".page-actions-buttons").append(groupBtn);
-                        $('.question').find('.modly-group:first').find('.remove-group-button').closest('.field').hide();
+                        question.find('.modly-group:first').find('.remove-group-button').closest('.field').hide();
                         $('.group-button').unbind('click').on('click', function () {
                             question.find('.modly-group:last').clone().appendTo('.question');
                             question.find('.modly-group:last').find('.modly-field').val('');
@@ -738,8 +745,14 @@ define([
             }
             if (value){
                 $.each(value, function(index, data) {
-                    if (index === fieldName) {
-                        fieldValue = data;
+                    if (groupName !== '') {
+                        if (index === fieldName) {
+                            fieldValue = data;
+                        }
+                    } else {
+                        if (index === fieldName) {
+                            fieldValue = data;
+                        }
                     }
                 });
             }
@@ -831,7 +844,6 @@ define([
                         var conditions = response.conditions;
                         var options = '<option value="">--Please Select--</option>';
                         $.each(conditions, function (index, condition) {
-                            console.log(condition.type);
                             if (condition.type === 'REQUEST') {
                                 options += '<option value="' + condition.name + '"';
                                 if (condition.name === fieldValue) {
@@ -2044,26 +2056,33 @@ define([
             },
 
             saveModuleConfig: function () {
-                var fieldData = [];
+                var fieldData = {};
                 var name = '';
                 var value = '';
                 var data = {};
                 var moduleId = $('#module-id').val();
+                var groupData = [];
                 $('.modly-group').each(function() {
                     $($(this).find('.modly-field')).each(function () {
                         name = $(this).attr('name');
                         value = $(this).val();
                         data[name] = value;
                     });
-                    fieldData.push(data);
+                    groupData.push(data);
                     data = {};
                 });
+                if (groupName !== ''){
+                    fieldData[groupName] = groupData;
+                } else {
+                    fieldData = groupData;
+                }
                 $.ajax({
                     type: "POST",
                     url: config.saveModuleConfigUrl,
                     data: {
                         'module_id': moduleId,
-                        'field_data': fieldData
+                        'field_data': fieldData,
+                        'group_name': groupName
                     },
                     showLoader: true,
                     success: function (data) {
@@ -2073,8 +2092,7 @@ define([
                                 if (response.status === true) {
                                     vcl.modal.modal('closeModal');
                                 }
-                            }
-                            );
+                            });
                         } else {
                             vcl.resetAllMessages();
                             vcl.showErrorMessage(data.msg);
@@ -2099,30 +2117,24 @@ define([
             parseVcl: function (fieldData) {
                 var moduleVcl = JSON.parse(module.manifest_vcl);
                 var templates = [];
+                var result = '';
 
-                // TODO: write proper ifEq helper
-                Handlebars.registerHelper('ifEq', function (a, b, options){
-                    if (a === b) {
-                        return options.fn(this)
-                    }
-                        return options.inverse(this)
-                });
-
-                // TODO: write extract helper
-
-                Handlebars.registerHelper('replace', function (string, replace, replacement){
-                    var regEx = new RegExp(replace, "g");
-                    return string.replace(regEx, replacement);
-                });
+                Handlebars.registerHelper('replace', (inp, re, repl) => inp.replace(new RegExp(re, 'g'), repl));
+                Handlebars.registerHelper('ifEq', (a, b, options) => options[a == b ? 'fn':'inverse'](this));
+                Handlebars.registerHelper('ifMatch', (a, pat, opts) => opts[a.match(new RegExp(pat)) ? 'fn':'inverse'](this));
+                Handlebars.registerHelper('extract', (a, pat) => (a.match(new RegExp(pat)) || [])[1]);
 
                  $.each(fieldData, function (key, fields) {
-                     $.each(moduleVcl, function (index, value) {
-                         var vclTemplate = Handlebars.compile(value.template);
-                         var result = vclTemplate(fields);
+                         $.each(moduleVcl, function (index, value) {
+                             var vclTemplate = Handlebars.compile(value.template);
+                             if (groupName !== '') {
+                                 result = vclTemplate(fieldData);
+                             } else {
+                                 result = vclTemplate(fields);
+                             }
                              templates.push({"type": value.type, "snippet": result})
-                     });
+                         });
                  });
-
                  return templates;
             },
 

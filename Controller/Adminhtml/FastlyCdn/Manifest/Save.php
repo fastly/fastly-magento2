@@ -69,63 +69,36 @@ class Save extends Action
         parent::__construct($context);
     }
 
+    /**
+     * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
+     */
     public function execute()
     {
         $result = $this->resultJson->create();
+        $isValid = '';
         try {
             $fieldData = $this->getRequest()->getParam('field_data');
             $moduleId = $this->getRequest()->getParam('module_id');
+            $groupName = $this->getRequest()->getParam('group_name');
             $moduleData = $this->modly->getModule($moduleId);
             $moduleProperties = json_decode($moduleData->getManifestProperties());
 
-            if ($fieldData) {
-                foreach ($fieldData as $index => $data) {
-                    foreach ($data as $key => $value) {
-                        foreach ($moduleProperties as $properties) {
-                            $name = $this->getName($properties);
-
-                            $groupProperties = $this->getGroupProperties($properties);
-                            if ($groupProperties) {
-                                foreach ($groupProperties as $props) {
-                                    $name = $this->getName($props);
-
-                                    if (isset($name) && $key == $name) {
-                                        $type = $this->getType($props);
-                                        $label = $this->getLabel($props);
-                                        $validation = $this->getValidation($props);
-                                        $required = $this->getRequired($props);
-
-                                        $isValid = $this->validateField($type, $validation, $value, $label, $required);
-
-                                        if (!empty($isValid)) {
-                                            throw new LocalizedException(__($isValid));
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (isset($name) && $key == $name) {
-                                $type = $this->getType($properties);
-                                $label = $this->getLabel($properties);
-                                $validation = $this->getValidation($properties);
-                                $required = $this->getRequired($properties);
-
-                                $isValid = $this->validateField($type, $validation, $value, $label, $required);
-
-                                if (!empty($isValid)) {
-                                    throw new LocalizedException(__($isValid));
-                                }
-                            }
-                        }
-                    }
-                }
-
-                $manifest = $this->manifestFactory->create();
-                $manifest->setManifestId($moduleId);
-                $manifest->setManifestValues(json_encode($fieldData));
-
-                $this->saveManifest($manifest);
+            if ($fieldData && $groupName == '') {
+                $isValid = $this->processSimple($fieldData[0], $moduleProperties);
+            } elseif ($fieldData && $groupName != '') {
+                $isValid = $this->processGroup($fieldData[$groupName], $moduleProperties);
             }
+
+            if (!empty($isValid)) {
+                throw new LocalizedException(__($isValid));
+            }
+
+            $manifest = $this->manifestFactory->create();
+            $manifest->setManifestId($moduleId);
+            $manifest->setManifestValues(json_encode($fieldData));
+
+            $this->saveManifest($manifest);
+
             return $result->setData([
                 'status' => true
             ]);
@@ -138,6 +111,63 @@ class Save extends Action
     }
 
     /**
+     * @param $fieldData
+     * @param $moduleProperties
+     * @return string
+     */
+    private function processSimple($fieldData, $moduleProperties)
+    {
+        $isValid = '';
+        foreach ($fieldData as $key => $value) {
+            foreach ($moduleProperties as $properties) {
+                $name = $this->getName($properties);
+
+                if (isset($name) && $key == $name) {
+                    $type = $this->getType($properties);
+                    $label = $this->getLabel($properties);
+                    $validation = $this->getValidation($properties);
+                    $required = $this->getRequired($properties);
+
+                    $isValid = $this->validateField($type, $validation, $value, $label, $required);
+                }
+            }
+        }
+
+        return $isValid;
+    }
+
+    /**
+     * @param $fieldData
+     * @param $moduleProperties
+     * @return string
+     */
+    private function processGroup($fieldData, $moduleProperties)
+    {
+        $isValid = '';
+        foreach ($fieldData[0] as $index => $value) {
+            foreach ($moduleProperties as $properties) {
+                $groupProperties = $this->getGroupProperties($properties);
+                if ($groupProperties) {
+                    foreach ($groupProperties as $props) {
+                        $name = $this->getName($props);
+
+                        if (isset($name) && $index == $name) {
+                            $type = $this->getType($props);
+                            $label = $this->getLabel($props);
+                            $validation = $this->getValidation($props);
+                            $required = $this->getRequired($props);
+
+                            $isValid = $this->validateField($type, $validation, $value, $label, $required);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $isValid;
+    }
+
+    /**
      * @param $manifest
      * @throws \Exception
      */
@@ -146,6 +176,14 @@ class Save extends Action
         $this->manifestResource->save($manifest);
     }
 
+    /**
+     * @param $type
+     * @param $validation
+     * @param $value
+     * @param $label
+     * @param $required
+     * @return string
+     */
     private function validateField($type, $validation, $value, $label, $required)
     {
         $message = '';
@@ -172,6 +210,10 @@ class Save extends Action
         return $message;
     }
 
+    /**
+     * @param $properties
+     * @return null
+     */
     private function getName($properties)
     {
         if (property_exists($properties, 'name')) {
@@ -181,6 +223,10 @@ class Save extends Action
         }
     }
 
+    /**
+     * @param $properties
+     * @return null
+     */
     private function getType($properties)
     {
         if (property_exists($properties, 'type')) {
@@ -190,6 +236,10 @@ class Save extends Action
         }
     }
 
+    /**
+     * @param $properties
+     * @return null
+     */
     private function getRequired($properties)
     {
         if (property_exists($properties, 'required')) {
@@ -199,6 +249,10 @@ class Save extends Action
         }
     }
 
+    /**
+     * @param $properties
+     * @return null|string
+     */
     private function getValidation($properties)
     {
         if (property_exists($properties, 'validation')) {
@@ -208,6 +262,10 @@ class Save extends Action
         }
     }
 
+    /**
+     * @param $properties
+     * @return null
+     */
     private function getLabel($properties)
     {
         if (property_exists($properties, 'label')) {
@@ -217,6 +275,10 @@ class Save extends Action
         }
     }
 
+    /**
+     * @param $properties
+     * @return null
+     */
     private function getGroupProperties($properties)
     {
         if (property_exists($properties, 'properties')) {

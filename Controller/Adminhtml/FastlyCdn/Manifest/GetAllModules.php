@@ -67,7 +67,8 @@ class GetAllModules extends Action
             if (!$modules) {
                 return $result->setData([
                     'status'    => false,
-                    'msg'       => 'Could not fetch modules.'
+                    'modules'   => '',
+                    'msg'       => 'Use the Refresh button to get the latest modules.'
                 ]);
             }
 

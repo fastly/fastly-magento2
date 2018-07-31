@@ -31,11 +31,6 @@
                         <field id="caching_application">fastly</field>
                         <field id="system/full_page_cache/fastly/fastly_advanced_configuration/enable_fastly_edge_modules">1</field>
                     </depends>
-                    <field id="fetch_modly" translate="label comment" sortOrder="0" showInDefault="1" showInStore="0" showInWebsite="0">
-                        <label><![CDATA[Refresh manifest]]></label>
-                        <comment><![CDATA[Downloads new manifest of features.]]></comment>
-                        <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ManifestBtn</frontend_model>
-                    </field>
                     <field id="modly_all_modules" translate="label comment" sortOrder="5" showInDefault="1" showInStore="0" showInWebsite="0">
                         <label><![CDATA[Module Manager]]></label>
                         <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\AllModulesBtn</frontend_model>

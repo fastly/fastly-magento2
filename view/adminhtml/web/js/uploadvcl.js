@@ -1287,9 +1287,11 @@ define([
                     showLoader: true
                 })
             ).done(function (response) {
-                if (response.status === false) {
-                    return warningAllModulesBtnMsg.text($.mage.__(response.msg)).show();
-                }
+
+                vcl.showPopup('modly-all-module-options');
+                var updateBtn = '<button class="action-secondary" id="fastly_manifest_btn" type="button" data-role="action"><span>Refresh</span></button>';
+                $('.modal-header').find(".page-actions-buttons").append(updateBtn);
+                $('.upload-button span').text('Save');
 
                 if (response.modules.length > 0) {
                     var allModules = response.modules;
@@ -1308,21 +1310,14 @@ define([
                         html += '>';
                         html += '<label class="admin__field-label" for="'+module.manifest_id+'"></label></div></td></tr>';
                     });
-                    vcl.showPopup('modly-all-module-options');
-                    $('.upload-button span').text('Save');
                     $('#modly-all-modules-table > tbody').append(html);
+                } else {
+                    vcl.showWarningMessage($.mage.__(response.msg));
                 }
             });
         });
 
-        $('#fastly_manifest_btn').on('click', function () {
-
-            if (isAlreadyConfigured !== true) {
-                $(this).attr('disabled', true);
-                return alert($.mage.__('Please save config prior to continuing.'));
-            }
-
-            vcl.resetAllMessages();
+        $('body').on('click', '#fastly_manifest_btn', function () {
 
             $.when(
                 $.ajax({
@@ -1333,13 +1328,45 @@ define([
             ).done(function (response) {
 
                 if (response.status === false) {
-                    return errorManifestBtnMsg.text($.mage.__('Could not refresh manifests.')).show();
+                    vcl.showErrorMessage($.mage.__('Could not update the list modules.')).show();
                 }
 
-                return successManifestBtnMsg.text($.mage.__('Manifests refreshed successfully.')).show();
+                $.when(
+                    $.ajax({
+                        type:"GET",
+                        url: config.getAllModulesUrl,
+                        showLoader: true
+                    })
+                ).done(function (response) {
+                    if (response.status === false) {
+                        vcl.showErrorMessage($.mage.__(response.msg));
+                    }
+
+                    if (response.modules.length > 0) {
+                        var allModules = response.modules;
+                        var html = '';
+                        $.each(allModules, function (index, module) {
+                            html += '<tr';
+                            if (module.manifest_status === '1') {
+                                html += ' class="highlighted"';
+                            }
+                            html +=  '><td><b>' + module.manifest_name + '</b></td>';
+                            html += '<td>' + module.manifest_description + '</td>';
+                            html += '<td><div class="admin__field-option" title="'+module.manifest_id+'"><input name="'+module.manifest_id+'" class="admin__control-checkbox module" type="checkbox" id="'+module.manifest_id+'"';
+                            if (module.manifest_status === '1') {
+                                html += ' checked';
+                            }
+                            html += '>';
+                            html += '<label class="admin__field-label" for="'+module.manifest_id+'"></label></div></td></tr>';
+                        });
+                        $('#modly-all-modules-table > tbody').html(html);
+                    }
+                });
+
+                vcl.showSuccessMessage('The list of modules has been successfully updated.');
 
             }).fail(function () {
-                return errorVclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                vcl.showErrorMessage('An error occurred while processing your request. Please try again.');
             });
         });
 
@@ -3055,6 +3082,13 @@ define([
                 msgSuccess.html($.mage.__(msg));
                 msgSuccess.show();
                 msgSuccess.focus();
+            },
+
+            showWarningMessage: function (msg) {
+                var msgWarning = $('.fastly-message-warning');
+                msgWarning.html($.mage.__(msg));
+                msgWarning.show();
+                msgWarning.focus();
             },
 
             resetAllMessages: function () {

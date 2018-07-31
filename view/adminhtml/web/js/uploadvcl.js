@@ -1913,6 +1913,7 @@ define([
                         'class': 'action cancel',
                         click: function () {
                             this.closeModal();
+                            vcl.resetAllMessages();
                         }
                     }, {
                         text: jQuery.mage.__('Upload'),
@@ -2062,6 +2063,7 @@ define([
                     success: function (data) {
                         if (data.status === true) {
                             vcl.modal.modal('closeModal');
+                            vcl.resetAllMessages();
                             vcl.getActiveModules(false).done(function (response) {
                                 $('.loading-modules').hide();
                                 if (response.status !== false) {
@@ -2118,6 +2120,7 @@ define([
                             vcl.uploadModuleConfig(moduleId, parsedVcl, active_version).done(function (response) {
                                 if (response.status === true) {
                                     vcl.modal.modal('closeModal');
+                                    vcl.resetAllMessages();
                                     successAllModulesBtnMsg.text($.mage.__('The '+ moduleId +' module has been successfully uploaded to the Fastly service.')).show();
                                 } else {
                                     vcl.resetAllMessages();
@@ -2439,6 +2442,7 @@ define([
                         if (response.status == true) {
                             active_version = response.active_version;
                             vcl.modal.modal('closeModal');
+                            vcl.resetAllMessages();
                             successVclBtnMsg.text($.mage.__('VCL file is successfully uploaded to the Fastly service.')).show();
                         } else {
                             vcl.resetAllMessages();

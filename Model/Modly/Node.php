@@ -66,7 +66,7 @@ class Node
             'showInDefault' => 1,
             'showInWebsite' => 0,
             'showInStore'   => 0,
-            'sortOrder'     => 1, // TODO: Increment this!
+            'sortOrder'     => 1,
             'label'         => $this->label,
             'comment'       => $this->comment,
             '_elementType'  => 'group',

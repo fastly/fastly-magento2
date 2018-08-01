@@ -32,7 +32,6 @@ class GetAllModules extends Action
      */
     private $manifest;
 
-
     /**
      * GetAllModules constructor.
      *

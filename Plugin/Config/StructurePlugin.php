@@ -56,14 +56,13 @@ class StructurePlugin
     /**
      * Injects modlyies to configuration
      *
-     * @param Structure $subject
      * @param \Closure $proceed
      * @param array $pathParts
      * @return ElementInterface|null
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function aroundGetElementByPathParts(Structure $subject, \Closure $proceed, array $pathParts)
+    public function aroundGetElementByPathParts(\Closure $proceed, array $pathParts)
     {
         /** @var Section $result */
         $result = $proceed($pathParts);

@@ -724,7 +724,8 @@ define([
             });
         });
 
-        function renderFields(property, value, active_version) {
+        function renderFields(property, value, active_version)
+        {
             var html = '<div class="admin__field field';
             if (property.required === true) {
                 html+= ' _required';
@@ -743,7 +744,7 @@ define([
             if (property.default) {
                 fieldValue = property.default;
             }
-            if (value){
+            if (value) {
                 $.each(value, function(index, data) {
                     if (groupName !== '') {
                         if (index === fieldName) {
@@ -780,10 +781,14 @@ define([
             } else if (property.type === 'boolean') {
                 html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
                 html += '<option value="false"';
-                if (fieldValue === 'false') html += 'selected';
+                if (fieldValue === 'false') {
+                    html += 'selected';
+                }
                 html += '>No</option>';
                 html += '<option value="true"';
-                if (fieldValue === 'true') html += 'selected';
+                if (fieldValue === 'true') {
+                    html += 'selected';
+                }
                 html += '>Yes</option>';
                 html += '</select>';
             } else if (property.type === 'acl') {
@@ -2050,7 +2055,7 @@ define([
 
             saveActiveModules: function (loaderVisibility) {
                 var checkedModules = [];
-                $('.module:checked').each(function(){
+                $('.module:checked').each(function () {
                     checkedModules.push($(this).attr('name'));
                 });
                 $.ajax({
@@ -2091,7 +2096,7 @@ define([
                 var data = {};
                 var moduleId = $('#module-id').val();
                 var groupData = [];
-                $('.modly-group').each(function() {
+                $('.modly-group').each(function () {
                     $($(this).find('.modly-field')).each(function () {
                         name = $(this).attr('name');
                         value = $(this).val();
@@ -2100,7 +2105,7 @@ define([
                     groupData.push(data);
                     data = {};
                 });
-                if (groupName !== ''){
+                if (groupName !== '') {
                     fieldData[groupName] = groupData;
                 } else {
                     fieldData = groupData;

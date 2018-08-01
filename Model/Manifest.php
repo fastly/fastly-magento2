@@ -58,9 +58,4 @@ class Manifest extends AbstractModel
     {
         return $this->getData('manifest_id', $id);
     }
-
-//    public function setManifestStatus($status)
-//    {
-//        return $this->setData('manifest_status', $status);
-//    }
 }

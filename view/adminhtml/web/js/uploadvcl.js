@@ -745,7 +745,7 @@ define([
                 fieldValue = property.default;
             }
             if (value) {
-                $.each(value, function(index, data) {
+                $.each(value, function (index, data) {
                     if (groupName !== '') {
                         if (index === fieldName) {
                             fieldValue = data;
@@ -1333,7 +1333,8 @@ define([
             ).done(function (response) {
 
                 if (response.status === false) {
-                    vcl.showErrorMessage($.mage.__('Could not update the list modules.')).show();
+                    vcl.showErrorMessage($.mage.__('Could not update the list modules.'));
+                    return;
                 }
 
                 $.when(

@@ -307,7 +307,7 @@ class Image extends ImageModel
 
     public function getBaseFileUrl($baseFile)
     {
-        if ($baseFile === null) {
+        if ($baseFile === null || $this->isBaseFilePlaceholder()) {
             $url = $this->_assetRepo->getUrl(
                 "Magento_Catalog::images/product/placeholder/{$this->getDestinationSubdir()}.jpg"
             );

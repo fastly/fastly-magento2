@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.62
+
+- Fix for situations where image is unavailable and placeholder image is inserted https://github.com/fastly/fastly-magento2/pull/195
+
 ## 1.2.61
 
 - Rework how snippets are written to disk. Addresses issues with Magento Cloud https://github.com/fastly/fastly-magento2/pull/194

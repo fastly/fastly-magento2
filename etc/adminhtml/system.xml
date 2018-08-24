@@ -334,6 +334,13 @@
                                 <field id="enable_webhooks">1</field>
                             </depends>
                         </field>
+                        <field id="publish_purge_events" translate="label comment" type="select" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Publish All Purge Events</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="enable_webhooks">1</field>
+                            </depends>
+                        </field>
                         <field id="publish_key_url_purge_events" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Publish Key and URL Purge Events</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -348,8 +355,24 @@
                                 <field id="enable_webhooks">1</field>
                             </depends>
                         </field>
-                        <field id="publish_purge_all_trace" translate="label comment" type="select" sortOrder="32" showInDefault="1" showInWebsite="1" showInStore="1">
-                            <label>Publish stack trace on purge all event</label>
+                        <field id="publish_purge_trace" translate="label comment" type="select" sortOrder="16" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Publish stack trace on All Purge Events</label>
+                            <comment>Submits the stack trace when any purge event is created, for debugging purposes</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="enable_webhooks">1</field>
+                            </depends>
+                        </field>
+                        <field id="publish_purge_by_key_trace" translate="label comment" type="select" sortOrder="21" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Publish stack trace on Key and URL Purge Event</label>
+                            <comment>Submits the stack trace when the purge by key event is created, for debugging purposes</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="enable_webhooks">1</field>
+                            </depends>
+                        </field>
+                        <field id="publish_purge_all_trace" translate="label comment" type="select" sortOrder="31" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Publish stack trace on Purge All/Clean All Event</label>
                             <comment>Submits the stack trace when the purge all event is created, for debugging purposes</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                             <depends>

@@ -152,6 +152,7 @@ class Api
      */
     public function cleanBySurrogateKey($keys)
     {
+        $type = 'clean by key on ';
         $uri = $this->_getApiServiceUri() . 'purge';
         $num = count($keys);
         $result = false;
@@ -167,15 +168,27 @@ class Api
 
         foreach ($collection as $keys) {
             $payload = json_encode(['surrogate_keys' => $keys]);
-            if ($result = $this->_purge($uri, \Zend_Http_Client::POST, $payload)) {
+            if ($result = $this->_purge($uri, null, \Zend_Http_Client::POST, $payload)) {
                 foreach ($keys as $key) {
                     $this->logger->execute('surrogate key: ' . $key);
                 }
             }
 
-            if ($this->config->areWebHooksEnabled() && $this->config->canPublishKeyUrlChanges()) {
+            $canPublishKeyUrlChanges = $this->config->canPublishKeyUrlChanges();
+            $canPublishPurgeChanges = $this->config->canPublishPurgeChanges();
+
+            if ($this->config->areWebHooksEnabled() && ($canPublishKeyUrlChanges || $canPublishPurgeChanges)) {
                 $status = $result ? '' : 'FAILED ';
                 $this->sendWebHook($status . '*clean by key on ' . join(" ", $keys) . '*');
+
+                $canPublishPurgeByKeyDebugBacktrace = $this->config->canPublishPurgeByKeyDebugBacktrace();
+                $canPublishPurgeDebugBacktrace = $this->config->canPublishPurgeDebugBacktrace();
+
+                if ($canPublishPurgeByKeyDebugBacktrace == false && $canPublishPurgeDebugBacktrace == false) {
+                    return $result;
+                }
+
+                $this->stackTrace($type . join(" ", $keys));
             }
         }
 
@@ -196,25 +209,26 @@ class Api
         }
         $this->purged = true;
 
+        $type = 'clean/purge all';
         $uri = $this->_getApiServiceUri() . 'purge_all';
-        if ($result = $this->_purge($uri)) {
+        if ($result = $this->_purge($uri, null)) {
             $this->logger->execute('clean all items');
         }
 
-        if ($this->config->areWebHooksEnabled() && $this->config->canPublishPurgeAllChanges()) {
+        $canPublishPurgeAllChanges = $this->config->canPublishPurgeAllChanges();
+        $canPublishPurgeChanges = $this->config->canPublishPurgeChanges();
+
+        if ($this->config->areWebHooksEnabled() && ($canPublishPurgeAllChanges || $canPublishPurgeChanges)) {
             $this->sendWebHook('*initiated clean/purge all*');
 
-            if ($this->config->canPublishDebugBacktrace() == false) {
+            $canPublishPurgeAllDebugBacktrace = $this->config->canPublishPurgeAllDebugBacktrace();
+            $canPublishPurgeDebugBacktrace = $this->config->canPublishPurgeDebugBacktrace();
+
+            if ($canPublishPurgeAllDebugBacktrace == false && $canPublishPurgeDebugBacktrace == false) {
                 return $result;
             }
 
-            $stackTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-            $trace = [];
-            foreach ($stackTrace as $row => $data) {
-                $trace[] = "#{$row} {$data['file']}:{$data['line']} -> {$data['function']}()";
-            }
-
-            $this->sendWebHook('*Purge all backtrace:*```' .  implode("\n", $trace) . '```');
+            $this->stackTrace($type);
         }
 
         return $result;
@@ -224,12 +238,13 @@ class Api
      * Send purge request via Fastly API
      *
      * @param $uri
+     * @param $type
      * @param string $method
      * @param null $payload
      * @return bool
      * @throws \Zend_Uri_Exception
      */
-    private function _purge($uri, $method = \Zend_Http_Client::POST, $payload = null)
+    private function _purge($uri, $type, $method = \Zend_Http_Client::POST, $payload = null)
     {
 
         if ($method == 'PURGE') {
@@ -259,6 +274,7 @@ class Api
             );
         }
 
+        $result = true;
         try {
             $client = $this->curlFactory->create();
             $client->setConfig(['timeout' => self::PURGE_TIMEOUT]);
@@ -276,10 +292,24 @@ class Api
             }
         } catch (\Exception $e) {
             $this->logger->critical($e->getMessage(), $uri);
-            return false;
+            $result = false;
         }
 
-        return true;
+        if (empty($type)) {
+            return $result;
+        }
+
+        if ($this->config->areWebHooksEnabled() && $this->config->canPublishPurgeChanges()) {
+            $this->sendWebHook('*initiated ' . $type .'*');
+
+            if ($this->config->canPublishPurgeDebugBacktrace() == false) {
+                return $result;
+            }
+
+            $this->stackTrace($type);
+        }
+
+        return $result;
     }
 
     /**
@@ -1159,5 +1189,16 @@ class Api
         }
 
         return json_decode($responseBody);
+    }
+
+    private function stackTrace($type)
+    {
+        $stackTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        $trace = [];
+        foreach ($stackTrace as $row => $data) {
+            $trace[] = "#{$row} {$data['file']}:{$data['line']} -> {$data['function']}()";
+        }
+
+        $this->sendWebHook('*'. $type .' backtrace:*```' .  implode("\n", $trace) . '```');
     }
 }

@@ -238,6 +238,7 @@ class Api
      * Send purge request via Fastly API
      *
      * @param $uri
+     * @param $type
      * @param string $method
      * @param null $payload
      * @return bool
@@ -299,7 +300,6 @@ class Api
         }
 
         if ($this->config->areWebHooksEnabled() && $this->config->canPublishPurgeChanges()) {
-
             $this->sendWebHook('*initiated ' . $type .'*');
 
             if ($this->config->canPublishPurgeDebugBacktrace() == false) {

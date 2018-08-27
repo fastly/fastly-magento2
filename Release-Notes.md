@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.63
+
+- Add additional tunable to send full stack trace for all purge actions not just purge all https://github.com/fastly/fastly-magento2/pull/196
+
 ## 1.2.62
 
 - Fix for situations where image is unavailable and placeholder image is inserted https://github.com/fastly/fastly-magento2/pull/195

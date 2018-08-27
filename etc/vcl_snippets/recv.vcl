@@ -95,7 +95,8 @@
         set req.http.x-pass = "1";
     } else {
         # Sort the query arguments to increase cache hit ratio with query arguments that
-        # may be out od order
+        # may be out od order. In case you want to restore the unsorted URL add a snippet
+        # after this one that sets req.url to req.http.Magento-Original-URL
         set req.url = boltsort.sort(req.url);
     }
 

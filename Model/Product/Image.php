@@ -298,7 +298,10 @@ class Image extends ImageModel
         $url = $this->getBaseFileUrl($baseFile);
 
         $this->fastlyParameters['quality'] = $this->_quality;
-        $this->fastlyParameters['bg-color'] = implode(',', $this->_backgroundColor);
+
+        if ($this->_scopeConfig->isSetFlag(Config::XML_FASTLY_IMAGE_OPTIMIZATION_BG_COLOR) == true) {
+            $this->fastlyParameters['bg-color'] = implode(',', $this->_backgroundColor);
+        }
         if ($this->_keepAspectRatio == true) {
             $this->fastlyParameters['fit'] = 'bounds';
         }

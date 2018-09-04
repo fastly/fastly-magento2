@@ -17,7 +17,7 @@ use Magento\Framework\Filesystem;
  *
  * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
  */
-class CreateCustomSnippet extends Action
+class EditCustomSnippet extends Action
 {
     /**
      * @var RawFactory
@@ -85,17 +85,11 @@ class CreateCustomSnippet extends Action
             $type = $this->getRequest()->getParam('type');
             $priority = $this->getRequest()->getParam('priority');
             $vcl = $this->getRequest()->getParam('vcl');
-            $edit = $this->getRequest()->getParam('edit');
+
             $snippetName = $this->validateCustomSnippet($name, $type, $priority);
             $fileName = $type . '_' . $priority . '_' . $snippetName . '.vcl';
 
             $write = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
-
-            if ($edit == true) {
-                $original = $this->getRequest()->getParam('original');
-                $write->renameFile('/vcl_snippets_custom/' . $original, '/vcl_snippets_custom/' . $fileName);
-            }
-
             $write->writeFile('/vcl_snippets_custom/' . $fileName, $vcl);
 
             return $result->setData([

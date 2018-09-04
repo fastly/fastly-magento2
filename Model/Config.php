@@ -174,8 +174,17 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_IMAGE_OPTIMIZATIONS
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimizations';
 
+    /**
+     * XML path to image optimization force lossy flag
+     */
     const XML_FASTLY_FORCE_LOSSY
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimization_force_lossy';
+
+    /**
+     * XML path to image optimization bg color flag
+     */
+    const XML_FASTLY_IMAGE_OPTIMIZATION_BG_COLOR
+        = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimization_bg_color';
 
     /**
      * XML path to image optimizations pixel ratio flag
@@ -514,9 +523,20 @@ class Config extends \Magento\PageCache\Model\Config
         return $this->_scopeConfig->isSetFlag(self::XML_FASTLY_IMAGE_OPTIMIZATIONS_PIXEL_RATIO);
     }
 
+    /**
+     * @return mixed
+     */
     public function isForceLossyEnabled()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_FORCE_LOSSY);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isImageOptimizationBgColorEnabled()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_IMAGE_OPTIMIZATION_BG_COLOR);
     }
 
     /**

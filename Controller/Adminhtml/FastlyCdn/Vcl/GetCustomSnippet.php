@@ -112,7 +112,6 @@ class GetCustomSnippet extends Action
                 $content = $read->readFile($read->getAbsolutePath() . 'vcl_snippets_custom/' . $snippet);
             } else {
                 throw new LocalizedException(__('Custom snippet not found.'));
-
             }
 
             return $result->setData([

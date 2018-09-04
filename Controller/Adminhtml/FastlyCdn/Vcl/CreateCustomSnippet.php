@@ -109,7 +109,7 @@ class CreateCustomSnippet extends Action
 
             $write = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
 
-            if ($edit == true) {
+            if ($edit == "true") {
                 $original = $this->getRequest()->getParam('original');
                 $write->renameFile('/vcl_snippets_custom/' . $original, '/vcl_snippets_custom/' . $fileName);
             }

@@ -26,6 +26,8 @@ use Magento\Framework\Cache\InvalidateLogger;
 use Fastly\Cdn\Helper\Data;
 use Fastly\Cdn\Helper\Vcl;
 use Psr\Log\LoggerInterface;
+use Magento\Backend\Model\Auth\Session\Proxy;
+use Magento\Framework\App\State;
 
 class Api
 {
@@ -72,13 +74,26 @@ class Api
     private $vcl;
 
     /**
+     * @var Proxy
+     */
+    private $authSession;
+
+    /**
+     * @var State
+     */
+    private $state;
+
+    /**
      * Api constructor.
+     *
      * @param Config $config
      * @param CurlFactory $curlFactory
      * @param InvalidateLogger $logger
      * @param Data $helper
      * @param LoggerInterface $log
      * @param Vcl $vcl
+     * @param Proxy $authSession
+     * @param State $state
      */
     public function __construct(
         Config $config,
@@ -86,7 +101,9 @@ class Api
         InvalidateLogger $logger,
         Data $helper,
         LoggerInterface $log,
-        Vcl $vcl
+        Vcl $vcl,
+        Proxy $authSession,
+        State $state
     ) {
         $this->config = $config;
         $this->curlFactory = $curlFactory;
@@ -94,6 +111,8 @@ class Api
         $this->helper = $helper;
         $this->log = $log;
         $this->vcl = $vcl;
+        $this->authSession = $authSession;
+        $this->state = $state;
     }
 
     /**
@@ -768,11 +787,19 @@ class Api
     {
         $url = $this->config->getIncomingWebhookURL();
         $messagePrefix = $this->config->getWebhookMessagePrefix();
-        $currentUsername = 'System'; // TO DO: Fetch current admin username
+        $currentUsername = 'System';
+        try {
+            if ($this->state->getAreaCode() == 'adminhtml') {
+                $currentUsername = $this->authSession->getUser()->getUserName();
+            }
+        } catch (\Exception $e) {
+            $this->log->log(100, 'Failed to retrieve Area Code');
+        }
+
         $storeName = $this->helper->getStoreName();
         $storeUrl = $this->helper->getStoreUrl();
 
-        $text =  $messagePrefix.' user='.$currentUsername.' '.$message.' on <'.$storeUrl.'|Store> | '.$storeName;
+        $text =  $messagePrefix.' user:'.$currentUsername.' '.$message.' on <'.$storeUrl.'|Store> | '.$storeName;
 
         $headers = [
             'Content-type: application/json'

@@ -108,7 +108,9 @@ class EditCustomSnippet extends Action
             $fileName = $type . '_' . $priority . '_' . $snippetName . '.vcl';
 
             $write = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
-            $write->writeFile('/vcl_snippets_custom/' . $fileName, $vcl);
+            $snippetAbsolutePath = $write->getAbsolutePath('vcl_snippets_custom/' . $fileName);
+
+            $write->writeFile($snippetAbsolutePath, $vcl);
 
             return $result->setData([
                 'status'    => true

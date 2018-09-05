@@ -84,8 +84,10 @@ class DeleteCustomSnippet extends Action
             $snippet = $this->getRequest()->getParam('snippet_id');
 
             $write = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
-            if ($write->isExist('/vcl_snippets_custom/' . $snippet)) {
-                $write->delete('/vcl_snippets_custom/' . $snippet);
+            $snippetAbsolutePath = $write->getAbsolutePath('vcl_snippets_custom/' . $snippet);
+
+            if ($write->isExist($snippetAbsolutePath)) {
+                $write->delete($snippetAbsolutePath);
             }
 
             return $result->setData([

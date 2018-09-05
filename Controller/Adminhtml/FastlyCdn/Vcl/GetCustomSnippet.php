@@ -103,13 +103,15 @@ class GetCustomSnippet extends Action
             $snippet = $this->getRequest()->getParam('snippet_id');
 
             $read = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR);
-            if ($read->isExist('/vcl_snippets_custom/' . $snippet)) {
+            $snippetAbsolutePath = $read->getAbsolutePath('vcl_snippets_custom/' . $snippet);
+
+            if ($read->isExist($snippetAbsolutePath)) {
                 $explodeId = explode('.', $snippet, -1);
                 $snippetParts = explode('_', $explodeId[0], 3);
                 $type = $snippetParts[0];
                 $priority = $snippetParts[1];
                 $name = $snippetParts[2];
-                $content = $read->readFile($read->getAbsolutePath() . 'vcl_snippets_custom/' . $snippet);
+                $content = $read->readFile($snippetAbsolutePath);
             } else {
                 throw new LocalizedException(__('Custom snippet not found.'));
             }

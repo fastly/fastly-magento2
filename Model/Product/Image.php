@@ -195,6 +195,9 @@ class Image extends ImageModel
 
         $this->fastlyParameters['width'] = $this->_width;
         $this->fastlyParameters['height'] = $this->_height;
+
+        // Make sure Fastly delivers the specified size, even with letterboxing or pillarboxing.
+        $this->fastlyParameters['canvas'] = "{$this->_width},{$this->_height}";
     }
 
     /**

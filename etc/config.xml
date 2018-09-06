@@ -54,12 +54,5 @@
                 </fastly>
             </full_page_cache>
         </system>
-        <dev>
-            <js>
-                <minify_exclude>
-                    gstatic.com
-                </minify_exclude>
-            </js>
-        </dev>
     </default>
 </config>

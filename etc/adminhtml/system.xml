@@ -227,6 +227,9 @@
                             <label>Set background color on images</label>
                             <comment>Adds bg-color query argument for product/catalog images. This will remove a transparency/alpha channel and replace it with the theme background color.</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="image_optimizations">1</field>
+                            </depends>
                         </field>
                         <field id="image_optimizations" translate="label comment" type="select" sortOrder="95" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enable deep image optimization</label>

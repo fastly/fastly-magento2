@@ -114,7 +114,8 @@ you can set this option to no.
 ## Adaptive pixel ratios
 
 This functionality enables delivering a fixed-width image that can adapt to varying `device-pixel-ratios`.
-It will add srcsets to product images. 
+It will add srcsets to product images which leaves it up to the user's browser to select most optimal dpr based on
+ones that are offered.
 Learn about `srcset` [browser support](https://caniuse.com/#feat=srcset) and [specification](https://html.spec.whatwg.org/multipage/embedded-content.html#attr-img-srcset). 
 For example the product image definition will be rewritten as follows
 
@@ -127,3 +128,7 @@ For example the product image definition will be rewritten as follows
     height="300"
   alt="Fusion Backpack"/>
 ```
+
+Please note this *will increase* size of the images. For example if above images had the original size of 720x900
+and request is for an image of 240x300 Fastly IO will serve an image of size 480x600 to devices requesting dpr=2,
+720x900 for dpr=3 and so forth. Image will not be upscaled so even if dpr=4 you will end up with image of size 720x900.

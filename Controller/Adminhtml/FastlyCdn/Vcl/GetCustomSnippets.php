@@ -81,9 +81,9 @@ class GetCustomSnippets extends Action
         $result = $this->resultJson->create();
         try {
             $read = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR);
-            $snippetAbsolutePath = $read->getAbsolutePath('vcl_snippets_custom');
+            $snippetPath = $read->getRelativePath('vcl_snippets_custom');
 
-            $customSnippets = $read->read($snippetAbsolutePath);
+            $customSnippets = $read->read($snippetPath);
 
             if (!$customSnippets) {
                 return $result->setData([

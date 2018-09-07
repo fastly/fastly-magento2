@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.64
+
+- Expose admins username in slack actions https://github.com/fastly/fastly-magento2/pull/200
+- Added option to toggle bg-color query argument for images https://github.com/fastly/fastly-magento2/pull/198
+
 ## 1.2.63
 
 - Add additional tunable to send full stack trace for all purge actions not just purge all https://github.com/fastly/fastly-magento2/pull/196

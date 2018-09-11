@@ -2,74 +2,88 @@
 
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
 
-use Magento\Backend\App\Action;
-use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\Controller\Result\RawFactory;
+use Magento\Framework\App\Response\Http\FileFactory;
+use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Filesystem\Directory\WriteFactory;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Framework\Controller\ResultInterface;
-use Fastly\Cdn\Model\Config\Backend\CustomSnippetUpload;
-use \Magento\Framework\Filesystem\Directory\ReadFactory;
+use Magento\Framework\Filesystem;
 
 /**
- * Class GetCustomSnippets
+ * Class CreateCustomSnippet
  *
  * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
  */
 class GetCustomSnippets extends Action
 {
     /**
-     * @var Http
+     * @var RawFactory
      */
-    private $request;
-
+    private $resultRawFactory;
+    /**
+     * @var FileFactory
+     */
+    private $fileFactory;
+    /**
+     * @var DirectoryList
+     */
+    private $directoryList;
+    /**
+     * @var WriteFactory
+     */
+    private $writeFactory;
     /**
      * @var JsonFactory
      */
     private $resultJson;
-
     /**
-     * @var CustomSnippetUpload
+     * @var Filesystem
      */
-    private $customSnippetUpload;
-
-    private $readFactory;
+    private $filesystem;
 
     /**
      * GetCustomSnippets constructor.
      *
      * @param Context $context
-     * @param Http $request
+     * @param RawFactory $resultRawFactory
+     * @param FileFactory $fileFactory
+     * @param DirectoryList $directoryList
+     * @param WriteFactory $writeFactory
      * @param JsonFactory $resultJsonFactory
-     * @param CustomSnippetUpload $customSnippetUpload
-     * @param ReadFactory $readFactory
+     * @param Filesystem $filesystem
      */
     public function __construct(
         Context $context,
-        Http $request,
+        RawFactory $resultRawFactory,
+        FileFactory $fileFactory,
+        DirectoryList $directoryList,
+        WriteFactory $writeFactory,
         JsonFactory $resultJsonFactory,
-        CustomSnippetUpload $customSnippetUpload,
-        ReadFactory $readFactory
+        Filesystem $filesystem
     ) {
-        $this->request = $request;
+        $this->resultRawFactory = $resultRawFactory;
+        $this->fileFactory = $fileFactory;
+        $this->directoryList = $directoryList;
+        $this->writeFactory = $writeFactory;
         $this->resultJson = $resultJsonFactory;
-        $this->customSnippetUpload = $customSnippetUpload;
-        $this->readFactory = $readFactory;
+        $this->filesystem = $filesystem;
+
         parent::__construct($context);
     }
 
     /**
-     * Get all backends for active version
-     *
-     * @return $this|ResponseInterface|ResultInterface
+     * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
+        $result = $this->resultJson->create();
         try {
-            $result = $this->resultJson->create();
-            $customSnippetPath = $this->customSnippetUpload->getUploadDirPath('vcl_snippets_custom');
-            $directoryRead = $this->readFactory->create($customSnippetPath);
-            $customSnippets = $directoryRead->read();
+            $read = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR);
+            $snippetPath = $read->getRelativePath('vcl_snippets_custom');
+
+            $customSnippets = $read->read($snippetPath);
 
             if (!$customSnippets) {
                 return $result->setData([
@@ -77,10 +91,14 @@ class GetCustomSnippets extends Action
                     'msg'       => 'No snippets found.'
                 ]);
             }
+            $snippets = [];
+            foreach ($customSnippets as $snippet) {
+                $snippets[] = explode('/', $snippet)[1];
+            }
 
             return $result->setData([
                 'status'    => true,
-                'snippets'  => $customSnippets
+                'snippets'  => $snippets
             ]);
         } catch (\Exception $e) {
             return $result->setData([

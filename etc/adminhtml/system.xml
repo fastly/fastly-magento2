@@ -438,6 +438,7 @@
                             original format. This option forces those images to be converted to lossy JPG or WEBP. Applies only to product/catalog images.</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
+
                         <!-- ===============================================
                              Enable Deep Image Optimization select field
                         ================================================ -->
@@ -448,10 +449,21 @@
                             target="_blank">image optimization guide</a> for caveats and details.]]></comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
+                        <!-- ===============================================
+                             Set Background Color on Images select field
+                        ================================================ -->
+                        <field id="image_optimization_bg_color" translate="label comment" type="select" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Set Background Color on Images</label>
+                            <comment>Adds bg-color query argument for product/catalog images. This will remove a transparency/alpha channel and replace it with the theme background color.</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="image_optimizations">1</field>
+                            </depends>
+                        </field>
                         <!-- ====================================================
                              Enable Adaptive Device Pixel Ratios select field
                         ===================================================== -->
-                        <field id="image_optimizations_pixel_ratio" translate="label comment" type="select" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="image_optimizations_pixel_ratio" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enable Adaptive Device Pixel Ratios</label>
                             <comment><![CDATA[Image sources will be rewritten to use srcsets supporting
                             <a href="https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/IMAGE-OPTIMIZATION.md#adaptive-pixel-ratios"
@@ -464,7 +476,7 @@
                         <!-- =========================================
                              Device Pixel Ratios multiselect field
                         ========================================== -->
-                        <field id="image_optimizations_ratios" type="multiselect" translate="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                        <field id="image_optimizations_ratios" type="multiselect" translate="label" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
                             <label>Device Pixel Ratios</label>
                             <comment><![CDATA[Using a higher <a href="https://www.html5rocks.com/en/mobile/high-dpi/" target="_blank">Device Pixel Ratio</a> means serving larger images.]]></comment>
                             <depends>
@@ -500,10 +512,20 @@
                                 <field id="enable_webhooks">1</field>
                             </depends>
                         </field>
+                        <!-- =========================================
+                             Publish All Purge Events select field
+                        ========================================== -->
+                        <field id="publish_purge_events" translate="label comment" type="select" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Publish All Purge Events</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="enable_webhooks">1</field>
+                            </depends>
+                        </field>
                         <!-- =================================================
                              Publish Key and URL Purge Events select field
                         ================================================== -->
-                        <field id="publish_key_url_purge_events" translate="label comment" type="select" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="publish_key_url_purge_events" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Publish Key and URL Purge Events</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                             <depends>
@@ -513,8 +535,30 @@
                         <!-- =========================================================
                              Publish Purge All/CLean All Items Events select field
                         ========================================================== -->
-                        <field id="publish_purge_all_items_events" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="publish_purge_all_items_events" translate="label comment" type="select" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Publish Purge All/Clean All Items Events</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="enable_webhooks">1</field>
+                            </depends>
+                        </field>
+                        <!-- ========================================================
+                             Publish Stack Trace on All Purge Events select field
+                        ========================================================= -->
+                        <field id="publish_purge_trace" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Publish Stack Trace on All Purge Events</label>
+                            <comment>Submits the stack trace when any purge event is created, for debugging purposes</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="enable_webhooks">1</field>
+                            </depends>
+                        </field>
+                        <!-- ================================================================
+                             Publish Stack Trace on Key and URL Purge Events select field
+                        ================================================================= -->
+                        <field id="publish_purge_by_key_trace" translate="label comment" type="select" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Publish stack trace on Key and URL Purge Event</label>
+                            <comment>Submits the stack trace when the purge by key event is created, for debugging purposes</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                             <depends>
                                 <field id="enable_webhooks">1</field>
@@ -523,8 +567,8 @@
                         <!-- =======================================================
                              Publish Stack Trace on Purge All Event select field
                         ======================================================== -->
-                        <field id="publish_purge_all_trace" translate="label comment" type="select" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
-                            <label>Publish Stack Trace on Purge All Event</label>
+                        <field id="publish_purge_all_trace" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Publish stack trace on Purge All/Clean All Event</label>
                             <comment>Submits the stack trace when the purge all event is created, for debugging purposes</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                             <depends>
@@ -534,7 +578,7 @@
                         <!-- =============================================
                              Publish Config Change Events select field
                         ============================================== -->
-                        <field id="publish_config_change_events" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="publish_config_change_events" translate="label comment" type="select" sortOrder="45" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Publish Config Change Events</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                             <depends>
@@ -544,7 +588,7 @@
                         <!-- ==============================
                              Message Prefix input field
                         =============================== -->
-                        <field id="webhook_message_prefix" translate="label comment" type="text" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="webhook_message_prefix" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Message Prefix</label>
                             <depends>
                                 <field id="enable_webhooks">1</field>

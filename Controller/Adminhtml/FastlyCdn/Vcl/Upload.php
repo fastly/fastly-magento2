@@ -31,6 +31,8 @@ use Fastly\Cdn\Model\Config\Backend\CustomSnippetUpload;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Filesystem;
+use Magento\Framework\App\Filesystem\DirectoryList;
 
 /**
  * Class Upload
@@ -80,7 +82,11 @@ class Upload extends Action
     private $timezone;
 
     /**
-     *
+     * @var Filesystem
+     */
+    private $filesystem;
+
+    /**
      * Upload constructor.
      *
      * @param Context $context
@@ -92,6 +98,7 @@ class Upload extends Action
      * @param CustomSnippetUpload $customSnippetUpload
      * @param DateTime $time
      * @param TimezoneInterface $timezone
+     * @param Filesystem $filesystem
      */
     public function __construct(
         Context $context,
@@ -102,7 +109,8 @@ class Upload extends Action
         Vcl $vcl,
         CustomSnippetUpload $customSnippetUpload,
         DateTime $time,
-        TimezoneInterface $timezone
+        TimezoneInterface $timezone,
+        Filesystem $filesystem
     ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
@@ -112,6 +120,7 @@ class Upload extends Action
         $this->customSnippetUpload = $customSnippetUpload;
         $this->time = $time;
         $this->timezone = $timezone;
+        $this->filesystem = $filesystem;
         parent::__construct($context);
     }
 
@@ -131,7 +140,8 @@ class Upload extends Action
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
             $snippets = $this->config->getVclSnippets();
-            $customSnippetPath = $this->customSnippetUpload->getUploadDirPath('vcl_snippets_custom');
+            $read = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR);
+            $customSnippetPath = $read->getAbsolutePath('vcl_snippets_custom');
             $customSnippets = $this->config->getCustomSnippets($customSnippetPath);
 
             foreach ($snippets as $key => $value) {
@@ -215,7 +225,7 @@ class Upload extends Action
         $snippetName = str_replace(' ', '', $customSnippet);
         $snippetNameData = explode('_', $snippetName, 3);
         $containsEmpty = in_array("", $snippetNameData, true);
-        $types = ['init', 'recv', 'hit', 'miss', 'pass', 'fetch', 'error', 'log', 'deliver', 'none'];
+        $types = ['init', 'recv', 'hit', 'miss', 'pass', 'fetch', 'error', 'log', 'deliver', 'hash', 'none'];
         $exception = 'Failed to upload VCL snippets. Please make sure the custom VCL snippets 
             follow this naming convention: [vcl_snippet_type]_[priority]_[short_name_description].vcl';
 

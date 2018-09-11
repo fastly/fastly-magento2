@@ -1,5 +1,30 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.64
+
+- Expose admins username in slack actions https://github.com/fastly/fastly-magento2/pull/200
+- Added option to toggle bg-color query argument for images https://github.com/fastly/fastly-magento2/pull/198
+
+## 1.2.63
+
+- Add additional tunable to send full stack trace for all purge actions not just purge all https://github.com/fastly/fastly-magento2/pull/196
+
+## 1.2.62
+
+- Fix for situations where image is unavailable and placeholder image is inserted https://github.com/fastly/fastly-magento2/pull/195
+
+## 1.2.61
+
+- Rework how snippets are written to disk. Addresses issues with Magento Cloud https://github.com/fastly/fastly-magento2/pull/194
+
+## 1.2.60
+
+- Fix for https://github.com/fastly/fastly-magento2/issues/193
+
+## 1.2.59
+
+- Fix for https://github.com/fastly/fastly-magento2/issues/191
+
 ## 1.2.58
 
 - Remove GeoIP processed cookie constant as it's not used and may be interpreted as tracking for GDPR https://github.com/fastly/fastly-magento2/pull/188

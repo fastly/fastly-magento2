@@ -33,6 +33,7 @@ There are four main categories
 * Default IO config options (available in 1.2.52+)
 * Force lossy conversion (available in 1.2.57+)
 * Deep image optimization
+* Set background color on images (available in 1.2.64+)
 * Adaptive pixel ratios
 
 ## Fastly IO Snippet Upload
@@ -79,9 +80,9 @@ the background color of your theme
 Deep image optimization is off by default. Enabling it will turn off built-in Magento resizing and offload it
 completely to Fastly IO. It only applies to *product* images. CMS images are not resized.
 
-Please note that deep image optimization will add background color definition to every image as defined in your
+Please note that deep image optimization will by default add background color definition to every image as defined in your
 theme. This will result in WebP images switching from WebP lossless to WebP lossy. One of the major differences
-between lossless and lossy is that it drops the alpha channel from PNG images. This will result in much smaller
+between lossless and lossy is that it *drops the alpha channel* from PNG images. This will result in much smaller
 images however may result in images with transparencies looking odd on product and campaign pages that use a
 different background.
 
@@ -104,10 +105,17 @@ will be rewritten as this
   alt="Fusion Backpack"/>
 ```
 
+## Set background color on images
+
+This feature is on by default when you enable deep image optimization. It adds background color definition to every
+image as defined in your theme. It effectively removes transparencies from your images. If that is not what you want
+you can set this option to no.
+
 ## Adaptive pixel ratios
 
 This functionality enables delivering a fixed-width image that can adapt to varying `device-pixel-ratios`.
-It will add srcsets to product images. 
+It will add srcsets to product images which leaves it up to the user's browser to select most optimal dpr based on
+ones that are offered.
 Learn about `srcset` [browser support](https://caniuse.com/#feat=srcset) and [specification](https://html.spec.whatwg.org/multipage/embedded-content.html#attr-img-srcset). 
 For example the product image definition will be rewritten as follows
 
@@ -120,3 +128,7 @@ For example the product image definition will be rewritten as follows
     height="300"
   alt="Fusion Backpack"/>
 ```
+
+Please note this *will increase* size of the images. For example if above images had the original size of 720x900
+and request is for an image of 240x300 Fastly IO will serve an image of size 480x600 to devices requesting dpr=2,
+720x900 for dpr=3 and so forth. Image will not be upscaled so even if dpr=4 you will end up with image of size 720x900.

@@ -115,8 +115,8 @@ class ForceTls extends Action
                 ];
 
                 $this->api->createRequest($clone->number, $request);
-
-                // Add force TLS snippets
+                
+                // Add force TLS snippet
                 foreach ($snippets as $key => $value) {
                     $snippetData = [
                         'name'      => Config::FASTLY_MAGENTO_MODULE . '_force_tls_' . $key,

@@ -136,7 +136,7 @@ define([
                 success: function (response) {
                     if (response.status === true) {
                         modal.modal('closeModal');
-                        var disabledOrEnabled = 'disabled';
+                        let disabledOrEnabled = 'disabled';
 
                         if (blocking === false) {
                             disabledOrEnabled = 'enabled';

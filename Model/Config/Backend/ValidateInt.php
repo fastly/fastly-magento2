@@ -50,7 +50,8 @@ class ValidateInt extends Value
             $maxValue = Config::XML_FASTLY_MAX_FIRST_BYTE_TIMEOUT;
             if ($value > $maxValue || $value < 0) {
                 throw new LocalizedException(
-                    __('%1 field value must be larger than 0 and smaller or equal to ' . $maxValue, $this->getFieldConfig('label'))
+                    __('%1 field value must be larger than 0 and smaller or equal to '
+                        . $maxValue, $this->getFieldConfig('label'))
                 );
             }
         }

@@ -175,8 +175,17 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_IMAGE_OPTIMIZATIONS
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimizations';
 
+    /**
+     * XML path to image optimization force lossy flag
+     */
     const XML_FASTLY_FORCE_LOSSY
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimization_force_lossy';
+
+    /**
+     * XML path to image optimization bg color flag
+     */
+    const XML_FASTLY_IMAGE_OPTIMIZATION_BG_COLOR
+        = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimization_bg_color';
 
     /**
      * XML path to image optimizations pixel ratio flag
@@ -243,10 +252,28 @@ class Config extends \Magento\PageCache\Model\Config
         = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_all_items_events';
 
     /**
+     * XML path to enable Publish Purge Events
+     */
+    const XML_FASTLY_PUBLISH_PURGE_EVENTS
+        = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_events';
+
+    /**
      * XML path to enable Publish Purge All/Clean backtrace
      */
     const XML_FASTLY_PUBLISH_PURGE_ALL_TRACE
         = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_all_trace';
+
+    /**
+     * XML path to enable Publish Purge By Key backtrace
+     */
+    const XML_FASTLY_PUBLISH_PURGE_BY_KEY_TRACE
+        = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_by_key_trace';
+
+    /**
+     * XML path to enable Publish Generic Purge
+     */
+    const XML_FASTLY_PUBLISH_PURGE_TRACE
+        = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_trace';
 
     /**
      * XML path to enable Publish Config change events
@@ -497,9 +524,20 @@ class Config extends \Magento\PageCache\Model\Config
         return $this->_scopeConfig->isSetFlag(self::XML_FASTLY_IMAGE_OPTIMIZATIONS_PIXEL_RATIO);
     }
 
+    /**
+     * @return mixed
+     */
     public function isForceLossyEnabled()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_FORCE_LOSSY);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isImageOptimizationBgColorEnabled()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_IMAGE_OPTIMIZATION_BG_COLOR);
     }
 
     /**
@@ -580,14 +618,37 @@ class Config extends \Magento\PageCache\Model\Config
         return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PUBLISH_PURGE_ALL_EVENTS));
     }
 
+    public function canPublishPurgeChanges()
+    {
+        return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PUBLISH_PURGE_EVENTS));
+    }
+
     /**
-     * Is publishing backtrace on purgall allowed
+     * Is publishing backtrace on purge all allowed
      *
      * @return bool
      */
-    public function canPublishDebugBacktrace()
+    public function canPublishPurgeAllDebugBacktrace()
     {
         return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PUBLISH_PURGE_ALL_TRACE));
+    }
+
+    /**
+     * Is publishing backtrace on purge by key allowed
+     * @return bool
+     */
+    public function canPublishPurgeByKeyDebugBacktrace()
+    {
+        return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PUBLISH_PURGE_BY_KEY_TRACE));
+    }
+
+    /**
+     * Is publishing backtrace on generic purge allowed
+     * @return bool
+     */
+    public function canPublishPurgeDebugBacktrace()
+    {
+        return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PUBLISH_PURGE_TRACE));
     }
 
     /**
@@ -733,29 +794,32 @@ class Config extends \Magento\PageCache\Model\Config
     public function getCustomSnippets($path, $specificFile = null)
     {
         $snippetsData = [];
-        $directoryRead = $this->readFactory->create($path);
-        if (!$specificFile) {
-            $files = $directoryRead->read();
+        try {
+            $directoryRead = $this->readFactory->create($path);
+            if (!$specificFile) {
+                $files = $directoryRead->read();
 
-            if (is_array($files)) {
-                foreach ($files as $file) {
-                    if (substr($file, strpos($file, ".") + 1) !== 'vcl') {
-                        continue;
+                if (is_array($files)) {
+                    foreach ($files as $file) {
+                        if (substr($file, strpos($file, ".") + 1) !== 'vcl') {
+                            continue;
+                        }
+                        $snippetFilePath = $path . '/' . $file;
+                        $snippetFilePath = $directoryRead->getRelativePath($snippetFilePath);
+                        $type = explode('.', $file)[0];
+                        $snippetsData[$type] = $directoryRead->readFile($snippetFilePath);
                     }
-                    $snippetFilePath = $path . '/' . $file;
-                    $snippetFilePath = $directoryRead->getRelativePath($snippetFilePath);
-                    $type = explode('.', $file)[0];
-                    $snippetsData[$type] = $directoryRead->readFile($snippetFilePath);
                 }
+            } else {
+                $snippetFilePath = $path . '/' . $specificFile;
+                $snippetFilePath = $directoryRead->getRelativePath($snippetFilePath);
+                $type = explode('.', $specificFile)[0];
+                $snippetsData[$type] = $directoryRead->readFile($snippetFilePath);
             }
-        } else {
-            $snippetFilePath = $path . '/' . $specificFile;
-            $snippetFilePath = $directoryRead->getRelativePath($snippetFilePath);
-            $type = explode('.', $specificFile)[0];
-            $snippetsData[$type] = $directoryRead->readFile($snippetFilePath);
+            return $snippetsData;
+        } catch (\Exception $e) {
+            return $snippetsData;
         }
-
-        return $snippetsData;
     }
 
     /**

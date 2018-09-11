@@ -25,17 +25,17 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\App\Response\Http\FileFactory;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Filesystem\Directory\WriteFactory;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Filesystem;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
- * Class CreateCustomSnippet
+ * Class GetCustomSnippet
  *
  * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
  */
-class CreateCustomSnippet extends Action
+class GetCustomSnippet extends Action
 {
     /**
      * @var RawFactory
@@ -63,7 +63,7 @@ class CreateCustomSnippet extends Action
     private $filesystem;
 
     /**
-     * CreateCustomSnippet constructor.
+     * DeleteCustomSnippet constructor.
      *
      * @param Context $context
      * @param RawFactory $resultRawFactory
@@ -98,28 +98,31 @@ class CreateCustomSnippet extends Action
     public function execute()
     {
         $result = $this->resultJson->create();
+
         try {
-            $name = $this->getRequest()->getParam('name');
-            $type = $this->getRequest()->getParam('type');
-            $priority = $this->getRequest()->getParam('priority');
-            $vcl = $this->getRequest()->getParam('vcl');
-            $edit = $this->getRequest()->getParam('edit');
-            $snippetName = $this->validateCustomSnippet($name, $type, $priority);
-            $fileName = $type . '_' . $priority . '_' . $snippetName . '.vcl';
+            $snippet = $this->getRequest()->getParam('snippet_id');
 
-            $write = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
-            $snippetPath = $write->getRelativePath('vcl_snippets_custom/' . $fileName);
+            $read = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR);
+            $snippetPath = $read->getRelativePath('vcl_snippets_custom/' . $snippet);
 
-            if ($edit == "true") {
-                $original = $this->getRequest()->getParam('original');
-                $originalPath = $write->getRelativePath('vcl_snippets_custom/' . $original);
-                $write->renameFile($originalPath, $snippetPath);
+            if ($read->isExist($snippetPath)) {
+                $explodeId = explode('.', $snippet, -1);
+                $snippetParts = explode('_', $explodeId[0], 3);
+                $type = $snippetParts[0];
+                $priority = $snippetParts[1];
+                $name = $snippetParts[2];
+                $content = $read->readFile($snippetPath);
+            } else {
+                throw new LocalizedException(__('Custom snippet not found.'));
             }
 
-            $write->writeFile($snippetPath, $vcl);
-
             return $result->setData([
-                'status'    => true
+                'status'    => true,
+                'type'      => $type,
+                'priority'  => $priority,
+                'name'      => $name,
+                'content'   => $content,
+                'original'  => $snippet
             ]);
         } catch (\Exception $e) {
             return $result->setData([
@@ -127,34 +130,5 @@ class CreateCustomSnippet extends Action
                 'msg'       => $e->getMessage()
             ]);
         }
-    }
-
-    /**
-     * @param $name
-     * @param $type
-     * @param $priority
-     * @return mixed
-     * @throws LocalizedException
-     */
-    private function validateCustomSnippet($name, $type, $priority)
-    {
-        $snippetName = str_replace(' ', '', $name);
-        $types = ['init', 'recv', 'hit', 'miss', 'pass', 'fetch', 'error', 'deliver', 'log', 'hash', 'none'];
-
-        $inArray = in_array($type, $types);
-        $isNumeric = is_numeric($priority);
-        $isAlphanumeric = preg_match('/^[\w]+$/', $snippetName);
-
-        if (!$inArray) {
-            throw new LocalizedException(__('Type value is not recognised.'));
-        }
-        if (!$isNumeric) {
-            throw new LocalizedException(__('Please make sure that the priority value is a number.'));
-        }
-        if (!$isAlphanumeric) {
-            throw new LocalizedException(__('Please make sure that the name value contains only 
-            alphanumeric characters.'));
-        }
-        return $snippetName;
     }
 }

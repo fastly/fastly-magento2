@@ -157,9 +157,9 @@ class PushImageSettings extends Action
                     $id = $service->id . '-' . $clone->number . '-imageopto';
                     $imageParams = json_encode([
                         'data' => [
-                            'id' => $id,
-                            'type' => 'io_settings',
-                            'attributes' => [
+                            'id'            => $id,
+                            'type'          => 'io_settings',
+                            'attributes'    => [
                                 'jpeg_quality'  => $imageQuality
                             ]
                         ]

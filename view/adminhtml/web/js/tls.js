@@ -10,13 +10,13 @@ define([
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         /* Force TLS state elements*/
-        var requestStateSpan = $('#request_state_span');
-        var requestStateMsgSpan = $('#fastly_request_state_message_span');
-        var forceTls = true;
+        let requestStateSpan = $('#request_state_span');
+        let requestStateMsgSpan = $('#fastly_request_state_message_span');
+        let forceTls = true;
         /* Force TLS button messages */
-        var successTlsBtnMsg = $('#fastly-success-tls-button-msg');
-        var errorTlsBtnMsg = $('#fastly-error-tls-button-msg');
-        var warningTlsBtnMsg = $('#fastly-warning-tls-button-msg');
+        let successTlsBtnMsg = $('#fastly-success-tls-button-msg');
+        let errorTlsBtnMsg = $('#fastly-error-tls-button-msg');
+        let warningTlsBtnMsg = $('#fastly-warning-tls-button-msg');
 
         requestStateSpan.find('.processing').show();
 
@@ -25,10 +25,10 @@ define([
          *
          * @type {{id: string, title: *, content: content, actionOk: actionOk}}
          */
-        var tlsOptions = {
+        let tlsOptions = {
             id: 'fastly-tls-options',
             title: jQuery.mage.__(' '),
-            content: function () {
+                content: function () {
                 return document.getElementById('fastly-tls-template').textContent;
             },
             actionOk: function () {
@@ -39,8 +39,8 @@ define([
         /* Call getTlsSetting function and display current status */
         getTlsSetting(serviceStatus.active_version, false).done(function (response) {
             requestStateSpan.find('.processing').hide();
-            var tlsStateEnabled = requestStateMsgSpan.find('#force_tls_state_enabled');
-            var tlsStateDisabled = requestStateMsgSpan.find('#force_tls_state_disabled');
+            let tlsStateEnabled = requestStateMsgSpan.find('#force_tls_state_enabled');
+            let tlsStateDisabled = requestStateMsgSpan.find('#force_tls_state_disabled');
 
             if (response.status === true) {
                 if (tlsStateDisabled.is(":hidden")) {
@@ -95,9 +95,9 @@ define([
                     return errorTlsBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
 
-                var active_version = service.active_version;
-                var next_version = service.next_version;
-                var service_name = service.service.name;
+                let active_version = service.active_version;
+                let next_version = service.next_version;
+                let service_name = service.service.name;
 
                 getTlsSetting (active_version, true).done(function (response) {
                     if (response.status === false) {
@@ -120,7 +120,7 @@ define([
 
         // Toggles the Force TLS enable/disable process and displays the relevant message
         function toggleTls(active_version) {
-            var activate_tls_flag = false;
+            let activate_tls_flag = false;
 
             if ($('#fastly_activate_tls').is(':checked')) {
                 activate_tls_flag = true;
@@ -137,7 +137,7 @@ define([
                 success: function (response) {
                     if (response.status === true) {
                         modal.modal('closeModal');
-                        var disabledOrEnabled = 'disabled';
+                        let disabledOrEnabled = 'disabled';
 
                         if (forceTls === false) {
                             disabledOrEnabled = 'enabled';

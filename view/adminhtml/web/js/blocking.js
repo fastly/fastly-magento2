@@ -1,21 +1,22 @@
 define([
     "jquery",
     "setServiceLabel",
+    "popup",
     "resetAllMessages",
     "showErrorMessage",
     "Magento_Ui/js/modal/modal",
     'mage/translate'
-], function ($, setServiceLabel, resetAllMessages, showErrorMessage) {
+], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         /* Blocking state elements*/
-        var blockingStateSpan = $('#blocking_state_span');
-        var blockingStateMsgSpan = $('#fastly_blocking_state_message_span');
-        var blocking = true;
+        let blockingStateSpan = $('#blocking_state_span');
+        let blockingStateMsgSpan = $('#fastly_blocking_state_message_span');
+        let blocking = true;
         /* Blocking button messages */
-        var successBlockingBtnMsg = $('#fastly-success-blocking-button-msg');
-        var errorBlockingBtnMsg = $('#fastly-error-blocking-button-msg');
-        var warningBlockingBtnMsg = $('#fastly-warning-blocking-button-msg');
+        let successBlockingBtnMsg = $('#fastly-success-blocking-button-msg');
+        let errorBlockingBtnMsg = $('#fastly-error-blocking-button-msg');
+        let warningBlockingBtnMsg = $('#fastly-warning-blocking-button-msg');
 
         blockingStateSpan.find('.processing').show();
 
@@ -24,7 +25,7 @@ define([
          *
          * @type {{id: string, title: *, content: content, actionOk: actionOk}}
          */
-        var blockingOptions = {
+        let blockingOptions = {
             id: 'fastly-blocking-options',
             title: jQuery.mage.__(' '),
             content: function () {
@@ -38,8 +39,8 @@ define([
         /* Call getBlockingSetting function and display current status */
         getBlockingSetting(serviceStatus.active_version, false).done(function (response) {
             blockingStateSpan.find('.processing').hide();
-            var blockingStateEnabled = blockingStateMsgSpan.find('#blocking_state_enabled');
-            var blockingStateDisabled = blockingStateMsgSpan.find('#blocking_state_disabled');
+            let blockingStateEnabled = blockingStateMsgSpan.find('#blocking_state_enabled');
+            let blockingStateDisabled = blockingStateMsgSpan.find('#blocking_state_disabled');
 
             if (response.status === true) {
                 if (blockingStateDisabled.is(":hidden")) {
@@ -94,9 +95,9 @@ define([
                     return errorBlockingBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
 
-                var active_version = service.active_version;
-                var next_version = service.next_version;
-                var service_name = service.service.name;
+                let active_version = service.active_version;
+                let next_version = service.next_version;
+                let service_name = service.service.name;
 
                 getBlockingSetting(active_version, true).done(function (response) {
                     if (response.status === false) {
@@ -109,9 +110,7 @@ define([
                     showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
                 });
 
-                requirejs(['popup'], function (popup) {
-                    popup(blockingOptions);
-                });
+                popup(blockingOptions);
                 setServiceLabel(active_version, next_version, service_name);
 
             }).fail(function () {
@@ -120,7 +119,7 @@ define([
         });
 
         function toggleBlocking(active_version) {
-            var activate_blocking_flag = false;
+            let activate_blocking_flag = false;
 
             if ($('#fastly_activate_blocking').is(':checked')) {
                 activate_blocking_flag = true;

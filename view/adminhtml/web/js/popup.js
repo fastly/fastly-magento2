@@ -3,8 +3,8 @@ define([
     "Magento_Ui/js/modal/modal"
 ], function ($) {
     return function showPopup (options) {
-        var self = this;
-        var divId = options.id;
+        let self = this;
+        let divId = options.id;
 
         this.modal = $('<div/>').attr({id: divId}).html(options.content()).modal({
             modalClass: 'magento',

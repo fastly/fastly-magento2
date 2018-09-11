@@ -45,9 +45,9 @@ define([
                     }
                 });
 
-                var advancedConfigurationHead = $('#system_full_page_cache_fastly_fastly_advanced_configuration-head');
-                var blockingConfigurationHead = $('#system_full_page_cache_fastly_fastly_blocking-head');
-                var imageOptimizationConfigurationHead = $('#system_full_page_cache_fastly_fastly_image_optimization_configuration-head');
+                let advancedConfigurationHead = $('#system_full_page_cache_fastly_fastly_advanced_configuration-head');
+                let blockingConfigurationHead = $('#system_full_page_cache_fastly_fastly_blocking-head');
+                let imageOptimizationConfigurationHead = $('#system_full_page_cache_fastly_fastly_image_optimization_configuration-head');
 
                 $.ajax({
                     type: "GET",
@@ -82,7 +82,7 @@ define([
                                 var wafPage = vcl.getWafPageRespObj(checkService.active_version, false);
                                 wafPageRow.hide();
                                 wafPage.done(function (checkWafResponse) {
-                                    if (checkWafResponse.status != false) {
+                                    if (checkWafResponse.status !== false) {
                                         wafPageRow.show();
                                     }
                                 });

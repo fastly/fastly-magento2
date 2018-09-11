@@ -18,26 +18,28 @@ define([
         let errorBlockingBtnMsg = $('#fastly-error-blocking-button-msg');
         let warningBlockingBtnMsg = $('#fastly-warning-blocking-button-msg');
 
+        let active_version = serviceStatus.active_version;
+
         blockingStateSpan.find('.processing').show();
 
         /**
          * Blocking options for the modal popup
          *
-         * @type {{id: string, title: *, content: content, actionOk: actionOk}}
+         * @type {{id: string, title: *, content: (function(): string), actionOk: actionOk}}
          */
         let blockingOptions = {
             id: 'fastly-blocking-options',
             title: jQuery.mage.__(' '),
-            content: function () {
+                content: function () {
                 return document.getElementById('fastly-blocking-template').textContent;
             },
             actionOk: function () {
-                toggleBlocking(serviceStatus.active_version);
+                toggleBlocking(active_version);
             }
         };
 
         /* Call getBlockingSetting function and display current status */
-        getBlockingSetting(serviceStatus.active_version, false).done(function (response) {
+        getBlockingSetting(active_version, false).done(function (response) {
             blockingStateSpan.find('.processing').hide();
             let blockingStateEnabled = blockingStateMsgSpan.find('#blocking_state_enabled');
             let blockingStateDisabled = blockingStateMsgSpan.find('#blocking_state_disabled');
@@ -95,7 +97,7 @@ define([
                     return errorBlockingBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
 
-                let active_version = service.active_version;
+                active_version = service.active_version;
                 let next_version = service.next_version;
                 let service_name = service.service.name;
 

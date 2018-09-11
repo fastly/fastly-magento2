@@ -59,6 +59,10 @@ define([
                         next_version = checkService.next_version;
                         serviceStatus = checkService;
 
+                        requirejs(['uploadVcl'], function (uploadVcl) {
+                            uploadVcl(config, serviceStatus, isAlreadyConfigured);
+                        });
+
                         advancedConfigurationHead.one('click', function () {
                             requirejs(['tls'], function (tls) {
                                 tls(config, serviceStatus, isAlreadyConfigured);

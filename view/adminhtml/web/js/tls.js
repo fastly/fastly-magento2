@@ -18,6 +18,8 @@ define([
         let errorTlsBtnMsg = $('#fastly-error-tls-button-msg');
         let warningTlsBtnMsg = $('#fastly-warning-tls-button-msg');
 
+        let active_version = serviceStatus.active_version;
+
         requestStateSpan.find('.processing').show();
 
         /**
@@ -32,12 +34,16 @@ define([
                 return document.getElementById('fastly-tls-template').textContent;
             },
             actionOk: function () {
-                toggleTls(serviceStatus.active_version);
+                toggleTls(active_version);
             }
         };
 
-        /* Call getTlsSetting function and display current status */
-        getTlsSetting(serviceStatus.active_version, false).done(function (response) {
+        /**
+         * Trigger the TLS setting status call
+         *
+         * @description sets and displays the status of the TLS VCL snippet
+         */
+        getTlsSetting(active_version, false).done(function (response) {
             requestStateSpan.find('.processing').hide();
             let tlsStateEnabled = requestStateMsgSpan.find('#force_tls_state_enabled');
             let tlsStateDisabled = requestStateMsgSpan.find('#force_tls_state_disabled');
@@ -74,7 +80,11 @@ define([
             });
         }
 
-        /* Force TLS button on click event that triggers a modal popup */
+        /**
+         * Force TLS button click event
+         *
+         * @description checks the Fastly service status and displays the TLS VCL snippet upload popup
+         */
         $('#fastly_force_tls_button').on('click', function () {
             if (isAlreadyConfigured !== true) {
                 $(this).attr('disabled', true);
@@ -95,7 +105,7 @@ define([
                     return errorTlsBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
 
-                let active_version = service.active_version;
+                active_version = service.active_version;
                 let next_version = service.next_version;
                 let service_name = service.service.name;
 
@@ -118,7 +128,12 @@ define([
             });
         });
 
-        // Toggles the Force TLS enable/disable process and displays the relevant message
+        /**
+         * Toggle TLS
+         *
+         * @description uploads/removes the TLS VCL snippet and shows the new status and messages
+         * @param active_version
+         */
         function toggleTls(active_version) {
             let activate_tls_flag = false;
 

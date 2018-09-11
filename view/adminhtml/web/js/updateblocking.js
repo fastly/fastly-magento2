@@ -5,8 +5,8 @@ define([
     'mage/translate'
 ], function ($) {
     return function (config) {
-        var blockingSuccessBtnMsg = $('#fastly-update-blocking-success-button-msg');
-        var blockingErrorBtnMsg = $('#fastly-update-blocking-error-button-msg');
+        let blockingSuccessBtnMsg = $('#fastly-update-blocking-success-button-msg');
+        let blockingErrorBtnMsg = $('#fastly-update-blocking-error-button-msg');
 
         $(document).ready(function () {
 
@@ -35,7 +35,7 @@ define([
                             return blockingSuccessBtnMsg.text($.mage.__('Blocking snippet has been updated successfully.')).show();
                         }
                     },
-                    error: function (msg) {
+                    error: function () {
                         return blockingErrorBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                     }
                 });

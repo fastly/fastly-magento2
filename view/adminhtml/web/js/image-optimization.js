@@ -251,7 +251,11 @@ define([
             });
         }
 
-        // Configure IO default config options
+        /**
+         * Update Image Optimization Default Configuration
+         *
+         * @description updates the Image Optimization configuration default values
+         */
         function configureIo () {
             let activate_vcl = false;
 

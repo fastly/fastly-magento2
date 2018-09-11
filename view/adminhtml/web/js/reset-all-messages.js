@@ -2,9 +2,9 @@ define([
     "jquery"
 ], function ($) {
     return function resetAllMessages() {
-        var msgWarning = $('.fastly-message-warning');
-        var msgError = $('.fastly-message-error');
-        var msgSuccess = $('.fastly-message-success');
+        let msgWarning = $('.fastly-message-warning');
+        let msgError = $('.fastly-message-error');
+        let msgSuccess = $('.fastly-message-success');
 
         // Modal window warning messages
         msgWarning.text();

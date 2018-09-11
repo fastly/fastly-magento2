@@ -1,7 +1,8 @@
-var config = {
+let config = {
     map: {
         '*': {
             historicStats: 'Fastly_Cdn/js/historicstats',
+            uploadVcl: 'Fastly_Cdn/js/upload-vcl',
             tls: 'Fastly_Cdn/js/tls',
             blocking: 'Fastly_Cdn/js/blocking',
             setServiceLabel: 'Fastly_Cdn/js/service-label',

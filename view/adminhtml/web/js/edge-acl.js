@@ -129,7 +129,7 @@ define([
                 html += "<tr id='fastly_acl_" + index + "'>";
                 html += "<td><input data-aclId='"+ acl.id + "' id='acl_" + index + "' value='"+ acl.name +"' disabled='disabled' class='input-text' type='text'></td>";
                 html += "<td class='col-actions'>" +
-                    "<button class='action-delete fastly-edit-acl-icon' data-acl-id='" + acl.id + "' id='fastly-edit-acl_"+ index + "' title='Edit ACL' type='button'>" +
+                    "<button class='action-delete fastly-edit-acl-icon' data-acl-id='" + acl.id + "' data-acl-name='" + acl.name + "'id='fastly-edit-acl_"+ index + "' title='Edit ACL' type='button'>" +
                     "<button class='action-delete fastly-delete-acl-icon' data-acl-id='" + acl.name + "' id='fastly-delete-acl_"+ index + "' title='Delete ACL' type='button'>" +
                     "</td></tr>";
             });
@@ -274,6 +274,7 @@ define([
             });
 
             acl_id = $(this).data('acl-id');
+            let acl_name = $(this).data('acl-name');
 
             // Handle ACLs
             if (acls != null && acl_id != null) {
@@ -297,9 +298,8 @@ define([
                                 }
                                 itemsHtml += '<tr><td>' +
                                     '<input name="value" data-type="acl" data-id="'+ item.id +'" value="'+ ip_output +'" class="input-text admin__control-text acl-items-field" type="text" disabled></td>' +
-                                    '<td><div class="admin__field-option" title="'+ acl_negated_title +'"><input name="negated" class="admin__control-checkbox" type="checkbox" id="acl_entry_'+ item.id +'"'+negated+'><label class="admin__field-label" for="acl_entry_'+ item.id +'"></label></div></td>' +
+                                    '<td><div class="admin__field-option" title="'+ acl_negated_title +'"><input name="negated" class="admin__control-checkbox" type="checkbox" id="acl_entry_'+ item.id +'"'+negated+' disabled><label class="admin__field-label" for="acl_entry_'+ item.id +'"></label></div></td>' +
                                     '<td class="col-actions">' +
-                                    '<button class="action-delete fastly-save-action save_acl_item" title="Save" type="button"><span>Save</span></button>' +
                                     '<button class="action-delete remove_acl_item"  title="Delete" type="button"><span>Delete</span></button>' +
                                     '</td></tr>';
                             });
@@ -309,12 +309,12 @@ define([
                                 '<td><div class="admin__field-option" title=""><input name="negated" class="admin__control-checkbox" type="checkbox" id=""><label class="admin__field-label" for=""></label></div></td>' +
                                 '<td class="col-actions">' +
                                 '<button class="action-delete fastly-save-action save_acl_item" title="Save" type="button"><span>Save</span></button>' +
-                                '<button class="action-delete remove_acl_item"  title="Delete" type="button"><span>Delete</span></button>' +
                                 '</td></tr>';
                         }
                     }
 
                     popup(aclItemOptions);
+                    $('.modal-title').text($.mage.__('"'+ acl_name +'" ACL container items'));
                     $('.upload-button').remove();
 
                     $('#acl-items-table > tbody').html(itemsHtml);
@@ -329,7 +329,6 @@ define([
                 '<td><div class="admin__field-option" title="'+acl_negated_title+'"><input name="negated" class="admin__control-checkbox" type="checkbox" id="acl_entry_'+ aclTimestamp +'"><label class="admin__field-label" for="acl_entry_'+ aclTimestamp +'"></label></div></td>' +
                 '<td class="col-actions">' +
                 '<button class="action-delete fastly-save-action save_acl_item" title="Save" type="button"><span>Save</span></button>' +
-                '<button class="action-delete remove_acl_item"  title="Delete" type="button"><span>Delete</span></button>' +
                 '</td></tr>');
         });
 
@@ -405,6 +404,7 @@ define([
                 let aclHtml = '<input name="acl" value="' + acl_id + '" class="input-text admin__control-text acl-field" type="hidden" disabled>';
                 popup(aclDeleteContainerOptions);
                 let containerWarning = $('#fastly-container-warning');
+                $('.modal-title').text($.mage.__('Delete "'+ acl_id +'" ACL container'));
                 containerWarning.text($.mage.__('You are about to delete the "' + acl_id + '" ACL container.'));
                 containerWarning.show();
                 if (aclHtml !== '') {

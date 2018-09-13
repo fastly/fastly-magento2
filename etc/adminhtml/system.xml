@@ -381,7 +381,7 @@
                              ACL button
                         =============== -->
                         <field id="acl" translate="label comment tooltip" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
-                            <label>Acl</label>
+                            <label>ACL</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Acl</frontend_model>
                         </field>
                     </group>

@@ -123,7 +123,7 @@ define([
                 html += "<tr id='fastly_dict_" + index + "'>";
                 html += "<td><input data-dictionaryId='"+ dictionary.id + "' id='dict_" + index + "' value='"+ dictionary.name +"' disabled='disabled' class='input-text' type='text'></td>";
                 html += "<td class='col-actions'>" +
-                    "<button class='action-delete fastly-edit-dictionary-icon' data-dictionary-id='" + dictionary.id + "' id='fastly-edit-dictionary_"+ index + "' title='Edit dictionary' type='button'>" +
+                    "<button class='action-delete fastly-edit-dictionary-icon' data-dictionary-id='" + dictionary.id + "' data-dictionary-name='" + dictionary.name + "' id='fastly-edit-dictionary_"+ index + "' title='Edit dictionary' type='button'>" +
                     "<button class='action-delete fastly-delete-dictionary-icon' data-dictionary-id='" + dictionary.name + "' id='fastly-delete-dictionary_"+ index + "' title='Delete dictionary' type='button'>" +
                     "</td></tr>";
             });
@@ -268,6 +268,7 @@ define([
             });
 
             dictionary_id = $(this).data('dictionary-id');
+            let dictionary_name = $(this).data('dictionary-name');
             // Handle Dictionaries
             if (dictionaries != null && dictionary_id != null) {
                 $.ajax({
@@ -295,12 +296,12 @@ define([
                                 '<td><input name="value" data-type="dictionary" value="" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
                                 '<td class="col-actions">' +
                                 '<button class="action-delete fastly-save-action save_dictionary_item" title="Save" type="button"><span>Save</span></button>' +
-                                '<button class="action-delete remove_dictionary_item"  title="Delete" type="button"><span>Delete</span></button>' +
                                 '</td></tr>';
                         }
                     }
 
                     popup(dictionaryItemOptions);
+                    $('.modal-title').text($.mage.__('"'+ dictionary_name +'" dictionary container items'));
                     $('.upload-button').remove();
 
                     $('#dictionary-items-table > tbody').html(itemsHtml);
@@ -313,7 +314,6 @@ define([
                 '<td><input name="value" data-type="dictionary" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
                 '<td class="col-actions">' +
                 '<button class="action-delete fastly-save-action save_item" title="Save" type="button"><span>Save</span></button>' +
-                '<button class="action-delete remove_dictionary_item"  title="Delete" type="button"><span>Delete</span></button>' +
                 '</td></tr>');
         });
 
@@ -392,6 +392,7 @@ define([
                 let dictionaryHtml = '<input name="dictionary" value="' + dictionary_id + '" class="input-text admin__control-text dictionary-field" type="hidden" disabled>';
                 popup(dictionaryDeleteContainerOptions);
                 let containerWarning = $('#fastly-container-warning');
+                $('.modal-title').text($.mage.__('Delete "'+ dictionary_id +'" dictionary container'));
                 containerWarning.text($.mage.__('You are about to delete the "' + dictionary_id + '" dictionary container.'));
                 containerWarning.show();
                 if (dictionaryHtml !== '') {

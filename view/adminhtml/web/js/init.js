@@ -48,6 +48,7 @@ define([
                 let basicAuthenticationHead = $('#system_full_page_cache_fastly_fastly_basic_auth-head');
                 let edgeDictionariesHead = $('#system_full_page_cache_fastly_fastly_edge_dictionaries-head');
                 let edgeAclHead = $('#system_full_page_cache_fastly_fastly_edge_acl-head');
+                let customSyntheticPagesHead = $('#system_full_page_cache_fastly_fastly_error_maintenance_page-head');
 
                 $.ajax({
                     type: "GET",
@@ -100,16 +101,10 @@ define([
                             });
                         });
 
-                        $('#system_full_page_cache_fastly_fastly_error_maintenance_page-head').unbind('click').on('click', function () {
-                            if ($(this).attr("class") === "open") {
-                                var wafPage = vcl.getWafPageRespObj(checkService.active_version, false);
-                                wafPageRow.hide();
-                                wafPage.done(function (checkWafResponse) {
-                                    if (checkWafResponse.status !== false) {
-                                        wafPageRow.show();
-                                    }
-                                });
-                            }
+                        customSyntheticPagesHead.one('click', function () {
+                            requirejs(['customSyntheticPages'], function (customSyntheticPages) {
+                                customSyntheticPages(config, serviceStatus, isAlreadyConfigured);
+                            });
                         });
 
                         $('#system_full_page_cache_fastly_fastly_custom_snippets-head').unbind('click').on('click', function () {

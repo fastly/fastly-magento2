@@ -85,7 +85,6 @@ class ListAll extends Action
             if (is_array($dictionaryItems) && empty($dictionaryItems)) {
                 return $result->setData([
                     'status'    => 'empty',
-                    'msg'       => 'There are no dictionary items.',
                     'dictionaryItems' => []
                 ]);
             }

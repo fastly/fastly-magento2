@@ -85,7 +85,7 @@ class ListAll extends Action
             if (is_array($aclItems) && empty($aclItems)) {
                 return $result->setData([
                     'status'    => 'empty',
-                    'msg'       => 'There are no acl items.'
+                    'aclItems'       => []
                 ]);
             }
 

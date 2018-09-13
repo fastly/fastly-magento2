@@ -6,18 +6,15 @@ define([
 ], function ($) {
     return function (config) {
         $(document).ready(function () {
-            var allOpen = '';
-            var allActive = '';
-            var requestStateMsgSpan = '';
-            var imageStateSpan = '';
-            var imageStateMsgSpan = '';
-            var authStateSpan = '';
-            var authStateMsgSpan = '';
-            var active_version = '';
-            var next_version = '';
-            var fastlyFieldset = $('#system_full_page_cache_fastly');
-            var isAlreadyConfigured = true;
-            var serviceStatus = false;
+            let allOpen = '';
+            let allActive = '';
+            let requestStateMsgSpan = '';
+            let imageStateMsgSpan = '';
+            let active_version = '';
+            let next_version = '';
+            let fastlyFieldset = $('#system_full_page_cache_fastly');
+            let isAlreadyConfigured = true;
+            let serviceStatus = false;
 
             $('#system_full_page_cache_fastly-head').one('click', function () {
                 if ($(this).attr("class") === "open") {
@@ -38,7 +35,7 @@ define([
                 $('body').loader('show');
                 $.ajax({
                     type: "GET",
-                    url: config.isAlreadyConfiguredUrl
+                    url: config.isAlreadyConfiguredUrl,
                 }).done(function (response) {
                     if (response.status === true) {
                         isAlreadyConfigured = response.flag;
@@ -50,10 +47,12 @@ define([
                 let imageOptimizationConfigurationHead = $('#system_full_page_cache_fastly_fastly_image_optimization_configuration-head');
                 let basicAuthenticationHead = $('#system_full_page_cache_fastly_fastly_basic_auth-head');
                 let edgeDictionariesHead = $('#system_full_page_cache_fastly_fastly_edge_dictionaries-head');
+                let edgeAclHead = $('#system_full_page_cache_fastly_fastly_edge_acl-head');
 
                 $.ajax({
                     type: "GET",
-                    url: config.serviceInfoUrl
+                    url: config.serviceInfoUrl,
+                    showLoader: true
                 }).done(function (checkService) {
                     if (checkService.status !== false) {
                         $('body').loader('hide');
@@ -95,6 +94,12 @@ define([
                             });
                         });
 
+                        edgeAclHead.one('click', function () {
+                            requirejs(['acl'], function (acl) {
+                                acl(config, serviceStatus, isAlreadyConfigured);
+                            });
+                        });
+
                         $('#system_full_page_cache_fastly_fastly_error_maintenance_page-head').unbind('click').on('click', function () {
                             if ($(this).attr("class") === "open") {
                                 var wafPage = vcl.getWafPageRespObj(checkService.active_version, false);
@@ -106,27 +111,6 @@ define([
                                 });
                             }
                         });
-
-                        // // Fetch dictionaries
-                        // $('#system_full_page_cache_fastly_fastly_edge_dictionaries-head').unbind('click').on('click', function () {
-                        //     if ($(this).attr("class") === "open") {
-                        //         vcl.listDictionaries(active_version, false).done(function (dictResp) {
-                        //             $('.loading-dictionaries').hide();
-                        //             if (dictResp.status != false) {
-                        //                 if (dictResp.status != false) {
-                        //                     if (dictResp.dictionaries.length > 0) {
-                        //                         dictionaries = dictResp.dictionaries;
-                        //                         vcl.processDictionaries(dictResp.dictionaries);
-                        //                     } else {
-                        //                         $('.no-dictionaries').show();
-                        //                     }
-                        //                 }
-                        //             }
-                        //         }).fail(function () {
-                        //             return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-                        //         });
-                        //     }
-                        // });
 
                         $('#system_full_page_cache_fastly_fastly_custom_snippets-head').unbind('click').on('click', function () {
                             // Fetch custom snippets
@@ -167,26 +151,6 @@ define([
                             }
                         });
 
-                        // Fetch ACLs
-                        $('#system_full_page_cache_fastly_fastly_edge_acl-head').unbind('click').on('click', function () {
-                            if ($(this).attr("class") === "open") {
-                                vcl.listAcls(active_version, false).done(function (aclResp) {
-                                    $('.loading-acls').hide();
-                                    if (aclResp.status != false) {
-                                        if (aclResp.status != false) {
-                                            if (aclResp.acls.length > 0) {
-                                                acls = aclResp.acls;
-                                                vcl.processAcls(aclResp.acls);
-                                            } else {
-                                                $('.no-acls').show();
-                                            }
-                                        }
-                                    }
-                                }).fail(function () {
-                                    return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-                                });
-                            }
-                        });
                     } else {
                         // blockingStateSpan.find('.processing').hide();
                         // blockingStateMsgSpan.find('#blocking_state_unknown').show();

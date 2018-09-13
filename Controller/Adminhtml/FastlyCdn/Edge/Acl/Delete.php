@@ -99,6 +99,7 @@ class Delete extends Action
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
             $acl = $this->getRequest()->getParam('acl');
+            $acl = preg_replace('/\s+/', '%20', $acl);
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);

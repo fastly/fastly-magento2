@@ -10,7 +10,7 @@ define([
 ], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage, showSuccessMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
-        /* Blocking button messages */
+        /* Dictionary button messages */
         let successDictionaryBtnMsg = $('#fastly-success-dictionary-button-msg');
         let errorDictionaryBtnMsg = $('#fastly-error-dictionary-button-msg');
         let warningDictionaryBtnMsg = $('#fastly-warning-dictionary-button-msg');
@@ -167,7 +167,7 @@ define([
                 activate_vcl = true;
             }
 
-            let del_dictionary = $("input[name='dictionary").val();
+            let del_dictionary = $("input[name='dictionary']").val();
 
             $.ajax({
                 type: "POST",
@@ -258,7 +258,8 @@ define([
         $('body').on('click', 'button.fastly-edit-dictionary-icon', function () {
             $.ajax({
                 type: "GET",
-                url: config.serviceInfoUrl
+                url: config.serviceInfoUrl,
+                showLoader: true
             }).done(function (checkService) {
                 active_version = checkService.active_version;
                 let next_version = checkService.next_version;
@@ -284,8 +285,8 @@ define([
                                     '<input name="key" value="'+ item.item_key +'" class="input-text admin__control-text dictionary-items-field" type="text" disabled></td>' +
                                     '<td><input name="value" data-type="dictionary" value="'+ item.item_value +'" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
                                     '<td class="col-actions">' +
-                                    '<button class="action-delete fastly-save-action save_item" title="Save" type="button"><span>Save</span></button>' +
-                                    '<button class="action-delete remove_item"  title="Delete" type="button"><span>Delete</span></button>' +
+                                    '<button class="action-delete fastly-save-action save_dictionary_item" title="Save" type="button"><span>Save</span></button>' +
+                                    '<button class="action-delete remove_dictionary_item"  title="Delete" type="button"><span>Delete</span></button>' +
                                     '</td></tr>';
                             });
                         } else {
@@ -293,8 +294,8 @@ define([
                                 '<input name="key" value="" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
                                 '<td><input name="value" data-type="dictionary" value="" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
                                 '<td class="col-actions">' +
-                                '<button class="action-delete fastly-save-action save_item" title="Save" type="button"><span>Save</span></button>' +
-                                '<button class="action-delete remove_item"  title="Delete" type="button"><span>Delete</span></button>' +
+                                '<button class="action-delete fastly-save-action save_dictionary_item" title="Save" type="button"><span>Save</span></button>' +
+                                '<button class="action-delete remove_dictionary_item"  title="Delete" type="button"><span>Delete</span></button>' +
                                 '</td></tr>';
                         }
                     }
@@ -312,11 +313,11 @@ define([
                 '<td><input name="value" data-type="dictionary" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
                 '<td class="col-actions">' +
                 '<button class="action-delete fastly-save-action save_item" title="Save" type="button"><span>Save</span></button>' +
-                '<button class="action-delete remove_item"  title="Delete" type="button"><span>Delete</span></button>' +
+                '<button class="action-delete remove_dictionary_item"  title="Delete" type="button"><span>Delete</span></button>' +
                 '</td></tr>');
         });
 
-        $('body').on('click', '.save_item', function () {
+        $('body').on('click', '.save_dictionary_item', function () {
             let keyField = $(this).closest('tr').find("input[name='key']");
             let valueField = $(this).closest('tr').find("input[name='value']");
             let item_key = keyField.val();
@@ -356,7 +357,7 @@ define([
             });
         });
 
-        $('body').on('click', '.remove_item', function () {
+        $('body').on('click', '.remove_dictionary_item', function () {
             let item_key = $(this).closest('tr').find("input[name='key']").val();
             let self = this;
 
@@ -376,7 +377,8 @@ define([
         $('body').on('click', 'button.fastly-delete-dictionary-icon', function () {
             $.ajax({
                 type: "GET",
-                url: config.serviceInfoUrl
+                url: config.serviceInfoUrl,
+                showLoader: true
             }).done(function (checkService) {
                 active_version = checkService.active_version;
                 let next_version = checkService.next_version;

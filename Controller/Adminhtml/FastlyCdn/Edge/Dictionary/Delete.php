@@ -99,13 +99,21 @@ class Delete extends Action
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
             $dictionary = $this->getRequest()->getParam('dictionary');
+            $dictionary = preg_replace('/\s+/', '%20', $dictionary);
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
             $used = '';
 
-            $this->api->deleteDictionary($clone->number, $dictionary);
+            $response = $this->api->deleteDictionary($clone->number, $dictionary);
+
+            if ($response == false) {
+                return $result->setData([
+                    'status'    => false,
+                    'msg'       => 'Failed to delete dictionary.'
+                ]);
+            }
             $validation = $this->api->containerValidateServiceVersion($clone->number);
             if ($validation->status == 'error') {
                 $used = $dictionary;

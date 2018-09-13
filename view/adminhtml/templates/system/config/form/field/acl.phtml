@@ -43,8 +43,8 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
     <p class="loading-acls" style="display: none;">
         <img class="processing"
              alt="Collecting"
-             style="margin:0 5px"
-             src="<?php /* @noEscape */ echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/>
+             style="margin:0 10px; position: absolute;"
+             src="<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/fastly32.gif') ?>" />
         <?php /* @noEscape */ echo __('Loading acl...'); ?>
     </p>
     <p class="no-acls" style="display: none;">

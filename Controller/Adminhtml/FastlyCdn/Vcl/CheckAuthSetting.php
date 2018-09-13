@@ -96,11 +96,15 @@ class CheckAuthSetting extends Action
                 $status = $this->api->hasSnippet($activeVersion, $name);
 
                 if ($status == false) {
-                    return $result->setData(['status' => false]);
+                    return $result->setData([
+                        'status' => false
+                    ]);
                 }
             }
 
-            return $result->setData(['status' => true]);
+            return $result->setData([
+                'status' => true
+            ]);
         } catch (\Exception $e) {
             return $result->setData([
                 'status'    => false,

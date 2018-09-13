@@ -35,7 +35,7 @@ define([
         ioStateSpan.find('.processing').show();
 
         /**
-         * Image Optimization snippet upload popup options
+         * Image Optimization VCL snippet upload popup options
          *
          * @description returns the template for the Image Optimization VCL snippet upload form
          * @type {{id: string, title: *, content: (function(): string), actionOk: actionOk}}

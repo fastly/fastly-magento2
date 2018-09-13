@@ -82,7 +82,7 @@ class TlsBtn extends Field
             'Magento\Backend\Block\Widget\Button'
         )->setData([
             'id' => 'fastly_force_tls_button',
-            'label' => __('Force TLS')
+            'label' => __('Enable/Disable')
         ]);
 
         return $button->toHtml();

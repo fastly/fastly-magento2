@@ -48,6 +48,8 @@ define([
                 let advancedConfigurationHead = $('#system_full_page_cache_fastly_fastly_advanced_configuration-head');
                 let blockingConfigurationHead = $('#system_full_page_cache_fastly_fastly_blocking-head');
                 let imageOptimizationConfigurationHead = $('#system_full_page_cache_fastly_fastly_image_optimization_configuration-head');
+                let basicAuthenticationHead = $('#system_full_page_cache_fastly_fastly_basic_auth-head');
+                let edgeDictionariesHead = $('#system_full_page_cache_fastly_fastly_edge_dictionaries-head');
 
                 $.ajax({
                     type: "GET",
@@ -81,6 +83,18 @@ define([
                             });
                         });
 
+                        basicAuthenticationHead.one('click', function () {
+                            requirejs(['basicAuthentication'], function (basicAuthentication) {
+                                basicAuthentication(config, serviceStatus, isAlreadyConfigured);
+                            });
+                        });
+
+                        edgeDictionariesHead.one('click', function () {
+                            requirejs(['dictionaries'], function (dictionaries) {
+                                dictionaries(config, serviceStatus, isAlreadyConfigured);
+                            });
+                        });
+
                         $('#system_full_page_cache_fastly_fastly_error_maintenance_page-head').unbind('click').on('click', function () {
                             if ($(this).attr("class") === "open") {
                                 var wafPage = vcl.getWafPageRespObj(checkService.active_version, false);
@@ -93,59 +107,26 @@ define([
                             }
                         });
 
-                        // Fetch basic auth setting status
-                        $('#system_full_page_cache_fastly_fastly_basic_auth-head').unbind('click').on('click', function () {
-                            if ($(this).attr("class") === "open") {
-                                var auth = vcl.getAuthSetting(checkService.active_version, false);
-                                auth.done(function (checkReqSetting) {
-                                    authStateSpan.find('.processing').hide();
-                                    var authStateEnabled = authStateMsgSpan.find('#enable_auth_state_enabled');
-                                    var authStateDisabled = authStateMsgSpan.find('#enable_auth_state_disabled');
-                                    if (checkReqSetting.status != false) {
-                                        if (authStateDisabled.is(":hidden")) {
-                                            authStateEnabled.show();
-                                        }
-                                    } else {
-                                        if (authStateEnabled.is(":hidden")) {
-                                            authStateDisabled.show();
-                                        }
-                                    }
-                                }).fail(function () {
-                                    authStateSpan.find('.processing').hide();
-                                    authStateMsgSpan.find('#enable_auth_state_unknown').show();
-                                });
-
-                                // Fetch basic auth dictionary status
-                                var authDict = vcl.getAuthDictionary(checkService.active_version, true);
-                                authDict.done(function (checkReqSetting) {
-                                    authStateSpan.find('.processing').hide();
-                                    authDictStatus = checkReqSetting.status;
-                                }).fail(function () {
-                                    authStateSpan.find('.processing').hide();
-                                });
-                            }
-                        });
-
-                        // Fetch dictionaries
-                        $('#system_full_page_cache_fastly_fastly_edge_dictionaries-head').unbind('click').on('click', function () {
-                            if ($(this).attr("class") === "open") {
-                                vcl.listDictionaries(active_version, false).done(function (dictResp) {
-                                    $('.loading-dictionaries').hide();
-                                    if (dictResp.status != false) {
-                                        if (dictResp.status != false) {
-                                            if (dictResp.dictionaries.length > 0) {
-                                                dictionaries = dictResp.dictionaries;
-                                                vcl.processDictionaries(dictResp.dictionaries);
-                                            } else {
-                                                $('.no-dictionaries').show();
-                                            }
-                                        }
-                                    }
-                                }).fail(function () {
-                                    return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-                                });
-                            }
-                        });
+                        // // Fetch dictionaries
+                        // $('#system_full_page_cache_fastly_fastly_edge_dictionaries-head').unbind('click').on('click', function () {
+                        //     if ($(this).attr("class") === "open") {
+                        //         vcl.listDictionaries(active_version, false).done(function (dictResp) {
+                        //             $('.loading-dictionaries').hide();
+                        //             if (dictResp.status != false) {
+                        //                 if (dictResp.status != false) {
+                        //                     if (dictResp.dictionaries.length > 0) {
+                        //                         dictionaries = dictResp.dictionaries;
+                        //                         vcl.processDictionaries(dictResp.dictionaries);
+                        //                     } else {
+                        //                         $('.no-dictionaries').show();
+                        //                     }
+                        //                 }
+                        //             }
+                        //         }).fail(function () {
+                        //             return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                        //         });
+                        //     }
+                        // });
 
                         $('#system_full_page_cache_fastly_fastly_custom_snippets-head').unbind('click').on('click', function () {
                             // Fetch custom snippets

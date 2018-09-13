@@ -83,8 +83,8 @@
                         <!-- ====================
                              Force TLS button
                         ===================== -->
-                        <field id="force_tls" translate="label comment" sortOrder="10" showInDefault="1" showInStore="0" showInWebsite="0">
-                            <label><![CDATA[Enable/Disable]]></label>
+                        <field id="force_tls" translate="label comment" sortOrder="10" showInDefault="1" showInStore="1" showInWebsite="1">
+                            <label><![CDATA[Force TLS]]></label>
                             <comment>
                                 <![CDATA[Return a <strong>301 Moved Permanently</strong> redirect to any unencrypted request, and redirect to the TLS equivalent. Also sets <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security" target="_blank">HSTS headers</a>.]]></comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\TlsBtn</frontend_model>
@@ -245,13 +245,13 @@
                         <label>Basic Authentication</label>
                         <comment><![CDATA[Basic authentication allows you to protect every page and asset on your site with username and password.
                         This can be used to protect the site during development. You will still be able to access Magento admin without basic auth.
-                        It is not advised to use this in production]]>
+                        It is not advised to use this in production.]]>
                         </comment>
                         <!-- ======================================
-                             Basic Authentication Status button
+                             Basic Authentication button
                         ======================================= -->
                         <field id="enable_basic_auth" translate="label comment" type="select" sortOrder="5" showInDefault="1">
-                            <label>Basic Authentication Status</label>
+                            <label>Basic Authentication</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\EnableAuth</frontend_model>
                         </field>
                         <!-- ==========================

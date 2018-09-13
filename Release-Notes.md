@@ -1,8 +1,13 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.65
+
+- Fix oversight where objects with no Cache-control and Expires headers would end up with the default TTL
+- Add canvas parameter to product images https://github.com/fastly/fastly-magento2/pull/206
+
 ## 1.2.64
 
-- Expose admins username in slack actions https://github.com/fastly/fastly-magento2/pull/200
+- Expose admin's username in slack actions https://github.com/fastly/fastly-magento2/pull/200
 - Added option to toggle bg-color query argument for images https://github.com/fastly/fastly-magento2/pull/198
 
 ## 1.2.63

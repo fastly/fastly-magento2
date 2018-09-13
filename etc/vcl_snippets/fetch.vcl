@@ -94,11 +94,10 @@
         return (pass);
     }
 
-    # Varnish sets default TTL if none of these are present
+    # Varnish sets default TTL if none of these are present. If not set we want to make sure we don't cache it
     if (!beresp.http.Expires && !beresp.http.Surrogate-Control ~ "max-age" && !beresp.http.Cache-Control ~ "(s-maxage|max-age)") {
         set beresp.ttl = 0s;
-	# We need to also set Surrogate-Control to avoid falling through to default TTL
-        set beresp.http.Surrogate-Control = "max-age=0";
+	set beresp.cacheable = false;
     }
 
     # validate if we need to cache it and prevent from setting cookie

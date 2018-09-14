@@ -137,6 +137,7 @@ define([
                 showLoader: true,
                 success: function (response) {
                     if (response.status === true) {
+
                         modal.modal('closeModal');
                         let disabledOrEnabled = 'disabled';
 
@@ -145,8 +146,8 @@ define([
                         } else {
                             disabledOrEnabled = 'disabled';
                         }
+
                         successBlockingBtnMsg.text($.mage.__('Blocking is successfully ' + disabledOrEnabled + '.')).show();
-                        $('.request_blocking_state_span').hide();
 
                         if (disabledOrEnabled === 'enabled') {
                             blockingStateMsgSpan.find('#blocking_state_disabled').hide();

@@ -108,12 +108,13 @@ class ListAll extends Action
             // Fetch Authentication items
             if (!$dictionary || (is_array($dictionary) && empty($dictionary))) {
                 return $result->setData([
-                    'status'    => 'empty',
+                    'status'    => 'none',
                     'msg'       => 'Authentication dictionary does not exist.'
                 ]);
             }
 
             $authItems = false;
+
             if (isset($dictionary->id)) {
                 $authItems = $this->api->dictionaryItemsList($dictionary->id);
             }

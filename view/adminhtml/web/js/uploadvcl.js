@@ -17,33 +17,6 @@ define([
 
         $(document).ready(function () {
 
-            /**
-             * Add new dictionary item
-             */
-
-            $('body').on('click', '#add-dictionary-item', function (e) {
-                $('#dictionary-items-table > tbody').append('<tr><td><input name="key" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
-                    '<td><input name="value" data-type="dictionary" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
-                    '<td class="col-actions">' +
-                    '<button class="action-delete fastly-save-action save_item" title="Save" type="button"><span>Save</span></button>' +
-                    '<button class="action-delete remove_item"  title="Delete" type="button"><span>Delete</span></button>' +
-                    '</td></tr>');
-            });
-
-            /**
-             * Add new acl item
-             */
-
-            $('body').on('click', '#add-acl-item', function (e) {
-                var aclTimestamp = Math.round(e.timeStamp);
-                $('#acl-items-table > tbody').append('<tr>' +
-                    '<td><input name="value" data-type="acl" data-id="" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
-                    '<td><div class="admin__field-option" title="'+acl_negated_title+'"><input name="negated" class="admin__control-checkbox" type="checkbox" id="acl_entry_'+ aclTimestamp +'"><label class="admin__field-label" for="acl_entry_'+ aclTimestamp +'"></label></div></td>' +
-                    '<td class="col-actions">' +
-                    '<button class="action-delete fastly-save-action save_item" title="Save" type="button"><span>Save</span></button>' +
-                    '<button class="action-delete remove_item"  title="Delete" type="button"><span>Delete</span></button>' +
-                    '</td></tr>');
-            });
 
             /**
              * Add new auth item
@@ -56,41 +29,6 @@ define([
                     '<button class="action-delete fastly-save-action save_item_auth" title="Save" type="button"><span>Save</span></button>' +
                     '<button class="action-delete remove_item_auth"  title="Delete" type="button"><span>Delete</span></button>' +
                     '</td></tr>');
-            });
-
-            /**
-             * Handles dictionary and ACL item removing
-             */
-
-            $('body').on('click', '.remove_item', function (e) {
-                e.preventDefault();
-                var valueField = $(this).closest('tr').find("input[name='value']");
-                var item_key = $(this).closest('tr').find("input[name='key']").val();
-                var self = this;
-                var type = valueField.data('type');
-
-                if (confirm("Are you sure you want to delete this item?")) {
-                    if (type === 'acl') {
-                        var acl_item_id = valueField.data('id');
-                        vcl.deleteAclItem(acl_id, acl_item_id, true).done(function (response) {
-                            if (response.status == true) {
-                                $(self).closest('tr').remove();
-                                vcl.showSuccessMessage($.mage.__('Acl item is successfully deleted.'));
-                            }
-                        }).fail(function () {
-                            vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
-                        });
-                    } else {
-                        vcl.deleteEdgeDictionaryItem(dictionary_id, item_key, true).done(function (response) {
-                            if (response.status == true) {
-                                $(self).closest('tr').remove();
-                                vcl.showSuccessMessage($.mage.__('Dictionary item is successfully deleted.'));
-                            }
-                        }).fail(function () {
-                            vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
-                        });
-                    }
-                }
             });
 
             /**
@@ -154,68 +92,6 @@ define([
                             vcl.showSuccessMessage($.mage.__('Authentication item is successfully deleted.'));
                         } else if (response.status == 'empty') {
                             vcl.showSuccessMessage($.mage.__(response.msg));
-                        }
-                    }).fail(function () {
-                        vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
-                    });
-                }
-            });
-
-            /**
-             * Handles dictionary and ACL item saving
-             */
-
-            $('body').on('click', '.save_item', function (e) {
-                e.preventDefault();
-                var keyField = $(this).closest('tr').find("input[name='key']");
-                var valueField = $(this).closest('tr').find("input[name='value']");
-                var item_key = keyField.val();
-                var item_value = valueField.val();
-                var errors = false;
-                var type = valueField.data('type');
-
-                if (item_key == '' && type !== 'acl') {
-                    errors = true;
-                    keyField.css('border-color', '#e22626');
-                } else {
-                    keyField.css('border-color', '#878787');
-                }
-
-                if (item_value == '') {
-                    errors = true;
-                    valueField.css('border-color', '#e22626');
-                } else {
-                    valueField.css('border-color', '#878787');
-                }
-
-                if (errors) {
-                    vcl.resetAllMessages();
-                    return vcl.showErrorMessage($.mage.__('Please enter all required fields.'));
-                }
-
-                var self = this;
-                if (type === 'acl') {
-                    var negated_field = $(this).closest('tr').find("input[name='negated']")[0].checked ? 1 : 0;
-                    vcl.saveAclItem(acl_id, item_value, negated_field, true).done(function (response) {
-                        if (response.status == true) {
-                            $(self).closest('tr').find("input[name='value']").prop('disabled', true);
-                            var newElement = $(self).closest('tr').find("input[name='value']")[0];
-                            newElement.setAttribute('data-id', response.id);
-
-                            vcl.showSuccessMessage($.mage.__('Acl item is successfully saved.'));
-                        } else {
-                            vcl.showErrorMessage(response.msg);
-                        }
-                    }).fail(function () {
-                        vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
-                    });
-                } else {
-                    vcl.saveEdgeDictionaryItem(dictionary_id, item_key, item_value, true).done(function (response) {
-                        if (response.status == true) {
-                            $(self).closest('tr').find("input[name='key']").prop('disabled', true);
-                            vcl.showSuccessMessage($.mage.__('Dictionary item is successfully saved.'));
-                        } else {
-                            vcl.showErrorMessage(response.msg);
                         }
                     }).fail(function () {
                         vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
@@ -293,77 +169,7 @@ define([
             }
         });
 
-        /**
-         * delete dictionary button
-         */
-        $('body').on('click', 'button#delete-dictionary-container-button', function () {
-            $.ajax({
-                type: "GET",
-                url: config.serviceInfoUrl
-            }).done(function (checkService) {
-                active_version = checkService.active_version;
-                next_version = checkService.next_version;
-                service_name = checkService.service.name;
-                vcl.setActiveServiceLabel(active_version, next_version, service_name);
-            });
 
-            $.ajax({
-                type: "POST",
-                url: config.getDictionaries,
-                showLoader: true,
-                data: {'active_version': active_version}
-            }).done(function (response) {
-                if (response.status == true) {
-                    edgeDictionaries = response.dictionaries;
-                    var dictionariesHtml = '';
-                    if (edgeDictionaries.length > 0) {
-                        $.each(edgeDictionaries, function (index, item) {
-                            dictionariesHtml += '<tr>' +
-                                '<td><input name="key" value="'+ item.id +'" class="input-text admin__control-text dictionary-items-field" type="hidden" disabled>' +
-                                '<input name="value" data-type="dictionary" value="'+ item.name +'" class="input-text admin__control-text dictionary-items-field" type="text" disabled></td>' +
-                                '<td class="col-actions">' +
-                                '<input name="dictionary-delete[]" class="admin__control-checkbox" type="checkbox" value="'+ item.name +'"><label class="admin__field-label"></label>' +
-                                '</td></tr>';
-                        });
-                    } else {
-                        edgeDictionaries = [];
-                    }
-
-                    vcl.showPopup('fastly-delete-dictionary-container-options');
-                    vcl.setActiveServiceLabel(active_version, next_version, service_name);
-
-                    if (dictionariesHtml != '') {
-                        $('#delete-dictionary-table > tbody').html(dictionariesHtml);
-                    }
-                }
-            });
-        });
-        // delete dictionary container button
-        $('body').on('click', 'button.fastly-delete-dictionary-icon', function () {
-            $.ajax({
-                type: "GET",
-                url: config.serviceInfoUrl
-            }).done(function (checkService) {
-                active_version = checkService.active_version;
-                next_version = checkService.next_version;
-                service_name = checkService.service.name;
-                vcl.setActiveServiceLabel(active_version, next_version, service_name);
-            });
-
-            dictionary_id = $(this).data('dictionary-id');
-
-            if (dictionaries != null && dictionary_id != null) {
-                var dictionaryHtml = '<input name="dictionary" value="' + dictionary_id + '" class="input-text admin__control-text dictionary-field" type="hidden" disabled>';
-                vcl.showPopup('fastly-delete-dictionary-container-options');
-                vcl.setActiveServiceLabel(active_version, next_version, service_name);
-                var containerWarning = $('#fastly-container-warning');
-                containerWarning.text($.mage.__('You are about to delete the "' + dictionary_id + '" dictionary container.'));
-                containerWarning.show();
-                if (dictionaryHtml != '') {
-                    $('#delete-dictionary-container').html(dictionaryHtml);
-                }
-            }
-        });
 
         $('body').on('click', 'button.fastly-delete-snippet-icon', function () {
             let snippet_id = $(this).data('snippet-id');
@@ -426,127 +232,6 @@ define([
             }).fail(function () {
                 return errorCustomSnippetBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
             });
-        });
-
-        // delete acl container button
-        $('body').on('click', 'button.fastly-delete-acl-icon', function () {
-            $.ajax({
-                type: "GET",
-                url: config.serviceInfoUrl
-            }).done(function (checkService) {
-                active_version = checkService.active_version;
-                next_version = checkService.next_version;
-                service_name = checkService.service.name;
-                vcl.setActiveServiceLabel(active_version, next_version, service_name);
-            });
-
-            acl_id = $(this).data('acl-id');
-
-            if (acls != null && acl_id != null) {
-                var aclHtml = '<input name="acl" value="' + acl_id + '" class="input-text admin__control-text acl-field" type="hidden" disabled>';
-                vcl.showPopup('fastly-delete-acl-container-options');
-                vcl.setActiveServiceLabel(active_version, next_version, service_name);
-                var containerWarning = $('#fastly-container-warning');
-                containerWarning.text($.mage.__('You are about to delete the "' + acl_id + '" ACL container.'));
-                containerWarning.show();
-                if (aclHtml != '') {
-                    $('#delete-acl-container').html(aclHtml);
-                }
-            }
-        });
-
-        /**
-         * Dictionary/ACL Edit icon
-         */
-
-        $('body').on('click', 'button.fastly-edit-dictionary-icon', function () {
-            $.ajax({
-                type: "GET",
-                url: config.serviceInfoUrl
-            }).done(function (checkService) {
-                active_version = checkService.active_version;
-                next_version = checkService.next_version;
-                service_name = checkService.service.name;
-                vcl.setActiveServiceLabel(active_version, next_version, service_name);
-            });
-
-            dictionary_id = $(this).data('dictionary-id');
-            acl_id = $(this).data('acl-id');
-            // Handle Dictionaries
-            if (dictionary_id) {
-                if (dictionaries != null && dictionary_id != null) {
-                    $.ajax({
-                        type: "POST",
-                        url: config.getDictionaryItems,
-                        showLoader: true,
-                        data: {'dictionary_id': dictionary_id}
-                    }).done(function (response) {
-                        if (response.status == true) {
-                            dictionaryItems = response.dictionaryItems;
-                            var itemsHtml = '';
-                            if (response.dictionaryItems.length > 0) {
-                                $.each(response.dictionaryItems, function (index, item) {
-                                    itemsHtml += '<tr><td>' +
-                                        '<input name="key" value="'+ item.item_key +'" class="input-text admin__control-text dictionary-items-field" type="text" disabled></td>' +
-                                        '<td><input name="value" data-type="dictionary" value="'+ item.item_value +'" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
-                                        '<td class="col-actions">' +
-                                        '<button class="action-delete fastly-save-action save_item" title="Save" type="button"><span>Save</span></button>' +
-                                        '<button class="action-delete remove_item"  title="Delete" type="button"><span>Delete</span></button>' +
-                                        '</td></tr>';
-                                });
-                            }
-                        } else {
-                            dictionaryItems = [];
-                        }
-                        vcl.showPopup('fastly-edge-items');
-                        $('.upload-button').remove();
-
-                        if (itemsHtml != '') {
-                            $('#dictionary-items-table > tbody').html(itemsHtml);
-                        }
-                    });
-                }
-            } else {
-                // Handle ACLs
-                if (acls != null && acl_id != null) {
-                    $.ajax({
-                        type: "POST",
-                        url: config.getAclItems,
-                        showLoader: true,
-                        data: {'acl_id': acl_id}
-                    }).done(function (response) {
-                        if (response.status == true) {
-                            aclItems = response.aclItems;
-                            var itemsHtml = '';
-                            if (response.aclItems.length > 0) {
-                                $.each(response.aclItems, function (index, item) {
-                                    var negated = item.negated == 1 ? ' checked' : '';
-                                    if (item.subnet) {
-                                        ip_output = item.ip + '/' + item.subnet;
-                                    } else {
-                                        ip_output = item.ip;
-                                    }
-                                    itemsHtml += '<tr><td>' +
-                                        '<input name="value" data-type="acl" data-id="'+ item.id +'" value="'+ ip_output +'" class="input-text admin__control-text dictionary-items-field" type="text" disabled></td>' +
-                                        '<td><div class="admin__field-option" title="'+ acl_negated_title +'"><input name="negated" class="admin__control-checkbox" type="checkbox" id="acl_entry_'+ item.id +'"'+negated+'><label class="admin__field-label" for="acl_entry_'+ item.id +'"></label></div></td>' +
-                                        '<td class="col-actions">' +
-                                        '<button class="action-delete fastly-save-action save_item" title="Save" type="button"><span>Save</span></button>' +
-                                        '<button class="action-delete remove_item"  title="Delete" type="button"><span>Delete</span></button>' +
-                                        '</td></tr>';
-                                });
-                            }
-                        } else {
-                            aclItems = [];
-                        }
-                        vcl.showPopup('fastly-acl-items');
-                        $('.upload-button').remove();
-
-                        if (itemsHtml != '') {
-                            $('#acl-items-table > tbody').html(itemsHtml);
-                        }
-                    });
-                }
-            }
         });
 
         /**
@@ -613,42 +298,6 @@ define([
         });
 
         /**
-         * VCL Upload button
-         */
-
-        $('#fastly_vcl_upload_button').on('click', function () {
-
-            if (isAlreadyConfigured != true) {
-                $(this).attr('disabled', true);
-                return alert($.mage.__('Please save config prior to continuing.'));
-            }
-
-            vcl.resetAllMessages();
-
-            $.when(
-                $.ajax({
-                    type: "GET",
-                    url: config.serviceInfoUrl,
-                    showLoader: true
-                })
-            ).done(function (service) {
-
-                if (service.status == false) {
-                    return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
-                }
-
-                active_version = service.active_version;
-                next_version = service.next_version;
-                service_name = service.service.name;
-                vcl.showPopup('fastly-uploadvcl-options');
-                vcl.setActiveServiceLabel(active_version, next_version, service_name);
-
-            }).fail(function () {
-                return errorVclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-            });
-        });
-
-        /**
          * Custom snippet upload
          */
 
@@ -681,90 +330,6 @@ define([
 
             }).fail(function () {
                 return errorCustomSnippetBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-            });
-        });
-
-
-        $('#fastly_push_image_config').on('click', function () {
-            if (isAlreadyConfigured != true) {
-                $(this).attr('disabled', true);
-                return alert($.mage.__('Please save config prior to continuing.'));
-            }
-
-            vcl.resetAllMessages();
-
-            $.ajax({
-                type: "GET",
-                url: config.serviceInfoUrl,
-                showLoader: true
-            }).done(function (service) {
-
-                if (service.status == false) {
-                    return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
-                }
-
-                active_version = service.active_version;
-                next_version = service.next_version;
-                service_name = service.service.name;
-                vcl.getImageSetting(active_version, true).done(function (response) {
-                    if (response.status == false) {
-                        $('.modal-title').text($.mage.__('We are about to upload the Fastly image optimization snippet'));
-                    } else {
-                        $('.modal-title').text($.mage.__('We are about to remove the Fastly image optimization snippet'));
-                    }
-                    imageOptimization = response.status;
-                }).fail(function () {
-                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
-                });
-                vcl.showPopup('fastly-image-options');
-                vcl.setActiveServiceLabel(active_version, next_version, service_name);
-
-            }).fail(function (msg) {
-                return errorImageBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-            });
-        });
-
-        /**
-         * Blocking button
-         */
-
-        $('#fastly_blocking_button').on('click', function () {
-
-            if (isAlreadyConfigured != true) {
-                $(this).attr('disabled', true);
-                return alert($.mage.__('Please save config prior to continuing.'));
-            }
-
-            vcl.resetAllMessages();
-
-            $.ajax({
-                type: "GET",
-                url: config.serviceInfoUrl,
-                showLoader: true
-            }).done(function (service) {
-
-                if (service.status == false) {
-                    return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
-                }
-
-                active_version = service.active_version;
-                next_version = service.next_version;
-                service_name = service.service.name;
-                vcl.getBlockingSetting(active_version, true).done(function (response) {
-                    if (response.status == false) {
-                        $('.modal-title').text($.mage.__('We are about to turn on blocking'));
-                    } else {
-                        $('.modal-title').text($.mage.__('We are about to turn off blocking'));
-                    }
-                    blocking = response.status;
-                }).fail(function () {
-                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
-                });
-                vcl.showPopup('fastly-blocking-options');
-                vcl.setActiveServiceLabel(active_version, next_version, service_name);
-
-            }).fail(function (msg) {
-                return errorBlockingBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
             });
         });
 
@@ -834,277 +399,23 @@ define([
             });
         });
 
-        /**
-         * Set Error Page HTML button
-         */
 
-        $('#fastly_error_page_button').on('click', function () {
-
-            if (isAlreadyConfigured != true) {
-                $(this).attr('disabled', true);
-                return alert($.mage.__('Please save config prior to continuing.'));
-            }
-
-            vcl.resetAllMessages();
-
-            $.when(
-                $.ajax({
-                    type: "GET",
-                    url: config.serviceInfoUrl,
-                    showLoader: true
-                })
-            ).done(function (service) {
-
-                if (service.status == false) {
-                    return errorHtmlBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
-                }
-
-                active_version = service.active_version;
-                next_version = service.next_version;
-                service_name = service.service.name;
-
-                vcl.getErrorPageRespObj(active_version, true).done(function (response) {
-                    if (response.status == true) {
-                        $('#error_page_html').text(response.errorPageResp.content).html();
-                    }
-                }).fail(function () {
-                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
-                });
-
-                vcl.showPopup('fastly-error-page-options');
-                vcl.setActiveServiceLabel(active_version, next_version, service_name);
-
-            }).fail(function () {
-                return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-            });
-        });
-
-        /**
-         * Set WAF Page HTML button
-         */
-        $('#fastly_waf_page_button').on('click', function () {
-
-            if (isAlreadyConfigured != true) {
-                $(this).attr('disabled', true);
-                return alert($.mage.__('Please save config prior to continuing.'));
-            }
-
-            vcl.resetAllMessages();
-
-            $.when(
-                $.ajax({
-                    type: "GET",
-                    url: config.serviceInfoUrl,
-                    showLoader: true
-                })
-            ).done(function (service) {
-
-                if (service.status == false) {
-                    return errorWafBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
-                }
-
-                active_version = service.active_version;
-                next_version = service.next_version;
-                service_name = service.service.name;
-
-                vcl.getWafPageRespObj(active_version, true).done(function (response) {
-                    if (response.status == true) {
-                        $('#waf_page_content').text(response.wafPageResp.content).html();
-                        $('#waf_page_status').val(response.wafPageResp.status);
-                        $('#waf_page_type').val(response.wafPageResp.content_type);
-                    }
-                }).fail(function () {
-                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
-                });
-
-                vcl.showPopup('fastly-waf-page-options');
-                vcl.setActiveServiceLabel(active_version, next_version, service_name);
-
-            }).fail(function () {
-                return errorWafBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-            });
-        });
-
-        /**
-         * Add dictionary container button
-         */
-
-        $('#add-dictionary-container-button').on('click', function () {
-
-            if (isAlreadyConfigured != true) {
-                $(this).attr('disabled', true);
-                return alert($.mage.__('Please save config prior to continuing.'));
-            }
-
-            vcl.resetAllMessages();
-
-            $.when(
-                $.ajax({
-                    type: "GET",
-                    url: config.serviceInfoUrl,
-                    showLoader: true
-                })
-            ).done(function (service) {
-
-                if (service.status == false) {
-                    return errorHtmlBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
-                }
-
-                active_version = service.active_version;
-                next_version = service.next_version;
-                service_name = service.service.name;
-
-                vcl.getErrorPageRespObj(active_version, true).done(function (response) {
-                    if (response.status == true) {
-                        $('#error_page_html').text(response.errorPageResp.content).html();
-                    }
-                }).fail(function () {
-                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
-                });
-
-                vcl.showPopup('fastly-dictionary-container-options');
-                vcl.setActiveServiceLabel(active_version, next_version, service_name);
-
-            }).fail(function () {
-                return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-            });
-        });
-
-        /**
-         * Add acl container button
-         */
-
-        $('#add-acl-container-button').on('click', function () {
-
-            if (isAlreadyConfigured != true) {
-                $(this).attr('disabled', true);
-                return alert($.mage.__('Please save config prior to continuing.'));
-            }
-
-            vcl.resetAllMessages();
-
-            $.when(
-                $.ajax({
-                    type: "GET",
-                    url: config.serviceInfoUrl,
-                    showLoader: true
-                })
-            ).done(function (service) {
-
-                if (service.status == false) {
-                    return errorHtmlBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
-                }
-
-                active_version = service.active_version;
-                next_version = service.next_version;
-                service_name = service.service.name;
-
-                vcl.getErrorPageRespObj(active_version, true).done(function (response) {
-                    if (response.status == true) {
-                        $('#error_page_html').text(response.errorPageResp.content).html();
-                    }
-                }).fail(function () {
-                    vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
-                });
-
-                vcl.showPopup('fastly-acl-container-options');
-                vcl.setActiveServiceLabel(active_version, next_version, service_name);
-
-            }).fail(function () {
-                return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-            });
-        });
-
-        $('#fastly_io_default_config').on('click', function () {
-            $.ajax({
-                type: "GET",
-                url: config.serviceInfoUrl
-            }).done(function (checkService) {
-                active_version = checkService.active_version;
-                next_version = checkService.next_version;
-                service_name = checkService.service.name;
-                vcl.setActiveServiceLabel(active_version, next_version, service_name);
-            });
-
-            $.ajax({
-                type: "POST",
-                url: config.listIoDefaultConfigOptions,
-                showLoader: true,
-                data: {'active_version': active_version}
-            }).done(function (response) {
-                 if (response.status == true) {
-                    ioOptions = response.io_options;
-
-                     vcl.showPopup('fastly-io-default-config-options');
-                     vcl.setActiveServiceLabel(active_version, next_version, service_name);
-
-                    if (ioOptions.webp === false) {
-                        $('#webp-no').prop('checked', true);
-                    } else {
-                        $('#webp-yes').prop('checked', true);
-                    }
-
-                    $('#webp_quality').val(ioOptions.webp_quality);
-
-                    if (ioOptions.jpeg_type == 'auto') {
-                        $('#jpeg-format-auto').prop('checked', true);
-                    } else if (ioOptions.jpeg_type == 'baseline') {
-                        $('#jpeg-format-baseline').prop('checked', true);
-                    } else {
-                        $('#jpeg-format-progressive').prop('checked', true);
-                    }
-
-                     $('#jpeg_quality').val(ioOptions.jpeg_quality);
-
-                     if (ioOptions.upscale === false) {
-                         $('#upscaling-no').prop('checked', true);
-                     } else {
-                         $('#upscaling-yes').prop('checked', true);
-                     }
-
-                     if (ioOptions.resize_filter == 'lanczos3') {
-                         $('#resize-filter-lancsoz3').prop('checked', true);
-                     } else if (ioOptions.resize_filter == 'lanczos2') {
-                         $('#resize-filter-lancsoz2').prop('checked', true);
-                     } else if (ioOptions.resize_filter == 'bicubic') {
-                         $('#resize-filter-bicubic').prop('checked', true);
-                     } else if (ioOptions.resize_filter == 'bilinear') {
-                         $('#resize-filter-bilinear').prop('checked', true);
-                     } else {
-                         $('#resize-filter-nearest').prop('checked', true);
-                     }
-                }
-            });
-        });
 
         var authDictStatus = null;
-        var authDict = null;
-        var enableAuthBtn = null;
-        var edgeDictionaries = null;
-        var ioOptions = null;
-        var edgeAcls = null;
         var authStatus = true;
         var backends = null;
         var dictionaries = null;
         var dictionary_id = null;
         var acls = null;
         var auths = null;
-        var acl_id = null;
-        var dictionaryItems = null;
         var active_version = '';
         var next_version = '';
         var service_name;
-        var blocking = true;
-        var imageOptimization = true;
         var isAlreadyConfigured = true;
         /* Image button message */
         var successImageBtnMsg = $('#fastly-success-imgopt-button-msg');
         var errorImageBtnMsg = $('#fastly-error-imgopt-button-msg');
         var warningImageBtnMsg = $('#fastly-warning-imgopt-button-msg');
-        /* IO setting status message */
-        var successIoMsg = $('#fastly-success-io-msg');
-        var errorIoMsg = $('#fastly-error-io-msg');
-        var warningIoMsg = $('#fastly-warning-io-msg');
         /* VCL button messages */
         var successVclBtnMsg = $('#fastly-success-vcl-button-msg');
         var errorVclBtnMsg = $('#fastly-error-vcl-button-msg');
@@ -1142,9 +453,7 @@ define([
         var warningAuthBtnMsg = $('#fastly-warning-auth-button-msg');
         var deleteAuthBtnMsgError = $('#fastly-error-auth-list-button-msg');
         var deleteAuthBtnMsgSuccess = $('#fastly-success-auth-list-button-msg');
-        var imgBtn = $('#fastly_push_image_config');
-        var imgConfigBtn = $('#fastly_io_default_config');
-        var ioToggle = $('#system_full_page_cache_fastly_fastly_image_optimization_configuration_image_optimizations');
+
         var wafPageRow = $('#row_system_full_page_cache_fastly_fastly_error_maintenance_page_waf_page');
 
         var vcl = {
@@ -1198,33 +507,6 @@ define([
                 });
             },
 
-            // Queries Fastly API to retrieve image optimization snippet setting
-            getImageSetting: function (active_version, loaderVisibility) {
-                return $.ajax({
-                    type: "POST",
-                    url: config.checkImageSettingUrl,
-                    showLoader: loaderVisibility,
-                    data: {'active_version': active_version}
-                });
-            },
-
-            // Queries Fastly Api to retrieve the Fastly service image optimization setting
-            getFastlyIoSetting: function () {
-                return $.ajax({
-                    type: "GET",
-                    url: config.checkFastlyIoSettingUrl
-                });
-            },
-
-            // Queries Fastly API to retrieve blocking setting
-            getBlockingSetting: function (active_version, loaderVisibility) {
-                return $.ajax({
-                    type: "POST",
-                    url: config.checkBlockingSettingUrl,
-                    showLoader: loaderVisibility,
-                    data: {'active_version': active_version}
-                });
-            },
 
             // Queries Fastly API to retrive Basic Auth status
             getAuthSetting: function (active_version, loaderVisibility) {
@@ -1271,26 +553,6 @@ define([
                 });
             },
 
-            // Queries Fastly API to retrieve error page response object
-            getErrorPageRespObj: function (active_version, loaderVisibility) {
-                return $.ajax({
-                    type: "GET",
-                    url: config.getErrorPageRespObj,
-                    showLoader: loaderVisibility,
-                    data: {'active_version': active_version}
-                });
-            },
-
-            // Queries Fastly API to retrieve WAF page response object
-            getWafPageRespObj: function (active_version, loaderVisibility) {
-                return $.ajax({
-                    type: "GET",
-                    url: config.getWafPageRespObj,
-                    showLoader: loaderVisibility,
-                    data: {'active_version': active_version}
-                });
-            },
-
             // Process backends
             processBackends: function (backends) {
                 $('#fastly-backends-list').html('');
@@ -1317,48 +579,6 @@ define([
                 $('#fastly-snippets-list').html(html);
             },
 
-            // Process dictionaries
-            processDictionaries: function (dictionaries) {
-                var html = '';
-                $.each(dictionaries, function (index, dictionary) {
-                    html += "<tr id='fastly_dict_" + index + "'>";
-                    html += "<td><input data-dictionaryId='"+ dictionary.id + "' id='dict_" + index + "' value='"+ dictionary.name +"' disabled='disabled' class='input-text' type='text'></td>";
-                    html += "<td class='col-actions'>" +
-                        "<button class='action-delete fastly-edit-dictionary-icon' data-dictionary-id='" + dictionary.id + "' id='fastly-edit-dictionary_"+ index + "' title='Edit dictionary' type='button'>" +
-                        "<button class='action-delete fastly-delete-dictionary-icon' data-dictionary-id='" + dictionary.name + "' id='fastly-delete-dictionary_"+ index + "' title='Delete dictionary' type='button'>" +
-                        "</td></tr>";
-                });
-                if (html != '') {
-                    $('.no-dictionaries').hide();
-                }
-                $('#fastly-dictionaries-list').html(html);
-            },
-
-            // Queries Fastly API to retrieve Dictionaries
-            listDictionaries: function (active_version, loaderVisibility) {
-                return $.ajax({
-                    type: "GET",
-                    url: config.getDictionaries,
-                    showLoader: loaderVisibility,
-                    data: {'active_version': active_version},
-                    beforeSend: function (xhr) {
-                        $('.loading-dictionaries').show();
-                    }
-                });
-            },
-
-            // Queries Fastly API to retrieve ACLs
-            listAcls: function (active_version, loaderVisibility) {
-                return $.ajax({
-                    type: "GET",
-                    url: config.getAcls,
-                    showLoader: loaderVisibility,
-                    data: {'active_version': active_version},
-                    beforeSend: function (xhr) {
-                        $('.loading-acls').show();
-                    }
-                });
-            },
 
             // Queries Fastly API to retrieve ACLs
             listAuths: function (active_version, loaderVisibility) {
@@ -1373,22 +593,6 @@ define([
                 });
             },
 
-            // Process ACLs
-            processAcls: function (acls) {
-                var html = '';
-                $.each(acls, function (index, acl) {
-                    html += "<tr id='fastly_acl_" + index + "'>";
-                    html += "<td><input data-aclId='"+ acl.id + "' id='acl_" + index + "' value='"+ acl.name +"' disabled='disabled' class='input-text' type='text'></td>";
-                    html += "<td class='col-actions'>" +
-                        "<button class='action-delete fastly-edit-dictionary-icon' data-acl-id='" + acl.id + "' id='fastly-edit-acl_"+ index + "' title='Edit Acl' type='button'>" +
-                        "<button class='action-delete fastly-delete-acl-icon' data-acl-id='" + acl.name + "' id='fastly-delete-acl_"+ index + "' title='Delete Acl' type='button'>" +
-                        "</td></tr>";
-                });
-                if (html != '') {
-                    $('.no-acls').hide();
-                }
-                $('#fastly-acls-list').html(html);
-            },
 
             // Process AUTHs
             processAuths: function (auths) {
@@ -1413,32 +617,6 @@ define([
                 }
             },
 
-            // Delete Edge Dictionary item
-            deleteEdgeDictionaryItem: function (dictionary_id, item_key, loaderVisibility) {
-                return $.ajax({
-                    type: "GET",
-                    url: config.deleteDictionaryItem,
-                    showLoader: loaderVisibility,
-                    data: {'dictionary_id': dictionary_id, 'item_key': item_key},
-                    beforeSend: function (xhr) {
-                        vcl.resetAllMessages();
-                    }
-                });
-            },
-
-            // Save Edge Dictionary item
-            saveEdgeDictionaryItem: function (dictionary_id, item_key, item_value, loaderVisibility) {
-                return $.ajax({
-                    type: "GET",
-                    url: config.createDictionaryItem,
-                    showLoader: loaderVisibility,
-                    data: {'dictionary_id': dictionary_id, 'item_key': item_key, 'item_value': item_value},
-                    beforeSend: function (xhr) {
-                        vcl.resetAllMessages();
-                    }
-                });
-            },
-
             deleteCustomSnippet: function (snippet_id, loaderVisibility) {
                 return $.ajax({
                     type: "GET",
@@ -1457,32 +635,6 @@ define([
                     url: config.editCustomSnippet,
                     showLoader: loaderVisibility,
                     data: {'snippet_id': snippet_id},
-                    beforeSend: function (xhr) {
-                        vcl.resetAllMessages();
-                    }
-                });
-            },
-
-            // Delete Acl entry item
-            deleteAclItem: function (acl_id, acl_item_id, loaderVisibility) {
-                return $.ajax({
-                    type: "GET",
-                    url: config.deleteAclItem,
-                    showLoader: loaderVisibility,
-                    data: {'acl_id': acl_id, 'acl_item_id': acl_item_id},
-                    beforeSend: function (xhr) {
-                        vcl.resetAllMessages();
-                    }
-                });
-            },
-
-            // Save Acl entry item
-            saveAclItem: function (acl_id, item_value, negated_field, loaderVisibility) {
-                return $.ajax({
-                    type: "GET",
-                    url: config.createAclItem,
-                    showLoader: loaderVisibility,
-                    data: {'acl_id': acl_id, 'item_value': item_value, 'negated_field': negated_field},
                     beforeSend: function (xhr) {
                         vcl.resetAllMessages();
                     }
@@ -1659,118 +811,7 @@ define([
                 });
             },
 
-            // Toggle image optimization process
-            pushImageConfig: function (active_version) {
-                var activate_image_flag = false;
-                var image_quality_flag = false;
 
-                if ($('#fastly_activate_image_vcl').is(':checked')) {
-                    activate_image_flag = true;
-                }
-                if ($('#fastly_image_quality_flag').is(':checked')) {
-                   image_quality_flag = true;
-                }
-
-                $.ajax({
-                    type: "POST",
-                    url: config.toggleImageSettingUrl,
-                    data: {
-                        'activate_flag': activate_image_flag,
-                        'image_quality_flag': image_quality_flag,
-                        'active_version': active_version
-                    },
-                    showLoader: true,
-                    success: function (response) {
-                        if (response.status == true) {
-                            vcl.modal.modal('closeModal');
-                            var onOrOff = 'removed';
-                            var disabledOrEnabled = 'disabled';
-                            if (imageOptimization == false) {
-                                onOrOff = 'uploaded';
-                                disabledOrEnabled = 'enabled';
-                            } else {
-                                onOrOff = 'removed';
-                                disabledOrEnabled = 'disabled';
-                            }
-                            var fastlyIo = vcl.getFastlyIoSetting(false);
-
-                            successImageBtnMsg.text($.mage.__('The image optimization snippet has been successfully ' + onOrOff + '.')).show();
-                            $('.request_imgopt_state_span').hide();
-                            if (disabledOrEnabled == 'enabled') {
-                                imageStateMsgSpan.find('#imgopt_state_disabled').hide();
-                                imageStateMsgSpan.find('#imgopt_state_enabled').show();
-                                fastlyIo.done(function (checkIoSetting) {
-                                    if (checkIoSetting.status != false) {
-                                        imgBtn.removeClass('disabled');
-                                    }
-                                });
-                            } else {
-                                imageStateMsgSpan.find('#imgopt_state_enabled').hide();
-                                imageStateMsgSpan.find('#imgopt_state_disabled').show();
-                                fastlyIo.done(function (checkIoSetting) {
-                                    if (checkIoSetting.status == false) {
-                                        imgBtn.addClass('disabled');
-                                    }
-                                });
-                            }
-                        } else {
-                            vcl.resetAllMessages();
-                            vcl.showErrorMessage(response.msg);
-                        }
-                    },
-                    error: function (msg) {
-                        // error handling
-                    }
-                });
-            },
-
-            // Toggle Blocking process
-            toggleBlocking: function (active_version) {
-                var activate_blocking_flag = false;
-
-                if ($('#fastly_activate_blocking').is(':checked')) {
-                    activate_blocking_flag = true;
-                }
-
-                $.ajax({
-                    type: "POST",
-                    url: config.toggleBlockingSettingUrl,
-                    data: {
-                        'activate_flag': activate_blocking_flag,
-                        'active_version': active_version
-                    },
-                    showLoader: true,
-                    success: function (response) {
-                        if (response.status == true) {
-                            vcl.modal.modal('closeModal');
-                            var onOrOff = 'OFF';
-                            var disabledOrEnabled = 'disabled';
-                            if (blocking == false) {
-                                onOrOff = 'ON';
-                                disabledOrEnabled = 'enabled';
-                            } else {
-                                onOrOff = 'OFF';
-                                disabledOrEnabled = 'disabled';
-                            }
-                            successBlockingBtnMsg.text($.mage.__('The Blocking request setting is successfully turned ' + onOrOff + '.')).show();
-                            $('.request_blocking_state_span').hide();
-                            if (disabledOrEnabled == 'enabled') {
-                                blockingStateMsgSpan.find('#blocking_state_disabled').hide();
-                                blockingStateMsgSpan.find('#blocking_state_enabled').show();
-                            } else {
-                                blockingStateMsgSpan.find('#blocking_state_enabled').hide();
-                                blockingStateMsgSpan.find('#blocking_state_disabled').show();
-                            }
-                        } else {
-                            vcl.resetAllMessages();
-                            vcl.showErrorMessage(response.msg);
-                        }
-                    },
-                    error: function (msg) {
-                        // error handling
-                    }
-                });
-            },
 
             // Toggle Auth process
             toggleAuth: function (active_version) {
@@ -1869,284 +910,6 @@ define([
                 });
             },
 
-            // Save Error Page Html
-            saveErrorHtml: function () {
-                var activate_vcl = false;
-
-                if ($('#fastly_activate_vcl').is(':checked')) {
-                    activate_vcl = true;
-                }
-                var errorHtmlChars = $('#error_page_html').val().length;
-                var maxChars = 65535;
-                if (errorHtmlChars >= maxChars) {
-                    var msgWarning = $('.fastly-message-error');
-                    msgWarning.text($.mage.__('The HTML must contain less than ' + maxChars + ' characters. Current number of characters: ' + errorHtmlChars));
-                    msgWarning.show();
-                    return;
-                }
-                $.ajax({
-                    type: "POST",
-                    url: config.saveErrorPageHtmlUrl,
-                    data: {
-                        'active_version': active_version,
-                        'activate_flag': activate_vcl,
-                        'html': $('#error_page_html').val()
-                    },
-                    showLoader: true,
-                    success: function (response) {
-                        if (response.status == true) {
-                            successHtmlBtnMsg.text($.mage.__('Error page HTML is successfully updated.')).show();
-                            active_version = response.active_version;
-                            vcl.modal.modal('closeModal');
-                        } else {
-                            vcl.resetAllMessages();
-                            vcl.showErrorMessage(response.msg);
-                        }
-                    },
-                    error: function (msg) {
-                        return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-                    }
-                });
-            },
-
-            // Save WAF Page Html
-            saveWafHtml: function () {
-                var activate_vcl = false;
-
-                if ($('#fastly_activate_vcl').is(':checked')) {
-                    activate_vcl = true;
-                }
-                var wafHtmlChars = $('#waf_page_content').val().length;
-                var maxChars = 65535;
-                if (wafHtmlChars >= maxChars) {
-                    var msgWarning = $('.fastly-message-error');
-                    msgWarning.text($.mage.__('The content must contain less than ' + maxChars + ' characters. Current number of characters: ' + wafHtmlChars));
-                    msgWarning.show();
-                    return;
-                }
-                $.ajax({
-                    type: "POST",
-                    url: config.saveWafPageUrl,
-                    data: {
-                        'active_version': active_version,
-                        'activate_flag': activate_vcl,
-                        'content': $('#waf_page_content').val(),
-                        'status': $('#waf_page_status').val(),
-                        'content_type': $('#waf_page_type').val()
-                    },
-                    showLoader: true,
-                    success: function (response) {
-                        if (response.status == true) {
-                            successWafBtnMsg.text($.mage.__('WAF page is successfully updated.')).show();
-                            active_version = response.active_version;
-                            vcl.modal.modal('closeModal');
-                        } else {
-                            vcl.resetAllMessages();
-                            vcl.showErrorMessage(response.msg);
-                        }
-                    },
-                    error: function (msg) {
-                        return errorWafBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-                    }
-                });
-            },
-
-            // CreateDictionary
-            createDictionary: function () {
-                var activate_vcl = false;
-
-                if ($('#fastly_activate_vcl').is(':checked')) {
-                    activate_vcl = true;
-                }
-
-                $.ajax({
-                    type: "POST",
-                    url: config.createDictionary,
-                    data: {
-                        'active_version': active_version,
-                        'activate_flag': activate_vcl,
-                        'dictionary_name': $('#dictionary_name').val()
-                    },
-                    showLoader: true,
-                    success: function (response) {
-                        if (response.status == true) {
-                            successDictionaryBtnMsg.text($.mage.__('Dictionary is successfully created.')).show();
-                            active_version = response.active_version;
-                            // Fetch dictionaries
-                            vcl.listDictionaries(active_version, false).done(function (dictResp) {
-                                $('.loading-dictionaries').hide();
-                                if (dictResp.status != false) {
-                                    if (dictResp.status != false) {
-                                        if (dictResp.dictionaries.length > 0) {
-                                            dictionaries = dictResp.dictionaries;
-                                            vcl.processDictionaries(dictResp.dictionaries);
-                                            $('.no-dictionaries').hide();
-                                        } else {
-                                            $('.no-dictionaries').show();
-                                        }
-                                    }
-                                }
-                            }).fail(function () {
-                                return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-                            });
-                            vcl.modal.modal('closeModal');
-                        } else {
-                            vcl.resetAllMessages();
-                            vcl.showErrorMessage(response.msg);
-                        }
-                    },
-                    error: function (msg) {
-                        return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-                    }
-                });
-            },
-
-            // delete dictionary
-            deleteDictionary: function () {
-                var activate_vcl = false;
-
-                if ($('#fastly_activate_vcl').is(':checked')) {
-                    activate_vcl = true;
-                }
-
-                var del_dictionary = $("input[name='dictionary").val();
-
-                $.ajax({
-                    type: "POST",
-                    url: config.deleteDictionary,
-                    data: {
-                        'active_version': active_version,
-                        'activate_flag': activate_vcl,
-                        'dictionary': del_dictionary
-                    },
-                    showLoader: true,
-                    success: function (response) {
-                        if (response.status == true) {
-                            successDictionaryBtnMsg.text($.mage.__('Dictionary successfully deleted.')).show();
-                            active_version = response.active_version;
-                            // Fetch dictionaries
-                            vcl.listDictionaries(active_version, false).done(function (dictResp) {
-                                $('.loading-dictionaries').hide();
-                                if (dictResp.status != false) {
-                                    if (dictResp.dictionaries.length > 0) {
-                                        dictionaries = dictResp.dictionaries;
-                                        vcl.processDictionaries(dictResp.dictionaries);
-                                    } else {
-                                        $('#fastly-dictionaries-list').html('');
-                                        $('.no-dictionaries').show();
-                                    }
-                                }
-                            }).fail(function () {
-                                return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-                            });
-                            vcl.modal.modal('closeModal');
-                        } else {
-                            vcl.resetAllMessages();
-                            vcl.showErrorMessage(response.msg);
-                        }
-                    },
-                    error: function (msg) {
-                        return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-                    }
-                });
-            },
-
-            // delete acl
-            deleteAcl: function () {
-                var activate_vcl = false;
-
-                if ($('#fastly_activate_vcl').is(':checked')) {
-                    activate_vcl = true;
-                }
-
-                var del_acl = $("input[name='acl']").val();
-
-                $.ajax({
-                    type: "POST",
-                    url: config.deleteAcl,
-                    data: {
-                        'active_version': active_version,
-                        'activate_flag': activate_vcl,
-                        'acl': del_acl
-                    },
-                    showLoader: true,
-                    success: function (response) {
-                        if (response.status == true) {
-                            successAclBtnMsg.text($.mage.__('ACL successfully deleted.')).show();
-                            active_version = response.active_version;
-                            // Fetch dictionaries
-                            vcl.listAcls(active_version, false).done(function (aclResp) {
-                                $('.loading-acls').hide();
-                                if (aclResp.status != false) {
-                                    if (aclResp.acls.length > 0) {
-                                        acls = aclResp.acls;
-                                        vcl.processAcls(aclResp.acls);
-                                    } else {
-                                        $('#fastly-acls-list').html('');
-                                        $('.no-acls').show();
-                                    }
-                                }
-                            }).fail(function () {
-                                return errorAclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-                            });
-                            vcl.modal.modal('closeModal');
-                        } else {
-                            vcl.resetAllMessages();
-                            vcl.showErrorMessage(response.msg);
-                        }
-                    },
-                    error: function (msg) {
-                        return errorAclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-                    }
-                });
-            },
-
-            // CreateDictionaryItems
-            createDictionaryItems: function () {
-                var activate_vcl = false;
-
-                if ($('#fastly_activate_vcl').is(':checked')) {
-                    activate_vcl = true;
-                }
-
-                var keys = [];
-                $("input[type='text'][name^='key']").each(function () {
-                    keys.push(this.value);
-                });
-
-                var values = [];
-                $("input[type='text'][name^='value']").each(function () {
-                    values.push(this.value);
-                });
-
-                $.ajax({
-                    type: "POST",
-                    url: config.createDictionaryItems,
-                    data: {
-                        'active_version': active_version,
-                        'activate_flag': activate_vcl,
-                        'dictionary_id': dictionary_id,
-                        'values': values,
-                        'keys': keys,
-                        'old_items': dictionaryItems
-                    },
-                    showLoader: true,
-                    success: function (response) {
-                        if (response.status == true) {
-                            successDictionaryBtnMsg.text($.mage.__('Dictionary items are successfully saved.')).show();
-                            active_version = response.active_version;
-                            vcl.modal.modal('closeModal');
-                        } else {
-                            vcl.resetAllMessages();
-                            vcl.showErrorMessage(response.msg);
-                        }
-                    },
-                    error: function (msg) {
-                        return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-                    }
-                });
-            },
-
             showErrorMessage: function (msg) {
                 var msgError = $('.fastly-message-error');
                 msgError.html($.mage.__(msg));
@@ -2225,54 +988,6 @@ define([
                 deleteAuthBtnMsgSuccess.hide();
             },
 
-            // CreateAcl
-            createAcl: function () {
-                var activate_vcl = false;
-
-                if ($('#fastly_activate_vcl').is(':checked')) {
-                    activate_vcl = true;
-                }
-
-                $.ajax({
-                    type: "POST",
-                    url: config.createAcl,
-                    data: {
-                        'active_version': active_version,
-                        'activate_flag': activate_vcl,
-                        'acl_name': $('#acl_name').val()
-                    },
-                    showLoader: true,
-                    success: function (response) {
-                        if (response.status == true) {
-                            successAclBtnMsg.text($.mage.__('Acl is successfully created.')).show();
-                            active_version = response.active_version;
-                            vcl.listAcls(active_version, false).done(function (aclResp) {
-                                $('.loading-acls').hide();
-                                if (aclResp.status != false) {
-                                    if (aclResp.status != false) {
-                                        if (aclResp.acls.length > 0) {
-                                            acls = aclResp.acls;
-                                            vcl.processAcls(aclResp.acls);
-                                            $('.no-acls').hide();
-                                        } else {
-                                            $('.no-acls').show();
-                                        }
-                                    }
-                                }
-                            }).fail(function () {
-                                return errorAclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-                            });
-                            vcl.modal.modal('closeModal');
-                        } else {
-                            vcl.resetAllMessages();
-                            vcl.showErrorMessage(response.msg);
-                        }
-                    },
-                    error: function (msg) {
-                        return errorAclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-                    }
-                });
-            },
 
             // CreateAuth
             createAuth: function () {
@@ -2367,51 +1082,6 @@ define([
                 });
             },
 
-            // Configure IO default config options
-            configureIo: function () {
-                var activate_vcl = false;
-
-                if ($('#fastly_activate_io_vcl').is(':checked')) {
-                    activate_vcl = true;
-                }
-                var webp = $('input[name=webp-radio]:checked').val();
-                var webp_quality = $('#webp_quality').val();
-                var jpeg_type = $('input[name=jpeg-format]:checked').val();
-                var jpeg_quality = $('#jpeg_quality').val();
-                var upscale = $('input[name=upscaling-radio]:checked').val();
-                var resize_filter = $('input[name=resize-filter-radio]:checked').val();
-
-                $.ajax({
-                    type: "POST",
-                    url: config.configureIoUrl,
-                    data: {
-                        'active_version': active_version,
-                        'activate_flag': activate_vcl,
-                        'webp': webp,
-                        'webp_quality': webp_quality,
-                        'jpeg_type': jpeg_type,
-                        'jpeg_quality': jpeg_quality,
-                        'upscale': upscale,
-                        'resize_filter': resize_filter
-                    },
-                    showLoader: true,
-                    success: function (response) {
-                        if (response.status == true) {
-                            $('#fastly-success-io-default-config-btn-msg').text($.mage.__(
-                                'Image optimization default configuration is successfully updated.'
-                            )).show();
-                            active_version = response.active_version;
-                            vcl.modal.modal('closeModal');
-                        } else {
-                            vcl.resetAllMessages();
-                            vcl.showErrorMessage(response.msg);
-                        }
-                    },
-                    error: function (msg) {
-                        // error handling
-                    }
-                });
-            },
 
             uploadVclConfig: {
                 'fastly-uploadvcl-options': {
@@ -2441,33 +1111,6 @@ define([
                         vcl.updateCustomSnippet();
                     }
                 },
-                'fastly-tls-options': {
-                    title: jQuery.mage.__(''),
-                    content: function () {
-                        return document.getElementById('fastly-tls-template').textContent;
-                    },
-                    actionOk: function () {
-                        vcl.toggleTls(active_version);
-                    }
-                },
-                'fastly-image-options': {
-                    title: jQuery.mage.__('Activate image optimization'),
-                    content: function () {
-                        return document.getElementById('fastly-image-template').textContent;
-                    },
-                    actionOk: function () {
-                        vcl.pushImageConfig(active_version);
-                    }
-                },
-                'fastly-blocking-options': {
-                    title: jQuery.mage.__(''),
-                    content: function () {
-                        return document.getElementById('fastly-blocking-template').textContent;
-                    },
-                    actionOk: function () {
-                        vcl.toggleBlocking(active_version);
-                    }
-                },
                 'fastly-auth-options': {
                     title: jQuery.mage.__(''),
                     content: function () {
@@ -2488,24 +1131,6 @@ define([
                         }
                     }
                 },
-                'fastly-error-page-options': {
-                    title: jQuery.mage.__('Update Error Page Content'),
-                    content: function () {
-                        return document.getElementById('fastly-error-page-template').textContent;
-                    },
-                    actionOk: function () {
-                        vcl.saveErrorHtml(active_version);
-                    }
-                },
-                'fastly-waf-page-options': {
-                    title: jQuery.mage.__('Update WAF Page Content'),
-                    content: function () {
-                        return document.getElementById('fastly-waf-page-template').textContent;
-                    },
-                    actionOk: function () {
-                        vcl.saveWafHtml(active_version);
-                    }
-                },
                 'fastly-dictionary-container-options': {
                     title: jQuery.mage.__('Create dictionary container'),
                     content: function () {
@@ -2524,24 +1149,7 @@ define([
                         vcl.deleteDictionary(active_version);
                     }
                 },
-                'fastly-delete-acl-container-options': {
-                    title: jQuery.mage.__('Delete ACL container'),
-                    content: function () {
-                        return document.getElementById('fastly-delete-acl-container-template').textContent;
-                    },
-                    actionOk: function () {
-                        vcl.deleteAcl(active_version);
-                    }
-                },
-                'fastly-acl-container-options': {
-                    title: jQuery.mage.__('Create ACL container'),
-                    content: function () {
-                        return document.getElementById('fastly-acl-container-template').textContent;
-                    },
-                    actionOk: function () {
-                        vcl.createAcl(active_version);
-                    }
-                },
+
                 'fastly-auth-container-options': {
                     title: jQuery.mage.__('Create container for authenticated users'),
                     content: function () {
@@ -2582,15 +1190,6 @@ define([
                         return document.getElementById('fastly-auth-items-template').textContent;
                     },
                     actionOk: function () {
-                    }
-                },
-                'fastly-io-default-config-options': {
-                    title: jQuery.mage.__('Image optimization default config options'),
-                    content: function () {
-                        return document.getElementById('fastly-io-default-config-options-template').textContent;
-                    },
-                    actionOk: function () {
-                        vcl.configureIo(active_version);
                     }
                 }
             }

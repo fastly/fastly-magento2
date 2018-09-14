@@ -24,6 +24,8 @@ define([
         let authStateSpan = $('#auth_state_span');
         let authStateMsgSpan = $('#fastly_auth_state_message_span');
 
+        let authStatus = true;
+
         let authDictStatus;
 
         let active_version = serviceStatus.active_version;
@@ -97,11 +99,11 @@ define([
         }
 
         // Queries Fastly API to retrieve ACLs
-        function listAuths (active_version, loaderVisibility) {
+        function listAuths (active_version) {
             return $.ajax({
                 type: "GET",
                 url: config.getAuths,
-                showLoader: loaderVisibility,
+                showLoader: true,
                 data: {'active_version': active_version},
                 beforeSend: function (xhr) {
                     $('.loading-dictionaries').show();
@@ -139,6 +141,51 @@ define([
                 data: {'active_version': active_version, 'auth_user': item_key, 'auth_pass': item_value},
                 beforeSend: function () {
                     resetAllMessages();
+                }
+            });
+        }
+
+        // Toggle Auth process
+        function toggleAuth(active_version) {
+            let activate_auth_flag = false;
+
+            if ($('#fastly_activate_auth').is(':checked')) {
+                activate_auth_flag = true;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: config.toggleAuthSettingUrl,
+                data: {
+                    'activate_flag': activate_auth_flag,
+                    'active_version': active_version
+                },
+                showLoader: true,
+                success: function (response) {
+                    if (response.status === true) {
+
+                        modal.modal('closeModal');
+                        let disabledOrEnabled = 'disabled';
+
+                        if (authStatus === false) {
+                            disabledOrEnabled = 'enabled';
+                        } else {
+                            disabledOrEnabled = 'disabled';
+                        }
+
+                        successAuthBtnMsg.text($.mage.__('Basic Authentication is successfully ' + disabledOrEnabled + '.')).show();
+
+                        if (disabledOrEnabled === 'enabled') {
+                            authStateMsgSpan.find('#enable_auth_state_disabled').hide();
+                            authStateMsgSpan.find('#enable_auth_state_enabled').show();
+                        } else {
+                            authStateMsgSpan.find('#enable_auth_state_enabled').hide();
+                            authStateMsgSpan.find('#enable_auth_state_disabled').show();
+                        }
+                    } else {
+                        resetAllMessages();
+                        showErrorMessage(response.msg);
+                    }
                 }
             });
         }
@@ -217,7 +264,7 @@ define([
                     } else {
                         $('.modal-title').text($.mage.__('We are about to turn off Basic Authentication'));
                     }
-
+                    authStatus = response.status;
                 }).fail(function () {
                     showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
                 });
@@ -274,7 +321,7 @@ define([
                     let service_name = service.service.name;
 
                     if (authDictStatus !== false) {
-                        listAuths(active_version, false).done(function (response) {
+                        listAuths(active_version).done(function (response) {
                             $('.loading-dictionaries').hide();
                             if (response.status === true) {
                                 if (response.auths.length > 0) {

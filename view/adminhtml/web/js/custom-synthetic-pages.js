@@ -25,7 +25,13 @@ define([
         let msgWarning = $('.fastly-message-error');
 
         let wafPageRow = $('#row_system_full_page_cache_fastly_fastly_error_maintenance_page_waf_page');
-        wafPageRow.hide();
+        let wafPage = getWafPageRespObj(active_version);
+
+        wafPage.done(function (checkWafResponse) {
+            if (checkWafResponse.status === false) {
+                wafPageRow.hide();
+            }
+        });
 
         let errorPageOptions = {
             title: jQuery.mage.__('Update Error Page Content'),
@@ -64,11 +70,11 @@ define([
         }
 
         // Queries Fastly API to retrieve WAF page response object
-        function getWafPageRespObj(active_version, loaderVisibility) {
+        function getWafPageRespObj(active_version) {
             return $.ajax({
                 type: "GET",
                 url: config.getWafPageRespObj,
-                showLoader: loaderVisibility,
+                showLoader: true,
                 data: {'active_version': active_version}
             });
         }

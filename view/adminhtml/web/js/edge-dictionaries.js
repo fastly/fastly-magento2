@@ -67,7 +67,8 @@ define([
             return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
         });
 
-        function createDictionary() {
+        function createDictionary()
+        {
             let activate_vcl = false;
 
             if ($('#fastly_activate_vcl').is(':checked')) {
@@ -117,7 +118,8 @@ define([
         }
 
         // Process dictionaries
-        function processDictionaries (dictionaries) {
+        function processDictionaries(dictionaries)
+        {
             let html = '';
             $.each(dictionaries, function (index, dictionary) {
                 html += "<tr id='fastly_dict_" + index + "'>";
@@ -134,7 +136,8 @@ define([
         }
 
         // Queries Fastly API to retrieve Dictionaries
-        function listDictionaries(active_version, loaderVisibility) {
+        function listDictionaries(active_version, loaderVisibility)
+        {
             return $.ajax({
                 type: "GET",
                 url: config.getDictionaries,
@@ -147,7 +150,8 @@ define([
         }
 
         // Save Edge Dictionary item
-        function saveEdgeDictionaryItem (dictionary_id, item_key, item_value, loaderVisibility) {
+        function saveEdgeDictionaryItem(dictionary_id, item_key, item_value, loaderVisibility)
+        {
             return $.ajax({
                 type: "GET",
                 url: config.createDictionaryItem,
@@ -160,7 +164,8 @@ define([
         }
 
         // delete dictionary
-        function deleteDictionary() {
+        function deleteDictionary()
+        {
             let activate_vcl = false;
 
             if ($('#fastly_activate_vcl').is(':checked')) {
@@ -210,7 +215,8 @@ define([
         }
 
         // Delete Edge Dictionary item
-        function deleteEdgeDictionaryItem(dictionary_id, item_key, loaderVisibility) {
+        function deleteEdgeDictionaryItem(dictionary_id, item_key, loaderVisibility)
+        {
             return $.ajax({
                 type: "GET",
                 url: config.deleteDictionaryItem,
@@ -223,7 +229,6 @@ define([
         }
 
         $('#add-dictionary-container-button').on('click', function () {
-
             if (isAlreadyConfigured !== true) {
                 $(this).attr('disabled', true);
                 return alert($.mage.__('Please save config prior to continuing.'));
@@ -238,7 +243,6 @@ define([
                     showLoader: true
                 })
             ).done(function (service) {
-
                 if (service.status === false) {
                     return errorDictionaryBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }

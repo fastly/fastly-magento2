@@ -1,7 +1,8 @@
 define([
     "jquery"
 ], function ($) {
-    return function resetAllMessages() {
+    return function resetAllMessages()
+    {
         let msgWarning = $('.fastly-message-warning');
         let msgError = $('.fastly-message-error');
         let msgSuccess = $('.fastly-message-success');

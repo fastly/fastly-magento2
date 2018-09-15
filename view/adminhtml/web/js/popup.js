@@ -2,7 +2,8 @@ define([
     "jquery",
     "Magento_Ui/js/modal/modal"
 ], function ($) {
-    return function showPopup (options) {
+    return function showPopup(options)
+    {
         let self = this;
         let divId = options.id;
 

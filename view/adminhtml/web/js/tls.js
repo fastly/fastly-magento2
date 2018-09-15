@@ -52,7 +52,7 @@ define([
                 if (tlsStateDisabled.is(":hidden")) {
                     tlsStateEnabled.show();
                 }
-            } else if (response.status === false){
+            } else if (response.status === false) {
                 if (tlsStateEnabled.is(":hidden")) {
                     tlsStateDisabled.show();
                 }
@@ -71,7 +71,8 @@ define([
          * @param loaderVisibility
          * @returns {*}
          */
-        function getTlsSetting(active_version, loaderVisibility) {
+        function getTlsSetting(active_version, loaderVisibility)
+        {
             return $.ajax({
                 type: "POST",
                 url: config.checkTlsSettingUrl,
@@ -109,7 +110,7 @@ define([
                 let next_version = service.next_version;
                 let service_name = service.service.name;
 
-                getTlsSetting (active_version, true).done(function (response) {
+                getTlsSetting(active_version, true).done(function (response) {
                     if (response.status === false) {
                         $('.modal-title').text($.mage.__('We are about to enable Force TLS.'));
                     } else {
@@ -134,7 +135,8 @@ define([
          * @description uploads/removes the TLS VCL snippet and shows the new status and messages
          * @param active_version
          */
-        function toggleTls(active_version) {
+        function toggleTls(active_version)
+        {
             let activate_tls_flag = false;
 
             if ($('#fastly_activate_tls').is(':checked')) {

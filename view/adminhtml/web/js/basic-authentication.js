@@ -98,7 +98,8 @@ define([
         });
 
         // Queries Fastly API to retrieve Basic Auth status
-        function getAuthSetting (active_version) {
+        function getAuthSetting (active_version)
+        {
             return $.ajax({
                 type: "POST",
                 url: config.checkAuthSettingUrl,
@@ -108,7 +109,8 @@ define([
         }
 
         // Queries Fastly API to retrieve ACLs
-        function listAuths (active_version) {
+        function listAuths (active_version)
+        {
             return $.ajax({
                 type: "GET",
                 url: config.getAuths,
@@ -117,7 +119,8 @@ define([
             });
         }
 
-        function processAuths(auths) {
+        function processAuths(auths)
+        {
             let html = '';
             $.each(auths, function (index, auth) {
                 html += '<tr><td>' +
@@ -135,7 +138,8 @@ define([
             }
         }
 
-        function saveAuthItem(item_key, item_value, loaderVisibility) {
+        function saveAuthItem(item_key, item_value, loaderVisibility)
+        {
             return $.ajax({
                 type: "GET",
                 url: config.createAuthItem,
@@ -148,7 +152,8 @@ define([
         }
 
         // Delete Auth item
-        function deleteAuthItem(item_key_id) {
+        function deleteAuthItem(item_key_id)
+        {
             return $.ajax({
                 type: "GET",
                 url: config.deleteAuthItem,
@@ -161,7 +166,8 @@ define([
         }
 
         // Toggle Auth process
-        function toggleAuth(active_version) {
+        function toggleAuth(active_version)
+        {
             let activate_auth_flag = false;
 
             if ($('#fastly_activate_auth').is(':checked')) {
@@ -178,7 +184,6 @@ define([
                 showLoader: true,
                 success: function (response) {
                     if (response.status === true) {
-
                         modal.modal('closeModal');
                         let disabledOrEnabled = 'disabled';
 
@@ -206,7 +211,8 @@ define([
         }
 
         // Delete Authentication dictionary
-        function deleteMainAuth() {
+        function deleteMainAuth()
+        {
             let activate_vcl = false;
 
             if ($('#fastly_activate_vcl').is(':checked')) {
@@ -247,7 +253,8 @@ define([
         }
 
         // CreateAuth
-        function createAuth() {
+        function createAuth()
+        {
             let activate_vcl = false;
 
             if ($('#fastly_activate_vcl').is(':checked')) {
@@ -269,7 +276,7 @@ define([
                         active_version = response.active_version;
                         modal.modal('closeModal');
                         processAuths(response.auths);
-                    } else if (response.status === 'empty'){
+                    } else if (response.status === 'empty') {
                         processAuths([]);
                     } else {
                         resetAllMessages();

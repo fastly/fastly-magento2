@@ -60,7 +60,8 @@ define([
                 });
             });
 
-            function uploadVcl () {
+            function uploadVcl()
+            {
                 let activate_vcl_flag = false;
 
                 if ($('#fastly_activate_vcl').is(':checked')) {

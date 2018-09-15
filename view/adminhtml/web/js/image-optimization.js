@@ -94,7 +94,8 @@ define([
          *
          * @description sets and displays the status of the Image Optimization VCL snippet
          */
-        function triggerIoSnippetStatusCall() {
+        function triggerIoSnippetStatusCall()
+        {
             getIoSnippetStatus(serviceStatus.active_version, false).done(function (response) {
                 ioStateSpan.find('.processing').hide();
                 ioSnippetStatus = response.status;
@@ -147,7 +148,8 @@ define([
          * @param loaderVisibility
          * @returns {*}
          */
-        function getIoSnippetStatus(active_version, loaderVisibility) {
+        function getIoSnippetStatus(active_version, loaderVisibility)
+        {
             return $.ajax({
                 type: "POST",
                 url: config.checkImageSettingUrl,
@@ -162,7 +164,8 @@ define([
          * @description queries the Fastly API to check if Image Optimization is enabled for the service
          * @returns {*}
          */
-        function getIoServiceStatus() {
+        function getIoServiceStatus()
+        {
             return $.ajax({
                 type: "GET",
                 url: config.checkFastlyIoSettingUrl
@@ -175,7 +178,8 @@ define([
          * @description queries the Fastly API to retrieve the Image Optimization default configuration
          * @param active_version
          */
-        function getIoDefaultConfig(active_version) {
+        function getIoDefaultConfig(active_version)
+        {
             return $.ajax({
                 type: "POST",
                 url: config.listIoDefaultConfigOptions,
@@ -190,7 +194,8 @@ define([
          * @description uploads/removes the Image Optimization snippet and shows the new status and messages
          * @param active_version
          */
-        function toggleIo(active_version) {
+        function toggleIo(active_version)
+        {
             let activate_image_flag = false;
             let image_quality_flag = false;
 
@@ -256,7 +261,8 @@ define([
          *
          * @description updates the Image Optimization configuration default values
          */
-        function configureIo () {
+        function configureIo()
+        {
             let activate_vcl = false;
 
             if ($('#fastly_activate_io_vcl').is(':checked')) {

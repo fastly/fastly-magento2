@@ -73,7 +73,8 @@ define([
             return errorAclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
         });
 
-        function createAcl() {
+        function createAcl()
+        {
             let activate_vcl = false;
 
             if ($('#fastly_activate_vcl').is(':checked')) {
@@ -123,7 +124,8 @@ define([
         }
 
         // Process ACLs
-        function processAcls (acls) {
+        function processAcls(acls)
+        {
             let html = '';
             $.each(acls, function (index, acl) {
                 html += "<tr id='fastly_acl_" + index + "'>";
@@ -140,7 +142,8 @@ define([
         }
 
         // Queries Fastly API to retrieve ACLs
-        function listAcls(active_version, loaderVisibility) {
+        function listAcls(active_version, loaderVisibility)
+        {
             return $.ajax({
                 type: "GET",
                 url: config.getAcls,
@@ -153,7 +156,8 @@ define([
         }
 
         // Save Acl entry item
-        function saveEdgeAclItem (acl_id, item_value, negated_field, loaderVisibility) {
+        function saveEdgeAclItem(acl_id, item_value, negated_field, loaderVisibility)
+        {
             return $.ajax({
                 type: "GET",
                 url: config.createAclItem,
@@ -166,7 +170,8 @@ define([
         }
 
         // delete ACL
-        function deleteAcl() {
+        function deleteAcl()
+        {
             let activate_vcl = false;
 
             if ($('#fastly_activate_vcl').is(':checked')) {
@@ -216,7 +221,8 @@ define([
         }
 
         // Delete Edge ACL item
-        function deleteEdgeAclItem (acl_id, acl_item_id, loaderVisibility) {
+        function deleteEdgeAclItem(acl_id, acl_item_id, loaderVisibility)
+        {
             return $.ajax({
                 type: "GET",
                 url: config.deleteAclItem,
@@ -229,7 +235,6 @@ define([
         }
 
         $('#add-acl-container-button').on('click', function () {
-
             if (isAlreadyConfigured !== true) {
                 $(this).attr('disabled', true);
                 return alert($.mage.__('Please save config prior to continuing.'));
@@ -244,7 +249,6 @@ define([
                     showLoader: true
                 })
             ).done(function (service) {
-
                 if (service.status === false) {
                     return errorAclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
@@ -333,7 +337,6 @@ define([
         });
 
         $('body').on('click', '.save_acl_item', function () {
-            let keyField = $(this).closest('tr').find("input[name='key']");
             let valueField = $(this).closest('tr').find("input[name='value']");
             let item_value = valueField.val();
             let errors = false;
@@ -364,7 +367,7 @@ define([
                     showErrorMessage(response.msg);
                 }
             }).fail(function () {
-                vcl.showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
+                showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
             });
         });
 

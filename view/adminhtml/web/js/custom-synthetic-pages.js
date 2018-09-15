@@ -60,7 +60,8 @@ define([
         });
 
         // Queries Fastly API to retrieve error page response object
-        function getErrorPageRespObj(active_version, loaderVisibility) {
+        function getErrorPageRespObj(active_version, loaderVisibility)
+        {
             return $.ajax({
                 type: "GET",
                 url: config.getErrorPageRespObj,
@@ -70,7 +71,8 @@ define([
         }
 
         // Queries Fastly API to retrieve WAF page response object
-        function getWafPageRespObj(active_version) {
+        function getWafPageRespObj(active_version)
+        {
             return $.ajax({
                 type: "GET",
                 url: config.getWafPageRespObj,
@@ -80,7 +82,8 @@ define([
         }
 
         // Save Error Page Html
-        function saveErrorHtml () {
+        function saveErrorHtml()
+        {
             let activate_vcl = false;
 
             if ($('#fastly_activate_vcl').is(':checked')) {
@@ -118,7 +121,8 @@ define([
         }
 
         // Save WAF Page Html
-        function saveWafHtml() {
+        function saveWafHtml()
+        {
             let activate_vcl = false;
 
             if ($('#fastly_activate_vcl').is(':checked')) {

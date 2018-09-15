@@ -67,7 +67,8 @@ define([
          * @param loaderVisibility
          * @returns {*}
          */
-        function getBlockingSetting (active_version, loaderVisibility) {
+        function getBlockingSetting (active_version, loaderVisibility)
+        {
             return $.ajax({
                 type: "POST",
                 url: config.checkBlockingSettingUrl,
@@ -92,7 +93,6 @@ define([
                 url: config.serviceInfoUrl,
                 showLoader: true
             }).done(function (service) {
-
                 if (service.status === false) {
                     return errorBlockingBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
@@ -120,7 +120,8 @@ define([
             });
         });
 
-        function toggleBlocking(active_version) {
+        function toggleBlocking(active_version)
+        {
             let activate_blocking_flag = false;
 
             if ($('#fastly_activate_blocking').is(':checked')) {

@@ -98,7 +98,7 @@ define([
         });
 
         // Queries Fastly API to retrieve Basic Auth status
-        function getAuthSetting (active_version)
+        function getAuthSetting(active_version)
         {
             return $.ajax({
                 type: "POST",
@@ -109,7 +109,7 @@ define([
         }
 
         // Queries Fastly API to retrieve ACLs
-        function listAuths (active_version)
+        function listAuths(active_version)
         {
             return $.ajax({
                 type: "GET",
@@ -433,9 +433,9 @@ define([
                         setServiceLabel(active_version, next_version, service_name);
 
                         if (authStatus === false) {
-                            $('.modal-title').text($.mage.__('We are about to enable Basic Authentication'));
+                            $('.modal-title').text($.mage.__('You are about to enable Basic Authentication'));
                         } else {
-                            $('.modal-title').text($.mage.__('We are about to disable Basic Authentication'));
+                            $('.modal-title').text($.mage.__('You are about to disable Basic Authentication'));
                         }
 
                         if (enableMsg) {

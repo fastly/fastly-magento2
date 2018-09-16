@@ -67,7 +67,7 @@ define([
          * @param loaderVisibility
          * @returns {*}
          */
-        function getBlockingSetting (active_version, loaderVisibility)
+        function getBlockingSetting(active_version, loaderVisibility)
         {
             return $.ajax({
                 type: "POST",
@@ -138,7 +138,6 @@ define([
                 showLoader: true,
                 success: function (response) {
                     if (response.status === true) {
-
                         modal.modal('closeModal');
                         let disabledOrEnabled = 'disabled';
 

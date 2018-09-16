@@ -8,6 +8,7 @@ let config = {
             dictionaries: 'Fastly_Cdn/js/edge-dictionaries',
             acl: 'Fastly_Cdn/js/edge-acl',
             customSyntheticPages: 'Fastly_Cdn/js/custom-synthetic-pages',
+            backends: 'Fastly_Cdn/js/backends',
             setServiceLabel: 'Fastly_Cdn/js/service-label',
             popup: 'Fastly_Cdn/js/popup',
             resetAllMessages: 'Fastly_Cdn/js/reset-all-messages',

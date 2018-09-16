@@ -49,6 +49,7 @@ define([
                 let edgeDictionariesHead = $('#system_full_page_cache_fastly_fastly_edge_dictionaries-head');
                 let edgeAclHead = $('#system_full_page_cache_fastly_fastly_edge_acl-head');
                 let customSyntheticPagesHead = $('#system_full_page_cache_fastly_fastly_error_maintenance_page-head');
+                let backendsHead = $('#system_full_page_cache_fastly_fastly_backend_settings-head');
 
                 $.ajax({
                     type: "GET",
@@ -107,6 +108,12 @@ define([
                             });
                         });
 
+                        backendsHead.one('click', function () {
+                            requirejs(['backends'], function (backends) {
+                                backends(config, serviceStatus, isAlreadyConfigured);
+                            })
+                        });
+
                         $('#system_full_page_cache_fastly_fastly_custom_snippets-head').unbind('click').on('click', function () {
                             // Fetch custom snippets
                             if ($(this).attr("class") === "open") {
@@ -126,26 +133,6 @@ define([
                                 });
                             }
                         });
-
-                        // Fetch backends
-                        $('#system_full_page_cache_fastly_fastly_backend_settings-head').unbind('click').on('click', function () {
-                            if ($(this).attr("class") === "open") {
-                                vcl.getBackends(active_version, false).done(function (backendsResp) {
-                                    $('.loading-backends').hide();
-                                    if (backendsResp.status != false) {
-                                        if (backendsResp.backends.length > 0) {
-                                            backends = backendsResp.backends;
-                                            vcl.processBackends(backendsResp.backends);
-                                        } else {
-                                            $('.no-backends').show();
-                                        }
-                                    }
-                                }).fail(function () {
-                                    // TO DO: implement
-                                });
-                            }
-                        });
-
                     } else {
                         // blockingStateSpan.find('.processing').hide();
                         // blockingStateMsgSpan.find('#blocking_state_unknown').show();

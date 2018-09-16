@@ -8,8 +8,6 @@ define([
         $(document).ready(function () {
             let allOpen = '';
             let allActive = '';
-            let requestStateMsgSpan = '';
-            let imageStateMsgSpan = '';
             let active_version = '';
             let next_version = '';
             let fastlyFieldset = $('#system_full_page_cache_fastly');
@@ -50,6 +48,7 @@ define([
                 let edgeAclHead = $('#system_full_page_cache_fastly_fastly_edge_acl-head');
                 let customSyntheticPagesHead = $('#system_full_page_cache_fastly_fastly_error_maintenance_page-head');
                 let backendsHead = $('#system_full_page_cache_fastly_fastly_backend_settings-head');
+                let customSnippetsHead = $('#system_full_page_cache_fastly_fastly_custom_snippets-head');
 
                 $.ajax({
                     type: "GET",
@@ -114,35 +113,13 @@ define([
                             })
                         });
 
-                        $('#system_full_page_cache_fastly_fastly_custom_snippets-head').unbind('click').on('click', function () {
-                            // Fetch custom snippets
-                            if ($(this).attr("class") === "open") {
-                                $('#row_system_full_page_cache_fastly_fastly_custom_snippets_fastly_custom_snippets_upload > .value > div').hide();
-                                vcl.getCustomSnippets(false).done(function (snippetsResp) {
-                                    $('.loading-snippets').hide();
-                                    if (snippetsResp.status != false) {
-                                        if (snippetsResp.snippets.length > 0) {
-                                            snippets = snippetsResp.snippets;
-                                            vcl.processCustomSnippets(snippets);
-                                        } else {
-                                            $('.no-snippets').show();
-                                        }
-                                    }
-                                }).fail(function () {
-                                    // TO DO: implement
-                                });
-                            }
+                        customSnippetsHead.one('click', function () {
+                            requirejs(['customSnippets'], function (customSnippets) {
+                                customSnippets(config, serviceStatus, isAlreadyConfigured);
+                            })
                         });
-                    } else {
-                        // blockingStateSpan.find('.processing').hide();
-                        // blockingStateMsgSpan.find('#blocking_state_unknown').show();
-                        // imageStateSpan.find('.processing').hide();
-                        // imageStateMsgSpan.find('#imgopt_state_unknown').show();
                     }
-                }).fail(function () {
-                    requestStateMsgSpan.find('#force_tls_state_unknown').show();
-                    imageStateMsgSpan.find('#imgopt_state_unknown').show();
-                });
+                })
             }
         });
     }

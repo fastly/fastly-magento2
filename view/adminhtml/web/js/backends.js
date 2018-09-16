@@ -4,10 +4,9 @@ define([
     "popup",
     "resetAllMessages",
     "showErrorMessage",
-    "showSuccessMessage",
     "Magento_Ui/js/modal/modal",
     'mage/translate'
-], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage, showSuccessMessage) {
+], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         let active_version = serviceStatus.active_version;

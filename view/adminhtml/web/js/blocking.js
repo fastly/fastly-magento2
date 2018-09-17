@@ -84,9 +84,7 @@ define([
                 return alert($.mage.__('Please save config prior to continuing.'));
             }
 
-            successBlockingBtnMsg.hide();
-            errorBlockingBtnMsg.hide();
-            warningBlockingBtnMsg.hide();
+            resetAllMessages();
 
             $.ajax({
                 type: "GET",

@@ -33,9 +33,7 @@ define([
                     return alert($.mage.__('Please save config prior to continuing.'));
                 }
 
-                successVclBtnMsg.hide();
-                errorVclBtnMsg.hide();
-                warningVclBtnMsg.hide();
+                resetAllMessages();
 
                 $.when(
                     $.ajax({

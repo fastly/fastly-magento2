@@ -1,9 +1,10 @@
 define([
     "jquery",
+    "resetAllMessages",
     'mage/template',
     "Magento_Ui/js/modal/modal",
     'mage/translate'
-], function ($) {
+], function ($, resetAllMessages) {
     return function (config) {
         let testSuccessBtnMsg = $('#fastly-test-success-button-msg');
         let testErrorBtnMsg = $('#fastly-test-error-button-msg');
@@ -12,10 +13,7 @@ define([
 
             $('#fastly_test_connection_button').on('click', function () {
 
-                testSuccessBtnMsg.text();
-                testSuccessBtnMsg.hide();
-                testErrorBtnMsg.text();
-                testErrorBtnMsg.hide();
+                resetAllMessages();
 
                 $.ajax({
                     type: "POST",

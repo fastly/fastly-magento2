@@ -92,9 +92,7 @@ define([
                 return alert($.mage.__('Please save config prior to continuing.'));
             }
 
-            successTlsBtnMsg.hide();
-            errorTlsBtnMsg.hide();
-            warningTlsBtnMsg.hide();
+            resetAllMessages();
 
             $.ajax({
                 type: "GET",

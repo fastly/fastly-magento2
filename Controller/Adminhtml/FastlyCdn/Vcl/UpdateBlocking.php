@@ -117,7 +117,7 @@ class UpdateBlocking extends Action
         $result = $this->resultJson->create();
         try {
             $service = $this->api->checkServiceDetails();
-            $currActiveVersion = $this->getActiveVersion($service);
+            $currActiveVersion = $this->vcl->determineVersions($service->versions);
 
             $snippet = $this->config->getVclSnippets(
                 Config::VCL_BLOCKING_PATH,
@@ -160,18 +160,6 @@ class UpdateBlocking extends Action
                 'msg'       => $e->getMessage()
             ]);
         }
-    }
-
-    /**
-     * Get the current active version
-     *
-     * @param $service
-     * @return array
-     */
-    private function getActiveVersion($service)
-    {
-        $currActiveVersion = $this->vcl->determineVersions($service->versions);
-        return $currActiveVersion;
     }
 
     /**

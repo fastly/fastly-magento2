@@ -147,4 +147,21 @@ class Vcl extends AbstractHelper
             'next_version'      => $nextVersion
         ];
     }
+
+    /**
+     * Fetches and validates active version
+     *
+     * @param $service
+     * @param $activeVersion
+     * @return array
+     * @throws LocalizedException
+     */
+    public function getActiveVersion($service, $activeVersion)
+    {
+        $currActiveVersion = $this->determineVersions($service->versions);
+        if ($currActiveVersion['active_version'] != $activeVersion) {
+            throw new LocalizedException(__('Active versions mismatch.'));
+        }
+        return $currActiveVersion;
+    }
 }

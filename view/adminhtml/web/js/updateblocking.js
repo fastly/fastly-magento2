@@ -1,9 +1,10 @@
 define([
     "jquery",
+    "resetAllMessages",
     'mage/template',
     "Magento_Ui/js/modal/modal",
     'mage/translate'
-], function ($) {
+], function ($, resetAllMessages) {
     return function (config) {
         let blockingSuccessBtnMsg = $('#fastly-update-blocking-success-button-msg');
         let blockingErrorBtnMsg = $('#fastly-update-blocking-error-button-msg');
@@ -12,10 +13,7 @@ define([
 
             $('#fastly_update_blocking_button').on('click', function () {
 
-                blockingSuccessBtnMsg.text();
-                blockingSuccessBtnMsg.hide();
-                blockingErrorBtnMsg.text();
-                blockingErrorBtnMsg.hide();
+                resetAllMessages();
 
                 $.ajax({
                     type: "POST",

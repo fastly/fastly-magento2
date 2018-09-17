@@ -95,7 +95,8 @@ class Blocking extends Action
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
             $service = $this->api->checkServiceDetails();
-            $currActiveVersion = $this->getActiveVersion($service, $activeVersion);
+            $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
+            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
 
             $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
 
@@ -185,23 +186,6 @@ class Blocking extends Action
                 'msg'       => $e->getMessage()
             ]);
         }
-    }
-
-    /**
-     * Fetches and validates active version
-     *
-     * @param $service
-     * @param $activeVersion
-     * @return array
-     * @throws LocalizedException
-     */
-    private function getActiveVersion($service, $activeVersion)
-    {
-        $currActiveVersion = $this->vcl->determineVersions($service->versions);
-        if ($currActiveVersion['active_version'] != $activeVersion) {
-            throw new LocalizedException(__('Active versions mismatch.'));
-        }
-        return $currActiveVersion;
     }
 
     /**

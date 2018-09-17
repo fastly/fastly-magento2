@@ -5,18 +5,15 @@ define([
     'moment'
 ], function ($, t, g, moment) {
     "use strict";
-
     return function (config) {
-
-        var requests = [];
-        var bandwith = [];
-        var hitRatio = [];
-        var errors = [];
-        var fromPicker = $('#from-picker')
-        var toPicker = $('#to-picker');
+        let requests = [];
+        let bandwith = [];
+        let hitRatio = [];
+        let errors = [];
+        let fromPicker = $('#from-picker');
+        let toPicker = $('#to-picker');
 
         $(document).ready(function () {
-
             $('#Fastly').removeClass('ui-tabs-panel');
             // From picker init
             fromPicker.datetimepicker({dateFormat: "mm/dd/yy"});
@@ -33,8 +30,8 @@ define([
             });
 
             /* Default picker values */
-            var from = moment().utc().subtract(7, 'days').format('M/D/YYYY h:mm');
-            var to = moment().utc().format('M/D/YYYY h:mm');
+            let from = moment().utc().subtract(7, 'days').format('M/D/YYYY h:mm');
+            let to = moment().utc().format('M/D/YYYY h:mm');
             fromPicker.val(from);
             toPicker.val(to);
 
@@ -44,7 +41,7 @@ define([
                 url: config.serviceInfoUrl,
                 showLoader: true,
             }).done(function (checkService) {
-                if (checkService.status != false) {
+                if (checkService.status !== false) {
                     applyCharts();
                 } else {
                     $('#apply-historic-stats').prop("disabled", "disabled");
@@ -55,72 +52,72 @@ define([
             });
 
             $('.graph-options').on('change', function () {
-                var option = $(this).find(":selected").val();
-                var optionName = $(this).attr("name");
+                let option = $(this).find(":selected").val();
+                let optionName = $(this).attr("name");
                 $(this).parent().find('span').hide();
                 $('#' +optionName+ '-number-' + option).show();
             });
             /* Last hour */
             $('#last-hour').on('click', function (e) {
                 e.preventDefault();
-                var from = moment().utc().subtract(1, 'hours').format('M/D/YYYY h:mm');
-                var to = moment().utc().format('M/D/YYYY h:mm');
+                let from = moment().utc().subtract(1, 'hours').format('M/D/YYYY h:mm');
+                let to = moment().utc().format('M/D/YYYY h:mm');
                 fromPicker.val(from);
                 toPicker.val(to);
             });
             /* Last 2 hours */
             $('#last-2hr').on('click', function (e) {
                 e.preventDefault();
-                var from = moment().utc().subtract(2, 'hours').format('M/D/YYYY h:mm');
-                var to = moment().utc().format('M/D/YYYY h:mm');
+                let from = moment().utc().subtract(2, 'hours').format('M/D/YYYY h:mm');
+                let to = moment().utc().format('M/D/YYYY h:mm');
                 fromPicker.val(from);
                 toPicker.val(to);
             });
 
             $('#last-4hr').on('click', function (e) {
                 e.preventDefault();
-                var from = moment().utc().subtract(4, 'hours').format('M/D/YYYY h:mm');
-                var to = moment().utc().format('M/D/YYYY h:mm');
+                let from = moment().utc().subtract(4, 'hours').format('M/D/YYYY h:mm');
+                let to = moment().utc().format('M/D/YYYY h:mm');
                 fromPicker.val(from);
                 toPicker.val(to);
             });
 
             $('#last-8hr').on('click', function (e) {
                 e.preventDefault();
-                var from = moment().utc().subtract(8, 'hours').format('M/D/YYYY h:mm');
-                var to = moment().utc().format('M/D/YYYY h:mm');
+                let from = moment().utc().subtract(8, 'hours').format('M/D/YYYY h:mm');
+                let to = moment().utc().format('M/D/YYYY h:mm');
                 fromPicker.val(from);
                 toPicker.val(to);
             });
 
             $('#last-day').on('click', function (e) {
                 e.preventDefault();
-                var from = moment().utc().subtract(1, 'days').format('M/D/YYYY h:mm');
-                var to = moment().utc().format('M/D/YYYY h:mm');
+                let from = moment().utc().subtract(1, 'days').format('M/D/YYYY h:mm');
+                let to = moment().utc().format('M/D/YYYY h:mm');
                 fromPicker.val(from);
                 toPicker.val(to);
             });
 
             $('#last-week').on('click', function (e) {
                 e.preventDefault();
-                var from = moment().utc().subtract(7, 'days').format('M/D/YYYY h:mm');
-                var to = moment().utc().format('M/D/YYYY h:mm');
+                let from = moment().utc().subtract(7, 'days').format('M/D/YYYY h:mm');
+                let to = moment().utc().format('M/D/YYYY h:mm');
                 fromPicker.val(from);
                 toPicker.val(to);
             });
 
             $('#last-month').on('click', function (e) {
                 e.preventDefault();
-                var from = moment().utc().subtract(1, 'months').format('M/D/YYYY h:mm');
-                var to = moment().utc().format('M/D/YYYY h:mm');
+                let from = moment().utc().subtract(1, 'months').format('M/D/YYYY h:mm');
+                let to = moment().utc().format('M/D/YYYY h:mm');
                 fromPicker.val(from);
                 toPicker.val(to);
             });
 
             $('#last-year').on('click', function (e) {
                 e.preventDefault();
-                var from = moment().utc().subtract(1, 'years').format('M/D/YYYY h:mm');
-                var to = moment().utc().format('M/D/YYYY h:mm');
+                let from = moment().utc().subtract(1, 'years').format('M/D/YYYY h:mm');
+                let to = moment().utc().format('M/D/YYYY h:mm');
                 fromPicker.val(from);
                 toPicker.val(to);
             });
@@ -132,10 +129,10 @@ define([
 
         function applyCharts()
         {
-            var from = fromPicker.val();
-            var to = toPicker.val();
-            var sample_rate = $('#sample-rate').val();
-            var region = $('#region').val();
+            let from = fromPicker.val();
+            let to = toPicker.val();
+            let sample_rate = $('#sample-rate').val();
+            let region = $('#region').val();
 
             $.ajax({
                 type: "POST",
@@ -151,30 +148,30 @@ define([
 
                 }
             }).done(function (response) {
-                if (response.status == true) {
+                if (response.status === true) {
                     if (response.stats.data.length > 0) {
-                        var data = response.stats.data;
+                        let data = response.stats.data;
                         /* Empty charts arrays */
                         requests = [];
                         bandwith = [];
                         hitRatio = [];
                         errors = [];
-                        var averageBandwidth = 0;
-                        var minimumBandwidth = 0;
+                        let averageBandwidth = 0;
+                        let minimumBandwidth = 0;
 
-                        var averageRequests = 0;
-                        var minimumRequests = 0;
+                        let averageRequests = 0;
+                        let minimumRequests = 0;
 
-                        var averageHitRatio = 0;
-                        var minimumHitRatio = 0;
-                        var maximumHitRatio = 0;
+                        let averageHitRatio = 0;
+                        let minimumHitRatio = 0;
+                        let maximumHitRatio = 0;
 
-                        var averageError503 = 0;
-                        var minimumError503 = 0;
+                        let averageError503 = 0;
+                        let minimumError503 = 0;
 
                         /* Parse Fastly Historic stats */
                         $.each(data, function (key, value) {
-                            var d = new Date();
+                            let d = new Date();
                             d.setTime(value.start_time*1000);
                             /* Requests */
                             requests.push([d, value.requests]);
@@ -182,14 +179,14 @@ define([
                             averageBandwidth += value.bandwidth;
                             averageError503 += value.status_503;
 
-                            if (value.miss != 0 && value.hits != 0) {
+                            if (value.miss !== 0 && value.hits !== 0) {
                                 averageHitRatio += (value.hits / (value.hits + value.miss)) * 100;
                             }
 
-                            if (key == 0) {
+                            if (key === 0) {
                                 minimumRequests = value.requests;
                                 minimumBandwidth = value.bandwidth;
-                                var initHitRatio = (value.hits / (value.hits + value.miss)) * 100;
+                                let initHitRatio = (value.hits / (value.hits + value.miss)) * 100;
                                 minimumHitRatio = initHitRatio;
                                 maximumHitRatio = initHitRatio;
                                 minimumError503 = 0;
@@ -218,13 +215,13 @@ define([
                             /* Bandwidth */
                             bandwith.push([d, value.bandwidth]);
                             /* Hit / Miss ratio */
-                            var ratio = (value.hits / (value.hits + value.miss)) * 100;
+                            let ratio = (value.hits / (value.hits + value.miss)) * 100;
                             hitRatio.push([d, ratio]);
                             /* 500s errors */
                             errors.push([d, value.status_5xx, value.status_503]);
                         });
 
-                        /* Bandwith stats */
+                        /* Bandwidth stats */
                         $('#bandwidth-number-total').html(formatBytes(averageBandwidth, 1));
                         averageBandwidth = averageBandwidth / data.length;
                         averageBandwidth = round(averageBandwidth, 2);
@@ -232,7 +229,7 @@ define([
                         $('#bandwidth-number-minimum').html(formatBytes(minimumBandwidth, 1));
 
                         /* Requests stats */
-                        var totalRequests = nFormatter(averageRequests, 1);
+                        let totalRequests = nFormatter(averageRequests, 1);
                         $('#requests-number-total').html(totalRequests);
                         averageRequests = averageRequests / data.length;
                         averageRequests = round(averageRequests, 2);
@@ -273,13 +270,13 @@ define([
 
         function errorsChart()
         {
-            var data = new google.visualization.DataTable();
+            let data = new google.visualization.DataTable();
             data.addColumn('datetime', 'Date');
             data.addColumn('number', '5xx');
             data.addColumn('number', '503');
             data.addRows(errors);
 
-            var options = {
+            let options = {
                 hAxis:{
                     format: 'MMMM d',
                     gridlines: {color: 'transparent'}
@@ -288,18 +285,18 @@ define([
                     gridlines: {color: 'transparent'},
                     format: 'short'
                 }};
-            var chart = new google.visualization.AreaChart(document.getElementById('errorschart'));
+            let chart = new google.visualization.AreaChart(document.getElementById('errorschart'));
             chart.draw(data,options);
         }
 
         function hitRatioChart()
         {
-            var data = new google.visualization.DataTable();
+            let data = new google.visualization.DataTable();
             data.addColumn('datetime', 'Date');
             data.addColumn('number', 'Ratio');
             data.addRows(hitRatio);
 
-            var options = {
+            let options = {
                 hAxis:{
                     format: 'MMMM d',
                     gridlines: {color: 'transparent'}
@@ -309,44 +306,44 @@ define([
                     format: '#\'%\''
                 }};
 
-            var formatter = new google.visualization.NumberFormat({suffix: '%'});
+            let formatter = new google.visualization.NumberFormat({suffix: '%'});
             formatter.format(data, 1);
-            var chart = new google.visualization.AreaChart(document.getElementById('hitratio'));
+            let chart = new google.visualization.AreaChart(document.getElementById('hitratio'));
             chart.draw(data,options);
 
         }
 
         function bandwithChart()
         {
-            var data = new google.visualization.DataTable();
+            let data = new google.visualization.DataTable();
             data.addColumn('datetime', 'Date');
             data.addColumn('number', 'Bandwith');
             data.addRows(bandwith);
 
             // custom format data values
-            for (var i = 0; i < data.getNumberOfRows(); i++) {
-                var val = data.getValue(i, 1);
-                var formattedVal = formatBytes(val, 0);
+            for (let i = 0; i < data.getNumberOfRows(); i++) {
+                let val = data.getValue(i, 1);
+                let formattedVal = formatBytes(val, 0);
                 data.setFormattedValue(i, 1, formattedVal);
             }
-            var options = {
+            let options = {
                 colors: ['#F17C09'],
                 hAxis:{
                     format: 'MMMM d',
                     gridlines: {color: 'transparent'}
                 }
             };
-            var chart = new google.visualization.AreaChart(document.getElementById('bandwith'));
+            let chart = new google.visualization.AreaChart(document.getElementById('bandwith'));
             // get the axis values and reformat them
-            var runOnce = google.visualization.events.addListener(chart, 'ready', function () {
+            let runOnce = google.visualization.events.addListener(chart, 'ready', function () {
                 google.visualization.events.removeListener(runOnce);
-                var bb, val, formattedVal, suffix, ticks = [], cli = chart.getChartLayoutInterface();
-                for (var i = 0; bb = cli.getBoundingBox('vAxis#0#gridline#' + i); i++) {
+                let bb, val, formattedVal, suffix, ticks = [], cli = chart.getChartLayoutInterface();
+                for (let i = 0; bb = cli.getBoundingBox('vAxis#0#gridline#' + i); i++) {
                     val = cli.getVAxisValue(bb.top);
                     // sometimes, the axis value falls 1/2 way though the pixel height of the gridline,
                     // so we need to add in 1/2 the height
                     // this assumes that all axis values will be integers
-                    if (val != parseInt(val)) {
+                    if (val !== parseInt(val)) {
                         val = cli.getVAxisValue(bb.top + bb.height / 2);
                     }
                     console.log(val);
@@ -365,12 +362,12 @@ define([
 
         function requestsChart()
         {
-            var data = new google.visualization.DataTable();
+            let data = new google.visualization.DataTable();
             data.addColumn('datetime', 'Date');
             data.addColumn('number', 'Requests');
             data.addRows(requests);
 
-            var options = {
+            let options = {
                 hAxis:{
                     format: 'MMMM d',
                     gridlines: {color: 'transparent'}
@@ -384,7 +381,7 @@ define([
                     easing: 'out'
                 }
             };
-            var chart = new google.visualization.AreaChart(document.getElementById('requests'));
+            let chart = new google.visualization.AreaChart(document.getElementById('requests'));
             chart.draw(data,options);
         }
 
@@ -412,17 +409,17 @@ define([
 
         function formatBytes(bytes, decimals, roundValue)
         {
-            if (bytes == 0) {
+            if (bytes === 0) {
                 return '0 Bytes';
             }
-            var k = 1000,
+            let k = 1000,
                 dm = decimals + 1 || 3,
                 sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
                 i = Math.floor(Math.log(bytes) / Math.log(k));
-            if (typeof roundValue == "undefined") {
+            if (typeof roundValue === "undefined") {
                 return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
             } else {
-                var result = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
+                let result = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
                 result = round(result, 0);
                 return result + ' ' + sizes[i];
             }
@@ -430,7 +427,7 @@ define([
 
         function nFormatter(num, digits)
         {
-            var si = [
+            let si = [
                 { value: 1E18, symbol: "E" },
                 { value: 1E15, symbol: "P" },
                 { value: 1E12, symbol: "T" },

@@ -318,9 +318,7 @@ define([
                 return alert($.mage.__('Please save config prior to continuing.'));
             }
 
-            successIoMsg.hide();
-            errorIoMsg.hide();
-            warningIoMsg.hide();
+            resetAllMessages();
 
             $.ajax({
                 type: "GET",

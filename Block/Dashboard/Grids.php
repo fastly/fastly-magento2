@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Block\Dashboard;
@@ -27,7 +27,6 @@ namespace Fastly\Cdn\Block\Dashboard;
  */
 class Grids extends \Magento\Backend\Block\Dashboard\Grids
 {
-
     protected function _prepareLayout() // @codingStandardsIgnoreLine - required by parent class
     {
         parent::_prepareLayout();
@@ -35,10 +34,10 @@ class Grids extends \Magento\Backend\Block\Dashboard\Grids
         $this->addTab(
             'fastly_historic_stats',
             [
-                'label' => __('Fastly'),
-                'url' => $this->getUrl('adminhtml/dashboard/historic', ['_current' => true]),
-                'class' => 'ajax',
-                'active' => false
+                'label'     => __('Fastly'),
+                'url'       => $this->getUrl('adminhtml/dashboard/historic', ['_current' => true]),
+                'class'     => 'ajax',
+                'active'    => false
             ]
         );
     }

@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Block\System\Config\Form\Field\Export;
@@ -76,9 +76,9 @@ class Fastly extends Field
             'Magento\Backend\Block\Widget\Button'
         )->setData(
             [
-                'id' => 'fastly_vcl_export_button',
-                'label' => __('Download Fastly VCL'),
-                'onclick' => "setLocation('{$this->getExportUrl()}')"
+                'id'        => 'fastly_vcl_export_button',
+                'label'     => __('Download Fastly VCL'),
+                'onclick'   => "setLocation('{$this->getExportUrl()}')"
             ]
         );
 

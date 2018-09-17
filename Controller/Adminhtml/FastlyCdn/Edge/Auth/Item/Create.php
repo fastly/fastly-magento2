@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Auth\Item;
@@ -39,22 +39,18 @@ class Create extends Action
      * @var Http
      */
     private $request;
-
     /**
      * @var JsonFactory
      */
     private $resultJson;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
     private $api;
-
     /**
      * @var Vcl
      */
@@ -87,7 +83,9 @@ class Create extends Action
     }
 
     /**
-     * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
+     * Create auth item
+     *
+     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Json|\Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {

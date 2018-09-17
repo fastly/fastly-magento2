@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Controller\GeoIP;
@@ -42,41 +42,31 @@ use Magento\Framework\App\Action\Action;
  */
 class GetAction extends Action
 {
-    /**
-     * Request parameter for the country code.
-     */
     const REQUEST_PARAM_COUNTRY = 'country_code';
-
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var UrlInterface
      */
     private $url;
-
     /**
      * @var StoreRepositoryInterface
      */
     private $storeRepository;
-
     /**
      * @var StoreManagerInterface
      */
     private $storeManager;
-
     /**
      * @var LayoutFactory
      */
     private $resultLayoutFactory;
-
     /**
      * @var LocaleResolverInterface
      */
     private $localeResolver;
-
     /**
      * @var LoggerInterface
      */
@@ -114,6 +104,8 @@ class GetAction extends Action
     }
 
     /**
+     * Get GeoIP action
+     *
      * @return ResponseInterface|ResultInterface|Layout|null
      */
     public function execute()

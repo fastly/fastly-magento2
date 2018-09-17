@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Block\System\Config\Form\Field;
@@ -58,7 +58,6 @@ class Checkbox extends Field
      * Retrieve element HTML markup.
      *
      * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
-     *
      * @return string
      */
     public function _getElementHtml(AbstractElement $element)
@@ -70,6 +69,8 @@ class Checkbox extends Field
     }
 
     /**
+     * Get pixel ratio values
+     *
      * @return array
      */
     public function getValues()
@@ -82,6 +83,7 @@ class Checkbox extends Field
         return $values;
     }
     /**
+     * Get is checked values
      *
      * @param  $name
      * @return boolean
@@ -92,6 +94,8 @@ class Checkbox extends Field
     }
 
     /**
+     * Get checked values
+     *
      * @return array|null
      */
     public function getCheckedValues()

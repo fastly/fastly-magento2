@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Block\System\Config\Form\Modal;
@@ -30,6 +30,8 @@ use \Magento\Backend\Block\Template;
 class UploadVcl extends Template
 {
     /**
+     * Prepare layout
+     *
      * @return $this|void
      */
     protected function _prepareLayout() // @codingStandardsIgnoreLine - required by parent class
@@ -40,6 +42,8 @@ class UploadVcl extends Template
     }
 
     /**
+     * Get dialogs
+     *
      * @return string
      */
     public function getDialogsHtml()
@@ -48,6 +52,8 @@ class UploadVcl extends Template
     }
 
     /**
+     * Return dialog html
+     *
      * @return string
      */
     public function _toHtml()

@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Block\Cache;
@@ -72,6 +72,8 @@ class Additional extends Template
     }
 
     /**
+     * Get clean by content type url
+     *
      * @return string
      */
     public function getCleanByContentTypeUrl()
@@ -80,6 +82,8 @@ class Additional extends Template
     }
 
     /**
+     * Get quick purge url
+     *
      * @return string
      */
     public function getQuickPurgeUrl()
@@ -88,6 +92,8 @@ class Additional extends Template
     }
 
     /**
+     * Get purge all url
+     *
      * @return string
      */
     public function getPurgeAllUrl()
@@ -96,7 +102,7 @@ class Additional extends Template
     }
 
     /**
-     *
+     * Get clean by source url
      *
      * @return string
      */
@@ -106,6 +112,8 @@ class Additional extends Template
     }
 
     /**
+     * Get store options
+     *
      * @return array
      */
     public function getStoreOptions()

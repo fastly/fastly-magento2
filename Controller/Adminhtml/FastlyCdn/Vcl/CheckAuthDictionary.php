@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
@@ -33,10 +33,9 @@ use Magento\Framework\Controller\Result\JsonFactory;
 class CheckAuthDictionary extends Action
 {
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
     private $api;
-
     /**
      * @var JsonFactory
      */
@@ -62,6 +61,7 @@ class CheckAuthDictionary extends Action
 
     /**
      * Check if AUTH dictionary exists
+     *
      * @return \Magento\Framework\Controller\Result\Json
      */
     public function execute()

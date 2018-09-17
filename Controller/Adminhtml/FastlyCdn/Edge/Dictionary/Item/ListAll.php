@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Dictionary\Item;
@@ -84,8 +84,8 @@ class ListAll extends Action
 
             if (is_array($dictionaryItems) && empty($dictionaryItems)) {
                 return $result->setData([
-                    'status'    => 'empty',
-                    'dictionaryItems' => []
+                    'status'            => 'empty',
+                    'dictionaryItems'   => []
                 ]);
             }
 

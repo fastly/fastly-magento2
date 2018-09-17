@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Acl;
@@ -89,6 +89,8 @@ class Delete extends Action
     }
 
     /**
+     * Delete ACL
+     *
      * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
      */
     public function execute()
@@ -108,9 +110,11 @@ class Delete extends Action
 
             $this->api->deleteAcl($clone->number, $acl);
             $validation = $this->api->containerValidateServiceVersion($clone->number);
+
             if ($validation->status == 'error') {
                 $used = $acl;
             }
+
             if ($used != '') {
                 throw new LocalizedException(__(
                     'Failed to validate service, the container "' . $used . '" may be in use. '

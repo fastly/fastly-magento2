@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
@@ -35,20 +35,17 @@ use Magento\Framework\Controller\Result\JsonFactory;
 class ServiceInfo extends Action
 {
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
     private $api;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var Vcl
      */
     private $vcl;
-
     /**
      * @var JsonFactory
      */
@@ -80,6 +77,7 @@ class ServiceInfo extends Action
 
     /**
      * Checking service details
+     *
      * @return \Magento\Framework\Controller\Result\Json
      */
     public function execute()

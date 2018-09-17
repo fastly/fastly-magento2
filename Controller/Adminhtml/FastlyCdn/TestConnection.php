@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn;
@@ -37,30 +37,25 @@ use Magento\Framework\Controller\Result\JsonFactory;
 class TestConnection extends Action
 {
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
     private $api;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var JsonFactory
      */
     private $resultJsonFactory;
-
     /**
      * @var Statistic
      */
     private $statistic;
-
     /**
      * @var StatisticFactory
      */
     private $statisticFactory;
-
     /**
      * @var StatisticRepository
      */
@@ -97,7 +92,7 @@ class TestConnection extends Action
     }
 
     /**
-     * Checking service details
+     * Check service details
      *
      * @return \Magento\Framework\Controller\Result\Json
      */

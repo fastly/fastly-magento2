@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Controller\Adminhtml\Dashboard;
@@ -30,6 +30,8 @@ use Magento\Backend\Controller\Adminhtml\Dashboard\AjaxBlock;
 class Historic extends AjaxBlock
 {
     /**
+     * Return historic stats
+     *
      * @return \Magento\Framework\Controller\Result\Raw
      */
     public function execute()

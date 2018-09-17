@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
@@ -40,22 +40,18 @@ class Blocking extends Action
      * @var Http
      */
     private $request;
-
     /**
      * @var JsonFactory
      */
     private $resultJson;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var Api
      */
     private $api;
-
     /**
      * @var Vcl
      */
@@ -206,7 +202,7 @@ class Blocking extends Action
     }
 
     /**
-     * Prepares ACLS VCL snippets
+     * Prepares ACL VCL snippets
      *
      * @param $blockedAcls
      * @return string

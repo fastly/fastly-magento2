@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
@@ -35,9 +35,6 @@ use Fastly\Cdn\Helper\Vcl;
  */
 class SaveErrorPageHtml extends Action
 {
-    /**
-     * VCL error snippet path
-     */
     const VCL_ERROR_SNIPPET_PATH = '/vcl_snippets_error_page';
     const VCL_ERROR_SNIPPET = 'deliver.vcl';
 
@@ -45,22 +42,18 @@ class SaveErrorPageHtml extends Action
      * @var Http
      */
     private $request;
-
     /**
      * @var JsonFactory
      */
     private $resultJson;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
     private $api;
-
     /**
      * @var Vcl
      */
@@ -68,6 +61,7 @@ class SaveErrorPageHtml extends Action
 
     /**
      * SaveErrorPageHtml constructor.
+     *
      * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory

@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Console\Command;
@@ -30,6 +30,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Cache\Manager;
 
+/**
+ * Class EnableCommand
+ *
+ * @package Fastly\Cdn\Console\Command
+ */
 class EnableCommand extends Command
 {
     /**

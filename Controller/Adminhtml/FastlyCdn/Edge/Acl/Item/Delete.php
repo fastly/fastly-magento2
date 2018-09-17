@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Acl\Item;
@@ -39,22 +39,18 @@ class Delete extends Action
      * @var Http
      */
     private $request;
-
     /**
      * @var JsonFactory
      */
     private $resultJson;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
     private $api;
-
     /**
      * @var Vcl
      */

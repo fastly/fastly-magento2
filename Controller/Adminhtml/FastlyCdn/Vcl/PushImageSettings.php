@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
@@ -37,9 +37,6 @@ use Magento\Framework\Exception\LocalizedException;
  */
 class PushImageSettings extends Action
 {
-    /**
-     * VCL snippet names
-     */
     const CONDITION_NAME = 'fastly-image-optimizer-condition';
     const HEADER_NAME = 'fastly-image-optimizer-header';
     const VCL_SNIPPET_PATH = '/vcl_snippets_image_optimizations';
@@ -48,27 +45,22 @@ class PushImageSettings extends Action
      * @var Http
      */
     private $request;
-
     /**
      * @var JsonFactory
      */
     private $resultJson;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
     private $api;
-
     /**
      * @var Vcl
      */
     private $vcl;
-
     /**
      * @var Image
      */
@@ -105,6 +97,8 @@ class PushImageSettings extends Action
     }
 
     /**
+     * Upload Image Optimization settings
+     *
      * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
      */
     public function execute()
@@ -204,8 +198,8 @@ class PushImageSettings extends Action
             ]);
         } catch (\Exception $e) {
             return $result->setData([
-                'status' => false,
-                'msg' => $e->getMessage()
+                'status'    => false,
+                'msg'       => $e->getMessage()
             ]);
         }
     }

@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
@@ -41,22 +41,18 @@ class EnableAuth extends Action
      * @var Http
      */
     private $request;
-
     /**
      * @var JsonFactory
      */
     private $resultJson;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
     private $api;
-
     /**
      * @var Vcl
      */
@@ -126,11 +122,11 @@ class EnableAuth extends Action
                 // Insert snippet
                 foreach ($snippets as $key => $value) {
                     $snippetData = [
-                        'name' => Config::FASTLY_MAGENTO_MODULE.'_basic_auth_'.$key,
-                        'type' => $key,
-                        'dynamic' => "0",
-                        'content' => $value,
-                        'priority' => 10
+                        'name'      => Config::FASTLY_MAGENTO_MODULE.'_basic_auth_'.$key,
+                        'type'      => $key,
+                        'dynamic'   => "0",
+                        'content'   => $value,
+                        'priority'  => 10
                     ];
                     $this->api->uploadSnippet($clone->number, $snippetData);
                 }

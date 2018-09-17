@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
@@ -33,26 +33,16 @@ use Magento\Framework\Controller\Result\JsonFactory;
  */
 class CheckAuthUsersAvailable extends Action
 {
-    /**
-     * Path to Authentication snippet
-     */
     const VCL_AUTH_SNIPPET_PATH = '/vcl_snippets_basic_auth';
-
-    /**
-     * Path to Authentication snippet
-     */
     const AUTH_DICTIONARY_NAME = 'magentomodule_basic_auth';
-
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
     private $api;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var JsonFactory
      */
@@ -80,7 +70,7 @@ class CheckAuthUsersAvailable extends Action
     }
 
     /**
-     * Checking request setting
+     * Check if authentication users are available
      *
      * @return \Magento\Framework\Controller\Result\Json
      */

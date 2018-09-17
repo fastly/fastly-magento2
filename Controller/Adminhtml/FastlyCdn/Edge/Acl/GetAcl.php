@@ -37,12 +37,10 @@ class GetAcl extends Action
      * @var JsonFactory
      */
     private $resultJson;
-
     /**
      * @var Api
      */
     private $api;
-
     /**
      * @var Acl
      */

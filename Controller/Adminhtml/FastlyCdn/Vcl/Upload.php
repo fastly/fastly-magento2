@@ -133,7 +133,7 @@ class Upload extends Action
             $clone = $this->api->cloneVersion($currActiveVersion);
             $snippets = $this->config->getVclSnippets();
             $read = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR);
-            $customSnippetPath = $read->getAbsolutePath('vcl_snippets_custom');
+            $customSnippetPath = $read->getAbsolutePath(Config::CUSTOM_SNIPPET_PATH);
             $customSnippets = $this->config->getCustomSnippets($customSnippetPath);
 
             foreach ($snippets as $key => $value) {

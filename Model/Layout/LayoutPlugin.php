@@ -33,12 +33,10 @@ class LayoutPlugin
      * @var \Magento\PageCache\Model\Config
      */
     private $config;
-
     /**
      * @var \Magento\Framework\App\ResponseInterface
      */
     private $response;
-
     /**
      * @var \Fastly\Cdn\Helper\CacheTags
      */

@@ -20,6 +20,9 @@
  */
 namespace Fastly\Cdn\Plugin;
 
+use Fastly\Cdn\Model\Config;
+use Magento\Catalog\Block\Product\Image;
+
 /**
  * Class AdaptivePixelRationPlugin
  *
@@ -28,16 +31,16 @@ namespace Fastly\Cdn\Plugin;
 class AdaptivePixelRationPlugin
 {
     /**
-     * @var \Fastly\Cdn\Model\Config
+     * @var Config
      */
     public $config;
 
     /**
      * AdaptivePixelRationPlugin constructor.
      *
-     * @param \Fastly\Cdn\Model\Config $config
+     * @param Config $config
      */
-    public function __construct(\Fastly\Cdn\Model\Config $config)
+    public function __construct(Config $config)
     {
         $this->config = $config;
     }
@@ -45,9 +48,9 @@ class AdaptivePixelRationPlugin
     /**
      * Adjust srcset if required
      *
-     * @param \Magento\Catalog\Block\Product\Image $subject
+     * @param Image $subject
      */
-    public function beforeToHtml(\Magento\Catalog\Block\Product\Image $subject)
+    public function beforeToHtml(Image $subject)
     {
         if ($this->config->isImageOptimizationPixelRatioEnabled() !== true) {
             return;

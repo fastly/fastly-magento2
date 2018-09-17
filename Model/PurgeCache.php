@@ -31,7 +31,6 @@ class PurgeCache
      * @var Api
      */
     private $api;
-
     /**
      * @var Config
      */

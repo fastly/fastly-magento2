@@ -100,7 +100,7 @@ class EnableAuth extends Action
             $enabled = false;
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
-            $vclPath = CheckAuthSetting::VCL_AUTH_SNIPPET_PATH;
+            $vclPath = Config::VCL_AUTH_SNIPPET_PATH;
             $snippets = $this->config->getVclSnippets($vclPath);
 
             // Check if snippets exist

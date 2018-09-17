@@ -33,8 +33,6 @@ use Magento\Framework\Controller\Result\JsonFactory;
  */
 class CheckAuthUsersAvailable extends Action
 {
-    const VCL_AUTH_SNIPPET_PATH = '/vcl_snippets_basic_auth';
-    const AUTH_DICTIONARY_NAME = 'magentomodule_basic_auth';
     /**
      * @var Api
      */
@@ -79,7 +77,7 @@ class CheckAuthUsersAvailable extends Action
         $result = $this->resultJsonFactory->create();
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $dictionaryName = CheckAuthSetting::AUTH_DICTIONARY_NAME;
+            $dictionaryName = Config::AUTH_DICTIONARY_NAME;
             $dictionary = $this->api->getSingleDictionary($activeVersion, $dictionaryName);
 
             if ((is_array($dictionary) && empty($dictionary)) || $dictionary == false || !isset($dictionary->id)) {

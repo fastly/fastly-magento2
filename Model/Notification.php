@@ -47,17 +47,14 @@ class Notification extends Feed
      * Github latest composer data url
      */
     const CHECK_VERSION_URL = 'https://raw.githubusercontent.com/fastly/fastly-magento2/master/composer.json';
-
     /**
      * @var ScopeConfigInterface
      */
     private $scopeConfig;
-
     /**
      * @var WriterInterface
      */
     private $configWriter;
-
     /**
      * @var Manager
      */

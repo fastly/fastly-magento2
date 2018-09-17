@@ -36,7 +36,6 @@ class All extends Action
      * @var Api
      */
     private $api;
-
     /**
      * @var Manager
      */

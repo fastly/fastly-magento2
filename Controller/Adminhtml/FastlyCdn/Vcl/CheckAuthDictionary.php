@@ -21,6 +21,7 @@
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
 
 use Fastly\Cdn\Model\Api;
+use Fastly\Cdn\Model\Config;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
@@ -70,7 +71,7 @@ class CheckAuthDictionary extends Action
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
 
-            $dictionaryName = CheckAuthSetting::AUTH_DICTIONARY_NAME;
+            $dictionaryName = Config::AUTH_DICTIONARY_NAME;
             $dictionary = $this->api->getSingleDictionary($activeVersion, $dictionaryName);
 
             if ((is_array($dictionary) && empty($dictionary)) || $dictionary == false) {

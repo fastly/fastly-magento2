@@ -34,7 +34,6 @@ use Magento\Framework\Controller\Result\JsonFactory;
  */
 class CheckImageSetting extends Action
 {
-    const IMAGE_SETTING_NAME = 'magentomodule_image_optimization';
     /**
      * @var Api
      */
@@ -79,7 +78,7 @@ class CheckImageSetting extends Action
         $result = $this->resultJsonFactory->create();
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $req = $this->api->getRequest($activeVersion, self::IMAGE_SETTING_NAME);
+            $req = $this->api->getRequest($activeVersion, Config::IMAGE_SETTING_NAME);
 
             if ($req == false) {
                 return $result->setData([

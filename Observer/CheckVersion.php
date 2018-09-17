@@ -41,17 +41,14 @@ class CheckVersion implements ObserverInterface
      * @var Notification
      */
     private $feedFactory;
-
     /**
      * @var Session
      */
     private $backendAuthSession;
-
     /**
      * @var ComponentRegistrarInterface
      */
     private $moduleRegistry;
-
     /**
      * @var CacheInterface
      */

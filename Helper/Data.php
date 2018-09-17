@@ -33,12 +33,10 @@ use Magento\Store\Model\StoreManagerInterface;
 class Data extends AbstractHelper
 {
     const FASTLY_MODULE_NAME = 'Fastly_Cdn';
-
     /**
      * @var ModuleListInterface
      */
     private $moduleList;
-
     /**
      * @var StoreManagerInterface
      */

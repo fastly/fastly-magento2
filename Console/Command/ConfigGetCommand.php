@@ -39,17 +39,14 @@ class ConfigGetCommand extends Command
      * @var Config
      */
     private $config;
-
     /**
      * @var Api
      */
     private $api;
-
     /**
      * @var Vcl
      */
     private $vcl;
-
     /**
      * @var OutputInterface
      */

@@ -37,12 +37,10 @@ class ListAll extends Action
      * @var Http
      */
     private $request;
-
     /**
      * @var JsonFactory
      */
     private $resultJson;
-
     /**
      * @var Api
      */

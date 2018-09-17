@@ -35,17 +35,14 @@ class StatisticRepository
      * @var ResourceStatistic
      */
     private $statisticResource;
-
     /**
      * @var StatisticFactory
      */
     private $statisticFactory;
-
     /**
      * @var StatisticCollectionFactory
      */
     private $statisticCollectionFactory;
-
     /**
      * @var StoreManagerInterface
      */

@@ -100,7 +100,7 @@ class ForceTls extends Action
             $clone = $this->api->cloneVersion($currActiveVersion);
             $reqName = Config::FASTLY_MAGENTO_MODULE.'_force_tls';
             $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);
-            $snippets = $this->config->getVclSnippets('/vcl_snippets_force_tls');
+            $snippets = $this->config->getVclSnippets(Config::FORCE_TLS_PATH);
 
             if (!$checkIfReqExist) {
                 $request = [

@@ -31,12 +31,10 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 class ConfigRewrite
 {
     private $purge = false;
-
     /**
      * @var ScopeConfigInterface
      */
     private $scopeConfig = null;
-
     /**
      * @var Api
      */
@@ -58,7 +56,9 @@ class ConfigRewrite
 
     /**
      * Trigger purge if set
+     *
      * @param \Magento\Config\Model\Config $subject
+     * @throws \Zend_Uri_Exception
      */
     public function afterSave(\Magento\Config\Model\Config $subject) // @codingStandardsIgnoreLine - unused parameter
     {

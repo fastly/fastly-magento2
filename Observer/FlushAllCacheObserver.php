@@ -35,7 +35,6 @@ class FlushAllCacheObserver implements ObserverInterface
      * @var Config
      */
     private $config;
-
     /**
      * @var PurgeCache
      */
@@ -55,8 +54,7 @@ class FlushAllCacheObserver implements ObserverInterface
      * Flush Fastly CDN cache
      *
      * @param \Magento\Framework\Event\Observer $observer
-     * @return void
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @throws \Zend_Uri_Exception
      */
     public function execute(\Magento\Framework\Event\Observer $observer) // @codingStandardsIgnoreLine - unused parameter
     {

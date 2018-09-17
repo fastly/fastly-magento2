@@ -101,7 +101,10 @@ class Blocking extends Action
 
             $reqName = Config::FASTLY_MAGENTO_MODULE . '_blocking';
             $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);
-            $snippet = $this->config->getVclSnippets('/vcl_snippets_blocking', 'recv.vcl');
+            $snippet = $this->config->getVclSnippets(
+                Config::VCL_BLOCKING_PATH,
+                Config::VCL_BLOCKING_SNIPPET
+            );
 
             $country_codes = $this->prepareCountryCodes($this->config->getBlockByCountry());
             $acls = $this->prepareAcls($this->config->getBlockByAcl());

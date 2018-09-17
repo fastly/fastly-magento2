@@ -35,27 +35,22 @@ class Image extends ImageModel
      * @var array
      */
     private $fastlyParameters = [];
-
     /**
      * @var bool
      */
     private $isFastlyEnabled = null;
-
     /**
      * @var null
      */
     private $isForceLossyEnabled = null;
-
     /**
      * @var null
      */
     private $lossyParam = null;
-
     /**
      * @var null
      */
     private $lossyUrl = null;
-
     /**
      * @var null
      */

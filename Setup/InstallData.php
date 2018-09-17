@@ -40,22 +40,18 @@ class InstallData implements InstallDataInterface
      * @var DateTime
      */
     private $date;
-
     /**
      * @var WriterInterface
      */
     private $configWriter;
-
     /**
      * @var Statistic
      */
     private $statistic;
-
     /**
      * @var Manager
      */
     private $cacheManager;
-
     /**
      * @var Data
      */

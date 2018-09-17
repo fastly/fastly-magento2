@@ -35,7 +35,6 @@ class ResponsePlugin
      * @var Config
      */
     private $config;
-
     /**
      * @var CacheTags
      */

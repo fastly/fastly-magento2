@@ -729,7 +729,7 @@ class EnableCommand extends Command
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
             $reqName = Config::FASTLY_MAGENTO_MODULE.'_force_tls';
-            $snippets = $this->config->getVclSnippets('/vcl_snippets_force_tls');
+            $snippets = $this->config->getVclSnippets(Config::FORCE_TLS_PATH);
 
             $request = [
                 'name'          => $reqName,
@@ -784,7 +784,7 @@ class EnableCommand extends Command
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
             $reqName = Config::FASTLY_MAGENTO_MODULE.'_force_tls';
-            $snippets = $this->config->getVclSnippets('/vcl_snippets_force_tls');
+            $snippets = $this->config->getVclSnippets(Config::FORCE_TLS_PATH);
 
             $request = [
                 'name'          => $reqName,

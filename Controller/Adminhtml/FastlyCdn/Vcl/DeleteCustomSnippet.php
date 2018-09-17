@@ -28,6 +28,7 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\Directory\WriteFactory;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Filesystem;
+use Fastly\Cdn\Model\Config;
 
 /**
  * Class CreateCustomSnippet
@@ -104,7 +105,7 @@ class DeleteCustomSnippet extends Action
             $snippet = $this->getRequest()->getParam('snippet_id');
 
             $write = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
-            $snippetPath = $write->getRelativePath('vcl_snippets_custom/' . $snippet);
+            $snippetPath = $write->getRelativePath(Config::CUSTOM_SNIPPET_PATH . $snippet);
 
             if ($write->isExist($snippetPath)) {
                 $write->delete($snippetPath);

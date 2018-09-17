@@ -77,77 +77,62 @@ class Statistic extends AbstractModel implements IdentityInterface
     const GA_HITTYPE_EVENT = 'event';
     const GA_PAGEVIEW_URL = 'http://fastly.com/';
     const GA_FASTLY_SETUP = 'Fastly Setup';
-
     /**
      * @var array
      */
     private $GAReqData = [];
-
     /**
      * @var null|string
      */
     private $validationServiceId = null;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var StoreManagerInterface
      */
     private $storeManager;
-
     /**
      * @var ProductMetadataInterface Magento meta data (version)
      */
     private $metaData;
-
     /**
      * @var ScopeConfigInterface
      */
     private $scopeConfig;
-
     /**
      * @var CountryInformationAcquirerInterface
      */
     private $countryInformation;
-
     /**
      * @var RegionFactory
      */
     private $regionFactory;
-
     /**
      * @var Api
      */
     private $api;
-
     /**
      * @var CurlFactory
      */
     private $curlFactory;
-
     /**
      * @var StatisticRepository
      */
     private $statisticRepository;
-
     /**
      * @var DateTime
      */
     private $dateTime;
-
     /**
      * @var Http
      */
     private $request;
-
     /**
      * @var CountryFactory
      */
     private $countryFactory;
-
     /**
      * @var Data
      */

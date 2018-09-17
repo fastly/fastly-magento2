@@ -36,12 +36,10 @@ class ListAcl implements ArrayInterface
      * @var JsonFactory
      */
     private $resultJson;
-
     /**
      * @var Api
      */
     private $api;
-
     /**
      * @var Acl
      */

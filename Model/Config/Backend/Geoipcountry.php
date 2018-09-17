@@ -30,7 +30,6 @@ use Magento\Config\Model\Config\Backend\Serialized\ArraySerialized;
  */
 class Geoipcountry extends ArraySerialized
 {
-
     protected function _afterLoad() // @codingStandardsIgnoreLine - required by parent class
     {
         $value = $this->getValue();

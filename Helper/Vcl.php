@@ -53,6 +53,7 @@ class Vcl extends AbstractHelper
 
     /**
      * Fetch current version
+     *
      * @param array $versions
      * @return mixed
      * @throws LocalizedException
@@ -72,6 +73,7 @@ class Vcl extends AbstractHelper
 
     /**
      * Fetch next version
+     *
      * @param array $versions
      * @return int
      * @throws LocalizedException
@@ -87,6 +89,7 @@ class Vcl extends AbstractHelper
 
     /**
      * Check if active versions (local and remote) are in sync
+     *
      * @param $versions
      * @param $activeVersion
      * @return bool
@@ -104,6 +107,8 @@ class Vcl extends AbstractHelper
     }
 
     /**
+     * Get the admin front name
+     *
      * @return mixed
      * @throws \Exception
      * @throws \Magento\Framework\Exception\FileSystemException

@@ -35,9 +35,6 @@ use Fastly\Cdn\Helper\Vcl;
  */
 class SaveErrorPageHtml extends Action
 {
-    const VCL_ERROR_SNIPPET_PATH = '/vcl_snippets_error_page';
-    const VCL_ERROR_SNIPPET = 'deliver.vcl';
-
     /**
      * @var Http
      */
@@ -103,8 +100,8 @@ class SaveErrorPageHtml extends Action
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
             $snippets = $this->config->getVclSnippets(
-                self::VCL_ERROR_SNIPPET_PATH,
-                self::VCL_ERROR_SNIPPET
+                Config::VCL_ERROR_SNIPPET_PATH,
+                Config::VCL_ERROR_SNIPPET
             );
 
             foreach ($snippets as $key => $value) {

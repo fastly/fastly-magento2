@@ -33,8 +33,6 @@ use Magento\Framework\Controller\Result\JsonFactory;
  */
 class CheckAuthSetting extends Action
 {
-    const VCL_AUTH_SNIPPET_PATH = '/vcl_snippets_basic_auth';
-    const AUTH_DICTIONARY_NAME = 'magentomodule_basic_auth';
     /**
      * @var Api
      */
@@ -79,7 +77,7 @@ class CheckAuthSetting extends Action
         $result = $this->resultJsonFactory->create();
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $snippets = $this->config->getVclSnippets(self::VCL_AUTH_SNIPPET_PATH);
+            $snippets = $this->config->getVclSnippets(Config::VCL_AUTH_SNIPPET_PATH);
 
             foreach ($snippets as $key => $value) {
                 $name = Config::FASTLY_MAGENTO_MODULE . '_basic_auth_' . $key;

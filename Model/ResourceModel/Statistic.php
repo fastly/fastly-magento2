@@ -33,8 +33,6 @@ use Magento\Framework\Stdlib\DateTime\DateTime;
 class Statistic extends AbstractDb
 {
     /**
-     * Date model
-     *
      * @var DateTime
      */
     private $date;
@@ -66,7 +64,7 @@ class Statistic extends AbstractDb
 
     /**
      * @param AbstractModel $object
-     * @return $this
+     * @return AbstractDb
      */
     protected function _beforeSave(AbstractModel $object) // @codingStandardsIgnoreLine - required by parent class
     {

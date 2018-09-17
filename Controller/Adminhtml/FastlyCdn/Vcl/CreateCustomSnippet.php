@@ -29,6 +29,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Filesystem\Directory\WriteFactory;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Filesystem;
+use Fastly\Cdn\Model\Config;
 
 /**
  * Class CreateCustomSnippet
@@ -61,6 +62,10 @@ class CreateCustomSnippet extends Action
      * @var Filesystem
      */
     private $filesystem;
+    /**
+     * @var Config
+     */
+    private $config;
 
     /**
      * CreateCustomSnippet constructor.
@@ -72,6 +77,7 @@ class CreateCustomSnippet extends Action
      * @param WriteFactory $writeFactory
      * @param JsonFactory $resultJsonFactory
      * @param Filesystem $filesystem
+     * @param Config $config
      */
     public function __construct(
         Context $context,
@@ -80,7 +86,8 @@ class CreateCustomSnippet extends Action
         DirectoryList $directoryList,
         WriteFactory $writeFactory,
         JsonFactory $resultJsonFactory,
-        Filesystem $filesystem
+        Filesystem $filesystem,
+        Config $config
     ) {
         $this->resultRawFactory = $resultRawFactory;
         $this->fileFactory = $fileFactory;
@@ -88,6 +95,7 @@ class CreateCustomSnippet extends Action
         $this->writeFactory = $writeFactory;
         $this->resultJson = $resultJsonFactory;
         $this->filesystem = $filesystem;
+        $this->config = $config;
 
         parent::__construct($context);
     }
@@ -106,15 +114,21 @@ class CreateCustomSnippet extends Action
             $priority = $this->getRequest()->getParam('priority');
             $vcl = $this->getRequest()->getParam('vcl');
             $edit = $this->getRequest()->getParam('edit');
-            $snippetName = $this->validateCustomSnippet($name, $type, $priority);
+            $validation = $this->config->validateCustomSnippet($name, $type, $priority);
+            $error = $validation['error'];
+            if ($error != null) {
+                throw new LocalizedException(__($error));
+            }
+            $snippetName = $validation['snippet_name'];
+
             $fileName = $type . '_' . $priority . '_' . $snippetName . '.vcl';
 
             $write = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
-            $snippetPath = $write->getRelativePath('vcl_snippets_custom/' . $fileName);
+            $snippetPath = $write->getRelativePath(Config::CUSTOM_SNIPPET_PATH . $fileName);
 
             if ($edit == "true") {
                 $original = $this->getRequest()->getParam('original');
-                $originalPath = $write->getRelativePath('vcl_snippets_custom/' . $original);
+                $originalPath = $write->getRelativePath(Config::CUSTOM_SNIPPET_PATH . $original);
                 $write->renameFile($originalPath, $snippetPath);
             }
 
@@ -129,34 +143,5 @@ class CreateCustomSnippet extends Action
                 'msg'       => $e->getMessage()
             ]);
         }
-    }
-
-    /**
-     * @param $name
-     * @param $type
-     * @param $priority
-     * @return mixed
-     * @throws LocalizedException
-     */
-    private function validateCustomSnippet($name, $type, $priority)
-    {
-        $snippetName = str_replace(' ', '', $name);
-        $types = ['init', 'recv', 'hit', 'miss', 'pass', 'fetch', 'error', 'deliver', 'log', 'hash', 'none'];
-
-        $inArray = in_array($type, $types);
-        $isNumeric = is_numeric($priority);
-        $isAlphanumeric = preg_match('/^[\w]+$/', $snippetName);
-
-        if (!$inArray) {
-            throw new LocalizedException(__('Type value is not recognised.'));
-        }
-        if (!$isNumeric) {
-            throw new LocalizedException(__('Please make sure that the priority value is a number.'));
-        }
-        if (!$isAlphanumeric) {
-            throw new LocalizedException(__('Please make sure that the name value contains only 
-            alphanumeric characters.'));
-        }
-        return $snippetName;
     }
 }

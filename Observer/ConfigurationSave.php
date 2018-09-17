@@ -38,17 +38,14 @@ class ConfigurationSave implements ObserverInterface
      * @var Manager
      */
     private $moduleManager;
-
     /**
      * @var StatisticRepository
      */
     private $statisticRepo;
-
     /**
      * @var Statistic
      */
     private $statistic;
-
     /**
      * @var StatisticFactory
      */

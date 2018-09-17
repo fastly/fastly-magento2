@@ -40,12 +40,10 @@ class MarkEsiPage implements ObserverInterface
      * @var \Magento\PageCache\Model\Config
      */
     private $config;
-
     /**
      * @var FastlyConfig
      */
     private $fastlyConfig;
-
     /**
      * @var Response
      */
@@ -71,7 +69,6 @@ class MarkEsiPage implements ObserverInterface
      * Set x-esi header if block contains ttl attribute
      *
      * @param Observer $observer
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function execute(Observer $observer)
     {

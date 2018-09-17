@@ -36,30 +36,21 @@ use Fastly\Cdn\Helper\Vcl;
 class ListAll extends Action
 {
     /**
-     * Path to Authentication snippet
-     */
-    const VCL_AUTH_SNIPPET_PATH = '/vcl_snippets_basic_auth';
-
-    /**
      * @var Http
      */
     private $request;
-
     /**
      * @var JsonFactory
      */
     private $resultJson;
-
     /**
      * @var Api
      */
     private $api;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var Vcl
      */

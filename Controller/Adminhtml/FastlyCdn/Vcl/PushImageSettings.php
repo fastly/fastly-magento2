@@ -37,10 +37,6 @@ use Magento\Framework\Exception\LocalizedException;
  */
 class PushImageSettings extends Action
 {
-    const CONDITION_NAME = 'fastly-image-optimizer-condition';
-    const HEADER_NAME = 'fastly-image-optimizer-header';
-    const VCL_SNIPPET_PATH = '/vcl_snippets_image_optimizations';
-
     /**
      * @var Http
      */
@@ -116,7 +112,7 @@ class PushImageSettings extends Action
 
             $reqName = Config::FASTLY_MAGENTO_MODULE . '_image_optimization';
             $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);
-            $snippet = $this->config->getVclSnippets(self::VCL_SNIPPET_PATH, 'recv.vcl');
+            $snippet = $this->config->getVclSnippets(Config::IO_VCL_SNIPPET_PATH, 'recv.vcl');
 
             $condition = [
                 'name' => Config::FASTLY_MAGENTO_MODULE . '_image_optimization',
@@ -219,20 +215,5 @@ class PushImageSettings extends Action
             throw new LocalizedException(__('Active versions mismatch.'));
         }
         return $currActiveVersion;
-    }
-
-    /**
-     * Adjusts the status of the config
-     *
-     * @param bool $status
-     */
-    private function setStatus($status)
-    {
-        $this->configWriter->save(Config::XML_FASTLY_IMAGE_OPTIMIZATIONS, (bool)$status);
-
-        /** @var \Magento\Framework\App\Cache\Manager $cacheManager */
-        $cacheManager = $this->cacheFactory->create();
-
-        $cacheManager->flush([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
     }
 }

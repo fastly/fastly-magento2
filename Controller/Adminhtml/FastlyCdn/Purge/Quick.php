@@ -39,12 +39,10 @@ class Quick extends Action
      * @var PurgeCache
      */
     private $purgeCache;
-
     /**
      * @var StoreManagerInterface
      */
     private $storeManager;
-
     /**
      * @var Config
      */

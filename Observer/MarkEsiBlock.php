@@ -36,7 +36,6 @@ class MarkEsiBlock implements ObserverInterface
      * @var FastlyConfig
      */
     private $fastlyConfig;
-
     /**
      * @var Response
      */

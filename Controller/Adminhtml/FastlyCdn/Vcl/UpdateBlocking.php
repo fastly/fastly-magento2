@@ -119,7 +119,10 @@ class UpdateBlocking extends Action
             $service = $this->api->checkServiceDetails();
             $currActiveVersion = $this->getActiveVersion($service);
 
-            $snippet = $this->config->getVclSnippets('/vcl_snippets_blocking', 'recv.vcl');
+            $snippet = $this->config->getVclSnippets(
+                Config::VCL_BLOCKING_PATH,
+                Config::VCL_BLOCKING_SNIPPET
+            );
 
             $country_codes = $this->prepareCountryCodes($this->request->getParam('countries'));
             $acls = $this->prepareAcls($this->request->getParam('acls'));

@@ -47,42 +47,34 @@ class Api
      * @var Config $config,
      */
     private $config;
-
     /**
-     * @var \Magento\Framework\HTTP\Adapter\CurlFactory
+     * @var CurlFactory
      */
     private $curlFactory;
-
     /**
      * @var InvalidateLogger
      */
     private $logger;
-
     /**
      * @var Data
      */
     private $helper;
-
     /**
      * @var LoggerInterface
      */
     private $log;
-
     /**
      * @var bool Purge all flag
      */
     private $purged = false;
-
     /**
      * @var Vcl
      */
     private $vcl;
-
     /**
      * @var Proxy
      */
     private $authSession;
-
     /**
      * @var State
      */
@@ -351,6 +343,7 @@ class Api
 
     /**
      * List detailed information on a specified service
+     *
      * @param bool $test
      * @param null $serviceId
      * @param null $apiKey
@@ -376,6 +369,7 @@ class Api
 
     /**
      * Clone the current configuration into a new version.
+     *
      * @param $curVersion
      * @return bool|mixed
      * @throws LocalizedException
@@ -424,6 +418,7 @@ class Api
 
     /**
      * Validate the version for a particular service and version.
+     *
      * @param $version
      * @throws LocalizedException
      */
@@ -877,6 +872,7 @@ class Api
 
     /**
      * Fetches dictionary by name
+     *
      * @param $version
      * @param $dictionaryName
      * @return bool|mixed
@@ -891,6 +887,7 @@ class Api
 
     /**
      * Get auth dictionary
+     *
      * @param $version
      * @return bool|mixed
      */
@@ -904,6 +901,7 @@ class Api
 
     /**
      * Check if authentication dictionary is populated
+     *
      * @param $version
      * @throws LocalizedException
      */
@@ -922,6 +920,13 @@ class Api
         }
     }
 
+    /**
+     * Create dictionary items
+     *
+     * @param $dictionaryId
+     * @param $params
+     * @return bool|mixed
+     */
     public function createDictionaryItems($dictionaryId, $params)
     {
         $url = $this->_getApiServiceUri().'dictionary/'.$dictionaryId.'/items';
@@ -961,6 +966,7 @@ class Api
 
     /**
      * Upsert single Dictionary item
+     *
      * @param $dictionaryId
      * @param $itemKey
      * @param $itemValue
@@ -1007,7 +1013,7 @@ class Api
     }
 
     /**
-     * Delete named acl for a particular service and version.
+     * Delete named ACL for a particular service and version.
      *
      * @param $version
      * @param $name
@@ -1078,6 +1084,8 @@ class Api
     }
 
     /**
+     * Query for historic stats
+     *
      * @param array $parameters
      * @return bool|mixed
      */

@@ -44,32 +44,26 @@ class UpgradeData implements UpgradeDataInterface
      * @var DateTime
      */
     private $date;
-
     /**
      * @var ScopeConfigInterface
      */
     private $scopeConfig;
-
     /**
      * @var WriterInterface
      */
     private $configWriter;
-
     /**
      * @var Statistic
      */
     private $statistic;
-
     /**
      * @var Manager
      */
     private $cacheManager;
-
     /**
      * @var Data
      */
     private $helper;
-
     /**
      * @var ProductMetadataInterface
      */

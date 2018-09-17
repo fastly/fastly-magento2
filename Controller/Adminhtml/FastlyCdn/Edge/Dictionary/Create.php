@@ -39,22 +39,18 @@ class Create extends Action
      * @var Http
      */
     private $request;
-
     /**
      * @var JsonFactory
      */
     private $resultJson;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var Api
      */
     private $api;
-
     /**
      * @var Vcl
      */

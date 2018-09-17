@@ -5,9 +5,9 @@ define([
     "resetAllMessages",
     "showErrorMessage",
     "showSuccessMessage",
-    "Magento_Ui/js/modal/modal",
+    "Magento_Ui/js/modal/confirm",
     'mage/translate'
-], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage, showSuccessMessage) {
+], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage, showSuccessMessage, confirm) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         /* Dictionary button messages */
@@ -317,7 +317,8 @@ define([
             $('#dictionary-items-table > tbody').append('<tr><td><input name="key" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
                 '<td><input name="value" data-type="dictionary" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
                 '<td class="col-actions">' +
-                '<button class="action-delete fastly-save-action save_item" title="Save" type="button"><span>Save</span></button>' +
+                '<button class="action-delete fastly-save-action save_dictionary_item" title="Save" type="button"><span>Save</span></button>' +
+                '<button class="action-delete remove_dictionary_item"  title="Delete" type="button" hidden><span>Delete</span></button>' +
                 '</td></tr>');
         });
 
@@ -352,6 +353,7 @@ define([
             saveEdgeDictionaryItem(dictionary_id, item_key, item_value, true).done(function (response) {
                 if (response.status === true) {
                     $(self).closest('tr').find("input[name='key']").prop('disabled', true);
+                    $(self).closest('tr').find(".remove_dictionary_item").show();
                     showSuccessMessage($.mage.__('Dictionary item is successfully saved.'));
                 } else {
                     showErrorMessage(response.msg);
@@ -365,16 +367,23 @@ define([
             let item_key = $(this).closest('tr').find("input[name='key']").val();
             let self = this;
 
-            if (confirm("Are you sure you want to delete this item?")) {
-                deleteEdgeDictionaryItem(dictionary_id, item_key, true).done(function (response) {
-                    if (response.status === true) {
-                        $(self).closest('tr').remove();
-                        showSuccessMessage($.mage.__('Dictionary item is successfully deleted.'));
-                    }
-                }).fail(function () {
-                    showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
-                });
-            }
+            confirm({
+                title: 'Delete Dictionary Item',
+                content: "Are you sure you want to delete this item?",
+                actions: {
+                    confirm: function() {
+                        deleteEdgeDictionaryItem(dictionary_id, item_key, true).done(function (response) {
+                            if (response.status === true) {
+                                $(self).closest('tr').remove();
+                                showSuccessMessage($.mage.__('Dictionary item is successfully deleted.'));
+                            }
+                        }).fail(function () {
+                            showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
+                        });
+                    },
+                    cancel: function() {}
+                }
+            });
         });
 
         // delete dictionary container button

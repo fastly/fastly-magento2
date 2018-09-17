@@ -103,7 +103,7 @@ class Create extends Action
             $clone = $this->api->cloneVersion($currActiveVersion);
 
             // Create Auth Dictionary if needed
-            $dictionaryName = CheckAuthSetting::AUTH_DICTIONARY_NAME;
+            $dictionaryName = Config::AUTH_DICTIONARY_NAME;
             $dictionary = $this->api->getAuthDictionary($activeVersion);
 
             // Fetch Authentication items

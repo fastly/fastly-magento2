@@ -93,7 +93,7 @@ class Delete extends Action
 
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $dictionary = $this->api->getSingleDictionary($activeVersion, 'magentomodule_basic_auth');
+            $dictionary = $this->api->getSingleDictionary($activeVersion, Config::AUTH_DICTIONARY_NAME);
 
             if ((is_array($dictionary) && empty($dictionary)) || !isset($dictionary->id)) {
                 return $result->setData([
@@ -109,7 +109,7 @@ class Delete extends Action
                 // No users left, send message
                 return $result->setData([
                     'status'    => 'empty',
-                    'msg'       => 'While Basic Authenticaton is enabled, et least one user must exist.',
+                    'msg'       => 'While Basic Authentication is enabled, at least one user must exist.',
                 ]);
             }
 

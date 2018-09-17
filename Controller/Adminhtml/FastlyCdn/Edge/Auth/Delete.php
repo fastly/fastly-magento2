@@ -101,7 +101,7 @@ class Delete extends Action
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
 
             // Check dictionary
-            $dictionaryName = CheckAuthSetting::AUTH_DICTIONARY_NAME;
+            $dictionaryName = Config::AUTH_DICTIONARY_NAME;
             $dictionary = $this->api->getSingleDictionary($activeVersion, $dictionaryName);
 
             if ((is_array($dictionary) && empty($dictionary)) || $dictionary == false) {
@@ -113,7 +113,7 @@ class Delete extends Action
             }
 
             $clone = $this->api->cloneVersion($currActiveVersion);
-            $vclPath = CheckAuthSetting::VCL_AUTH_SNIPPET_PATH;
+            $vclPath = Config::VCL_AUTH_SNIPPET_PATH;
             $snippets = $this->config->getVclSnippets($vclPath);
 
             // Remove snippets

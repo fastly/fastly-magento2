@@ -5,9 +5,9 @@ define([
     "resetAllMessages",
     "showErrorMessage",
     "showSuccessMessage",
-    "Magento_Ui/js/modal/modal",
+    "Magento_Ui/js/modal/confirm",
     'mage/translate'
-], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage, showSuccessMessage) {
+], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage, showSuccessMessage, confirm) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         /* ACL button messages */
@@ -361,8 +361,9 @@ define([
                     $(self).closest('tr').find("input[name='value']").prop('disabled', true);
                     let newElement = $(self).closest('tr').find("input[name='value']")[0];
                     newElement.setAttribute('data-id', response.id);
+                    $(self).closest('tr').find(".col-actions").html('<button class="action-delete remove_acl_item"  title="Delete" type="button"><span>Delete</span></button>');
 
-                    showSuccessMessage($.mage.__('Acl item is successfully saved.'));
+                    showSuccessMessage($.mage.__('ACL item is successfully saved.'));
                 } else {
                     showErrorMessage(response.msg);
                 }
@@ -376,16 +377,23 @@ define([
             let acl_item_id = valueField.data('id');
             let self = this;
 
-            if (confirm("Are you sure you want to delete this item?")) {
-                deleteEdgeAclItem(acl_id, acl_item_id, true).done(function (response) {
-                    if (response.status === true) {
-                        $(self).closest('tr').remove();
-                        showSuccessMessage($.mage.__('ACL item is successfully deleted.'));
-                    }
-                }).fail(function () {
-                    showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
-                });
-            }
+            confirm({
+                title: 'Delete Dictionary Item',
+                content: "Are you sure you want to delete this item?",
+                actions: {
+                    confirm: function() {
+                        deleteEdgeAclItem(acl_id, acl_item_id, true).done(function (response) {
+                            if (response.status === true) {
+                                $(self).closest('tr').remove();
+                                showSuccessMessage($.mage.__('ACL item is successfully deleted.'));
+                            }
+                        }).fail(function () {
+                            showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
+                        });
+                    },
+                    cancel: function() {}
+                }
+            });
         });
 
         // delete ACL container button

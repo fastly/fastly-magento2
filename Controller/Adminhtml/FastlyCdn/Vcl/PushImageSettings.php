@@ -109,7 +109,7 @@ class PushImageSettings extends Action
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
 
-            $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
+            $clone = $this->api->cloneVersion($currActiveVersion);
 
             $reqName = Config::FASTLY_MAGENTO_MODULE . '_image_optimization';
             $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);

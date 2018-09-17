@@ -98,7 +98,7 @@ class Blocking extends Action
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
 
-            $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
+            $clone = $this->api->cloneVersion($currActiveVersion);
 
             $reqName = Config::FASTLY_MAGENTO_MODULE . '_blocking';
             $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);

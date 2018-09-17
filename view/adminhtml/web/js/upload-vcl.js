@@ -4,7 +4,6 @@ define([
     "popup",
     "resetAllMessages",
     "showErrorMessage",
-    "Magento_Ui/js/modal/modal",
     'mage/translate'
 ], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
@@ -15,7 +14,6 @@ define([
         let active_version = serviceStatus.active_version;
 
         $(document).ready(function () {
-
             let uploadOptions = {
                 title: jQuery.mage.__('You are about to upload VCL to Fastly '),
                 content: function () {
@@ -27,7 +25,6 @@ define([
             };
 
             $('#fastly_vcl_upload_button').on('click', function () {
-
                 if (isAlreadyConfigured !== true) {
                     $(this).attr('disabled', true);
                     return alert($.mage.__('Please save config prior to continuing.'));
@@ -42,7 +39,6 @@ define([
                         showLoader: true
                     })
                 ).done(function (service) {
-
                     if (service.status === false) {
                         return errorVclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                     }

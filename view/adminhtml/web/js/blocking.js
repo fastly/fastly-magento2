@@ -4,7 +4,6 @@ define([
     "popup",
     "resetAllMessages",
     "showErrorMessage",
-    "Magento_Ui/js/modal/modal",
     'mage/translate'
 ], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {

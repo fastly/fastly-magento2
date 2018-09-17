@@ -2,7 +2,6 @@ define([
     "jquery",
     "resetAllMessages",
     'mage/template',
-    "Magento_Ui/js/modal/modal",
     'mage/translate'
 ], function ($, resetAllMessages) {
     return function (config) {

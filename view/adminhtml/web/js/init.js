@@ -1,7 +1,6 @@
 define([
     "jquery",
     'mage/template',
-    "Magento_Ui/js/modal/modal",
     'mage/translate'
 ], function ($) {
     return function (config) {

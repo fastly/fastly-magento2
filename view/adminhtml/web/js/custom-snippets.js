@@ -5,9 +5,9 @@ define([
     "resetAllMessages",
     "showErrorMessage",
     "showSuccessMessage",
-    "Magento_Ui/js/modal/modal",
+    "Magento_Ui/js/modal/confirm",
     'mage/translate'
-], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage, showSuccessMessage) {
+], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage, showSuccessMessage, confirm) {
     return function (config, serviceStatus, isAlreadyConfigured) {
         /* Custom snippet button messages */
         let successCustomSnippetBtnMsg = $('#fastly-success-custom-snippet-button-msg');
@@ -40,13 +40,12 @@ define([
         getCustomSnippets(false).done(function (response) {
             $('.loading-snippets').hide();
             if (response.status !== false) {
-                if (response.snippets.length > 0) {
-                    snippets = response.snippets;
-                    processCustomSnippets(snippets);
-                } else {
-                    $('.no-snippets').show();
-                }
+                snippets = response.snippets;
+                processCustomSnippets(snippets);
+            } else {
+                $('.no-snippets').show();
             }
+
         });
 
         // custom snippet creation
@@ -82,12 +81,10 @@ define([
                         getCustomSnippets().done(function (snippetsResp) {
                             $('.loading-snippets').hide();
                             if (snippetsResp.status !== false) {
-                                if (snippetsResp.snippets.length > 0) {
-                                    snippets = snippetsResp.snippets;
-                                    processCustomSnippets(snippets);
-                                } else {
-                                    $('.no-snippets').show();
-                                }
+                                snippets = snippetsResp.snippets;
+                                processCustomSnippets(snippets);
+                            } else {
+                                $('.no-snippets').show();
                             }
                         });
                     } else {
@@ -227,16 +224,24 @@ define([
         $('body').on('click', 'button.fastly-delete-snippet-icon', function () {
             let snippet_id = $(this).data('snippet-id');
             let closestTr = $(this).closest('tr');
-            if (confirm("Are you sure you want to delete "+ snippet_id +"?")) {
-                deleteCustomSnippet(snippet_id).done(function (response) {
-                    if (response.status === true) {
-                        closestTr.remove();
-                        $('#fastly-success-snippet-button-msg').text($.mage.__('Custom snippet successfully deleted.')).show();
-                    }
-                }).fail(function () {
-                    showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
-                });
-            }
+
+            confirm({
+                title: 'Delete Custom Snippet',
+                content: "Are you sure you want to delete "+ snippet_id +"?",
+                actions: {
+                    confirm: function() {
+                        deleteCustomSnippet(snippet_id).done(function (response) {
+                            if (response.status === true) {
+                                closestTr.remove();
+                                $('#fastly-success-snippet-button-msg').text($.mage.__('Custom snippet successfully deleted.')).show();
+                            }
+                        }).fail(function () {
+                            showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
+                        });
+                    },
+                    cancel: function() {}
+                }
+            });
         });
 
         $('body').on('click', 'button.fastly-edit-snippet-icon', function () {

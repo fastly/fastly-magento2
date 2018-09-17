@@ -5,9 +5,9 @@ define([
     "resetAllMessages",
     "showErrorMessage",
     "showSuccessMessage",
-    "Magento_Ui/js/modal/modal",
+    "Magento_Ui/js/modal/confirm",
     'mage/translate'
-], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage, showSuccessMessage) {
+], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage, showSuccessMessage, confirm) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         /* Auth button messages */
@@ -342,18 +342,25 @@ define([
             let self = this;
             let authItemKeyId = valueField.data('keyid');
 
-            if (confirm("Are you sure you want to delete this item?")) {
-                deleteAuthItem(authItemKeyId).done(function (response) {
-                    if (response.status === true) {
-                        $(self).closest('tr').remove();
-                        showSuccessMessage($.mage.__('Authentication item is successfully deleted.'));
-                    } else if (response.status === 'empty') {
-                        showSuccessMessage($.mage.__(response.msg));
-                    }
-                }).fail(function () {
-                    showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
-                });
-            }
+            confirm({
+                title: 'Delete Authentication Item',
+                content: "Are you sure you want to delete this item?",
+                actions: {
+                    confirm: function() {
+                        deleteAuthItem(authItemKeyId).done(function (response) {
+                            if (response.status === true) {
+                                $(self).closest('tr').remove();
+                                showSuccessMessage($.mage.__('Authentication item is successfully deleted.'));
+                            } else if (response.status === 'empty') {
+                                showSuccessMessage($.mage.__(response.msg));
+                            }
+                        }).fail(function () {
+                            showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
+                        });
+                    },
+                    cancel: function() {}
+                }
+            });
         });
 
         $('body').on('click', '.remove_auth_dictionary', function () {

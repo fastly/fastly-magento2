@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.66
+
+- Added check for empty string instead of just false, added default config value to force lossy https://github.com/fastly/fastly-magento2/pull/207
+
 ## 1.2.65
 
 - Fix oversight where objects with no Cache-control and Expires headers would end up with the default TTL

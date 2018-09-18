@@ -41,6 +41,7 @@
                     </fastly_advanced_configuration>
                     <fastly_image_optimization_configuration>
                         <image_optimizations>0</image_optimizations>
+                        <image_optimization_force_lossy>0</image_optimization_force_lossy>
                         <image_optimization_bg_color>1</image_optimization_bg_color>
                         <image_optimizations_ratios>2,3</image_optimizations_ratios>
                     </fastly_image_optimization_configuration>

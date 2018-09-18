@@ -92,7 +92,7 @@ class Image extends ImageModel
 
         $this->isForceLossyEnabled = true;
 
-        if ($this->_scopeConfig->isSetFlag(Config::XML_FASTLY_FORCE_LOSSY) == false) {
+        if (empty($this->_scopeConfig->isSetFlag(Config::XML_FASTLY_FORCE_LOSSY))) {
             $this->isForceLossyEnabled = false;
         }
 

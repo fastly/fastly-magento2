@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Auth\Item;
@@ -94,6 +94,19 @@ class Delete extends Action
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
             $dictionary = $this->api->getSingleDictionary($activeVersion, Config::AUTH_DICTIONARY_NAME);
+            $vclPath = Config::VCL_AUTH_SNIPPET_PATH;
+            $snippets = $this->config->getVclSnippets($vclPath);
+
+            // Check if snippets exist
+            $status = true;
+            foreach ($snippets as $key => $value) {
+                $name = Config::FASTLY_MAGENTO_MODULE.'_basic_auth_'.$key;
+                $status = $this->api->getSnippet($activeVersion, $name);
+
+                if (!$status) {
+                    break;
+                }
+            }
 
             if ((is_array($dictionary) && empty($dictionary)) || !isset($dictionary->id)) {
                 return $result->setData([
@@ -105,7 +118,7 @@ class Delete extends Action
             // Check if there are any entries left
             $authItems = $this->api->dictionaryItemsList($dictionary->id);
 
-            if ((is_array($authItems) && count($authItems) < 2) || $authItems == false) {
+            if (($status == true && is_array($authItems) && count($authItems) < 2) || $authItems == false) {
                 // No users left, send message
                 return $result->setData([
                     'status'    => 'empty',

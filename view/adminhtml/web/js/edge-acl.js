@@ -359,6 +359,7 @@ define([
             saveEdgeAclItem(acl_id, item_value, negated_field, true).done(function (response) {
                 if (response.status === true) {
                     $(self).closest('tr').find("input[name='value']").prop('disabled', true);
+                    $(self).closest('tr').find("input[name='negated']").prop('disabled', true);
                     let newElement = $(self).closest('tr').find("input[name='value']")[0];
                     newElement.setAttribute('data-id', response.id);
                     $(self).closest('tr').find(".col-actions").html('<button class="action-delete remove_acl_item"  title="Delete" type="button"><span>Delete</span></button>');
@@ -375,11 +376,12 @@ define([
         $('body').on('click', '.remove_acl_item', function () {
             let valueField = $(this).closest('tr').find("input[name='value']");
             let acl_item_id = valueField.data('id');
+            let acl_item_name = valueField.val();
             let self = this;
 
             confirm({
                 title: 'Delete Dictionary Item',
-                content: "Are you sure you want to delete this item?",
+                content: 'Are you sure you want to delete the ACL item with the "'+acl_item_name+'" IP value?',
                 actions: {
                     confirm: function() {
                         deleteEdgeAclItem(acl_id, acl_item_id, true).done(function (response) {

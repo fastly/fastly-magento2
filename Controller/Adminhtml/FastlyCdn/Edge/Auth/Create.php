@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Auth;
@@ -58,7 +58,7 @@ class Create extends Action
     private $vcl;
 
     /**
-     * ForceTls constructor.
+     * Create constructor.
      *
      * @param Context $context
      * @param Http $request

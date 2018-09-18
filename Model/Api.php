@@ -15,7 +15,7 @@
  *
  * @category    Fastly
  * @package     Fastly_Cdn
- * @copyright   Copyright (c) 2018 Fastly, Inc. (http://www.fastly.com)
+ * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
 namespace Fastly\Cdn\Model;
@@ -44,7 +44,7 @@ class Api
     const FASTLY_MAX_HEADER_KEY_SIZE = 256;
 
     /**
-     * @var Config $config,
+     * @var Config
      */
     private $config;
     /**
@@ -893,7 +893,7 @@ class Api
      */
     public function getAuthDictionary($version)
     {
-        $name = \Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl\CheckAuthUsersAvailable::AUTH_DICTIONARY_NAME;
+        $name = Config::AUTH_DICTIONARY_NAME;
         $dictionary = $this->getSingleDictionary($version, $name);
 
         return $dictionary;

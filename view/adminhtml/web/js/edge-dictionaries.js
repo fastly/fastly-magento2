@@ -366,10 +366,9 @@ define([
         $('body').on('click', '.remove_dictionary_item', function () {
             let item_key = $(this).closest('tr').find("input[name='key']").val();
             let self = this;
-
             confirm({
                 title: 'Delete Dictionary Item',
-                content: "Are you sure you want to delete this item?",
+                content: 'Are you sure you want to delete the "'+item_key+'" dictionary item?',
                 actions: {
                     confirm: function() {
                         deleteEdgeDictionaryItem(dictionary_id, item_key, true).done(function (response) {

@@ -346,7 +346,6 @@ define([
                     if (val !== parseInt(val)) {
                         val = cli.getVAxisValue(bb.top + bb.height / 2);
                     }
-                    console.log(val);
                     formattedVal = formatBytes(val, 0, true);
 
                     ticks.push({v: val, f: formattedVal});

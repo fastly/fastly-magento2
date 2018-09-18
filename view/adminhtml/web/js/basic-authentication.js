@@ -138,12 +138,12 @@ define([
             }
         }
 
-        function saveAuthItem(item_key, item_value, loaderVisibility)
+        function saveAuthItem(item_key, item_value)
         {
             return $.ajax({
                 type: "GET",
                 url: config.createAuthItem,
-                showLoader: loaderVisibility,
+                showLoader: true,
                 data: {'active_version': active_version, 'auth_user': item_key, 'auth_pass': item_value},
                 beforeSend: function () {
                     resetAllMessages();
@@ -295,6 +295,7 @@ define([
                 '<td><input name="auth_pass" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
                 '<td class="col-actions">' +
                 '<button class="action-delete fastly-save-action save_item_auth" title="Save" type="button"><span>Save</span></button>' +
+                '<button class="action-delete remove_item_auth"  title="Delete" type="button" hidden><span>Delete</span></button>' +
                 '</td></tr>');
         });
 
@@ -319,12 +320,13 @@ define([
 
             let self = this;
 
-            saveAuthItem(item_key, item_value, true).done(function (response) {
+            saveAuthItem(item_key, item_value).done(function (response) {
                 if (response.status === true) {
                     $(self).closest('tr').find("input[name='auth_user']").prop('disabled', true);
                     $(self).closest('tr').find("input[name='auth_user']").data('keyid', btoa(item_key + ':' + item_value));
                     $(self).closest('tr').find("input[name='auth_pass']").prop('disabled', true);
-                    $(self).closest('tr').find(".save_item_auth").context.hide();
+                    $(self).closest('tr').find(".save_item_auth").hide();
+                    $(self).closest('tr').find(".remove_item_auth").show();
                     showSuccessMessage($.mage.__('Authentication entry is successfully saved.'));
                 } else {
                     showErrorMessage(response.msg);
@@ -352,7 +354,7 @@ define([
                                 $(self).closest('tr').remove();
                                 showSuccessMessage($.mage.__('Authentication item is successfully deleted.'));
                             } else if (response.status === 'empty') {
-                                showSuccessMessage($.mage.__(response.msg));
+                                showErrorMessage($.mage.__(response.msg));
                             }
                         }).fail(function () {
                             showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
@@ -407,7 +409,6 @@ define([
                 url: config.serviceInfoUrl,
                 showLoader: true
             }).done(function (service) {
-
                 if (service.status === false) {
                     return errorAuthBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
@@ -427,9 +428,7 @@ define([
                 $.ajax({
                     type: "GET",
                     url: config.checkAuthUsersAvailable,
-                    data: {
-                        'active_version': active_version
-                    },
+                    data: {'active_version': active_version},
                     showLoader: true,
                     success: function (response) {
                         if (response.status === 'empty') {
@@ -457,7 +456,6 @@ define([
         });
 
         $('#add-auth-container-button').on('click', function () {
-
             if (isAlreadyConfigured !== true) {
                 $(this).attr('disabled', true);
                 return alert($.mage.__('Please save config prior to continuing.'));
@@ -470,7 +468,6 @@ define([
                 url: config.serviceInfoUrl,
                 showLoader: true,
                 success: function (service) {
-
                     if (service.status === false) {
                         return errorAuthListBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                     }
@@ -479,17 +476,14 @@ define([
                     let next_version = service.next_version;
                     let service_name = service.service.name;
 
-
-                    listAuths(active_version, false).done(function (authResp) {
-                            if (authResp.status === true) {
-                                popup(authenticationItemsOptions);
-                                processAuths(authResp.auths);
-                            } else if (authResp.status === 'empty') {
-                                popup(authenticationItemsOptions);
-                                processAuths([]);
-                            } else {
-                                popup(authenticationContainerOptions);
-                            }
+                    listAuths(active_version).done(function (authResp) {
+                        if (authResp.status === true) {
+                            processAuths(authResp.auths);
+                        } else if (authResp.status === 'empty') {
+                            processAuths([]);
+                        } else {
+                            popup(authenticationContainerOptions);
+                        }
                         setServiceLabel(active_version, next_version, service_name);
                     }).fail(function () {
                         return errorAuthListBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();

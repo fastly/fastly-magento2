@@ -10,7 +10,6 @@ define([
         /* VCL button messages */
         let successVclBtnMsg = $('#fastly-success-vcl-button-msg');
         let errorVclBtnMsg = $('#fastly-error-vcl-button-msg');
-        let warningVclBtnMsg = $('#fastly-warning-vcl-button-msg');
         let active_version = serviceStatus.active_version;
 
         $(document).ready(function () {
@@ -24,6 +23,9 @@ define([
                 }
             };
 
+            /**
+             * VCL Upload button on click event
+             */
             $('#fastly_vcl_upload_button').on('click', function () {
                 if (isAlreadyConfigured !== true) {
                     $(this).attr('disabled', true);
@@ -54,6 +56,9 @@ define([
                 });
             });
 
+            /**
+             * Upload VCL snippets to the Fastly service
+             */
             function uploadVcl()
             {
                 let activate_vcl_flag = false;

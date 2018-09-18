@@ -206,7 +206,6 @@ define([
          * Set WAF Page HTML button
          */
         $('#fastly_waf_page_button').on('click', function () {
-
             if (isAlreadyConfigured !== true) {
                 $(this).attr('disabled', true);
                 return alert($.mage.__('Please save config prior to continuing.'));

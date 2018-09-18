@@ -15,14 +15,13 @@ define([
         /* Blocking button messages */
         let successBlockingBtnMsg = $('#fastly-success-blocking-button-msg');
         let errorBlockingBtnMsg = $('#fastly-error-blocking-button-msg');
-        let warningBlockingBtnMsg = $('#fastly-warning-blocking-button-msg');
 
         let active_version = serviceStatus.active_version;
 
         blockingStateSpan.find('.processing').show();
 
         /**
-         * Blocking options for the modal popup
+         * Blocking modal popup options
          *
          * @type {{id: string, title: *, content: (function(): string), actionOk: actionOk}}
          */
@@ -37,7 +36,9 @@ define([
             }
         };
 
-        /* Call getBlockingSetting function and display current status */
+        /**
+         * Trigger the Blocking status call
+         */
         getBlockingSetting(active_version, false).done(function (response) {
             blockingStateSpan.find('.processing').hide();
             let blockingStateEnabled = blockingStateMsgSpan.find('#blocking_state_enabled');
@@ -76,7 +77,9 @@ define([
             });
         }
 
-        /* Blocking button on click event that triggers a modal popup */
+        /**
+         * Toggle Blocking button on click event
+         */
         $('#fastly_blocking_button').on('click', function () {
             if (isAlreadyConfigured !== true) {
                 $(this).attr('disabled', true);
@@ -117,6 +120,11 @@ define([
             });
         });
 
+        /**
+         * Toggle Blocking VCL snippet
+         *
+         * @param active_version
+         */
         function toggleBlocking(active_version)
         {
             let activate_blocking_flag = false;

@@ -9,9 +9,10 @@ define([
         let blockingErrorBtnMsg = $('#fastly-update-blocking-error-button-msg');
 
         $(document).ready(function () {
-
+            /**
+             * Update Blocking button on click event
+             */
             $('#fastly_update_blocking_button').on('click', function () {
-
                 resetAllMessages();
 
                 $.ajax({

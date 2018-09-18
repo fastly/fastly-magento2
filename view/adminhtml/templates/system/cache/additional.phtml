@@ -35,15 +35,17 @@
                     </button>
                 </td>
                 <td>
-                    <select name="content_types"
-                            class="required-entry admin__control-select local-validation"
-                            style="margin:0 10px; width:150px">
-                        <?php foreach ($block->getContentTypeOptions() as $contentType => $label) : ?>
-                            <option value="<?php /* @noEscape */ echo $contentType ?>">
-                                <?php /* @noEscape */ echo $label ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <label>
+                        <select name="content_types"
+                                class="required-entry admin__control-select local-validation"
+                                style="margin:0 10px; width:150px">
+                            <?php foreach ($block->getContentTypeOptions() as $contentType => $label) : ?>
+                                <option value="<?php /* @noEscape */ echo $contentType ?>">
+                                    <?php /* @noEscape */ echo $label ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </label>
                 </td>
                 <td class="scope-label">
                     <span>

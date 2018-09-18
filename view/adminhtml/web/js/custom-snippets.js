@@ -12,21 +12,30 @@ define([
         /* Custom snippet button messages */
         let successCustomSnippetBtnMsg = $('#fastly-success-custom-snippet-button-msg');
         let errorCustomSnippetBtnMsg = $('#fastly-error-custom-snippet-button-msg');
-        let warningCUstomSnippetBtnMsg = $('#fastly-warning-custom-snippet-button-msg');
 
         let active_version = serviceStatus.active_version;
         let snippets;
 
+        /**
+         * Custom Snippet creation modal popup options
+         *
+         * @type {{title: *, content: (function(): string), actionOk: actionOk}}
+         */
         let customSnippetOptions = {
             title: jQuery.mage.__('You are about to create a custom snippet '),
                 content: function () {
                 return document.getElementById('fastly-custom-snippet-template').textContent;
             },
             actionOk: function () {
-                setCustomSnippet();
+                saveCustomSnippet();
             }
         };
 
+        /**
+         * Custom Snippet edit modal popup options
+         *
+         * @type {{title: *, content: (function(): string), actionOk: actionOk}}
+         */
         let customSnippetEditOptions = {
             title: jQuery.mage.__('You are about to edit a custom snippet '),
                 content: function () {
@@ -37,6 +46,9 @@ define([
             }
         };
 
+        /**
+         * Trigger the Custom Snippet list call
+         */
         getCustomSnippets(false).done(function (response) {
             $('.loading-snippets').hide();
             if (response.status !== false) {
@@ -48,8 +60,10 @@ define([
 
         });
 
-        // custom snippet creation
-        function setCustomSnippet()
+        /**
+         * Save a Custom Snippet
+         */
+        function saveCustomSnippet()
         {
             let custom_name = $('#custom_snippet_name').val();
             let custom_type = $('#custom_snippet_type').val();
@@ -97,7 +111,11 @@ define([
             });
         }
 
-        // Retrieve custom snippets
+        /**
+         * Retrieve a Custom Snippet
+         *
+         * @returns {*}
+         */
         function getCustomSnippets()
         {
             return $.ajax({
@@ -107,7 +125,11 @@ define([
             });
         }
 
-        // Process custom snippets
+        /**
+         * Process and display Custom Snippets
+         *
+         * @param snippets
+         */
         function processCustomSnippets(snippets)
         {
             let html = '';
@@ -123,6 +145,12 @@ define([
             $('#fastly-snippets-list').html(html);
         }
 
+        /**
+         * Delete a Custom Snippet
+         *
+         * @param snippet_id
+         * @returns {*}
+         */
         function deleteCustomSnippet(snippet_id)
         {
             return $.ajax({
@@ -136,6 +164,9 @@ define([
             });
         }
 
+        /**
+         * Update a Custom Snippet
+         */
         function updateCustomSnippet()
         {
             let custom_name = $('#custom_snippet_name').val();
@@ -189,7 +220,7 @@ define([
         }
 
         /**
-         * Custom snippet upload
+         * Custom Snippet create button on click event
          */
         $('#fastly_custom_vcl_button').on('click', function () {
             if (isAlreadyConfigured !== true) {
@@ -221,6 +252,9 @@ define([
             });
         });
 
+        /**
+         * Custom Snippet delete button on click event
+         */
         $('body').on('click', 'button.fastly-delete-snippet-icon', function () {
             let snippet_id = $(this).data('snippet-id');
             let closestTr = $(this).closest('tr');
@@ -244,6 +278,9 @@ define([
             });
         });
 
+        /**
+         * Custom Snippet edit button on click event
+         */
         $('body').on('click', 'button.fastly-edit-snippet-icon', function () {
             let snippet_id = $(this).data('snippet-id');
             if (isAlreadyConfigured !== true) {

@@ -13,6 +13,9 @@ define([
             let isAlreadyConfigured = true;
             let serviceStatus = false;
 
+            /**
+             * Fastly Configuration head on click event
+             */
             $('#system_full_page_cache_fastly-head').one('click', function () {
                 if ($(this).attr("class") === "open") {
                     init();
@@ -27,6 +30,9 @@ define([
                 }
             });
 
+            /**
+             * Initializes the Fastly Configuration
+             */
             function init()
             {
                 $('body').loader('show');

@@ -13,12 +13,10 @@ define([
         /* Auth button messages */
         let successAuthBtnMsg = $('#fastly-success-auth-button-msg');
         let errorAuthBtnMsg = $('#fastly-error-auth-button-msg');
-        let warningAuthBtnMsg = $('#fastly-warning-auth-button-msg');
 
         /* Auth list messages */
         let successAuthListBtnMsg = $('#fastly-success-auth-list-button-msg');
         let errorAuthListBtnMsg = $('#fastly-error-auth-list-button-msg');
-        let warningAuthListBtnMsg = $('#fastly-warning-auth-list-button-msg');
 
         /* Auth state elements*/
         let authStateSpan = $('#auth_state_span');
@@ -32,7 +30,7 @@ define([
         authStateSpan.find('.processing').show();
 
         /**
-         * Basic Authentication VCL snippet upload popup options
+         * Basic Authentication VCL snippet upload modal popup options
          *
          * @type {{title: *, content: (function(): string), actionOk: actionOk}}
          */
@@ -46,6 +44,11 @@ define([
             }
         };
 
+        /**
+         * Basic Authentication container creation modal popup options
+         *
+         * @type {{title: *, content: (function(): string), actionOk: actionOk}}
+         */
         let authenticationContainerOptions = {
             title: jQuery.mage.__('Create container for authenticated users'),
                 content: function () {
@@ -56,6 +59,11 @@ define([
             }
         };
 
+        /**
+         * Basic Authentication users modal popup options
+         *
+         * @type {{title: *, content: (function(): string), actionOk: actionOk}}
+         */
         let authenticationItemsOptions = {
             title: jQuery.mage.__('Basic Auth users'),
                 content: function () {
@@ -65,6 +73,11 @@ define([
             }
         };
 
+        /**
+         * Basic Authentication delete all users modal popup otions
+         *
+         * @type {{title: *, content: (function(): string), actionOk: actionOk}}
+         */
         let authenticationContainerDeleteOptions = {
             title: jQuery.mage.__('Delete all authenticated users'),
                 content: function () {
@@ -75,7 +88,9 @@ define([
             }
         };
 
-        /* Call getBlockingSetting function and display current status */
+        /**
+         * Trigger the Basic Authentication status call
+         */
         getAuthSetting(active_version).done(function (response) {
             authStateSpan.find('.processing').hide();
             let authStateEnabled = authStateMsgSpan.find('#auth_state_enabled');
@@ -97,7 +112,13 @@ define([
             authStateMsgSpan.find('#auth_state_unknown').show();
         });
 
-        // Queries Fastly API to retrieve Basic Auth status
+
+        /**
+         * Queries the Fastly API to retrieve the Basic Authentication status
+         *
+         * @param active_version
+         * @returns {*}
+         */
         function getAuthSetting(active_version)
         {
             return $.ajax({
@@ -108,7 +129,12 @@ define([
             });
         }
 
-        // Queries Fastly API to retrieve ACLs
+        /**
+         * Queries the Fastly API to retrieve the list of Basic Authentication users
+         *
+         * @param active_version
+         * @returns {*}
+         */
         function listAuths(active_version)
         {
             return $.ajax({
@@ -119,6 +145,11 @@ define([
             });
         }
 
+        /**
+         * Process and display basic Authentication users
+         *
+         * @param auths
+         */
         function processAuths(auths)
         {
             let html = '';
@@ -138,6 +169,13 @@ define([
             }
         }
 
+        /**
+         * Save Basic Authentication user
+         *
+         * @param item_key
+         * @param item_value
+         * @returns {*}
+         */
         function saveAuthItem(item_key, item_value)
         {
             return $.ajax({
@@ -151,7 +189,12 @@ define([
             });
         }
 
-        // Delete Auth item
+        /**
+         * Delete a Basic Authentication user
+         *
+         * @param item_key_id
+         * @returns {*}
+         */
         function deleteAuthItem(item_key_id)
         {
             return $.ajax({
@@ -165,7 +208,11 @@ define([
             });
         }
 
-        // Toggle Auth process
+        /**
+         * Toggle Basic Authentication VCL snippet
+         *
+         * @param active_version
+         */
         function toggleAuth(active_version)
         {
             let activate_auth_flag = false;
@@ -210,7 +257,9 @@ define([
             });
         }
 
-        // Delete Authentication dictionary
+        /**
+         * Delete the Basic Authentication container and turn off Basic Authentication
+         */
         function deleteMainAuth()
         {
             let activate_vcl = false;
@@ -252,7 +301,9 @@ define([
             });
         }
 
-        // CreateAuth
+        /**
+         * Create the Basic Authentication dictionary container
+         */
         function createAuth()
         {
             let activate_vcl = false;
@@ -290,6 +341,9 @@ define([
             });
         }
 
+        /**
+         * Add Basic Authentication user button on click event
+         */
         $('body').on('click', '#add-auth-item', function () {
             $('#auth-items-table > tbody').append('<tr><td><input name="auth_user" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
                 '<td><input name="auth_pass" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
@@ -299,6 +353,9 @@ define([
                 '</td></tr>');
         });
 
+        /**
+         * Save Basic Authentication user button on click event
+         */
         $('body').on('click', '.save_item_auth', function () {
             let keyField = $(this).closest('tr').find("input[name='auth_user']");
             let valueField = $(this).closest('tr').find("input[name='auth_pass']");
@@ -337,7 +394,7 @@ define([
         });
 
         /**
-         * Handles AUTH item removing
+         * Remove Basic Authentication user on click event
          */
         $('body').on('click', '.remove_item_auth', function () {
             let valueField = $(this).closest('tr').find("input[name='auth_user']");
@@ -365,6 +422,9 @@ define([
             });
         });
 
+        /**
+         * Remove Basic Authentication dictionary button on clikc event
+         */
         $('body').on('click', '.remove_auth_dictionary', function () {
             if (isAlreadyConfigured !== true) {
                 $(this).attr('disabled', true);
@@ -396,6 +456,9 @@ define([
             });
         });
 
+        /**
+         * Toggle Basic Authentication button on click event
+         */
         $('#fastly_enable_auth_button').on('click', function () {
             if (isAlreadyConfigured !== true) {
                 $(this).attr('disabled', true);
@@ -455,6 +518,9 @@ define([
             });
         });
 
+        /**
+         * Add Basic Authentication dictionary container button on click event
+         */
         $('#add-auth-container-button').on('click', function () {
             if (isAlreadyConfigured !== true) {
                 $(this).attr('disabled', true);

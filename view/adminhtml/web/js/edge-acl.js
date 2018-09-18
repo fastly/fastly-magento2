@@ -28,6 +28,11 @@ define([
 
         let active_version = serviceStatus.active_version;
 
+        /**
+         * ACL container modal popup options
+         *
+         * @type {{title: *, content: (function(): string), actionOk: actionOk}}
+         */
         let aclContainerOptions = {
             title: jQuery.mage.__('Create ACL container'),
             content: function () {
@@ -38,6 +43,11 @@ define([
             }
         };
 
+        /**
+         * ACL container item modal popup options
+         *
+         * @type {{title: *, content: (function(): string), actionOk: actionOk}}
+         */
         let aclItemOptions = {
             title: jQuery.mage.__('ACL items'),
             content: function () {
@@ -47,6 +57,11 @@ define([
             }
         };
 
+        /**
+         * ACL container delete modal popup options
+         *
+         * @type {{title: *, content: (function(): string), actionOk: actionOk}}
+         */
         let aclDeleteContainerOptions = {
             title: jQuery.mage.__('Delete ACL containers'),
             content: function () {
@@ -57,6 +72,9 @@ define([
             }
         };
 
+        /**
+         * Trigger ACL container list
+         */
         listAcls(active_version, false).done(function (response) {
             $('.loading-acls').hide();
             if (response.status !== false) {
@@ -73,6 +91,9 @@ define([
             return errorAclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
         });
 
+        /**
+         * Create ACL container
+         */
         function createAcl()
         {
             let activate_vcl = false;
@@ -123,7 +144,11 @@ define([
             });
         }
 
-        // Process ACLs
+        /**
+         * Process and display the list of ACL containers
+         *
+         * @param acls
+         */
         function processAcls(acls)
         {
             let html = '';
@@ -141,7 +166,13 @@ define([
             $('#fastly-acls-list').html(html);
         }
 
-        // Queries Fastly API to retrieve ACLs
+        /**
+         * Queries Fastly API to retrieve the list of ACL containers
+         *
+         * @param active_version
+         * @param loaderVisibility
+         * @returns {*}
+         */
         function listAcls(active_version, loaderVisibility)
         {
             return $.ajax({
@@ -155,7 +186,15 @@ define([
             });
         }
 
-        // Save Acl entry item
+        /**
+         * Save ACL container item
+         *
+         * @param acl_id
+         * @param item_value
+         * @param negated_field
+         * @param loaderVisibility
+         * @returns {*}
+         */
         function saveEdgeAclItem(acl_id, item_value, negated_field, loaderVisibility)
         {
             return $.ajax({
@@ -169,7 +208,9 @@ define([
             });
         }
 
-        // delete ACL
+        /**
+         * Delete ACL container
+         */
         function deleteAcl()
         {
             let activate_vcl = false;
@@ -220,7 +261,14 @@ define([
             });
         }
 
-        // Delete Edge ACL item
+        /**
+         * Delete ACL container item
+         *
+         * @param acl_id
+         * @param acl_item_id
+         * @param loaderVisibility
+         * @returns {*}
+         */
         function deleteEdgeAclItem(acl_id, acl_item_id, loaderVisibility)
         {
             return $.ajax({
@@ -234,6 +282,9 @@ define([
             });
         }
 
+        /**
+         * ACL container add button on click event
+         */
         $('#add-acl-container-button').on('click', function () {
             if (isAlreadyConfigured !== true) {
                 $(this).attr('disabled', true);
@@ -265,6 +316,9 @@ define([
             });
         });
 
+        /**
+         * ACL container edit button on click event
+         */
         $('body').on('click', 'button.fastly-edit-acl-icon', function () {
             $.ajax({
                 type: "GET",
@@ -326,6 +380,9 @@ define([
             }
         });
 
+        /**
+         * ACL container add item button on click event
+         */
         $('body').on('click', '#add-acl-item', function (e) {
             let aclTimestamp = Math.round(e.timeStamp);
             $('#acl-items-table > tbody').append('<tr>' +
@@ -336,6 +393,9 @@ define([
                 '</td></tr>');
         });
 
+        /**
+         * ACL container save item button on click event
+         */
         $('body').on('click', '.save_acl_item', function () {
             let valueField = $(this).closest('tr').find("input[name='value']");
             let item_value = valueField.val();
@@ -373,6 +433,9 @@ define([
             });
         });
 
+        /**
+         * ACL container remove item button on click event
+         */
         $('body').on('click', '.remove_acl_item', function () {
             let valueField = $(this).closest('tr').find("input[name='value']");
             let acl_item_id = valueField.data('id');
@@ -398,7 +461,9 @@ define([
             });
         });
 
-        // delete ACL container button
+        /**
+         * ACL container delete button on click event
+         */
         $('body').on('click', 'button.fastly-delete-acl-icon', function () {
             $.ajax({
                 type: "GET",

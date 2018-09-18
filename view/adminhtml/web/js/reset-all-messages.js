@@ -3,6 +3,11 @@ define([
 ], function ($) {
     return function resetAllMessages()
     {
+        /**
+         * Reset all Fastly Messages
+         *
+         * @type {*|jQuery|HTMLElement}
+         */
         let msgWarning = $('.fastly-message-warning');
         let msgError = $('.fastly-message-error');
         let msgSuccess = $('.fastly-message-success');

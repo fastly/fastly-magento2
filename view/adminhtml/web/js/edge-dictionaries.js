@@ -13,7 +13,6 @@ define([
         /* Dictionary button messages */
         let successDictionaryBtnMsg = $('#fastly-success-dictionary-button-msg');
         let errorDictionaryBtnMsg = $('#fastly-error-dictionary-button-msg');
-        let warningDictionaryBtnMsg = $('#fastly-warning-dictionary-button-msg');
 
         let itemsHtml;
         let dictionaryItems;
@@ -22,6 +21,11 @@ define([
 
         let active_version = serviceStatus.active_version;
 
+        /**
+         * Dictionary container modal popup options
+         *
+         * @type {{title: *, content: (function(): string), actionOk: actionOk}}
+         */
         let dictionaryContainerOptions = {
             title: jQuery.mage.__('Create dictionary container'),
                 content: function () {
@@ -32,6 +36,11 @@ define([
             }
         };
 
+        /**
+         * Dictionary container items modal popup options
+         *
+         * @type {{title: *, content: (function(): string), actionOk: actionOk}}
+         */
         let dictionaryItemOptions = {
             title: jQuery.mage.__('Dictionary items'),
                 content: function () {
@@ -41,6 +50,11 @@ define([
             }
         };
 
+        /**
+         * Dictionary container delete modal popup options
+         *
+         * @type {{title: *, content: (function(): string), actionOk: actionOk}}
+         */
         let dictionaryDeleteContainerOptions = {
             title: jQuery.mage.__('Delete dictionary containers'),
                 content: function () {
@@ -51,6 +65,9 @@ define([
             }
         };
 
+        /**
+         * Trigger Dictionary container list
+         */
         listDictionaries(active_version, false).done(function (response) {
             $('.loading-dictionaries').hide();
             if (response.status !== false) {
@@ -67,6 +84,9 @@ define([
             return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
         });
 
+        /**
+         * Create Dictionary container
+         */
         function createDictionary()
         {
             let activate_vcl = false;
@@ -117,7 +137,11 @@ define([
             });
         }
 
-        // Process dictionaries
+        /**
+         * Process and display Dictionary container
+         *
+         * @param dictionaries
+         */
         function processDictionaries(dictionaries)
         {
             let html = '';
@@ -135,7 +159,13 @@ define([
             $('#fastly-dictionaries-list').html(html);
         }
 
-        // Queries Fastly API to retrieve Dictionaries
+        /**
+         * Queries Fastly API to retrieve the list of Dictionary containers
+         *
+         * @param active_version
+         * @param loaderVisibility
+         * @returns {*}
+         */
         function listDictionaries(active_version, loaderVisibility)
         {
             return $.ajax({
@@ -149,7 +179,15 @@ define([
             });
         }
 
-        // Save Edge Dictionary item
+        /**
+         * Save Dictionary container item
+         *
+         * @param dictionary_id
+         * @param item_key
+         * @param item_value
+         * @param loaderVisibility
+         * @returns {*}
+         */
         function saveEdgeDictionaryItem(dictionary_id, item_key, item_value, loaderVisibility)
         {
             return $.ajax({
@@ -163,7 +201,9 @@ define([
             });
         }
 
-        // delete dictionary
+        /**
+         * Delete Dictionary container
+         */
         function deleteDictionary()
         {
             let activate_vcl = false;
@@ -214,7 +254,14 @@ define([
             });
         }
 
-        // Delete Edge Dictionary item
+        /**
+         * Delete Dictionary container item
+         *
+         * @param dictionary_id
+         * @param item_key
+         * @param loaderVisibility
+         * @returns {*}
+         */
         function deleteEdgeDictionaryItem(dictionary_id, item_key, loaderVisibility)
         {
             return $.ajax({
@@ -228,6 +275,9 @@ define([
             });
         }
 
+        /**
+         * Dictionary container add button on click event
+         */
         $('#add-dictionary-container-button').on('click', function () {
             if (isAlreadyConfigured !== true) {
                 $(this).attr('disabled', true);
@@ -259,6 +309,9 @@ define([
             });
         });
 
+        /**
+         * Dictionary container edit button on click event
+         */
         $('body').on('click', 'button.fastly-edit-dictionary-icon', function () {
             $.ajax({
                 type: "GET",
@@ -313,6 +366,9 @@ define([
             }
         });
 
+        /**
+         * Dictionary container add item button on click event
+         */
         $('body').on('click', '#add-dictionary-item', function () {
             $('#dictionary-items-table > tbody').append('<tr><td><input name="key" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
                 '<td><input name="value" data-type="dictionary" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
@@ -322,6 +378,9 @@ define([
                 '</td></tr>');
         });
 
+        /**
+         * Dictionary container save item on click event
+         */
         $('body').on('click', '.save_dictionary_item', function () {
             let keyField = $(this).closest('tr').find("input[name='key']");
             let valueField = $(this).closest('tr').find("input[name='value']");
@@ -363,6 +422,9 @@ define([
             });
         });
 
+        /**
+         * Dictionary container remove item on click event
+         */
         $('body').on('click', '.remove_dictionary_item', function () {
             let item_key = $(this).closest('tr').find("input[name='key']").val();
             let self = this;
@@ -385,7 +447,9 @@ define([
             });
         });
 
-        // delete dictionary container button
+        /**
+         * Dictionary container delete button on click event
+         */
         $('body').on('click', 'button.fastly-delete-dictionary-icon', function () {
             $.ajax({
                 type: "GET",

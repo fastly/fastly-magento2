@@ -7,6 +7,11 @@ define([
         let self = this;
         let divId = options.id;
 
+        /**
+         * Modal popup options
+         *
+         * @type {*|jQuery}
+         */
         this.modal = $('<div/>').attr({id: divId}).html(options.content()).modal({
             modalClass: 'magento',
             title: options.title,

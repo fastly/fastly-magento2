@@ -273,7 +273,7 @@
                         <field id="block" translate="label comment" sortOrder="5" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Blocking]]></label>
                             <comment>
-                                <![CDATA[Block traffic from selected Acl IPs and Countries. Please Save Config prior to enabling.]]>
+                                <![CDATA[Block traffic from selected ACL IPs and Countries. Please Save Config prior to enabling.]]>
                             </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\BlockingBtn</frontend_model>
                         </field>
@@ -301,7 +301,7 @@
                         <field id="block_by_acl" translate="label comment" type="multiselect" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Block by ACL</label>
                             <comment>
-                                <![CDATA[List of Acls that can be blocked.]]>
+                                <![CDATA[List of ACLs that can be blocked.]]>
                             </comment>
                             <source_model>Fastly\Cdn\Model\Config\Backend\ListAcl</source_model>
                             <can_be_empty>1</can_be_empty>

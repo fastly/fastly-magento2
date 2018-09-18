@@ -8,10 +8,15 @@ define([
 ], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
-        let active_version = serviceStatus.active_version;
         let backends;
         let backend_name;
+        let active_version = serviceStatus.active_version;
 
+        /**
+         * Backend modal popup options
+         *
+         * @type {{title: *, content: (function(): string), actionOk: actionOk}}
+         */
         let backendOptions = {
             title: jQuery.mage.__(' '),
                 content: function () {
@@ -24,6 +29,9 @@ define([
             }
         };
 
+        /**
+         * Trigger the Backends list call
+         */
         getBackends(active_version, false).done(function (response) {
             $('.loading-backends').hide();
             if (response !== false) {
@@ -36,6 +44,13 @@ define([
             }
         });
 
+        /**
+         * Get the list of Backends
+         *
+         * @param active_version
+         * @param loaderVisibility
+         * @returns {*}
+         */
         function getBackends(active_version, loaderVisibility)
         {
             return $.ajax({
@@ -46,6 +61,11 @@ define([
             });
         }
 
+        /**
+         * Process and display the list of Backends
+         *
+         * @param backends
+         */
         function processBackends(backends)
         {
             $('#fastly-backends-list').html('');
@@ -57,6 +77,9 @@ define([
             });
         }
 
+        /**
+         * Update the Backend configuration
+         */
         function configureBackend()
         {
             let activate_backend = false;
@@ -91,6 +114,9 @@ define([
             });
         }
 
+        /**
+         * Edit Backend button on click event
+         */
         $('body').on('click', 'button.fastly-edit-backend-icon', function () {
             if (isAlreadyConfigured !== true) {
                 $(this).attr('disabled', true);

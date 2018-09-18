@@ -412,6 +412,7 @@ class Statistic extends AbstractModel implements IdentityInterface
      * Get Google Analytics mandatory data
      *
      * @return array
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getGAReqData()
     {

@@ -7,10 +7,10 @@ define(
     function (Component, $, modal) {
         return Component.extend({
             initialize: function (config) {
-                var redirectUrl = config.redirect_url;
-                var message = config.message;
+                let redirectUrl = config.redirect_url;
+                let message = config.message;
                 if (redirectUrl.length > 0 && message.length > 0) {
-                    var options = {
+                    let options = {
                         responsive: true,
                         content: message,
                         actions: {

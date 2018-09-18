@@ -22,9 +22,9 @@ define([
         requestStateSpan.find('.processing').show();
 
         /**
-         * Force TLS options for the modal popup
+         * Force TLS modal popup options
          *
-         * @type {{id: string, title: *, content: content, actionOk: actionOk}}
+         * @type {{id: string, title: *, content: (function(): string), actionOk: actionOk}}
          */
         let tlsOptions = {
             id: 'fastly-tls-options',

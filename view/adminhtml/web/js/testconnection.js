@@ -9,9 +9,10 @@ define([
         let testErrorBtnMsg = $('#fastly-test-error-button-msg');
 
         $(document).ready(function () {
-
+            /**
+             * Test connection button on click event
+             */
             $('#fastly_test_connection_button').on('click', function () {
-
                 resetAllMessages();
 
                 $.ajax({
@@ -27,7 +28,7 @@ define([
                         if (response.status === false) {
                             return testErrorBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                         } else {
-                            return testSuccessBtnMsg.text($.mage.__('Connection to service name ' + response.service_name + ' has been succesfully established. Please, save configuration and clear cache.')).show();
+                            return testSuccessBtnMsg.text($.mage.__('Connection to service name ' + response.service_name + ' has been successfully established. Please, save configuration and clear cache.')).show();
                         }
                     },
                     error: function () {

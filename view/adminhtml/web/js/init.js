@@ -70,6 +70,10 @@ define([
                             uploadVcl(config, serviceStatus, isAlreadyConfigured);
                         });
 
+                        requirejs(['testConnection'], function (testConnection) {
+                            testConnection(config);
+                        });
+
                         advancedConfigurationHead.one('click', function () {
                             requirejs(['tls'], function (tls) {
                                 tls(config, serviceStatus, isAlreadyConfigured);

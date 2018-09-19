@@ -65,7 +65,7 @@ define([
          * @type {{title: *, content: (function(): string), actionOk: actionOk}}
          */
         let authenticationItemsOptions = {
-            title: jQuery.mage.__('Basic Auth users'),
+            title: jQuery.mage.__('Basic Authentication users'),
                 content: function () {
                 return document.getElementById('fastly-auth-items-template').textContent;
             },

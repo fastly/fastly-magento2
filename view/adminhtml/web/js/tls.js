@@ -98,7 +98,6 @@ define([
                 url: config.serviceInfoUrl,
                 showLoader: true
             }).done(function (service) {
-
                 if (service.status === false) {
                     return errorTlsBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
@@ -108,18 +107,18 @@ define([
                 let service_name = service.service.name;
 
                 getTlsSetting(active_version, true).done(function (response) {
+                    popup(tlsOptions);
+                    setServiceLabel(active_version, next_version, service_name);
+
                     if (response.status === false) {
-                        $('.modal-title').text($.mage.__('You are about to enable Force TLS.'));
+                        $('.modal-title').text($.mage.__('You are about to enable Force TLS'));
                     } else {
-                        $('.modal-title').text($.mage.__('You are about to disable Force TLS.'));
+                        $('.modal-title').text($.mage.__('You are about to disable Force TLS'));
                     }
                     forceTls = response.status;
                 }).fail(function () {
                     showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
                 });
-
-                popup(tlsOptions);
-                setServiceLabel(active_version, next_version, service_name);
 
             }).fail(function () {
                 return errorTlsBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();

@@ -4,19 +4,16 @@ define([
     "popup",
     "resetAllMessages",
     "showErrorMessage",
-    "showSuccessMessage",
     'mage/translate'
-], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage, showSuccessMessage) {
+], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         /* Error page HTML button */
         let successHtmlBtnMsg = $('#fastly-success-html-page-button-msg');
         let errorHtmlBtnMsg = $('#fastly-error-html-page-button-msg');
-        let warningHtmlBtnMsg = $('#fastly-warning-html-page-button-msg');
         /* WAF page HTML button */
         let successWafBtnMsg = $('#fastly-success-waf-page-button-msg');
         let errorWafBtnMsg = $('#fastly-error-waf-page-button-msg');
-        let warningWafBtnMsg = $('#fastly-warning-waf-page-button-msg');
 
         let active_version = serviceStatus.active_version;
 
@@ -187,15 +184,15 @@ define([
                 let service_name = service.service.name;
 
                 getErrorPageRespObj(active_version, true).done(function (response) {
+                    popup(errorPageOptions);
+                    setServiceLabel(active_version, next_version, service_name);
+
                     if (response.status === true) {
                         $('#error_page_html').text(response.errorPageResp.content).html();
                     }
                 }).fail(function () {
                     showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
                 });
-
-                popup(errorPageOptions);
-                setServiceLabel(active_version, next_version, service_name);
 
             }).fail(function () {
                 return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
@@ -229,6 +226,9 @@ define([
                 let service_name = service.service.name;
 
                 getWafPageRespObj(active_version, true).done(function (response) {
+                    popup(wafPageOptions);
+                    setServiceLabel(active_version, next_version, service_name);
+
                     if (response.status === true) {
                         $('#waf_page_content').text(response.wafPageResp.content).html();
                         $('#waf_page_status').val(response.wafPageResp.status);
@@ -237,9 +237,6 @@ define([
                 }).fail(function () {
                     showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
                 });
-
-                popup(wafPageOptions);
-                setServiceLabel(active_version, next_version, service_name);
 
             }).fail(function () {
                 return errorWafBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();

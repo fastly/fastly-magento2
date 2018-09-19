@@ -102,6 +102,9 @@ define([
                 let service_name = service.service.name;
 
                 getBlockingSetting(active_version, true).done(function (response) {
+                    popup(blockingOptions);
+                    setServiceLabel(active_version, next_version, service_name);
+
                     if (response.status === false) {
                         $('.modal-title').text($.mage.__('You are about to enable Blocking'));
                     } else {
@@ -111,9 +114,6 @@ define([
                 }).fail(function () {
                     showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
                 });
-
-                popup(blockingOptions);
-                setServiceLabel(active_version, next_version, service_name);
 
             }).fail(function () {
                 return errorBlockingBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();

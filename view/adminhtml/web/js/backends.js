@@ -103,7 +103,7 @@ define([
                 showLoader: true,
                 success: function (response) {
                     if (response.status === true) {
-                        $('#fastly-success-backend-button-msg').text($.mage.__('Backend "'+backend_name+'"is successfully updated.')).show();
+                        $('#fastly-success-backend-button-msg').text($.mage.__('Backend "'+backend_name+'" is successfully updated.')).show();
                         active_version = response.active_version;
                         modal.modal('closeModal');
                     } else {
@@ -123,6 +123,8 @@ define([
                 return alert($.mage.__('Please save config prior to continuing.'));
             }
 
+            let backend_id = $(this).data('backend-id');
+
             $.ajax({
                 type: "GET",
                 url: config.serviceInfoUrl,
@@ -131,21 +133,28 @@ define([
                 active_version = checkService.active_version;
                 let next_version = checkService.next_version;
                 let service_name = checkService.service.name;
-                setServiceLabel(active_version, next_version, service_name);
+
+                getBackends(active_version, true).done(function (response) {
+                    if (response !== false) {
+                        if (response.backends.length > 0) {
+                            backends = response.backends;
+                        }
+                    }
+
+                    if (backends != null && backend_id != null) {
+                        popup(backendOptions);
+                        setServiceLabel(active_version, next_version, service_name);
+
+                        backend_name = backends[backend_id].name;
+                        $('.modal-title').text($.mage.__('Backend "'+backend_name+'" configuration'));
+                        $('#backend_name').val(backends[backend_id].name);
+                        $('#backend_shield option[value=\'' + backends[backend_id].shield +'\']').attr('selected','selected');
+                        $('#backend_connect_timeout').val(backends[backend_id].connect_timeout);
+                        $('#backend_between_bytes_timeout').val(backends[backend_id].between_bytes_timeout);
+                        $('#backend_first_byte_timeout').val(backends[backend_id].first_byte_timeout);
+                    }
+                });
             });
-
-            let backend_id = $(this).data('backend-id');
-
-            if (backends != null && backend_id != null) {
-                popup(backendOptions);
-                backend_name = backends[backend_id].name;
-                $('.modal-title').text($.mage.__('Backend "'+backend_name+'"'));
-                $('#backend_name').val(backends[backend_id].name);
-                $('#backend_shield option[value=\'' + backends[backend_id].shield +'\']').attr('selected','selected');
-                $('#backend_connect_timeout').val(backends[backend_id].connect_timeout);
-                $('#backend_between_bytes_timeout').val(backends[backend_id].between_bytes_timeout);
-                $('#backend_first_byte_timeout').val(backends[backend_id].first_byte_timeout);
-            }
         });
     }
 });

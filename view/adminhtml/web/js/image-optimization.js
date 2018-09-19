@@ -227,14 +227,14 @@ define([
                     modal.modal('closeModal');
 
                     if (ioSnippetStatus === false) {
-                        toggled = 'uploaded';
+                        toggled = 'enabled';
                         ioSnippetStatus = true;
                     } else {
-                        toggled = 'removed';
+                        toggled = 'disabled';
                         ioSnippetStatus = false;
                     }
 
-                    successIoBtnMsg.text($.mage.__('The image optimization snippet has been successfully ' + toggled + '.')).show();
+                    successIoBtnMsg.text($.mage.__('The Image Optimization snippet has been successfully ' + toggled + '.')).show();
                     $('.request_imgopt_state_span').hide();
 
                     if (ioSnippetStatus === true) {
@@ -414,6 +414,9 @@ define([
                 let service_name = service.service.name;
 
                 getIoSnippetStatus(active_version, true).done(function (response) {
+                    popup(ioOptions);
+                    setServiceLabel(active_version, next_version, service_name);
+
                     if (response.status === false) {
                         $('.modal-title').text($.mage.__('You are about to enable the Fastly Image Optimization snippet'));
                     } else {
@@ -422,9 +425,6 @@ define([
                 }).fail(function () {
                     showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))
                 });
-
-                popup(ioOptions);
-                setServiceLabel(active_version, next_version, service_name);
 
             }).fail(function () {
                 return errorIoBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();

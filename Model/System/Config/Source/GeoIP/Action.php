@@ -20,6 +20,11 @@
  */
 namespace Fastly\Cdn\Model\System\Config\Source\GeoIP;
 
+/**
+ * Class Action
+ *
+ * @package Fastly\Cdn\Model\System\Config\Source\GeoIP
+ */
 class Action implements \Magento\Framework\Data\OptionSourceInterface
 {
     /**

@@ -1,5 +1,23 @@
 <?php
-
+/**
+ * Fastly CDN for Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Fastly CDN for Magento End User License Agreement
+ * that is bundled with this package in the file LICENSE_FASTLY_CDN.txt.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Fastly CDN to newer
+ * versions in the future. If you wish to customize this module for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    Fastly
+ * @package     Fastly_Cdn
+ * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @license     BSD, see LICENSE_FASTLY_CDN.txt
+ */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
 
 use Magento\Backend\App\Action;
@@ -12,40 +30,33 @@ use Fastly\Cdn\Helper\Vcl;
 use Fastly\Cdn\Model\Product\Image;
 use Magento\Framework\Exception\LocalizedException;
 
+/**
+ * Class PushImageSettings
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
+ */
 class PushImageSettings extends Action
 {
-    /**
-     * VCL snippet names
-     */
-    const CONDITION_NAME = 'fastly-image-optimizer-condition';
-    const HEADER_NAME = 'fastly-image-optimizer-header';
-    const VCL_SNIPPET_PATH = '/vcl_snippets_image_optimizations';
-
     /**
      * @var Http
      */
     private $request;
-
     /**
      * @var JsonFactory
      */
     private $resultJson;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
     private $api;
-
     /**
      * @var Vcl
      */
     private $vcl;
-
     /**
      * @var Image
      */
@@ -82,6 +93,8 @@ class PushImageSettings extends Action
     }
 
     /**
+     * Upload Image Optimization settings
+     *
      * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
      */
     public function execute()
@@ -93,13 +106,14 @@ class PushImageSettings extends Action
             $imageQualityFlag = $this->getRequest()->getParam('image_quality_flag');
             $imageQuality = $this->image->getQuality();
             $service = $this->api->checkServiceDetails();
-            $currActiveVersion = $this->getActiveVersion($service, $activeVersion);
+            $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
+            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
 
-            $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
+            $clone = $this->api->cloneVersion($currActiveVersion);
 
             $reqName = Config::FASTLY_MAGENTO_MODULE . '_image_optimization';
             $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);
-            $snippet = $this->config->getVclSnippets(self::VCL_SNIPPET_PATH, 'recv.vcl');
+            $snippet = $this->config->getVclSnippets(Config::IO_VCL_SNIPPET_PATH, 'recv.vcl');
 
             $condition = [
                 'name' => Config::FASTLY_MAGENTO_MODULE . '_image_optimization',
@@ -134,9 +148,9 @@ class PushImageSettings extends Action
                     $id = $service->id . '-' . $clone->number . '-imageopto';
                     $imageParams = json_encode([
                         'data' => [
-                            'id' => $id,
-                            'type' => 'io_settings',
-                            'attributes' => [
+                            'id'            => $id,
+                            'type'          => 'io_settings',
+                            'attributes'    => [
                                 'jpeg_quality'  => $imageQuality
                             ]
                         ]
@@ -181,41 +195,9 @@ class PushImageSettings extends Action
             ]);
         } catch (\Exception $e) {
             return $result->setData([
-                'status' => false,
-                'msg' => $e->getMessage()
+                'status'    => false,
+                'msg'       => $e->getMessage()
             ]);
         }
-    }
-
-    /**
-     * Fetches and validates active version
-     *
-     * @param $service
-     * @param $activeVersion
-     * @return array
-     * @throws LocalizedException
-     */
-    private function getActiveVersion($service, $activeVersion)
-    {
-        $currActiveVersion = $this->vcl->determineVersions($service->versions);
-        if ($currActiveVersion['active_version'] != $activeVersion) {
-            throw new LocalizedException(__('Active versions mismatch.'));
-        }
-        return $currActiveVersion;
-    }
-
-    /**
-     * Adjusts the status of the config
-     *
-     * @param bool $status
-     */
-    private function setStatus($status)
-    {
-        $this->configWriter->save(Config::XML_FASTLY_IMAGE_OPTIMIZATIONS, (bool)$status);
-
-        /** @var \Magento\Framework\App\Cache\Manager $cacheManager */
-        $cacheManager = $this->cacheFactory->create();
-
-        $cacheManager->flush([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
     }
 }

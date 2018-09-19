@@ -26,13 +26,17 @@ use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Exception\LocalizedException;
 
+/**
+ * Class ContentType
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Purge
+ */
 class ContentType extends Action
 {
     /**
      * @var PurgeCache
      */
     private $purgeCache;
-
     /**
      * @var Config
      */

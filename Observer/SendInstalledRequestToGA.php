@@ -29,35 +29,35 @@ use Fastly\Cdn\Helper\Data;
 use Fastly\Cdn\Model\Config;
 use \Magento\Framework\App\Config\Storage\WriterInterface;
 
+/**
+ * Class SendInstalledRequestToGA
+ *
+ * @package Fastly\Cdn\Observer
+ */
 class SendInstalledRequestToGA implements ObserverInterface
 {
     /**
      * @var Manager
      */
     private $moduleManager;
-
     /**
      * @var StatisticRepository
      */
     private $statisticRepo;
-
     /**
      * @var Statistic
      */
     private $statistic;
-
     /**
      * @var Data
      */
     private $helper;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
-     * @var \Magento\Framework\App\Config\Storage\WriterInterface
+     * @var WriterInterface
      */
     private $configWriter;
 

@@ -27,20 +27,21 @@ use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 
+/**
+ * Class CheckBlockingSetting
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
+ */
 class CheckBlockingSetting extends Action
 {
-    const BLOCKING_SETTING_NAME = 'magentomodule_blocking';
-
     /**
      * @var Api
      */
     private $api;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var JsonFactory
      */
@@ -75,10 +76,9 @@ class CheckBlockingSetting extends Action
     public function execute()
     {
         $result = $this->resultJsonFactory->create();
-
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $req = $this->api->getRequest($activeVersion, self::BLOCKING_SETTING_NAME);
+            $req = $this->api->getRequest($activeVersion, Config::BLOCKING_SETTING_NAME);
 
             if ($req == false) {
                 return $result->setData([

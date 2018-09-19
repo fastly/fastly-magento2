@@ -33,49 +33,40 @@ use Magento\Store\Model\StoreManagerInterface;
 use Magento\Store\Model\StoreResolver;
 use Magento\Store\Api\Data\StoreInterface;
 use Psr\Log\LoggerInterface;
+use Magento\Framework\App\Action\Action;
 
 /**
  * Class GetAction
  *
  * @package Fastly\Cdn\Controller\GeoIP
  */
-class GetAction extends \Magento\Framework\App\Action\Action
+class GetAction extends Action
 {
-    /**
-     * Request parameter for the country code.
-     */
     const REQUEST_PARAM_COUNTRY = 'country_code';
-
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var UrlInterface
      */
     private $url;
-
     /**
      * @var StoreRepositoryInterface
      */
     private $storeRepository;
-
     /**
      * @var StoreManagerInterface
      */
     private $storeManager;
-
     /**
      * @var LayoutFactory
      */
     private $resultLayoutFactory;
-
     /**
      * @var LocaleResolverInterface
      */
     private $localeResolver;
-
     /**
      * @var LoggerInterface
      */
@@ -113,6 +104,8 @@ class GetAction extends \Magento\Framework\App\Action\Action
     }
 
     /**
+     * Get GeoIP action
+     *
      * @return ResponseInterface|ResultInterface|Layout|null
      */
     public function execute()

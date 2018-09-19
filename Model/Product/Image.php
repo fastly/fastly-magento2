@@ -1,11 +1,4 @@
 <?php
-
-namespace Fastly\Cdn\Model\Product;
-
-use Fastly\Cdn\Model\Config;
-use Magento\Catalog\Model\Product\Image as ImageModel;
-use Magento\PageCache\Model\Config as PageCacheConfig;
-
 /**
  * Fastly CDN for Magento
  *
@@ -25,33 +18,39 @@ use Magento\PageCache\Model\Config as PageCacheConfig;
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
+namespace Fastly\Cdn\Model\Product;
+
+use Fastly\Cdn\Model\Config;
+use Magento\Catalog\Model\Product\Image as ImageModel;
+use Magento\PageCache\Model\Config as PageCacheConfig;
+
+/**
+ * Class Image
+ *
+ * @package Fastly\Cdn\Model\Product
+ */
 class Image extends ImageModel
 {
     /**
      * @var array
      */
     private $fastlyParameters = [];
-
     /**
      * @var bool
      */
     private $isFastlyEnabled = null;
-
     /**
      * @var null
      */
     private $isForceLossyEnabled = null;
-
     /**
      * @var null
      */
     private $lossyParam = null;
-
     /**
      * @var null
      */
     private $lossyUrl = null;
-
     /**
      * @var null
      */

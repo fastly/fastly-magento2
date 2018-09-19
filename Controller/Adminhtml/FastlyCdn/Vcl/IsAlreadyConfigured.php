@@ -28,18 +28,21 @@ use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultInterface;
 
+/**
+ * Class IsAlreadyConfigured
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
+ */
 class IsAlreadyConfigured extends Action
 {
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
     private $api;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var JsonFactory
      */
@@ -66,12 +69,14 @@ class IsAlreadyConfigured extends Action
     }
 
     /**
+     * Check if the Fastly service is already configured
+     *
      * @return $this|ResponseInterface|ResultInterface
      */
     public function execute()
     {
+        $result = $this->resultJsonFactory->create();
         try {
-            $result = $this->resultJsonFactory->create();
             $serviceId = $this->config->getServiceId();
             $apiKey = $this->config->getApiKey();
 

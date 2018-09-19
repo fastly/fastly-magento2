@@ -25,23 +25,25 @@ use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\PurgeCache;
 use Magento\Framework\Event\ObserverInterface;
 
+/**
+ * Class InvalidateVarnishObserver
+ *
+ * @package Fastly\Cdn\Observer
+ */
 class InvalidateVarnishObserver implements ObserverInterface
 {
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var PurgeCache
      */
     private $purgeCache;
-
     /**
      * @var CacheTags
      */
     private $cacheTags;
-
     /**
      * @var array
      */
@@ -63,10 +65,10 @@ class InvalidateVarnishObserver implements ObserverInterface
     }
 
     /**
-     * If Fastly CDN is enabled it sends one purge request per tag.
+     * If Fastly CDN is enabled it sends one purge request per tag
      *
      * @param \Magento\Framework\Event\Observer $observer
-     * @return void
+     * @throws \Zend_Uri_Exception
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {

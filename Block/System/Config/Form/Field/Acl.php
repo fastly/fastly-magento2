@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Fastly CDN for Magento
  *
@@ -26,7 +25,9 @@ use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
 use Magento\Framework\Data\Form\Element\Factory;
 
 /**
- * Backend system config array field renderer
+ * Class Acl
+ *
+ * @package Fastly\Cdn\Block\System\Config\Form\Field
  */
 class Acl extends AbstractFieldArray
 {
@@ -97,18 +98,23 @@ class Acl extends AbstractFieldArray
      * Get list of store views.
      *
      * @param bool|false $label
-     *
      * @return array
      */
     protected function getOptions($label = false) // @codingStandardsIgnoreLine - required by parent class
     {
         $options = [];
         foreach ($this->_storeManager->getStores() as $store) {
-            $options[] = ['value' => $store->getId(), 'label' => $store->getName()];
+            $options[] = [
+                'value' => $store->getId(),
+                'label' => $store->getName()
+            ];
         }
 
         if ($label) {
-            array_unshift($options, ['value' => '', 'label' => $label]);
+            array_unshift($options, [
+                'value' => '',
+                'label' => $label
+            ]);
         }
 
         return $options;

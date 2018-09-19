@@ -24,6 +24,11 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class GenerateVclCommand
+ *
+ * @package Fastly\Cdn\Console\Command
+ */
 class GenerateVclCommand extends Command
 {
     /**
@@ -36,7 +41,9 @@ class GenerateVclCommand extends Command
     }
 
     /**
-     * @inheritdoc
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output) // @codingStandardsIgnoreLine - required by parent class
     {

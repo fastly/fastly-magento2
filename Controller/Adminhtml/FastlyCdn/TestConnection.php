@@ -20,45 +20,42 @@
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn;
 
-use Braintree\Exception;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use Fastly\Cdn\Helper\Vcl;
 use Fastly\Cdn\Model\Statistic;
 use Fastly\Cdn\Model\StatisticFactory;
 use Fastly\Cdn\Model\StatisticRepository;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Framework\Exception\LocalizedException;
 
+/**
+ * Class TestConnection
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn
+ */
 class TestConnection extends Action
 {
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
     private $api;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var JsonFactory
      */
     private $resultJsonFactory;
-
     /**
      * @var Statistic
      */
     private $statistic;
-
     /**
      * @var StatisticFactory
      */
     private $statisticFactory;
-
     /**
      * @var StatisticRepository
      */
@@ -95,7 +92,7 @@ class TestConnection extends Action
     }
 
     /**
-     * Checking service details
+     * Check service details
      *
      * @return \Magento\Framework\Controller\Result\Json
      */

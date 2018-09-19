@@ -20,6 +20,11 @@
  */
 namespace Fastly\Cdn\Test\Unit\Model\Layout;
 
+/**
+ * Class LayoutPluginTest
+ *
+ * @package Fastly\Cdn\Test\Unit\Model\Layout
+ */
 class LayoutPluginTest extends \PHPUnit_Framework_TestCase
 {
     /**

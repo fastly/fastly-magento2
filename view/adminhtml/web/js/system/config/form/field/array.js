@@ -7,12 +7,12 @@ define(
     function (Component, mageTemplate) {
         return Component.extend({
             initialize: function (config) {
-                var htmlId = config.htmlId;
-                var arrayRowX = 'arrayRow' + htmlId;
-                var addToEndBtnX = 'addToEndBtn' + htmlId;
-                var html = config.html;
-                var templateValuesOrig = config.templateValues;
-                var arrayRows = config.arrayRows;
+                let htmlId = config.htmlId;
+                let arrayRowX = 'arrayRow' + htmlId;
+                let addToEndBtnX = 'addToEndBtn' + htmlId;
+                let html = config.html;
+                let templateValuesOrig = config.templateValues;
+                let arrayRows = config.arrayRows;
 
                 window[arrayRowX] = {
 
@@ -21,22 +21,22 @@ define(
 
                     add: function (rowData, insertAfterId) {
                         // generate default template data
-                        var templateValues;
+                        let templateValues;
 
                         // Prepare template values
                         if (rowData) {
                             templateValues = rowData;
                         } else {
                             // Handles adding of new empty field
-                            var d = new Date();
+                            let d = new Date();
 
                             templateValues = {
                                 option_extra_attrs : {},
                                 _id : '_' + d.getTime() + '_' + d.getMilliseconds()
                             };
-                            for (var prop in templateValuesOrig) {
+                            for (let prop in templateValuesOrig) {
                                 if (templateValuesOrig.hasOwnProperty(prop)) {
-                                    var columnName = templateValuesOrig[prop];
+                                    let columnName = templateValuesOrig[prop];
                                     templateValues[columnName] = '';
                                 }
                             }
@@ -51,8 +51,8 @@ define(
 
                         // Fill controls with data
                         if (rowData) {
-                            var rowInputElementNames = Object.keys(rowData.column_values);
-                            for (var key in rowInputElementNames) {
+                            let rowInputElementNames = Object.keys(rowData.column_values);
+                            for (let key in rowInputElementNames) {
                                 if (rowInputElementNames.hasOwnProperty(key)) {
                                     if ($(rowInputElementNames[key])) {
                                         $(rowInputElementNames[key]).value = rowData.column_values[rowInputElementNames[key]];
@@ -80,7 +80,7 @@ define(
                 );
 
                 // Add database values on load
-                for (var key in arrayRows) {
+                for (let key in arrayRows) {
                     if (arrayRows.hasOwnProperty(key)) {
                         window[arrayRowX].add(arrayRows[key]);
                     }

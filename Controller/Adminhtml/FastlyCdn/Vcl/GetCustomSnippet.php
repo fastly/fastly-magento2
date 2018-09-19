@@ -20,6 +20,7 @@
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
 
+use Fastly\Cdn\Model\Config;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\Result\RawFactory;
@@ -93,6 +94,8 @@ class GetCustomSnippet extends Action
     }
 
     /**
+     * Get custom snippet
+     *
      * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
      */
     public function execute()
@@ -103,7 +106,7 @@ class GetCustomSnippet extends Action
             $snippet = $this->getRequest()->getParam('snippet_id');
 
             $read = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR);
-            $snippetPath = $read->getRelativePath('vcl_snippets_custom/' . $snippet);
+            $snippetPath = $read->getRelativePath(Config::CUSTOM_SNIPPET_PATH . $snippet);
 
             if ($read->isExist($snippetPath)) {
                 $explodeId = explode('.', $snippet, -1);

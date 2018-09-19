@@ -27,20 +27,21 @@ use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 
+/**
+ * Class CheckImageSetting
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
+ */
 class CheckImageSetting extends Action
 {
-    const IMAGE_SETTING_NAME = 'magentomodule_image_optimization';
-
     /**
      * @var Api
      */
     private $api;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var JsonFactory
      */
@@ -75,10 +76,9 @@ class CheckImageSetting extends Action
     public function execute()
     {
         $result = $this->resultJsonFactory->create();
-
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $req = $this->api->getRequest($activeVersion, self::IMAGE_SETTING_NAME);
+            $req = $this->api->getRequest($activeVersion, Config::IMAGE_SETTING_NAME);
 
             if ($req == false) {
                 return $result->setData([

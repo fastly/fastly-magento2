@@ -1,5 +1,23 @@
 <?php
-
+/**
+ * Fastly CDN for Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Fastly CDN for Magento End User License Agreement
+ * that is bundled with this package in the file LICENSE_FASTLY_CDN.txt.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Fastly CDN to newer
+ * versions in the future. If you wish to customize this module for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    Fastly
+ * @package     Fastly_Cdn
+ * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @license     BSD, see LICENSE_FASTLY_CDN.txt
+ */
 namespace Fastly\Cdn\Setup;
 
 use Fastly\Cdn\Helper\Data;
@@ -14,6 +32,11 @@ use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Fastly\Cdn\Model\Statistic;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 
+/**
+ * Class UpgradeData
+ *
+ * @package Fastly\Cdn\Setup
+ */
 class UpgradeData implements UpgradeDataInterface
 {
 
@@ -21,32 +44,26 @@ class UpgradeData implements UpgradeDataInterface
      * @var DateTime
      */
     private $date;
-
     /**
      * @var ScopeConfigInterface
      */
     private $scopeConfig;
-
     /**
      * @var WriterInterface
      */
     private $configWriter;
-
     /**
      * @var Statistic
      */
     private $statistic;
-
     /**
      * @var Manager
      */
     private $cacheManager;
-
     /**
      * @var Data
      */
     private $helper;
-
     /**
      * @var ProductMetadataInterface
      */

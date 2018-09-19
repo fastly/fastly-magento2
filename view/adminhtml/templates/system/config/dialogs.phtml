@@ -4,6 +4,7 @@
  * See COPYING.txt for license details.
  */
 ?>
+<!-- Upload VCL popup template -->
 <script type="text/x-magento-template" id="fastly-uploadvcl-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -38,6 +39,7 @@
     </form>
 </script>
 
+<!-- Force TLS toggle popup template -->
 <script type="text/x-magento-template" id="fastly-tls-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -72,6 +74,7 @@
     </form>
 </script>
 
+<!-- Image Optimization toggle popup template -->
 <script type="text/x-magento-template" id="fastly-image-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -123,6 +126,7 @@
     </form>
 </script>
 
+<!-- Blocking toggle popup template -->
 <script type="text/x-magento-template" id="fastly-blocking-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -157,6 +161,7 @@
     </form>
 </script>
 
+<!-- Basic Authentication toggle popup template -->
 <script type="text/x-magento-template" id="fastly-auth-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -193,6 +198,7 @@
     </form>
 </script>
 
+<!-- Backend configuration popup template -->
 <script type="text/x-magento-template" id="fastly-backend-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -329,6 +335,7 @@
     </form>
 </script>
 
+<!-- Error page popup template -->
 <script type="text/x-magento-template" id="fastly-error-page-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -368,14 +375,14 @@
                               name="error_page_html"
                               required="required"
                               id="error_page_html"
-                              class="admin__control-text">
-                    </textarea>
+                              class="admin__control-text"></textarea>
                 </div>
             </div>
         </fieldset>
     </form>
 </script>
 
+<!-- WAF page popup template -->
 <script type="text/x-magento-template" id="fastly-waf-page-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -499,8 +506,7 @@
                               name="waf_page_content"
                               required="required"
                               id="waf_page_content"
-                              class="admin__control-text required-entry">
-                    </textarea>
+                              class="admin__control-text required-entry"></textarea>
                     <div class="admin__field-note">
                         The content to be served when delivering the response.
                     </div>
@@ -510,6 +516,7 @@
     </form>
 </script>
 
+<!-- Edge Dictionary creation popup template -->
 <script type="text/x-magento-template" id="fastly-dictionary-container-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -557,12 +564,14 @@
     </form>
 </script>
 
+<!-- Popup template messages -->
 <div class="messages">
     <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
     <div class="message message-success fastly-message-success" style="display: none;"></div>
 </div>
 
-<script type="text/x-magento-template" id="fastly-edge-items-template">
+<!-- Edge Dictionary configuration popup template -->
+<script type="text/x-magento-template" id="fastly-dictionary-item-template">
     <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="fastly-dictionary-form"
@@ -625,6 +634,7 @@
     </form>
 </script>
 
+<!-- Edge ACL creation popup template -->
 <script type="text/x-magento-template" id="fastly-acl-container-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -643,7 +653,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field _required">
                 <label for="acl_name" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __("Acl name") ?></span>
+                    <span><?php /* @noEscape */ echo __("ACL name") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input name="acl_name" type="text" required="required" id="acl_name" class="admin__control-text">
@@ -668,6 +678,7 @@
     </form>
 </script>
 
+<!-- Edge Dictionary delete popup template -->
 <script type="text/x-magento-template" id="fastly-delete-dictionary-container-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -706,6 +717,7 @@
     </form>
 </script>
 
+<!-- Edge ACL delete popup template -->
 <script type="text/x-magento-template" id="fastly-delete-acl-container-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -744,6 +756,7 @@
     </form>
 </script>
 
+<!-- Edge ACL configuration popup template -->
 <script type="text/x-magento-template" id="fastly-acl-items-template">
     <div class="messages">
         <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
@@ -806,6 +819,7 @@
     </form>
 </script>
 
+<!-- Basic Authentication creation popup template -->
 <script type="text/x-magento-template" id="fastly-auth-container-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -841,6 +855,7 @@
     </form>
 </script>
 
+<!-- Basic Auth delete popup template -->
 <script type="text/x-magento-template" id="fastly-auth-delete-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -876,6 +891,7 @@
     </form>
 </script>
 
+<!-- Basic Authentication users popup template -->
 <script type="text/x-magento-template" id="fastly-auth-items-template">
     <div class="messages">
         <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
@@ -914,7 +930,7 @@
                         <button class="action-delete fastly-save-action save_item_auth" title="Save" type="button">
                             <span>Save</span>
                         </button>
-                        <button class="action-delete remove_item"  title="Delete" type="button">
+                        <button class="action-delete remove_item_auth" title="Delete" type="button" hidden>
                             <span>Delete</span>
                         </button>
                     </td>
@@ -934,6 +950,7 @@
     </form>
 </script>
 
+<!-- Image Optimization default configuration popup template -->
 <script type="text/x-magento-template" id="fastly-io-default-config-options-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -1177,6 +1194,7 @@
     </form>
 </script>
 
+<!-- Custom Snippet creation popup template -->
 <script type="text/x-magento-template" id="fastly-custom-snippet-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -1260,6 +1278,7 @@
     </form>
 </script>
 
+<!-- Custom Snippet edit popup template -->
 <script type="text/x-magento-template" id="fastly-custom-snippet-edit-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -1393,17 +1412,17 @@ $toggleAuthSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/enableAuth');
 $checkAuthUsersAvailable = $block->getUrl('adminhtml/fastlyCdn_Vcl/CheckAuthUsersAvailable');
 $listIoDefaultConfigOptions = $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/ListAll');
 $configureIoUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/IoDefaultConfigOptions');
+$updateBlockingUrl = $block->getUrl('admin/fastlyCdn_Vcl/updateBlocking');
 $isIoEnabled = $block->getConfig()->isImageOptimizationEnabled();
 
 /* This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application  */
 $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
 ?>
 
-
 <script type="text/x-magento-init">
         {
             "*": {
-                "Fastly_Cdn/js/uploadvcl": {
+                "Fastly_Cdn/js/init": {
                     "serviceInfoUrl": "<?php echo $block->escapeJsQuote($serviceInfoUrl);?>",
                     "vclUploadUrl": "<?php echo $block->escapeJsQuote($vclUploadUrl);?>",
                     "testServiceUrl": "<?php echo $block->escapeJsQuote($testServiceUrl);?>",
@@ -1449,7 +1468,8 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "listIoDefaultConfigOptions": "<?php echo $block->escapeJsQuote($listIoDefaultConfigOptions);?>",
                     "configureIoUrl": "<?php echo $block->escapeJsQuote($configureIoUrl);?>",
                     "createCustomSnippetUrl": "<?php echo $block->escapeJsQuote($createCustomSnippetUrl);?>",
-                    "getCustomSnippetsUrl": "<?php echo $block->escapeJsQuote($getCustomSnippetsUrl);?>"
+                    "getCustomSnippetsUrl": "<?php echo $block->escapeJsQuote($getCustomSnippetsUrl);?>",
+                    "updateBlockingUrl": "<?php echo $block->escapeJsQuote($updateBlockingUrl);?>"
                 }
             }
         }
@@ -1465,7 +1485,7 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
     }
 
     .admin__control-table .fastly-save-action::before {
-        content: '\e636';
+        content: '\1F4BE';
         font-size: 2rem;
     }
 

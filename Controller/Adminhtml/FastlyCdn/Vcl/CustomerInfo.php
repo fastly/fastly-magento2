@@ -27,23 +27,25 @@ use Magento\Backend\App\Action\Context;
 use Fastly\Cdn\Helper\Vcl;
 use Magento\Framework\Controller\Result\JsonFactory;
 
+/**
+ * Class CustomerInfo
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
+ */
 class CustomerInfo extends Action
 {
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
     private $api;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var Vcl
      */
     private $vcl;
-
     /**
      * @var JsonFactory
      */
@@ -51,10 +53,13 @@ class CustomerInfo extends Action
 
     /**
      * ServiceInfo constructor.
+     *
+     * CustomerInfo constructor.
      * @param Context $context
      * @param Config $config
      * @param Api $api
      * @param JsonFactory $resultJsonFactory
+     * @param Vcl $vcl
      */
     public function __construct(
         Context $context,
@@ -73,12 +78,13 @@ class CustomerInfo extends Action
 
     /**
      * Checking service details
+     *
      * @return \Magento\Framework\Controller\Result\Json
      */
     public function execute()
     {
+        $result = $this->resultJsonFactory->create();
         try {
-            $result = $this->resultJsonFactory->create();
             $customer = $this->api->getCustomerInfo();
 
             if (!$customer) {

@@ -29,6 +29,11 @@ use Psr\Log\LoggerInterface;
 use Magento\Backend\Model\Auth\Session\Proxy;
 use Magento\Framework\App\State;
 
+/**
+ * Class Api
+ *
+ * @package Fastly\Cdn\Model
+ */
 class Api
 {
     const FASTLY_HEADER_AUTH   = 'Fastly-Key';
@@ -39,45 +44,37 @@ class Api
     const FASTLY_MAX_HEADER_KEY_SIZE = 256;
 
     /**
-     * @var Config $config,
+     * @var Config
      */
     private $config;
-
     /**
-     * @var \Magento\Framework\HTTP\Adapter\CurlFactory
+     * @var CurlFactory
      */
     private $curlFactory;
-
     /**
      * @var InvalidateLogger
      */
     private $logger;
-
     /**
      * @var Data
      */
     private $helper;
-
     /**
      * @var LoggerInterface
      */
     private $log;
-
     /**
      * @var bool Purge all flag
      */
     private $purged = false;
-
     /**
      * @var Vcl
      */
     private $vcl;
-
     /**
      * @var Proxy
      */
     private $authSession;
-
     /**
      * @var State
      */
@@ -346,6 +343,7 @@ class Api
 
     /**
      * List detailed information on a specified service
+     *
      * @param bool $test
      * @param null $serviceId
      * @param null $apiKey
@@ -371,6 +369,7 @@ class Api
 
     /**
      * Clone the current configuration into a new version.
+     *
      * @param $curVersion
      * @return bool|mixed
      * @throws LocalizedException
@@ -419,6 +418,7 @@ class Api
 
     /**
      * Validate the version for a particular service and version.
+     *
      * @param $version
      * @throws LocalizedException
      */
@@ -872,6 +872,7 @@ class Api
 
     /**
      * Fetches dictionary by name
+     *
      * @param $version
      * @param $dictionaryName
      * @return bool|mixed
@@ -886,12 +887,13 @@ class Api
 
     /**
      * Get auth dictionary
+     *
      * @param $version
      * @return bool|mixed
      */
     public function getAuthDictionary($version)
     {
-        $name = \Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl\CheckAuthUsersAvailable::AUTH_DICTIONARY_NAME;
+        $name = Config::AUTH_DICTIONARY_NAME;
         $dictionary = $this->getSingleDictionary($version, $name);
 
         return $dictionary;
@@ -899,6 +901,7 @@ class Api
 
     /**
      * Check if authentication dictionary is populated
+     *
      * @param $version
      * @throws LocalizedException
      */
@@ -917,6 +920,13 @@ class Api
         }
     }
 
+    /**
+     * Create dictionary items
+     *
+     * @param $dictionaryId
+     * @param $params
+     * @return bool|mixed
+     */
     public function createDictionaryItems($dictionaryId, $params)
     {
         $url = $this->_getApiServiceUri().'dictionary/'.$dictionaryId.'/items';
@@ -956,6 +966,7 @@ class Api
 
     /**
      * Upsert single Dictionary item
+     *
      * @param $dictionaryId
      * @param $itemKey
      * @param $itemValue
@@ -1002,7 +1013,7 @@ class Api
     }
 
     /**
-     * Delete named acl for a particular service and version.
+     * Delete named ACL for a particular service and version.
      *
      * @param $version
      * @param $name
@@ -1073,6 +1084,8 @@ class Api
     }
 
     /**
+     * Query for historic stats
+     *
      * @param array $parameters
      * @return bool|mixed
      */

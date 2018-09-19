@@ -62,7 +62,7 @@ define(
                         }
 
                         // Add event for {addAfterBtn} button
-                        if (config.isAddAfter !== 0) {
+                        if (config.isAddAfter != 0) {
                             Event.observe('addAfterBtn' + templateValues._id, 'click', this.add.bind(this, false, templateValues._id));
                         }
                     },
@@ -87,7 +87,7 @@ define(
                 }
 
                 // Toggle the grid availability, if element is disabled (depending on scope)
-                if (config.disabled !== 0) {
+                if (config.disabled != 0) {
                     toggleValueElements({checked: true}, $('grid' + htmlId).parentNode);
                 }
             }

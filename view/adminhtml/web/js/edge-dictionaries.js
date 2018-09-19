@@ -451,6 +451,8 @@ define([
          * Dictionary container delete button on click event
          */
         $('body').on('click', 'button.fastly-delete-dictionary-icon', function () {
+            dictionary_id = $(this).data('dictionary-id');
+
             $.ajax({
                 type: "GET",
                 url: config.serviceInfoUrl,
@@ -459,22 +461,20 @@ define([
                 active_version = checkService.active_version;
                 let next_version = checkService.next_version;
                 let service_name = checkService.service.name;
-                setServiceLabel(active_version, next_version, service_name);
-            });
 
-            dictionary_id = $(this).data('dictionary-id');
-
-            if (dictionaries != null && dictionary_id != null) {
-                let dictionaryHtml = '<input name="dictionary" value="' + dictionary_id + '" class="input-text admin__control-text dictionary-field" type="hidden" disabled>';
-                popup(dictionaryDeleteContainerOptions);
-                let containerWarning = $('#fastly-container-warning');
-                $('.modal-title').text($.mage.__('Delete "'+ dictionary_id +'" dictionary container'));
-                containerWarning.text($.mage.__('You are about to delete the "' + dictionary_id + '" Dictionary container.'));
-                containerWarning.show();
-                if (dictionaryHtml !== '') {
-                    $('#delete-dictionary-container').html(dictionaryHtml);
+                if (dictionaries != null && dictionary_id != null) {
+                    let dictionaryHtml = '<input name="dictionary" value="' + dictionary_id + '" class="input-text admin__control-text dictionary-field" type="hidden" disabled>';
+                    popup(dictionaryDeleteContainerOptions);
+                    setServiceLabel(active_version, next_version, service_name);
+                    let containerWarning = $('#fastly-container-warning');
+                    $('.modal-title').text($.mage.__('Delete "'+ dictionary_id +'" Dictionary container'));
+                    containerWarning.text($.mage.__('You are about to delete the "' + dictionary_id + '" Dictionary container.'));
+                    containerWarning.show();
+                    if (dictionaryHtml !== '') {
+                        $('#delete-dictionary-container').html(dictionaryHtml);
+                    }
                 }
-            }
+            });
         });
 
     }

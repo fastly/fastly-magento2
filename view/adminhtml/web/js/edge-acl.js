@@ -465,6 +465,8 @@ define([
          * ACL container delete button on click event
          */
         $('body').on('click', 'button.fastly-delete-acl-icon', function () {
+            acl_id = $(this).data('acl-id');
+
             $.ajax({
                 type: "GET",
                 url: config.serviceInfoUrl,
@@ -473,22 +475,20 @@ define([
                 active_version = checkService.active_version;
                 let next_version = checkService.next_version;
                 let service_name = checkService.service.name;
-                setServiceLabel(active_version, next_version, service_name);
-            });
 
-            acl_id = $(this).data('acl-id');
-
-            if (acls != null && acl_id != null) {
-                let aclHtml = '<input name="acl" value="' + acl_id + '" class="input-text admin__control-text acl-field" type="hidden" disabled>';
-                popup(aclDeleteContainerOptions);
-                let containerWarning = $('#fastly-container-warning');
-                $('.modal-title').text($.mage.__('Delete "'+ acl_id +'" ACL container'));
-                containerWarning.text($.mage.__('You are about to delete the "' + acl_id + '" ACL container.'));
-                containerWarning.show();
-                if (aclHtml !== '') {
-                    $('#delete-acl-container').html(aclHtml);
+                if (acls != null && acl_id != null) {
+                    let aclHtml = '<input name="acl" value="' + acl_id + '" class="input-text admin__control-text acl-field" type="hidden" disabled>';
+                    popup(aclDeleteContainerOptions);
+                    setServiceLabel(active_version, next_version, service_name);
+                    let containerWarning = $('#fastly-container-warning');
+                    $('.modal-title').text($.mage.__('Delete "'+ acl_id +'" ACL container'));
+                    containerWarning.text($.mage.__('You are about to delete the "' + acl_id + '" ACL container.'));
+                    containerWarning.show();
+                    if (aclHtml !== '') {
+                        $('#delete-acl-container').html(aclHtml);
+                    }
                 }
-            }
+            });
         });
 
     }

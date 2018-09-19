@@ -109,9 +109,9 @@ define([
 
                 getTlsSetting(active_version, true).done(function (response) {
                     if (response.status === false) {
-                        $('.modal-title').text($.mage.__('We are about to enable Force TLS.'));
+                        $('.modal-title').text($.mage.__('You are about to enable Force TLS.'));
                     } else {
-                        $('.modal-title').text($.mage.__('We are about to disable Force TLS.'));
+                        $('.modal-title').text($.mage.__('You are about to disable Force TLS.'));
                     }
                     forceTls = response.status;
                 }).fail(function () {

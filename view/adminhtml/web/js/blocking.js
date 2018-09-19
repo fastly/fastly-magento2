@@ -103,9 +103,9 @@ define([
 
                 getBlockingSetting(active_version, true).done(function (response) {
                     if (response.status === false) {
-                        $('.modal-title').text($.mage.__('We are about to enable Blocking'));
+                        $('.modal-title').text($.mage.__('You are about to enable Blocking'));
                     } else {
-                        $('.modal-title').text($.mage.__('We are about to disable Blocking'));
+                        $('.modal-title').text($.mage.__('You are about to disable Blocking'));
                     }
                     blocking = response.status;
                 }).fail(function () {

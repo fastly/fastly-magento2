@@ -22,7 +22,7 @@ define([
          * @type {{title: *, content: (function(): string), actionOk: actionOk}}
          */
         let customSnippetOptions = {
-            title: jQuery.mage.__('You are about to create a custom snippet '),
+            title: jQuery.mage.__('You are about to create a Custom Snippet '),
                 content: function () {
                 return document.getElementById('fastly-custom-snippet-template').textContent;
             },
@@ -37,7 +37,7 @@ define([
          * @type {{title: *, content: (function(): string), actionOk: actionOk}}
          */
         let customSnippetEditOptions = {
-            title: jQuery.mage.__('You are about to edit a custom snippet '),
+            title: jQuery.mage.__('You are about to edit a Custom Snippet '),
                 content: function () {
                 return document.getElementById('fastly-custom-snippet-edit-template').textContent;
             },

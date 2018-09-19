@@ -469,7 +469,7 @@ define([
                 popup(dictionaryDeleteContainerOptions);
                 let containerWarning = $('#fastly-container-warning');
                 $('.modal-title').text($.mage.__('Delete "'+ dictionary_id +'" dictionary container'));
-                containerWarning.text($.mage.__('You are about to delete the "' + dictionary_id + '" dictionary container.'));
+                containerWarning.text($.mage.__('You are about to delete the "' + dictionary_id + '" Dictionary container.'));
                 containerWarning.show();
                 if (dictionaryHtml !== '') {
                     $('#delete-dictionary-container').html(dictionaryHtml);

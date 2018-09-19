@@ -27,7 +27,7 @@ define([
 
         let ioBtn = $('#fastly_push_image_config');
         let ioConfigBtn = $('#fastly_io_default_config');
-        let ioToggle = $('#system_full_page_cache_fastly_fastly_image_optimization_configuration_image_optimizations');
+        let deepIoToggle = $('#system_full_page_cache_fastly_fastly_image_optimization_configuration_image_optimizations');
 
         let active_version = serviceStatus.active_version;
 
@@ -67,26 +67,32 @@ define([
             }
         };
 
+        triggerIoServiceStatusCall();
+
         /**
-         * Enable/disable the Image Optimization buttons
+         * Enable/disable the Image Optimization buttons and display messages
          *
          * @description enables/disables the Image Optimization buttons depending on the Image Optimization service
          *              status
          */
-        getIoServiceStatus().done(function (response) {
-            if (response.status === false) {
-                if (config.isIoEnabled) {
-                    ioToggle.removeAttrs('disabled');
+        function triggerIoServiceStatusCall()
+        {
+            getIoServiceStatus().done(function (response) {
+                if (response.status === false) {
+                    if (config.isIoEnabled) {
+                        deepIoToggle.removeAttrs('disabled');
+                    } else {
+                        deepIoToggle.attr('disabled', 'disabled');
+                    }
                     ioConfigBtn.addClass('disabled');
                 } else {
-                    ioToggle.attr('disabled', 'disabled');
                     ioConfigBtn.removeClass('disabled');
                 }
-            }
 
-            ioServiceStatus = response.status;
-            triggerIoSnippetStatusCall();
-        });
+                ioServiceStatus = response.status;
+                triggerIoSnippetStatusCall();
+            });
+        }
 
         /**
          * Trigger the Image Optimization VCL snippet status call
@@ -409,9 +415,9 @@ define([
 
                 getIoSnippetStatus(active_version, true).done(function (response) {
                     if (response.status === false) {
-                        $('.modal-title').text($.mage.__('We are about to upload the Fastly Image Optimization snippet'));
+                        $('.modal-title').text($.mage.__('You are about to enable the Fastly Image Optimization snippet'));
                     } else {
-                        $('.modal-title').text($.mage.__('We are about to remove the Fastly Image Optimization snippet'));
+                        $('.modal-title').text($.mage.__('You are about to remove the Fastly Image Optimization snippet'));
                     }
                 }).fail(function () {
                     showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'))

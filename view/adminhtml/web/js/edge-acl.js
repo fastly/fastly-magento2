@@ -446,7 +446,7 @@ define([
                 title: 'Delete Dictionary Item',
                 content: 'Are you sure you want to delete the ACL item with the "'+acl_item_name+'" IP value?',
                 actions: {
-                    confirm: function() {
+                    confirm: function () {
                         deleteEdgeAclItem(acl_id, acl_item_id, true).done(function (response) {
                             if (response.status === true) {
                                 $(self).closest('tr').remove();
@@ -456,7 +456,7 @@ define([
                             showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
                         });
                     },
-                    cancel: function() {}
+                    cancel: function () {}
                 }
             });
         });

@@ -405,7 +405,7 @@ define([
                 title: 'Delete Authentication Item',
                 content: "Are you sure you want to delete this item?",
                 actions: {
-                    confirm: function() {
+                    confirm: function () {
                         deleteAuthItem(authItemKeyId).done(function (response) {
                             if (response.status === true) {
                                 $(self).closest('tr').remove();
@@ -417,7 +417,7 @@ define([
                             showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
                         });
                     },
-                    cancel: function() {}
+                    cancel: function () {}
                 }
             });
         });

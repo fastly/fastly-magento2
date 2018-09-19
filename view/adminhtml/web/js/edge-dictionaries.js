@@ -432,7 +432,7 @@ define([
                 title: 'Delete Dictionary Item',
                 content: 'Are you sure you want to delete the "'+item_key+'" dictionary item?',
                 actions: {
-                    confirm: function() {
+                    confirm: function () {
                         deleteEdgeDictionaryItem(dictionary_id, item_key, true).done(function (response) {
                             if (response.status === true) {
                                 $(self).closest('tr').remove();
@@ -442,7 +442,7 @@ define([
                             showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
                         });
                     },
-                    cancel: function() {}
+                    cancel: function () {}
                 }
             });
         });

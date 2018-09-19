@@ -263,7 +263,7 @@ define([
                 title: 'Delete Custom Snippet',
                 content: "Are you sure you want to delete "+ snippet_id +"?",
                 actions: {
-                    confirm: function() {
+                    confirm: function () {
                         deleteCustomSnippet(snippet_id).done(function (response) {
                             if (response.status === true) {
                                 closestTr.remove();
@@ -273,7 +273,7 @@ define([
                             showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
                         });
                     },
-                    cancel: function() {}
+                    cancel: function () {}
                 }
             });
         });

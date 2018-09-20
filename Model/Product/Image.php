@@ -197,7 +197,8 @@ class Image extends ImageModel
 
         if ($this->_scopeConfig->isSetFlag(Config::XML_FASTLY_IMAGE_OPTIMIZATION_CANVAS) == true) {
             // Make sure Fastly delivers the specified size, even with letterboxing or pillarboxing.
-            $this->fastlyParameters['canvas'] = "{$this->_width},{$this->_height}";
+            // We'll use aspect ratio canvas to avoid issues when using dpr
+            $this->fastlyParameters['canvas'] = "1:1";
         }
     }
 

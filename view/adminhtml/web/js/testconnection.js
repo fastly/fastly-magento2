@@ -1,19 +1,18 @@
 define([
     "jquery",
+    "resetAllMessages",
     'mage/template',
-    "Magento_Ui/js/modal/modal",
     'mage/translate'
-], function ($) {
+], function ($, resetAllMessages) {
     return function (config) {
-        var testSuccessBtnMsg = $('#fastly-test-success-button-msg');
-        var testErrorBtnMsg = $('#fastly-test-error-button-msg');
+        let testSuccessBtnMsg = $('#fastly-test-success-button-msg');
+        let testErrorBtnMsg = $('#fastly-test-error-button-msg');
 
+        /**
+         * Test connection button on click event
+         */
         $('#fastly_test_connection_button').on('click', function () {
-
-            testSuccessBtnMsg.text();
-            testSuccessBtnMsg.hide();
-            testErrorBtnMsg.text();
-            testErrorBtnMsg.hide();
+            resetAllMessages();
 
             $.ajax({
                 type: "POST",
@@ -25,13 +24,13 @@ define([
                 },
                 cache: false,
                 success: function (response) {
-                    if (response.status == false) {
+                    if (response.status === false) {
                         return testErrorBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                     } else {
-                        return testSuccessBtnMsg.text($.mage.__('Connection to service name ' + response.service_name + ' has been succesfully established. Please, save configuration and clear cache.')).show();
+                        return testSuccessBtnMsg.text($.mage.__('Connection to service name ' + response.service_name + ' has been successfully established. Please, save configuration and clear cache.')).show();
                     }
                 },
-                error: function (msg) {
+                error: function () {
                     return testErrorBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                 }
             });

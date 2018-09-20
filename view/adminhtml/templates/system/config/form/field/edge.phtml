@@ -39,11 +39,11 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
             <tbody id="fastly-dictionaries-list"></tbody>
         </table>
     </div>
-    <p class="loading-dictionaries" style="display: none;">
+    <p class="loading-dictionaries">
         <img class="processing"
              alt="Collecting"
-             style="margin:0 5px"
-             src="<?php /* @noEscape */ echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/>
+             style="margin:0 5px;"
+             src="<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/fastly16.gif') ?>" />
         <?php /* @noEscape */ echo __('Loading dictionaries...'); ?>
     </p>
     <p class="no-dictionaries" style="display: none;">
@@ -52,15 +52,15 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
 </div>
 
 <div class="message message-error fastly-button-messages"
-     id="fastly-error-edge-button-msg"
+     id="fastly-error-dictionary-button-msg"
      style="display: none"></div>
 
 <div class="message message-success fastly-button-messages"
-     id="fastly-success-edge-button-msg"
+     id="fastly-success-dictionary-button-msg"
      style="display: none"></div>
 
 <div class="message message-warning fastly-button-messages"
-     id="fastly-warning-edge-button-msg"
+     id="fastly-warning-dictionary-button-msg"
      style="display: none"></div>
 
 <style type="text/css">

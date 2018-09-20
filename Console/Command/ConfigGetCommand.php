@@ -23,29 +23,30 @@ namespace Fastly\Cdn\Console\Command;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
-use Magento\Framework\Exception\LocalizedException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
+/**
+ * Class ConfigGetCommand
+ *
+ * @package Fastly\Cdn\Console\Command
+ */
 class ConfigGetCommand extends Command
 {
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var Api
      */
     private $api;
-
     /**
      * @var Vcl
      */
     private $vcl;
-
     /**
      * @var OutputInterface
      */
@@ -160,6 +161,7 @@ class ConfigGetCommand extends Command
 
     /**
      * ConfigGetCommand constructor.
+     *
      * @param Config $config
      * @param Api $api
      * @param Vcl $vcl
@@ -176,7 +178,9 @@ class ConfigGetCommand extends Command
     }
 
     /**
-     * @inheritdoc
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output) // @codingStandardsIgnoreLine - required by parent class
     {

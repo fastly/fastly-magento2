@@ -20,13 +20,17 @@
  */
 namespace Fastly\Cdn\Model;
 
+/**
+ * Class PurgeCache
+ *
+ * @package Fastly\Cdn\Model
+ */
 class PurgeCache
 {
     /**
      * @var Api
      */
     private $api;
-
     /**
      * @var Config
      */
@@ -47,8 +51,9 @@ class PurgeCache
     /**
      * Send API purge request to invalidate cache by pattern
      *
-     * @param string|array $pattern
-     * @return bool Return true if successful; otherwise return false
+     * @param string $pattern
+     * @return bool
+     * @throws \Zend_Uri_Exception
      */
     public function sendPurgeRequest($pattern = '')
     {

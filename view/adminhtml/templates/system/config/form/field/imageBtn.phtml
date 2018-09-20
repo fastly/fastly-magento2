@@ -1,30 +1,29 @@
 <?php echo $block->getButtonHtml() ?>
 
-<span class="collect-indicator" id="imgopt_state_span">
-    <span id="fastly_imgopt_state_message_span"><b>Current state:</b>
+<span class="collect-indicator" id="io_state_span">
+    <span id="fastly_io_state_message_span"><b>Current state:</b>
         <img class="processing"
-             hidden="hidden"
              alt="Collecting"
-             style="margin:0 5px"
-             src="<?php /* @noEscape */ echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/>
-        <span style="display:none;" class="imgopt_state_span" id="imgopt_state_enabled"> enabled</span>
-        <span style="display:none;" class="imgopt_state_span" id="imgopt_state_disabled"> disabled</span>
-        <span style="display:none;" class="imgopt_state_span" id="imgopt_state_unknown"> unknown</span>
+             style="margin:0 5px;"
+             src="<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/fastly16.gif') ?>" />
+        <span style="display:none;" class="io_state_span" id="io_state_enabled"> enabled</span>
+        <span style="display:none;" class="io_state_span" id="io_state_disabled"> disabled</span>
+        <span style="display:none;" class="io_state_span" id="io_state_unknown"> unknown</span>
     </span>
 </span>
 
 <div class="message message-error fastly-button-messages"
-     id="fastly-error-imgopt-button-msg"
+     id="fastly-error-io-button-msg"
      style="display: none">
 </div>
 
 <div class="message message-success fastly-button-messages"
-     id="fastly-success-imgopt-button-msg"
+     id="fastly-success-io-button-msg"
      style="display: none">
 </div>
 
 <div class="message message-warning fastly-button-messages"
-     id="fastly-warning-imgopt-button-msg"
+     id="fastly-warning-io-button-msg"
      style="display: none">
 </div>
 
@@ -50,15 +49,15 @@
         padding: 1.4rem 4rem 1.4rem 5.5rem;
     }
 
-    #imgopt_state_enabled {
+    #io_state_enabled {
         color: #008000;
     }
 
-    #imgopt_state_disabled {
+    #io_state_disabled {
         color: #808080;
     }
 
-    #imgopt_state_unknown {
+    #io_state_unknown {
         color: #ff0000;
     }
 </style>

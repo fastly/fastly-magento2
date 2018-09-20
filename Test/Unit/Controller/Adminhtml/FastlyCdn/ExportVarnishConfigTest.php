@@ -27,8 +27,9 @@ namespace Fastly\Cdn\Test\Unit\Controller\Adminhtml\PageCache;
 use Magento\Framework\App\Filesystem\DirectoryList;
 
 /**
- * Class PageCacheTest
+ * Class ExportVarnishConfigTest
  *
+ * @package Fastly\Cdn\Test\Unit\Controller\Adminhtml\PageCache
  */
 class ExportVarnishConfigTest extends \PHPUnit_Framework_TestCase
 {

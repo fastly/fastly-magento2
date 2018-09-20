@@ -1,5 +1,23 @@
 <?php
-
+/**
+ * Fastly CDN for Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Fastly CDN for Magento End User License Agreement
+ * that is bundled with this package in the file LICENSE_FASTLY_CDN.txt.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Fastly CDN to newer
+ * versions in the future. If you wish to customize this module for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    Fastly
+ * @package     Fastly_Cdn
+ * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @license     BSD, see LICENSE_FASTLY_CDN.txt
+ */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
 
 use Magento\Backend\App\Action;
@@ -14,43 +32,41 @@ use Magento\Framework\App\Config\Storage\WriterInterface as ConfigWriter;
 use Magento\Framework\App\Cache\TypeListInterface as CacheTypeList;
 use Magento\Config\App\Config\Type\System as SystemConfig;
 
+/**
+ * Class UpdateBlocking
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
+ */
 class UpdateBlocking extends Action
 {
     /**
      * @var Http
      */
     private $request;
-
     /**
      * @var JsonFactory
      */
     private $resultJson;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var Api
      */
     private $api;
-
     /**
      * @var Vcl
      */
     private $vcl;
-
     /**
      * @var ConfigWriter
      */
     private $configWriter;
-
     /**
      * @var CacheTypeList
      */
     private $cacheTypeList;
-
     /**
      * @var SystemConfig
      */
@@ -101,9 +117,12 @@ class UpdateBlocking extends Action
         $result = $this->resultJson->create();
         try {
             $service = $this->api->checkServiceDetails();
-            $currActiveVersion = $this->getActiveVersion($service);
+            $currActiveVersion = $this->vcl->determineVersions($service->versions);
 
-            $snippet = $this->config->getVclSnippets('/vcl_snippets_blocking', 'recv.vcl');
+            $snippet = $this->config->getVclSnippets(
+                Config::VCL_BLOCKING_PATH,
+                Config::VCL_BLOCKING_SNIPPET
+            );
 
             $country_codes = $this->prepareCountryCodes($this->request->getParam('countries'));
             $acls = $this->prepareAcls($this->request->getParam('acls'));
@@ -144,19 +163,7 @@ class UpdateBlocking extends Action
     }
 
     /**
-     * Get the current active version
-     *
-     * @param $service
-     * @return array
-     */
-    private function getActiveVersion($service)
-    {
-        $currActiveVersion = $this->vcl->determineVersions($service->versions);
-        return $currActiveVersion;
-    }
-
-    /**
-     * Prepares ACLS VCL snippets
+     * Prepares ACL VCL snippets
      *
      * @param $blockedAcls
      * @return string

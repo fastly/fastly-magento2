@@ -1,5 +1,23 @@
 <?php
-
+/**
+ * Fastly CDN for Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Fastly CDN for Magento End User License Agreement
+ * that is bundled with this package in the file LICENSE_FASTLY_CDN.txt.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Fastly CDN to newer
+ * versions in the future. If you wish to customize this module for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    Fastly
+ * @package     Fastly_Cdn
+ * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @license     BSD, see LICENSE_FASTLY_CDN.txt
+ */
 namespace Fastly\Cdn\Model;
 
 use Fastly\Cdn\Helper\Data;
@@ -20,6 +38,11 @@ use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\Request\Http;
 
+/**
+ * Class Statistic
+ *
+ * @package Fastly\Cdn\Model
+ */
 class Statistic extends AbstractModel implements IdentityInterface
 {
     /**
@@ -54,77 +77,62 @@ class Statistic extends AbstractModel implements IdentityInterface
     const GA_HITTYPE_EVENT = 'event';
     const GA_PAGEVIEW_URL = 'http://fastly.com/';
     const GA_FASTLY_SETUP = 'Fastly Setup';
-
     /**
      * @var array
      */
     private $GAReqData = [];
-
     /**
      * @var null|string
      */
     private $validationServiceId = null;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var StoreManagerInterface
      */
     private $storeManager;
-
     /**
      * @var ProductMetadataInterface Magento meta data (version)
      */
     private $metaData;
-
     /**
      * @var ScopeConfigInterface
      */
     private $scopeConfig;
-
     /**
      * @var CountryInformationAcquirerInterface
      */
     private $countryInformation;
-
     /**
      * @var RegionFactory
      */
     private $regionFactory;
-
     /**
      * @var Api
      */
     private $api;
-
     /**
      * @var CurlFactory
      */
     private $curlFactory;
-
     /**
      * @var StatisticRepository
      */
     private $statisticRepository;
-
     /**
      * @var DateTime
      */
     private $dateTime;
-
     /**
      * @var Http
      */
     private $request;
-
     /**
      * @var CountryFactory
      */
     private $countryFactory;
-
     /**
      * @var Data
      */
@@ -404,6 +412,7 @@ class Statistic extends AbstractModel implements IdentityInterface
      * Get Google Analytics mandatory data
      *
      * @return array
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getGAReqData()
     {

@@ -32,6 +32,7 @@ use \Magento\PageCache\Model\Config;
 /**
  * Class ConfigPlugin
  *
+ * @package Fastly\Cdn\Model\PageCache
  */
 class ConfigPlugin
 {

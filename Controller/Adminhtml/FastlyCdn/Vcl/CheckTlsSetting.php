@@ -27,20 +27,21 @@ use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 
+/**
+ * Class CheckTlsSetting
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
+ */
 class CheckTlsSetting extends Action
 {
-    const FORCE_TLS_SETTING_NAME = 'magentomodule_force_tls';
-
     /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
     private $api;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var JsonFactory
      */
@@ -68,17 +69,16 @@ class CheckTlsSetting extends Action
     }
 
     /**
-     * Verifes weather or not TLS settings snippet existis on specified Faslty version
+     * Verifies weather or not TLS settings snippet exists on specified Fastly version
      *
      * @return Json
      */
     public function execute()
     {
         $result = $this->resultJsonFactory->create();
-
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $req = $this->api->getRequest($activeVersion, self::FORCE_TLS_SETTING_NAME);
+            $req = $this->api->getRequest($activeVersion, Config::FORCE_TLS_SETTING_NAME);
 
             if ($req == false) {
                 return $result->setData(['status' => false]);

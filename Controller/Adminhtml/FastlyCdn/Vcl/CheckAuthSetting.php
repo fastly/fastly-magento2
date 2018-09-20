@@ -26,28 +26,21 @@ use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
 
+/**
+ * Class CheckAuthSetting
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
+ */
 class CheckAuthSetting extends Action
 {
     /**
-     * Path to Authentication snippet
-     */
-    const VCL_AUTH_SNIPPET_PATH = '/vcl_snippets_basic_auth';
-
-    /**
-     * Path to Authentication snippet
-     */
-    const AUTH_DICTIONARY_NAME = 'magentomodule_basic_auth';
-
-    /**
-     * @var \Fastly\Cdn\Model\Api
+     * @var Api
      */
     private $api;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var JsonFactory
      */
@@ -75,28 +68,31 @@ class CheckAuthSetting extends Action
     }
 
     /**
-     * Verifes weather or not auth settings snippet existis on specified Faslty version
+     * Verifies weather or not auth settings snippet exists on specified Fastly version
      *
      * @return \Magento\Framework\Controller\Result\Json
      */
     public function execute()
     {
         $result = $this->resultJsonFactory->create();
-
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $snippets = $this->config->getVclSnippets(self::VCL_AUTH_SNIPPET_PATH);
+            $snippets = $this->config->getVclSnippets(Config::VCL_AUTH_SNIPPET_PATH);
 
             foreach ($snippets as $key => $value) {
                 $name = Config::FASTLY_MAGENTO_MODULE . '_basic_auth_' . $key;
                 $status = $this->api->hasSnippet($activeVersion, $name);
 
                 if ($status == false) {
-                    return $result->setData(['status' => false]);
+                    return $result->setData([
+                        'status' => false
+                    ]);
                 }
             }
 
-            return $result->setData(['status' => true]);
+            return $result->setData([
+                'status' => true
+            ]);
         } catch (\Exception $e) {
             return $result->setData([
                 'status'    => false,

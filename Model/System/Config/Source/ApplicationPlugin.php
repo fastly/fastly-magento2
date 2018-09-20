@@ -23,11 +23,16 @@ namespace Fastly\Cdn\Model\System\Config\Source;
 use Magento\PageCache\Model\System\Config\Source\Application;
 use Fastly\Cdn\Model\Config;
 
+/**
+ * Class ApplicationPlugin
+ *
+ * @package Fastly\Cdn\Model\System\Config\Source
+ */
 class ApplicationPlugin
 {
     /**
-     * Options getter
-     *
+     * @param Application $application
+     * @param array $optionArray
      * @return array
      */
     public function afterToOptionArray(Application $application, array $optionArray) // @codingStandardsIgnoreLine - unused parameter
@@ -36,8 +41,8 @@ class ApplicationPlugin
     }
 
     /**
-     * Get options in "key-value" format
-     *
+     * @param Application $application
+     * @param array $optionArray
      * @return array
      */
     public function afterToArray(Application $application, array $optionArray) // @codingStandardsIgnoreLine - unused parameter

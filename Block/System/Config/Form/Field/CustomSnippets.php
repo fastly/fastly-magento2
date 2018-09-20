@@ -103,11 +103,17 @@ class CustomSnippets extends AbstractFieldArray
     {
         $options = [];
         foreach ($this->_storeManager->getStores() as $store) {
-            $options[] = ['value' => $store->getId(), 'label' => $store->getName()];
+            $options[] = [
+                'value' => $store->getId(),
+                'label' => $store->getName()
+            ];
         }
 
         if ($label) {
-            array_unshift($options, ['value' => '', 'label' => $label]);
+            array_unshift($options, [
+                'value' => '',
+                'label' => $label
+            ]);
         }
 
         return $options;

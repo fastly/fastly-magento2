@@ -1,11 +1,4 @@
 <?php
-
-namespace Fastly\Cdn\Model;
-
-use Fastly\Cdn\Helper\CacheTags;
-use Magento\Framework\App\Response\Http;
-use Fastly\Cdn\Model\Config;
-
 /**
  * Fastly CDN for Magento
  *
@@ -25,13 +18,23 @@ use Fastly\Cdn\Model\Config;
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
+namespace Fastly\Cdn\Model;
+
+use Fastly\Cdn\Helper\CacheTags;
+use Magento\Framework\App\Response\Http;
+use Fastly\Cdn\Model\Config;
+
+/**
+ * Class ResponsePlugin
+ *
+ * @package Fastly\Cdn\Model
+ */
 class ResponsePlugin
 {
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var CacheTags
      */

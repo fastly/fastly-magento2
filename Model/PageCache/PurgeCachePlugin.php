@@ -1,10 +1,4 @@
 <?php
-
-namespace Fastly\Cdn\Model\PageCache;
-
-use Fastly\Cdn\Model\Config;
-use Magento\CacheInvalidate\Model\PurgeCache;
-
 /**
  * Fastly CDN for Magento
  *
@@ -23,6 +17,16 @@ use Magento\CacheInvalidate\Model\PurgeCache;
  * @package     Fastly_Cdn
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
+ */
+namespace Fastly\Cdn\Model\PageCache;
+
+use Fastly\Cdn\Model\Config;
+use Magento\CacheInvalidate\Model\PurgeCache;
+
+/**
+ * Class PurgeCachePlugin
+ *
+ * @package Fastly\Cdn\Model\PageCache
  */
 class PurgeCachePlugin
 {

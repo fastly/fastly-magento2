@@ -23,12 +23,18 @@ namespace Fastly\Cdn\Console\Command;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
-use Magento\Framework\Exception\LocalizedException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Magento\Framework\App\Config\Storage\WriterInterface;
+use Magento\Framework\App\Cache\Manager;
 
+/**
+ * Class EnableCommand
+ *
+ * @package Fastly\Cdn\Console\Command
+ */
 class EnableCommand extends Command
 {
     /**
@@ -235,14 +241,20 @@ class EnableCommand extends Command
     }
 
     /**
+     * EnableCommand constructor.
+     *
      * @param Config $config
+     * @param Api $api
+     * @param Vcl $vcl
+     * @param WriterInterface $configWriter
+     * @param Manager $cacheManager
      */
     public function __construct(
         Config $config,
         Api $api,
         Vcl $vcl,
-        \Magento\Framework\App\Config\Storage\WriterInterface $configWriter,
-        \Magento\Framework\App\Cache\Manager $cacheManager
+        WriterInterface $configWriter,
+        Manager $cacheManager
     ) {
         parent::__construct();
         $this->config = $config;
@@ -644,9 +656,9 @@ class EnableCommand extends Command
 
     /**
      * Upload default VCL, conditions and requests
+     *
      * @param $activate
      * @throws \Exception
-     * @throws \Magento\Framework\Exception\FileSystemException
      */
     private function uploadVcl($activate)
     {
@@ -706,7 +718,8 @@ class EnableCommand extends Command
     }
 
     /**
-     *  Uploads the Force TLS VCL snippet
+     * Uploads the Force TLS VCL snippet
+     *
      * @param $activate
      */
     private function enableForceTls($activate)
@@ -716,7 +729,7 @@ class EnableCommand extends Command
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
             $reqName = Config::FASTLY_MAGENTO_MODULE.'_force_tls';
-            $snippets = $this->config->getVclSnippets('/vcl_snippets_force_tls');
+            $snippets = $this->config->getVclSnippets(Config::FORCE_TLS_PATH);
 
             $request = [
                 'name'          => $reqName,
@@ -761,6 +774,7 @@ class EnableCommand extends Command
 
     /**
      * Removes the Force TLS VCL snippet from the current active version
+     *
      * @param $activate
      */
     private function disableForceTls($activate)
@@ -770,7 +784,7 @@ class EnableCommand extends Command
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
             $reqName = Config::FASTLY_MAGENTO_MODULE.'_force_tls';
-            $snippets = $this->config->getVclSnippets('/vcl_snippets_force_tls');
+            $snippets = $this->config->getVclSnippets(Config::FORCE_TLS_PATH);
 
             $request = [
                 'name'          => $reqName,

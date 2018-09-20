@@ -4,6 +4,7 @@
  * See COPYING.txt for license details.
  */
 ?>
+<!-- Upload VCL popup template -->
 <script type="text/x-magento-template" id="fastly-uploadvcl-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -38,6 +39,7 @@
     </form>
 </script>
 
+<!-- Force TLS toggle popup template -->
 <script type="text/x-magento-template" id="fastly-tls-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -72,6 +74,7 @@
     </form>
 </script>
 
+<!-- Image Optimization toggle popup template -->
 <script type="text/x-magento-template" id="fastly-image-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -123,6 +126,7 @@
     </form>
 </script>
 
+<!-- Blocking toggle popup template -->
 <script type="text/x-magento-template" id="fastly-blocking-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -157,6 +161,7 @@
     </form>
 </script>
 
+<!-- Basic Authentication toggle popup template -->
 <script type="text/x-magento-template" id="fastly-auth-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -193,6 +198,7 @@
     </form>
 </script>
 
+<!-- Backend configuration popup template -->
 <script type="text/x-magento-template" id="fastly-backend-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -329,6 +335,7 @@
     </form>
 </script>
 
+<!-- Error page popup template -->
 <script type="text/x-magento-template" id="fastly-error-page-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -368,14 +375,14 @@
                               name="error_page_html"
                               required="required"
                               id="error_page_html"
-                              class="admin__control-text">
-                    </textarea>
+                              class="admin__control-text"></textarea>
                 </div>
             </div>
         </fieldset>
     </form>
 </script>
 
+<!-- WAF page popup template -->
 <script type="text/x-magento-template" id="fastly-waf-page-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -499,8 +506,7 @@
                               name="waf_page_content"
                               required="required"
                               id="waf_page_content"
-                              class="admin__control-text required-entry">
-                    </textarea>
+                              class="admin__control-text required-entry"></textarea>
                     <div class="admin__field-note">
                         The content to be served when delivering the response.
                     </div>
@@ -510,6 +516,7 @@
     </form>
 </script>
 
+<!-- Edge Dictionary creation popup template -->
 <script type="text/x-magento-template" id="fastly-dictionary-container-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -557,12 +564,14 @@
     </form>
 </script>
 
+<!-- Popup template messages -->
 <div class="messages">
     <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
     <div class="message message-success fastly-message-success" style="display: none;"></div>
 </div>
 
-<script type="text/x-magento-template" id="fastly-edge-items-template">
+<!-- Edge Dictionary configuration popup template -->
+<script type="text/x-magento-template" id="fastly-dictionary-item-template">
     <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="fastly-dictionary-form"
@@ -625,6 +634,7 @@
     </form>
 </script>
 
+<!-- Edge ACL creation popup template -->
 <script type="text/x-magento-template" id="fastly-acl-container-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -643,7 +653,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field _required">
                 <label for="acl_name" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __("Acl name") ?></span>
+                    <span><?php /* @noEscape */ echo __("ACL name") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input name="acl_name" type="text" required="required" id="acl_name" class="admin__control-text">
@@ -668,6 +678,7 @@
     </form>
 </script>
 
+<!-- Edge Dictionary delete popup template -->
 <script type="text/x-magento-template" id="fastly-delete-dictionary-container-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -706,6 +717,7 @@
     </form>
 </script>
 
+<!-- Edge ACL delete popup template -->
 <script type="text/x-magento-template" id="fastly-delete-acl-container-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -744,6 +756,7 @@
     </form>
 </script>
 
+<!-- Edge ACL configuration popup template -->
 <script type="text/x-magento-template" id="fastly-acl-items-template">
     <div class="messages">
         <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
@@ -806,6 +819,7 @@
     </form>
 </script>
 
+<!-- Basic Authentication creation popup template -->
 <script type="text/x-magento-template" id="fastly-auth-container-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -841,6 +855,7 @@
     </form>
 </script>
 
+<!-- Basic Auth delete popup template -->
 <script type="text/x-magento-template" id="fastly-auth-delete-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -876,6 +891,7 @@
     </form>
 </script>
 
+<!-- Basic Authentication users popup template -->
 <script type="text/x-magento-template" id="fastly-auth-items-template">
     <div class="messages">
         <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
@@ -914,7 +930,7 @@
                         <button class="action-delete fastly-save-action save_item_auth" title="Save" type="button">
                             <span>Save</span>
                         </button>
-                        <button class="action-delete remove_item"  title="Delete" type="button">
+                        <button class="action-delete remove_item_auth" title="Delete" type="button" hidden>
                             <span>Delete</span>
                         </button>
                     </td>
@@ -934,6 +950,7 @@
     </form>
 </script>
 
+<!-- Image Optimization default configuration popup template -->
 <script type="text/x-magento-template" id="fastly-io-default-config-options-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -1177,6 +1194,7 @@
     </form>
 </script>
 
+<!-- Custom Snippet creation popup template -->
 <script type="text/x-magento-template" id="fastly-custom-snippet-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -1260,6 +1278,92 @@
     </form>
 </script>
 
+<!-- Custom Snippet edit popup template -->
+<script type="text/x-magento-template" id="fastly-custom-snippet-edit-template">
+    <div class="messages">
+        <div class="message message-warning fastly-message-warning" style="display: none">
+            <?php /* @noEscape */ echo __("You are about to edit a custom snippet.")?>
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/editCustomSnippet'); ?>"
+          method="POST"
+          id="fastly-custom-snippet-edit-form"
+          class="form-inline"
+          enctype="multipart/form-data">
+
+        <fieldset class="admin__fieldset form-list question">
+            <input hidden="hidden" name="original_snippet_name" id="original_snippet_name" class="admin__control-text">
+            <div class="admin__field field _required">
+                <label for="custom_snippet_name" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Name") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input type="text"
+                           name="custom_snippet_name"
+                           required="required"
+                           id="custom_snippet_name"
+                           class="admin__control-text required-entry">
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="custom_snippet_type" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Type") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="custom_snippet_type" id="custom_snippet_type" class="admin__control-text">
+                        <option value="init">init</option>
+                        <option value="recv" selected>recv</option>
+                        <option value="hit">hit</option>
+                        <option value="miss">miss</option>
+                        <option value="pass">pass</option>
+                        <option value="fetch">fetch</option>
+                        <option value="error">error</option>
+                        <option value="deliver">deliver</option>
+                        <option value="log">log</option>
+                        <option value="hash">hash</option>
+                        <option value="none">none</option>
+                    </select>
+                    <div class="admin__field-note">
+                        This specifies the location in which to place the snippet when uploaded to Fastly.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="custom_snippet_priority" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Priority") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input type="text"
+                           name="custom_snippet_priority"
+                           required="required"
+                           id="custom_snippet_priority"
+                           value="100"
+                           class="admin__control-text required-entry">
+                    <div class="admin__field-note">
+                        For most configurations, the default (100) is best. Priority determines the ordering for
+                        multiple snippets. Lower numbers execute first.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="custom_snippet_content" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("VCL") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <textarea rows="10"
+                              name="custom_snippet_content"
+                              required="required"
+                              id="custom_snippet_content"
+                              class="admin__control-text required-entry"></textarea>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</script>
+
+<!-- Modly active module popup template -->
 <script type="text/x-magento-template" id="modly-active-module-template">
     <div class="messages">
         <div class="message message-error fastly-message-error" style="display: none">
@@ -1277,6 +1381,7 @@
     </form>
 </script>
 
+<!-- Modly all modules template -->
 <script type="text/x-magento-template" id="modly-all-modules-template">
     <div class="messages">
         <div class="message message-error fastly-message-error" style="display: none">
@@ -1341,6 +1446,7 @@ $deleteDictionaryItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item
 $createAcl = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/Create');
 $deleteAcl = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/Delete');
 $deleteCustomSnippet = $block->getUrl('adminhtml/fastlyCdn_Vcl/DeleteCustomSnippet');
+$getCustomSnippet = $block->getUrl('adminhtml/fastlyCdn_Vcl/GetCustomSnippet');
 $listAcls = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/ListAll');
 $aclItems = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/ListAll');
 $createAclItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/Create');
@@ -1366,17 +1472,17 @@ $getAllConditionsUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getAllCondit
 $getAllDomainsUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getAllDomains');
 $getCountriesUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getCountries');
 $uploadModuleSnippetUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/upload');
+$updateBlockingUrl = $block->getUrl('admin/fastlyCdn_Vcl/updateBlocking');
 $isIoEnabled = $block->getConfig()->isImageOptimizationEnabled();
 
 /* This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application  */
 $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
 ?>
 
-
 <script type="text/x-magento-init">
         {
             "*": {
-                "Fastly_Cdn/js/uploadvcl": {
+                "Fastly_Cdn/js/init": {
                     "serviceInfoUrl": "<?php echo $block->escapeJsQuote($serviceInfoUrl);?>",
                     "vclUploadUrl": "<?php echo $block->escapeJsQuote($vclUploadUrl);?>",
                     "testServiceUrl": "<?php echo $block->escapeJsQuote($testServiceUrl);?>",
@@ -1405,6 +1511,7 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "createAcl": "<?php echo $block->escapeJsQuote($createAcl);?>",
                     "deleteAcl": "<?php echo $block->escapeJsQuote($deleteAcl);?>",
                     "deleteCustomSnippet": "<?php echo $block->escapeJsQuote($deleteCustomSnippet);?>",
+                    "getCustomSnippet": "<?php echo $block->escapeJsQuote($getCustomSnippet);?>",
                     "getAcls": "<?php echo $block->escapeJsQuote($listAcls);?>",
                     "getAclItems": "<?php echo $block->escapeJsQuote($aclItems);?>",
                     "createAclItem": "<?php echo $block->escapeJsQuote($createAclItem);?>",
@@ -1432,6 +1539,7 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "getAllDomainsUrl": "<?php echo $block->escapeJsQuote($getAllDomainsUrl);?>",
                     "getCountriesUrl": "<?php echo $block->escapeJsQuote($getCountriesUrl);?>",
                     "uploadModuleSnippetUrl": "<?php echo $block->escapeJsQuote($uploadModuleSnippetUrl);?>"
+                    "updateBlockingUrl": "<?php echo $block->escapeJsQuote($updateBlockingUrl);?>"
                 }
             }
         }
@@ -1451,7 +1559,7 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
     }
 
     .admin__control-table .fastly-save-action::before {
-        content: '\e636';
+        content: '\1F4BE';
         font-size: 2rem;
     }
 

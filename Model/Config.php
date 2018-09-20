@@ -33,6 +33,7 @@ use Magento\Framework\Module\Dir;
 /**
  * Class Config
  *
+ * @package Fastly\Cdn\Model
  */
 class Config extends \Magento\PageCache\Model\Config
 {
@@ -70,6 +71,76 @@ class Config extends \Magento\PageCache\Model\Config
      * GeoIP action "redirect"
      */
     const GEOIP_ACTION_REDIRECT = 'redirect';
+
+    /**
+     * Blocking snippets directory path
+     */
+    const VCL_BLOCKING_PATH = '/vcl_snippets_blocking';
+
+    /**
+     * VCL blocking snippet
+     */
+    const VCL_BLOCKING_SNIPPET = 'recv.vcl';
+
+    /**
+     * Blocking setting name
+     */
+    const BLOCKING_SETTING_NAME = 'magentomodule_blocking';
+
+    /**
+     * Authentication snippets directory path
+     */
+    const VCL_AUTH_SNIPPET_PATH = '/vcl_snippets_basic_auth';
+
+    /**
+     * Authentication dictionary name
+     */
+    const AUTH_DICTIONARY_NAME = 'magentomodule_basic_auth';
+
+    /**
+     * Image optimization setting name
+     */
+    const IMAGE_SETTING_NAME = 'magentomodule_image_optimization';
+
+    /**
+     * Force TLS snippet path
+     */
+    const FORCE_TLS_PATH = '/vcl_snippets_force_tls';
+
+    /**
+     * Force TLS setting name
+     */
+    const FORCE_TLS_SETTING_NAME = 'magentomodule_force_tls';
+
+    /**
+     * Custom snippet path
+     */
+    const CUSTOM_SNIPPET_PATH = 'vcl_snippets_custom/';
+
+    /**
+     * Image optimization condition name
+     */
+    const IO_CONDITION_NAME = 'fastly-image-optimizer-condition';
+
+    /**
+     * Image optimization header name
+     */
+    const IO_HEADER_NAME = 'fastly-image-optimizer-header';
+
+    /**
+     * Image optimization snippet path
+     */
+    const IO_VCL_SNIPPET_PATH = '/vcl_snippets_image_optimizations';
+
+    /**
+     * Error page snippet path
+     */
+    const VCL_ERROR_SNIPPET_PATH = '/vcl_snippets_error_page';
+
+    /**
+     * Error page snippet
+     */
+    const VCL_ERROR_SNIPPET = 'deliver.vcl';
 
     /**
      * XML path to Fastly config template path
@@ -179,8 +250,17 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_IMAGE_OPTIMIZATIONS
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimizations';
 
+    /**
+     * XML path to image optimization force lossy flag
+     */
     const XML_FASTLY_FORCE_LOSSY
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimization_force_lossy';
+
+    /**
+     * XML path to image optimization bg color flag
+     */
+    const XML_FASTLY_IMAGE_OPTIMIZATION_BG_COLOR
+        = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimization_bg_color';
 
     /**
      * XML path to image optimizations pixel ratio flag
@@ -247,10 +327,28 @@ class Config extends \Magento\PageCache\Model\Config
         = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_all_items_events';
 
     /**
+     * XML path to enable Publish Purge Events
+     */
+    const XML_FASTLY_PUBLISH_PURGE_EVENTS
+        = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_events';
+
+    /**
      * XML path to enable Publish Purge All/Clean backtrace
      */
     const XML_FASTLY_PUBLISH_PURGE_ALL_TRACE
         = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_all_trace';
+
+    /**
+     * XML path to enable Publish Purge By Key backtrace
+     */
+    const XML_FASTLY_PUBLISH_PURGE_BY_KEY_TRACE
+        = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_by_key_trace';
+
+    /**
+     * XML path to enable Publish Generic Purge
+     */
+    const XML_FASTLY_PUBLISH_PURGE_TRACE
+        = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_trace';
 
     /**
      * XML path to enable Publish Config change events
@@ -501,9 +599,24 @@ class Config extends \Magento\PageCache\Model\Config
         return $this->_scopeConfig->isSetFlag(self::XML_FASTLY_IMAGE_OPTIMIZATIONS_PIXEL_RATIO);
     }
 
+    /**
+     * Checks if the image optimization force lossy option is enabled
+     *
+     * @return mixed
+     */
     public function isForceLossyEnabled()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_FORCE_LOSSY);
+    }
+
+    /**
+     * Checks if the image optimization bg color option is enabled
+     *
+     * @return mixed
+     */
+    public function isImageOptimizationBgColorEnabled()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_IMAGE_OPTIMIZATION_BG_COLOR);
     }
 
     /**
@@ -557,6 +670,7 @@ class Config extends \Magento\PageCache\Model\Config
 
     /**
      * Get Webhooks Username
+     *
      * @return mixed
      */
     public function getWebhookUsername()
@@ -585,13 +699,43 @@ class Config extends \Magento\PageCache\Model\Config
     }
 
     /**
-     * Is publishing backtrace on purgall allowed
+     * Is publishing purge changes allowed
      *
      * @return bool
      */
-    public function canPublishDebugBacktrace()
+    public function canPublishPurgeChanges()
+    {
+        return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PUBLISH_PURGE_EVENTS));
+    }
+
+    /**
+     * Is publishing backtrace on purge all allowed
+     *
+     * @return bool
+     */
+    public function canPublishPurgeAllDebugBacktrace()
     {
         return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PUBLISH_PURGE_ALL_TRACE));
+    }
+
+    /**
+     * Is publishing backtrace on purge by key allowed
+     *
+     * @return bool
+     */
+    public function canPublishPurgeByKeyDebugBacktrace()
+    {
+        return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PUBLISH_PURGE_BY_KEY_TRACE));
+    }
+
+    /**
+     * Is publishing backtrace on generic purge allowed
+     *
+     * @return bool
+     */
+    public function canPublishPurgeDebugBacktrace()
+    {
+        return ($this->isEnabled() && $this->_scopeConfig->isSetFlag(self::XML_FASTLY_PUBLISH_PURGE_TRACE));
     }
 
     /**
@@ -626,6 +770,7 @@ class Config extends \Magento\PageCache\Model\Config
 
     /**
      * Get store ID for country.
+     *
      * @param $countryCode 2-digit country code
      * @return int|null
      */
@@ -639,6 +784,7 @@ class Config extends \Magento\PageCache\Model\Config
 
     /**
      * Filter country code mapping by priority
+     *
      * @param $mapping
      * @param $countryCode
      * @return int|null
@@ -819,5 +965,50 @@ class Config extends \Magento\PageCache\Model\Config
         }
 
         return $result;
+    }
+
+    /**
+     * Validate custom snippet data
+     *
+     * @param $name
+     * @param $type
+     * @param $priority
+     * @return array
+     */
+    public function validateCustomSnippet($name, $type, $priority)
+    {
+        $snippetName = str_replace(' ', '', $name);
+        $types = ['init', 'recv', 'hit', 'miss', 'pass', 'fetch', 'error', 'deliver', 'log', 'hash', 'none'];
+
+        $inArray = in_array($type, $types);
+        $isNumeric = is_numeric($priority);
+        $isAlphanumeric = preg_match('/^[\w]+$/', $snippetName);
+        $error = null;
+
+        if (!$inArray) {
+            $error = 'Type value is not recognised.';
+            return [
+                'snippet_name' => null,
+                'error' => $error
+            ];
+        }
+        if (!$isNumeric) {
+            $error = 'Please make sure that the priority value is a number.';
+            return [
+                'snippet_name' => null,
+                'error' => $error
+            ];
+        }
+        if (!$isAlphanumeric) {
+            $error = 'Please make sure that the name value contains only alphanumeric characters.';
+            return [
+                'snippet_name' => null,
+                'error' => $error
+            ];
+        }
+        return [
+            'snippet_name' => $snippetName,
+            'error' => $error
+        ];
     }
 }

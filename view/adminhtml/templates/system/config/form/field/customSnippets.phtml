@@ -31,14 +31,14 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
             <tbody id="fastly-snippets-list"></tbody>
         </table>
     </div>
-    <p class="loading-snippets" style="">
+    <p class="loading-snippets">
         <img class="processing"
              alt="Collecting"
-             style="margin:0 5px"
-             src="<?php /* @noEscape */ echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/>
+             style="margin:0 5px;"
+             src="<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/fastly16.gif') ?>" />
         <?php /* @noEscape */ echo __('Loading snippets...'); ?>
     </p>
-    <p class="no-snippets" style="">
+    <p class="no-snippets" style="display: none;">
         <?php /* @noEscape */ echo __('There are no custom snippets yet.'); ?>
     </p>
 </div>

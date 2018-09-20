@@ -1,11 +1,4 @@
 <?php
-
-namespace Fastly\Cdn\Model\Product;
-
-use Fastly\Cdn\Model\Config;
-use Magento\Catalog\Model\Product\Image as ImageModel;
-use Magento\PageCache\Model\Config as PageCacheConfig;
-
 /**
  * Fastly CDN for Magento
  *
@@ -25,33 +18,39 @@ use Magento\PageCache\Model\Config as PageCacheConfig;
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
+namespace Fastly\Cdn\Model\Product;
+
+use Fastly\Cdn\Model\Config;
+use Magento\Catalog\Model\Product\Image as ImageModel;
+use Magento\PageCache\Model\Config as PageCacheConfig;
+
+/**
+ * Class Image
+ *
+ * @package Fastly\Cdn\Model\Product
+ */
 class Image extends ImageModel
 {
     /**
      * @var array
      */
     private $fastlyParameters = [];
-
     /**
      * @var bool
      */
     private $isFastlyEnabled = null;
-
     /**
      * @var null
      */
     private $isForceLossyEnabled = null;
-
     /**
      * @var null
      */
     private $lossyParam = null;
-
     /**
      * @var null
      */
     private $lossyUrl = null;
-
     /**
      * @var null
      */
@@ -92,7 +91,7 @@ class Image extends ImageModel
 
         $this->isForceLossyEnabled = true;
 
-        if ($this->_scopeConfig->isSetFlag(Config::XML_FASTLY_FORCE_LOSSY) == false) {
+        if (empty($this->_scopeConfig->isSetFlag(Config::XML_FASTLY_FORCE_LOSSY))) {
             $this->isForceLossyEnabled = false;
         }
 
@@ -195,6 +194,9 @@ class Image extends ImageModel
 
         $this->fastlyParameters['width'] = $this->_width;
         $this->fastlyParameters['height'] = $this->_height;
+
+        // Make sure Fastly delivers the specified size, even with letterboxing or pillarboxing.
+        $this->fastlyParameters['canvas'] = "{$this->_width},{$this->_height}";
     }
 
     /**
@@ -298,7 +300,10 @@ class Image extends ImageModel
         $url = $this->getBaseFileUrl($baseFile);
 
         $this->fastlyParameters['quality'] = $this->_quality;
-        $this->fastlyParameters['bg-color'] = implode(',', $this->_backgroundColor);
+
+        if ($this->_scopeConfig->isSetFlag(Config::XML_FASTLY_IMAGE_OPTIMIZATION_BG_COLOR) == true) {
+            $this->fastlyParameters['bg-color'] = implode(',', $this->_backgroundColor);
+        }
         if ($this->_keepAspectRatio == true) {
             $this->fastlyParameters['fit'] = 'bounds';
         }
@@ -307,7 +312,7 @@ class Image extends ImageModel
 
     public function getBaseFileUrl($baseFile)
     {
-        if ($baseFile === null) {
+        if ($baseFile === null || $this->isBaseFilePlaceholder()) {
             $url = $this->_assetRepo->getUrl(
                 "Magento_Catalog::images/product/placeholder/{$this->getDestinationSubdir()}.jpg"
             );

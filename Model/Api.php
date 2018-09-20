@@ -26,7 +26,14 @@ use Magento\Framework\Cache\InvalidateLogger;
 use Fastly\Cdn\Helper\Data;
 use Fastly\Cdn\Helper\Vcl;
 use Psr\Log\LoggerInterface;
+use Magento\Backend\Model\Auth\Session\Proxy;
+use Magento\Framework\App\State;
 
+/**
+ * Class Api
+ *
+ * @package Fastly\Cdn\Model
+ */
 class Api
 {
     const FASTLY_HEADER_AUTH   = 'Fastly-Key';
@@ -37,48 +44,53 @@ class Api
     const FASTLY_MAX_HEADER_KEY_SIZE = 256;
 
     /**
-     * @var Config $config,
+     * @var Config
      */
     private $config;
-
     /**
-     * @var \Magento\Framework\HTTP\Adapter\CurlFactory
+     * @var CurlFactory
      */
     private $curlFactory;
-
     /**
      * @var InvalidateLogger
      */
     private $logger;
-
     /**
      * @var Data
      */
     private $helper;
-
     /**
      * @var LoggerInterface
      */
     private $log;
-
     /**
      * @var bool Purge all flag
      */
     private $purged = false;
-
     /**
      * @var Vcl
      */
     private $vcl;
+    /**
+     * @var Proxy
+     */
+    private $authSession;
+    /**
+     * @var State
+     */
+    private $state;
 
     /**
      * Api constructor.
+     *
      * @param Config $config
      * @param CurlFactory $curlFactory
      * @param InvalidateLogger $logger
      * @param Data $helper
      * @param LoggerInterface $log
      * @param Vcl $vcl
+     * @param Proxy $authSession
+     * @param State $state
      */
     public function __construct(
         Config $config,
@@ -86,7 +98,9 @@ class Api
         InvalidateLogger $logger,
         Data $helper,
         LoggerInterface $log,
-        Vcl $vcl
+        Vcl $vcl,
+        Proxy $authSession,
+        State $state
     ) {
         $this->config = $config;
         $this->curlFactory = $curlFactory;
@@ -94,6 +108,8 @@ class Api
         $this->helper = $helper;
         $this->log = $log;
         $this->vcl = $vcl;
+        $this->authSession = $authSession;
+        $this->state = $state;
     }
 
     /**
@@ -152,6 +168,7 @@ class Api
      */
     public function cleanBySurrogateKey($keys)
     {
+        $type = 'clean by key on ';
         $uri = $this->_getApiServiceUri() . 'purge';
         $num = count($keys);
         $result = false;
@@ -167,15 +184,27 @@ class Api
 
         foreach ($collection as $keys) {
             $payload = json_encode(['surrogate_keys' => $keys]);
-            if ($result = $this->_purge($uri, \Zend_Http_Client::POST, $payload)) {
+            if ($result = $this->_purge($uri, null, \Zend_Http_Client::POST, $payload)) {
                 foreach ($keys as $key) {
                     $this->logger->execute('surrogate key: ' . $key);
                 }
             }
 
-            if ($this->config->areWebHooksEnabled() && $this->config->canPublishKeyUrlChanges()) {
+            $canPublishKeyUrlChanges = $this->config->canPublishKeyUrlChanges();
+            $canPublishPurgeChanges = $this->config->canPublishPurgeChanges();
+
+            if ($this->config->areWebHooksEnabled() && ($canPublishKeyUrlChanges || $canPublishPurgeChanges)) {
                 $status = $result ? '' : 'FAILED ';
                 $this->sendWebHook($status . '*clean by key on ' . join(" ", $keys) . '*');
+
+                $canPublishPurgeByKeyDebugBacktrace = $this->config->canPublishPurgeByKeyDebugBacktrace();
+                $canPublishPurgeDebugBacktrace = $this->config->canPublishPurgeDebugBacktrace();
+
+                if ($canPublishPurgeByKeyDebugBacktrace == false && $canPublishPurgeDebugBacktrace == false) {
+                    return $result;
+                }
+
+                $this->stackTrace($type . join(" ", $keys));
             }
         }
 
@@ -196,25 +225,26 @@ class Api
         }
         $this->purged = true;
 
+        $type = 'clean/purge all';
         $uri = $this->_getApiServiceUri() . 'purge_all';
-        if ($result = $this->_purge($uri)) {
+        if ($result = $this->_purge($uri, null)) {
             $this->logger->execute('clean all items');
         }
 
-        if ($this->config->areWebHooksEnabled() && $this->config->canPublishPurgeAllChanges()) {
+        $canPublishPurgeAllChanges = $this->config->canPublishPurgeAllChanges();
+        $canPublishPurgeChanges = $this->config->canPublishPurgeChanges();
+
+        if ($this->config->areWebHooksEnabled() && ($canPublishPurgeAllChanges || $canPublishPurgeChanges)) {
             $this->sendWebHook('*initiated clean/purge all*');
 
-            if ($this->config->canPublishDebugBacktrace() == false) {
+            $canPublishPurgeAllDebugBacktrace = $this->config->canPublishPurgeAllDebugBacktrace();
+            $canPublishPurgeDebugBacktrace = $this->config->canPublishPurgeDebugBacktrace();
+
+            if ($canPublishPurgeAllDebugBacktrace == false && $canPublishPurgeDebugBacktrace == false) {
                 return $result;
             }
 
-            $stackTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-            $trace = [];
-            foreach ($stackTrace as $row => $data) {
-                $trace[] = "#{$row} {$data['file']}:{$data['line']} -> {$data['function']}()";
-            }
-
-            $this->sendWebHook('*Purge all backtrace:*```' .  implode("\n", $trace) . '```');
+            $this->stackTrace($type);
         }
 
         return $result;
@@ -224,12 +254,13 @@ class Api
      * Send purge request via Fastly API
      *
      * @param $uri
+     * @param $type
      * @param string $method
      * @param null $payload
      * @return bool
      * @throws \Zend_Uri_Exception
      */
-    private function _purge($uri, $method = \Zend_Http_Client::POST, $payload = null)
+    private function _purge($uri, $type, $method = \Zend_Http_Client::POST, $payload = null)
     {
 
         if ($method == 'PURGE') {
@@ -259,6 +290,7 @@ class Api
             );
         }
 
+        $result = true;
         try {
             $client = $this->curlFactory->create();
             $client->setConfig(['timeout' => self::PURGE_TIMEOUT]);
@@ -276,10 +308,24 @@ class Api
             }
         } catch (\Exception $e) {
             $this->logger->critical($e->getMessage(), $uri);
-            return false;
+            $result = false;
         }
 
-        return true;
+        if (empty($type)) {
+            return $result;
+        }
+
+        if ($this->config->areWebHooksEnabled() && $this->config->canPublishPurgeChanges()) {
+            $this->sendWebHook('*initiated ' . $type .'*');
+
+            if ($this->config->canPublishPurgeDebugBacktrace() == false) {
+                return $result;
+            }
+
+            $this->stackTrace($type);
+        }
+
+        return $result;
     }
 
     /**
@@ -297,6 +343,7 @@ class Api
 
     /**
      * List detailed information on a specified service
+     *
      * @param bool $test
      * @param null $serviceId
      * @param null $apiKey
@@ -322,6 +369,7 @@ class Api
 
     /**
      * Clone the current configuration into a new version.
+     *
      * @param $curVersion
      * @return bool|mixed
      * @throws LocalizedException
@@ -370,6 +418,7 @@ class Api
 
     /**
      * Validate the version for a particular service and version.
+     *
      * @param $version
      * @throws LocalizedException
      */
@@ -762,7 +811,15 @@ class Api
     {
         $url = $this->config->getIncomingWebhookURL();
         $messagePrefix = $this->config->getWebhookMessagePrefix();
-        $currentUsername = 'System'; // TO DO: Fetch current admin username
+        $currentUsername = 'System';
+        try {
+            if ($this->state->getAreaCode() == 'adminhtml') {
+                $currentUsername = $this->authSession->getUser()->getUserName();
+            }
+        } catch (\Exception $e) {
+            $this->log->log(100, 'Failed to retrieve Area Code');
+        }
+
         $storeName = $this->helper->getStoreName();
         $storeUrl = $this->helper->getStoreUrl();
 
@@ -839,6 +896,7 @@ class Api
 
     /**
      * Fetches dictionary by name
+     *
      * @param $version
      * @param $dictionaryName
      * @return bool|mixed
@@ -853,12 +911,13 @@ class Api
 
     /**
      * Get auth dictionary
+     *
      * @param $version
      * @return bool|mixed
      */
     public function getAuthDictionary($version)
     {
-        $name = \Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl\CheckAuthUsersAvailable::AUTH_DICTIONARY_NAME;
+        $name = Config::AUTH_DICTIONARY_NAME;
         $dictionary = $this->getSingleDictionary($version, $name);
 
         return $dictionary;
@@ -866,6 +925,7 @@ class Api
 
     /**
      * Check if authentication dictionary is populated
+     *
      * @param $version
      * @throws LocalizedException
      */
@@ -884,6 +944,13 @@ class Api
         }
     }
 
+    /**
+     * Create dictionary items
+     *
+     * @param $dictionaryId
+     * @param $params
+     * @return bool|mixed
+     */
     public function createDictionaryItems($dictionaryId, $params)
     {
         $url = $this->_getApiServiceUri().'dictionary/'.$dictionaryId.'/items';
@@ -923,6 +990,7 @@ class Api
 
     /**
      * Upsert single Dictionary item
+     *
      * @param $dictionaryId
      * @param $itemKey
      * @param $itemValue
@@ -969,7 +1037,7 @@ class Api
     }
 
     /**
-     * Delete named acl for a particular service and version.
+     * Delete named ACL for a particular service and version.
      *
      * @param $version
      * @param $name
@@ -1040,6 +1108,8 @@ class Api
     }
 
     /**
+     * Query for historic stats
+     *
      * @param array $parameters
      * @return bool|mixed
      */
@@ -1183,5 +1253,16 @@ class Api
         }
 
         return json_decode($responseBody);
+    }
+
+    private function stackTrace($type)
+    {
+        $stackTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        $trace = [];
+        foreach ($stackTrace as $row => $data) {
+            $trace[] = "#{$row} {$data['file']}:{$data['line']} -> {$data['function']}()";
+        }
+
+        $this->sendWebHook('*'. $type .' backtrace:*```' .  implode("\n", $trace) . '```');
     }
 }

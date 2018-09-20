@@ -24,6 +24,8 @@ use \Fastly\Cdn\Model\Config;
 
 /**
  * Class LayoutPlugin
+ *
+ * @package Fastly\Cdn\Model\Layout
  */
 class LayoutPlugin
 {
@@ -31,12 +33,10 @@ class LayoutPlugin
      * @var \Magento\PageCache\Model\Config
      */
     private $config;
-
     /**
      * @var \Magento\Framework\App\ResponseInterface
      */
     private $response;
-
     /**
      * @var \Fastly\Cdn\Helper\CacheTags
      */
@@ -111,7 +111,7 @@ class LayoutPlugin
     public function afterGetOutput(\Magento\Framework\View\Layout $subject, $result) // @codingStandardsIgnoreLine - unused parameter
     {
         if ($this->config->getType() == Config::FASTLY) {
-            $this->response->setHeader("Fastly-Module-Enabled", "1.2.59", true);
+            $this->response->setHeader("Fastly-Module-Enabled", "1.2.66", true);
         }
 
         return $result;

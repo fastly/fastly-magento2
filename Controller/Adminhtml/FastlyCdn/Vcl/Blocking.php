@@ -1,5 +1,23 @@
 <?php
-
+/**
+ * Fastly CDN for Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Fastly CDN for Magento End User License Agreement
+ * that is bundled with this package in the file LICENSE_FASTLY_CDN.txt.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Fastly CDN to newer
+ * versions in the future. If you wish to customize this module for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    Fastly
+ * @package     Fastly_Cdn
+ * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @license     BSD, see LICENSE_FASTLY_CDN.txt
+ */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
 
 use Magento\Backend\App\Action;
@@ -11,28 +29,29 @@ use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
 use Magento\Framework\Exception\LocalizedException;
 
+/**
+ * Class Blocking
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
+ */
 class Blocking extends Action
 {
     /**
      * @var Http
      */
     private $request;
-
     /**
      * @var JsonFactory
      */
     private $resultJson;
-
     /**
      * @var Config
      */
     private $config;
-
     /**
      * @var Api
      */
     private $api;
-
     /**
      * @var Vcl
      */
@@ -71,18 +90,22 @@ class Blocking extends Action
      */
     public function execute()
     {
+        $result = $this->resultJson->create();
         try {
-            $result = $this->resultJson->create();
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
             $service = $this->api->checkServiceDetails();
-            $currActiveVersion = $this->getActiveVersion($service, $activeVersion);
+            $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
+            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
 
-            $clone = $this->api->cloneVersion($currActiveVersion['active_version']);
+            $clone = $this->api->cloneVersion($currActiveVersion);
 
             $reqName = Config::FASTLY_MAGENTO_MODULE . '_blocking';
             $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);
-            $snippet = $this->config->getVclSnippets('/vcl_snippets_blocking', 'recv.vcl');
+            $snippet = $this->config->getVclSnippets(
+                Config::VCL_BLOCKING_PATH,
+                Config::VCL_BLOCKING_SNIPPET
+            );
 
             $country_codes = $this->prepareCountryCodes($this->config->getBlockByCountry());
             $acls = $this->prepareAcls($this->config->getBlockByAcl());
@@ -166,24 +189,7 @@ class Blocking extends Action
     }
 
     /**
-     * Fetches and validates active version
-     *
-     * @param $service
-     * @param $activeVersion
-     * @return array
-     * @throws LocalizedException
-     */
-    private function getActiveVersion($service, $activeVersion)
-    {
-        $currActiveVersion = $this->vcl->determineVersions($service->versions);
-        if ($currActiveVersion['active_version'] != $activeVersion) {
-            throw new LocalizedException(__('Active versions mismatch.'));
-        }
-        return $currActiveVersion;
-    }
-
-    /**
-     * Prepares ACLS VCL snippets
+     * Prepares ACL VCL snippets
      *
      * @param $blockedAcls
      * @return string

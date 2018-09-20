@@ -1,74 +1,116 @@
 <?php
-
+/**
+ * Fastly CDN for Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Fastly CDN for Magento End User License Agreement
+ * that is bundled with this package in the file LICENSE_FASTLY_CDN.txt.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Fastly CDN to newer
+ * versions in the future. If you wish to customize this module for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    Fastly
+ * @package     Fastly_Cdn
+ * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
+ * @license     BSD, see LICENSE_FASTLY_CDN.txt
+ */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
 
-use Magento\Backend\App\Action;
-use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\Request\Http;
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\Controller\Result\RawFactory;
+use Magento\Framework\App\Response\Http\FileFactory;
+use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Filesystem\Directory\WriteFactory;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Framework\Filesystem\Driver\File;
+use Magento\Framework\Filesystem;
 use Fastly\Cdn\Model\Config;
-use Fastly\Cdn\Model\Config\Backend\CustomSnippetUpload;
 
+/**
+ * Class CreateCustomSnippet
+ *
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
+ */
 class DeleteCustomSnippet extends Action
 {
     /**
-     * @var Http
+     * @var RawFactory
      */
-    private $request;
-
+    private $resultRawFactory;
+    /**
+     * @var FileFactory
+     */
+    private $fileFactory;
+    /**
+     * @var DirectoryList
+     */
+    private $directoryList;
+    /**
+     * @var WriteFactory
+     */
+    private $writeFactory;
     /**
      * @var JsonFactory
      */
     private $resultJson;
-
     /**
-     * @var Config
+     * @var Filesystem
      */
-    private $config;
-
-    private $customSnippetUpload;
-
-    private $file;
+    private $filesystem;
 
     /**
      * DeleteCustomSnippet constructor.
      *
      * @param Context $context
-     * @param Http $request
+     * @param RawFactory $resultRawFactory
+     * @param FileFactory $fileFactory
+     * @param DirectoryList $directoryList
+     * @param WriteFactory $writeFactory
      * @param JsonFactory $resultJsonFactory
-     * @param Config $config
-     * @param CustomSnippetUpload $customSnippetUpload
-     * @param File $file
+     * @param Filesystem $filesystem
      */
     public function __construct(
         Context $context,
-        Http $request,
+        RawFactory $resultRawFactory,
+        FileFactory $fileFactory,
+        DirectoryList $directoryList,
+        WriteFactory $writeFactory,
         JsonFactory $resultJsonFactory,
-        Config $config,
-        CustomSnippetUpload $customSnippetUpload,
-        File $file
+        Filesystem $filesystem
     ) {
-        $this->request = $request;
+        $this->resultRawFactory = $resultRawFactory;
+        $this->fileFactory = $fileFactory;
+        $this->directoryList = $directoryList;
+        $this->writeFactory = $writeFactory;
         $this->resultJson = $resultJsonFactory;
-        $this->config = $config;
-        $this->customSnippetUpload = $customSnippetUpload;
-        $this->file = $file;
+        $this->filesystem = $filesystem;
 
         parent::__construct($context);
     }
 
+    /**
+     * Deletes the specified custom snippet VCL file
+     *
+     * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
+     */
     public function execute()
     {
         $result = $this->resultJson->create();
 
         try {
             $snippet = $this->getRequest()->getParam('snippet_id');
-            $customSnippetPath = $this->customSnippetUpload->getUploadDirPath('vcl_snippets_custom');
 
-            if ($this->file->isExists($customSnippetPath . '/' . $snippet)) {
-                $this->file->deleteFile($customSnippetPath . '/' . $snippet);
+            $write = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
+            $snippetPath = $write->getRelativePath(Config::CUSTOM_SNIPPET_PATH . $snippet);
+
+            if ($write->isExist($snippetPath)) {
+                $write->delete($snippetPath);
             }
+
             return $result->setData([
                 'status'            => true
             ]);

@@ -22,20 +22,3 @@
         padding: 1.4rem 4rem 1.4rem 5.5rem;
     }
 </style>
-
-<?php
-$updateBlockingUrl = $block->getUrl('admin/fastlyCdn_Vcl/updateBlocking')
-?>
-
-<script type="text/x-magento-init">
-        {
-            "*": {
-                "Fastly_Cdn/js/updateblocking": {
-                    "updateBlockingUrl": "<?php echo $block->escapeJsQuote($updateBlockingUrl);?>"
-                }
-            }
-        }
-</script>
-
-
-

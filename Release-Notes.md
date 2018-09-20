@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.67
+
+- Allow to turn off canvas query option to image optimization https://github.com/fastly/fastly-magento2/pull/209
+- Code cleanup and refactoring https://github.com/fastly/fastly-magento2/pull/208
+
 ## 1.2.66
 
 - Added check for empty string instead of just false, added default config value to force lossy https://github.com/fastly/fastly-magento2/pull/207

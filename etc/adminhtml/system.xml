@@ -458,6 +458,17 @@
                                 <field id="image_optimizations">1</field>
                             </depends>
                         </field>
+                        <!-- =====================================
+                             Set Canvas on Images select field
+                        ====================================== -->
+                        <field id="image_optimization_canvas" translate="label comment" type="select" sortOrder="26" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Set Canvas on Images</label>
+                            <comment>Adds canvas query argument for product/catalog images.</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="image_optimizations">1</field>
+                            </depends>
+                        </field>
                         <!-- ====================================================
                              Enable Adaptive Device Pixel Ratios select field
                         ===================================================== -->

@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.68
+
+- Fix for non square images and canvas setting
+
 ## 1.2.67
 
 - Allow to turn off canvas query option to image optimization https://github.com/fastly/fastly-magento2/pull/209

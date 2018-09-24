@@ -35,7 +35,7 @@ The tasks involved in this are:
 The installation of the Magento module is pretty easy and can be performed in
 a few ways depending on your Magento version.
 
-- [Install from Magento Marketplace (only Magento 2.0.x versions)](#installing-from-the-magento-marketplace-using-web-setup-wizard)
+- [Install from Magento Marketplace (only Magento 2.2.x versions)](#installing-from-the-magento-marketplace-using-web-setup-wizard)
 - [Install using Composer](#installing-using-composer)
 - [Install from Zip file](#installing-from-zip-file)
 
@@ -133,7 +133,7 @@ will be used to sync with the marketplace.
     `<magento home>/app/code/Fastly/Cdn/`.
 4. At this point, it is possible to install with either the:
 
-   **Web Setup Wizard's Component Manager (only Magento 2.0.x versions, for 2.1.x use command line)**
+   **Web Setup Wizard's Component Manager (only Magento 2.2.x versions, for 2.1.x use command line)**
    1. To install in the Web Setup Wizard. Open a browser and log in to the Magento
        admin section with administrative privileges.
    1. Navigate to 'System > Web Setup Wizard'.

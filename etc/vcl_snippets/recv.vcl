@@ -38,11 +38,12 @@
             /* validate signature */
             if (var.X-Sig == regsub(digest.hmac_sha1(req.service_id, req.url.path var.X-Exp), "^0x", "")) {
             /* check that expiration time has not elapsed */
-            if (time.is_after(now, std.integer2time(std.atoi(var.X-Exp)))) {
-                error 410;
+                if (time.is_after(now, std.integer2time(std.atoi(var.X-Exp)))) {
+                    error 410;
+                }
+            } else {
+                error 403;
             }
-            }
-
         } else {
             set req.http.Fastly-Purge-Requires-Auth = "1";
         }

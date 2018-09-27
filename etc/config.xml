@@ -31,7 +31,7 @@
                         <stale_error_ttl>86400</stale_error_ttl>
                         <admin_path_timeout>180</admin_path_timeout>
                         <ignored_url_parameters>utm_.*, gclid, gdftrk, _ga, mc_.*</ignored_url_parameters>
-                        <preserve_static>0</preserve_static>
+                        <preserve_static>1</preserve_static>
                         <soft_purge>1</soft_purge>
                         <x_magento_tags_size>16383</x_magento_tags_size>
                         <purge_catalog_category>0</purge_catalog_category>

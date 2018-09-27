@@ -16,8 +16,7 @@ Magento admin > Stores > Configuration > Advanced > System > Full Page Cache > F
 
 Under the *Blocking* tab, you will see a screen like this.
 
-<img alt="Blocking main screen UI" title="Blocking main screen UI" src="../images/guides/blocking/
-blocking_ui.png" width="800px"/>
+<img alt="Blocking main screen UI" title="Blocking main screen UI" src="../images/guides/blocking/blocking_ui.png" width="800px"/>
 
 ## Configuring Blocking
 

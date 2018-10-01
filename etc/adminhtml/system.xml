@@ -306,6 +306,16 @@
                             <source_model>Fastly\Cdn\Model\Config\Backend\ListAcl</source_model>
                             <can_be_empty>1</can_be_empty>
                         </field>
+                        <!-- ================================
+                             Block whitelist select field
+                        ================================= -->
+                        <field id="block_whitelist" translate="label comment" type="select" sortOrder="21" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Whitelist Countries and ACLs</label>
+                            <comment>
+                                <![CDATA[When enabled, only allows traffic from the selected Countries and ACL IPs. All other traffic will be blocked.]]>
+                            </comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
                     </group>
                     <!-- ================================
                          Custom Synthetic Pages group

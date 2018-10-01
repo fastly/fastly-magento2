@@ -301,6 +301,11 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_BLOCK_BY_ACL = 'system/full_page_cache/fastly/fastly_blocking/block_by_acl';
 
     /**
+     * XML path to the Fastly Block whitelist flag
+     */
+    const XML_FASTLY_BLOCK_WHITELIST = 'system/full_page_cache/fastly/fastly_blocking/block_whitelist';
+
+    /**
      * XML path to enable Webhooks
      */
     const XML_FASTLY_WEBHOOKS_ENABLED = 'system/full_page_cache/fastly/fastly_web_hooks/enable_webhooks';
@@ -648,6 +653,16 @@ class Config extends \Magento\PageCache\Model\Config
     public function getBlockByAcl()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_BLOCK_BY_ACL);
+    }
+
+    /**
+     * Return Block whitelist flag
+     *
+     * @return mixed
+     */
+    public function isBlockWhitelistEnabled()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_BLOCK_WHITELIST);
     }
 
     /**

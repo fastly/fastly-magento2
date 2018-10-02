@@ -97,7 +97,6 @@ class Blocking extends Action
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
-            $isWhitelistEnabled = $this->config->isBlockWhitelistEnabled();
 
             $clone = $this->api->cloneVersion($currActiveVersion);
 
@@ -139,9 +138,7 @@ class Blocking extends Action
                     if ($strippedBlockedItems === '') {
                         $value = '';
                     } else {
-                        if ($isWhitelistEnabled == 1) {
-                            $strippedBlockedItems = '!(' . $strippedBlockedItems . ')';
-                        }
+                        $strippedBlockedItems = $this->config->processBlockedItems($strippedBlockedItems);
                         $value = str_replace('####BLOCKED_ITEMS####', $strippedBlockedItems, $value);
                     }
 

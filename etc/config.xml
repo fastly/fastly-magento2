@@ -40,7 +40,7 @@
                         <enable_geoip>0</enable_geoip>
                     </fastly_advanced_configuration>
                     <fastly_blocking>
-                        <block_whitelist>0</block_whitelist>
+                        <blocking_type>0</blocking_type>
                     </fastly_blocking>
                     <fastly_image_optimization_configuration>
                         <image_optimizations>0</image_optimizations>

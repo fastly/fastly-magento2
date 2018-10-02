@@ -118,7 +118,6 @@ class UpdateBlocking extends Action
         try {
             $service = $this->api->checkServiceDetails();
             $currActiveVersion = $this->vcl->determineVersions($service->versions);
-            $isWhitelistEnabled = $this->config->isBlockWhitelistEnabled();
 
             $snippet = $this->config->getVclSnippets(
                 Config::VCL_BLOCKING_PATH,
@@ -136,9 +135,7 @@ class UpdateBlocking extends Action
                 if ($strippedBlockedItems === '') {
                     $value = '';
                 } else {
-                    if ($isWhitelistEnabled == 1) {
-                        $strippedBlockedItems = '!(' . $strippedBlockedItems . ')';
-                    }
+                    $strippedBlockedItems = $this->config->processBlockedItems($strippedBlockedItems);
                     $value = str_replace('####BLOCKED_ITEMS####', $strippedBlockedItems, $value);
                 }
 

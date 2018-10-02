@@ -309,12 +309,13 @@
                         <!-- ================================
                              Block whitelist select field
                         ================================= -->
-                        <field id="block_whitelist" translate="label comment" type="select" sortOrder="21" showInDefault="1" showInWebsite="0" showInStore="0">
-                            <label>Whitelist Countries and ACLs</label>
+                        <field id="blocking_type" translate="label comment" type="select" sortOrder="21" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Blocking Type</label>
                             <comment>
-                                <![CDATA[When enabled, only allows traffic from the selected Countries and ACL IPs. All other traffic will be blocked.]]>
+                                <![CDATA[<b>Blocklist:</b> block ALL access for users from designated countries/ACLs <br />
+                                        <b>Allowlist:</b> block ALL access except for users from designated countries/ACLs]]>
                             </comment>
-                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <source_model>Fastly\Cdn\Model\Config\Backend\BlocklistAllowlist</source_model>
                         </field>
                     </group>
                     <!-- ================================

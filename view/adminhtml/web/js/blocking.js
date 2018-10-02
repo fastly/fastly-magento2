@@ -166,15 +166,15 @@ define([
                         'Only way to fix it is via Fastly management UI. Please type I ACKNOWLEDGE' +
                         ' in the box below if you are sure you want to do this.',
                     actions: {
-                        confirm: function(input){
+                        confirm: function (input) {
                             if (input !== 'I ACKNOWLEDGE') {
                                 $('#system_full_page_cache_fastly_fastly_blocking_blocking_type').val('0');
                             }
                         },
-                        cancel: function(){
+                        cancel: function () {
                             $('#system_full_page_cache_fastly_fastly_blocking_blocking_type').val('0');
                         },
-                        always: function(){}
+                        always: function () {}
                     }
                 });
             }

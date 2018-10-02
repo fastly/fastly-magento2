@@ -282,15 +282,18 @@
                         =========================== -->
                         <field id="update_blocking_snippet" translate="label comment" sortOrder="6" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Update Blocking]]></label>
+                            <comment>
+                                <![CDATA[Applies blocking changes to active setup. HAS TO BE clicked anytime you make blocking changes.]]>
+                            </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\UpdateBlockingBtn</frontend_model>
                         </field>
                         <!-- ======================================
                              Block by Country multiselect field
                         ======================================= -->
                         <field id="block_by_country" translate="label comment" type="multiselect" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
-                            <label>Block by Country</label>
+                            <label>Country List</label>
                             <comment>
-                                <![CDATA[List of countries that can be blocked.]]>
+                                <![CDATA[List of countries that can be selected. Multiple selections allowed.]]>
                             </comment>
                             <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                             <can_be_empty>1</can_be_empty>
@@ -299,9 +302,9 @@
                              Block by ACL multiselect field
                         =================================== -->
                         <field id="block_by_acl" translate="label comment" type="multiselect" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
-                            <label>Block by ACL</label>
+                            <label>ACLs</label>
                             <comment>
-                                <![CDATA[List of ACLs that can be blocked.]]>
+                                <![CDATA[List of ACLs that can be selected. Multiple selections allowed.]]>
                             </comment>
                             <source_model>Fastly\Cdn\Model\Config\Backend\ListAcl</source_model>
                             <can_be_empty>1</can_be_empty>
@@ -309,11 +312,11 @@
                         <!-- ===========================
                              Block Type select field
                         ============================ -->
-                        <field id="blocking_type" translate="label comment" type="select" sortOrder="21" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <field id="blocking_type" translate="label comment" type="select" sortOrder="9" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Blocking Type</label>
                             <comment>
-                                <![CDATA[<b>Blocklist:</b> block ALL access for users from designated countries/ACLs <br />
-                                        <b>Allowlist:</b> block ALL access except for users from designated countries/ACLs]]>
+                                <![CDATA[<b>Blocklist:</b> block ALL access for users from selected countries/ACLs <br />
+                                        <b>Allowlist:</b> block ALL access EXCEPT for users from selected countries/ACLs]]>
                             </comment>
                             <source_model>Fastly\Cdn\Model\Config\Backend\BlocklistAllowlist</source_model>
                         </field>

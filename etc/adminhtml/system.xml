@@ -306,6 +306,17 @@
                             <source_model>Fastly\Cdn\Model\Config\Backend\ListAcl</source_model>
                             <can_be_empty>1</can_be_empty>
                         </field>
+                        <!-- ===========================
+                             Block Type select field
+                        ============================ -->
+                        <field id="blocking_type" translate="label comment" type="select" sortOrder="21" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Blocking Type</label>
+                            <comment>
+                                <![CDATA[<b>Blocklist:</b> block ALL access for users from designated countries/ACLs <br />
+                                        <b>Allowlist:</b> block ALL access except for users from designated countries/ACLs]]>
+                            </comment>
+                            <source_model>Fastly\Cdn\Model\Config\Backend\BlocklistAllowlist</source_model>
+                        </field>
                     </group>
                     <!-- ================================
                          Custom Synthetic Pages group

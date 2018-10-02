@@ -135,6 +135,7 @@ class UpdateBlocking extends Action
                 if ($strippedBlockedItems === '') {
                     $value = '';
                 } else {
+                    $strippedBlockedItems = $this->config->processBlockedItems($strippedBlockedItems);
                     $value = str_replace('####BLOCKED_ITEMS####', $strippedBlockedItems, $value);
                 }
 

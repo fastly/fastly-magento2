@@ -4,8 +4,9 @@ define([
     "popup",
     "resetAllMessages",
     "showErrorMessage",
+    "Magento_Ui/js/modal/prompt",
     'mage/translate'
-], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage) {
+], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage, prompt) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         /* Blocking state elements*/
@@ -151,6 +152,32 @@ define([
                     return blockingErrorBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                 }
             });
+        });
+
+        /**
+         * Blocking Type on change event
+         */
+        $('#system_full_page_cache_fastly_fastly_blocking_blocking_type').on('change', function () {
+            if (this.value === '1') {
+                prompt({
+                    title: 'Blocking Type: Allowlist',
+                    content: 'Turning on this feature will block ALL access except for users from designated countries/ACLs. ' +
+                        'Please make sure you as the admin user are in one of the lists since you WILL lose access to the admin pages. ' +
+                        'Only way to fix it is via Fastly management UI. Please type I ACKNOWLEDGE' +
+                        ' in the box below if you are sure you want to do this.',
+                    actions: {
+                        confirm: function (input) {
+                            if (input !== 'I ACKNOWLEDGE') {
+                                $('#system_full_page_cache_fastly_fastly_blocking_blocking_type').val('0');
+                            }
+                        },
+                        cancel: function () {
+                            $('#system_full_page_cache_fastly_fastly_blocking_blocking_type').val('0');
+                        },
+                        always: function () {}
+                    }
+                });
+            }
         });
 
         /**

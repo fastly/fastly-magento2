@@ -138,7 +138,8 @@ define([
                     'service_id': $('#system_full_page_cache_fastly_fastly_service_id').val(),
                     'api_key': $('#system_full_page_cache_fastly_fastly_api_key').val(),
                     'acls': $('#system_full_page_cache_fastly_fastly_blocking_block_by_acl').serializeArray(),
-                    'countries': $('#system_full_page_cache_fastly_fastly_blocking_block_by_country').serializeArray()
+                    'countries': $('#system_full_page_cache_fastly_fastly_blocking_block_by_country').serializeArray(),
+                    'blocking_type': $('#system_full_page_cache_fastly_fastly_blocking_blocking_type').val()
                 },
                 cache: false,
                 success: function (response) {

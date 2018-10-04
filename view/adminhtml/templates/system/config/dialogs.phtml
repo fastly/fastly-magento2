@@ -1382,56 +1382,64 @@
 /**
  * AJAX urls passed to uploadvcl.js file
  */
-
-$serviceInfoUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/serviceInfo');
-$vclUploadUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/upload');
-$testServiceUrl = $block->getUrl('adminhtml/fastlyCdn/testConnection');
-$checkTlsSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkTlsSetting');
-$toggleTlsSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/forceTls');
-$checkImageSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkImageSetting');
-$checkFastlyIoSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkFastlyIoSetting');
-$toggleImageSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/pushImageSettings');
-$checkBlockingSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkBlockingSetting');
-$toggleBlockingSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/blocking');
-$fetchBackendsUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/getBackends');
-$createCustomSnippetUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/createCustomSnippet');
-$getCustomSnippetsUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/getCustomSnippets');
-$configureBackendUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/configureBackend');
-$isAlreadyConfiguredUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/isAlreadyConfigured');
-$savePageErrorHtml = $block->getUrl('adminhtml/fastlyCdn_Vcl/SaveErrorPageHtml');
-$getErrorPageRespObjUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/GetErrorPageRespObj');
-$getWafPageRespObjUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/GetWafPageRespObj');
-$saveWafPage = $block->getUrl('adminhtml/fastlyCdn_Vcl/SaveWafPage');
-$createDictionary = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary/Create');
-$deleteDictionary = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary/Delete');
-$listDictionaries = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary/ListAll');
-$dictionaryItems = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item/ListAll');
-$createDictionaryItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item/Create');
-$deleteDictionaryItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item/Delete');
-$createAcl = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/Create');
-$deleteAcl = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/Delete');
-$deleteCustomSnippet = $block->getUrl('adminhtml/fastlyCdn_Vcl/DeleteCustomSnippet');
-$getCustomSnippet = $block->getUrl('adminhtml/fastlyCdn_Vcl/GetCustomSnippet');
-$listAcls = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/ListAll');
-$aclItems = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/ListAll');
-$createAclItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/Create');
-$deleteAclItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/Delete');
-$getAuthItems = $block->getUrl('adminhtml/fastlyCdn_Edge_Auth_Item/ListAll');
-$createAuth = $block->getUrl('adminhtml/fastlyCdn_Edge_Auth/Create');
-$deleteAuth = $block->getUrl('adminhtml/fastlyCdn_Edge_Auth/Delete');
-$createAuthItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Auth_Item/Create');
-$deleteAuthItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Auth_Item/Delete');
-$checkAuthSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkAuthSetting');
-$checkAuthDictionaryUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/checkAuthDictionary');
-$toggleAuthSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/enableAuth');
-$checkAuthUsersAvailable = $block->getUrl('adminhtml/fastlyCdn_Vcl/CheckAuthUsersAvailable');
-$listIoDefaultConfigOptions = $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/ListAll');
-$configureIoUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/IoDefaultConfigOptions');
-$updateBlockingUrl = $block->getUrl('admin/fastlyCdn_Vcl/updateBlocking');
-$isIoEnabled = $block->getConfig()->isImageOptimizationEnabled();
-
-/* This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application  */
-$isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
+// Advanced
+$checkTlsSettingUrl =           $block->getUrl('adminhtml/fastlyCdn_Advanced/checkTlsSetting');
+$toggleTlsSettingUrl =          $block->getUrl('adminhtml/fastlyCdn_Advanced/forceTls');
+// Backend
+$configureBackendUrl =          $block->getUrl('adminhtml/fastlyCdn_Backend/configureBackend');
+$fetchBackendsUrl =             $block->getUrl('adminhtml/fastlyCdn_Backend/getBackends');
+// Basic Authentication
+$createAuthItem =               $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication_Item/create');
+$deleteAuthItem =               $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication_Item/delete');
+$getAuthItems =                 $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication_Item/listAll');
+$checkAuthDictionaryUrl =       $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication/checkAuthDictionary');
+$checkAuthSettingUrl =          $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication/checkAuthSetting');
+$checkAuthUsersAvailable =      $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication/checkAuthUsersAvailable');
+$createAuth =                   $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication/create');
+$deleteAuth =                   $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication/delete');
+$toggleAuthSettingUrl =         $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication/enableAuth');
+// Blocking
+$toggleBlockingSettingUrl =     $block->getUrl('adminhtml/fastlyCdn_Blocking/blocking');
+$checkBlockingSettingUrl =      $block->getUrl('adminhtml/fastlyCdn_Blocking/checkBlockingSetting');
+$updateBlockingUrl =            $block->getUrl('adminhtml/fastlyCdn_Blocking/updateBlocking');
+// Configuration
+$isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
+$serviceInfoUrl =               $block->getUrl('adminhtml/fastlyCdn_Configuration/serviceInfo');
+$testServiceUrl =               $block->getUrl('adminhtml/fastlyCdn_Configuration/testConnection');
+$isAlreadyConfiguredUrl =       $block->getUrl('adminhtml/fastlyCdn_Configuration/isAlreadyConfigured');
+// Custom Snippet
+$createCustomSnippetUrl =       $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/createCustomSnippet');
+$deleteCustomSnippet =          $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/deleteCustomSnippet');
+$getCustomSnippetsUrl =         $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/getCustomSnippets');
+$getCustomSnippet =             $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/getCustomSnippet');
+// Edge ACL
+$createAcl =                    $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/create');
+$deleteAcl =                    $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/delete');
+$listAcls =                     $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/listAll');
+$aclItems =                     $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/listAll');
+$createAclItem =                $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/create');
+$deleteAclItem =                $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/delete');
+// Edge Dictionary
+$createDictionary =             $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary/create');
+$deleteDictionary =             $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary/delete');
+$listDictionaries =             $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary/listAll');
+$dictionaryItems =              $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item/listAll');
+$createDictionaryItem =         $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item/create');
+$deleteDictionaryItem =         $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item/delete');
+// Image Optimization
+$checkImageSettingUrl =         $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/checkImageSetting');
+$checkFastlyIoSettingUrl =      $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/checkFastlyIoSetting');
+$toggleImageSettingUrl =        $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/pushImageSettings');
+$listIoDefaultConfigOptions =   $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/listAll');
+$configureIoUrl =               $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/ioDefaultConfigOptions');
+$isIoEnabled =                  $block->getConfig()->isImageOptimizationEnabled();
+// Synthetic Pages
+$getErrorPageRespObjUrl =       $block->getUrl('adminhtml/fastlyCdn_SyntheticPages/getErrorPageRespObj');
+$getWafPageRespObjUrl =         $block->getUrl('adminhtml/fastlyCdn_SyntheticPages/getWafPageRespObj');
+$savePageErrorHtml =            $block->getUrl('adminhtml/fastlyCdn_SyntheticPages/saveErrorPageHtml');
+$saveWafPage =                  $block->getUrl('adminhtml/fastlyCdn_SyntheticPages/saveWafPage');
+// VCL
+$vclUploadUrl =                 $block->getUrl('adminhtml/fastlyCdn_Vcl/upload');
 ?>
 
 <script type="text/x-magento-init">

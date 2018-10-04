@@ -193,7 +193,7 @@ class UpdateBlocking extends Action
         if ($acls != '') {
             $blockedAclsPieces = explode(",", $acls);
             foreach ($blockedAclsPieces as $acl) {
-                $result .= ' client.ip ~ ' . $acl . ' ||';
+                $result .= ' req.http.Fastly-Client-Ip ~ ' . $acl . ' ||';
             }
         }
 

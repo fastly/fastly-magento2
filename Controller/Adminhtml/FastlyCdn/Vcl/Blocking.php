@@ -202,7 +202,7 @@ class Blocking extends Action
         if ($blockedAcls != null) {
             $blockedAclsPieces = explode(",", $blockedAcls);
             foreach ($blockedAclsPieces as $acl) {
-                $result .= ' client.ip ~ ' . $acl . ' ||';
+                $result .= ' req.http.Fastly-Client-Ip ~ ' . $acl . ' ||';
             }
         }
 

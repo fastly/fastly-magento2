@@ -20,6 +20,17 @@ Under the *Blocking* tab, you will see a screen like this.
 
 ## Configuring Blocking
 
+## Blocking modes
+
+First thing to decide is how you want to block traffic. Two modes are available
+
+* **Blocklist**: blocks all access for users from selected countries/ACLs
+* **Allowlist**: block all access EXCEPT for users from selected countries/ACLs
+
+Blocklist is the default mode.
+
+## Country/ACL selection
+
 You can select to block by list of countries and/or ACLs. Multiple selections are possible if you hold the Control key
 when selecting a list of countries. If you don't see any [ACL](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/ACL.md) listed in the selection box you will need to create one.
 
@@ -29,7 +40,9 @@ To enable Blocking click the **Enable/Disable** button and follow the directions
 
 ## Changing blocking config
 
-After any change to the blocking rules you need to click the *Update Blocking Config* button.
+After any change to the country list or ACL list you need to click the *Update Blocking Config* button to push the config change.
+
+If you decide to switch blocking modes you have to save the config before clicking Update Blocking Config.
 
 ## Turning off Blocking
 

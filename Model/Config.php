@@ -1022,11 +1022,15 @@ class Config extends \Magento\PageCache\Model\Config
      * Process blocked items depending on blocking type
      *
      * @param $strippedBlockedItems
+     * @param null $blockingType
      * @return string
      */
-    public function processBlockedItems($strippedBlockedItems)
+    public function processBlockedItems($strippedBlockedItems, $blockingType = null)
     {
-        if ($this->_scopeConfig->getValue(self::XML_FASTLY_BLOCKING_TYPE) == '1') {
+        if (empty($blockingType)) {
+            $blockingType = $this->_scopeConfig->getValue(self::XML_FASTLY_BLOCKING_TYPE);
+        }
+        if ($blockingType == '1') {
             $strippedBlockedItems = '!(' . $strippedBlockedItems . ')';
         }
         return $strippedBlockedItems;

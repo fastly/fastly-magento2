@@ -287,28 +287,6 @@
                             </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\UpdateBlockingBtn</frontend_model>
                         </field>
-                        <!-- ======================================
-                             Block by Country multiselect field
-                        ======================================= -->
-                        <field id="block_by_country" translate="label comment" type="multiselect" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
-                            <label>Country List</label>
-                            <comment>
-                                <![CDATA[List of countries that can be selected. Multiple selections allowed.]]>
-                            </comment>
-                            <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
-                            <can_be_empty>1</can_be_empty>
-                        </field>
-                        <!-- ==================================
-                             Block by ACL multiselect field
-                        =================================== -->
-                        <field id="block_by_acl" translate="label comment" type="multiselect" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
-                            <label>ACLs</label>
-                            <comment>
-                                <![CDATA[List of ACLs that can be selected. Multiple selections allowed.]]>
-                            </comment>
-                            <source_model>Fastly\Cdn\Model\Config\Backend\ListAcl</source_model>
-                            <can_be_empty>1</can_be_empty>
-                        </field>
                         <!-- ===========================
                              Block Type select field
                         ============================ -->
@@ -319,6 +297,28 @@
                                         <b>Allowlist:</b> block ALL access EXCEPT for users from selected countries/ACLs]]>
                             </comment>
                             <source_model>Fastly\Cdn\Model\Config\Backend\BlocklistAllowlist</source_model>
+                        </field>
+                        <!-- ==================================
+                             Country List multiselect field
+                        =================================== -->
+                        <field id="block_by_country" translate="label comment" type="multiselect" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Country List</label>
+                            <comment>
+                                <![CDATA[List of countries that can be selected. Multiple selections allowed.]]>
+                            </comment>
+                            <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                            <can_be_empty>1</can_be_empty>
+                        </field>
+                        <!-- ==========================
+                             ACLs multiselect field
+                        =========================== -->
+                        <field id="block_by_acl" translate="label comment" type="multiselect" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>ACLs</label>
+                            <comment>
+                                <![CDATA[List of ACLs that can be selected. Multiple selections allowed.]]>
+                            </comment>
+                            <source_model>Fastly\Cdn\Model\Config\Backend\ListAcl</source_model>
+                            <can_be_empty>1</can_be_empty>
                         </field>
                     </group>
                     <!-- ================================

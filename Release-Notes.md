@@ -1,5 +1,13 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.70
+
+- Refine blocking to include allowlist functionality https://github.com/fastly/fastly-magento2/pull/211
+
+## 1.2.69
+
+- Change default setting to preserve static content e.g. JS/CSS/Images when people request Flush Magento Cache. This should provide for higher cache hit ratio
+
 ## 1.2.68
 
 - Fix for non square images and canvas setting

@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.71
+
+- Added save to config when update blocking is triggered https://github.com/fastly/fastly-magento2/pull/213
+
 ## 1.2.70
 
 - Refine blocking to include allowlist functionality https://github.com/fastly/fastly-magento2/pull/211

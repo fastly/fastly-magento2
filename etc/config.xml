@@ -31,7 +31,7 @@
                         <stale_error_ttl>86400</stale_error_ttl>
                         <admin_path_timeout>180</admin_path_timeout>
                         <ignored_url_parameters>utm_.*, gclid, gdftrk, _ga, mc_.*</ignored_url_parameters>
-                        <preserve_static>0</preserve_static>
+                        <preserve_static>1</preserve_static>
                         <soft_purge>1</soft_purge>
                         <x_magento_tags_size>16383</x_magento_tags_size>
                         <purge_catalog_category>0</purge_catalog_category>
@@ -40,10 +40,14 @@
                         <enable_geoip>0</enable_geoip>
                         <enable_fastly_edge_modules>0</enable_fastly_edge_modules>
                     </fastly_advanced_configuration>
+                    <fastly_blocking>
+                        <blocking_type>0</blocking_type>
+                    </fastly_blocking>
                     <fastly_image_optimization_configuration>
                         <image_optimizations>0</image_optimizations>
                         <image_optimization_force_lossy>0</image_optimization_force_lossy>
                         <image_optimization_bg_color>1</image_optimization_bg_color>
+                        <image_optimization_canvas>1</image_optimization_canvas>
                         <image_optimizations_ratios>2,3</image_optimizations_ratios>
                     </fastly_image_optimization_configuration>
                     <fastly_web_hooks>

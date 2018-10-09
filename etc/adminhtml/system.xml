@@ -302,26 +302,40 @@
                         =========================== -->
                         <field id="update_blocking_snippet" translate="label comment" sortOrder="6" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Update Blocking]]></label>
+                            <comment>
+                                <![CDATA[Applies blocking changes to active setup. HAS TO BE clicked anytime you make blocking changes.]]>
+                            </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\UpdateBlockingBtn</frontend_model>
                         </field>
-                        <!-- ======================================
-                             Block by Country multiselect field
-                        ======================================= -->
-                        <field id="block_by_country" translate="label comment" type="multiselect" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
-                            <label>Block by Country</label>
+                        <!-- ===========================
+                             Block Type select field
+                        ============================ -->
+                        <field id="blocking_type" translate="label comment" type="select" sortOrder="9" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Blocking Type</label>
                             <comment>
-                                <![CDATA[List of countries that can be blocked.]]>
+                                <![CDATA[<b>Blocklist:</b> block ALL access for users from selected countries/ACLs <br />
+                                        <b>Allowlist:</b> block ALL access EXCEPT for users from selected countries/ACLs]]>
+                            </comment>
+                            <source_model>Fastly\Cdn\Model\Config\Backend\BlocklistAllowlist</source_model>
+                        </field>
+                        <!-- ==================================
+                             Country List multiselect field
+                        =================================== -->
+                        <field id="block_by_country" translate="label comment" type="multiselect" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Country List</label>
+                            <comment>
+                                <![CDATA[List of countries that can be selected. Multiple selections allowed.]]>
                             </comment>
                             <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                             <can_be_empty>1</can_be_empty>
                         </field>
-                        <!-- ==================================
-                             Block by ACL multiselect field
-                        =================================== -->
+                        <!-- ==========================
+                             ACLs multiselect field
+                        =========================== -->
                         <field id="block_by_acl" translate="label comment" type="multiselect" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
-                            <label>Block by ACL</label>
+                            <label>ACLs</label>
                             <comment>
-                                <![CDATA[List of ACLs that can be blocked.]]>
+                                <![CDATA[List of ACLs that can be selected. Multiple selections allowed.]]>
                             </comment>
                             <source_model>Fastly\Cdn\Model\Config\Backend\ListAcl</source_model>
                             <can_be_empty>1</can_be_empty>
@@ -473,6 +487,17 @@
                         <field id="image_optimization_bg_color" translate="label comment" type="select" sortOrder="25" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Set Background Color on Images</label>
                             <comment>Adds bg-color query argument for product/catalog images. This will remove a transparency/alpha channel and replace it with the theme background color.</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="image_optimizations">1</field>
+                            </depends>
+                        </field>
+                        <!-- =====================================
+                             Set Canvas on Images select field
+                        ====================================== -->
+                        <field id="image_optimization_canvas" translate="label comment" type="select" sortOrder="26" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Set Canvas on Images</label>
+                            <comment>Adds canvas query argument for product/catalog images.</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                             <depends>
                                 <field id="image_optimizations">1</field>

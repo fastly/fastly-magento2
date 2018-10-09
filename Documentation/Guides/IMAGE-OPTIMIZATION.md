@@ -34,6 +34,7 @@ There are four main categories
 * Force lossy conversion (available in 1.2.57+)
 * Deep image optimization
 * Set background color on images (available in 1.2.64+)
+* Set canvas on images (available in 1.2.65+)
 * Adaptive pixel ratios
 
 ## Fastly IO Snippet Upload
@@ -110,6 +111,10 @@ will be rewritten as this
 This feature is on by default when you enable deep image optimization. It adds background color definition to every
 image as defined in your theme. It effectively removes transparencies from your images. If that is not what you want
 you can set this option to no.
+
+## Set canvas parameter on images
+
+This feature is on by default when you enable deep image optimization. It adds canvas argument to the image optimization with the aspect ratio of the image. You can read more about this feature in Fastly [image optimization docs](https://docs.fastly.com/api/imageopto/canvas). Set to no to exclude.
 
 ## Adaptive pixel ratios
 

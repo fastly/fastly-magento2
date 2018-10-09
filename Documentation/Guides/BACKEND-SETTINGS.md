@@ -41,6 +41,6 @@ The modal window will pop up with the following content:
 
 ![Shield configuration](../images/guides/backend-settings/shielding-configuration.png "Shield configuration")
 
-For the Shield value you should select Datacenter close to your backend. As for backend timeout settings, it’s best to leave default values or set them according to your needs. Press the Upload button in the upper right corner to apply your changes.
+For the Shield value you should select a Fastly POP/datacenter that is close to your backend. UI has few suggestions based on your cloud provider's region. As for backend timeout settings, it’s best to leave default values or set them according to your needs. If you are getting a lot of `first byte timeout` errors you can increase the timeout higher. Press the Upload button in the upper right corner to apply your changes.
 
 That’s it, you have successfully fine tuned your Fastly service.

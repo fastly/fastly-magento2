@@ -263,6 +263,12 @@ class Config extends \Magento\PageCache\Model\Config
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimization_bg_color';
 
     /**
+     * XML path to image optimization canvas flag
+     */
+    const XML_FASTLY_IMAGE_OPTIMIZATION_CANVAS
+        = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimization_canvas';
+
+    /**
      * XML path to image optimizations pixel ratio flag
      */
     const XML_FASTLY_IMAGE_OPTIMIZATIONS_PIXEL_RATIO
@@ -298,6 +304,11 @@ class Config extends \Magento\PageCache\Model\Config
      * XML path to Fastly list of blocked Acls
      */
     const XML_FASTLY_BLOCK_BY_ACL = 'system/full_page_cache/fastly/fastly_blocking/block_by_acl';
+
+    /**
+     * XML path to the Fastly Blocking Type flag
+     */
+    const XML_FASTLY_BLOCKING_TYPE = 'system/full_page_cache/fastly/fastly_blocking/blocking_type';
 
     /**
      * XML path to enable Webhooks
@@ -1010,5 +1021,23 @@ class Config extends \Magento\PageCache\Model\Config
             'snippet_name' => $snippetName,
             'error' => $error
         ];
+    }
+
+    /**
+     * Process blocked items depending on blocking type
+     *
+     * @param $strippedBlockedItems
+     * @param null $blockingType
+     * @return string
+     */
+    public function processBlockedItems($strippedBlockedItems, $blockingType = null)
+    {
+        if (empty($blockingType)) {
+            $blockingType = $this->_scopeConfig->getValue(self::XML_FASTLY_BLOCKING_TYPE);
+        }
+        if ($blockingType == '1') {
+            $strippedBlockedItems = '!(' . $strippedBlockedItems . ')';
+        }
+        return $strippedBlockedItems;
     }
 }

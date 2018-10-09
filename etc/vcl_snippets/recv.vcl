@@ -38,11 +38,12 @@
             /* validate signature */
             if (var.X-Sig == regsub(digest.hmac_sha1(req.service_id, req.url.path var.X-Exp), "^0x", "")) {
             /* check that expiration time has not elapsed */
-            if (time.is_after(now, std.integer2time(std.atoi(var.X-Exp)))) {
-                error 410;
+                if (time.is_after(now, std.integer2time(std.atoi(var.X-Exp)))) {
+                    error 410;
+                }
+            } else {
+                error 403;
             }
-            }
-
         } else {
             set req.http.Fastly-Purge-Requires-Auth = "1";
         }
@@ -59,6 +60,9 @@
         # Needed for proper handling of stale while revalidated when shielding is involved
         set req.max_stale_while_revalidate = 0s;
     }
+
+    # Make sure we lookup end user geo not shielding. More at https://docs.fastly.com/vcl/geolocation/#using-geographic-variables-with-shielding
+    set client.geo.ip_override = req.http.Fastly-Client-IP;
 
     # geoip lookup
     if (req.url ~ "fastlyCdn/geoip/getaction/") {

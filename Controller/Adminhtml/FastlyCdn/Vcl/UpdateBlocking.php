@@ -135,6 +135,8 @@ class UpdateBlocking extends Action
                 if ($strippedBlockedItems === '') {
                     $value = '';
                 } else {
+                    $blockingType = $this->request->getParam('blocking_type');
+                    $strippedBlockedItems = $this->config->processBlockedItems($strippedBlockedItems, $blockingType);
                     $value = str_replace('####BLOCKED_ITEMS####', $strippedBlockedItems, $value);
                 }
 
@@ -191,7 +193,7 @@ class UpdateBlocking extends Action
         if ($acls != '') {
             $blockedAclsPieces = explode(",", $acls);
             foreach ($blockedAclsPieces as $acl) {
-                $result .= ' client.ip ~ ' . $acl . ' ||';
+                $result .= ' req.http.Fastly-Client-Ip ~ ' . $acl . ' ||';
             }
         }
 

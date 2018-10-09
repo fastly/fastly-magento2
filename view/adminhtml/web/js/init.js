@@ -30,6 +30,10 @@ define([
                 }
             });
 
+            $('#system_full_page_cache_fastly_edge_modules-head').one('click', function () {
+                modlyInit();
+            });
+
             /**
              * Initializes the Fastly Configuration
              */
@@ -129,6 +133,12 @@ define([
                         });
                     }
                 })
+            }
+
+            function modlyInit() {
+                requirejs(['modly'], function (uploadVcl) {
+                    uploadVcl(config, serviceStatus, isAlreadyConfigured);
+                });
             }
         });
     }

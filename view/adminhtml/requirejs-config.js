@@ -2,7 +2,7 @@ let config = {
     map: {
         '*': {
             historicStats: 'Fastly_Cdn/js/historicstats',
-            handlebars: 'Fastly_Cdn/js/handlebars.min-148b191'
+            handlebars: 'Fastly_Cdn/js/handlebars.min-148b191',
             uploadVcl: 'Fastly_Cdn/js/upload-vcl',
             tls: 'Fastly_Cdn/js/tls',
             blocking: 'Fastly_Cdn/js/blocking',
@@ -18,7 +18,8 @@ let config = {
             showErrorMessage: 'Fastly_Cdn/js/error-message',
             showSuccessMessage: 'Fastly_Cdn/js/success-message',
             imageOptimization: 'Fastly_Cdn/js/image-optimization',
-            basicAuthentication: 'Fastly_Cdn/js/basic-authentication'
+            basicAuthentication: 'Fastly_Cdn/js/basic-authentication',
+            modly: 'Fastly_Cdn/js/modly'
         }
     }
 };

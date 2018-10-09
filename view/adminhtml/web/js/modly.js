@@ -25,7 +25,7 @@ define([
             }
         };
 
-        let allModuleOptions= {
+        let allModuleOptions = {
             title: jQuery.mage.__(' '),
                 content: function () {
                 return document.getElementById('modly-all-modules-template').textContent;
@@ -34,6 +34,22 @@ define([
                 saveActiveModules();
             }
         };
+
+        getActiveModules(false).done(function (response) {
+            $('.loading-modules').hide();
+            if (response.status !== false) {
+                if (response.modules.length > 0) {
+                    modules = response.modules;
+                    processActiveModules(modules);
+                } else {
+                    $('#modly-active-modules-list').html('');
+                    $('.no-modules').show();
+                }
+            } else {
+                $('#modly-active-modules-list').html('');
+                $('.no-modules').show();
+            }
+        });
 
         function saveModuleConfig() {
             let fieldData = {};
@@ -235,7 +251,7 @@ define([
                 data: {'active_version': active_version},
                 showLoader: true
             });
-        },
+        }
 
         function getAllDomains(active_version)
         {
@@ -245,7 +261,7 @@ define([
                 data: {'active_version': active_version},
                 showLoader: true
             });
-        },
+        }
 
         function getCountries(active_version) {
             return $.ajax({
@@ -579,7 +595,8 @@ define([
 
                 $.ajax({
                     type: "GET",
-                    url: config.serviceInfoUrl
+                    url: config.serviceInfoUrl,
+                    showLoader: true
                 }).done(function (checkService) {
                     active_version = checkService.active_version;
                     let next_version = checkService.next_version;

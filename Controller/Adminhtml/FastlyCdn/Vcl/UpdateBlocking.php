@@ -27,7 +27,6 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\App\Config\Storage\WriterInterface as ConfigWriter;
 use Magento\Framework\App\Cache\TypeListInterface as CacheTypeList;
 use Magento\Config\App\Config\Type\System as SystemConfig;
@@ -129,13 +128,20 @@ class UpdateBlocking extends Action
 
             $blockedItems = $country_codes . $acls;
             $strippedBlockedItems = substr($blockedItems, 0, strrpos($blockedItems, '||', -1));
+            $blockingType = $this->request->getParam('blocking_type');
+
+            $this->configWriter->save(
+                Config::XML_FASTLY_BLOCKING_TYPE,
+                $blockingType,
+                'default',
+                '0'
+            );
 
             // Add blocking snippet
             foreach ($snippet as $key => $value) {
                 if ($strippedBlockedItems === '') {
                     $value = '';
                 } else {
-                    $blockingType = $this->request->getParam('blocking_type');
                     $strippedBlockedItems = $this->config->processBlockedItems($strippedBlockedItems, $blockingType);
                     $value = str_replace('####BLOCKED_ITEMS####', $strippedBlockedItems, $value);
                 }

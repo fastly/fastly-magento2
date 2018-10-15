@@ -218,7 +218,8 @@ define([
                 type: "GET",
                 url: config.getDictionaries,
                 showLoader: true,
-                data: {'active_version': active_version}
+                data: {'active_version': active_version},
+                async: false
             });
         }
 
@@ -229,7 +230,8 @@ define([
                 type: "GET",
                 url: config.getAcls,
                 showLoader: true,
-                data: {'active_version': active_version}
+                data: {'active_version': active_version},
+                async: false
             });
         }
 
@@ -239,7 +241,8 @@ define([
                 type: "GET",
                 url: config.fetchBackendsUrl,
                 showLoader: true,
-                data: {'active_version': active_version}
+                data: {'active_version': active_version},
+                async: false
             });
         }
 
@@ -249,7 +252,8 @@ define([
                 type: "POST",
                 url: config.getAllConditionsUrl,
                 data: {'active_version': active_version},
-                showLoader: true
+                showLoader: true,
+                async: false
             });
         }
 
@@ -259,7 +263,8 @@ define([
                 type: "POST",
                 url: config.getAllDomainsUrl,
                 data: {'active_version': active_version},
-                showLoader: true
+                showLoader: true,
+                async: false
             });
         }
 
@@ -270,29 +275,37 @@ define([
                 data: {
                     'active_version': active_version
                 },
-                showLoader: true
+                showLoader: true,
+                async: false
             });
         }
 
         function renderFields(property, value, active_version)
         {
-            let html = '<div class="admin__field field';
-            if (property.required === true) {
-                html+= ' _required';
-            }
-            html +=   '">';
-            html += '<label for="' + property.name + '" class="admin__field-label">';
-            html += '<span>' + property.label + '</span>';
-            html += '</label>';
-            html += '<div class="admin__field-control">';
+            let field = $('<div class="admin__field field"></div>');
+            let control = $('<div class="admin__field-control"></div>');
+            let label = $('<label class="admin__field-label"></label>');
+            let span = $('<span></span>');
+            let note = $('<div class="admin__field-note"></div>');
+
+            let textInput = $('<input class="input-text admin__control-text modly-field">');
+            let textAreaInput = $('<textarea rows="10" class="admin__control-text modly-field"></textarea>');
+            let selectInput = $('<select class="select admin__control-select modly-field"></select>');
+            let selectOption  = $('<option></option>');
+
             let description = '';
-            if (property.description) {
-                description = property.description;
-            }
             let fieldName = property.name;
             let fieldValue = '';
+            let type = property.type;
+
             if (property.default) {
                 fieldValue = property.default;
+            }
+            if (property.required === true) {
+               field.prop(' _required');
+            }
+            if (property.description) {
+                description = property.description;
             }
             if (value) {
                 $.each(value, function (index, data) {
@@ -308,187 +321,235 @@ define([
                 });
             }
 
-            if (property.type === 'string' || property.type === 'rtime' || property.type === 'path' || property.type === 'url' || !property.type) {
-                html += '<input type="text" name="' + property.name + '" required="required" id="' + property.name + '" value="' + fieldValue + '" class="admin__control-text modly-field">';
-            } else if (property.type === 'integer' || property.type === 'float') {
-                html += '<input type="number" name="' + property.name + '" required="required" id="' + property.name + '" value="' + fieldValue + '" class="admin__control-text modly-field">';
-            } else if (property.type === 'time') {
-                html += '<input type="time" name="' + property.name + '" required="required" id="' + property.name + '" value="' + fieldValue + '" class="admin__control-text modly-field">';
-            } else if (property.type === 'longstring') {
-                html += '<textarea rows="10" name="' + property.name + '" required="required" id="' + property.name + '" class="admin__control-text modly-field">';
-                html += fieldValue + '</textarea>';
-            } else if (property.type === 'select') {
-                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
-                html += '<option value="">--Please Select--</option>';
-                $.each(property.options, function (key, option) {
-                    html += '<option value="' + key + '"';
-                    if (key === fieldValue) {
-                        html += ' selected';
-                    }
-                    html += '>' + option + '</option>';
-                });
-                html += '</select>';
-            } else if (property.type === 'boolean') {
-                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
-                html += '<option value="false"';
-                if (fieldValue === 'false') {
-                    html += 'selected';
-                }
-                html += '>No</option>';
-                html += '<option value="true"';
-                if (fieldValue === 'true') {
-                    html += 'selected';
-                }
-                html += '>Yes</option>';
-                html += '</select>';
-            } else if (property.type === 'acl') {
-                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
+            function aclAjax()
+            {
                 listAcls(active_version).done(function (response) {
                     if (response.status !== false) {
                         let acls = response.acls;
-                        let options = '<option value="">--Please Select--</option>';
                         $.each(acls, function (index, acl) {
-                            options += '<option value="' + acl.name + '"';
+                            selectOption  = $('<option></option>');
+                            selectOption.attr('value', acl.name);
                             if (acl.name === fieldValue) {
-                                options += ' selected';
+                                selectOption.attr('selected', true);
                             }
-                            options += '>' + acl.name + '</option>';
+                            selectOption.html(acl.name);
+                            selectInput.append(selectOption);
                         });
-                        $('#' + property.name).append(options);
+                        control.append(selectInput);
                     }
                 });
-                html += '</select>';
-            } else if (property.type === 'dict') {
-                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
+            }
+
+            function dictionaryAjax()
+            {
                 listDictionaries(active_version).done(function (response) {
                     if (response.status !== false) {
                         let dictionaries = response.dictionaries;
-                        let options = '<option value="">--Please Select--</option>';
                         $.each(dictionaries, function (index, dictionary) {
-                            options += '<option value="' + dictionary.name + '"';
+                            selectOption  = $('<option></option>');
+                            selectOption.attr('value', dictionary.name);
                             if (dictionary.name === fieldValue) {
-                                options += ' selected';
+                                selectOption.attr('selected', true);
                             }
-                            options += '>' + dictionary.name + '</option>';
+                            selectOption.html(dictionary.name);
+                            selectInput.append(selectOption);
                         });
-                        $('#' + property.name).append(options);
+                        control.append(selectInput);
                     }
                 });
-                html += '</select>';
-            } else if (property.type === 'origin') {
-                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
+            }
+
+            function backendsAjax()
+            {
                 getBackends(active_version).done(function (response) {
                     if (response.status !== false) {
                         let backends = response.backends;
-                        let options = '<option value="">--Please Select--</option>';
+                        selectOption  = $('<option></option>');
                         $.each(backends, function (index, backend) {
-                            options += '<option value="' + backend.name + '"';
+                            selectOption  = $('<option></option>');
+                            selectOption.attr('value', backend.name);
                             if (backend.name === fieldValue) {
-                                options += ' selected';
+                                selectOption.attr('selected', true);
                             }
-                            options += '>' + backend.name + '</option>';
+                            selectOption.html(backend.name);
+                            selectInput.append(selectOption);
                         });
-                        $('#' + property.name).append(options);
+                        control.append(selectInput);
                     }
                 });
-                html += '</select>';
-            } else if (property.type === 'cond-req') {
-                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
+            }
+
+            function conditionsAjax(type)
+            {
                 getAllConditions(active_version).done(function (response) {
                     if (response.status !== false) {
                         let conditions = response.conditions;
-                        let options = '<option value="">--Please Select--</option>';
                         $.each(conditions, function (index, condition) {
-                            if (condition.type === 'REQUEST') {
-                                options += '<option value="' + condition.name + '"';
+                            selectOption  = $('<option></option>');
+                            if ((condition.type === 'REQUEST' && type === 'request') ||
+                                (condition.type === 'RESPONSE' && type === 'response') ||
+                                (condition.type === 'CACHE' && type === 'cache')) {
+                                selectOption.attr('value', condition.name);
                                 if (condition.name === fieldValue) {
-                                    options += ' selected';
+                                    selectOption.attr('selected', true);
                                 }
-                                options += '>' + condition.name + '</option>';
+                                selectOption.html(condition.name);
+                                selectInput.append(selectOption);
                             }
                         });
-                        $('#'+ property.name).append(options);
+                        control.append(selectInput);
                     }
                 });
-                html += '</select>';
-            } else if (property.type === 'cond-resp') {
-                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
-                getAllConditions(active_version).done(function (response) {
-                    if (response.status !== false) {
-                        let conditions = response.conditions;
-                        let options = '<option value="">--Please Select--</option>';
-                        $.each(conditions, function (index, condition) {
-                            if (condition.type === 'RESPONSE') {
-                                options += '<option value="' + condition.name + '"';
-                                if (condition.name === fieldValue) {
-                                    options += ' selected';
-                                }
-                                options += '>' + condition.name + '</option>';
-                            }
-                        });
-                        $('#'+ property.name).append(options);
-                    }
-                });
-                html += '</select>';
-            } else if (property.type === 'cond-cache') {
-                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
-                getAllConditions(active_version).done(function (response) {
-                    if (response.status !== false) {
-                        let conditions = response.conditions;
-                        let options = '<option value="">--Please Select--</option>';
-                        $.each(conditions, function (index, condition) {
-                            if (condition.type === 'CACHE') {
-                                options += '<option value="' + condition.name + '"';
-                                if (condition.name === fieldValue) {
-                                    options += ' selected';
-                                }
-                                options += '>' + condition.name + '</option>';
-                            }
-                        });
-                        $('#'+ property.name).append(options);
-                    }
-                });
-                html += '</select>';
-            } else if (property.type === 'domain') {
-                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
+            }
+
+            function domainsAjax()
+            {
                 getAllDomains(active_version).done(function (response) {
                     if (response.status !== false) {
                         let domains = response.domains;
-                        let options = '<option value="">--Please Select--</option>';
                         $.each(domains, function (index, domain) {
-                            options += '<option value="' + domain.name + '"';
+                            selectOption  = $('<option></option>');
+                            selectOption.attr('value', domain.name);
                             if (domain.name === fieldValue) {
-                                options += ' selected';
+                                selectOption.attr('selected', true);
                             }
-                            options += '>' + domain.name + '</option>';
+                            selectOption.html(domain.name);
+                            selectInput.append(selectOption);
                         });
-                        $('#' + property.name).append(options);
+                        control.append(selectInput);
                     }
                 });
-                html += '</select>';
-            } else if (property.type === 'iso3166-1a2') {
-                html += '<select name="' + property.name + '" id="' + property.name + '" class="admin__control-text modly-field">';
+            }
+
+            function countriesAjax()
+            {
                 getCountries(active_version).done(function (response) {
                     if (response.status !== false) {
                         let countries = response.countries;
-                        let options = '';
                         $.each(countries, function (index, country) {
-                            options += '<option value="' + country.value + '"';
+                            selectOption  = $('<option></option>');
+                            selectOption.attr('value', country.value);
                             if (country.value === fieldValue) {
-                                options += ' selected';
+                                selectOption.attr('selected', true);
                             }
-                            options += '>' + country.label + '</option>';
+                            selectOption.html(country.label);
+                            selectInput.append(selectOption);
                         });
-                        $('#'+ property.name).append(options);
+                        control.append(selectInput);
                     }
                 });
-                html += '</select>';
-            } else {
-                html = ''
             }
-            html += '<div class="admin__field-note">' + description + '</div>';
-            html += '</div></div>';
-            return html;
+
+            function buildField()
+            {
+                span.append(property.label);
+                label.attr('for', property.name);
+                label.append(span);
+                field.append(label);
+                note.append(description);
+                control.append(note);
+                field.append(control);
+                return field;
+            }
+
+            textInput.attr('name', property.name);
+            textInput.attr('id', property.name);
+            textInput.attr('required', 'required');
+            textInput.val(fieldValue);
+
+            textAreaInput.attr('name', property.name);
+            textAreaInput.attr('id', property.name);
+            textAreaInput.attr('required', 'required');
+            textAreaInput.append(fieldValue);
+
+            selectInput.attr('name', property.name);
+            selectInput.attr('id', property.name);
+            selectInput.append(selectOption.attr('value', '').append('--Please Select--'));
+
+            switch (property.type) {
+                case 'string':
+                case 'rtime':
+                case 'path':
+                case 'url':
+                    textInput.attr('type', 'text');
+                    control.append(textInput);
+                    return buildField();
+                case 'integer':
+                case 'float':
+                    textInput.attr('type', 'number');
+                    control.append(textInput);
+                    return buildField();
+                case 'time':
+                    textInput.attr('type', 'time');
+                    control.append(textInput);
+                    return buildField();
+                case 'longstring':
+                    control.append(textAreaInput);
+                    return buildField();
+                case 'select':
+                    $.each(property.options, function (key, option) {
+                        selectOption = $('<option></option>');
+                        selectOption.attr('value', key);
+                        if (key === fieldValue) {
+                           selectOption.attr('selected', true);
+                        }
+                        selectOption.append(option);
+                        selectInput.append(selectOption);
+                    });
+                    control.append(selectInput);
+                    return buildField();
+                case 'boolean':
+                    selectInput.html('');
+
+                    selectOption  = $('<option></option>');
+                    selectOption.attr('value', 'false');
+                    selectOption.html('No');
+
+                    if (fieldValue === 'false') {
+                        selectOption.attr('selected', true);
+                    }
+                    selectInput.append(selectOption);
+
+                    selectOption  = $('<option></option>');
+                    selectOption.attr('value', 'true');
+
+                    if (fieldValue === 'true') {
+                        selectOption.attr('selected', true);
+                    }
+                    selectOption.html('Yes');
+                    selectInput.append(selectOption);
+
+                    control.append(selectInput);
+                    return buildField();
+                case 'acl':
+                    aclAjax();
+                    return buildField();
+                case 'dict':
+                    dictionaryAjax();
+                    return buildField();
+                case 'origin':
+                    backendsAjax();
+                    return buildField();
+                case 'cond-req':
+                    conditionsAjax('request');
+                    return buildField();
+                case 'cond-resp':
+                    conditionsAjax('response');
+                    return buildField();
+                case 'cond-cache':
+                    conditionsAjax('cache');
+                    return buildField();
+                case 'domain':
+                    domainsAjax();
+                    return buildField();
+                case 'iso3166-1a2':
+                    countriesAjax();
+                    return buildField();
+                default:
+                    textInput.attr('type', 'text');
+                    control.append(textInput);
+                    return buildField();
+            }
         }
 
         $('#modly_all_modules_btn').on('click', function () {
@@ -500,28 +561,48 @@ define([
                 })
             ).done(function (response) {
                 popup(allModuleOptions);
-                let updateBtn = '<button class="action-secondary" id="fastly_manifest_btn" type="button" data-role="action"><span>Refresh</span></button>';
+                let updateBtn = $('<button class="action-secondary" id="fastly_manifest_btn" type="button" data-role="action"></button>');
+                updateBtn.append($('<span>Refresh</span>'));
                 $('.modal-header').find(".page-actions-buttons").append(updateBtn);
                 $('.upload-button span').text('Save');
 
                 if (response.modules.length > 0) {
                     let allModules = response.modules;
                     let html = '';
+                    let nameCell;
+                    let descriptionCell;
+                    let checkboxCell;
+                    let checkbox;
+                    let checkboxDiv;
+                    let checkboxLabel;
                     $.each(allModules, function (index, module) {
-                        html += '<tr';
+                        html = $('<tr></tr>');
+                        nameCell = $('<td></td>');
+                        descriptionCell = $('<td></td>');
+                        checkboxCell = $('<td></td>');
+                        checkbox = $('<input class="admin__control-checkbox module" type="checkbox">');
+                        checkboxDiv = $('<div class="admin__field-option"></div>');
+                        checkboxLabel = $('<label class="admin__field-label" for="'+module.manifest_id+'"></label>');
                         if (module.manifest_status === '1') {
-                            html += ' class="highlighted"';
+                            html.addClass('highlighted');
                         }
-                        html +=  '><td><b>' + module.manifest_name + '</b></td>';
-                        html += '<td>' + module.manifest_description + '</td>';
-                        html += '<td><div class="admin__field-option" title="'+module.manifest_id+'"><input name="'+module.manifest_id+'" class="admin__control-checkbox module" type="checkbox" id="'+module.manifest_id+'"';
+                        html.append(nameCell);
+                        html.append(descriptionCell);
+                        html.append(checkboxCell);
+                        nameCell.text(module.manifest_name);
+                        descriptionCell.append(module.manifest_description);
+                        checkboxCell.append(checkboxDiv);
+                        checkboxDiv.append(checkbox);
+                        checkboxDiv.append(checkboxLabel);
+                        checkboxDiv.attr('title', module.manifest_id);
+                        checkbox.attr('name', module.manifest_id);
+                        checkbox.attr('id', module.manifest_id);
                         if (module.manifest_status === '1') {
-                            html += ' checked';
+                            checkbox.attr('checked', 'checked');
                         }
-                        html += '>';
-                        html += '<label class="admin__field-label" for="'+module.manifest_id+'"></label></div></td></tr>';
+                        checkboxLabel.attr('for', module.manifest_id);
+                        $('#modly-all-modules-table > tbody').append(html);
                     });
-                    $('#modly-all-modules-table > tbody').append(html);
                 } else {
                     showErrorMessage($.mage.__(response.msg)); // TODO: change this to showWarningMessage
                 }
@@ -583,7 +664,7 @@ define([
         $('body').on('click', 'button.fastly-edit-active-modules-icon', function () {
             let module_id = $(this).data('module-id');
             let properties = [];
-            let field = '<div class="admin__fieldset form-list modly-group">';
+            let fieldset = $('<div class="admin__fieldset form-list modly-group">');
             let message = '';
             let title = '';
 
@@ -624,25 +705,24 @@ define([
                                         parsedValues = [{"":""}];
                                     }
 
-                                    field = '';
+                                    //field = ''; // todo delete or revert
                                     // for each group object property ie. {"responses": [{...}]}}
                                     $.each(parsedValues, function (moduleIndex, groupData) {
                                         // for each group data property
                                         $.each(groupData, function (groupIndex, groupValues) {
                                             // open the modly-group class element
-                                            field += '<div class="admin__fieldset form-list modly-group">';
+                                            //field += '<div class="admin__fieldset form-list modly-group">';
                                             // for each manifest defined config property, render fields with group values
                                             $.each(property.properties, function (propertyIndex, propertyValues) {
-                                                field += renderFields(propertyValues, groupValues, active_version);
+                                                fieldset.append(renderFields(propertyValues, groupValues, active_version));
                                             });
-                                            field += '<div class="admin__field field"><div class="admin__field-label"></div><div class="admin__field-control"><button class="action remove-group-button" type="button" data-role="action"><span>Remove group</span></button></div></div>';
-                                            field += '<div class="admin__field field"><div class="admin__field-label"></div><div class="admin__field-control"><hr></div></div>';
-                                            field += '</div>';
+                                            fieldset.append('<div class="admin__field field"><div class="admin__field-label"></div><div class="admin__field-control"><button class="action remove-group-button" type="button" data-role="action"><span>Remove group</span></button></div></div>');
+                                            fieldset.append('<div class="admin__field field"><div class="admin__field-label"></div><div class="admin__field-control"><hr></div></div></div>');
                                         });
-
                                     });
                                 } else {
-                                    field += renderFields(property, parsedValues[0], active_version);
+                                    fieldset.append(renderFields(property, parsedValues[0], active_version));
+                                    console.log(renderFields(property, parsedValues[0], active_version));
                                 }
                             });
                         }
@@ -653,10 +733,10 @@ define([
                         setServiceLabel(active_version, next_version, service_name);
                         $('#modly-active-module-options > .messages').prepend(message);
                         let question = $('.question');
-                        if (isGroup === false) {
-                            field += '</div>';
-                        }
-                        question.append(field);
+                        // if (isGroup === false) {
+                        //     field += '</div>';
+                        // }
+                        question.append(fieldset);
                         $('.modal-title').html(title);
                         $('#module-id').val(module_id);
                         let groupBtn = '<button class="action-secondary group-button" type="button" data-role="action"><span>Add group</span></button>';

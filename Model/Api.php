@@ -790,7 +790,10 @@ class Api
         $currentUsername = 'System';
         try {
             if ($this->state->getAreaCode() == 'adminhtml') {
-                $currentUsername = $this->authSession->getUser()->getUserName();
+                $getUser = $this->authSession->getUser();
+                if (!empty($getUser)) {
+                    $currentUsername = $getUser->getUserName();
+                }
             }
         } catch (\Exception $e) {
             $this->log->log(100, 'Failed to retrieve Area Code');

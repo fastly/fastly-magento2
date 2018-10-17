@@ -105,7 +105,7 @@ class CountryMapping extends AbstractFieldArray
         foreach ($this->_storeManager->getStores() as $store) {
             $options[] = [
                 'value' => $store->getId(),
-                'label' => $store->getName()
+                'label' => $store->getName() . " [" . $store->getCode() . "]"
             ];
         }
 

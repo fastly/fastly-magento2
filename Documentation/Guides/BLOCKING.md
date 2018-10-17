@@ -25,7 +25,7 @@ Under the *Blocking* tab, you will see a screen like this.
 First thing to decide is how you want to block traffic. Two modes are available
 
 * **Blocklist**: blocks all access for users from selected countries/ACLs
-* **Allowlist**: block all access EXCEPT for users from selected countries/ACLs
+* **Allowlist**: block all access EXCEPT for users from selected countries/ACLs (Available in 1.2.70+)
 
 Blocklist is the default mode.
 

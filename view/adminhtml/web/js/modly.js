@@ -187,17 +187,38 @@ define([
         }
 
         function processActiveModules(modules) {
-            let html = '';
-            $.each(modules, function (index, module) {
-                html += "<tr id='fastly_" + index + "'>";
-                html += "<td><span data-moduleId='" + index + "' id='module_" + index + "' disabled='disabled' class='active-modules' type='text'><b>" + module.manifest_name + "</b></span>";
-                html += "<p class='note'><span>" + module.manifest_description + "</span></p></td>";
-                html += "<td class='col-actions'><button class='action-delete fastly-edit-active-modules-icon' data-module-id='" + module.manifest_id + "' id='fastly-edit-active-modules"+ index + "' title='Edit module' type='button'></td></tr>";
-            });
-            if (html !== '') {
+            if (modules.length > 0) {
+                $.each(modules, function (index, module) {
+                    let moduleRow = $('<tr></tr>');
+                    let moduleCell = $('<td></td>');
+                    let moduleSpan = $('<span class="active-modules" type="text"></span>');
+                    let moduleNote = $('<p class="note"></p>');
+                    let moduleNoteSpan = $('<span></span>');
+                    let moduleActionCell = $('<td class="col-actions"></td>');
+                    let moduleActionButton = $('<button title="Edit module" type="button">');
+
+                    moduleRow.attr('id', 'fastly_' + index);
+                    moduleRow.append(moduleCell);
+                    moduleRow.append(moduleActionCell);
+                    moduleCell.append(moduleSpan);
+                    moduleCell.append(moduleNote);
+                    moduleSpan.attr('data-moduleId', index);
+                    moduleSpan.attr('id', 'module_' + index);
+                    moduleSpan.attr('disabled', 'disabled');
+                    moduleSpan.text(module.manifest_name);
+                    moduleNote.append(moduleNoteSpan);
+                    moduleNoteSpan.text(module.manifest_description);
+                    moduleActionCell.append(moduleActionButton);
+                    moduleActionButton.attr('data-module-id', module.manifest_id);
+                    moduleActionButton.attr('id', 'fastly-edit-active-modules' + index);
+                    moduleActionButton.addClass("action-delete fastly-edit-active-modules-icon");
+
+                    $('#modly-active-modules-list').append(moduleRow);
+                });
+            } else {
                 $('.no-modules').hide();
+                $('#modly-active-modules-list').html('');
             }
-            $('#modly-active-modules-list').html(html);
         }
 
         function getModuleData(module_id) {
@@ -552,6 +573,46 @@ define([
             }
         }
 
+        function listModules(modules)
+        {
+            let allModules = modules;
+            let html = '';
+            let nameCell;
+            let descriptionCell;
+            let checkboxCell;
+            let checkbox;
+            let checkboxDiv;
+            let checkboxLabel;
+            $.each(allModules, function (index, module) {
+                html = $('<tr></tr>');
+                nameCell = $('<td></td>');
+                descriptionCell = $('<td></td>');
+                checkboxCell = $('<td></td>');
+                checkbox = $('<input class="admin__control-checkbox module" type="checkbox">');
+                checkboxDiv = $('<div class="admin__field-option"></div>');
+                checkboxLabel = $('<label class="admin__field-label" for="'+module.manifest_id+'"></label>');
+                if (module.manifest_status === '1') {
+                    html.addClass('highlighted');
+                }
+                html.append(nameCell);
+                html.append(descriptionCell);
+                html.append(checkboxCell);
+                nameCell.text(module.manifest_name);
+                descriptionCell.append(module.manifest_description);
+                checkboxCell.append(checkboxDiv);
+                checkboxDiv.append(checkbox);
+                checkboxDiv.append(checkboxLabel);
+                checkboxDiv.attr('title', module.manifest_id);
+                checkbox.attr('name', module.manifest_id);
+                checkbox.attr('id', module.manifest_id);
+                if (module.manifest_status === '1') {
+                    checkbox.attr('checked', 'checked');
+                }
+                checkboxLabel.attr('for', module.manifest_id);
+                $('#modly-all-modules-table > tbody').append(html);
+            });
+        }
+
         $('#modly_all_modules_btn').on('click', function () {
             $.when(
                 $.ajax({
@@ -567,42 +628,7 @@ define([
                 $('.upload-button span').text('Save');
 
                 if (response.modules.length > 0) {
-                    let allModules = response.modules;
-                    let html = '';
-                    let nameCell;
-                    let descriptionCell;
-                    let checkboxCell;
-                    let checkbox;
-                    let checkboxDiv;
-                    let checkboxLabel;
-                    $.each(allModules, function (index, module) {
-                        html = $('<tr></tr>');
-                        nameCell = $('<td></td>');
-                        descriptionCell = $('<td></td>');
-                        checkboxCell = $('<td></td>');
-                        checkbox = $('<input class="admin__control-checkbox module" type="checkbox">');
-                        checkboxDiv = $('<div class="admin__field-option"></div>');
-                        checkboxLabel = $('<label class="admin__field-label" for="'+module.manifest_id+'"></label>');
-                        if (module.manifest_status === '1') {
-                            html.addClass('highlighted');
-                        }
-                        html.append(nameCell);
-                        html.append(descriptionCell);
-                        html.append(checkboxCell);
-                        nameCell.text(module.manifest_name);
-                        descriptionCell.append(module.manifest_description);
-                        checkboxCell.append(checkboxDiv);
-                        checkboxDiv.append(checkbox);
-                        checkboxDiv.append(checkboxLabel);
-                        checkboxDiv.attr('title', module.manifest_id);
-                        checkbox.attr('name', module.manifest_id);
-                        checkbox.attr('id', module.manifest_id);
-                        if (module.manifest_status === '1') {
-                            checkbox.attr('checked', 'checked');
-                        }
-                        checkboxLabel.attr('for', module.manifest_id);
-                        $('#modly-all-modules-table > tbody').append(html);
-                    });
+                   listModules(response.modules);
                 } else {
                     showErrorMessage($.mage.__(response.msg)); // TODO: change this to showWarningMessage
                 }
@@ -634,28 +660,11 @@ define([
                     }
 
                     if (response.modules.length > 0) {
-                        let allModules = response.modules;
-                        let html = '';
-                        $.each(allModules, function (index, module) {
-                            html += '<tr';
-                            if (module.manifest_status === '1') {
-                                html += ' class="highlighted"';
-                            }
-                            html +=  '><td><b>' + module.manifest_name + '</b></td>';
-                            html += '<td>' + module.manifest_description + '</td>';
-                            html += '<td><div class="admin__field-option" title="'+module.manifest_id+'"><input name="'+module.manifest_id+'" class="admin__control-checkbox module" type="checkbox" id="'+module.manifest_id+'"';
-                            if (module.manifest_status === '1') {
-                                html += ' checked';
-                            }
-                            html += '>';
-                            html += '<label class="admin__field-label" for="'+module.manifest_id+'"></label></div></td></tr>';
-                        });
-                        $('#modly-all-modules-table > tbody').html(html);
+                        $('#modly-all-modules-table > tbody').html('');
+                        listModules(response.modules);
                     }
+                    showSuccessMessage('The list of modules has been successfully updated.');
                 });
-
-                showSuccessMessage('The list of modules has been successfully updated.');
-
             }).fail(function () {
                 showErrorMessage('An error occurred while processing your request. Please try again.');
             });

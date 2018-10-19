@@ -1182,6 +1182,14 @@ class Api
         return $result;
     }
 
+    public function getOwaspSettings($id)
+    {
+        $url = $this->_getApiServiceUri() . 'wafs/' . $id . '/owasp';
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
     /**
      * Wrapper for API calls towards Fastly service
      *

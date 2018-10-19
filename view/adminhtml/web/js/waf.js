@@ -45,6 +45,9 @@ define([
                                 wafStateEnabled.show();
                             }
                         });
+                        getOwaspSettings(info.id).done(function (owaspResponse) {
+                            console.log(owaspResponse);
+                        });
                     });
                 } else {
                     wafStateSpan.find('.processing').hide();
@@ -86,6 +89,23 @@ define([
                     'id': id
                 }
             });
+        }
+
+        /**
+         * Retrieve OWASP settings
+         *
+         * @param id
+         * @returns {*}
+         */
+        function getOwaspSettings(id)
+        {
+            return $.ajax({
+                type: "POST",
+                url: config.getOwaspSettingsUrl,
+                data: {
+                    'id': id
+                }
+            })
         }
     }
 });

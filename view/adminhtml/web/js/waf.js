@@ -63,7 +63,8 @@ define([
          *
          * @returns {*}
          */
-        function getServiceInfo() {
+        function getServiceInfo()
+        {
             return $.ajax({
                 type: "GET",
                 url: config.getFastlyServiceInfoUrl
@@ -76,7 +77,8 @@ define([
          * @param id
          * @returns {*}
          */
-        function getWafSettings(id) {
+        function getWafSettings(id)
+        {
             return $.ajax({
                 type: "POST",
                 url: config.getWafSettingsUrl,

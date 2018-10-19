@@ -17,7 +17,8 @@ let config = {
             showErrorMessage: 'Fastly_Cdn/js/error-message',
             showSuccessMessage: 'Fastly_Cdn/js/success-message',
             imageOptimization: 'Fastly_Cdn/js/image-optimization',
-            basicAuthentication: 'Fastly_Cdn/js/basic-authentication'
+            basicAuthentication: 'Fastly_Cdn/js/basic-authentication',
+            waf: 'Fastly_Cdn/js/waf'
         }
     }
 };

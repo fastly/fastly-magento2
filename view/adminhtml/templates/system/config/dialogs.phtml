@@ -1427,8 +1427,10 @@ $toggleAuthSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/enableAuth');
 $checkAuthUsersAvailable = $block->getUrl('adminhtml/fastlyCdn_Vcl/CheckAuthUsersAvailable');
 $listIoDefaultConfigOptions = $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/ListAll');
 $configureIoUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/IoDefaultConfigOptions');
-$updateBlockingUrl = $block->getUrl('admin/fastlyCdn_Vcl/updateBlocking');
+$updateBlockingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/updateBlocking');
 $isIoEnabled = $block->getConfig()->isImageOptimizationEnabled();
+$getFastlyServiceInfoUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/getFastlyServiceInfo');
+$getWafSettingsUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/getWafSettings');
 
 /* This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application  */
 $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
@@ -1484,7 +1486,9 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "configureIoUrl": "<?php echo $block->escapeJsQuote($configureIoUrl);?>",
                     "createCustomSnippetUrl": "<?php echo $block->escapeJsQuote($createCustomSnippetUrl);?>",
                     "getCustomSnippetsUrl": "<?php echo $block->escapeJsQuote($getCustomSnippetsUrl);?>",
-                    "updateBlockingUrl": "<?php echo $block->escapeJsQuote($updateBlockingUrl);?>"
+                    "updateBlockingUrl": "<?php echo $block->escapeJsQuote($updateBlockingUrl);?>",
+                    "getFastlyServiceInfoUrl": "<?php echo $block->escapeJsQuote($getFastlyServiceInfoUrl);?>",
+                    "getWafSettingsUrl": "<?php echo $block->escapeJsQuote($getWafSettingsUrl);?>"
                 }
             }
         }

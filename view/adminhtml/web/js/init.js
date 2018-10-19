@@ -135,7 +135,8 @@ define([
                 })
             }
 
-            function modlyInit() {
+            function modlyInit()
+            {
                 requirejs(['modly'], function (uploadVcl) {
                     uploadVcl(config, serviceStatus, isAlreadyConfigured);
                 });

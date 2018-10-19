@@ -51,7 +51,8 @@ define([
             }
         });
 
-        function saveModuleConfig() {
+        function saveModuleConfig()
+        {
             let fieldData = {};
             let name = '';
             let value = '';
@@ -102,7 +103,8 @@ define([
             });
         }
 
-        function uploadModuleConfig(moduleId, parsedVcl, active_version) {
+        function uploadModuleConfig(moduleId, parsedVcl, active_version)
+        {
             return $.ajax({
                 type: "POST",
                 url: config.uploadModuleSnippetUrl,
@@ -115,7 +117,8 @@ define([
             });
         }
 
-        function parseVcl(fieldData) {
+        function parseVcl(fieldData)
+        {
             let moduleVcl = JSON.parse(module.manifest_vcl);
             let templates = [];
             let result = '';
@@ -139,7 +142,8 @@ define([
             return templates;
         }
 
-        function saveActiveModules() {
+        function saveActiveModules()
+        {
             let checkedModules = [];
             $('.module:checked').each(function () {
                 checkedModules.push($(this).attr('name'));
@@ -175,7 +179,8 @@ define([
             });
         }
 
-        function getActiveModules(loaderVisibility) {
+        function getActiveModules(loaderVisibility)
+        {
             return $.ajax({
                 type: "GET",
                 url: config.getActiveModulesUrl,
@@ -221,7 +226,8 @@ define([
             }
         }
 
-        function getModuleData(module_id) {
+        function getModuleData(module_id)
+        {
             return $.ajax({
                 type: "GET",
                 url: config.getModuleDataUrl,
@@ -674,7 +680,7 @@ define([
             let module_id = $(this).data('module-id');
             let properties = [];
             let fieldset = $('<div class="admin__fieldset form-list modly-group">');
-            let message = '';
+            let message = $('<div class="message"></div>');
             let title = '';
 
             // call getModule data function to retrieve a specific module's data
@@ -695,7 +701,7 @@ define([
                     let isGroup = false;
 
                     if (module.manifest_id === module_id) {
-                        message = '<div class="message">' + module.manifest_description + '</div>';
+                        message.text(module.manifest_description);
                         title = module.manifest_name;
                         let moduleValues = module.manifest_values;
                         let parsedValues = '';
@@ -713,14 +719,10 @@ define([
                                     if (parsedValues === '') {
                                         parsedValues = [{"":""}];
                                     }
-
-                                    //field = ''; // todo delete or revert
                                     // for each group object property ie. {"responses": [{...}]}}
                                     $.each(parsedValues, function (moduleIndex, groupData) {
                                         // for each group data property
                                         $.each(groupData, function (groupIndex, groupValues) {
-                                            // open the modly-group class element
-                                            //field += '<div class="admin__fieldset form-list modly-group">';
                                             // for each manifest defined config property, render fields with group values
                                             $.each(property.properties, function (propertyIndex, propertyValues) {
                                                 fieldset.append(renderFields(propertyValues, groupValues, active_version));

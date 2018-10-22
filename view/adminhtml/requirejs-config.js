@@ -17,6 +17,7 @@ let config = {
             resetAllMessages: 'Fastly_Cdn/js/reset-all-messages',
             showErrorMessage: 'Fastly_Cdn/js/error-message',
             showSuccessMessage: 'Fastly_Cdn/js/success-message',
+            showWarningMessage: 'Fastly_Cdn/js/warning-message',
             imageOptimization: 'Fastly_Cdn/js/image-optimization',
             basicAuthentication: 'Fastly_Cdn/js/basic-authentication',
             modly: 'Fastly_Cdn/js/modly'

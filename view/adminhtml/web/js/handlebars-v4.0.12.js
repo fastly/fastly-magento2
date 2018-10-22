@@ -1,4 +1,7 @@
-// phpcs:ignoreFile
+// @codingStandardsIgnoreFile
+/**
+ * @codingStandardsIgnoreFile
+ */
 /**!
 
  @license

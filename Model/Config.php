@@ -922,6 +922,38 @@ class Config extends \Magento\PageCache\Model\Config
         }
     }
 
+    public function getFastlyEdgeModules($path = '/fastly_edge_modules', $specificFile = null)
+    {
+        $moduleData = [];
+        try {
+            $moduleEtcPath = $this->reader->getModuleDir(Dir::MODULE_ETC_DIR, 'Fastly_Cdn') . $path;
+            $directoryRead = $this->readFactory->create($moduleEtcPath);
+            if (!$specificFile) {
+                $files = $directoryRead->read();
+
+                if (is_array($files)) {
+                    foreach ($files as $file) {
+                        if (substr($file, strpos($file, ".") + 1) !== 'json') {
+                            continue;
+                        }
+                        $fastlyModuleFilePath = $moduleEtcPath . '/' . $file;
+                        $fastlyModuleFilePath = $directoryRead->getRelativePath($fastlyModuleFilePath);
+                        $type = explode('.', $file)[0];
+                        $moduleData[$type] = $directoryRead->readFile($fastlyModuleFilePath);
+                    }
+                }
+            } else {
+                $fastlyModuleFilePath = $moduleEtcPath . '/' . $specificFile;
+                $fastlyModuleFilePath = $directoryRead->getRelativePath($fastlyModuleFilePath);
+                $type = explode('.', $specificFile)[0];
+                $moduleData[$type] = $directoryRead->readFile($fastlyModuleFilePath);
+            }
+            return $moduleData;
+        } catch (\Exception $e) {
+            return $moduleData;
+        }
+    }
+
     /**
      * Prepare data for VCL config
      *

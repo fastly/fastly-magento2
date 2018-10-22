@@ -1,0 +1,53 @@
+{
+	"name": "Block users by IP or subnet",
+	"id": "aclblacklist",
+	"description": "Use an Access Control List (ACL) to block users from specific IPs or\nnetwork",
+	"version": 1,
+	"properties": [
+		{
+			"name": "externalAcl",
+			"label": "ACL",
+			"description": "Referencing a named access control list defined on your service enables\nyou to [update it via our API](https://docs.fastly.com/guides/access-control-lists/creating-and-manipulating-edge-acl-entries).",
+			"type": "acl",
+			"required": false
+		},
+		{
+			"name": "localAcl",
+			"label": "IPs/masks",
+			"description": "List specific IPs and subnets to block, separated by newlines",
+			"type": "longstring",
+			"required": false,
+			"validation": "^(\"(\\d{3}"
+		},
+		{
+			"name": "mode",
+			"label": "Mode",
+			"type": "select",
+			"options": {
+				"allow": "Allow only the listed IPs",
+				"block": "Allow all except the listed IPs"
+			},
+			"required": true
+		}
+	],
+	"vcl": [
+		{
+			"type": "init",
+			"template": "{{#if localAcl}}\nacl modly_aclblacklist_local {\n  {{localAcl}}\n}\n{{/if}}"
+		},
+		{
+			"type": "recv",
+			"template": "{{#ifEq mode \"allow\"}}\n  {{#if ../localAcl}}\n    {{#if ../externalAcl}}\n      if (client.ip !~ modly_aclblacklist_local && client.ip !~ {{../externalAcl}}) {\n        error 921 \"[modly:aclblacklist]\";\n      }\n    {{else}}\n      if (client.ip !~ modly_aclblacklist_local) {\n        error 921 \"[modly:aclblacklist]\";\n      }\n    {{/if}}\n  {{else}}\n    if (client.ip !~ {{../externalAcl}}) {\n      error 921 \"[modly:aclblacklist]\";\n    }\n  {{/if}}\n{{else}}\n  {{#if ../externalAcl}}\n    if (client.ip ~ {{../externalAcl}}) {\n      error 921 \"[modly:aclblacklist]\";\n    }\n  {{/if}}\n  {{#if ../localAcl}}\n    if (client.ip ~ modly_aclblacklist_local) {\n      error 921 \"[modly:aclblacklist]\";\n    }\n  {{/if}}\n{{/ifEq}}"
+		},
+		{
+			"type": "error",
+			"template": "if (obj.status == 921 && obj.response == \"[modly:aclblacklist]\") {\n  synthetic \"\";\n  set obj.status = 403;\n  set obj.response = \"Forbidden\";\n  set obj.http.Content-Type = \"text/html\";\n  if (req.http.Fastly-Debug) {\n    set obj.http.Fastly-ACL = \"Ban in effect for \" client.ip;\n  }  \n  return (deliver);\n}"
+		}
+	],
+	"test": {
+		"origins": [
+			"https://httpbin.org"
+		],
+		"reqUrl": "/status/500"
+	}
+}

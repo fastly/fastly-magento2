@@ -6,8 +6,9 @@ define([
     "resetAllMessages",
     "showErrorMessage",
     "showSuccessMessage",
+    "showWarningMessage",
     'mage/translate'
-], function ($, Handlebars, setServiceLabel, popup, resetAllMessages, showErrorMessage, showSuccessMessage) {
+], function ($, Handlebars, setServiceLabel, popup, resetAllMessages, showErrorMessage, showSuccessMessage, showWarningMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
         let successAllModulesBtnMsg = $('#fastly-success-all-modules-button-msg');
         let errorAllModulesBtnMsg = $('#fastly-error-all-modules-button-msg');
@@ -194,6 +195,8 @@ define([
         function processActiveModules(modules)
         {
             if (modules.length > 0) {
+                $('#modly-active-modules-list').html('');
+                $('.no-modules').hide();
                 $.each(modules, function (index, module) {
                     let moduleRow = $('<tr></tr>');
                     let moduleCell = $('<td></td>');
@@ -212,6 +215,7 @@ define([
                     moduleSpan.attr('id', 'module_' + index);
                     moduleSpan.attr('disabled', 'disabled');
                     moduleSpan.text(module.manifest_name);
+                    moduleSpan.wrapInner('<b></b>');
                     moduleNote.append(moduleNoteSpan);
                     moduleNoteSpan.text(module.manifest_description);
                     moduleActionCell.append(moduleActionButton);
@@ -222,7 +226,7 @@ define([
                     $('#modly-active-modules-list').append(moduleRow);
                 });
             } else {
-                $('.no-modules').hide();
+                $('.no-modules').show();
                 $('#modly-active-modules-list').html('');
             }
         }
@@ -606,6 +610,7 @@ define([
                 html.append(descriptionCell);
                 html.append(checkboxCell);
                 nameCell.text(module.manifest_name);
+                nameCell.wrapInner('<b></b>');
                 descriptionCell.append(module.manifest_description);
                 checkboxCell.append(checkboxDiv);
                 checkboxDiv.append(checkbox);
@@ -638,7 +643,7 @@ define([
                 if (response.modules.length > 0) {
                    listModules(response.modules);
                 } else {
-                    showErrorMessage($.mage.__(response.msg)); // TODO: change this to showWarningMessage
+                    showWarningMessage($.mage.__(response.msg));
                 }
             });
         });
@@ -744,11 +749,8 @@ define([
                     if (module != null && module_id != null) {
                         popup(activeModuleOptions);
                         setServiceLabel(active_version, next_version, service_name);
-                        $('#modly-active-module-options > .messages').prepend(message);
+                        $('.module-messages').prepend(message);
                         let question = $('.question');
-                        // if (isGroup === false) {
-                        //     field += '</div>';
-                        // }
                         question.append(fieldset);
                         $('.modal-title').html(title);
                         $('#module-id').val(module_id);

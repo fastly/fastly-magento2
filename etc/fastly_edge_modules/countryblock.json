@@ -1,0 +1,33 @@
+{
+  "version": 1, 
+  "description": "Block requests from a set of countries", 
+  "name": "Country block", 
+  "test": {
+    "reqHeaders": "Fastly-Debug: 1", 
+    "reqUrl": "/html", 
+    "origins": [
+      "https://httpbin.org"
+    ]
+  }, 
+  "vcl": [
+    {
+      "type": "recv", 
+      "template": "if (client.geo.country_code ~ \"(?i)^({{replace countryList '[ ,]+' '|'}})$\") {\n  error 921 \"[modly:countryblock]\";\n}"
+    }, 
+    {
+      "type": "error", 
+      "template": "if (obj.status == 921 && obj.response == \"[modly:countryblock]\") {\n  set obj.status = 403;\n  set obj.response = \"Forbidden\";\n  if (req.http.Fastly-Debug) {\n    set obj.http.Fastly-Country-Block = client.geo.country_code;\n  }\n  synthetic \"\";\n  return (deliver);\n}"
+    }
+  ], 
+  "id": "countryblock", 
+  "properties": [
+    {
+      "validation": "^\\w{2}(\\s+\\w{2})*$", 
+      "description": "List countries to block, using [ISO-3166-1 alpha 2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) codes, separated by spaces, eg `us de cn`", 
+      "name": "countryList", 
+      "required": true, 
+      "type": "string", 
+      "label": "Countries"
+    }
+  ]
+}

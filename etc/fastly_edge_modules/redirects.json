@@ -1,0 +1,67 @@
+{
+	"name": "Redirects",
+	"id": "redirects",
+	"description": "Emit redirects directly from the edge for known URLs",
+	"version": 1,
+	"properties": [
+		{
+			"name": "rules",
+			"label": "Rules",
+			"type": "group",
+			"entryTemplate": "{{source}} => {{dest}} ({{type}})",
+			"properties": [
+				{
+					"name": "source",
+					"label": "Source path",
+					"description": "URL path of incoming request to redirect",
+					"type": "path",
+					"required": true
+				},
+				{
+					"name": "dest",
+					"label": "Destination path or URL",
+					"description": "URL path to which to redirect",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "type",
+					"label": "Type of redirect",
+					"description": "Permanent and temporary redirects send HTTP responses to the client.  Internal\nredirects accept the incoming request and remap it invisibly at the Edge.  Internal\nredirects cannot change the domain.",
+					"type": "select",
+					"required": false,
+					"default": "308",
+					"options": {
+						"307": "Temporary",
+						"308": "Permanent",
+						"internal": "Internal"
+					}
+				},
+				{
+					"name": "matchQS",
+					"label": "Match querystring",
+					"description": "Whether to include the querystring when matching against the source\npath.  Querystring is always lowercased and sorted prior to matching",
+					"type": "boolean",
+					"required": false,
+					"default": false
+				}
+			]
+		}
+	],
+	"vcl": [
+		{
+			"type": "recv",
+			"template": "if (req.url == \"xxxxxxx\") {\n{{#each rules}}\n} elseif ({{#if matchQS}}req.url{{else}}req.url.path{{/if}} == \"{{source}}\") {\n  {{#ifEq type \"internal\"}}\n  set req.url = \"{{../dest}}\";\n  {{else}}\n  error 921 \"[modly:redirect]{{../dest}},{{../type}}\";\n  {{/ifEq}}\n{{/each}}\n}"
+		},
+		{
+			"type": "error",
+			"template": "if (obj.status == 921 && obj.response ~ \"^\\[modly\\:redirect\\](.*),(\\d+)\") {\n  set obj.status = std.atoi(re.group.2);\n  set obj.response = if (re.group.2 == \"308\", \"Permanent redirect\", \"Temporary redirect\");\n  set obj.http.Location = re.group.1;\n  return (deliver);\n}"
+		}
+	],
+	"test": {
+		"origins": [
+			"https://httpbin.org"
+		],
+		"reqUrl": "/sourcePath"
+	}
+}

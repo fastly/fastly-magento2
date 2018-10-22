@@ -1,0 +1,34 @@
+{
+	"name": "GZip",
+	"id": "gzip",
+	"description": "Dynamically compress responses at the edge",
+	"version": 1,
+	"properties": [
+		{
+			"name": "fileExtensions",
+			"label": "File extensions",
+			"description": "The file extensions for each file type you wish to have dynamically\ngzipped, separated by spaces.",
+			"default": "css js html eot ico otf ttf json",
+			"required": false,
+			"validation": "^(\\w{1,4} )+\\w{1,4}$"
+		},
+		{
+			"name": "contentTypes",
+			"label": "Content types",
+			"description": "The mime type for each type of content you wish to have dynamically\ngzipped, separated by spaces.",
+			"default": "text/html application/x-javascript text/css application/javascript text/javascript\napplication/json application/vnd.ms-fontobject application/x-font-opentype application/x-font-truetype\napplication/x-font-ttf application/xml font/eot font/opentype font/otf image/svg+xml\nimage/vnd.microsoft.icon text/plain text/xml"
+		}
+	],
+	"vcl": [
+		{
+			"type": "fetch",
+			"template": "if ((beresp.status == 200 || beresp.status == 404) && (beresp.http.content-type ~ \"^({{replace contentTypes '[ ,]+' '|'}})($|;)\" || req.url ~ \"\\.({{replace fileExtensions '[ ,]+' '|'}})($|\\?)\" ) ) {\n\n  if (!beresp.http.Vary ~ \"Accept-Encoding\") {\n    if (beresp.http.Vary) {\n      set beresp.http.Vary = beresp.http.Vary \", Accept-Encoding\";\n    } else {\n       set beresp.http.Vary = \"Accept-Encoding\";\n    }\n  }\n  if (req.http.Accept-Encoding == \"gzip\") {\n    set beresp.gzip = true;\n  }\n}"
+		}
+	],
+	"test": {
+		"origins": [
+			"https://httpbin.org"
+		],
+		"reqUrl": "/html"
+	}
+}

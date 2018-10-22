@@ -2,7 +2,7 @@ let config = {
     map: {
         '*': {
             historicStats: 'Fastly_Cdn/js/historicstats',
-            handlebars: 'Fastly_Cdn/js/handlebars.min-148b191',
+            handlebars: 'Fastly_Cdn/js/handlebars-v4.0.12',
             uploadVcl: 'Fastly_Cdn/js/upload-vcl',
             tls: 'Fastly_Cdn/js/tls',
             blocking: 'Fastly_Cdn/js/blocking',

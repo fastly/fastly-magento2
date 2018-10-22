@@ -191,7 +191,8 @@ define([
             });
         }
 
-        function processActiveModules(modules) {
+        function processActiveModules(modules)
+        {
             if (modules.length > 0) {
                 $.each(modules, function (index, module) {
                     let moduleRow = $('<tr></tr>');
@@ -295,7 +296,8 @@ define([
             });
         }
 
-        function getCountries(active_version) {
+        function getCountries(active_version)
+        {
             return $.ajax({
                 type: "POST",
                 url: config.getCountriesUrl,

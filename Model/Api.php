@@ -139,6 +139,13 @@ class Api
         return $uri;
     }
 
+    private function _getWafEndpoint()
+    {
+        $uri = $this->config->getApiEndpoint() . 'wafs/';
+
+        return $uri;
+    }
+
     /**
      * Purge a single URL
      *
@@ -1144,6 +1151,41 @@ class Api
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version . '/io_settings';
         $result = $this->_fetch($url, \Zend_Http_Client::PATCH, $params);
+
+        return $result;
+    }
+
+    /**
+     * Retrieve Fastly service details
+     *
+     * @return bool|mixed
+     */
+    public function getServiceDetails()
+    {
+        $url = $this->_getApiServiceUri() . 'details';
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    /**
+     * Retrieve Web Application Firewall settings
+     *
+     * @param $id
+     * @return bool|mixed
+     */
+    public function getWafSettings($id)
+    {
+        $url = $this->_getWafEndpoint() . $id;
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    public function getOwaspSettings($id)
+    {
+        $url = $this->_getApiServiceUri() . 'wafs/' . $id . '/owasp';
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
 
         return $result;
     }

@@ -20,6 +20,16 @@ define([
         let errorWafBtnMsg = $('#fastly-error-waf-button-msg');
         let warningWafBtnMsg = $('#fastly-warning-waf-button-msg');
 
+        /* OWASP rows */
+        let owaspRestrictedExtensionsRow = $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_owasp_restricted_extensions');
+        let owaspAllowedMethodsRow = $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_owasp_allowed_methods');
+
+        /* OWASP fields */
+        let owaspRestrictedExtensionsField = $('#system_full_page_cache_fastly_fastly_web_application_firewall_owasp_restricted_extensions');
+        let owaspAllowedMethodsField = $('#system_full_page_cache_fastly_fastly_web_application_firewall_owasp_allowed_methods');
+
+        owaspRestrictedExtensionsField.prop('disabled', true);
+        owaspAllowedMethodsField.prop('disabled', true);
 
         /**
          * Trigger the WAF status call
@@ -46,7 +56,19 @@ define([
                             }
                         });
                         getOwaspSettings(info.id).done(function (owaspResponse) {
-                            console.log(owaspResponse);
+                            if (owaspResponse.status !== false) {
+                                let owaspSettings = owaspResponse.owasp_settings;
+                                let owaspSettingsData = owaspSettings.data;
+                                let owaspDataAttributes = owaspSettingsData.attributes;
+                                let owaspAllowedMethods = owaspDataAttributes.allowed_methods;
+                                let owaspRestricedExtensions = owaspDataAttributes.restricted_extensions;
+
+                                owaspAllowedMethodsRow.show();
+                                owaspAllowedMethodsField.val(owaspAllowedMethods);
+                                owaspRestrictedExtensionsRow.show();
+                                owaspRestrictedExtensionsField.val(owaspRestricedExtensions);
+                            }
+
                         });
                     });
                 } else {

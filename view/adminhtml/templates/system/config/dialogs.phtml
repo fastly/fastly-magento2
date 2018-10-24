@@ -1407,6 +1407,7 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
 $serviceInfoUrl =               $block->getUrl('adminhtml/fastlyCdn_Configuration/serviceInfo');
 $testServiceUrl =               $block->getUrl('adminhtml/fastlyCdn_Configuration/testConnection');
 $isAlreadyConfiguredUrl =       $block->getUrl('adminhtml/fastlyCdn_Configuration/isAlreadyConfigured');
+$getFastlyServiceInfoUrl =      $block->getUrl('adminhtml/fastlyCdn_Configuration/getFastlyServiceInfo');
 // Custom Snippet
 $createCustomSnippetUrl =       $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/createCustomSnippet');
 $deleteCustomSnippet =          $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/deleteCustomSnippet');
@@ -1440,6 +1441,11 @@ $savePageErrorHtml =            $block->getUrl('adminhtml/fastlyCdn_SyntheticPag
 $saveWafPage =                  $block->getUrl('adminhtml/fastlyCdn_SyntheticPages/saveWafPage');
 // VCL
 $vclUploadUrl =                 $block->getUrl('adminhtml/fastlyCdn_Vcl/upload');
+// Web Application Firewall
+$getWafSettingsUrl = $block->getUrl('adminhtml/fastlyCdn_Waf/getWafSettings');
+$getOwaspSettingsUrl = $block->getUrl('adminhtml/fastlyCdn_Waf/getOwaspSettings');
+// This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application
+$isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
 ?>
 
 <script type="text/x-magento-init">
@@ -1492,7 +1498,10 @@ $vclUploadUrl =                 $block->getUrl('adminhtml/fastlyCdn_Vcl/upload')
                     "configureIoUrl": "<?php echo $block->escapeJsQuote($configureIoUrl);?>",
                     "createCustomSnippetUrl": "<?php echo $block->escapeJsQuote($createCustomSnippetUrl);?>",
                     "getCustomSnippetsUrl": "<?php echo $block->escapeJsQuote($getCustomSnippetsUrl);?>",
-                    "updateBlockingUrl": "<?php echo $block->escapeJsQuote($updateBlockingUrl);?>"
+                    "updateBlockingUrl": "<?php echo $block->escapeJsQuote($updateBlockingUrl);?>",
+                    "getFastlyServiceInfoUrl": "<?php echo $block->escapeJsQuote($getFastlyServiceInfoUrl);?>",
+                    "getWafSettingsUrl": "<?php echo $block->escapeJsQuote($getWafSettingsUrl);?>",
+                    "getOwaspSettingsUrl": "<?php echo $block->escapeJsQuote($getOwaspSettingsUrl);?>"
                 }
             }
         }

@@ -1,5 +1,18 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.73
+
+- Add store code to CountryMapping list to identify store https://github.com/fastly/fastly-magento2/pull/216
+- Initial implementation of the Web Application Firewall (WAF) https://github.com/fastly/fastly-magento2/pull/217
+
+## 1.2.72
+
+- Added check for empty admin user variable in webhooks https://github.com/fastly/fastly-magento2/pull/215
+
+## 1.2.71
+
+- Added save to config when update blocking is triggered https://github.com/fastly/fastly-magento2/pull/213
+
 ## 1.2.70
 
 - Refine blocking to include allowlist functionality https://github.com/fastly/fastly-magento2/pull/211

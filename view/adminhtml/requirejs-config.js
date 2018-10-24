@@ -20,7 +20,8 @@ let config = {
             showWarningMessage: 'Fastly_Cdn/js/warning-message',
             imageOptimization: 'Fastly_Cdn/js/image-optimization',
             basicAuthentication: 'Fastly_Cdn/js/basic-authentication',
-            modly: 'Fastly_Cdn/js/modly'
+            modly: 'Fastly_Cdn/js/modly',
+            waf: 'Fastly_Cdn/js/waf'
         }
     }
 };

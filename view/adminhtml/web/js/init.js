@@ -58,6 +58,9 @@ define([
                 let customSyntheticPagesHead = $('#system_full_page_cache_fastly_fastly_error_maintenance_page-head');
                 let backendsHead = $('#system_full_page_cache_fastly_fastly_backend_settings-head');
                 let customSnippetsHead = $('#system_full_page_cache_fastly_fastly_custom_snippets-head');
+                let webApplicationFirewallHead = $('#system_full_page_cache_fastly_fastly_web_application_firewall-head');
+                $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_owasp_restricted_extensions').hide();
+                $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_owasp_allowed_methods').hide();
 
                 $.ajax({
                     type: "GET",
@@ -129,6 +132,12 @@ define([
                         customSnippetsHead.one('click', function () {
                             requirejs(['customSnippets'], function (customSnippets) {
                                 customSnippets(config, serviceStatus, isAlreadyConfigured);
+                            })
+                        });
+
+                        webApplicationFirewallHead.one('click', function () {
+                            requirejs(['waf'], function (waf) {
+                                waf(config, serviceStatus, isAlreadyConfigured);
                             })
                         });
                     }

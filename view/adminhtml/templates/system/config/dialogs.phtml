@@ -1487,8 +1487,11 @@ $getAllConditionsUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getAllCondit
 $getAllDomainsUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getAllDomains');
 $getCountriesUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getCountries');
 $uploadModuleSnippetUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/upload');
-$updateBlockingUrl = $block->getUrl('admin/fastlyCdn_Vcl/updateBlocking');
+$updateBlockingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/updateBlocking');
 $isIoEnabled = $block->getConfig()->isImageOptimizationEnabled();
+$getFastlyServiceInfoUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/getFastlyServiceInfo');
+$getWafSettingsUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/getWafSettings');
+$getOwaspSettingsUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/getOwaspSettings');
 
 /* This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application  */
 $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
@@ -1554,7 +1557,10 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "getAllDomainsUrl": "<?php echo $block->escapeJsQuote($getAllDomainsUrl);?>",
                     "getCountriesUrl": "<?php echo $block->escapeJsQuote($getCountriesUrl);?>",
                     "uploadModuleSnippetUrl": "<?php echo $block->escapeJsQuote($uploadModuleSnippetUrl);?>",
-                    "updateBlockingUrl": "<?php echo $block->escapeJsQuote($updateBlockingUrl);?>"
+                    "updateBlockingUrl": "<?php echo $block->escapeJsQuote($updateBlockingUrl);?>",
+                    "getFastlyServiceInfoUrl": "<?php echo $block->escapeJsQuote($getFastlyServiceInfoUrl);?>",
+                    "getWafSettingsUrl": "<?php echo $block->escapeJsQuote($getWafSettingsUrl);?>",
+                    "getOwaspSettingsUrl": "<?php echo $block->escapeJsQuote($getOwaspSettingsUrl);?>"
                 }
             }
         }
@@ -1579,5 +1585,3 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
     }
 
 </style>
-
-

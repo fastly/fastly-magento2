@@ -1,0 +1,50 @@
+{
+	"name": "Disable caching",
+	"id": "disablecache",
+	"description": "For selected requests, disable caching, either on Fastly, or in the browser, or both.",
+	"version": 1,
+	"properties": [
+		{
+			"name": "rules",
+			"label": "Disable caching for",
+			"type": "group",
+			"entryTemplate": "{{pathpattern}}: {{mode}}",
+			"properties": [
+				{
+					"name": "pathpattern",
+					"label": "Path pattern",
+					"description": "Regular expressions are supported",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "mode",
+					"label": "Where to disable caching",
+					"type": "select",
+					"options": {
+						"browser": "Browser",
+						"fastly": "Fastly edge cache",
+						"both": "Browser and Fastly"
+					},
+					"required": true
+				}
+			]
+		}
+	],
+	"vcl": [
+		{
+			"type": "recv",
+			"template": "{{#each rules}}\n{{#ifMatch mode 'both|fastly'}}\nif (req.url ~ \"{{../pathpattern}}\") {\n  return(pass);\n}\n{{/ifMatch}}\n{{/each}}"
+		},
+		{
+			"type": "deliver",
+			"template": "{{#each rules}}\n{{#ifMatch mode 'both|browser'}}\nif (req.url ~ \"{{../pathpattern}}\") {\n  set resp.http.Cache-Control = \"no-cache, private\";\n  unset resp.http.Expires;\n  unset resp.http.Pragma;\n}\n{{/ifMatch}}\n{{/each}}"
+		}
+	],
+	"test": {
+		"origins": [
+			"https://httpbin.org"
+		],
+		"reqUrl": "/html"
+	}
+}

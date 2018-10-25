@@ -1377,6 +1377,56 @@
         </fieldset>
     </form>
 </script>
+
+<!-- Modly active module popup template -->
+<script type="text/x-magento-template" id="modly-active-module-template">
+    <div class="messages module-messages">
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/setActiveModuleConfig'); ?>"
+          method="POST"
+          id="fastly-active-module-config-form"
+          class="form-inline"
+          enctype="multipart/form-data"
+          style="margin-top: 25px;">
+        <fieldset class="admin__fieldset form-list question">
+            <input hidden="hidden" name="module_name" id="module-id" class="admin__control-text">
+        </fieldset>
+    </form>
+</script>
+
+<!-- Modly all modules template -->
+<script type="text/x-magento-template" id="modly-all-modules-template">
+    <div class="messages">
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+        <div class="message message-success fastly-message-success" style="display: none">
+        </div>
+        <div class="message message-warning fastly-message-warning" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/setActiveModules'); ?>"
+          method="POST"
+          id="modly-all-modules-form"
+          class="form-inline"
+          enctype="multipart/form-data"
+          style="margin-top: 25px;">
+        <fieldset class="admin__fieldset form-list question">
+            <table class="admin__control-table" id="modly-all-modules-table">
+                <thead>
+                <tr>
+                    <th><?php /* @noEscape */ echo __('Module') ?></th>
+                    <th><?php /* @noEscape */ echo __('Description') ?></th>
+                    <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Enabled') ?></th>
+                </tr>
+                </thead>
+                <tbody class="item-container">
+                </tbody>
+            </table>
+        </fieldset>
+    </form>
+</script>
 <?php
 
 /**
@@ -1427,6 +1477,16 @@ $toggleAuthSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/enableAuth');
 $checkAuthUsersAvailable = $block->getUrl('adminhtml/fastlyCdn_Vcl/CheckAuthUsersAvailable');
 $listIoDefaultConfigOptions = $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/ListAll');
 $configureIoUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/IoDefaultConfigOptions');
+$createManifestsUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/Create');
+$toggleModulesUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/ToggleModules');
+$getAllModulesUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getAllModules');
+$saveModuleConfigUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/save');
+$getActiveModulesUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getActiveModules');
+$getModuleDataUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getModuleData');
+$getAllConditionsUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getAllConditions');
+$getAllDomainsUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getAllDomains');
+$getCountriesUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getCountries');
+$uploadModuleSnippetUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/upload');
 $updateBlockingUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/updateBlocking');
 $isIoEnabled = $block->getConfig()->isImageOptimizationEnabled();
 $getFastlyServiceInfoUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/getFastlyServiceInfo');
@@ -1484,9 +1544,19 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
                     "toggleAuthSettingUrl": "<?php echo $block->escapeJsQuote($toggleAuthSettingUrl);?>",
                     "checkAuthUsersAvailable": "<?php echo $block->escapeJsQuote($checkAuthUsersAvailable);?>",
                     "listIoDefaultConfigOptions": "<?php echo $block->escapeJsQuote($listIoDefaultConfigOptions);?>",
+                    "toggleModulesUrl": "<?php echo $block->escapeJsQuote($toggleModulesUrl);?>",
                     "configureIoUrl": "<?php echo $block->escapeJsQuote($configureIoUrl);?>",
                     "createCustomSnippetUrl": "<?php echo $block->escapeJsQuote($createCustomSnippetUrl);?>",
                     "getCustomSnippetsUrl": "<?php echo $block->escapeJsQuote($getCustomSnippetsUrl);?>",
+                    "createManifestsUrl": "<?php echo $block->escapeJsQuote($createManifestsUrl);?>",
+                    "getAllModulesUrl": "<?php echo $block->escapeJsQuote($getAllModulesUrl);?>",
+                    "saveModuleConfigUrl": "<?php echo $block->escapeJsQuote($saveModuleConfigUrl);?>",
+                    "getActiveModulesUrl": "<?php echo $block->escapeJsQuote($getActiveModulesUrl);?>",
+                    "getModuleDataUrl": "<?php echo $block->escapeJsQuote($getModuleDataUrl);?>",
+                    "getAllConditionsUrl": "<?php echo $block->escapeJsQuote($getAllConditionsUrl);?>",
+                    "getAllDomainsUrl": "<?php echo $block->escapeJsQuote($getAllDomainsUrl);?>",
+                    "getCountriesUrl": "<?php echo $block->escapeJsQuote($getCountriesUrl);?>",
+                    "uploadModuleSnippetUrl": "<?php echo $block->escapeJsQuote($uploadModuleSnippetUrl);?>",
                     "updateBlockingUrl": "<?php echo $block->escapeJsQuote($updateBlockingUrl);?>",
                     "getFastlyServiceInfoUrl": "<?php echo $block->escapeJsQuote($getFastlyServiceInfoUrl);?>",
                     "getWafSettingsUrl": "<?php echo $block->escapeJsQuote($getWafSettingsUrl);?>",
@@ -1505,11 +1575,13 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
         width: 100%;
     }
 
+    .highlighted > td{
+        background: #fffbbb;
+    }
+
     .admin__control-table .fastly-save-action::before {
         content: '\1F4BE';
         font-size: 2rem;
     }
 
 </style>
-
-

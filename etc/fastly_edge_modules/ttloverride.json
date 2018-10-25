@@ -1,0 +1,53 @@
+{
+	"name": "Override Edge TTL / cache time",
+	"id": "ttloverride",
+	"description": "For selected requests, override caching directives received from the origin server.  Often used to increase TTL for static assets.",
+	"version": 1,
+	"properties": [
+		{
+			"name": "rules",
+			"label": "Override rules",
+			"type": "group",
+			"entryTemplate": "{{pathpattern}}: {{ttl}}s",
+			"properties": [
+				{
+					"name": "pathpattern",
+					"label": "Path pattern",
+					"description": "Regular expressions are supported",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "ttl",
+					"label": "Freshness duration",
+					"type": "rtime",
+					"required": true
+				},
+				{
+					"name": "swr",
+					"label": "Stale while revalidate duration",
+					"type": "rtime",
+					"required": false
+				},
+				{
+					"name": "sie",
+					"label": "Stale if error duration",
+					"type": "rtime",
+					"required": false
+				}
+			]
+		}
+	],
+	"vcl": [
+		{
+			"type": "fetch",
+			"template": "{{#each rules}}\nif (req.url ~ \"{{pathpattern}}\") {\n  set beresp.ttl = {{ttl}};\n  {{#if swr}}set beresp.stale-while-revalidate = {{swr}};{{/if}}\n  {{#if sie}}set beresp.stale-if-error = {{sie}};{{/if}}\n}\n{{/each}}"
+		}
+	],
+	"test": {
+		"origins": [
+			"https://httpbin.org"
+		],
+		"reqUrl": "/html"
+	}
+}

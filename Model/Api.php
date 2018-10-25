@@ -731,6 +731,30 @@ class Api
     }
 
     /**
+     * @param $version
+     * @return bool|mixed
+     */
+    public function getAllConditions($version)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/condition';
+        $result = $this->_fetch($url, \Zend_Http_Client::GET, '', false, null, false);
+
+        return $result;
+    }
+
+    /**
+     * @param $version
+     * @return bool|mixed
+     */
+    public function getAllDomains($version)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/domain';
+        $result = $this->_fetch($url, \Zend_Http_Client::GET, '', false, null, false);
+
+        return $result;
+    }
+
+    /**
      * Removes the specified Request Settings object.
      * @param $version
      * @param $name

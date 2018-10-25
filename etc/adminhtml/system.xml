@@ -237,8 +237,14 @@
                                 <field id="enable_geoip">1</field>
                             </depends>
                         </field>
+                        <!-- ================================
+                             Fastly Edge Modules on/off switch 
+                        ================================= -->
                         <field id="enable_fastly_edge_modules" translate="label comment" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enable Fastly Edge Modules</label>
+                            <comment>
+                                <![CDATA[WARNING: Enables beta Fastly Edge Modules menu. Experimental feature.]]>
+                            </comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                     </group>

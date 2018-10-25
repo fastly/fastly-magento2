@@ -48,9 +48,9 @@ class Config extends \Magento\PageCache\Model\Config
     const FASTLY_MAGENTO_MODULE = 'magentomodule';
 
     /**
-     * Modly module prefix used for naming modly module snippets
+     * Edge module prefix used for naming edge module snippets
      */
-    const FASTLY_MODLY_MODULE = 'modlymodule';
+    const FASTLY_MODLY_MODULE = 'edgemodule';
 
     /**
      * Magento Error Page Response Object Name

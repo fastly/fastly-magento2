@@ -1,0 +1,48 @@
+{
+    "description": "Rewrite /sitemap.xml paths to point to the correct URL on the backend filesystem",
+    "id": "magento_cloud_sitemap_rewrite",
+    "name": "Magento Cloud Sitemap rewrites",
+    "properties": [
+        {
+            "entryTemplate": "{{source}} => {{dest}} ({{type}})",
+            "label": "Rules",
+            "name": "rules",
+            "properties": [
+                {
+                    "default": "/sitemap.xml",
+                    "description": "Incoming URL path only (no host) exact match e.g. /sitemap.xml",
+                    "label": "Source path",
+                    "name": "source",
+                    "required": true,
+                    "type": "path"
+                },
+                {
+                    "default": "/media/sitemap.xml",
+                    "description": "Destination path path (no host)",
+                    "label": "Destination path",
+                    "name": "dest",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "type": "group"
+        }
+    ],
+    "test": {
+        "origins": [
+            "https://httpbin.org"
+        ],
+        "reqUrl": "/sourcePath"
+    },
+    "vcl": [
+        {
+            "template": "{{#each rules}}\nif (!req.backend.is_shield && req.url.path == \"{{source}}\") {\n  set bereq.url = \"{{dest}}\";\n}\n{{/each}}",
+            "type": "miss"
+        },
+        {
+            "template": "{{#each rules}}\nif (!req.backend.is_shield && req.url.path == \"{{source}}\") {\n  set bereq.url = \"{{dest}}\";\n}\n{{/each}}",
+            "type": "pass"
+        }
+    ],
+    "version": 1
+}

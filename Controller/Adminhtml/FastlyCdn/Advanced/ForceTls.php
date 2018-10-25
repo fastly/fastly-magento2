@@ -147,6 +147,12 @@ class ForceTls extends Action
                 }
             }
 
+            $comment = ['comment' => 'Magento Module turned ON Force TLS'];
+            if ($checkIfReqExist) {
+                $comment = ['comment' => 'Magento Module turned OFF Force TLS'];
+            }
+            $this->api->addComment($clone->number, $comment);
+
             return $result->setData(['status' => true]);
         } catch (\Exception $e) {
             return $result->setData([

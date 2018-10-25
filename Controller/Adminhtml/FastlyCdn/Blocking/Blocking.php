@@ -97,7 +97,6 @@ class Blocking extends Action
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
-
             $clone = $this->api->cloneVersion($currActiveVersion);
 
             $reqName = Config::FASTLY_MAGENTO_MODULE . '_blocking';
@@ -170,13 +169,13 @@ class Blocking extends Action
                 $this->api->activateVersion($clone->number);
             }
 
-            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-                if ($checkIfReqExist) {
-                    $this->api->sendWebHook('*Blocking has been turned OFF in Fastly version ' . $clone->number . '*');
-                } else {
-                    $this->api->sendWebHook('*Blocking has been turned ON in Fastly version ' . $clone->number . '*');
-                }
+            $this->sendWebhook($checkIfReqExist, $clone);
+
+            $comment = ['comment' => 'Magento Module turned ON Blocking'];
+            if ($checkIfReqExist) {
+                $comment = ['comment' => 'Magento Module turned OFF Blocking'];
             }
+            $this->api->addComment($clone->number, $comment);
 
             return $result->setData([
                 'status' => true
@@ -227,5 +226,16 @@ class Blocking extends Action
         }
 
         return $result;
+    }
+
+    private function sendWebhook($checkIfReqExist, $clone)
+    {
+        if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+            if ($checkIfReqExist) {
+                $this->api->sendWebHook('*Blocking has been turned OFF in Fastly version ' . $clone->number . '*');
+            } else {
+                $this->api->sendWebHook('*Blocking has been turned ON in Fastly version ' . $clone->number . '*');
+            }
+        }
     }
 }

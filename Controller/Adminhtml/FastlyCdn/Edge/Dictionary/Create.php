@@ -108,6 +108,9 @@ class Create extends Action
                 $this->api->activateVersion($clone->number);
             }
 
+            $comment = ['comment' => 'Magento Module created the "'.$dictionaryName.'" Dictionary'];
+            $this->api->addComment($clone->number, $comment);
+
             return $result->setData([
                 'status'            => true,
                 'active_version'    => $clone->number

@@ -202,6 +202,9 @@ class SaveWafPage extends Action
                 );
             }
 
+            $comment = ['comment' => 'Magento Module updated WAF Page html'];
+            $this->api->addComment($clone->number, $comment);
+
             return $result->setData([
                 'status'            => true,
                 'active_version'    => $clone->number

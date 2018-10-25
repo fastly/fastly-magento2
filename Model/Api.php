@@ -394,6 +394,21 @@ class Api
     }
 
     /**
+     * Add comment to the specified version
+     *
+     * @param $version
+     * @param $comment
+     * @return bool|mixed
+     */
+    public function addComment($version, $comment)
+    {
+        $url = $this->_getApiServiceUri() . 'version/' . $version;
+        $result = $this->_fetch($url, \Zend_Http_Client::PUT, $comment);
+
+        return $result;
+    }
+
+    /**
      * Upload a VCL for a particular service and version
      *
      * @param array $vcl

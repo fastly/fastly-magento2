@@ -137,6 +137,9 @@ class Delete extends Action
                 $this->api->activateVersion($clone->number);
             }
 
+            $comment = ['comment' => 'Magento Module deleted the Basic Authentication dictionary'];
+            $this->api->addComment($clone->number, $comment);
+
             return $result->setData([
                 'status'            => true,
                 'active_version'    => $clone->number

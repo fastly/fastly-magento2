@@ -118,6 +118,9 @@ class Create extends Action
                 $this->api->activateVersion($clone->number);
             }
 
+            $comment = ['comment' => 'Magento Module created the Basic Authentication dictionary'];
+            $this->api->addComment($clone->number, $comment);
+
             return $result->setData([
                 'status'            => true,
                 'active_version'    => $clone->number

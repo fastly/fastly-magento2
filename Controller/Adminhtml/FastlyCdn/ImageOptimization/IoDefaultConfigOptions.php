@@ -139,6 +139,9 @@ class IoDefaultConfigOptions extends Action
                 $this->api->sendWebHook('*Image optimization default config options have been updated*');
             }
 
+            $comment = ['comment' => 'Magento Module updated the Image Optimization Default Configuration'];
+            $this->api->addComment($clone->number, $comment);
+
             return $result->setData([
                 'status'            => true,
                 'active_version'    => $clone->number

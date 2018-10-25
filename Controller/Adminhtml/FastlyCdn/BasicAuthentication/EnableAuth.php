@@ -148,17 +148,13 @@ class EnableAuth extends Action
                 $this->api->activateVersion($clone->number);
             }
 
-            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-                if (!$enabled) {
-                    $this->api->sendWebHook(
-                        '*Basic Authentication has been turned OFF in Fastly version ' . $clone->number . '*'
-                    );
-                } else {
-                    $this->api->sendWebHook(
-                        '*Basic Authentication has been turned ON in Fastly version '. $clone->number . '*'
-                    );
-                }
+            $this->sendWebhook($enabled, $clone);
+
+            $comment = ['comment' => 'Magento Module turned ON Basic Authentication'];
+            if (!$enabled) {
+                $comment = ['comment' => 'Magento Module turned OFF Basic Authentication'];
             }
+            $this->api->addComment($clone->number, $comment);
 
             return $result->setData(['status' => true]);
         } catch (\Exception $e) {
@@ -166,6 +162,21 @@ class EnableAuth extends Action
                 'status'    => false,
                 'msg'       => $e->getMessage()
             ]);
+        }
+    }
+
+    private function sendWebhook($enabled, $clone)
+    {
+        if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+            if (!$enabled) {
+                $this->api->sendWebHook(
+                    '*Basic Authentication has been turned OFF in Fastly version ' . $clone->number . '*'
+                );
+            } else {
+                $this->api->sendWebHook(
+                    '*Basic Authentication has been turned ON in Fastly version '. $clone->number . '*'
+                );
+            }
         }
     }
 }

@@ -108,9 +108,7 @@ class PushImageSettings extends Action
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
-
             $clone = $this->api->cloneVersion($currActiveVersion);
-
             $reqName = Config::FASTLY_MAGENTO_MODULE . '_image_optimization';
             $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);
             $snippet = $this->config->getVclSnippets(Config::IO_VCL_SNIPPET_PATH, 'recv.vcl');
@@ -178,18 +176,14 @@ class PushImageSettings extends Action
                 $this->api->activateVersion($clone->number);
             }
 
-            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-                if ($checkIfReqExist) {
-                    $this->api->sendWebHook(
-                        '*Image optimization snippet has been removed in Fastly version ' . $clone->number . '*'
-                    );
-                } else {
-                    $this->api->sendWebHook(
-                        '*Image optimization snippet has been pushed in Fastly version ' . $clone->number . '*'
-                    );
-                }
+            $this->sendWebhook($checkIfReqExist, $clone);
+
+            $comment = ['comment' => 'Magento Module pushed the Image Optimization snippet'];
+            if ($checkIfReqExist) {
+                $comment = ['comment' => 'Magento Module removed the Image Optimization snippet'];
             }
-            // Validate before sending success
+            $this->api->addComment($clone->number, $comment);
+
             return $result->setData([
                 'status' => true
             ]);
@@ -198,6 +192,21 @@ class PushImageSettings extends Action
                 'status'    => false,
                 'msg'       => $e->getMessage()
             ]);
+        }
+    }
+
+    private function sendWebhook($checkIfReqExist, $clone)
+    {
+        if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+            if ($checkIfReqExist) {
+                $this->api->sendWebHook(
+                    '*Image optimization snippet has been removed in Fastly version ' . $clone->number . '*'
+                );
+            } else {
+                $this->api->sendWebHook(
+                    '*Image optimization snippet has been pushed in Fastly version ' . $clone->number . '*'
+                );
+            }
         }
     }
 }

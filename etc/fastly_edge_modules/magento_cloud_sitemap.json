@@ -1,10 +1,10 @@
 {
-    "description": "Rewrite /sitemap.xml paths to point to the correct URL on the backend filesystem",
+    "description": "URL rewrite /sitemap.xml path to point to the correct URL on the backend",
     "id": "magento_cloud_sitemap_rewrite",
     "name": "Magento Cloud Sitemap rewrites",
     "properties": [
         {
-            "entryTemplate": "{{source}} => {{dest}} ({{type}})",
+            "entryTemplate": "{{source}} => {{dest}}",
             "label": "Rules",
             "name": "rules",
             "properties": [
@@ -18,7 +18,7 @@
                 },
                 {
                     "default": "/media/sitemap.xml",
-                    "description": "Destination path path (no host)",
+                    "description": "Destination path on origin (no host)",
                     "label": "Destination path",
                     "name": "dest",
                     "required": true,

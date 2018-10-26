@@ -132,6 +132,9 @@ class Upload extends Action
                 );
             }
 
+            $comment = ['comment' => 'Magento Module uploaded the "'.$moduleId.'" Edge Module'];
+            $this->api->addComment($clone->number, $comment);
+
             return $result->setData([
                 'status'            => true,
                 'active_version'    => $clone->number

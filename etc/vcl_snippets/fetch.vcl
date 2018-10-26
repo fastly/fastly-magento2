@@ -9,9 +9,6 @@
         if (req.restarts < 1 && (req.request == "GET" || req.request == "HEAD")) {
             restart;
         }
-
-        /* else go to vcl_error to deliver a synthetic */
-        error beresp.status beresp.response;
     }
 
     # Remove Set-Cookies from responses for static content to match the cookie removal in recv.

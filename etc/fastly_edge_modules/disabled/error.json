@@ -1,0 +1,52 @@
+{
+  "version": 1, 
+  "description": "In the event of 4xx or 5xx errors being returned from your origin server, replace the output with something else at the edge.", 
+  "name": "Custom error pages", 
+  "test": {
+    "reqUrl": "/status/500", 
+    "origins": [
+      "https://httpbin.org"
+    ]
+  }, 
+  "vcl": [
+    {
+      "type": "fetch", 
+      "template": "{{#each responses}}\nif (beresp.status == {{type}}) {\n  error 921 \"[modly:customerrors]{{type}}\";\n}\n{{/each}}"
+    }, 
+    {
+      "type": "error", 
+      "template": "if (obj.status == 921 && obj.response ~ \"^\\[modly:customerrors\\](.*)$\") {\n  {{#each responses}}\n  if (re.group.1 == \"{{type}}\") {\n    synthetic {\"{{responseBody}}\"};\n    return (deliver);\n  }\n  {{/each}}\n}\n#TODO: errors during fetch ('nofetch')"
+    }
+  ], 
+  "id": "customerrors", 
+  "properties": [
+    {
+      "label": "Responses", 
+      "type": "group", 
+      "properties": [
+        {
+          "label": "Error type", 
+          "required": true, 
+          "type": "select", 
+          "options": {
+            "404": "404 Not Found", 
+            "nofetch": "Origin offline", 
+            "401": "401 Unauthorized", 
+            "403": "403 Forbidden", 
+            "503": "503 Service Unavailable", 
+            "500": "500 Internal Server Error"
+          }, 
+          "name": "type"
+        }, 
+        {
+          "required": true, 
+          "type": "longstring", 
+          "name": "responseBody", 
+          "label": "Response content"
+        }
+      ], 
+      "name": "responses", 
+      "entryTemplate": "{{type}}"
+    }
+  ]
+}

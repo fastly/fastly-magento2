@@ -1,0 +1,31 @@
+{
+  "version": 1, 
+  "description": "When fetching from origin, set the origin's own hostname as Host header, rather than the public domain of your Fastly service.", 
+  "name": "Origin host header override", 
+  "test": {
+    "reqUrl": "/html", 
+    "origins": [
+      "https://httpbin.org"
+    ]
+  }, 
+  "vcl": [
+    {
+      "type": "miss", 
+      "template": "if (!req.backend.is_shield) { set bereq.http.Host = \"{{hostname}}\"; }"
+    }, 
+    {
+      "type": "pass", 
+      "template": "if (!req.backend.is_shield) { set bereq.http.Host = \"{{hostname}}\"; }"
+    }
+  ], 
+  "id": "hostoverride", 
+  "properties": [
+    {
+      "label": "Origin Host", 
+      "required": true, 
+      "type": "domain", 
+      "description": "The string to send as `Host:` header for origin requests.", 
+      "name": "hostname"
+    }
+  ]
+}

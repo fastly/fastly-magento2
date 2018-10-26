@@ -1,0 +1,46 @@
+{
+  "version": 1, 
+  "description": "Redirect all non-secure requests to the equivalent secure URL, and optionally enable HTTP Strict Transport Security", 
+  "name": "Force TLS / HTTPS / SSL", 
+  "test": {
+    "reqUrl": "/html", 
+    "origins": [
+      "https://httpbin.org"
+    ]
+  }, 
+  "vcl": [
+    {
+      "type": "recv", 
+      "template": "if (!req.http.Fastly-SSL) {\n  error 801 \"Force TLS\";\n}"
+    }, 
+    {
+      "type": "deliver", 
+      "template": "{{#ifEq hsts \"standard\"}}\n  set resp.http.Strict-Transport-Security = \"max-age={{../hstsTTL}}\";\n{{/ifEq}}\n{{#ifEq hsts \"subdom\"}}\n  set resp.http.Strict-Transport-Security = \"max-age={{../hstsTTL}}; includeSubdomains\";\n{{/ifEq}}\n{{#ifEq hsts \"preload\"}}\n  set resp.http.Strict-Transport-Security = \"max-age={{../hstsTTL}}; includeSubdomains; preload\";\n{{/ifEq}}"
+    }
+  ], 
+  "id": "forcetls", 
+  "properties": [
+    {
+      "description": "When HTTP Strict Transport Security is enabled, browsers are required to make an initial connection over HTTPS, even if the user does not enter a `https://` prefix", 
+      "name": "hsts", 
+      "default": "none", 
+      "required": false, 
+      "type": "select", 
+      "options": {
+        "preload": "Include subdomains and preload", 
+        "none": "None", 
+        "subdom": "Include subdomains", 
+        "standard": "Standard"
+      }, 
+      "label": "HTTP Strict Transport Security"
+    }, 
+    {
+      "description": "Duration of time in seconds for which the browser will apply any received HSTS rule.  Typically set to a year once you are confident in your TLS setup.", 
+      "name": "hstsTTL", 
+      "default": 3600, 
+      "required": false, 
+      "type": "integer", 
+      "label": "Lifetime of HSTS rule"
+    }
+  ]
+}

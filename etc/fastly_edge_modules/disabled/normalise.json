@@ -1,0 +1,58 @@
+{
+  "version": 1, 
+  "description": "Normalise requests to increase cache hit ratio", 
+  "name": "Normalise requests", 
+  "test": {
+    "reqHeaders": "User-Agent: test\nAccept-Language: en-GB,en-US;q=0.9,en;q=0.8", 
+    "reqUrl": "/html?FOO=42&bar=TESTtest&aa=", 
+    "origins": [
+      "https://httpbin.org"
+    ]
+  }, 
+  "vcl": [
+    {
+      "type": "recv", 
+      "template": "{{#if lower }}\nset req.url = std.tolower(req.url);\n{{/if}}\n\n{{#if qsWhitelist }}\nset req.url = querystring.filter_except(req.url,\n  \"{{replace qsWhitelist '\\W' '\" querystring.filtersep() \"'}}\"\n);\n{{/if}}\n\n{{#if qsSort }}\nset req.url = querystring.sort(req.url);\n{{/if}}\n\n{{#if unsetHeaders }}\nunset req.http.{{replace unsetHeaders \"\\s+\" \"; unset req.http.\"}};\n{{/if}}\n\n{{#if acceptLangs }}\nset req.http.Accept-Language = accept.language_lookup(\n  \"{{replace acceptLangs \"[,\\s&]+\" \":\"}}\",\n  \"{{extract acceptLangs \"^(\\w+)([,\\s&].*)?$\"}}\",\n  req.http.Accept-Language\n);\n{{/if}}"
+    }
+  ], 
+  "id": "normalisereqs", 
+  "properties": [
+    {
+      "label": "Strip all query params except", 
+      "required": false, 
+      "type": "string", 
+      "description": "List the query parameters that are valid for your site, separated by `&`, `,` or spaces. All others will be removed.", 
+      "name": "qsWhitelist"
+    }, 
+    {
+      "description": "Sorting the querystring improves cache efficiency without changing any of the data", 
+      "name": "qsSort", 
+      "default": false, 
+      "required": false, 
+      "type": "boolean", 
+      "label": "Sort querystring parameters"
+    }, 
+    {
+      "description": "Converts entire URL to lowercase, including path segments, query keys and values.", 
+      "name": "lower", 
+      "default": false, 
+      "required": false, 
+      "type": "boolean", 
+      "label": "Convert to lowercase"
+    }, 
+    {
+      "label": "Remove headers", 
+      "required": false, 
+      "type": "longstring", 
+      "description": "Headers that you would like to strip from the incoming request, one per line.", 
+      "name": "unsetHeaders"
+    }, 
+    {
+      "label": "Accepted languages", 
+      "required": false, 
+      "type": "string", 
+      "description": "ISO-639-1 language codes recognised by your origin server, separated by space.  Incoming `Accept-Language` headers will be normalised to one of these values.  List your default language first.", 
+      "name": "acceptLangs"
+    }
+  ]
+}

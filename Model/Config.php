@@ -48,6 +48,11 @@ class Config extends \Magento\PageCache\Model\Config
     const FASTLY_MAGENTO_MODULE = 'magentomodule';
 
     /**
+     * Edge module prefix used for naming edge module snippets
+     */
+    const FASTLY_MODLY_MODULE = 'edgemodule';
+
+    /**
      * Magento Error Page Response Object Name
      */
     const ERROR_PAGE_RESPONSE_OBJECT = 'magentomodule_error_page_response_object';
@@ -914,6 +919,38 @@ class Config extends \Magento\PageCache\Model\Config
             return $snippetsData;
         } catch (\Exception $e) {
             return $snippetsData;
+        }
+    }
+
+    public function getFastlyEdgeModules($path = '/fastly_edge_modules', $specificFile = null)
+    {
+        $moduleData = [];
+        try {
+            $moduleEtcPath = $this->reader->getModuleDir(Dir::MODULE_ETC_DIR, 'Fastly_Cdn') . $path;
+            $directoryRead = $this->readFactory->create($moduleEtcPath);
+            if (!$specificFile) {
+                $files = $directoryRead->read();
+
+                if (is_array($files)) {
+                    foreach ($files as $file) {
+                        if (substr($file, strpos($file, ".") + 1) !== 'json') {
+                            continue;
+                        }
+                        $fastlyModuleFilePath = $moduleEtcPath . '/' . $file;
+                        $fastlyModuleFilePath = $directoryRead->getRelativePath($fastlyModuleFilePath);
+                        $type = explode('.', $file)[0];
+                        $moduleData[$type] = $directoryRead->readFile($fastlyModuleFilePath);
+                    }
+                }
+            } else {
+                $fastlyModuleFilePath = $moduleEtcPath . '/' . $specificFile;
+                $fastlyModuleFilePath = $directoryRead->getRelativePath($fastlyModuleFilePath);
+                $type = explode('.', $specificFile)[0];
+                $moduleData[$type] = $directoryRead->readFile($fastlyModuleFilePath);
+            }
+            return $moduleData;
+        } catch (\Exception $e) {
+            return $moduleData;
         }
     }
 

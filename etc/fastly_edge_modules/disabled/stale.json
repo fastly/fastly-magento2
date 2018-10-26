@@ -1,0 +1,56 @@
+{
+  "version": 1, 
+  "description": "If your origin server is unreachable, serve a stale version of the content from the Fastly cache", 
+  "name": "Serve stale on origin failure", 
+  "test": {
+    "reqUrl": "/html", 
+    "origins": [
+      "https://httpbin.org"
+    ]
+  }, 
+  "vcl": [
+    {
+      "type": "recv", 
+      "template": "if (req.http.Fastly-FF) {\n  set req.max_stale_while_revalidate = 0s;\n  set req.max_stale_if_error = 0s;\n}"
+    }, 
+    {
+      "type": "fetch", 
+      "template": "if (beresp.status >= 500 && beresp.status < 600) {\n  if (stale.exists) {\n    return(deliver_stale);\n  }\n  if (req.restarts < 1 && (req.request == \"GET\" || req.request == \"HEAD\")) {\n    restart;\n  }\n  error 503;\n}\n{{#if sie}}set beresp.stale_if_error = {{sie}};{{/if}}\n{{#if swr}}set beresp.stale_while_revalidate = {{swr}};{{/if}}"
+    }, 
+    {
+      "type": "deliver", 
+      "template": "if (resp.status >= 500 && resp.status < 600 && stale.exists) {\n  restart;\n}"
+    }, 
+    {
+      "type": "error", 
+      "template": "if (obj.status >= 500 && obj.status < 600) {\n  if (stale.exists) {\n    return(deliver_stale);\n  }\n  set obj.status = 503;\n  set obj.response = \"Service unavailable\";\n  set obj.http.Content-Type = \"text/html\";\n  synthetic {\"{{offlineContent}}\"};\n  return(deliver);\n}"
+    }
+  ], 
+  "id": "servestale", 
+  "properties": [
+    {
+      "description": "Maximum time in seconds to allow stale content to be served while waiting for updated content from origin", 
+      "name": "swr", 
+      "default": "60s", 
+      "required": false, 
+      "type": "rtime", 
+      "label": "Stale lifetime for async revalidation"
+    }, 
+    {
+      "description": "Maximum time in seconds to allow stale content to be served while origin is unreachable", 
+      "name": "sie", 
+      "default": "604800s", 
+      "required": false, 
+      "type": "rtime", 
+      "label": "Stale lifetime for origin failure"
+    }, 
+    {
+      "description": "Content to serve (with a 503 Service Unavailable response) if the origin is offline and a stale version is not available", 
+      "name": "offlineContent", 
+      "default": "Sorry, we are currently experiencing a problem.", 
+      "required": false, 
+      "type": "longstring", 
+      "label": "Offline page content"
+    }
+  ]
+}

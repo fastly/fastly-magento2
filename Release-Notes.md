@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.74
+
+- Code refactoring and add comments to Fastly service config changes so they show up in event log https://github.com/fastly/fastly-magento2/pull/219
+- Preliminary support for Fastly Edge Modules. They are off by default. Need to be enabled through the Advanced menu. https://github.com/fastly/fastly-magento2/pull/218
+
 ## 1.2.73
 
 - Add store code to CountryMapping list to identify store https://github.com/fastly/fastly-magento2/pull/216

@@ -18,7 +18,7 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Dictionary;
+namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\BasicAuthentication\Item;
 
 use Fastly\Cdn\Model\Api;
 use Magento\Backend\App\Action;
@@ -29,11 +29,11 @@ use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Helper\Vcl;
 
 /**
- * Class Create
+ * Class Delete
  *
- * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Dictionary
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\BasicAuthentication\Item
  */
-class Create extends Action
+class Delete extends Action
 {
     /**
      * @var Http
@@ -79,12 +79,11 @@ class Create extends Action
         $this->config = $config;
         $this->api = $api;
         $this->vcl = $vcl;
-
         parent::__construct($context);
     }
 
     /**
-     * Create dictionary
+     * Delete auth item
      *
      * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
      */
@@ -94,27 +93,50 @@ class Create extends Action
 
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $activateVcl = $this->getRequest()->getParam('activate_flag');
-            $dictionaryName = $this->getRequest()->getParam('dictionary_name');
-            $service = $this->api->checkServiceDetails();
-            $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
-            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
-            $clone = $this->api->cloneVersion($currActiveVersion);
-            $params = ['name' => $dictionaryName];
-            $this->api->createDictionary($clone->number, $params);
-            $this->api->validateServiceVersion($clone->number);
+            $dictionary = $this->api->getSingleDictionary($activeVersion, Config::AUTH_DICTIONARY_NAME);
+            $vclPath = Config::VCL_AUTH_SNIPPET_PATH;
+            $snippets = $this->config->getVclSnippets($vclPath);
 
-            if ($activateVcl === 'true') {
-                $this->api->activateVersion($clone->number);
+            // Check if snippets exist
+            $status = true;
+            foreach ($snippets as $key => $value) {
+                $name = Config::FASTLY_MAGENTO_MODULE.'_basic_auth_'.$key;
+                $status = $this->api->getSnippet($activeVersion, $name);
+
+                if (!$status) {
+                    break;
+                }
             }
 
-            $comment = ['comment' => 'Magento Module created the "'.$dictionaryName.'" Dictionary'];
-            $this->api->addComment($clone->number, $comment);
+            if ((is_array($dictionary) && empty($dictionary)) || !isset($dictionary->id)) {
+                return $result->setData([
+                    'status'    => 'empty',
+                    'msg'       => 'Authentication dictionary does not exist.'
+                ]);
+            }
 
-            return $result->setData([
-                'status'            => true,
-                'active_version'    => $clone->number
-            ]);
+            // Check if there are any entries left
+            $authItems = $this->api->dictionaryItemsList($dictionary->id);
+
+            if (($status == true && is_array($authItems) && count($authItems) < 2) || $authItems == false) {
+                // No users left, send message
+                return $result->setData([
+                    'status'    => 'empty',
+                    'msg'       => 'While Basic Authentication is enabled, at least one user must exist.',
+                ]);
+            }
+
+            $itemKey = $this->getRequest()->getParam('item_key_id');
+            $deleteItem = $this->api->deleteDictionaryItem($dictionary->id, $itemKey);
+
+            if (!$deleteItem) {
+                return $result->setData([
+                    'status'    => false,
+                    'msg'       => 'Failed to create Dictionary item.'
+                ]);
+            }
+
+            return $result->setData(['status' => true]);
         } catch (\Exception $e) {
             return $result->setData([
                 'status'    => false,

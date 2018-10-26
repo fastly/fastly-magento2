@@ -96,8 +96,8 @@ class Delete extends Action
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
-            $acl = $this->getRequest()->getParam('acl');
-            $acl = preg_replace('/\s+/', '%20', $acl);
+            $acl_o = $this->getRequest()->getParam('acl');
+            $acl = preg_replace('/\s+/', '%20', $acl_o);
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
@@ -120,6 +120,9 @@ class Delete extends Action
             if ($activateVcl === 'true') {
                 $this->api->activateVersion($clone->number);
             }
+
+            $comment = ['comment' => 'Magento Module deleted the "'.$acl_o.'" ACL'];
+            $this->api->addComment($clone->number, $comment);
 
             return $result->setData([
                 'status'            => true,

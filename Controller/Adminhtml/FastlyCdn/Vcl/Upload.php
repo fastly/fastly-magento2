@@ -192,6 +192,9 @@ class Upload extends Action
                 );
             }
 
+            $comment = ['comment' => 'Magento Module uploaded VCL'];
+            $this->api->addComment($clone->number, $comment);
+
             return $result->setData([
                 'status'            => true,
                 'active_version'    => $clone->number

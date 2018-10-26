@@ -18,22 +18,22 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Dictionary;
+namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\SyntheticPages;
 
-use Fastly\Cdn\Model\Api;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Config;
+use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
 
 /**
- * Class Create
+ * Class SaveErrorPageHtml
  *
- * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Dictionary
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\SyntheticPages
  */
-class Create extends Action
+class SaveErrorPageHtml extends Action
 {
     /**
      * @var Http
@@ -57,7 +57,7 @@ class Create extends Action
     private $vcl;
 
     /**
-     * ForceTls constructor.
+     * SaveErrorPageHtml constructor.
      *
      * @param Context $context
      * @param Http $request
@@ -84,31 +84,75 @@ class Create extends Action
     }
 
     /**
-     * Create dictionary
+     * Save Error Page Html
      *
      * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
         $result = $this->resultJson->create();
-
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
-            $dictionaryName = $this->getRequest()->getParam('dictionary_name');
+            $html = $this->getRequest()->getParam('html');
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
-            $params = ['name' => $dictionaryName];
-            $this->api->createDictionary($clone->number, $params);
+            $snippets = $this->config->getVclSnippets(
+                Config::VCL_ERROR_SNIPPET_PATH,
+                Config::VCL_ERROR_SNIPPET
+            );
+
+            foreach ($snippets as $key => $value) {
+                $snippetData = [
+                    'name'      => Config::FASTLY_MAGENTO_MODULE . '_error_page_' . $key,
+                    'type'      => $key,
+                    'dynamic'   => '0',
+                    'content'   => $value
+                ];
+                $this->api->uploadSnippet($clone->number, $snippetData);
+            }
+
+            $condition = [
+                'name' => Config::FASTLY_MAGENTO_MODULE.'_error_page_condition',
+                'statement' => 'req.http.ResponseObject == "970"',
+                'type' => 'REQUEST',
+                'priority' => '9'
+            ];
+
+            $createCondition = $this->api->createCondition($clone->number, $condition);
+            $response = [
+                'name'              => Config::ERROR_PAGE_RESPONSE_OBJECT,
+                'request_condition' => $createCondition->name,
+                'content'           =>  $html,
+                'status'            => "503",
+                'content_type'      => "text/html; charset=utf-8",
+                'response'          => "Service Temporarily Unavailable"
+            ];
+
+            $createResponse = $this->api->createResponse($clone->number, $response);
+
+            if (!$createResponse) {
+                return $result->setData([
+                    'status'    => false,
+                    'msg'       => 'Failed to create a RESPONSE object.'
+                ]);
+            }
+
             $this->api->validateServiceVersion($clone->number);
 
             if ($activateVcl === 'true') {
                 $this->api->activateVersion($clone->number);
             }
 
-            $comment = ['comment' => 'Magento Module created the "'.$dictionaryName.'" Dictionary'];
+            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+                $this->api->sendWebHook(
+                    '*New Error/Maintenance page has updated and activated under config version ' . $clone->number . '*'
+                );
+            }
+
+            $comment = ['comment' => 'Magento Module updated Error Page html'];
             $this->api->addComment($clone->number, $comment);
 
             return $result->setData([

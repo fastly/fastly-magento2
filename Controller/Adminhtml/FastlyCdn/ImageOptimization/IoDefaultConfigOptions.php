@@ -18,22 +18,22 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Dictionary;
+namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\ImageOptimization;
 
-use Fastly\Cdn\Model\Api;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Fastly\Cdn\Model\Config;
+use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
+use Fastly\Cdn\Model\Config;
 
 /**
- * Class Create
+ * Class IoDefaultConfigOptions
  *
- * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Dictionary
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\ImageOptimization
  */
-class Create extends Action
+class IoDefaultConfigOptions extends Action
 {
     /**
      * @var Http
@@ -44,10 +44,6 @@ class Create extends Action
      */
     private $resultJson;
     /**
-     * @var Config
-     */
-    private $config;
-    /**
      * @var Api
      */
     private $api;
@@ -55,60 +51,95 @@ class Create extends Action
      * @var Vcl
      */
     private $vcl;
+    /**
+     * @var Config
+     */
+    private $config;
 
     /**
-     * ForceTls constructor.
+     * IoDefaultConfigOptions constructor.
      *
      * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
-     * @param Config $config
      * @param Api $api
      * @param Vcl $vcl
+     * @param Config $config
      */
     public function __construct(
         Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
-        Config $config,
         Api $api,
-        Vcl $vcl
+        Vcl $vcl,
+        Config $config
     ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
-        $this->config = $config;
         $this->api = $api;
         $this->vcl = $vcl;
-
+        $this->config = $config;
         parent::__construct($context);
     }
 
     /**
-     * Create dictionary
+     * Upload snippet with updated IO default config options
      *
      * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
         $result = $this->resultJson->create();
-
         try {
+            $activate_flag = $this->getRequest()->getParam('activate_flag');
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $activateVcl = $this->getRequest()->getParam('activate_flag');
-            $dictionaryName = $this->getRequest()->getParam('dictionary_name');
+            $formData = $this->getRequest()->getParams();
+            if (in_array("", $formData)) {
+                return $result->setData([
+                    'status'    => false,
+                    'msg'       => 'Please fill in the required fields.'
+                ]);
+            }
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
-            $params = ['name' => $dictionaryName];
-            $this->api->createDictionary($clone->number, $params);
-            $this->api->validateServiceVersion($clone->number);
+            $id = $service->id . '-' . $clone->number . '-imageopto';
 
-            if ($activateVcl === 'true') {
-                $this->api->activateVersion($clone->number);
+            $params = json_encode([
+                'data' => [
+                    'id' => $id,
+                    'type' => 'io_settings',
+                    'attributes' => [
+                        'webp'          => $this->getRequest()->getParam('webp'),
+                        'webp_quality'  => $this->getRequest()->getParam('webp_quality'),
+                        'jpeg_type'     => $this->getRequest()->getParam('jpeg_type'),
+                        'jpeg_quality'  => $this->getRequest()->getParam('jpeg_quality'),
+                        'upscale'       => $this->getRequest()->getParam('upscale'),
+                        'resize_filter' => $this->getRequest()->getParam('resize_filter')
+                    ]
+                ]
+            ]);
+
+            $configureIo = $this->api->configureImageOptimizationDefaultConfigOptions($params, $clone->number);
+
+            if (!$configureIo) {
+                return $result->setData([
+                    'status'    => false,
+                    'msg'       => 'Failed to update image optimization default config options.'
+                ]);
             }
 
-            $comment = ['comment' => 'Magento Module created the "'.$dictionaryName.'" Dictionary'];
+            $this->api->validateServiceVersion($clone->number);
+
+            if ($activate_flag === 'true') {
+                $this->api->activateVersion($clone->number);
+            }
+            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+                $this->api->sendWebHook('*Image optimization default config options have been updated*');
+            }
+
+            $comment = ['comment' => 'Magento Module updated the Image Optimization Default Configuration'];
             $this->api->addComment($clone->number, $comment);
 
             return $result->setData([

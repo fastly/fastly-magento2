@@ -18,22 +18,22 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Dictionary;
+namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\ImageOptimization;
 
-use Fastly\Cdn\Model\Api;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\Http;
+use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Fastly\Cdn\Model\Config;
-use Fastly\Cdn\Helper\Vcl;
+use Fastly\Cdn\Model\Api;
+use Magento\Framework\Controller\ResultInterface;
 
 /**
- * Class Create
+ * Class CheckFastlyIoSetting
  *
- * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Dictionary
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\ImageOptimization
  */
-class Create extends Action
+class CheckFastlyIoSetting extends Action
 {
     /**
      * @var Http
@@ -44,76 +44,51 @@ class Create extends Action
      */
     private $resultJson;
     /**
-     * @var Config
-     */
-    private $config;
-    /**
      * @var Api
      */
     private $api;
-    /**
-     * @var Vcl
-     */
-    private $vcl;
 
     /**
-     * ForceTls constructor.
+     * GetBackends constructor.
      *
      * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
-     * @param Config $config
      * @param Api $api
-     * @param Vcl $vcl
      */
     public function __construct(
         Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
-        Config $config,
-        Api $api,
-        Vcl $vcl
+        Api $api
     ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
-        $this->config = $config;
         $this->api = $api;
-        $this->vcl = $vcl;
-
         parent::__construct($context);
     }
 
     /**
-     * Create dictionary
+     * Get Fastly service image optimization status
      *
-     * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
+     * @return $this|ResponseInterface|ResultInterface
      */
     public function execute()
     {
         $result = $this->resultJson->create();
-
         try {
-            $activeVersion = $this->getRequest()->getParam('active_version');
-            $activateVcl = $this->getRequest()->getParam('activate_flag');
-            $dictionaryName = $this->getRequest()->getParam('dictionary_name');
-            $service = $this->api->checkServiceDetails();
-            $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
-            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
-            $clone = $this->api->cloneVersion($currActiveVersion);
-            $params = ['name' => $dictionaryName];
-            $this->api->createDictionary($clone->number, $params);
-            $this->api->validateServiceVersion($clone->number);
+            $req = $this->api->checkImageOptimizationStatus();
 
-            if ($activateVcl === 'true') {
-                $this->api->activateVersion($clone->number);
+            if (!$req) {
+                return $result->setData([
+                    'status'    => false,
+                    'msg'       => 'Failed to check image optimization status.'
+                ]);
             }
 
-            $comment = ['comment' => 'Magento Module created the "'.$dictionaryName.'" Dictionary'];
-            $this->api->addComment($clone->number, $comment);
-
             return $result->setData([
-                'status'            => true,
-                'active_version'    => $clone->number
+                'status'        => true,
+                'req_setting'   => $req
             ]);
         } catch (\Exception $e) {
             return $result->setData([

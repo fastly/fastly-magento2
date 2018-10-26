@@ -18,7 +18,7 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Dictionary;
+namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\BasicAuthentication\Item;
 
 use Fastly\Cdn\Model\Api;
 use Magento\Backend\App\Action;
@@ -29,11 +29,11 @@ use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Helper\Vcl;
 
 /**
- * Class Create
+ * Class ListAll
  *
- * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Dictionary
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\BasicAuthentication\Item
  */
-class Create extends Action
+class ListAll extends Action
 {
     /**
      * @var Http
@@ -44,20 +44,20 @@ class Create extends Action
      */
     private $resultJson;
     /**
-     * @var Config
-     */
-    private $config;
-    /**
      * @var Api
      */
     private $api;
+    /**
+     * @var Config
+     */
+    private $config;
     /**
      * @var Vcl
      */
     private $vcl;
 
     /**
-     * ForceTls constructor.
+     * ListAll constructor.
      *
      * @param Context $context
      * @param Http $request
@@ -84,7 +84,7 @@ class Create extends Action
     }
 
     /**
-     * Create dictionary
+     * Get all Auth items for active version
      *
      * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
      */
@@ -94,26 +94,47 @@ class Create extends Action
 
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $activateVcl = $this->getRequest()->getParam('activate_flag');
-            $dictionaryName = $this->getRequest()->getParam('dictionary_name');
-            $service = $this->api->checkServiceDetails();
-            $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
-            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
-            $clone = $this->api->cloneVersion($currActiveVersion);
-            $params = ['name' => $dictionaryName];
-            $this->api->createDictionary($clone->number, $params);
-            $this->api->validateServiceVersion($clone->number);
+            $dictionary = $this->api->getSingleDictionary($activeVersion, 'magentomodule_basic_auth');
 
-            if ($activateVcl === 'true') {
-                $this->api->activateVersion($clone->number);
+            // Fetch Authentication items
+            if (!$dictionary || (is_array($dictionary) && empty($dictionary))) {
+                return $result->setData([
+                    'status'    => 'none',
+                    'msg'       => 'Authentication dictionary does not exist.'
+                ]);
             }
 
-            $comment = ['comment' => 'Magento Module created the "'.$dictionaryName.'" Dictionary'];
-            $this->api->addComment($clone->number, $comment);
+            $authItems = false;
+
+            if (isset($dictionary->id)) {
+                $authItems = $this->api->dictionaryItemsList($dictionary->id);
+            }
+
+            if (is_array($authItems) && empty($authItems)) {
+                return $result->setData([
+                    'status'    => 'empty',
+                    'msg'       => 'There are no dictionary items.'
+                ]);
+            }
+
+            if (!$authItems) {
+                return $result->setData([
+                    'status'    => false,
+                    'msg'       => 'Failed to fetch dictionary items.'
+                ]);
+            }
+
+            foreach ($authItems as $key => $item) {
+                $userData = explode(':', base64_decode($item->item_key)); // @codingStandardsIgnoreLine - used for authentication
+                $username = $userData[0];
+                $item->item_key_id = $item->item_key;
+                $item->item_key = $username;
+                $authItems[$key] = $item;
+            }
 
             return $result->setData([
-                'status'            => true,
-                'active_version'    => $clone->number
+                'status'    => true,
+                'auths'     => $authItems
             ]);
         } catch (\Exception $e) {
             return $result->setData([

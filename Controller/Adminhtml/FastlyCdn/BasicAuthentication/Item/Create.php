@@ -18,20 +18,20 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Dictionary;
+namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\BasicAuthentication\Item;
 
-use Fastly\Cdn\Model\Api;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Config;
+use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
 
 /**
  * Class Create
  *
- * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Dictionary
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\BasicAuthentication\Item
  */
 class Create extends Action
 {
@@ -79,14 +79,13 @@ class Create extends Action
         $this->config = $config;
         $this->api = $api;
         $this->vcl = $vcl;
-
         parent::__construct($context);
     }
 
     /**
-     * Create dictionary
+     * Create auth item
      *
-     * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
+     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Json|\Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
@@ -94,27 +93,22 @@ class Create extends Action
 
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $activateVcl = $this->getRequest()->getParam('activate_flag');
-            $dictionaryName = $this->getRequest()->getParam('dictionary_name');
-            $service = $this->api->checkServiceDetails();
-            $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
-            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
-            $clone = $this->api->cloneVersion($currActiveVersion);
-            $params = ['name' => $dictionaryName];
-            $this->api->createDictionary($clone->number, $params);
-            $this->api->validateServiceVersion($clone->number);
 
-            if ($activateVcl === 'true') {
-                $this->api->activateVersion($clone->number);
+            $dictionary = $this->api->getAuthDictionary($activeVersion);
+
+            if ((is_array($dictionary) && empty($dictionary)) || !isset($dictionary->id)) {
+                return $result->setData([
+                    'status'    => 'empty',
+                    'msg'       => 'Authentication dictionary does not exist.'
+                ]);
             }
 
-            $comment = ['comment' => 'Magento Module created the "'.$dictionaryName.'" Dictionary'];
-            $this->api->addComment($clone->number, $comment);
+            $user = $this->getRequest()->getParam('auth_user');
+            $pass = $this->getRequest()->getParam('auth_pass');
+            $key = base64_encode($user . ':' . $pass);
+            $this->api->upsertDictionaryItem($dictionary->id, $key, true);
 
-            return $result->setData([
-                'status'            => true,
-                'active_version'    => $clone->number
-            ]);
+            return $result->setData(['status' => true]);
         } catch (\Exception $e) {
             return $result->setData([
                 'status'    => false,

@@ -18,22 +18,22 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
-namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Dictionary;
+namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Backend;
 
-use Fastly\Cdn\Model\Api;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Fastly\Cdn\Model\Config;
+use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
+use Fastly\Cdn\Model\Config;
 
 /**
- * Class Create
+ * Class ConfigureBackend
  *
- * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Dictionary
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Backend
  */
-class Create extends Action
+class ConfigureBackend extends Action
 {
     /**
      * @var Http
@@ -44,10 +44,6 @@ class Create extends Action
      */
     private $resultJson;
     /**
-     * @var Config
-     */
-    private $config;
-    /**
      * @var Api
      */
     private $api;
@@ -55,60 +51,85 @@ class Create extends Action
      * @var Vcl
      */
     private $vcl;
+    /**
+     * @var Config
+     */
+    private $config;
 
     /**
-     * ForceTls constructor.
+     * ConfigureBackend constructor
      *
      * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
-     * @param Config $config
      * @param Api $api
      * @param Vcl $vcl
+     * @param Config $config
      */
     public function __construct(
         Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
-        Config $config,
         Api $api,
-        Vcl $vcl
+        Vcl $vcl,
+        Config $config
     ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
-        $this->config = $config;
         $this->api = $api;
         $this->vcl = $vcl;
-
+        $this->config = $config;
         parent::__construct($context);
     }
 
     /**
-     * Create dictionary
+     * Upload VCL snippets
      *
      * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
         $result = $this->resultJson->create();
-
         try {
+            $activate_flag = $this->getRequest()->getParam('activate_flag');
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $activateVcl = $this->getRequest()->getParam('activate_flag');
-            $dictionaryName = $this->getRequest()->getParam('dictionary_name');
+            $oldName = $this->getRequest()->getParam('name');
+            $params = [
+                'name'                  => $this->getRequest()->getParam('name'),
+                'shield'                => $this->getRequest()->getParam('shield'),
+                'connect_timeout'       => $this->getRequest()->getParam('connect_timeout'),
+                'between_bytes_timeout' => $this->getRequest()->getParam('between_bytes_timeout'),
+                'first_byte_timeout'    => $this->getRequest()->getParam('first_byte_timeout'),
+            ];
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
-            $params = ['name' => $dictionaryName];
-            $this->api->createDictionary($clone->number, $params);
-            $this->api->validateServiceVersion($clone->number);
+            $configureBackend = $this->api->configureBackend($params, $clone->number, $oldName);
 
-            if ($activateVcl === 'true') {
-                $this->api->activateVersion($clone->number);
+            if (!$configureBackend) {
+                return $result->setData([
+                    'status'    => false,
+                    'msg'       => 'Failed to update Backend configuration.'
+                ]);
             }
 
-            $comment = ['comment' => 'Magento Module created the "'.$dictionaryName.'" Dictionary'];
+            $this->api->validateServiceVersion($clone->number);
+
+            if ($activate_flag === 'true') {
+                $this->api->activateVersion($clone->number);
+            }
+            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+                $this->api->sendWebHook(
+                    '*Backend '
+                    . $this->getRequest()->getParam('name')
+                    . ' has been changed in Fastly version '
+                    . $clone->number
+                    . '*'
+                );
+            }
+
+            $comment = ['comment' => 'Magento Module updated the "'.$oldName.'" Backend Configuration'];
             $this->api->addComment($clone->number, $comment);
 
             return $result->setData([

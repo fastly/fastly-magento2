@@ -1,14 +1,6 @@
-    if (resp.status >= 500 && resp.status < 600) {
-        /* restart if the stale object is available */
-        if (stale.exists) {
-            restart;
-        }
-    }
-
     # Send no cache headers to end users for non-static content. Also make sure
     # we only set this on the edge nodes and not on shields
     if (req.url !~ "^/(pub/)?(media|static)/.*" && !req.http.Fastly-FF ) {
-        set resp.http.Pragma = "no-cache";
         set resp.http.Cache-Control = "no-store, no-cache, must-revalidate, max-age=0";
     }
 

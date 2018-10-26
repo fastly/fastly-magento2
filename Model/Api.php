@@ -307,10 +307,13 @@ class Api
             $client->write($method, $uri, '1.1', $headers, $payload);
             $responseBody = $client->read();
             $responseCode = \Zend_Http_Response::extractCode($responseBody);
+            $responseMessage = \Zend_Http_Response::extractMessage($responseBody);
             $client->close();
 
             // check response
-            if ($responseCode != '200') {
+            if ($responseCode == '429') {
+                throw new LocalizedException(__($responseMessage));
+            } elseif ($responseCode != '200') {
                 throw new LocalizedException(__('Return status ' . $responseCode));
             }
         } catch (\Exception $e) {
@@ -339,6 +342,7 @@ class Api
      * Get the logged in customer details
      *
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function getCustomerInfo()
     {
@@ -399,6 +403,7 @@ class Api
      * @param $version
      * @param $comment
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function addComment($version, $comment)
     {
@@ -414,6 +419,7 @@ class Api
      * @param array $vcl
      * @param $version
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function uploadVcl($version, $vcl)
     {
@@ -429,6 +435,7 @@ class Api
      * @param $version
      * @param string $name
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function setVclAsMain($version, $name)
     {
@@ -457,6 +464,7 @@ class Api
     /**
      * @param $version
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function containerValidateServiceVersion($version)
     {
@@ -471,6 +479,7 @@ class Api
      *
      * @param $version
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function activateVersion($version)
     {
@@ -529,6 +538,7 @@ class Api
      * @param $version
      * @param $name
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function getSnippet($version, $name)
     {
@@ -543,6 +553,7 @@ class Api
      *
      * @param array $snippet
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function updateSnippet(array $snippet)
     {
@@ -559,6 +570,7 @@ class Api
      * @param string    $name   VCL snippet name
      *
      * @return bool
+     * @throws LocalizedException
      */
     public function hasSnippet($version, $name)
     {
@@ -577,6 +589,7 @@ class Api
      * @param $version
      * @param $name
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function removeSnippet($version, $name)
     {
@@ -619,6 +632,7 @@ class Api
      * @param $version
      * @param $name
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function getCondition($version, $name)
     {
@@ -634,6 +648,7 @@ class Api
      * @param $version
      * @param $condition
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function createHeader($version, array $condition)
     {
@@ -658,6 +673,7 @@ class Api
      * @param $version
      * @param $name
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function getHeader($version, $name)
     {
@@ -673,6 +689,7 @@ class Api
      * @param $version
      * @param array $response
      * @return bool $result
+     * @throws LocalizedException
      */
     public function createResponse($version, array $response)
     {
@@ -696,6 +713,7 @@ class Api
      * @param string $version
      * @param string $name
      * @return bool|mixed $result
+     * @throws LocalizedException
      */
     public function getResponse($version, $name)
     {
@@ -736,6 +754,7 @@ class Api
      * @param string    $name   Request name
      *
      * @return bool
+     * @throws LocalizedException
      */
     public function getRequest($version, $name)
     {
@@ -766,6 +785,7 @@ class Api
      *
      * @param $version
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function getBackends($version)
     {
@@ -782,6 +802,7 @@ class Api
      * @param $version
      * @param $old_name
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function configureBackend($params, $version, $old_name)
     {
@@ -872,6 +893,7 @@ class Api
      * @param $version
      * @param $name
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function deleteDictionary($version, $name)
     {
@@ -886,6 +908,7 @@ class Api
      *
      * @param $dictionaryId
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function dictionaryItemsList($dictionaryId)
     {
@@ -901,6 +924,7 @@ class Api
      * @param $version
      * @param $dictionaryName
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function getSingleDictionary($version, $dictionaryName)
     {
@@ -915,6 +939,7 @@ class Api
      *
      * @param $version
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function getAuthDictionary($version)
     {
@@ -951,6 +976,7 @@ class Api
      * @param $dictionaryId
      * @param $params
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function createDictionaryItems($dictionaryId, $params)
     {
@@ -965,6 +991,7 @@ class Api
      *
      * @param $version
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function getDictionaries($version)
     {
@@ -980,6 +1007,7 @@ class Api
      * @param $dictionaryId
      * @param $itemKey
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function deleteDictionaryItem($dictionaryId, $itemKey)
     {
@@ -1014,6 +1042,7 @@ class Api
      * @param $version
      * @param $params
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function createAcl($version, $params)
     {
@@ -1028,6 +1057,7 @@ class Api
      *
      * @param $version
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function getAcls($version)
     {
@@ -1043,6 +1073,7 @@ class Api
      * @param $version
      * @param $name
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function deleteAcl($version, $name)
     {
@@ -1057,6 +1088,7 @@ class Api
      *
      * @param $aclId
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function aclItemsList($aclId)
     {
@@ -1074,6 +1106,7 @@ class Api
      * @param $negated
      * @param bool $subnet
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function upsertAclItem($aclId, $itemValue, $negated, $subnet = false)
     {
@@ -1099,6 +1132,7 @@ class Api
      * @param $aclId
      * @param $aclItemId
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function deleteAclItem($aclId, $aclItemId)
     {
@@ -1113,6 +1147,7 @@ class Api
      *
      * @param array $parameters
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function queryHistoricStats(array $parameters)
     {
@@ -1132,6 +1167,7 @@ class Api
      * Check if image optimization is enabled for the Fastly service
      *
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function checkImageOptimizationStatus()
     {
@@ -1146,6 +1182,7 @@ class Api
      *
      * @param $version
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function getImageOptimizationDefaultConfigOptions($version)
     {
@@ -1161,6 +1198,7 @@ class Api
      * @param $params
      * @param $version
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function configureImageOptimizationDefaultConfigOptions($params, $version)
     {
@@ -1174,6 +1212,7 @@ class Api
      * Retrieve Fastly service details
      *
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function getServiceDetails()
     {
@@ -1188,6 +1227,7 @@ class Api
      *
      * @param $id
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function getWafSettings($id)
     {
@@ -1216,6 +1256,7 @@ class Api
      * @param bool  $logError   When set to false, prevents writing failed requests to log
      *
      * @return bool|mixed   Returns false on failiure
+     * @throws LocalizedException
      */
     private function _fetch(
         $uri,
@@ -1278,9 +1319,12 @@ class Api
         // Parse response
         $responseBody = \Zend_Http_Response::extractBody($response);
         $responseCode = \Zend_Http_Response::extractCode($response);
+        $responseMessage = \Zend_Http_Response::extractMessage($response);
 
         // Return error based on response code
-        if ($responseCode != '200') {
+        if ($responseCode == '429') {
+            throw new LocalizedException(__($responseMessage));
+        } elseif ($responseCode != '200') {
             if ($logError == true) {
                 $this->logger->critical('Return status ' . $responseCode, $uri);
             }

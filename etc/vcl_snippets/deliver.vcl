@@ -1,6 +1,5 @@
-    # Send no cache headers to end users for non-static content. Also make sure
-    # we only set this on the edge nodes and not on shields
-    if (req.url !~ "^/(pub/)?(media|static)/.*" && !req.http.Fastly-FF ) {
+    # Send no cache headers to end users for non-static content created by Magento
+    if (resp.http.X-Magento-Tags && !req.http.Fastly-FF ) {
         set resp.http.Cache-Control = "no-store, no-cache, must-revalidate, max-age=0";
     }
 

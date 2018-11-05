@@ -1,11 +1,11 @@
 define([
     "jquery",
     "setServiceLabel",
-    "popup",
+    "overlay",
     "resetAllMessages",
     "showErrorMessage",
     'mage/translate'
-], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
         /* VCL button messages */
         let successVclBtnMsg = $('#fastly-success-vcl-button-msg');
@@ -48,7 +48,7 @@ define([
                     active_version = service.active_version;
                     let next_version = service.next_version;
                     let service_name = service.service.name;
-                    popup(uploadOptions);
+                    overlay(uploadOptions);
                     setServiceLabel(active_version, next_version, service_name);
 
                 }).fail(function () {

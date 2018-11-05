@@ -12,7 +12,7 @@ let config = {
             backends: 'Fastly_Cdn/js/backends',
             customSnippets: 'Fastly_Cdn/js/custom-snippets',
             setServiceLabel: 'Fastly_Cdn/js/service-label',
-            popup: 'Fastly_Cdn/js/popup',
+            overlay: 'Fastly_Cdn/js/overlay',
             testConnection: 'Fastly_Cdn/js/testconnection',
             resetAllMessages: 'Fastly_Cdn/js/reset-all-messages',
             showErrorMessage: 'Fastly_Cdn/js/error-message',

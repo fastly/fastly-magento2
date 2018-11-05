@@ -1,12 +1,12 @@
 define([
     "jquery",
     "setServiceLabel",
-    "popup",
+    "overlay",
     "resetAllMessages",
     "showErrorMessage",
     "Magento_Ui/js/modal/prompt",
     'mage/translate'
-], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage, prompt) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, prompt) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         /* Blocking state elements*/
@@ -25,7 +25,7 @@ define([
         blockingStateSpan.find('.processing').show();
 
         /**
-         * Blocking modal popup options
+         * Blocking modal overlay options
          *
          * @type {{id: string, title: *, content: (function(): string), actionOk: actionOk}}
          */
@@ -106,7 +106,7 @@ define([
                 let service_name = service.service.name;
 
                 getBlockingSetting(active_version, true).done(function (response) {
-                    popup(blockingOptions);
+                    overlay(blockingOptions);
                     setServiceLabel(active_version, next_version, service_name);
 
                     if (response.status === false) {

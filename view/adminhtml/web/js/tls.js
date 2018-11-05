@@ -1,11 +1,11 @@
 define([
     "jquery",
     "setServiceLabel",
-    "popup",
+    "overlay",
     "resetAllMessages",
     "showErrorMessage",
     'mage/translate'
-], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         /* Force TLS state elements*/
@@ -22,7 +22,7 @@ define([
         requestStateSpan.find('.processing').show();
 
         /**
-         * Force TLS modal popup options
+         * Force TLS modal overlay options
          *
          * @type {{id: string, title: *, content: (function(): string), actionOk: actionOk}}
          */
@@ -83,7 +83,7 @@ define([
         /**
          * Force TLS button click event
          *
-         * @description checks the Fastly service status and displays the TLS VCL snippet upload popup
+         * @description checks the Fastly service status and displays the TLS VCL snippet upload overlay
          */
         $('#fastly_force_tls_button').on('click', function () {
             if (isAlreadyConfigured !== true) {
@@ -107,7 +107,7 @@ define([
                 let service_name = service.service.name;
 
                 getTlsSetting(active_version, true).done(function (response) {
-                    popup(tlsOptions);
+                    overlay(tlsOptions);
                     setServiceLabel(active_version, next_version, service_name);
 
                     if (response.status === false) {

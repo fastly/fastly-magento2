@@ -1,13 +1,13 @@
 define([
     "jquery",
     "setServiceLabel",
-    "popup",
+    "overlay",
     "resetAllMessages",
     "showErrorMessage",
     "showSuccessMessage",
     "Magento_Ui/js/modal/confirm",
     'mage/translate'
-], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage, showSuccessMessage, confirm) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, showSuccessMessage, confirm) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         /* ACL button messages */
@@ -29,7 +29,7 @@ define([
         let active_version = serviceStatus.active_version;
 
         /**
-         * ACL container modal popup options
+         * ACL container modal overlay options
          *
          * @type {{title: *, content: (function(): string), actionOk: actionOk}}
          */
@@ -44,7 +44,7 @@ define([
         };
 
         /**
-         * ACL container item modal popup options
+         * ACL container item modal overlay options
          *
          * @type {{title: *, content: (function(): string), actionOk: actionOk}}
          */
@@ -58,7 +58,7 @@ define([
         };
 
         /**
-         * ACL container delete modal popup options
+         * ACL container delete modal overlay options
          *
          * @type {{title: *, content: (function(): string), actionOk: actionOk}}
          */
@@ -308,7 +308,7 @@ define([
                 let next_version = service.next_version;
                 let service_name = service.service.name;
 
-                popup(aclContainerOptions);
+                overlay(aclContainerOptions);
                 setServiceLabel(active_version, next_version, service_name);
 
             }).fail(function () {
@@ -371,7 +371,7 @@ define([
                         }
                     }
 
-                    popup(aclItemOptions);
+                    overlay(aclItemOptions);
                     $('.modal-title').text($.mage.__('"'+ acl_name +'" ACL container items'));
                     $('.upload-button').remove();
 
@@ -478,7 +478,7 @@ define([
 
                 if (acls != null && acl_id != null) {
                     let aclHtml = '<input name="acl" value="' + acl_id + '" class="input-text admin__control-text acl-field" type="hidden" disabled>';
-                    popup(aclDeleteContainerOptions);
+                    overlay(aclDeleteContainerOptions);
                     setServiceLabel(active_version, next_version, service_name);
                     let containerWarning = $('#fastly-container-warning');
                     $('.modal-title').text($.mage.__('Delete "'+ acl_id +'" ACL container'));

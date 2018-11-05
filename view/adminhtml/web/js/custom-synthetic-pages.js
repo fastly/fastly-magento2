@@ -1,11 +1,11 @@
 define([
     "jquery",
     "setServiceLabel",
-    "popup",
+    "overlay",
     "resetAllMessages",
     "showErrorMessage",
     'mage/translate'
-], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         /* Error page HTML button */
@@ -184,7 +184,7 @@ define([
                 let service_name = service.service.name;
 
                 getErrorPageRespObj(active_version, true).done(function (response) {
-                    popup(errorPageOptions);
+                    overlay(errorPageOptions);
                     setServiceLabel(active_version, next_version, service_name);
 
                     if (response.status === true) {
@@ -226,7 +226,7 @@ define([
                 let service_name = service.service.name;
 
                 getWafPageRespObj(active_version, true).done(function (response) {
-                    popup(wafPageOptions);
+                    overlay(wafPageOptions);
                     setServiceLabel(active_version, next_version, service_name);
 
                     if (response.status === true) {

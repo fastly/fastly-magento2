@@ -1,11 +1,11 @@
 define([
     "jquery",
     "setServiceLabel",
-    "popup",
+    "overlay",
     "resetAllMessages",
     "showErrorMessage",
     'mage/translate'
-], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         /* Image optimization state elements */
@@ -34,7 +34,7 @@ define([
         ioStateSpan.find('.processing').show();
 
         /**
-         * Image Optimization VCL snippet upload popup options
+         * Image Optimization VCL snippet upload overlay options
          *
          * @description returns the template for the Image Optimization VCL snippet upload form
          * @type {{id: string, title: *, content: (function(): string), actionOk: actionOk}}
@@ -51,7 +51,7 @@ define([
         };
 
         /**
-         * Image Optimization default configuration popup options
+         * Image Optimization default configuration overlay options
          *
          * @description returns the template for the Image Optimization default configuration form
          * @type {{id: string, title: *, content: (function(): string), actionOk: actionOk}}
@@ -338,7 +338,7 @@ define([
                 let next_version = service.next_version;
                 let service_name = service.service.name;
 
-                popup(ioDefaultOptions);
+                overlay(ioDefaultOptions);
                 setServiceLabel(active_version, next_version, service_name);
 
                 getIoDefaultConfig(active_version).done(function (response) {
@@ -390,7 +390,7 @@ define([
         /**
          * Image Optimization VCL snippet upload button click event
          *
-         * @description checks the Fastly service status and displays the Image Optimization VCL snippet upload popup
+         * @description checks the Fastly service status and displays the Image Optimization VCL snippet upload overlay
          */
         ioBtn.on('click', function () {
             if (isAlreadyConfigured !== true) {
@@ -414,7 +414,7 @@ define([
                 let service_name = service.service.name;
 
                 getIoSnippetStatus(active_version, true).done(function (response) {
-                    popup(ioOptions);
+                    overlay(ioOptions);
                     setServiceLabel(active_version, next_version, service_name);
 
                     if (response.status === false) {

@@ -1,13 +1,13 @@
 define([
     "jquery",
     "setServiceLabel",
-    "popup",
+    "overlay",
     "resetAllMessages",
     "showErrorMessage",
     "showSuccessMessage",
     "Magento_Ui/js/modal/confirm",
     'mage/translate'
-], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage, showSuccessMessage, confirm) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, showSuccessMessage, confirm) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         /* Dictionary button messages */
@@ -22,7 +22,7 @@ define([
         let active_version = serviceStatus.active_version;
 
         /**
-         * Dictionary container modal popup options
+         * Dictionary container modal overlay options
          *
          * @type {{title: *, content: (function(): string), actionOk: actionOk}}
          */
@@ -37,7 +37,7 @@ define([
         };
 
         /**
-         * Dictionary container items modal popup options
+         * Dictionary container items modal overlay options
          *
          * @type {{title: *, content: (function(): string), actionOk: actionOk}}
          */
@@ -51,7 +51,7 @@ define([
         };
 
         /**
-         * Dictionary container delete modal popup options
+         * Dictionary container delete modal overlay options
          *
          * @type {{title: *, content: (function(): string), actionOk: actionOk}}
          */
@@ -301,7 +301,7 @@ define([
                 let next_version = service.next_version;
                 let service_name = service.service.name;
 
-                popup(dictionaryContainerOptions);
+                overlay(dictionaryContainerOptions);
                 setServiceLabel(active_version, next_version, service_name);
 
             }).fail(function () {
@@ -357,7 +357,7 @@ define([
                         }
                     }
 
-                    popup(dictionaryItemOptions);
+                    overlay(dictionaryItemOptions);
                     $('.modal-title').text($.mage.__('"'+ dictionary_name +'" dictionary container items'));
                     $('.upload-button').remove();
 
@@ -464,7 +464,7 @@ define([
 
                 if (dictionaries != null && dictionary_id != null) {
                     let dictionaryHtml = '<input name="dictionary" value="' + dictionary_id + '" class="input-text admin__control-text dictionary-field" type="hidden" disabled>';
-                    popup(dictionaryDeleteContainerOptions);
+                    overlay(dictionaryDeleteContainerOptions);
                     setServiceLabel(active_version, next_version, service_name);
                     let containerWarning = $('#fastly-container-warning');
                     $('.modal-title').text($.mage.__('Delete "'+ dictionary_id +'" Dictionary container'));

@@ -62,6 +62,10 @@ define([
                 $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_owasp_restricted_extensions').hide();
                 $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_owasp_allowed_methods').hide();
 
+                requirejs(['fastlyTestConnection'], function (fastlyTestConnection) {
+                    fastlyTestConnection(config);
+                });
+
                 $.ajax({
                     type: "GET",
                     url: config.serviceInfoUrl,
@@ -75,10 +79,6 @@ define([
 
                         requirejs(['uploadVcl'], function (uploadVcl) {
                             uploadVcl(config, serviceStatus, isAlreadyConfigured);
-                        });
-
-                        requirejs(['fastlyTestConnection'], function (fastlyTestConnection) {
-                            fastlyTestConnection(config);
                         });
 
                         advancedConfigurationHead.one('click', function () {

@@ -1,13 +1,13 @@
 define([
     "jquery",
     "setServiceLabel",
-    "popup",
+    "overlay",
     "resetAllMessages",
     "showErrorMessage",
     "showSuccessMessage",
     "Magento_Ui/js/modal/confirm",
     'mage/translate'
-], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage, showSuccessMessage, confirm) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, showSuccessMessage, confirm) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         /* Auth button messages */
@@ -30,7 +30,7 @@ define([
         authStateSpan.find('.processing').show();
 
         /**
-         * Basic Authentication VCL snippet upload modal popup options
+         * Basic Authentication VCL snippet upload modal overlay options
          *
          * @type {{title: *, content: (function(): string), actionOk: actionOk}}
          */
@@ -45,7 +45,7 @@ define([
         };
 
         /**
-         * Basic Authentication container creation modal popup options
+         * Basic Authentication container creation modal overlay options
          *
          * @type {{title: *, content: (function(): string), actionOk: actionOk}}
          */
@@ -60,7 +60,7 @@ define([
         };
 
         /**
-         * Basic Authentication users modal popup options
+         * Basic Authentication users modal overlay options
          *
          * @type {{title: *, content: (function(): string), actionOk: actionOk}}
          */
@@ -74,7 +74,7 @@ define([
         };
 
         /**
-         * Basic Authentication delete all users modal popup otions
+         * Basic Authentication delete all users modal overlay otions
          *
          * @type {{title: *, content: (function(): string), actionOk: actionOk}}
          */
@@ -161,7 +161,7 @@ define([
                     '<button class="action-delete remove_item_auth"  title="Delete" type="button"><span>Delete</span></button>' +
                     '</td></tr>';
             });
-            popup(authenticationItemsOptions);
+            overlay(authenticationItemsOptions);
             $('.upload-button').remove();
 
             if (html !== '') {
@@ -448,7 +448,7 @@ define([
                 let next_version = service.next_version;
                 let service_name = service.service.name;
 
-                popup(authenticationContainerDeleteOptions);
+                overlay(authenticationContainerDeleteOptions);
                 setServiceLabel(active_version, next_version, service_name);
 
             }).fail(function () {
@@ -498,7 +498,7 @@ define([
                             enableMsg = response.msg;
                         }
 
-                        popup(authenticationOptions);
+                        overlay(authenticationOptions);
                         setServiceLabel(active_version, next_version, service_name);
 
                         if (authStatus === false) {
@@ -508,8 +508,8 @@ define([
                         }
 
                         if (enableMsg) {
-                            let enableAuthPopupMsg =  $('.fastly-message-error');
-                            enableAuthPopupMsg.text($.mage.__(response.msg)).show();
+                            let enableAuthOverlayMsg =  $('.fastly-message-error');
+                            enableAuthOverlayMsg.text($.mage.__(response.msg)).show();
                         }
                     }
                 });
@@ -548,7 +548,7 @@ define([
                         } else if (authResp.status === 'empty') {
                             processAuths([]);
                         } else {
-                            popup(authenticationContainerOptions);
+                            overlay(authenticationContainerOptions);
                         }
                         setServiceLabel(active_version, next_version, service_name);
                     }).fail(function () {

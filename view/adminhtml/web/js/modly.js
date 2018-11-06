@@ -2,13 +2,13 @@ define([
     "jquery",
     "handlebars",
     "setServiceLabel",
-    "popup",
+    "overlay",
     "resetAllMessages",
     "showErrorMessage",
     "showSuccessMessage",
     "showWarningMessage",
     'mage/translate'
-], function ($, Handlebars, setServiceLabel, popup, resetAllMessages, showErrorMessage, showSuccessMessage, showWarningMessage) {
+], function ($, Handlebars, setServiceLabel, overlay, resetAllMessages, showErrorMessage, showSuccessMessage, showWarningMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
         let successAllModulesBtnMsg = $('#fastly-success-all-modules-button-msg');
         let errorAllModulesBtnMsg = $('#fastly-error-all-modules-button-msg');
@@ -640,7 +640,7 @@ define([
                     showLoader: true
                 })
             ).done(function (response) {
-                popup(allModuleOptions);
+                overlay(allModuleOptions);
                 let updateBtn = $('<button class="action-secondary" id="fastly_manifest_btn" type="button" data-role="action"></button>');
                 updateBtn.append($('<span>Refresh</span>'));
                 $('.modal-header').find(".page-actions-buttons").append(updateBtn);
@@ -752,7 +752,7 @@ define([
                     }
 
                     if (module != null && module_id != null) {
-                        popup(activeModuleOptions);
+                        overlay(activeModuleOptions);
                         setServiceLabel(active_version, next_version, service_name);
                         $('.module-messages').prepend(message);
                         let question = $('.question');

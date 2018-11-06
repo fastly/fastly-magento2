@@ -2,13 +2,13 @@ define([
     "jquery",
     "Magento_Ui/js/modal/modal"
 ], function ($) {
-    return function showPopup(options)
+    return function showOverlay(options)
     {
         let self = this;
         let divId = options.id;
 
         /**
-         * Modal popup options
+         * Modal overlay options
          *
          * @type {*|jQuery}
          */

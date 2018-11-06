@@ -1,11 +1,11 @@
 define([
     "jquery",
     "setServiceLabel",
-    "popup",
+    "overlay",
     "resetAllMessages",
     "showErrorMessage",
     'mage/translate'
-], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         let backends;
@@ -13,7 +13,7 @@ define([
         let active_version = serviceStatus.active_version;
 
         /**
-         * Backend modal popup options
+         * Backend modal overlay options
          *
          * @type {{title: *, content: (function(): string), actionOk: actionOk}}
          */
@@ -142,7 +142,7 @@ define([
                     }
 
                     if (backends != null && backend_id != null) {
-                        popup(backendOptions);
+                        overlay(backendOptions);
                         setServiceLabel(active_version, next_version, service_name);
 
                         backend_name = backends[backend_id].name;

@@ -1,13 +1,13 @@
 define([
     "jquery",
     "setServiceLabel",
-    "popup",
+    "overlay",
     "resetAllMessages",
     "showErrorMessage",
     "showSuccessMessage",
     "Magento_Ui/js/modal/confirm",
     'mage/translate'
-], function ($, setServiceLabel, popup, resetAllMessages, showErrorMessage, showSuccessMessage, confirm) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, showSuccessMessage, confirm) {
     return function (config, serviceStatus, isAlreadyConfigured) {
         /* Custom snippet button messages */
         let successCustomSnippetBtnMsg = $('#fastly-success-custom-snippet-button-msg');
@@ -17,7 +17,7 @@ define([
         let snippets;
 
         /**
-         * Custom Snippet creation modal popup options
+         * Custom Snippet creation modal overlay options
          *
          * @type {{title: *, content: (function(): string), actionOk: actionOk}}
          */
@@ -32,7 +32,7 @@ define([
         };
 
         /**
-         * Custom Snippet edit modal popup options
+         * Custom Snippet edit modal overlay options
          *
          * @type {{title: *, content: (function(): string), actionOk: actionOk}}
          */
@@ -245,7 +245,7 @@ define([
                 let next_version = service.next_version;
                 let service_name = service.service.name;
                 setServiceLabel(active_version, next_version, service_name);
-                popup(customSnippetOptions);
+                overlay(customSnippetOptions);
                 $('.upload-button span').text('Create');
             }).fail(function () {
                 return errorCustomSnippetBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
@@ -314,7 +314,7 @@ define([
                     })
                 ).done(function (response) {
                     if (response.status === true) {
-                        popup(customSnippetEditOptions);
+                        overlay(customSnippetEditOptions);
                         $('.upload-button span').text('Save');
                         $('#custom_snippet_name').val(response.name);
                         $('#original_snippet_name').val(response.original);

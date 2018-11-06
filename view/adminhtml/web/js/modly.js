@@ -125,7 +125,13 @@ define([
             let result = '';
 
             Handlebars.registerHelper('replace', (inp, re, repl) => inp.replace(new RegExp(re, 'g'), repl));
-            Handlebars.registerHelper('ifEq', (a, b, options) => options[a == b ? 'fn':'inverse'](this));
+            Handlebars.registerHelper('ifEq', function (a, b, options) {
+                if (a === b) {
+                    return options.fn(this);
+                } else {
+                    return options.inverse(this);
+                }
+            });
             Handlebars.registerHelper('ifMatch', (a, pat, opts) => opts[a.match(new RegExp(pat)) ? 'fn':'inverse'](this));
             Handlebars.registerHelper('extract', (a, pat) => (a.match(new RegExp(pat)) || [])[1]);
 
@@ -740,7 +746,6 @@ define([
                                     });
                                 } else {
                                     fieldset.append(renderFields(property, parsedValues[0], active_version));
-                                    console.log(renderFields(property, parsedValues[0], active_version));
                                 }
                             });
                         }

@@ -77,8 +77,8 @@ define([
                             uploadVcl(config, serviceStatus, isAlreadyConfigured);
                         });
 
-                        requirejs(['testConnection'], function (testConnection) {
-                            testConnection(config);
+                        requirejs(['fastlyTestConnection'], function (fastlyTestConnection) {
+                            fastlyTestConnection(config);
                         });
 
                         advancedConfigurationHead.one('click', function () {

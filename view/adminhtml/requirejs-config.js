@@ -13,7 +13,7 @@ let config = {
             customSnippets: 'Fastly_Cdn/js/custom-snippets',
             setServiceLabel: 'Fastly_Cdn/js/service-label',
             popup: 'Fastly_Cdn/js/popup',
-            testConnection: 'Fastly_Cdn/js/testconnection',
+            fastlyTestConnection: 'Fastly_Cdn/js/testconnection',
             resetAllMessages: 'Fastly_Cdn/js/reset-all-messages',
             showErrorMessage: 'Fastly_Cdn/js/error-message',
             showSuccessMessage: 'Fastly_Cdn/js/success-message',

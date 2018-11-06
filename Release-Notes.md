@@ -1,5 +1,12 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.75
+
+- Changed popup.js name and any references to it to 'overlay' to avoid potential adblocking https://github.com/fastly/fastly-magento2/pull/224
+- Handlebars ifEq helper fix https://github.com/fastly/fastly-magento2/pull/223
+- Bugfix/#199 module breaks search engine switcher due to testconnection same name https://github.com/fastly/fastly-magento2/pull/222
+- Reset cache-control headers to uncacheable only if X-Magento-Tags header is present https://github.com/fastly/fastly-magento2/commit/c99d56bf96c627cfec5205b258a102b6e549fa97
+
 ## 1.2.74
 
 - Code refactoring and add comments to Fastly service config changes so they show up in event log https://github.com/fastly/fastly-magento2/pull/219

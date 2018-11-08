@@ -127,6 +127,7 @@ class GetAction extends Action
                 $currentStore = $this->storeManager->getStore();
                 // only generate a redirect URL if current and new store are different
                 if ($currentStore->getId() != $targetStore->getId()) {
+                    $this->url->setQueryParam('___from_store', $currentStore->getCode());
                     $redirectUrl = $this->url->getUrl(
                         'stores/store/switch',
                         [StoreResolver::PARAM_NAME => $targetStore->getCode()]

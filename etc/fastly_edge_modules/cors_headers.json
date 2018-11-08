@@ -1,0 +1,47 @@
+{
+    "description": "Set CORS headers",
+    "id": "cors_headers",
+    "name": "CORS headers",
+    "properties": [
+        {
+            "default": "anyone",
+            "description": "What origins are allowed",
+            "label": "Origins allowed",
+            "name": "origin",
+            "options": {
+                "anyone": "Allow anyone (*)",
+                "regex-match": "Regex matching set of origins. Do not supply http://"
+            },
+            "required": true,
+            "type": "select"
+        },
+        {
+            "default": "GET,HEAD,POST,OPTIONS",
+            "description": "Allowed HTTP Methods that requestor can use",
+            "label": "Allowed HTTP Methods",
+            "name": "cors_allowed_methods",
+            "required": true,
+            "type": "string"
+        },
+        {
+            "description": "Regex matching origins that are allowed to access this service",
+            "label": "Regex matching origins",
+            "name": "cors_allowed_origins_regex",
+            "required": false,
+            "type": "string"
+        }
+    ],
+    "test": {
+        "origins": [
+            "https://httpbin.org"
+        ],
+        "reqUrl": "/html"
+    },
+    "vcl": [
+        {
+            "template": "  if (req.http.Origin && !resp.http.Access-Control-Allow-Origin && !resp.http.Access-Control-Allow-Methods) {\n{{#ifEq origin \"anyone\"}}\n    set resp.http.Access-Control-Allow-Origin = \"*\";\n{{/ifEq}}\n{{#ifEq origin \"regex-match\"}}\n    if ( req.http.Origin ~ \"^https?://{{cors_allowed_origins_regex}}\" ) {\n      set resp.http.Access-Control-Allow-Origin = req.http.origin;\n    }\n{{/ifEq}}\n    set resp.http.Access-Control-Allow-Methods = \"{{cors_allowed_methods}}\";\n  \n  }\n",
+            "type": "deliver"
+        }
+    ],
+    "version": 1
+}

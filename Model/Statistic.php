@@ -350,14 +350,13 @@ class Statistic extends AbstractModel implements IdentityInterface
      * Get Default Site Location
      *
      * @return string
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getSiteLocation()
     {
         $countryId = $this->scopeConfig->getValue('general/store_information/country_id');
         if ($countryId) {
-            $country = $this->countryInformation->getCountryInfo($countryId);
-            $countryName = $country->getFullNameEnglish();
+            $country = $this->countryFactory->create()->loadByCode($countryId);
+            $countryName = $country->getName();
         } else {
             $countryName = 'Unknown country';
         }

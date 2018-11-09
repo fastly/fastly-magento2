@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.76
+
+- Added ___from_store url parameter when switching stores https://github.com/fastly/fastly-magento2/pull/228
+- Changed the way Fastly Statistics obtain default site country name https://github.com/fastly/fastly-magento2/pull/227
+
 ## 1.2.75
 
 - Changed popup.js name and any references to it to 'overlay' to avoid potential adblocking https://github.com/fastly/fastly-magento2/pull/224

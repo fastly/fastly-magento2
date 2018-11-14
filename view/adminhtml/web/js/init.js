@@ -140,6 +140,10 @@ define([
                                 waf(config, serviceStatus, isAlreadyConfigured);
                             })
                         });
+                    } else {
+                        $(".processing").hide();
+                        $(".state_unknown").show();
+                        $(".list-loading").hide();
                     }
                 })
             }

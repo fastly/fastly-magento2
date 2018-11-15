@@ -7,7 +7,7 @@
     unset req.http.x-long-cache;
 
     # We want to force long cache times on any of the versioned assets
-    if (req.url.path ~ "^/static/version(\d*/)") {
+    if (req.url.path ~ "^/static/version\d*/") {
        set req.http.x-long-cache = "1";
     }
     

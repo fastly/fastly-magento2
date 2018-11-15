@@ -6,9 +6,8 @@
 
     unset req.http.x-long-cache;
 
-    # Rewrite /static/versionxxxxx URLs. Avoids us having to rewrite on nginx layer
-    if (req.url ~ "^/static/version(\d*/)?(.*)$") {
-       set req.url = "/static/" + re.group.2 + "?" + re.group.1;
+    # We want to force long cache times on any of the versioned assets
+    if (req.url.path ~ "^/static/version(\d*/)") {
        set req.http.x-long-cache = "1";
     }
     

@@ -88,6 +88,21 @@ class Config extends \Magento\PageCache\Model\Config
     const BLOCKING_SETTING_NAME = 'magentomodule_blocking';
 
     /**
+     * WAF snippets directory path
+     */
+    const VCL_WAF_PATH = '/vcl_snippets_waf';
+
+    /**
+     * VCL WAF snippet
+     */
+    const VCL_WAF_ALLOWLIST_SNIPPET = 'recv.vcl';
+
+    /**
+     * WAF setting name
+     */
+    const WAF_SETTING_NAME = 'magentomodule_waf';
+
+    /**
      * Authentication snippets directory path
      */
     const VCL_AUTH_SNIPPET_PATH = '/vcl_snippets_basic_auth';
@@ -309,6 +324,12 @@ class Config extends \Magento\PageCache\Model\Config
      * XML path to the Fastly Blocking Type flag
      */
     const XML_FASTLY_BLOCKING_TYPE = 'system/full_page_cache/fastly/fastly_blocking/blocking_type';
+
+    /**
+     * XML path to Fastly list of WAF allowed Acls
+     */
+    const XML_FASTLY_WAF_ALLOW_BY_ACL =
+        'system/full_page_cache/fastly/fastly_web_application_firewall/waf_allow_by_acl';
 
     /**
      * XML path to enable Webhooks
@@ -658,6 +679,11 @@ class Config extends \Magento\PageCache\Model\Config
     public function getBlockByAcl()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_BLOCK_BY_ACL);
+    }
+
+    public function getWafAllowByAcl()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_WAF_ALLOW_BY_ACL);
     }
 
     /**

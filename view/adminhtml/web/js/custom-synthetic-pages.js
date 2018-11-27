@@ -187,6 +187,7 @@ define([
                     overlay(errorPageOptions);
                     setServiceLabel(active_version, next_version, service_name);
 
+                    $('.upload-button span').text('Update');
                     if (response.status === true) {
                         $('#error_page_html').text(response.errorPageResp.content).html();
                     }
@@ -229,6 +230,7 @@ define([
                     overlay(wafPageOptions);
                     setServiceLabel(active_version, next_version, service_name);
 
+                    $('.upload-button span').text('Update');
                     if (response.status === true) {
                         $('#waf_page_content').text(response.wafPageResp.content).html();
                         $('#waf_page_status').val(response.wafPageResp.status);

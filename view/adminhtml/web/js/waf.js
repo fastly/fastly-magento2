@@ -41,6 +41,12 @@ define([
                 let wafs = active_version_info.wafs;
                 if (wafs !== undefined) {
                     warningWafBtnMsg.hide();
+                    $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_waf_bypass').show();
+                    $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_update_waf_bypass').show();
+                    $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_waf_allow_by_acl').show();
+                    requirejs(['wafBypass'], function (wafBypass) {
+                        wafBypass(config, serviceStatus, isAlreadyConfigured);
+                    });
                     $.each(wafs, function (waf, info) {
                         getWafSettings(info.id).done(function (wafResponse) {
                             wafStateSpan.find('.processing').hide();
@@ -79,6 +85,8 @@ define([
                             'Please contact your sales rep or send an email to support@fastly.com to request Web Application Firewall activation for your Fastly service.'
                         )
                     ).show();
+                    owaspAllowedMethodsRow.show();
+                    owaspRestrictedExtensionsRow.show();
                 }
             }
         });

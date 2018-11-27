@@ -340,6 +340,7 @@ define([
 
                 overlay(ioDefaultOptions);
                 setServiceLabel(active_version, next_version, service_name);
+                $('.upload-button span').text('Update');
 
                 getIoDefaultConfig(active_version).done(function (response) {
                     if (response.status === true) {

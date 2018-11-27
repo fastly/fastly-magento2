@@ -145,6 +145,7 @@ define([
                         overlay(backendOptions);
                         setServiceLabel(active_version, next_version, service_name);
 
+                        $('.upload-button span').text('Update');
                         backend_name = backends[backend_id].name;
                         $('.modal-title').text($.mage.__('Backend "'+backend_name+'" configuration'));
                         $('#backend_name').val(backends[backend_id].name);

@@ -564,7 +564,7 @@
                              Update WAF bypass button
                         ============================= -->
                         <field id="update_waf_bypass" translate="label comment" sortOrder="497" showInDefault="1" showInStore="0" showInWebsite="0">
-                            <label><![CDATA[Update WAF Bypass ACLs]]></label>
+                            <label><![CDATA[Update WAF Bypass]]></label>
                             <comment>
                                 <![CDATA[Applies bypass changes to active setup. HAS TO BE clicked anytime you make changes to WAF Bypass ACLs.]]>
                             </comment>

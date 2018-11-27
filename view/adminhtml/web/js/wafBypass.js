@@ -108,11 +108,14 @@ define([
                 getWafBypassSetting(active_version, true).done(function (response) {
                     overlay(wafBypassOptions);
                     setServiceLabel(active_version, next_version, service_name);
+                    let upload_button = $('.upload-button span');
 
                     if (response.status === false) {
                         $('.modal-title').text($.mage.__('You are about to enable WAF Bypass'));
+                        upload_button.text('Enable');
                     } else {
                         $('.modal-title').text($.mage.__('You are about to disable WAF Bypass'));
+                        upload_button.text('Disable');
                     }
                     wafBypass = response.status;
                 }).fail(function () {

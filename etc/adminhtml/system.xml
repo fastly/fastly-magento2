@@ -566,6 +566,37 @@
                             <label>Restricted Extensions</label>
                             <comment><![CDATA[]]></comment>
                         </field>
+                        <!-- =====================
+                             WAF Bypass button
+                        ====================== -->
+                        <field id="waf_bypass" translate="label comment" sortOrder="496" showInDefault="1" showInStore="0" showInWebsite="0">
+                            <label><![CDATA[WAF Bypass]]></label>
+                            <comment>
+                                <![CDATA[Allow selected ACLs to bypass WAF blocking]]>
+                            </comment>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\WafBypassBtn</frontend_model>
+                        </field>
+                        <!-- ============================
+                             Update WAF bypass button
+                        ============================= -->
+                        <field id="update_waf_bypass" translate="label comment" sortOrder="497" showInDefault="1" showInStore="0" showInWebsite="0">
+                            <label><![CDATA[Update WAF Bypass ACLs]]></label>
+                            <comment>
+                                <![CDATA[Applies bypass changes to active setup. HAS TO BE clicked anytime you make changes to WAF Bypass ACLs.]]>
+                            </comment>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\UpdateBypassBtn</frontend_model>
+                        </field>
+                        <!-- ==========================
+                             ACLs multiselect field
+                        =========================== -->
+                        <field id="waf_allow_by_acl" translate="label comment" type="multiselect" sortOrder="500" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>WAF Bypass ACLs</label>
+                            <comment>
+                                <![CDATA[Select one or multiple ACLs that are allowed to bypass WAF blocking]]>
+                            </comment>
+                            <source_model>Fastly\Cdn\Model\Config\Backend\ListAcl</source_model>
+                            <can_be_empty>1</can_be_empty>
+                        </field>
                     </group>
                     <!-- ===============================
                          Webhook Notifications group

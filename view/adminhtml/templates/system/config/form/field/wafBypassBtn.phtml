@@ -1,0 +1,48 @@
+<?php echo $block->getButtonHtml() ?>
+
+<span class="collect-indicator" id="waf_bypass_state_span">
+    <span id="fastly_waf_bypass_state_message_span"><b>Current state:</b>
+        <img class="processing"
+             alt="Collecting"
+             style="margin:0 5px;"
+             src="<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/fastly16.gif') ?>" />
+        <span style="display:none;" class="waf_bypass_state_span" id="waf_bypass_state_enabled"> enabled</span>
+        <span style="display:none;" class="waf_bypass_state_span" id="waf_bypass_state_disabled"> disabled</span>
+        <span style="display:none;" class="waf_bypass_state_span" id="waf_bypass_state_unknown"> unknown</span>
+    </span>
+</span>
+
+<div class="message message-error fastly-button-messages"
+     id="fastly-error-waf_bypass-button-msg"
+     style="display: none">
+</div>
+
+<div class="message message-success fastly-button-messages"
+     id="fastly-success-waf_bypass-button-msg"
+     style="display: none">
+</div>
+
+<div class="message message-warning fastly-button-messages"
+     id="fastly-warning-waf_bypass-button-msg"
+     style="display: none">
+</div>
+
+<style type="text/css">
+    .fastly-button-messages {
+        font-size: 1.2rem;
+        margin-top: 5px;
+        padding: 1.4rem 4rem 1.4rem 5.5rem;
+    }
+
+    #waf_bypass_state_enabled {
+        color: #008000;
+    }
+
+    #waf_bypass_state_disabled {
+        color: #808080;
+    }
+
+    #waf_bypass_state_unknown {
+        color: #ff0000;
+    }
+</style>

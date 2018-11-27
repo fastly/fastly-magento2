@@ -79,6 +79,8 @@ define([
                             'Please contact your sales rep or send an email to support@fastly.com to request Web Application Firewall activation for your Fastly service.'
                         )
                     ).show();
+                    owaspAllowedMethodsRow.show();
+                    owaspRestrictedExtensionsRow.show();
                 }
             }
         });

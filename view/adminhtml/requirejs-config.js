@@ -21,7 +21,8 @@ let config = {
             imageOptimization: 'Fastly_Cdn/js/image-optimization',
             basicAuthentication: 'Fastly_Cdn/js/basic-authentication',
             modly: 'Fastly_Cdn/js/modly',
-            waf: 'Fastly_Cdn/js/waf'
+            waf: 'Fastly_Cdn/js/waf',
+            wafBypass: 'Fastly_Cdn/js/wafBypass'
         }
     }
 };

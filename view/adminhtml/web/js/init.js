@@ -132,13 +132,16 @@ define([
                         customSnippetsHead.one('click', function () {
                             requirejs(['customSnippets'], function (customSnippets) {
                                 customSnippets(config, serviceStatus, isAlreadyConfigured);
-                            })
+                            });
                         });
 
                         webApplicationFirewallHead.one('click', function () {
                             requirejs(['waf'], function (waf) {
                                 waf(config, serviceStatus, isAlreadyConfigured);
-                            })
+                            });
+                            requirejs(['wafBypass'], function (wafBypass) {
+                                wafBypass(config, serviceStatus, isAlreadyConfigured);
+                            });
                         });
                     }
                 })

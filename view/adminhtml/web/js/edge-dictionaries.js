@@ -303,6 +303,7 @@ define([
 
                 overlay(dictionaryContainerOptions);
                 setServiceLabel(active_version, next_version, service_name);
+                $('.upload-button span').text('Create');
 
             }).fail(function () {
                 return errorDictionaryBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();

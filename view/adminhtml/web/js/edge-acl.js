@@ -310,6 +310,7 @@ define([
 
                 overlay(aclContainerOptions);
                 setServiceLabel(active_version, next_version, service_name);
+                $('.upload-button span').text('Create');
 
             }).fail(function () {
                 return errorAclBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();

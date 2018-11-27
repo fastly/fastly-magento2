@@ -500,11 +500,14 @@ define([
 
                         overlay(authenticationOptions);
                         setServiceLabel(active_version, next_version, service_name);
+                        let upload_button = $('.upload-button span');
 
                         if (authStatus === false) {
                             $('.modal-title').text($.mage.__('You are about to enable Basic Authentication'));
+                            upload_button.text('Enable');
                         } else {
                             $('.modal-title').text($.mage.__('You are about to disable Basic Authentication'));
+                            upload_button.text('Disable');
                         }
 
                         if (enableMsg) {

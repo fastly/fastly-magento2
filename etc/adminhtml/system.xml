@@ -551,12 +551,12 @@
                             <comment><![CDATA[]]></comment>
                         </field>
                         <!-- =====================
-                             WAF Bypass button
+                             WAF ACL Bypass button
                         ====================== -->
                         <field id="waf_bypass" translate="label comment" sortOrder="496" showInDefault="1" showInStore="0" showInWebsite="0">
-                            <label><![CDATA[WAF Bypass]]></label>
+                            <label><![CDATA[WAF ACL Bypass]]></label>
                             <comment>
-                                <![CDATA[Allow selected ACLs to bypass WAF blocking]]>
+                                <![CDATA[Allow IPs in selected ACLs to bypass WAF blocking]]>
                             </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\WafBypassBtn</frontend_model>
                         </field>
@@ -564,9 +564,9 @@
                              Update WAF bypass button
                         ============================= -->
                         <field id="update_waf_bypass" translate="label comment" sortOrder="497" showInDefault="1" showInStore="0" showInWebsite="0">
-                            <label><![CDATA[Update WAF Bypass]]></label>
+                            <label><![CDATA[Update WAF ACL Bypass]]></label>
                             <comment>
-                                <![CDATA[Applies bypass changes to active setup. HAS TO BE clicked anytime you make changes to WAF Bypass ACLs.]]>
+                                <![CDATA[Changes WAF ACL bypass. HAS TO BE clicked anytime you make changes to the list of ACLs.  Not needed if you are adding/removing IPs. That is done in ACL menu.]]>
                             </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\UpdateBypassBtn</frontend_model>
                         </field>

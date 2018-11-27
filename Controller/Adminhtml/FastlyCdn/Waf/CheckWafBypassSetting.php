@@ -30,7 +30,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 /**
  * Class CheckWafBypassSetting
  *
- * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Blocking
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Waf
  */
 class CheckWafBypassSetting extends Action
 {

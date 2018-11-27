@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.77
+
+- Stop rewriting version assets URLs in Varnish https://github.com/fastly/fastly-magento2/pull/230
+- Add ability to configure WAF ACL Bypass https://github.com/fastly/fastly-magento2/pull/232
+
 ## 1.2.76
 
 - Added ___from_store url parameter when switching stores https://github.com/fastly/fastly-magento2/pull/228

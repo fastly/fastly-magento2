@@ -61,6 +61,9 @@ define([
                 let webApplicationFirewallHead = $('#system_full_page_cache_fastly_fastly_web_application_firewall-head');
                 $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_owasp_restricted_extensions').hide();
                 $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_owasp_allowed_methods').hide();
+                $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_waf_bypass').hide();
+                $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_update_waf_bypass').hide();
+                $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_waf_allow_by_acl').hide();
 
                 requirejs(['fastlyTestConnection'], function (fastlyTestConnection) {
                     fastlyTestConnection(config);
@@ -138,9 +141,6 @@ define([
                         webApplicationFirewallHead.one('click', function () {
                             requirejs(['waf'], function (waf) {
                                 waf(config, serviceStatus, isAlreadyConfigured);
-                            });
-                            requirejs(['wafBypass'], function (wafBypass) {
-                                wafBypass(config, serviceStatus, isAlreadyConfigured);
                             });
                         });
                     } else {

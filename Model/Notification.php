@@ -153,8 +153,8 @@ class Notification extends Feed
     public function getLastVersion()
     {
         try {
-            $client = $this->curlFactory->create();
             $url = self::CHECK_VERSION_URL;
+            $client = $this->curlFactory->create();
 
             $client->write(\Zend_Http_Client::GET, $url, '1.1');
             $responseBody = $client->read();

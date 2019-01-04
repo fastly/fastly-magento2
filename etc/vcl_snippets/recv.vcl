@@ -100,9 +100,10 @@
         # Sort the query arguments to increase cache hit ratio with query arguments that
         # may be out od order. In case you want to restore the unsorted URL add a snippet
         # after this one that sets req.url to req.http.Magento-Original-URL
-        set req.url = boltsort.sort(req.url);
+        if ( !req.http.x-pass ) {
+            set req.url = boltsort.sort(req.url);
+        }
     }
-
 
     # static files are always cacheable. remove SSL flag and cookie
     if (req.http.x-long-cache || req.url ~ "^/(pub/)?(media|static)/.*") {

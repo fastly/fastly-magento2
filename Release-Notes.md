@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.78
+
+- Fix for stock Magento placeholder images being displayed instead of customer defined when deep IO turned on  https://github.com/fastly/fastly-magento2/pull/236
+
 ## 1.2.77
 
 - Stop rewriting version assets URLs in Varnish https://github.com/fastly/fastly-magento2/pull/230

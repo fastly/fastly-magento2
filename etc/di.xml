@@ -44,4 +44,7 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\Framework\View\Asset\Minification">
+        <plugin name="fastly_exclude" type="Fastly\Cdn\Plugin\ExcludeFilesFromMinification" />
+    </type>
 </config>

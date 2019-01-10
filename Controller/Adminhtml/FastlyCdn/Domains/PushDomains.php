@@ -25,6 +25,7 @@ use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
@@ -114,33 +115,8 @@ class PushDomains extends Action
                 ]);
             }
 
-            if (!$currentDomains) {
-                $currentDomains = [];
-            }
-
-            if (!$newDomains) {
-                $newDomains = [];
-            }
-
-            $currentDomainData = [];
-            foreach ($currentDomains as $current) {
-                $currentName = $current['name'];
-                $currentComment = $current['comment'];
-                $currentDomainData[$currentName] = $currentComment;
-            }
-
-            $newDomainData = [];
-            foreach ($newDomains as $new) {
-                $newName = $new['name'];
-                $newComment = $new['comment'];
-                $newDomainData[$newName] = $newComment;
-                if (!preg_match('/^(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/', $newName)) {
-                    return $result->setData([
-                        'status'    => false,
-                        'msg'       => 'Invalid domain name "'.$newName.'"'
-                    ]);
-                }
-            }
+            $currentDomainData = $this->processCurrent($currentDomains);
+            $newDomainData = $this->processNew($newDomains);
 
             $domainsToCreate = array_diff_assoc($newDomainData, $currentDomainData);
             $domainsToDelete = array_diff_assoc($currentDomainData, $newDomainData);
@@ -199,5 +175,47 @@ class PushDomains extends Action
                 'msg'       => $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * @param $currentDomains
+     * @return array
+     */
+    private function processCurrent($currentDomains)
+    {
+        if (!$currentDomains) {
+            $currentDomains = [];
+        }
+
+        $currentDomainData = [];
+        foreach ($currentDomains as $current) {
+            $currentName = $current['name'];
+            $currentComment = $current['comment'];
+            $currentDomainData[$currentName] = $currentComment;
+        }
+        return $currentDomainData;
+    }
+
+    /**
+     * @param $newDomains
+     * @return array
+     * @throws LocalizedException
+     */
+    private function processNew($newDomains)
+    {
+        if (!$newDomains) {
+            $newDomains = [];
+        }
+
+        $newDomainData = [];
+        foreach ($newDomains as $new) {
+            $newName = $new['name'];
+            $newComment = $new['comment'];
+            $newDomainData[$newName] = $newComment;
+            if (!preg_match('/^(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/', $newName)) {
+                throw new LocalizedException(__('Invalid domain name "'.$newName.'"'));
+            }
+        }
+        return $newDomainData;
     }
 }

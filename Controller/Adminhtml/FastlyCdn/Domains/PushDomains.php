@@ -24,6 +24,7 @@ use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Store\Model\StoreManagerInterface;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
@@ -55,6 +56,10 @@ class PushDomains extends Action
      * @var Vcl
      */
     private $vcl;
+    /**
+     * @var StoreManagerInterface
+     */
+    private $storeManager;
 
     /**
      * PushDomains constructor.
@@ -62,6 +67,7 @@ class PushDomains extends Action
      * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
+     * @param StoreManagerInterface $storeManager
      * @param Config $config
      * @param Api $api
      * @param Vcl $vcl
@@ -70,12 +76,14 @@ class PushDomains extends Action
         Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
+        StoreManagerInterface $storeManager,
         Config $config,
         Api $api,
         Vcl $vcl
     ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
+        $this->storeManager = $storeManager;
         $this->config = $config;
         $this->api = $api;
         $this->vcl = $vcl;
@@ -92,30 +100,91 @@ class PushDomains extends Action
 
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $activateVcl = $this->getRequest()->getParam('activate_flag');
             $currentDomains = $this->getRequest()->getParam('current_domains');
             $newDomains = $this->getRequest()->getParam('domains');
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
-            $clone = $this->api->cloneVersion($currActiveVersion);
-            $params = [
-                'name'      => $name,
-                'comment'   => $comment
-            ];
+            $storeBaseUrl = $this->storeManager->getStore()->getBaseUrl();
 
-            if (!createDomain) {
+            if (!$currentDomains && !$newDomains) {
                 return $result->setData([
                     'status'    => false,
-                    'msg'       => 'Failed to push domains.'
+                    'msg'       => 'At least one domain must exist.'
                 ]);
+            }
+
+            if (!$currentDomains) {
+                $currentDomains = [];
+            }
+
+            if (!$newDomains) {
+                $newDomains = [];
+            }
+
+            $currentDomainData = [];
+            foreach ($currentDomains as $current) {
+                $currentName = $current['name'];
+                $currentComment = $current['comment'];
+                $currentDomainData[$currentName] = $currentComment;
+            }
+
+            $newDomainData = [];
+            foreach ($newDomains as $new) {
+                $newName = $new['name'];
+                $newComment = $new['comment'];
+                $newDomainData[$newName] = $newComment;
+                if (!preg_match('/^(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/', $newName)) {
+                    return $result->setData([
+                        'status'    => false,
+                        'msg'       => 'Invalid domain name "'.$newName.'"'
+                    ]);
+                }
+            }
+
+            $domainsToCreate = array_diff_assoc($newDomainData, $currentDomainData);
+            $domainsToDelete = array_diff_assoc($currentDomainData, $newDomainData);
+
+            foreach ($domainsToDelete as $name => $comment) {
+                if (strpos($storeBaseUrl, $name) !== false) {
+                    return $result->setData([
+                        'status'    => false,
+                        'msg'       => 'Cannot remove your current domain.'
+                    ]);
+                }
+            }
+
+            $clone = $this->api->cloneVersion($currActiveVersion);
+
+            foreach ($domainsToCreate as $name => $comment) {
+                $data = [
+                    'name'      => $name,
+                    'comment'   => $comment
+                ];
+                $createDomain = $this->api->createDomain($clone->number, $data);
+
+                if (!$createDomain) {
+                    return $result->setData([
+                        'status'    => false,
+                        'msg'       => 'Failed to activate changes. Some domains may already be registered.'
+                    ]);
+                }
+            }
+
+            foreach ($domainsToDelete as $name => $comment) {
+                $deleteDomain = $this->api->deleteDomain($clone->number, $name);
+
+                if (!$deleteDomain) {
+                    return $result->setData([
+                        'status'    => false,
+                        'msg'       => 'Failed to activate changes.'
+                    ]);
+                }
             }
 
             $this->api->validateServiceVersion($clone->number);
 
-            if ($activateVcl === 'true') {
-                $this->api->activateVersion($clone->number);
-            }
+            $this->api->activateVersion($clone->number);
 
             $comment = ['comment' => 'Magento Module pushed domains'];
             $this->api->addComment($clone->number, $comment);

@@ -767,6 +767,7 @@ class Api
     /**
      * @param $version
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function getAllConditions($version)
     {
@@ -779,11 +780,40 @@ class Api
     /**
      * @param $version
      * @return bool|mixed
+     * @throws LocalizedException
      */
     public function getAllDomains($version)
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version . '/domain';
         $result = $this->_fetch($url, \Zend_Http_Client::GET, '', false, null, false);
+
+        return $result;
+    }
+
+    /**
+     * @param $version
+     * @param $name
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function deleteDomain($version, $name)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/domain/' . $name;
+        $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
+
+        return $result;
+    }
+
+    /**
+     * @param $version
+     * @param $data
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function createDomain($version, $data)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/domain';
+        $result = $this->_fetch($url, \Zend_Http_Client::POST, $data);
 
         return $result;
     }

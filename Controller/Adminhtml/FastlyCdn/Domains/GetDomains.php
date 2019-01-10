@@ -27,6 +27,7 @@ use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Api;
 use Magento\Framework\Controller\ResultInterface;
+use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Class GetDomains
@@ -47,6 +48,10 @@ class GetDomains extends Action
      * @var Api
      */
     private $api;
+    /**
+     * @var StoreManagerInterface
+     */
+    private $storeManager;
 
     /**
      * GetDomains constructor.
@@ -54,16 +59,19 @@ class GetDomains extends Action
      * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
+     * @param StoreManagerInterface $storeManager
      * @param Api $api
      */
     public function __construct(
         Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
+        StoreManagerInterface $storeManager,
         Api $api
     ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
+        $this->storeManager = $storeManager;
         $this->api = $api;
         parent::__construct($context);
     }
@@ -79,6 +87,7 @@ class GetDomains extends Action
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
             $domains = $this->api->getAllDomains($activeVersion);
+            $storeBaseUrl = $this->storeManager->getStore()->getBaseUrl();
 
             if (!$domains) {
                 return $result->setData([
@@ -89,7 +98,8 @@ class GetDomains extends Action
 
             return $result->setData([
                 'status'    => true,
-                'domains'  => $domains
+                'domains'   => $domains,
+                'store'     => $storeBaseUrl
             ]);
         } catch (\Exception $e) {
             return $result->setData([

@@ -221,9 +221,9 @@
                                 <field id="enable_geoip">1</field>
                             </depends>
                         </field>
-                        <!-- ================================
+                        <!-- =====================================
                              Fastly Edge Modules on/off switch 
-                        ================================= -->
+                        ====================================== -->
                         <field id="enable_fastly_edge_modules" translate="label comment" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enable Fastly Edge Modules</label>
                             <comment>
@@ -374,20 +374,28 @@
                         </comment>
                         <!-- ================================
                              Create Custom Snippet button
-                        ============================= -->
+                        ================================= -->
                         <field id="fastly_custom_snippet_upload" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Create Custom Snippet</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\CustomSnippetBtn</frontend_model>
                         </field>
                         <!-- ==============================
                              Custom Snippets list field
-                        =========================== -->
+                        =============================== -->
                         <field id="fastly_custom_snippet_files" translate="label comment tooltip" sortOrder="80" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Custom Snippets</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\CustomSnippets</frontend_model>
                             <comment>
                                 <![CDATA[]]>
                             </comment>
+                        </field>
+                    </group>
+                    <group id="fastly_domains" translate="label comment tooltip" sortOrder="325" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>Domains</label>
+                        <comment></comment>
+                        <field id="fastly_domains_list" translate="label comment tooltip" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Domains</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Domains</frontend_model>
                         </field>
                     </group>
                     <!-- ==================
@@ -520,9 +528,9 @@
                             <validate>required_entry</validate>
                         </field>
                     </group>
-                    <!-- ===================================
+                    <!-- ==================================
                          Web Application Firewall group
-                    ==================================== -->
+                    =================================== -->
                     <group id="fastly_web_application_firewall" sortOrder="490" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Web Application Firewall (WAF)</label>
                         <comment>
@@ -550,9 +558,9 @@
                             <label>Restricted Extensions</label>
                             <comment><![CDATA[]]></comment>
                         </field>
-                        <!-- =====================
+                        <!-- =========================
                              WAF ACL Bypass button
-                        ====================== -->
+                        ========================== -->
                         <field id="waf_bypass" translate="label comment" sortOrder="496" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[WAF ACL Bypass]]></label>
                             <comment>

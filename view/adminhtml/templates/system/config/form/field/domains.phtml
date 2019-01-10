@@ -1,0 +1,71 @@
+<?php
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/**
+ * Copied from Mage_Config::view/adminhtml/templates/system/config/form/field/array.phtml.
+ * Currently necessary for work around a missing feature in the M2 core.
+ *
+ * @see https://github.com/magento/magento2/pull/3469
+ */
+?>
+
+<?php
+$_htmlId = $block->getHtmlId() ? $block->getHtmlId() : '_' . uniqid();
+$_colspan = $block->isAddAfter() ? 2 : 1;
+?>
+
+<button type="button"
+        style="margin-bottom: 10px;"
+        class="primary"
+        id="manage-domains-button">
+    <?php /* @noEscape */ echo __('Manage Domains') ?>
+</button>
+<div class="design_theme_ua_regexp" id="grid<?php /* @noEscape */ echo $_htmlId; ?>">
+    <div class="admin__control-table-wrapper">
+        <table class="admin__control-table" id="<?php /* @noEscape */ echo $block->getElement()->getId(); ?>">
+
+            <tbody id="fastly-domains-list"></tbody>
+        </table>
+    </div>
+    <p class="loading-domains list-loading">
+        <img class="processing"
+             alt="Collecting"
+             style="margin:0 5px;"
+             src="<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/fastly16.gif') ?>" />
+        <?php /* @noEscape */ echo __('Loading Domains...'); ?>
+    </p>
+    <p class="no-domains" style="display: none;">
+        <?php /* @noEscape */ echo __('There are no Domains configured yet.'); ?>
+    </p>
+</div>
+
+<div class="message message-error fastly-button-messages"
+     id="fastly-error-domains-button-msg"
+     style="display: none"></div>
+
+<div class="message message-success fastly-button-messages"
+     id="fastly-success-domains-button-msg"
+     style="display: none"></div>
+
+<div class="message message-warning fastly-button-messages"
+     id="fastly-warning-domains-button-msg"
+     style="display: none"></div>
+
+<style type="text/css">
+    .admin__control-table .fastly-edit-domain-icon::before {
+        content: '\e610';
+        font-size: 2rem;
+    }
+
+    .admin__control-table .fastly-delete-domain-icon::before {
+        content: '\e630';
+        font-size: 2rem;
+    }
+
+    .no-domains, .loading-domains {
+        text-align: center;
+    }
+</style>

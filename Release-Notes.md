@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.79
+
+- Addition of the interface to manage domains https://github.com/fastly/fastly-magento2/pull/240
+- Add fix to avoid magento for rewriting gstatic.com assets that are no minified. Without this it breaks Fastly usage graphs in the dashboard https://github.com/fastly/fastly-magento2/pull/239
+
 ## 1.2.78
 
 - Fix for stock Magento placeholder images being displayed instead of customer defined when deep IO turned on  https://github.com/fastly/fastly-magento2/pull/236

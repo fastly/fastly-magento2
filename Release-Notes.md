@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.80
+
+- Correct historic stats URL path. https://github.com/fastly/fastly-magento2/pull/241
+
 ## 1.2.79
 
 - Addition of the interface to manage domains https://github.com/fastly/fastly-magento2/pull/240

@@ -80,6 +80,8 @@ class Api
      */
     private $state;
 
+    private $resultJson;
+
     /**
      * Api constructor.
      *
@@ -150,12 +152,14 @@ class Api
      * Purge a single URL
      *
      * @param $url
-     * @return bool
+     * @return \Magento\Framework\Controller\Result\Json
      * @throws \Zend_Uri_Exception
      */
     public function cleanUrl($url)
     {
-        if ($result = $this->_purge($url, 'PURGE')) {
+        $result = $this->_purge($url, 'PURGE');
+
+        if ($result['status']) {
             $this->logger->execute($url);
         }
 
@@ -170,7 +174,7 @@ class Api
      * Purge Fastly by a given surrogate key
      *
      * @param $keys
-     * @return bool
+     * @return bool|\Magento\Framework\Controller\Result\Json
      * @throws \Zend_Uri_Exception
      */
     public function cleanBySurrogateKey($keys)
@@ -191,7 +195,8 @@ class Api
 
         foreach ($collection as $keys) {
             $payload = json_encode(['surrogate_keys' => $keys]);
-            if ($result = $this->_purge($uri, null, \Zend_Http_Client::POST, $payload)) {
+            $result = $this->_purge($uri, null, \Zend_Http_Client::POST, $payload);
+            if ($result['status']) {
                 foreach ($keys as $key) {
                     $this->logger->execute('surrogate key: ' . $key);
                 }
@@ -201,27 +206,27 @@ class Api
             $canPublishPurgeChanges = $this->config->canPublishPurgeChanges();
 
             if ($this->config->areWebHooksEnabled() && ($canPublishKeyUrlChanges || $canPublishPurgeChanges)) {
-                $status = $result ? '' : 'FAILED ';
+                $status = $result['status'] ? '' : 'FAILED ';
                 $this->sendWebHook($status . '*clean by key on ' . join(" ", $keys) . '*');
 
                 $canPublishPurgeByKeyDebugBacktrace = $this->config->canPublishPurgeByKeyDebugBacktrace();
                 $canPublishPurgeDebugBacktrace = $this->config->canPublishPurgeDebugBacktrace();
 
                 if ($canPublishPurgeByKeyDebugBacktrace == false && $canPublishPurgeDebugBacktrace == false) {
-                    return $result;
+                    return $result['status'];
                 }
 
                 $this->stackTrace($type . join(" ", $keys));
             }
         }
 
-        return $result;
+        return $result['status'];
     }
 
     /**
      * Purge all of Fastly's CDN content. Can be called only once per request
      *
-     * @return bool
+     * @return bool|\Magento\Framework\Controller\Result\Json
      * @throws \Zend_Uri_Exception
      */
     public function cleanAll()
@@ -234,7 +239,8 @@ class Api
 
         $type = 'clean/purge all';
         $uri = $this->_getApiServiceUri() . 'purge_all';
-        if ($result = $this->_purge($uri, null)) {
+        $result = $this->_purge($uri, null);
+        if ($result['status']) {
             $this->logger->execute('clean all items');
         }
 
@@ -248,13 +254,13 @@ class Api
             $canPublishPurgeDebugBacktrace = $this->config->canPublishPurgeDebugBacktrace();
 
             if ($canPublishPurgeAllDebugBacktrace == false && $canPublishPurgeDebugBacktrace == false) {
-                return $result;
+                return $result['status'];
             }
 
             $this->stackTrace($type);
         }
 
-        return $result;
+        return $result['status'];
     }
 
     /**
@@ -264,7 +270,7 @@ class Api
      * @param $type
      * @param string $method
      * @param null $payload
-     * @return bool
+     * @return \Magento\Framework\Controller\Result\Json
      * @throws \Zend_Uri_Exception
      */
     private function _purge($uri, $type, $method = \Zend_Http_Client::POST, $payload = null)
@@ -296,8 +302,7 @@ class Api
                 self::FASTLY_HEADER_SOFT_PURGE . ': 1'
             );
         }
-
-        $result = true;
+        $result['status'] = true;
         try {
             $client = $this->curlFactory->create();
             $client->setConfig(['timeout' => self::PURGE_TIMEOUT]);
@@ -314,11 +319,12 @@ class Api
             if ($responseCode == '429') {
                 throw new LocalizedException(__($responseMessage));
             } elseif ($responseCode != '200') {
-                throw new LocalizedException(__('Return status ' . $responseCode));
+                throw new LocalizedException(__($responseCode . ': ' . $responseMessage));
             }
         } catch (\Exception $e) {
             $this->logger->critical($e->getMessage(), $uri);
-            $result = false;
+            $result['status'] = false;
+            $result['msg'] = $e->getMessage();
         }
 
         if (empty($type)) {

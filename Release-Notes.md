@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.81
+
+- Added more details to quick purge error messages https://github.com/fastly/fastly-magento2/pull/243
+
 ## 1.2.80
 
 - Correct historic stats URL path. https://github.com/fastly/fastly-magento2/pull/241

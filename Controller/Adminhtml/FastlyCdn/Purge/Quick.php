@@ -101,11 +101,11 @@ class Quick extends Action
 
                 // purge uri
                 $result = $this->purgeCache->sendPurgeRequest($uri);
-                if ($result) {
+                if ($result['status']) {
                     $this->messageManager->addSuccessMessage(__('The URL\'s "' . $url . '" cache has been cleaned.'));
                 } else {
                     $this->getMessageManager()->addErrorMessage(
-                        __('The purge request was not processed successfully.')
+                        __('The purge request was not processed successfully. [' . $result['msg'] . ']')
                     );
                 }
             }

@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.82
+
+- Fix for gstatic.com minification that was done in 1.2.79 broke under Magento 2.1.x. This fixes it https://github.com/fastly/fastly-magento2/pull/244
+
 ## 1.2.81
 
 - Added more details to quick purge error messages https://github.com/fastly/fastly-magento2/pull/243

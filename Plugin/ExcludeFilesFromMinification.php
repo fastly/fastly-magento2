@@ -31,15 +31,17 @@ class ExcludeFilesFromMinification
 {
     /**
      * @param Minification $subject
-     * @param array $result
+     * @param callable $proceed
      * @param $contentType
      * @return array
      */
-    public function afterGetExcludes(Minification $subject, array $result, $contentType)
+    public function aroundGetExcludes(Minification $subject, callable $proceed, $contentType)
     {
-        if ($contentType == 'js' && $subject->isEnabled($contentType)) {
-            $result[] = 'https://www.gstatic.com/charts/loader.js';
+        $result = $proceed($contentType);
+        if ($contentType != 'js' && !$subject->isEnabled($contentType)) {
+            return $result;
         }
+        $result[] = 'https://www.gstatic.com/charts/loader.js';
         return $result;
     }
 }

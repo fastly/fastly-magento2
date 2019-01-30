@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.83
+
+- Make sure Quick Purge uses the PURGE verb https://github.com/fastly/fastly-magento2/pull/245
+
 ## 1.2.82
 
 - Fix for gstatic.com minification that was done in 1.2.79 broke under Magento 2.1.x. This fixes it https://github.com/fastly/fastly-magento2/pull/244

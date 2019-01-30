@@ -56,7 +56,7 @@ You will see a welcome wizard with two input fields which you should fill with:
 * Your website domain for Fastly to use when routing requests
 * The hostname (or IP address) and port number for your origin server
 
-On the next screen, Fastly is offering you to enable gzip, logging and health check of your origin – you can enable this later. Click continue.
+On the next screen, Fastly is offering you to enable GZIP, logging and health check of your origin. *DO NOT ENABLE* GZIP under any circumstances. It will break ESI workflow and result in intermittent issues. Don't worry custom Magento VCL handles GZIP compression properly. Rest of the items can be enabled later. Click continue.
 
 ![New Features](../images/guides/installation/newfeatures.png "New Features")
 

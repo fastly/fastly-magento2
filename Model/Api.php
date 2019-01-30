@@ -157,7 +157,7 @@ class Api
      */
     public function cleanUrl($url)
     {
-        $result = $this->_purge($url, 'PURGE');
+        $result = $this->_purge($url, 'PURGE', 'PURGE');
 
         if ($result['status']) {
             $this->logger->execute($url);

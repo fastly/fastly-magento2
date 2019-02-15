@@ -1,0 +1,50 @@
+{
+  "description": "Set up domain/host redirects (301) e.g. domain.com => www.domain.com",
+  "id": "redirect_hosts",
+  "name": "Redirect one domain to another",
+  "properties": [
+    {
+      "entryTemplate": "{{incomingHost}} => {{destinationHost}}",
+      "label": "Rules",
+      "name": "rules",
+      "properties": [
+        {
+          "description": "Incoming domain/host e.g. www.domain.com",
+          "label": "Incoming Domain/Host",
+          "name": "incomingHost",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "description": "Destination domain/host",
+          "label": "Destination domain/host",
+          "name": "destinationHost",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "description": "Strip incoming path and set it to /. Default only rewrites host retaining the path e.g. http://domain.com/category is redirected to https://www.domain.com/category",
+          "name": "ignorePath",
+          "default": false,
+          "required": true,
+          "type": "boolean",
+          "label": "Ignore path"
+        }
+      ],
+      "type": "group"
+    }
+  ],
+  "test": {
+    "origins": [
+      "https://httpbin.org"
+    ],
+    "reqUrl": "/sourcePath"
+  },
+  "vcl": [
+    {
+      "template": "{{#each rules}}\nif (req.http.host == \"{{incomingHost}}\") {\n  set req.http.host = \"{{destinationHost}}\";\n  {{#if ignorePath }}\n  set req.url = \"/\";\n{{/if}}  error 801;\n}\n{{/each}}",
+      "type": "recv"
+    }
+  ],
+  "version": 1
+}

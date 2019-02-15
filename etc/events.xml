@@ -28,9 +28,6 @@
     <event name="clean_cache_by_tags">
         <observer name="flush_fastly_cdn" instance="Fastly\Cdn\Observer\InvalidateVarnishObserver"/>
     </event>
-    <event name="adminhtml_cache_flush_system">
-        <observer name="flush_fastly_cdn" instance="Fastly\Cdn\Observer\FlushAllCacheObserver"/>
-    </event>
     <event name="clean_media_cache_after">
         <observer name="flush_fastly_cdn" instance="Fastly\Cdn\Observer\FlushAllCacheObserver"/>
     </event>

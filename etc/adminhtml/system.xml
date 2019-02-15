@@ -707,7 +707,7 @@
                 ============================== -->
                 <group id="fastly_edge_modules" sortOrder="630" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Fastly Edge Modules</label>
-                    <comment><![CDATA[Here goes short description of Modly functionality]]></comment>
+                    <comment><![CDATA[Fastly Edge module allow you to enable specific functionality like CORS headers, etc.]]></comment>
                     <depends>
                         <field id="caching_application">fastly</field>
                         <field id="system/full_page_cache/fastly/fastly_advanced_configuration/enable_fastly_edge_modules">1</field>

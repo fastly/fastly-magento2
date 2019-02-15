@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.84
+
+- Flush Magento cache used to flush Fastly as well. This changes to behavior to Magento Only https://github.com/fastly/fastly-magento2/issues/246
+
 ## 1.2.83
 
 - Make sure Quick Purge uses the PURGE verb https://github.com/fastly/fastly-magento2/pull/245

@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.85
+
+- When removing custom snippet also remove them from Fastly https://github.com/fastly/fastly-magento2/pull/249
+
 ## 1.2.84
 
 - Flush Magento cache used to flush Fastly as well. This changes to behavior to Magento Only https://github.com/fastly/fastly-magento2/issues/246

@@ -32,11 +32,10 @@ use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
 
 /**
- * Class DeleteCustomSnippet
- *
+ * Class CheckCustomSnippet
  * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\CustomSnippet
  */
-class DeleteCustomSnippet extends Action
+class CheckCustomSnippet extends Action
 {
     /**
      * @var FileFactory
@@ -100,9 +99,7 @@ class DeleteCustomSnippet extends Action
     }
 
     /**
-     * Deletes the specified custom snippet VCL file
-     *
-     * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
+     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Json|\Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
@@ -111,13 +108,8 @@ class DeleteCustomSnippet extends Action
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
             $snippet = $this->getRequest()->getParam('snippet_id');
-            $activateVcl = $this->getRequest()->getParam('activate_flag');
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
-            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
-
-            $write = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
-            $snippetPath = $write->getRelativePath(Config::CUSTOM_SNIPPET_PATH . $snippet);
 
             $snippetName = explode('_', $snippet);
             $snippetName = explode('.', $snippetName[2]);
@@ -125,25 +117,8 @@ class DeleteCustomSnippet extends Action
             $reqName = Config::FASTLY_MAGENTO_MODULE . '_' . $snippetName[0];
             $checkIfSnippetExist = $this->api->hasSnippet($activeVersion, $reqName);
 
-            if ($checkIfSnippetExist) {
-                $clone = $this->api->cloneVersion($currActiveVersion);
-                $this->api->removeSnippet($clone->number, $reqName);
-                $this->api->validateServiceVersion($clone->number);
-
-                if ($activateVcl === 'true') {
-                    $this->api->activateVersion($clone->number);
-                }
-
-                $comment = ['comment' => 'Magento Module deleted the ' . $reqName . ' custom snippet.'];
-                $this->api->addComment($clone->number, $comment);
-            }
-
-            if ($write->isExist($snippetPath)) {
-                $write->delete($snippetPath);
-            }
-
             return $result->setData([
-                'status'    => true
+                'status'    => $checkIfSnippetExist
             ]);
         } catch (\Exception $e) {
             return $result->setData([

@@ -15,6 +15,8 @@ define([
 
         let active_version = serviceStatus.active_version;
         let snippets;
+        let snippet_id;
+        let closestTr;
 
         /**
          * Custom Snippet creation modal overlay options
@@ -23,11 +25,21 @@ define([
          */
         let customSnippetOptions = {
             title: jQuery.mage.__('You are about to create a Custom Snippet '),
-                content: function () {
+            content: function () {
                 return document.getElementById('fastly-custom-snippet-template').textContent;
             },
             actionOk: function () {
                 saveCustomSnippet();
+            }
+        };
+
+        let deleteCustomSnippetOptions = {
+            title: jQuery.mage.__('You are about to delete a Custom Snippet '),
+            content: function () {
+                return document.getElementById('fastly-delete-custom-snippet-template').textContent;
+            },
+            actionOk: function () {
+                deleteCustomSnippet(snippet_id);
             }
         };
 
@@ -38,7 +50,7 @@ define([
          */
         let customSnippetEditOptions = {
             title: jQuery.mage.__('You are about to edit a Custom Snippet '),
-                content: function () {
+            content: function () {
                 return document.getElementById('fastly-custom-snippet-edit-template').textContent;
             },
             actionOk: function () {
@@ -153,13 +165,32 @@ define([
          */
         function deleteCustomSnippet(snippet_id)
         {
+            let activate_flag = false;
+
+            if ($('#fastly_delete_custom_snippet_activate').is(':checked')) {
+                activate_flag = true;
+            }
             return $.ajax({
                 type: "GET",
                 url: config.deleteCustomSnippet,
                 showLoader: true,
-                data: {'snippet_id': snippet_id},
+                data: {
+                    'snippet_id': snippet_id,
+                    'active_version': active_version,
+                    'activate_flag': activate_flag
+                },
                 beforeSend: function () {
                     resetAllMessages();
+                },
+                success: function (response) {
+                    if (response.status === true) {
+                        modal.modal('closeModal');
+                        closestTr.remove();
+                        successCustomSnippetBtnMsg.text($.mage.__('Custom snippet successfully deleted.')).show();
+                    } else {
+                        resetAllMessages();
+                        showErrorMessage(response.msg);
+                    }
                 }
             });
         }
@@ -256,25 +287,45 @@ define([
          * Custom Snippet delete button on click event
          */
         $('body').on('click', 'button.fastly-delete-snippet-icon', function () {
-            let snippet_id = $(this).data('snippet-id');
-            let closestTr = $(this).closest('tr');
+            snippet_id = $(this).data('snippet-id');
+            closestTr = $(this).closest('tr');
 
-            confirm({
-                title: 'Delete Custom Snippet',
-                content: "Are you sure you want to delete "+ snippet_id +"?",
-                actions: {
-                    confirm: function () {
-                        deleteCustomSnippet(snippet_id).done(function (response) {
-                            if (response.status === true) {
-                                closestTr.remove();
-                                $('#fastly-success-snippet-button-msg').text($.mage.__('Custom snippet successfully deleted.')).show();
-                            }
-                        }).fail(function () {
-                            showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
-                        });
-                    },
-                    cancel: function () {}
+            $.when(
+                $.ajax({
+                    type: "GET",
+                    url: config.serviceInfoUrl,
+                    showLoader: true
+                })
+            ).done(function (service) {
+                if (service.status === false) {
+                    return errorCustomSnippetBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
+
+                active_version = service.active_version;
+                let next_version = service.next_version;
+                let service_name = service.service.name;
+                overlay(deleteCustomSnippetOptions);
+                $('.fastly-message-notice').text('You are about to delete the ' + snippet_id + ' custom snippet.').show();
+                $('.maintenance-checkbox-container').hide();
+                $.when(
+                    $.ajax({
+                        type: "GET",
+                        url: config.checkCustomSnippet,
+                        data: {
+                            'snippet_id': snippet_id,
+                            'active_version': active_version
+                        },
+                        showLoader: true
+                    })
+                ).done(function (response) {
+                    if (response.status === true) {
+                        setServiceLabel(active_version, next_version, service_name);
+                        $('.maintenance-checkbox-container').show();
+                    }
+                });
+                $('.upload-button span').text('Delete');
+            }).fail(function () {
+                return errorCustomSnippetBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
             });
         });
 

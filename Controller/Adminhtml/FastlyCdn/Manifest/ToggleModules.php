@@ -14,6 +14,7 @@ use Fastly\Cdn\Model\ResourceModel\Manifest\CollectionFactory;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
 use Fastly\Cdn\Model\Config;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Class Create
@@ -111,8 +112,8 @@ class ToggleModules extends Action
 
             if ($this->enabledModules) {
                 $removeStatus = $this->removeManifests($this->enabledModules);
-                if ($removeStatus) {
-                    throw new \Exception(__($removeStatus));
+                if ($removeStatus != false) {
+                    throw new LocalizedException($removeStatus);
                 }
             }
 

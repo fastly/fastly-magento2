@@ -479,6 +479,17 @@
                             target="_blank">image optimization guide</a> for caveats and details.]]></comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
+                        <!-- ====================================================
+                             Enable default Magento JPEG quality select field
+                        ===================================================== -->
+                        <field id="image_optimization_default_quality" translate="label comment" type="select" sortOrder="21" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Use Magento default JPEG quality</label>
+                            <comment>Adds the quality query argument for product/catalog images. This will override the "Default JPEG quality" value set in the Default IO Config Options with the Magento default JPEG quality value.</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="image_optimizations">1</field>
+                            </depends>
+                        </field>
                         <!-- ===============================================
                              Set Background Color on Images select field
                         ================================================ -->

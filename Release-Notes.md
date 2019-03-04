@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.86
+
+- Remove snippets when Edge Module is disabled https://github.com/fastly/fastly-magento2/pull/250
+
 ## 1.2.85
 
 - When removing custom snippet also remove them from Fastly https://github.com/fastly/fastly-magento2/pull/249

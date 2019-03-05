@@ -480,7 +480,7 @@
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <!-- ====================================================
-                             Enable default Magento JPEG quality select field
+                             JPEG image quality input field
                         ===================================================== -->
                         <field id="image_optimization_image_quality" translate="label comment" type="text" sortOrder="21" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                             <label>JPEG Image Quality</label>

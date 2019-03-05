@@ -485,7 +485,7 @@
                         <field id="image_optimization_image_quality" translate="label comment" type="text" sortOrder="21" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                             <label>JPEG Image Quality</label>
                             <comment>
-                                <![CDATA[Sets JPEG image quality, values in percentage from 1 to 100.]]>
+                                <![CDATA[Sets JPEG image quality, values in percentage from 1 to 100. This value is used in the quality query argument for product/catalog images.]]>
                             </comment>
                             <validate>required-entry validate-digits validate-not-negative-number validate-digits-range digits-range-1-100</validate>
                             <depends>

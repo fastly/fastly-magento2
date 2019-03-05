@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.87
+
+- There are multiple locations to set image quality e.g. Fastly has IO defaults menu with quality settings that are used unless
+  quality query argument exists in the URL. Deep IO optimization sets the default quality level by appending the quality argument
+  This pull request exposes the latter in the UI under Deep IO https://github.com/fastly/fastly-magento2/pull/251
+
 ## 1.2.86
 
 - Remove snippets when Edge Module is disabled https://github.com/fastly/fastly-magento2/pull/250

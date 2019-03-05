@@ -278,6 +278,12 @@ class Config extends \Magento\PageCache\Model\Config
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimization_bg_color';
 
     /**
+     * XML path to image optimization image quality value
+     */
+    const XML_FASTLY_IMAGE_OPTIMIZATION_IMAGE_QUALITY
+        = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimization_image_quality';
+
+    /**
      * XML path to image optimization canvas flag
      */
     const XML_FASTLY_IMAGE_OPTIMIZATION_CANVAS

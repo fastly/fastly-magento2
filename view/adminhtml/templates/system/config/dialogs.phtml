@@ -1049,6 +1049,10 @@
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
+        <div class="message message-notice fastly-message-notice">
+            These settings will be used as fallbacks when no transformation rules are
+            applied in the URL query string or in your VCL.
+        </div>
     </div>
     <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"

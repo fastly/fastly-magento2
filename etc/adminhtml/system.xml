@@ -456,7 +456,7 @@
                         <field id="image_optimizations_default_config_options" translate="label comment" sortOrder="10" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Default IO Config Options]]></label>
                             <comment>
-                                <![CDATA[Allows you to (re)configure items such as default quality levels lossy image formats, auto WebP, JPG types.]]>
+                                <![CDATA[Allows you to (re)configure items such as default quality levels, lossy image formats, auto WebP, JPG types. These settings will be used as fallbacks when no transformation rules are applied in the URL query string or in your VCL.]]>
                             </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\IoConfigOptionsBtn</frontend_model>
                         </field>
@@ -478,6 +478,19 @@
                             Please read the <a href="https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/IMAGE-OPTIMIZATION.md#deep-image-optimization"
                             target="_blank">image optimization guide</a> for caveats and details.]]></comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <!-- ====================================================
+                             JPEG image quality input field
+                        ===================================================== -->
+                        <field id="image_optimization_image_quality" translate="label comment" type="text" sortOrder="21" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                            <label>JPEG Image Quality</label>
+                            <comment>
+                                <![CDATA[Sets JPEG image quality, values in percentage from 1 to 100. This value is used in the quality query argument for product/catalog images.]]>
+                            </comment>
+                            <validate>required-entry validate-digits validate-not-negative-number validate-digits-range digits-range-1-100</validate>
+                            <depends>
+                                <field id="image_optimizations">1</field>
+                            </depends>
                         </field>
                         <!-- ===============================================
                              Set Background Color on Images select field

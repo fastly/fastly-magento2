@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.88
+
+- Change shield definition for Tokyo
+
 ## 1.2.87
 
 - There are multiple locations to set image quality e.g. Fastly has IO defaults menu with quality settings that are used unless

@@ -29,11 +29,11 @@ use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
 
 /**
- * Class Create
+ * Class Update
  *
  * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Edge\Acl\Item
  */
-class Create extends Action
+class Update extends Action
 {
     /**
      * @var Http
@@ -57,7 +57,7 @@ class Create extends Action
     private $vcl;
 
     /**
-     * Create constructor.
+     * Update constructor.
      *
      * @param Context $context
      * @param Http $request
@@ -84,9 +84,9 @@ class Create extends Action
     }
 
     /**
-     * Create ACL entry for specific ACL
+     * Update ACL entry
      *
-     * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
+     * @return \Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
@@ -94,6 +94,7 @@ class Create extends Action
 
         try {
             $aclId = $this->getRequest()->getParam('acl_id');
+            $aclItemId = $this->getRequest()->getParam('acl_item_id');
             $value = $this->getRequest()->getParam('item_value');
             $comment = $this->getRequest()->getParam('comment_value');
             $negated = 0;
@@ -124,20 +125,18 @@ class Create extends Action
                 ]);
             }
 
-            $createAclItem = $this->api->upsertAclItem($aclId, $ipParts[0], $negated, $comment, $subnet);
+            $updateAclItem = $this->api->updateAclItem($aclId, $aclItemId, $ipParts[0], $negated, $comment, $subnet);
 
-            if (!$createAclItem) {
+            if (!$updateAclItem) {
                 return $result->setData([
                     'status'    => false,
-                    'msg'       => 'Failed to create Acl entry.'
+                    'msg'       => 'Failed to update ACL entry.'
                 ]);
             }
 
             return $result->setData([
-                'status'        => true,
-                'id'            => $createAclItem->id,
-                'comment'       => $createAclItem->comment,
-                'created_at'    => $createAclItem->created_at
+                'status'    => true,
+                'comment'   => $updateAclItem->comment
             ]);
         } catch (\Exception $e) {
             return $result->setData([

@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.89
+
+- Rework ACL interface to more closely align it with Fastly interface https://github.com/fastly/fastly-magento2/pull/252
+
 ## 1.2.88
 
 - Change shield definition for Tokyo

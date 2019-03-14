@@ -852,6 +852,9 @@
     <div class="messages">
         <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
         <div class="message message-success fastly-message-success" style="display: none;"></div>
+        <div class="message message-notice fastly-message-notice" >
+            To add a subnet mask, use a slash ("192.0.2/24"). To exclude, use an exclamation mark ("!192.0.2.0").
+        </div>
     </div>
     <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST" id="fastly-acl-form"
@@ -862,8 +865,9 @@
             <table class="admin__control-table" id="acl-items-table">
                 <thead>
                 <tr>
-                    <th><?php /* @noEscape */ echo __('IP Value') ?></th>
-                    <th><?php /* @noEscape */ echo __('Negated') ?></th>
+                    <th><?php /* @noEscape */ echo __('Address') ?></th>
+                    <th><?php /* @noEscape */ echo __('Comment (Optional)') ?></th>
+                    <th><?php /* @noEscape */ echo __('Date Added') ?></th>
                     <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Action') ?></th>
                 </tr>
                 </thead>
@@ -898,7 +902,7 @@
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="3" class="col-actions-add">
+                    <td colspan="4" class="col-actions-add">
                         <button id="add-acl-item" class="action-add" title="Add new item" type="button">
                             <span><?php /* @noEscape */ echo __('Add new item') ?></span>
                         </button>
@@ -1610,6 +1614,7 @@ $listAcls =                     $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/lis
 $aclItems =                     $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/listAll');
 $createAclItem =                $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/create');
 $deleteAclItem =                $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/delete');
+$updateAclItem =                $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/update');
 // Edge Dictionary
 $createDictionary =             $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary/create');
 $deleteDictionary =             $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary/delete');
@@ -1690,6 +1695,7 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "getAclItems": "<?php echo $block->escapeJsQuote($aclItems);?>",
                     "createAclItem": "<?php echo $block->escapeJsQuote($createAclItem);?>",
                     "deleteAclItem": "<?php echo $block->escapeJsQuote($deleteAclItem);?>",
+                    "updateAclItem": "<?php echo $block->escapeJsQuote($updateAclItem);?>",
                     "getAuths": "<?php echo $block->escapeJsQuote($getAuthItems);?>",
                     "createAuth": "<?php echo $block->escapeJsQuote($createAuth);?>",
                     "deleteAuth": "<?php echo $block->escapeJsQuote($deleteAuth);?>",
@@ -1743,6 +1749,16 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
     .admin__control-table .fastly-save-action::before {
         content: '\1F4BE';
         font-size: 2rem;
+    }
+
+    .admin__control-table .fastly-edit-action::before {
+        content: '\e610';
+        font-size: 2rem;
+    }
+
+    .dialog-item {
+        border: none;
+        background-color: transparent;
     }
 
 </style>

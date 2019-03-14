@@ -1164,16 +1164,17 @@ class Api
      * @param $aclId
      * @param $itemValue
      * @param $negated
+     * @param string $comment
      * @param bool $subnet
      * @return bool|mixed
      * @throws LocalizedException
      */
-    public function upsertAclItem($aclId, $itemValue, $negated, $subnet = false)
+    public function upsertAclItem($aclId, $itemValue, $negated, $comment = 'Added by Magento Module', $subnet = false)
     {
         $body = [
             'ip' => $itemValue,
             'negated' => $negated,
-            'comment' => 'Added by Magento Module'
+            'comment' => $comment
         ];
 
         if ($subnet) {
@@ -1198,6 +1199,36 @@ class Api
     {
         $url = $this->_getApiServiceUri(). 'acl/'. $aclId . '/entry/' . $aclItemId;
         $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
+
+        return $result;
+    }
+
+    /**
+     * Update single ACL entry
+     *
+     * @param $aclId
+     * @param $aclItemId
+     * @param $itemValue
+     * @param $negated
+     * @param string $comment
+     * @param bool $subnet
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function updateAclItem($aclId, $aclItemId, $itemValue, $negated, $comment = '', $subnet = false)
+    {
+        $body = [
+            'ip' => $itemValue,
+            'negated' => $negated,
+            'comment' => $comment
+        ];
+
+        if ($subnet) {
+            $body['subnet'] = $subnet;
+        }
+
+        $url = $this->_getApiServiceUri(). 'acl/'. $aclId . '/entry/' . $aclItemId;
+        $result = $this->_fetch($url, \Zend_Http_Client::PATCH, json_encode($body));
 
         return $result;
     }

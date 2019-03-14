@@ -191,17 +191,16 @@ define([
          *
          * @param acl_id
          * @param item_value
-         * @param negated_field
          * @param loaderVisibility
          * @returns {*}
          */
-        function saveEdgeAclItem(acl_id, item_value, negated_field, loaderVisibility)
+        function saveEdgeAclItem(acl_id, item_value, comment_value, loaderVisibility)
         {
             return $.ajax({
                 type: "GET",
                 url: config.createAclItem,
                 showLoader: loaderVisibility,
-                data: {'acl_id': acl_id, 'item_value': item_value, 'negated_field': negated_field},
+                data: {'acl_id': acl_id, 'item_value': item_value, 'comment_value': comment_value},
                 beforeSend: function () {
                     resetAllMessages();
                 }
@@ -282,6 +281,19 @@ define([
             });
         }
 
+        function updateEdgeAclItem(acl_id, acl_item_id, item_value, comment_value, loaderVisibility)
+        {
+            return $.ajax({
+                type: "GET",
+                url: config.updateAclItem,
+                showLoader: loaderVisibility,
+                data: {'acl_id': acl_id, 'acl_item_id': acl_item_id, 'item_value': item_value, 'comment_value': comment_value},
+                beforeSend: function () {
+                    resetAllMessages();
+                }
+            });
+        }
+
         /**
          * ACL container add button on click event
          */
@@ -348,24 +360,30 @@ define([
                         itemsHtml = '';
                         if (response.aclItems.length > 0) {
                             $.each(response.aclItems, function (index, item) {
-                                let negated = item.negated === 1 ? ' checked' : '';
                                 let ip_output;
                                 if (item.subnet) {
                                     ip_output = item.ip + '/' + item.subnet;
                                 } else {
                                     ip_output = item.ip;
                                 }
+                                if (item.negated === '1') {
+                                    ip_output = '!' + ip_output;
+                                }
+                                let created_at = new Date(item.created_at);
                                 itemsHtml += '<tr><td>' +
                                     '<input name="value" data-type="acl" data-id="'+ item.id +'" value="'+ ip_output +'" class="input-text admin__control-text acl-items-field" type="text" disabled></td>' +
-                                    '<td><div class="admin__field-option" title="'+ acl_negated_title +'"><input name="negated" class="admin__control-checkbox" type="checkbox" id="acl_entry_'+ item.id +'"'+negated+' disabled><label class="admin__field-label" for="acl_entry_'+ item.id +'"></label></div></td>' +
+                                    '<td><input name="comment" data-type="acl" value="'+ item.comment +'" class="input-text admin__control-text acl-comment" type="text" disabled></td>' +
+                                    '<td><div class="admin__control-text dialog-item acl-date">' + created_at.toUTCString() + '</div></td>' +
                                     '<td class="col-actions">' +
+                                    '<button class="action-delete fastly-edit-action edit_acl_item"  title="Edit" type="button"><span>Edit</span></button>' +
                                     '<button class="action-delete remove_acl_item"  title="Delete" type="button"><span>Delete</span></button>' +
                                     '</td></tr>';
                             });
                         } else {
                             itemsHtml += '<tr><td>' +
                                 '<input name="value" data-type="acl" data-id="" value="" class="input-text admin__control-text acl-items-field" type="text"></td>' +
-                                '<td><div class="admin__field-option" title=""><input name="negated" class="admin__control-checkbox" type="checkbox" id=""><label class="admin__field-label" for=""></label></div></td>' +
+                                '<td><input name="comment" data-type="acl" value="" class="input-text admin__control-text acl-comment" type="text"></div></td>' +
+                                '<td><div class="admin__control-text dialog-item acl-date"></div></td>' +
                                 '<td class="col-actions">' +
                                 '<button class="action-delete fastly-save-action save_acl_item" title="Save" type="button"><span>Save</span></button>' +
                                 '</td></tr>';
@@ -385,10 +403,10 @@ define([
          * ACL container add item button on click event
          */
         $('body').on('click', '#add-acl-item', function (e) {
-            let aclTimestamp = Math.round(e.timeStamp);
             $('#acl-items-table > tbody').append('<tr>' +
                 '<td><input name="value" data-type="acl" data-id="" required="required" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
-                '<td><div class="admin__field-option" title="'+acl_negated_title+'"><input name="negated" class="admin__control-checkbox" type="checkbox" id="acl_entry_'+ aclTimestamp +'"><label class="admin__field-label" for="acl_entry_'+ aclTimestamp +'"></label></div></td>' +
+                '<td><input name="comment" data-type="acl" value="" class="input-text admin__control-text acl-comment" type="text"></div></td>' +
+                '<td><div class="admin__control-text dialog-item acl-date"></div></td>' +
                 '<td class="col-actions">' +
                 '<button class="action-delete fastly-save-action save_acl_item" title="Save" type="button"><span>Save</span></button>' +
                 '</td></tr>');
@@ -399,7 +417,9 @@ define([
          */
         $('body').on('click', '.save_acl_item', function () {
             let valueField = $(this).closest('tr').find("input[name='value']");
+            let commentField = $(this).closest('tr').find("input[name='comment']");
             let item_value = valueField.val();
+            let comment_value = commentField.val();
             let errors = false;
 
             if (item_value === '') {
@@ -416,14 +436,19 @@ define([
 
             let self = this;
 
-            let negated_field = $(this).closest('tr').find("input[name='negated']")[0].checked ? 1 : 0;
-            saveEdgeAclItem(acl_id, item_value, negated_field, true).done(function (response) {
+            saveEdgeAclItem(acl_id, item_value, comment_value, true).done(function (response) {
                 if (response.status === true) {
+                    let created_at = new Date(response.created_at);
                     $(self).closest('tr').find("input[name='value']").prop('disabled', true);
-                    $(self).closest('tr').find("input[name='negated']").prop('disabled', true);
+                    $(self).closest('tr').find("input[name='comment']").prop('disabled', true);
+                    $(self).closest('tr').find(".acl-comment").val(response.comment);
+                    $(self).closest('tr').find(".acl-date").html(created_at.toUTCString());
                     let newElement = $(self).closest('tr').find("input[name='value']")[0];
                     newElement.setAttribute('data-id', response.id);
-                    $(self).closest('tr').find(".col-actions").html('<button class="action-delete remove_acl_item"  title="Delete" type="button"><span>Delete</span></button>');
+                    $(self).closest('tr').find(".col-actions").html(
+                        '<button class="action-delete fastly-edit-action edit_acl_item"  title="Edit" type="button"><span>Edit</span></button>'+
+                        '<button class="action-delete remove_acl_item"  title="Delete" type="button"><span>Delete</span></button>'
+                    );
 
                     showSuccessMessage($.mage.__('ACL item is successfully saved.'));
                 } else {
@@ -459,6 +484,44 @@ define([
                     },
                     cancel: function () {}
                 }
+            });
+        });
+
+        $('body').on('click', '.edit_acl_item', function () {
+            let valueField = $(this).closest('tr').find("input[name='value']");
+            let commentField = $(this).closest('tr').find("input[name='comment']");
+            let self = this;
+            valueField.prop('disabled', false);
+            commentField.prop('disabled', false);
+            $(self).removeClass('fastly-edit-action');
+            $(self).removeClass('edit_acl_item');
+            $(self).addClass('fastly-save-action');
+            $(self).addClass('update_acl_item');
+        });
+
+        $('body').on('click', '.update_acl_item', function () {
+            let valueField = $(this).closest('tr').find("input[name='value']");
+            let commentField = $(this).closest('tr').find("input[name='comment']");
+            let acl_item_id = valueField.data('id');
+            let item_value = valueField.val();
+            let comment_value = commentField.val();
+            let self = this;
+
+            updateEdgeAclItem(acl_id, acl_item_id, item_value, comment_value, true).done(function (response) {
+                if (response.status === true) {
+                    $(self).closest('tr').find("input[name='value']").prop('disabled', true);
+                    $(self).closest('tr').find("input[name='comment']").prop('disabled', true);
+                    $(self).closest('tr').find(".acl-comment").val(response.comment);
+                    $(self).closest('tr').find(".col-actions").html(
+                        '<button class="action-delete fastly-edit-action edit_acl_item"  title="Edit" type="button"><span>Edit</span></button>'+
+                        '<button class="action-delete remove_acl_item"  title="Delete" type="button"><span>Delete</span></button>'
+                    );
+                    showSuccessMessage($.mage.__('ACL item is successfully updated.'));
+                } else {
+                    showErrorMessage(response.msg);
+                }
+            }).fail(function () {
+                showErrorMessage($.mage.__('An error occurred while processing your request. Please try again.'));
             });
         });
 

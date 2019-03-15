@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.90
+
+- Add Bypass Fastly cache for Admin users Admin module https://github.com/fastly/fastly-magento2/commit/56595f105b4ccf8b4b70dc2a418456fcdef94fe7
+
 ## 1.2.89
 
 - Rework ACL interface to more closely align it with Fastly interface https://github.com/fastly/fastly-magento2/pull/252

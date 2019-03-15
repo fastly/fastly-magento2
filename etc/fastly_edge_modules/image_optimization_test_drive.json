@@ -9,8 +9,8 @@
       "name": "rules",
       "properties": [
         {
-          "description": "IO Setup URL",
-          "label": "Incoming Domain/Host",
+          "label": "IO Setup URL",
+          "description": "URL to use on your site to enable IO test drive. It will https://www.yourdomain.com/<URL specified>",
           "name": "setupURL",
           "required": true,
           "type": "string",

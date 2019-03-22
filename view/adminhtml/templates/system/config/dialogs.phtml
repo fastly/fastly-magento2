@@ -1567,6 +1567,41 @@
         </fieldset>
     </form>
 </script>
+
+<!-- Maintenancesupport template -->
+<script type="text/x-magento-template" id="fastly-su-template">
+    <div class="messages">
+        <div class="message message-warning fastly-message-warning" style="display: none">
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll upload your VCL to version #y.")?>
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="fastly-su-form"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field maintenance-checkbox-container">
+                <label for="fastly_activate_su" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate VCL after upload')?></span>
+                </label>
+                <div class="admin__field-control">
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_su"
+                               id="fastly_activate_su"
+                               checked/>
+                        <label class="admin__field-label" for="fastly_activate_su"></label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</script>
 <?php
 
 /**
@@ -1629,6 +1664,10 @@ $toggleImageSettingUrl =        $block->getUrl('adminhtml/fastlyCdn_ImageOptimiz
 $listIoDefaultConfigOptions =   $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/listAll');
 $configureIoUrl =               $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/ioDefaultConfigOptions');
 $isIoEnabled =                  $block->getConfig()->isImageOptimizationEnabled();
+// Maintenance Support
+$checkSuSettingUrl =            $block->getUrl('adminhtml/fastlyCdn_Maintenance/CheckSuSetting');
+$toggleSuSettingUrl =           $block->getUrl('adminhtml/fastlyCdn_Maintenance/toggleSuSetting');
+$updateSuIpsUrl =               $block->getUrl('adminhtml/fastlyCdn_Maintenance/updateSuIps');
 // Manifest
 $createManifestsUrl =           $block->getUrl('adminhtml/fastlyCdn_Manifest/Create');
 $toggleModulesUrl =             $block->getUrl('adminhtml/fastlyCdn_Manifest/ToggleModules');
@@ -1650,9 +1689,9 @@ $vclUploadUrl =                 $block->getUrl('adminhtml/fastlyCdn_Vcl/upload')
 // Web Application Firewall
 $getWafSettingsUrl =            $block->getUrl('adminhtml/fastlyCdn_Waf/getWafSettings');
 $getOwaspSettingsUrl =          $block->getUrl('adminhtml/fastlyCdn_Waf/getOwaspSettings');
-$toggleWafBypassSettingUrl =     $block->getUrl('adminhtml/fastlyCdn_Waf/wafAllowlist');
-$checkWafBypassSettingUrl =      $block->getUrl('adminhtml/fastlyCdn_Waf/checkWafBypassSetting');
-$updateWafBypassUrl =            $block->getUrl('adminhtml/fastlyCdn_Waf/updateWafAllowlist');
+$toggleWafBypassSettingUrl =    $block->getUrl('adminhtml/fastlyCdn_Waf/wafAllowlist');
+$checkWafBypassSettingUrl =     $block->getUrl('adminhtml/fastlyCdn_Waf/checkWafBypassSetting');
+$updateWafBypassUrl =           $block->getUrl('adminhtml/fastlyCdn_Waf/updateWafAllowlist');
 // This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application
 $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
 ?>
@@ -1727,7 +1766,10 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "checkWafBypassSettingUrl": "<?php echo $block->escapeJsQuote($checkWafBypassSettingUrl);?>",
                     "updateWafBypassUrl": "<?php echo $block->escapeJsQuote($updateWafBypassUrl);?>",
                     "getDomainsUrl": "<?php echo $block->escapeJsQuote($getDomainsUrl);?>",
-                    "pushDomainsUrl": "<?php echo $block->escapeJsQuote($pushDomainsUrl);?>"
+                    "pushDomainsUrl": "<?php echo $block->escapeJsQuote($pushDomainsUrl);?>",
+                    "checkSuSettingUrl": "<?php echo $block->escapeJsQuote($checkSuSettingUrl);?>",
+                    "toggleSuSettingUrl": "<?php echo $block->escapeJsQuote($toggleSuSettingUrl);?>",
+                    "updateSuIpsUrl": "<?php echo $block->escapeJsQuote($updateSuIpsUrl);?>"
                 }
             }
         }

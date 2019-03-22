@@ -180,6 +180,7 @@ class Upload extends Action
             ];
 
             $this->api->createRequest($clone->number, $request);
+            $this->setupDictionaries($clone->number);
             $this->api->validateServiceVersion($clone->number);
 
             if ($activateVcl === 'true') {
@@ -236,5 +237,16 @@ class Upload extends Action
             throw new LocalizedException(__($exception));
         }
         return $snippetNameData;
+    }
+
+    /**
+     * @param $cloneNumber
+     * @throws LocalizedException
+     */
+    private function setupDictionaries($cloneNumber)
+    {
+        $configDictionary = Config::CONFIG_DICTIONARY_NAME;
+        $params = ['name' => $configDictionary];
+        $this->api->createDictionary($cloneNumber, $params);
     }
 }

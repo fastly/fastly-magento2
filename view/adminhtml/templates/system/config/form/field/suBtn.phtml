@@ -1,0 +1,48 @@
+<?php echo $block->getButtonHtml() ?>
+
+<span class="collect-indicator" id="su_state_span">
+    <span id="su_state_message_span"><b>Current state:</b>
+        <img class="processing"
+             alt="Collecting"
+             style="margin:0 5px;"
+             src="<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/fastly16.gif') ?>" />
+        <span style="display:none;" class="su_state_span state_enabled"
+              id="su_state_enabled"> enabled</span>
+        <span style="display:none;" class="su_state_span state_disabled"
+              id="su_state_disabled"> disabled</span>
+        <span style="display:none;" class="su_state_span state_unknown"
+              id="su_state_unknown"> unknown</span>
+    </span>
+</span>
+
+<div class="message message-error fastly-button-messages" id="fastly-error-su-button-msg" style="display: none">
+</div>
+
+<div class="message message-success fastly-button-messages" id="fastly-success-su-button-msg" style="display: none">
+</div>
+
+<div class="message message-warning fastly-button-messages" id="fastly-warning-su-button-msg" style="display: none">
+</div>
+
+<style type="text/css">
+    .fastly-button-messages {
+        font-size: 1.2rem;
+        margin-top: 5px;
+        padding: 1.4rem 4rem 1.4rem 5.5rem;
+    }
+
+    #su_state_enabled {
+        color: #008000;
+    }
+
+    #su_state_disabled {
+        color: #808080;
+    }
+
+    #su_state_unknown {
+        color: #ff0000;
+    }
+</style>
+
+
+

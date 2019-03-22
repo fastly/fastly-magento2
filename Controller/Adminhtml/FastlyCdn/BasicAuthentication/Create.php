@@ -20,7 +20,6 @@
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\BasicAuthentication;
 
-use Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl\CheckAuthSetting;
 use Fastly\Cdn\Model\Api;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
@@ -109,7 +108,14 @@ class Create extends Action
             // Fetch Authentication items
             if ((is_array($dictionary) && empty($dictionary)) || $dictionary == false) {
                 $params = ['name' => $dictionaryName];
-                $this->api->createDictionary($clone->number, $params);
+                $createDictionary = $this->api->createDictionary($clone->number, $params);
+
+                if (!$createDictionary) {
+                    return $result->setData([
+                        'status'    => false,
+                        'msg'       => 'Failed to create Dictionary container.'
+                    ]);
+                }
             }
 
             $this->api->validateServiceVersion($clone->number);

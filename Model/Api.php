@@ -933,8 +933,10 @@ class Api
 
     /**
      * Create named dictionary for a particular service and version.
+     *
      * @param $version
      * @param $params
+     * @return bool|mixed
      * @throws LocalizedException
      */
     public function createDictionary($version, $params)
@@ -942,9 +944,7 @@ class Api
         $url = $this->_getApiServiceUri(). 'version/'. $version . '/dictionary';
         $result = $this->_fetch($url, \Zend_Http_Client::POST, $params);
 
-        if (!$result) {
-            throw new LocalizedException(__('Failed to create Dictionary container.'));
-        }
+        return $result;
     }
 
     /**
@@ -1094,6 +1094,21 @@ class Api
         if (!$result) {
             throw new LocalizedException(__('Failed to create Dictionary item.'));
         }
+    }
+
+    /**
+     * Get ACL container info
+     * @param $version
+     * @param $acl
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function getSingleAcl($version, $acl)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version . '/acl/' . $acl;
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
     }
 
     /**

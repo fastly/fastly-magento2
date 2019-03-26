@@ -1568,7 +1568,42 @@
     </form>
 </script>
 
-<!-- Maintenancesupport template -->
+<!-- Maintenance support template -->
+<script type="text/x-magento-template" id="fastly-maint-template">
+    <div class="messages">
+        <div class="message message-warning fastly-message-warning" style="display: none">
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll upload your VCL to version #y.")?>
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="fastly-maint-form"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field maintenance-checkbox-container">
+                <label for="fastly_activate_maint" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate VCL after upload')?></span>
+                </label>
+                <div class="admin__field-control">
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_maint"
+                               id="fastly_activate_maint"
+                               checked/>
+                        <label class="admin__field-label" for="fastly_activate_maint"></label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</script>
+
+<!-- Super Users template -->
 <script type="text/x-magento-template" id="fastly-su-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -1583,23 +1618,6 @@
           id="fastly-su-form"
           class="form-inline"
           enctype="multipart/form-data">
-        <fieldset class="admin__fieldset form-list question">
-            <div class="admin__field field maintenance-checkbox-container">
-                <label for="fastly_activate_su" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __('Activate VCL after upload')?></span>
-                </label>
-                <div class="admin__field-control">
-                    <div class="admin__field-option">
-                        <input class="admin__control-checkbox"
-                               type="checkbox"
-                               name="fastly_activate_su"
-                               id="fastly_activate_su"
-                               checked/>
-                        <label class="admin__field-label" for="fastly_activate_su"></label>
-                    </div>
-                </div>
-            </div>
-        </fieldset>
     </form>
 </script>
 <?php
@@ -1666,7 +1684,9 @@ $configureIoUrl =               $block->getUrl('adminhtml/fastlyCdn_ImageOptimiz
 $isIoEnabled =                  $block->getConfig()->isImageOptimizationEnabled();
 // Maintenance Support
 $checkSuSettingUrl =            $block->getUrl('adminhtml/fastlyCdn_Maintenance/CheckSuSetting');
+$checkMaintSettingUrl =         $block->getUrl('adminhtml/fastlyCdn_Maintenance/CheckMaintSetting');
 $toggleSuSettingUrl =           $block->getUrl('adminhtml/fastlyCdn_Maintenance/toggleSuSetting');
+$toggleMaintSettingUrl =        $block->getUrl('adminhtml/fastlyCdn_Maintenance/toggleSuSnippet');
 $updateSuIpsUrl =               $block->getUrl('adminhtml/fastlyCdn_Maintenance/updateSuIps');
 // Manifest
 $createManifestsUrl =           $block->getUrl('adminhtml/fastlyCdn_Manifest/Create');
@@ -1768,7 +1788,9 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "getDomainsUrl": "<?php echo $block->escapeJsQuote($getDomainsUrl);?>",
                     "pushDomainsUrl": "<?php echo $block->escapeJsQuote($pushDomainsUrl);?>",
                     "checkSuSettingUrl": "<?php echo $block->escapeJsQuote($checkSuSettingUrl);?>",
+                    "checkMaintSettingUrl": "<?php echo $block->escapeJsQuote($checkMaintSettingUrl);?>",
                     "toggleSuSettingUrl": "<?php echo $block->escapeJsQuote($toggleSuSettingUrl);?>",
+                    "toggleMaintSettingUrl": "<?php echo $block->escapeJsQuote($toggleMaintSettingUrl);?>",
                     "updateSuIpsUrl": "<?php echo $block->escapeJsQuote($updateSuIpsUrl);?>"
                 }
             }

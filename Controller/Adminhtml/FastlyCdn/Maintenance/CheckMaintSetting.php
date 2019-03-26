@@ -22,25 +22,20 @@ namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Maintenance;
 
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
-use Fastly\Cdn\Helper\Vcl;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
 
 /**
- * Class CheckSuSetting
+ * Class CheckMaintSetting
  * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Maintenance
  */
-class CheckSuSetting extends Action
+class CheckMaintSetting extends Action
 {
     /**
      * @var Api
      */
     private $api;
-    /**
-     * @var Vcl
-     */
-    private $vcl;
     /**
      * @var Config
      */
@@ -55,18 +50,15 @@ class CheckSuSetting extends Action
      * @param Context $context
      * @param Config $config
      * @param Api $api
-     * @param Vcl $vcl
      * @param JsonFactory $resultJsonFactory
      */
     public function __construct(
         Context $context,
         Config $config,
         Api $api,
-        Vcl $vcl,
         JsonFactory $resultJsonFactory
     ) {
         $this->api = $api;
-        $this->vcl = $vcl;
         $this->config = $config;
         $this->resultJsonFactory = $resultJsonFactory;
 
@@ -74,38 +66,29 @@ class CheckSuSetting extends Action
     }
 
     /**
-     * Verifies whether super users are enabled in the magentomodule_config dictionary
-     *
+     * Verifies whether maintenance settings snippet exists on specified Fastly version
      * @return \Magento\Framework\Controller\Result\Json
      */
     public function execute()
     {
         $result = $this->resultJsonFactory->create();
         try {
-            $service = $this->api->checkServiceDetails();
-            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
+            $activeVersion = $this->getRequest()->getParam('active_version');
+            $snippets = $this->config->getVclSnippets(Config::VCL_MAINT_SNIPPET_PATH);
 
-            $dictionaryName = Config::CONFIG_DICTIONARY_NAME;
-            $dictionary = $this->api->getSingleDictionary($currActiveVersion, $dictionaryName);
+            foreach ($snippets as $key => $value) {
+                $name = Config::FASTLY_MAGENTO_MODULE . '_maintenance_' . $key;
+                $status = $this->api->hasSnippet($activeVersion, $name);
 
-            if (!$dictionary) {
-                return $result->setData([
-                    'status' => false
-                ]);
-            }
-
-            $dictionaryItems = $this->api->dictionaryItemsList($dictionary->id);
-
-            foreach ($dictionaryItems as $item) {
-                if ($item->item_key == Config::CONFIG_DICTIONARY_KEY && $item->item_value == 1) {
+                if ($status == false) {
                     return $result->setData([
-                        'status' => true
+                        'status' => false
                     ]);
                 }
             }
 
             return $result->setData([
-                'status' => false
+                'status' => true
             ]);
         } catch (\Exception $e) {
             return $result->setData([

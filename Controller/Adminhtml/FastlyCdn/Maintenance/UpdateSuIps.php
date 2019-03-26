@@ -106,7 +106,8 @@ class UpdateSuIps extends Action
 
             if (!$acl) {
                 throw new LocalizedException(__(
-                    'The required ACL container does not exist. Please enable Super Users and try again.'
+                    'The required ACL container does not exist. 
+                    Please enable the Maintenance Support snippet and try again.'
                 ));
             } else {
                 $ipList = $this->readMaintenanceIp();
@@ -156,7 +157,6 @@ class UpdateSuIps extends Action
             ]);
         }
     }
-
 
     /**
      * @return array

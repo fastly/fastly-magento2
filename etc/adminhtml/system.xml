@@ -222,7 +222,7 @@
                             </depends>
                         </field>
                         <!-- =====================================
-                             Fastly Edge Modules on/off switch 
+                             Fastly Edge Modules on/off switch
                         ====================================== -->
                         <field id="enable_fastly_edge_modules" translate="label comment" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enable Fastly Edge Modules</label>
@@ -709,6 +709,20 @@
                             <depends>
                                 <field id="enable_webhooks">1</field>
                             </depends>
+                        </field>
+                    </group>
+                    <!-- ==========================
+                    Rate Limiting Settings group
+                    =========================== -->
+                    <group id="fastly_rate_limiting_settings" sortOrder="510" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>Rate limiting</label>
+                        <!-- ==================
+                             Backends field
+                        =================== -->
+                        <field id="enable_rate_limiting" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Enable Rate limiting</label>
+                            <comment>Enable Rate Limiting for certain requests.</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                     </group>
                     <depends>

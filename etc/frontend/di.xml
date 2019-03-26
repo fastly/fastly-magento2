@@ -30,5 +30,9 @@
         <plugin name="fastly_adjust_cache_tags" type="Fastly\Cdn\Model\ResponsePlugin" sortOrder="100"/>
     </type>
 
+    <type name="Magento\Framework\App\FrontController">
+        <plugin name="fastly_rate_limiter" type="Fastly\Cdn\Model\FrontControllerPlugin" sortOrder="1"/>
+    </type>
+
     <preference for="\Magento\Catalog\Model\Product\Image" type="Fastly\Cdn\Model\Product\Image" />
 </config>

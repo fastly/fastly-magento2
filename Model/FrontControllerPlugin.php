@@ -112,10 +112,16 @@ class FrontControllerPlugin
 
         $limitedPaths = [
             '/paypal/transparent/requestsecuretoken',
-            '/paypal/transparent/requestsecuretoken/'
         ];
 
-        if (in_array($path, $limitedPaths)) {
+        $limit = false;
+        foreach ($limitedPaths as $limited) {
+            if (strpos($path, $limited) !== false) {
+                $limit = true;
+            }
+        }
+
+        if ($limit) {
             $ip = $request->getClientIp();
             $tag = self::FASTLY_CACHE_TAG . $path . '_' . $ip;
             $data = json_decode($this->cache->load($tag), true);

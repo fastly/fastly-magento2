@@ -545,18 +545,18 @@
                         Maintenance Support group
                     ============================= -->
                     <group id="fastly_maintenance_support" sortOrder="485" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0">
-                        <label>Maintenance Support</label>
+                        <label>Maintenance Mode</label>
                         <comment>
-                            <![CDATA[]]>
+                            <![CDATA[Enabling maintenance mode allows admin IPs (IPs specified in .maintenance.ip file) to access
+                            the site as normal while returning an error page to everyone else.]]>
                         </comment>
                         <field id="toggle_su" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
-                            <label>Enable Super Users</label>
-                            <comment>Enables Super Users for Maintenance mode.</comment>
+                            <label>Enable Maintenance Mode</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\SuBtn</frontend_model>
                         </field>
                         <field id="update_su" translate="label comment" type="select" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0">
-                            <label>Update Super Users IPs</label>
-                            <comment>Updates the list of whitelisted IPs. The IP values will be supplied by the var/.maintenance.ip file.</comment>
+                            <label>Update Admin IPs list</label>
+                            <comment>Updates the list of allowed/admin IPs. The IP values are comma-delimited and read from var/.maintenance.ip file.</comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\UpdateSuBtn</frontend_model>
                         </field>
                     </group>

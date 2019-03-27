@@ -13,11 +13,3 @@
         synthetic {""};
         return (deliver);
     }
-
-    if (obj.status == 750) {
-        set obj.http.Location = "https://" + req.http.host + req.url;
-        set obj.status = 301;
-        set obj.response = "Moved Permanently";
-        synthetic {""};
-        return (deliver);
-    }

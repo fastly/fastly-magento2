@@ -108,6 +108,11 @@ class Config extends \Magento\PageCache\Model\Config
     const VCL_AUTH_SNIPPET_PATH = '/vcl_snippets_basic_auth';
 
     /**
+     * Maintenance snippets directory path
+     */
+    const VCL_MAINT_SNIPPET_PATH = '/vcl_snippets_maintenance';
+
+    /**
      * Authentication dictionary name
      */
     const AUTH_DICTIONARY_NAME = 'magentomodule_basic_auth';
@@ -126,6 +131,21 @@ class Config extends \Magento\PageCache\Model\Config
      * Force TLS setting name
      */
     const FORCE_TLS_SETTING_NAME = 'magentomodule_force_tls';
+
+    /**
+     * Configure Dictionary name
+     */
+    const CONFIG_DICTIONARY_NAME = 'magentomodule_config';
+
+    /**
+     * Maintenance Allowlist name
+     */
+    const MAINT_ACL_NAME = 'maint_allowlist';
+
+    /**
+     * Config Dictionary key
+     */
+    const CONFIG_DICTIONARY_KEY = 'allow_super_users_during_maint';
 
     /**
      * Custom snippet path

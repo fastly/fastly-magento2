@@ -101,7 +101,14 @@ class Create extends Action
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
             $params = ['name' => $dictionaryName];
-            $this->api->createDictionary($clone->number, $params);
+            $createDictionary = $this->api->createDictionary($clone->number, $params);
+
+            if (!$createDictionary) {
+                return $result->setData([
+                    'status'    => false,
+                    'msg'       => 'Failed to create Dictionary container.'
+                ]);
+            }
             $this->api->validateServiceVersion($clone->number);
 
             if ($activateVcl === 'true') {

@@ -549,11 +549,6 @@
                         <comment>
                             <![CDATA[]]>
                         </comment>
-                        <field id="toggle_maint" translate="label comment" type="select" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
-                            <label>Maintenance Support Snippet</label>
-                            <comment>Enables Maintenance Support snippet and creates containers for use with Super Users.</comment>
-                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\MaintBtn</frontend_model>
-                        </field>
                         <field id="toggle_su" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Enable Super Users</label>
                             <comment>Enables Super Users for Maintenance mode.</comment>

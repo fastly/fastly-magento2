@@ -97,13 +97,22 @@ class ToggleSuSetting extends Action
             if (!$dictionary) {
                 return $result->setData([
                     'status'    => false,
-                    'msg'       => 'The required dictionary container does not exist'
+                    'msg'       => 'The required dictionary container does not exist. Please re-upload VCL.'
                 ]);
             }
+
+            $aclName = Config::MAINT_ACL_NAME;
+            $acl = $this->api->getSingleAcl($currActiveVersion, $aclName);
 
             $dictionaryItems = $this->api->dictionaryItemsList($dictionary->id);
 
             if (!$dictionaryItems) {
+                if (!$acl) {
+                    return $result->setData([
+                        'status'    => false,
+                        'msg'       => 'The required ACL container does not exist. Please re-upload VCL.'
+                    ]);
+                }
                 $this->api->upsertDictionaryItem(
                     $dictionary->id,
                     Config::CONFIG_DICTIONARY_KEY,
@@ -120,6 +129,12 @@ class ToggleSuSetting extends Action
                         );
                         $this->sendWebHook('*Super Users have been turned OFF*');
                     } elseif ($item->item_key == Config::CONFIG_DICTIONARY_KEY && $item->item_value == 0) {
+                        if (!$acl) {
+                            return $result->setData([
+                                'status'    => false,
+                                'msg'       => 'The required ACL container does not exist. Please re-upload VCL.'
+                            ]);
+                        }
                         $this->api->upsertDictionaryItem(
                             $dictionary->id,
                             Config::CONFIG_DICTIONARY_KEY,

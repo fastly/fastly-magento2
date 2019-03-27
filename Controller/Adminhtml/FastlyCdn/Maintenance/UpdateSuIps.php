@@ -107,7 +107,7 @@ class UpdateSuIps extends Action
             if (!$acl) {
                 throw new LocalizedException(__(
                     'The required ACL container does not exist. 
-                    Please enable the Maintenance Support snippet and try again.'
+                    Please re-upload VCL.'
                 ));
             } else {
                 $ipList = $this->readMaintenanceIp();
@@ -136,7 +136,10 @@ class UpdateSuIps extends Action
                     }
 
                     if (!filter_var($ipParts[0], FILTER_VALIDATE_IP)) {
-                        continue;
+                        throw new LocalizedException(__(
+                            'IP validation failed, please make sure that the provided IP values are comma-separated 
+                            and valid'
+                        ));
                     }
 
                     $this->api->upsertAclItem($aclId, $ipParts[0], 0, $comment, $subnet);
@@ -145,7 +148,7 @@ class UpdateSuIps extends Action
 
             if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
                 $this->api->sendWebHook(
-                    '*Super User Ips have been updated*'
+                    '*Super User IPs have been updated*'
                 );
             }
 
@@ -168,7 +171,13 @@ class UpdateSuIps extends Action
 
         if ($flagDir->isExist('.maintenance.ip')) {
             $temp = $flagDir->readFile('.maintenance.ip');
-            return explode(',', trim($temp));
+            $tempList = explode(',', trim($temp));
+            foreach ($tempList as $key => $value) {
+                if (empty($value) || !trim($value)) {
+                    unset($tempList[$key]);
+                }
+            }
+            return $tempList;
         }
         return [];
     }

@@ -180,7 +180,13 @@ class Upload extends Action
             ];
 
             $this->api->createRequest($clone->number, $request);
-            $this->setupDictionaries($clone->number);
+            $dictionary = $this->setupDictionary($clone->number, $currActiveVersion);
+            $acl = $this->setupAcl($clone->number, $currActiveVersion);
+
+            if (!$dictionary || !$acl) {
+                throw new LocalizedException(__('Failed to create Containers'));
+            }
+
             $this->api->validateServiceVersion($clone->number);
 
             if ($activateVcl === 'true') {
@@ -241,12 +247,37 @@ class Upload extends Action
 
     /**
      * @param $cloneNumber
+     * @param $currActiveVersion
+     * @return bool|mixed
      * @throws LocalizedException
      */
-    private function setupDictionaries($cloneNumber)
+    private function setupDictionary($cloneNumber, $currActiveVersion)
     {
-        $configDictionary = Config::CONFIG_DICTIONARY_NAME;
-        $params = ['name' => $configDictionary];
-        $this->api->createDictionary($cloneNumber, $params);
+        $dictionaryName = Config::CONFIG_DICTIONARY_NAME;
+        $dictionary = $this->api->getSingleDictionary($currActiveVersion, $dictionaryName);
+
+        if (!$dictionary) {
+            $params = ['name' => $dictionaryName];
+            $dictionary = $this->api->createDictionary($cloneNumber, $params);
+        }
+        return $dictionary;
+    }
+
+    /**
+     * @param $cloneNumber
+     * @param $currActiveVersion
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    private function setupAcl($cloneNumber, $currActiveVersion)
+    {
+        $aclName = Config::MAINT_ACL_NAME;
+        $acl = $this->api->getSingleAcl($currActiveVersion, $aclName);
+
+        if (!$acl) {
+            $params = ['name' => $aclName];
+            $acl = $this->api->createAcl($cloneNumber, $params);
+        }
+        return $acl;
     }
 }

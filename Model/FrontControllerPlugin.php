@@ -122,7 +122,7 @@ class FrontControllerPlugin
         }
 
         if ($limit) {
-            $ip = $request->getClientIp();
+            $ip = $request->getServerValue('HTTP_FASTLY_CLIENT_IP') ?? $request->getClientIp();
             $tag = self::FASTLY_CACHE_TAG . $path . '_' . $ip;
             $data = json_decode($this->cache->load($tag), true);
 

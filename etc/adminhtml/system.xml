@@ -555,7 +555,7 @@
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\SuBtn</frontend_model>
                         </field>
                         <field id="update_su" translate="label comment" type="select" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0">
-                            <label>Update Super Users IPs</label>
+                            <label>Update Super User IPs</label>
                             <comment>Updates the list of whitelisted IPs. The IP values will be supplied by the var/.maintenance.ip file.</comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\UpdateSuBtn</frontend_model>
                         </field>

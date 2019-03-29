@@ -157,11 +157,21 @@ class SuperUserCommand extends Command
             if ($action == 'enable') {
                 $aclName = Config::MAINT_ACL_NAME;
                 $acl = $this->api->getSingleAcl($currActiveVersion, $aclName);
+
                 if (!$acl) {
                     $msg = 'The required ACL container does not exist. Please re-upload VCL.';
                     $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
                     return;
                 }
+
+                $hasIps = $this->hasIps($acl);
+
+                if (!$hasIps) {
+                    $msg = 'Please update Super User IPs with at least one IP address before enabling Super Users.';
+                    $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
+                    return;
+                }
+
                 $this->api->upsertDictionaryItem(
                     $dictionary->id,
                     Config::CONFIG_DICTIONARY_KEY,
@@ -270,6 +280,22 @@ class SuperUserCommand extends Command
             return $tempList;
         }
         return [];
+    }
+
+    /**
+     * @param $acl
+     * @return bool
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    private function hasIps($acl)
+    {
+        $aclId = $acl->id;
+        $aclItems = $this->api->aclItemsList($aclId);
+
+        if (!$aclItems) {
+            return false;
+        }
+        return true;
     }
 
     /**

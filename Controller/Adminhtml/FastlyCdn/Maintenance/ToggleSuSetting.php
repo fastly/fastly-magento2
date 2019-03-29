@@ -106,11 +106,20 @@ class ToggleSuSetting extends Action
 
             $dictionaryItems = $this->api->dictionaryItemsList($dictionary->id);
 
+            $hasIps = $this->hasIps($acl);
+
             if (!$dictionaryItems) {
                 if (!$acl) {
                     return $result->setData([
                         'status'    => false,
                         'msg'       => 'The required ACL container does not exist. Please re-upload VCL.'
+                    ]);
+                }
+                if (!$hasIps) {
+                    return $result->setData([
+                        'status'    => false,
+                        'msg'       => 'Please update Super User IPs with at least one IP address before 
+                        enabling Super Users.'
                     ]);
                 }
                 $this->api->upsertDictionaryItem(
@@ -135,6 +144,13 @@ class ToggleSuSetting extends Action
                                 'msg'       => 'The required ACL container does not exist. Please re-upload VCL.'
                             ]);
                         }
+                        if (!$hasIps) {
+                            return $result->setData([
+                                'status'    => false,
+                                'msg'       => 'Please update Super User IPs with at least one IP address before 
+                                enabling Super Users.'
+                            ]);
+                        }
                         $this->api->upsertDictionaryItem(
                             $dictionary->id,
                             Config::CONFIG_DICTIONARY_KEY,
@@ -154,6 +170,22 @@ class ToggleSuSetting extends Action
                 'msg'       => $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * @param $acl
+     * @return bool
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    private function hasIps($acl)
+    {
+        $aclId = $acl->id;
+        $aclItems = $this->api->aclItemsList($aclId);
+
+        if (!$aclItems) {
+            return false;
+        }
+        return true;
     }
 
     private function sendWebHook($message)

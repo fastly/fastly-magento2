@@ -3,6 +3,8 @@
 This guide will show you how to setup Maintenance Support. This feature allows you to whitelist IP addresses on the 
 Fastly service during maintenance and prevents non-whitelisted IPs from accessing cached content.
 
+![Maintenance Support Screen](../images/guides/maintenance-support/maint-support-screen.png "Maintenance Support Screen")
+
 # Requirements
 
 Before using this feature, make sure to Upload VCL to Fastly from the Fastly Configuration menu, or
@@ -24,5 +26,9 @@ Before Super Users can be enabled, the list of allowed IP addresses in the `main
 contain at least one IP address. To update the list, use the Update Super Users IPs button in the Maintenance
 Support tab of the Fastly Configuration or the CLI command `bin/magento fastly:superusers -u`. This process will read 
 all of the IP addresses contained in the `var/.maintenance.ip` file and add them to the `maint_allowlist` ACL container.
+
+The `var/.maintenance.ip` file can be manually created or by using the Magento default CLI commands 
+`bin/magento maintenance:enable [--ip=<ip address> ... --ip=<ip address>]` or 
+`bin/magento maintenance:allow-ips <ip address> .. <ip address>`
 
 

@@ -3,6 +3,8 @@
 ## 1.2.91
 
 - Add maintenance mode support https://github.com/fastly/fastly-magento2/pull/256
+- Added check for file and line array indexes for webhook stack trace https://github.com/fastly/fastly-magento2/pull/257
+- Changed the way the store switch url parameters are added for the geoip redirect https://github.com/fastly/fastly-magento2/pull/254
 
 ## 1.2.90
 

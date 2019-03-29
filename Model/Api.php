@@ -1446,7 +1446,11 @@ class Api
         $stackTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
         $trace = [];
         foreach ($stackTrace as $row => $data) {
-            $trace[] = "#{$row} {$data['file']}:{$data['line']} -> {$data['function']}()";
+            if (!array_key_exists('file', $data) || !array_key_exists('line', $data)) {
+                $trace[] = "# <unknown>";
+            } else {
+                $trace[] = "#{$row} {$data['file']}:{$data['line']} -> {$data['function']}()";
+            }
         }
 
         $this->sendWebHook('*'. $type .' backtrace:*```' .  implode("\n", $trace) . '```');

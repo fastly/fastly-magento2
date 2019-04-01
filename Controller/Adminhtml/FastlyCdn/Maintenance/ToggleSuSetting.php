@@ -117,8 +117,8 @@ class ToggleSuSetting extends Action
                 if (!$hasIps) {
                     return $result->setData([
                         'status'    => false,
-                        'msg'       => 'Please update Super User IPs with at least one IP address before 
-                        enabling Super Users.'
+                        'msg'       => 'Please update Admin IPs list with at least one IP address before enabling 
+                        Maintenance Mode.'
                     ]);
                 }
                 $this->api->upsertDictionaryItem(
@@ -126,7 +126,7 @@ class ToggleSuSetting extends Action
                     Config::CONFIG_DICTIONARY_KEY,
                     1
                 );
-                $this->sendWebHook('*Super Users have been turned ON*');
+                $this->sendWebHook('*Maintenance Mode has been turned ON*');
             } else {
                 $processResult = $this->processDictionaryItems($dictionary, $dictionaryItems, $acl, $hasIps);
                 if ($processResult) {
@@ -178,7 +178,7 @@ class ToggleSuSetting extends Action
                     Config::CONFIG_DICTIONARY_KEY,
                     0
                 );
-                $this->sendWebHook('*Super Users have been turned OFF*');
+                $this->sendWebHook('*Maintenance Mode has been turned OFF*');
             } elseif ($item->item_key == Config::CONFIG_DICTIONARY_KEY && $item->item_value == 0) {
                 if (!$acl) {
                     return [
@@ -189,8 +189,8 @@ class ToggleSuSetting extends Action
                 if (!$hasIps) {
                     return [
                         'status'    => false,
-                        'msg'       => 'Please update Super User IPs with at least one IP address before 
-                        enabling Super Users.'
+                        'msg'       => 'Please update Admin IPs list with at least one IP address before enabling 
+                        Maintenance Mode.'
                     ];
                 }
                 $this->api->upsertDictionaryItem(
@@ -198,7 +198,7 @@ class ToggleSuSetting extends Action
                     Config::CONFIG_DICTIONARY_KEY,
                     1
                 );
-                $this->sendWebHook('*Super Users have been turned ON*');
+                $this->sendWebHook('*Maintenance Mode has been turned ON*');
             }
         }
         return false;

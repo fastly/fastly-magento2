@@ -111,9 +111,15 @@ class UpdateSuIps extends Action
                 ));
             } else {
                 $ipList = $this->readMaintenanceIp();
+                if (!$ipList) {
+                    return $result->setData([
+                        'status'    => false,
+                        'msg'       => 'Please make sure that the maintenance.ip file contains at least one IP address.'
+                    ]);
+                }
                 $aclId = $acl->id;
                 $aclItems = $this->api->aclItemsList($aclId);
-                $comment = 'Added for Maintenance Support';
+                $comment = 'Added for Maintenance Mode';
 
                 foreach ($aclItems as $key => $value) {
                     $this->api->deleteAclItem($aclId, $value->id);
@@ -148,7 +154,7 @@ class UpdateSuIps extends Action
 
             if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
                 $this->api->sendWebHook(
-                    '*Super User IPs have been updated*'
+                    '*Admin IPs list has been updated*'
                 );
             }
 

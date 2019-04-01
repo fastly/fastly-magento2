@@ -80,7 +80,7 @@ define([
                     if (response.status === false) {
                         return errorUpdateSuBtnMsg.text($.mage.__(response.msg)).show();
                     } else {
-                        return successUpdateSuBtnMsg.text($.mage.__('Super User Ips successfully updated')).show();
+                        return successUpdateSuBtnMsg.text($.mage.__('Admin IPs list successfully updated')).show();
                     }
                 });
             });
@@ -110,10 +110,10 @@ define([
                     let upload_button = $('.upload-button span');
 
                     if (response.status === false) {
-                        $('.modal-title').text($.mage.__('You are about to enable Super Users for Maintenance Mode'));
+                        $('.modal-title').text($.mage.__('You are about to enable Maintenance Mode'));
                         upload_button.text('Enable');
                     } else {
-                        $('.modal-title').text($.mage.__('You are about to disable Super Users for Maintenance Mode'));
+                        $('.modal-title').text($.mage.__('You are about to disable Maintenance Mode'));
                         upload_button.text('Disable');
                     }
                     superUsers = response.status;
@@ -153,7 +153,7 @@ define([
                         } else {
                             disabledOrEnabled = 'disabled';
                         }
-                        successSuBtnMsg.text($.mage.__('Super Users successfully ' + disabledOrEnabled + '.')).show();
+                        successSuBtnMsg.text($.mage.__('Maintenance Mode successfully ' + disabledOrEnabled + '.')).show();
                         $('.su_state_span').hide();
 
                         if (disabledOrEnabled === 'enabled') {

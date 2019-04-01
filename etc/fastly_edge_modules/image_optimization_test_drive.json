@@ -1,39 +1,32 @@
 {
-  "description": "Allows you to test drive Image optimization on your site without turning it on for all users. Creates a special URL which will set a special cookie which turns on IO only for you.",
-  "id": "io_test_drive",
-  "name": "Test Drive Image Optimization",
-  "properties": [
-    {
-      "entryTemplate": "{{source}} => {{dest}}",
-      "label": "Rules",
-      "name": "rules",
-      "properties": [
+    "description": "Allows you to test drive Image optimization on your site without turning it on for all users. Creates a special URL which will set a special cookie which turns on IO with selected quality settings only for you.",
+    "id": "io_test_drive",
+    "name": "Test Drive Image Optimization",
+    "properties": [
         {
-          "description": "IO Setup URL",
-          "label": "Incoming Domain/Host",
-          "name": "setupURL",
-          "required": true,
-          "type": "string",
-          "default": "/.fastly-image-optimization-test-parameters"
+            "default": "/.fastly-test-drive",
+            "description": "This is the URL that will be exposed on your domain for enabling test drive e.g. https://www.domain.com/.fastly-test-drive. Once is you enable this module go to the URL to enable it for yourself.",
+            "label": "Incoming URL path",
+            "name": "setupURL",
+            "required": true,
+            "type": "string"
         }
-      ]
-    }
-  ],
-  "test": {
-    "origins": [
-      "https://httpbin.org"
     ],
-    "reqUrl": "/sourcePath"
-  },
-  "vcl": [
-    {
-      "template": "# Sets up synthetic responses\nif ( req.url.path == \"{{setupURL}}\" ) {\n  if ( req.url.qs == \"\" ) {\n    error 798;\n  } else {\n    set req.url = querystring.filter_except(req.url, \"quality\" + querystring.filtersep() + \"bgcolor\");\n    error 799;\n  }\n\n}\n\n# Enable IO only for users with the cookie\nif ( req.http.Cookie:fastly-io-test && req.url.ext ~ \"(?i)^(gif|png|jpg|jpeg|webp)$\") {\n\n  set req.http.X-Fastly-Imageopto-Api = \"fastly\";\n\n  set req.url = querystring.set(req.url, \"auto\", \"webp\") + \"&\" + req.http.Cookie:fastly-io-test;\n  \n}\n",
-      "type": "recv"
+    "test": {
+        "origins": [
+            "https://httpbin.org"
+        ],
+        "reqUrl": "/sourcePath"
     },
-    {
-      "type": "error",
-      "template": "  if (obj.status == 798 ) {\n    set obj.http.Content-Type = \"text/html; charset=utf-8\";\n    set obj.status = 200;\n    synthetic {\"<HTML>\n      <HEAD>\n      <TITLE>Image Optimization Test</TITLE>\n      <META HTTP-EQUIV='Content-Type' CONTENT='text/html;'>\n      </HEAD>\n      <BODY>\n      <form>\n        Enter the quality level you want to test. This will set a cookie that will\n        allow you to test the site with the said quality level. If you want to try a different\n        quality level come back to this page. Also best used in Incognito or Private Window mod\n        <p>\n        <h2>Quality level 0-100 <input name=quality size=3></h2>\n        <input type=submit>\n      </form>\n      </BODY>\n      </HTML>\"};\n      return (deliver);\n  }\n  \n  if (obj.status == 799 ) {\n    set obj.http.Content-Type = \"text/html; charset=utf-8\";\n    set obj.http.Set-Cookie = \"fastly-io-test=\" req.url.qs \"; Max-Age=3600; path=/; HttpOnly\";\n    set obj.status = 200;\n    synthetic {\"Cookie has been set for 1 hour. Please browse the site as you normally would.\"};\n    return (deliver);\n  }"
-    }
-  ],
-  "version": 1
+    "vcl": [
+        {
+            "template": "# Sets up synthetic responses\nif ( req.url.path == \"{{setupURL}}\" ) {\n  if ( req.url.qs == \"\" ) {\n    error 798;\n  } else {\n    set req.url = querystring.filter_except(req.url, \"quality\" + querystring.filtersep() + \"bgcolor\");\n    error 799;\n  }\n\n}\n\n# Enable IO only for users with the cookie\nif ( req.http.Cookie:fastly-io-test && req.url.ext ~ \"(?i)^(gif|png|jpg|jpeg|webp)$\") {\n\n  set req.http.X-Fastly-Imageopto-Api = \"fastly\";\n\n  set req.url = querystring.set(req.url, \"auto\", \"webp\") + \"&\" + req.http.Cookie:fastly-io-test;\n  \n}\n",
+            "type": "recv"
+        },
+        {
+            "template": "  if (obj.status == 798 ) {\n    set obj.http.Content-Type = \"text/html; charset=utf-8\";\n    set obj.status = 200;\n    synthetic {\"<HTML>\n      <HEAD>\n      <TITLE>Image Optimization Test</TITLE>\n      <META HTTP-EQUIV='Content-Type' CONTENT='text/html;'>\n      </HEAD>\n      <BODY>\n      <form>\n        Enter the quality level you want to test. This will set a cookie that will\n        allow you to test the site with the said quality level. If you want to try a different\n        quality level come back to this page. Also best used in Incognito or Private Window mod\n        <p>\n        <h2>Quality level 0-100 <input name=quality size=3></h2>\n        <input type=submit>\n      </form>\n      </BODY>\n      </HTML>\"};\n      return (deliver);\n  }\n  \n  if (obj.status == 799 ) {\n    set obj.http.Content-Type = \"text/html; charset=utf-8\";\n    set obj.http.Set-Cookie = \"fastly-io-test=\" req.url.qs \"; Max-Age=3600; path=/; HttpOnly\";\n    set obj.status = 200;\n    synthetic {\"Cookie has been set for 1 hour. Please browse the site as you normally would.\"};\n    return (deliver);\n  }",
+            "type": "error"
+        }
+    ],
+    "version": 1
 }

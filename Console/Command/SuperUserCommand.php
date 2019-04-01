@@ -62,21 +62,21 @@ class SuperUserCommand extends Command
      */
     protected function configure() // @codingStandardsIgnoreLine - required by parent class
     {
-        $this->setName('fastly:superusers')
-            ->setDescription('Enables Fastly Super Users for Maintenance mode');
+        $this->setName('fastly:maintenance')
+            ->setDescription('Fastly Maintenance Mode configuration');
 
         $this->addOption(
             'enable',
             'e',
             InputOption::VALUE_NONE,
-            'Enables Fastly Super Users.'
+            'Enables Fastly Maintenance Mode.'
         );
 
         $this->addOption(
             'disable',
             'd',
             InputOption::VALUE_NONE,
-            'Disables Fastly Super Users.'
+            'Disables Fastly Maintenance Mode.'
         );
 
         $this->addOption(
@@ -146,7 +146,7 @@ class SuperUserCommand extends Command
 
             $dictionaryName = Config::CONFIG_DICTIONARY_NAME;
             $dictionary = $this->api->getSingleDictionary($currActiveVersion, $dictionaryName);
-            $msg = 'Super Users have been enabled';
+            $msg = 'Maintenance Mode has been enabled';
 
             if (!$dictionary) {
                 $msg = 'The required dictionary container does not exist.';
@@ -167,7 +167,7 @@ class SuperUserCommand extends Command
                 $hasIps = $this->hasIps($acl);
 
                 if (!$hasIps) {
-                    $msg = 'Please update Super User IPs with at least one IP address before enabling Super Users.';
+                    $msg = 'Please update Admin IPs list with at least one IP address before enabling Maintenance Mode';
                     $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
                     return;
                 }
@@ -177,15 +177,15 @@ class SuperUserCommand extends Command
                     Config::CONFIG_DICTIONARY_KEY,
                     1
                 );
-                $this->sendWebHook('*Super Users have been enabled*');
+                $this->sendWebHook('*Maintenance Mode has been enabled*');
             } elseif ($action == 'disable') {
                 $this->api->upsertDictionaryItem(
                     $dictionary->id,
                     Config::CONFIG_DICTIONARY_KEY,
                     0
                 );
-                $msg = 'Super Users have been disabled';
-                $this->sendWebHook('*Super Users have been disabled*');
+                $msg = 'Maintenance Mode has been disabled';
+                $this->sendWebHook('*Maintenance Mode has been disabled*');
             }
 
             $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
@@ -211,9 +211,14 @@ class SuperUserCommand extends Command
                 return;
             } else {
                 $ipList = $this->readMaintenanceIp();
+                if (!$ipList) {
+                    $msg = 'Please make sure that the maintenance.ip file contains at least one IP address.';
+                    $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
+                    return;
+                }
                 $aclId = $acl->id;
                 $aclItems = $this->api->aclItemsList($aclId);
-                $comment = 'Added for Maintenance Support';
+                $comment = 'Added for Maintenance Mode';
 
                 foreach ($aclItems as $key => $value) {
                     $this->api->deleteAclItem($aclId, $value->id);
@@ -248,11 +253,11 @@ class SuperUserCommand extends Command
 
             if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
                 $this->api->sendWebHook(
-                    '*Super User IPs have been updated*'
+                    '*Admin IPs list has been updated*'
                 );
             }
 
-            $msg = 'Super User IPs have been updated';
+            $msg = 'Admin IPs list has been updated';
             $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
         } catch (\Exception $e) {
             $msg = $e->getMessage();

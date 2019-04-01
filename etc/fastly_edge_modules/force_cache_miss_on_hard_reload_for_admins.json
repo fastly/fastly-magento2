@@ -1,0 +1,31 @@
+{
+  "name": "Hard Reload cache bypass for set of admin IPs",
+  "id": "force_cache_miss_on_hard_reload_for_admins",
+  "description": "Force cache miss for users on allowlist. Invoke it on your browser by pressing CMD/CTRL + SHIFT + R or SHIFT + F5 depending on your browser. It only affects your own session. It will not affected already cached content.",
+  "version": 1,
+  "properties": [
+    {
+      "name": "Acl",
+      "label": "ACL",
+      "description": "ACL that contains IPs of users allowing to force cache misses",
+      "type": "acl",
+      "required": true
+    }
+  ],
+  "vcl": [
+    {
+      "type": "recv",
+      "template": "if ( req.http.Fastly-Client-IP ~ {{Acl}} && req.http.pragma ~ \"no-cache\" ) {\n  set req.hash_always_miss = true;\n}"
+    },
+    {
+      "type": "hash",
+      "template": "if ( req.http.Fastly-Client-IP ~ {{Acl}} && req.http.pragma ~ \"no-cache\" ) {\n  set req.hash += \"NOCACHE\";\n\n}"
+    }
+  ],
+  "test": {
+    "origins": [
+      "https://httpbin.org"
+    ],
+    "reqUrl": "/status/500"
+  }
+}

@@ -105,6 +105,7 @@ class ToggleSuSetting extends Action
             $acl = $this->api->getSingleAcl($currActiveVersion, $aclName);
 
             $dictionaryItems = $this->api->dictionaryItemsList($dictionary->id);
+            $hasIps = $this->hasIps($acl);
 
             if (!$dictionaryItems) {
                 if (!$acl) {
@@ -113,35 +114,23 @@ class ToggleSuSetting extends Action
                         'msg'       => 'The required ACL container does not exist. Please re-upload VCL.'
                     ]);
                 }
+                if (!$hasIps) {
+                    return $result->setData([
+                        'status'    => false,
+                        'msg'       => 'Please update Admin IPs list with at least one IP address before enabling 
+                        Maintenance Mode.'
+                    ]);
+                }
                 $this->api->upsertDictionaryItem(
                     $dictionary->id,
                     Config::CONFIG_DICTIONARY_KEY,
                     1
                 );
-                $this->sendWebHook('*Super Users have been turned ON*');
+                $this->sendWebHook('*Maintenance Mode has been turned ON*');
             } else {
-                foreach ($dictionaryItems as $item) {
-                    if ($item->item_key == Config::CONFIG_DICTIONARY_KEY && $item->item_value == 1) {
-                        $this->api->upsertDictionaryItem(
-                            $dictionary->id,
-                            Config::CONFIG_DICTIONARY_KEY,
-                            0
-                        );
-                        $this->sendWebHook('*Super Users have been turned OFF*');
-                    } elseif ($item->item_key == Config::CONFIG_DICTIONARY_KEY && $item->item_value == 0) {
-                        if (!$acl) {
-                            return $result->setData([
-                                'status'    => false,
-                                'msg'       => 'The required ACL container does not exist. Please re-upload VCL.'
-                            ]);
-                        }
-                        $this->api->upsertDictionaryItem(
-                            $dictionary->id,
-                            Config::CONFIG_DICTIONARY_KEY,
-                            1
-                        );
-                        $this->sendWebHook('*Super Users have been turned ON*');
-                    }
+                $processResult = $this->processDictionaryItems($dictionary, $dictionaryItems, $acl, $hasIps);
+                if ($processResult) {
+                    return $result->setData($processResult);
                 }
             }
 
@@ -156,6 +145,68 @@ class ToggleSuSetting extends Action
         }
     }
 
+    /**
+     * @param $acl
+     * @return bool
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    private function hasIps($acl)
+    {
+        $aclId = $acl->id;
+        $aclItems = $this->api->aclItemsList($aclId);
+
+        if (!$aclItems) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @param $dictionary
+     * @param $dictionaryItems
+     * @param $acl
+     * @param $hasIps
+     * @return array|bool
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    private function processDictionaryItems($dictionary, $dictionaryItems, $acl, $hasIps)
+    {
+        foreach ($dictionaryItems as $item) {
+            if ($item->item_key == Config::CONFIG_DICTIONARY_KEY && $item->item_value == 1) {
+                $this->api->upsertDictionaryItem(
+                    $dictionary->id,
+                    Config::CONFIG_DICTIONARY_KEY,
+                    0
+                );
+                $this->sendWebHook('*Maintenance Mode has been turned OFF*');
+            } elseif ($item->item_key == Config::CONFIG_DICTIONARY_KEY && $item->item_value == 0) {
+                if (!$acl) {
+                    return [
+                        'status'    => false,
+                        'msg'       => 'The required ACL container does not exist. Please re-upload VCL.'
+                    ];
+                }
+                if (!$hasIps) {
+                    return [
+                        'status'    => false,
+                        'msg'       => 'Please update Admin IPs list with at least one IP address before enabling 
+                        Maintenance Mode.'
+                    ];
+                }
+                $this->api->upsertDictionaryItem(
+                    $dictionary->id,
+                    Config::CONFIG_DICTIONARY_KEY,
+                    1
+                );
+                $this->sendWebHook('*Maintenance Mode has been turned ON*');
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param $message
+     */
     private function sendWebHook($message)
     {
         if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {

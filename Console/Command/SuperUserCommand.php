@@ -62,21 +62,21 @@ class SuperUserCommand extends Command
      */
     protected function configure() // @codingStandardsIgnoreLine - required by parent class
     {
-        $this->setName('fastly:superusers')
-            ->setDescription('Enables Fastly Super Users for Maintenance mode');
+        $this->setName('fastly:maintenance')
+            ->setDescription('Fastly Maintenance Mode configuration');
 
         $this->addOption(
             'enable',
             'e',
             InputOption::VALUE_NONE,
-            'Enables Fastly Super Users.'
+            'Enables Fastly Maintenance Mode.'
         );
 
         $this->addOption(
             'disable',
             'd',
             InputOption::VALUE_NONE,
-            'Disables Fastly Super Users.'
+            'Disables Fastly Maintenance Mode.'
         );
 
         $this->addOption(
@@ -146,7 +146,7 @@ class SuperUserCommand extends Command
 
             $dictionaryName = Config::CONFIG_DICTIONARY_NAME;
             $dictionary = $this->api->getSingleDictionary($currActiveVersion, $dictionaryName);
-            $msg = 'Super Users have been enabled';
+            $msg = 'Maintenance Mode has been enabled';
 
             if (!$dictionary) {
                 $msg = 'The required dictionary container does not exist.';
@@ -157,25 +157,35 @@ class SuperUserCommand extends Command
             if ($action == 'enable') {
                 $aclName = Config::MAINT_ACL_NAME;
                 $acl = $this->api->getSingleAcl($currActiveVersion, $aclName);
+
                 if (!$acl) {
                     $msg = 'The required ACL container does not exist. Please re-upload VCL.';
                     $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
                     return;
                 }
+
+                $hasIps = $this->hasIps($acl);
+
+                if (!$hasIps) {
+                    $msg = 'Please update Admin IPs list with at least one IP address before enabling Maintenance Mode';
+                    $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
+                    return;
+                }
+
                 $this->api->upsertDictionaryItem(
                     $dictionary->id,
                     Config::CONFIG_DICTIONARY_KEY,
                     1
                 );
-                $this->sendWebHook('*Super Users have been enabled*');
+                $this->sendWebHook('*Maintenance Mode has been enabled*');
             } elseif ($action == 'disable') {
                 $this->api->upsertDictionaryItem(
                     $dictionary->id,
                     Config::CONFIG_DICTIONARY_KEY,
                     0
                 );
-                $msg = 'Super Users have been disabled';
-                $this->sendWebHook('*Super Users have been disabled*');
+                $msg = 'Maintenance Mode has been disabled';
+                $this->sendWebHook('*Maintenance Mode has been disabled*');
             }
 
             $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
@@ -199,50 +209,49 @@ class SuperUserCommand extends Command
                 $msg = 'The required ACL container does not exist. Please re-upload VCL.';
                 $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
                 return;
-            } else {
-                $ipList = $this->readMaintenanceIp();
-                $aclId = $acl->id;
-                $aclItems = $this->api->aclItemsList($aclId);
-                $comment = 'Added for Maintenance Support';
-
-                foreach ($aclItems as $key => $value) {
-                    $this->api->deleteAclItem($aclId, $value->id);
-                }
-
-                foreach ($ipList as $ip) {
-                    if ($ip[0] == '!') {
-                        $ip = ltrim($ip, '!');
-                    }
-
-                    // Handle subnet
-                    $ipParts = explode('/', $ip);
-                    $subnet = false;
-                    if (!empty($ipParts[1])) {
-                        if (is_numeric($ipParts[1]) && (int)$ipParts[1] < 129) {
-                            $subnet = $ipParts[1];
-                        } else {
-                            continue;
-                        }
-                    }
-
-                    if (!filter_var($ipParts[0], FILTER_VALIDATE_IP)) {
-                        $msg = 'IP validation failed, please make sure that the provided ';
-                        $msg = $msg . 'IP values are comma-separated and valid.';
-                        $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
-                        return;
-                    }
-
-                    $this->api->upsertAclItem($aclId, $ipParts[0], 0, $comment, $subnet);
-                }
             }
 
-            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-                $this->api->sendWebHook(
-                    '*Super User IPs have been updated*'
-                );
+            $ipList = $this->readMaintenanceIp();
+            if (!$ipList) {
+                $msg = 'Please make sure that the maintenance.ip file contains at least one IP address.';
+                $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
+                return;
+            }
+            $aclId = $acl->id;
+            $aclItems = $this->api->aclItemsList($aclId);
+            $comment = 'Added for Maintenance Mode';
+
+            $this->deleteIps($aclItems, $aclId);
+
+            foreach ($ipList as $ip) {
+                if ($ip[0] == '!') {
+                    $ip = ltrim($ip, '!');
+                }
+
+                // Handle subnet
+                $ipParts = explode('/', $ip);
+                $subnet = false;
+                if (!empty($ipParts[1])) {
+                    if (is_numeric($ipParts[1]) && (int)$ipParts[1] < 129) {
+                        $subnet = $ipParts[1];
+                    } else {
+                        continue;
+                    }
+                }
+
+                if (!filter_var($ipParts[0], FILTER_VALIDATE_IP)) {
+                    $msg = 'IP validation failed, please make sure that the provided ';
+                    $msg = $msg . 'IP values are comma-separated and valid.';
+                    $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
+                    return;
+                }
+
+                $this->api->upsertAclItem($aclId, $ipParts[0], 0, $comment, $subnet);
             }
 
-            $msg = 'Super User IPs have been updated';
+            $this->sendWebHook('*Admin IPs list has been updated*');
+
+            $msg = 'Admin IPs list has been updated';
             $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
         } catch (\Exception $e) {
             $msg = $e->getMessage();
@@ -270,6 +279,34 @@ class SuperUserCommand extends Command
             return $tempList;
         }
         return [];
+    }
+
+    /**
+     * @param $acl
+     * @return bool
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    private function hasIps($acl)
+    {
+        $aclId = $acl->id;
+        $aclItems = $this->api->aclItemsList($aclId);
+
+        if (!$aclItems) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @param $aclItems
+     * @param $aclId
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    private function deleteIps($aclItems, $aclId)
+    {
+        foreach ($aclItems as $key => $value) {
+            $this->api->deleteAclItem($aclId, $value->id);
+        }
     }
 
     /**

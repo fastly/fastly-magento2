@@ -106,18 +106,21 @@ class UpdateSuIps extends Action
 
             if (!$acl) {
                 throw new LocalizedException(__(
-                    'The required ACL container does not exist. 
-                    Please re-upload VCL.'
+                    'The required ACL container does not exist. Please re-upload VCL.'
                 ));
             } else {
                 $ipList = $this->readMaintenanceIp();
+                if (!$ipList) {
+                    return $result->setData([
+                        'status'    => false,
+                        'msg'       => 'Please make sure that the maintenance.ip file contains at least one IP address.'
+                    ]);
+                }
                 $aclId = $acl->id;
                 $aclItems = $this->api->aclItemsList($aclId);
-                $comment = 'Added for Maintenance Support';
+                $comment = 'Added for Maintenance Mode';
 
-                foreach ($aclItems as $key => $value) {
-                    $this->api->deleteAclItem($aclId, $value->id);
-                }
+                $this->deleteIps($aclItems, $aclId);
 
                 foreach ($ipList as $ip) {
                     if ($ip[0] == '!') {
@@ -146,11 +149,7 @@ class UpdateSuIps extends Action
                 }
             }
 
-            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-                $this->api->sendWebHook(
-                    '*Super User IPs have been updated*'
-                );
-            }
+            $this->sendWebHook();
 
             return $result->setData(['status' => true]);
         } catch (\Exception $e) {
@@ -180,5 +179,26 @@ class UpdateSuIps extends Action
             return $tempList;
         }
         return [];
+    }
+
+    private function sendWebHook()
+    {
+        if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+            $this->api->sendWebHook(
+                '*Admin IPs list has been updated*'
+            );
+        }
+    }
+
+    /**
+     * @param $aclItems
+     * @param $aclId
+     * @throws LocalizedException
+     */
+    private function deleteIps($aclItems, $aclId)
+    {
+        foreach ($aclItems as $key => $value) {
+            $this->api->deleteAclItem($aclId, $value->id);
+        }
     }
 }

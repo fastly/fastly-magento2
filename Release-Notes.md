@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.92
+
+- Improvements to maintenance mode support https://github.com/fastly/fastly-magento2/pull/258
+
 ## 1.2.91
 
 - Add maintenance mode support https://github.com/fastly/fastly-magento2/pull/256

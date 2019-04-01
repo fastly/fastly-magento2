@@ -209,53 +209,47 @@ class SuperUserCommand extends Command
                 $msg = 'The required ACL container does not exist. Please re-upload VCL.';
                 $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
                 return;
-            } else {
-                $ipList = $this->readMaintenanceIp();
-                if (!$ipList) {
-                    $msg = 'Please make sure that the maintenance.ip file contains at least one IP address.';
+            }
+
+            $ipList = $this->readMaintenanceIp();
+            if (!$ipList) {
+                $msg = 'Please make sure that the maintenance.ip file contains at least one IP address.';
+                $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
+                return;
+            }
+            $aclId = $acl->id;
+            $aclItems = $this->api->aclItemsList($aclId);
+            $comment = 'Added for Maintenance Mode';
+
+            $this->deleteIps($aclItems, $aclId);
+
+            foreach ($ipList as $ip) {
+                if ($ip[0] == '!') {
+                    $ip = ltrim($ip, '!');
+                }
+
+                // Handle subnet
+                $ipParts = explode('/', $ip);
+                $subnet = false;
+                if (!empty($ipParts[1])) {
+                    if (is_numeric($ipParts[1]) && (int)$ipParts[1] < 129) {
+                        $subnet = $ipParts[1];
+                    } else {
+                        continue;
+                    }
+                }
+
+                if (!filter_var($ipParts[0], FILTER_VALIDATE_IP)) {
+                    $msg = 'IP validation failed, please make sure that the provided ';
+                    $msg = $msg . 'IP values are comma-separated and valid.';
                     $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
                     return;
                 }
-                $aclId = $acl->id;
-                $aclItems = $this->api->aclItemsList($aclId);
-                $comment = 'Added for Maintenance Mode';
 
-                foreach ($aclItems as $key => $value) {
-                    $this->api->deleteAclItem($aclId, $value->id);
-                }
-
-                foreach ($ipList as $ip) {
-                    if ($ip[0] == '!') {
-                        $ip = ltrim($ip, '!');
-                    }
-
-                    // Handle subnet
-                    $ipParts = explode('/', $ip);
-                    $subnet = false;
-                    if (!empty($ipParts[1])) {
-                        if (is_numeric($ipParts[1]) && (int)$ipParts[1] < 129) {
-                            $subnet = $ipParts[1];
-                        } else {
-                            continue;
-                        }
-                    }
-
-                    if (!filter_var($ipParts[0], FILTER_VALIDATE_IP)) {
-                        $msg = 'IP validation failed, please make sure that the provided ';
-                        $msg = $msg . 'IP values are comma-separated and valid.';
-                        $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
-                        return;
-                    }
-
-                    $this->api->upsertAclItem($aclId, $ipParts[0], 0, $comment, $subnet);
-                }
+                $this->api->upsertAclItem($aclId, $ipParts[0], 0, $comment, $subnet);
             }
 
-            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-                $this->api->sendWebHook(
-                    '*Admin IPs list has been updated*'
-                );
-            }
+            $this->sendWebHook('*Admin IPs list has been updated*');
 
             $msg = 'Admin IPs list has been updated';
             $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
@@ -301,6 +295,18 @@ class SuperUserCommand extends Command
             return false;
         }
         return true;
+    }
+
+    /**
+     * @param $aclItems
+     * @param $aclId
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    private function deleteIps($aclItems, $aclId)
+    {
+        foreach ($aclItems as $key => $value) {
+            $this->api->deleteAclItem($aclId, $value->id);
+        }
     }
 
     /**

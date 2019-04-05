@@ -23,7 +23,8 @@ let config = {
             modly: 'Fastly_Cdn/js/modly',
             waf: 'Fastly_Cdn/js/waf',
             wafBypass: 'Fastly_Cdn/js/wafBypass',
-            domains: 'Fastly_Cdn/js/domains'
+            domains: 'Fastly_Cdn/js/domains',
+            rateLimiting: 'Fastly_Cdn/js/rate-limiting'
         }
     }
 };

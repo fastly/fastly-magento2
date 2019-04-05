@@ -36,12 +36,6 @@ class FrontControllerPlugin
     /** @var string Cache tag for storing rate limit data */
     const FASTLY_CACHE_TAG = 'fastly_rate_limit_';
 
-    /** @var int Number of tolerated rate limit requests */
-    const FASTLY_RATE_LIMIT = 10;
-
-    /** @var int Rate limit lifetime */
-    const FASTLY_RATE_LIMIT_LIFETIME = 3600;
-
     /**
      * @var CacheInterface
      */
@@ -110,18 +104,22 @@ class FrontControllerPlugin
         $response = $this->response;
         $path = strtolower($request->getPathInfo());
 
-        $limitedPaths = [
-            '/paypal/transparent/requestsecuretoken',
-        ];
+        $limitedPaths = json_decode($this->config->getRateLimitPaths());
+        if (!$limitedPaths) {
+            $limitedPaths = [];
+        }
 
         $limit = false;
-        foreach ($limitedPaths as $limited) {
-            if (strpos($path, $limited) !== false) {
+        foreach ($limitedPaths as $key => $value) {
+            if (strpos($path, $value->path) !== false) {
                 $limit = true;
             }
         }
 
         if ($limit) {
+            $rateLimitingLimit = $this->config->getRateLimitingLimit();
+            $rateLimitingTtl = $this->config->getRateLimitingTtl();
+            $this->response->setHeader('Surrogate-Control', 'max-age=' . $rateLimitingTtl);
             $ip = $request->getServerValue('HTTP_FASTLY_CLIENT_IP') ?? $request->getClientIp();
             $tag = self::FASTLY_CACHE_TAG . $path . '_' . $ip;
             $data = json_decode($this->cache->load($tag), true);
@@ -133,7 +131,7 @@ class FrontControllerPlugin
                     'date' => $date
                 ]);
 
-                $this->cache->save($data, $tag, [], self::FASTLY_RATE_LIMIT_LIFETIME);
+                $this->cache->save($data, $tag, [], $rateLimitingTtl);
 
             } else {
                 $usage = $data['usage'] ?? 0;
@@ -141,12 +139,12 @@ class FrontControllerPlugin
                 $newDate = $this->coreDate->timestamp();
                 $dateDiff = ($newDate - $date);
 
-                if ($dateDiff >= self::FASTLY_RATE_LIMIT_LIFETIME) {
+                if ($dateDiff >= $rateLimitingTtl) {
                     $this->cache->remove($tag);
                     $usage = 0;
                 }
 
-                if ($usage >= self::FASTLY_RATE_LIMIT) {
+                if ($usage >= $rateLimitingLimit) {
                     $response->setStatusHeader(429, null, 'API limit exceeded');
                     $response->setNoCacheHeaders();
                     return $response;

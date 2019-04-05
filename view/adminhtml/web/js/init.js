@@ -60,6 +60,7 @@ define([
                 let customSnippetsHead = $('#system_full_page_cache_fastly_fastly_custom_snippets-head');
                 let webApplicationFirewallHead = $('#system_full_page_cache_fastly_fastly_web_application_firewall-head');
                 let domainsHead = $('#system_full_page_cache_fastly_fastly_domains-head');
+                let rateLimitingHead = $('#system_full_page_cache_fastly_fastly_rate_limiting_settings-head');
                 $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_owasp_restricted_extensions').hide();
                 $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_owasp_allowed_methods').hide();
                 $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_waf_bypass').hide();
@@ -150,6 +151,12 @@ define([
                                 domains(config, serviceStatus, isAlreadyConfigured);
                             });
                         });
+
+                        rateLimitingHead.one('click', function () {
+                            requirejs(['rateLimiting'], function (rateLimiting) {
+                                rateLimiting(config, serviceStatus, isAlreadyConfigured);
+                            })
+                        })
                     } else {
                         $(".processing").hide();
                         $(".state_unknown").show();

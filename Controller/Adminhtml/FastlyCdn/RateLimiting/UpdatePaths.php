@@ -126,7 +126,7 @@ class UpdatePaths extends Action
                     unset($paths[$key]);
                     continue;
                 }
-                $pregMatch = @preg_match('{' . $value['path'] . '}', null);
+                $pregMatch = @preg_match('{' . $value['path'] . '}', null); // @codingStandardsIgnoreLine - silencing errors
                 if ($pregMatch === false) {
                     return $result->setData([
                         'status'    => false,

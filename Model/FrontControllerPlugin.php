@@ -39,12 +39,12 @@ class FrontControllerPlugin
     /**
      * @var CacheInterface
      */
-    protected $cache;
+    private $cache;
 
     /**
      * @var DateTime
      */
-    protected $coreDate;
+    private $coreDate;
 
     /**
      * @var \Magento\PageCache\Model\Config
@@ -75,7 +75,6 @@ class FrontControllerPlugin
         CacheInterface $cache,
         DateTime $coreDate,
         Response $response
-
     ) {
         $this->request = $request;
         $this->response = $response;
@@ -91,7 +90,7 @@ class FrontControllerPlugin
      * @param mixed ...$args
      * @return \Magento\Framework\App\Response\Http|\Magento\Framework\App\ResponseInterface
      */
-    public function aroundDispatch(FrontController $subject, callable $proceed, ...$args)
+    public function aroundDispatch(FrontController $subject, callable $proceed, ...$args) // @codingStandardsIgnoreLine - unused parameter
     {
         if (!$this->config->isRateLimitingEnabled()) {
             return $proceed(...$args);
@@ -132,7 +131,6 @@ class FrontControllerPlugin
                 ]);
 
                 $this->cache->save($data, $tag, [], $rateLimitingTtl);
-
             } else {
                 $usage = $data['usage'] ?? 0;
                 $date = $data['date'] ?? null;

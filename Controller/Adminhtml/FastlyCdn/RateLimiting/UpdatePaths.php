@@ -126,14 +126,14 @@ class UpdatePaths extends Action
                     unset($paths[$key]);
                     continue;
                 }
-                $pregMatch = preg_match('^\/[\/\.a-zA-Z0-9\-]+$^', $value['path']);
-                if ($pregMatch == 0) {
+                $pregMatch = @preg_match('{' . $value['path'] . '}', null);
+                if ($pregMatch === false) {
                     return $result->setData([
                         'status'    => false,
-                        'msg'       => $value['path'] . ' is not a valid path'
+                        'msg'       => $value['path'] . ' is not a valid regular expression'
                     ]);
                 }
-                $validPaths .= 'req.url.path ~ "^' . $value['path'] . '" || ';
+                $validPaths .= 'req.url.path ~ "' . $value['path'] . '" || ';
             }
 
             $strippedValidPaths = substr($validPaths, 0, strrpos($validPaths, '||', -1));

@@ -110,7 +110,7 @@ class FrontControllerPlugin
 
         $limit = false;
         foreach ($limitedPaths as $key => $value) {
-            if (strpos($path, $value->path) !== false) {
+            if (preg_match('{' . $value->path . '}', $path) == 1) {
                 $limit = true;
             }
         }

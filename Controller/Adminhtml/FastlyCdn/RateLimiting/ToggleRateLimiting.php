@@ -127,7 +127,8 @@ class ToggleRateLimiting extends Action
 
             $condition = [
                 'name'      => Config::FASTLY_MAGENTO_MODULE . '_rate_limiting',
-                'statement' => 'req.http.x-pass',
+                'statement' => 'req.http.rate-limiting',
+                'action'    => 'lookup',
                 'type'      => 'REQUEST',
                 'priority'  => 5
             ];
@@ -139,7 +140,6 @@ class ToggleRateLimiting extends Action
                     'name'              => $reqName,
                     'service_id'        => $service->id,
                     'version'           => $currActiveVersion['active_version'],
-                    'force_ssl'         => true,
                     'request_condition' => $createCondition->name
                 ];
 
@@ -226,7 +226,7 @@ class ToggleRateLimiting extends Action
         $validPaths = '';
 
         foreach ($paths as $key => $value) {
-            $validPaths .= 'req.url.path ~ "^' . $value->path . '" || ';
+            $validPaths .= 'req.url.path ~ "' . $value->path . '" || ';
         }
         $result = substr($validPaths, 0, strrpos($validPaths, '||', -1));
 

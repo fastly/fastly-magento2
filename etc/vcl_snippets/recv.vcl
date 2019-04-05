@@ -1,3 +1,8 @@
+    # VCL required to support maintenance mode
+    if (table.lookup(magentomodule_config, "allow_super_users_during_maint", "0") == "1" && !req.http.Fastly-Client-Ip ~ maint_allowlist ) {
+        error 503 "Maintenance mode";
+    }
+
     # Fixup for Varnish ESI not dealing with https:// absolute URLs well
     if (req.is_esi_subreq && req.url ~ "/https://([^/]+)(/.*)$") {
         set req.http.Host = re.group.1;
@@ -110,3 +115,4 @@
         unset req.http.Https;
         unset req.http.Cookie;
     }
+

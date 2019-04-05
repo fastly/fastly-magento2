@@ -59,6 +59,7 @@ define([
                 let backendsHead = $('#system_full_page_cache_fastly_fastly_backend_settings-head');
                 let customSnippetsHead = $('#system_full_page_cache_fastly_fastly_custom_snippets-head');
                 let webApplicationFirewallHead = $('#system_full_page_cache_fastly_fastly_web_application_firewall-head');
+                let maintenanceSupportHead = $('#system_full_page_cache_fastly_fastly_maintenance_support-head');
                 let domainsHead = $('#system_full_page_cache_fastly_fastly_domains-head');
                 let rateLimitingHead = $('#system_full_page_cache_fastly_fastly_rate_limiting_settings-head');
                 $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_owasp_restricted_extensions').hide();
@@ -155,8 +156,14 @@ define([
                         rateLimitingHead.one('click', function () {
                             requirejs(['rateLimiting'], function (rateLimiting) {
                                 rateLimiting(config, serviceStatus, isAlreadyConfigured);
-                            })
-                        })
+                            });
+                        });
+
+                        maintenanceSupportHead.one('click', function () {
+                            requirejs(['maintenance'], function (maintenance) {
+                                maintenance(config, serviceStatus, isAlreadyConfigured);
+                            });
+                        });
                     } else {
                         $(".processing").hide();
                         $(".state_unknown").show();

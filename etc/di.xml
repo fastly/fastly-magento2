@@ -41,6 +41,7 @@
                 <item name="SerializeToJson" xsi:type="object">Fastly\Cdn\Console\Command\SerializeToJson</item>
                 <item name="JsonToSerialize" xsi:type="object">Fastly\Cdn\Console\Command\JsonToSerialize</item>
                 <item name="ConfigGetCommand" xsi:type="object">Fastly\Cdn\Console\Command\ConfigGetCommand</item>
+                <item name="SuperUserCommand" xsi:type="object">Fastly\Cdn\Console\Command\SuperUserCommand</item>
             </argument>
         </arguments>
     </type>

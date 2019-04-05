@@ -127,11 +127,11 @@ class GetAction extends Action
                 $currentStore = $this->storeManager->getStore();
                 // only generate a redirect URL if current and new store are different
                 if ($currentStore->getId() != $targetStore->getId()) {
-                    $this->url->setQueryParam('___from_store', $currentStore->getCode());
-                    $redirectUrl = $this->url->getUrl(
-                        'stores/store/switch',
-                        [StoreResolver::PARAM_NAME => $targetStore->getCode()]
-                    );
+                    $this->url->addQueryParams([
+                        '___store'      => $targetStore->getCode(),
+                        '___from_store' => $currentStore->getCode()
+                    ]);
+                    $redirectUrl = $this->url->getUrl('stores/store/switch');
                 }
 
                 // generate output only if redirect should be performed
@@ -162,9 +162,9 @@ class GetAction extends Action
 
     /**
      * Gets the dialog message in the locale of the target store.
-     *
      * @param StoreInterface $emulatedStore
      * @return string
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     private function getMessageInStoreLocale(StoreInterface $emulatedStore)
     {

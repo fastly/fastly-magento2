@@ -88,6 +88,21 @@ class Config extends \Magento\PageCache\Model\Config
     const BLOCKING_SETTING_NAME = 'magentomodule_blocking';
 
     /**
+     * Rate Limiting snippets directory path
+     */
+    const VCL_RATE_LIMITING_PATH = '/vcl_snippets_rate_limiting';
+
+    /**
+     * Rate limiting snippet
+     */
+    const VCL_RATE_LIMITING_SNIPPET = 'recv.vcl';
+
+    /**
+     * Rate Limiting setting name
+     */
+    const RATE_LIMITING_SETTING_NAME = 'magentomodule_rate_limiting';
+
+    /**
      * WAF snippets directory path
      */
     const VCL_WAF_PATH = '/vcl_snippets_waf';
@@ -280,6 +295,24 @@ class Config extends \Magento\PageCache\Model\Config
         = 'system/full_page_cache/fastly/fastly_advanced_configuration/geoip_country_mapping';
 
     /**
+     * XML path to Rate Limiting paths
+     */
+    const XML_FASTLY_RATE_LIMITING_PATHS
+        = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/rate_limiting_paths';
+
+    /**
+     * XML path to Rate Limiting limit
+     */
+    const XML_FASTLY_RATE_LIMITING_LIMIT
+        = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/rate_limiting_limit';
+
+    /**
+     * XML path to Rate Limiting TTL
+     */
+    const XML_FASTLY_RATE_LIMITING_TTL
+        = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/rate_limiting_ttl';
+
+    /**
      * XML path to image optimizations flag
      */
     const XML_FASTLY_IMAGE_OPTIMIZATIONS
@@ -419,6 +452,12 @@ class Config extends \Magento\PageCache\Model\Config
      */
     const XML_FASTLY_WEBHOOK_MESSAGE_PREFIX
         = 'system/full_page_cache/fastly/fastly_web_hooks/webhook_message_prefix';
+
+    /**
+     * XML path to enable Rate Limiting
+     */
+    const XML_FASTLY_RATE_LIMITING_ENABLE
+        = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/enable_rate_limiting';
 
     /**
      * Check if Fastly is selected for Caching Application
@@ -832,6 +871,36 @@ class Config extends \Magento\PageCache\Model\Config
     }
 
     /**
+     * return Rate Limiting status
+     *
+     * @return mixed
+     */
+    public function isRateLimitingEnabled()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_RATE_LIMITING_ENABLE);
+    }
+
+    /**
+     * return Rate Limiting limit
+     *
+     * @return mixed
+     */
+    public function getRateLimitingLimit()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_RATE_LIMITING_LIMIT);
+    }
+
+    /**
+     * return Rate Limiting TTL
+     *
+     * @return mixed
+     */
+    public function getRateLimitingTtl()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_RATE_LIMITING_TTL);
+    }
+
+    /**
      * Get store ID for country.
      *
      * @param $countryCode 2-digit country code
@@ -887,7 +956,15 @@ class Config extends \Magento\PageCache\Model\Config
         }
         return $final;
     }
-    
+
+    /**
+     * @return array|mixed|null
+     */
+    public function getRateLimitPaths()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_RATE_LIMITING_PATHS);
+    }
+
     /**
      * Return generated magento2_fastly_varnish.vcl configuration file
      *

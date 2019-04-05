@@ -137,11 +137,15 @@ class Upload extends Action
             $customSnippets = $this->config->getCustomSnippets($customSnippetPath);
 
             foreach ($snippets as $key => $value) {
+                $priority = 50;
+                if ($key == 'hash') {
+                    $priority = 80;
+                }
                 $snippetData = [
                     'name'      => Config::FASTLY_MAGENTO_MODULE . '_' . $key,
                     'type'      => $key,
                     'dynamic'   => "0",
-                    'priority'  => 50,
+                    'priority'  => $priority,
                     'content'   => $value
                 ];
                 $this->api->uploadSnippet($clone->number, $snippetData);

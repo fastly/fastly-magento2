@@ -222,7 +222,7 @@
                             </depends>
                         </field>
                         <!-- =====================================
-                             Fastly Edge Modules on/off switch 
+                             Fastly Edge Modules on/off switch
                         ====================================== -->
                         <field id="enable_fastly_edge_modules" translate="label comment" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enable Fastly Edge Modules</label>
@@ -620,6 +620,42 @@
                             </comment>
                             <source_model>Fastly\Cdn\Model\Config\Backend\ListAcl</source_model>
                             <can_be_empty>1</can_be_empty>
+                        </field>
+                    </group>
+                    <!-- ================================
+                         Rate Limiting Settings group
+                    ================================= -->
+                    <group id="fastly_rate_limiting_settings" sortOrder="460" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>Rate Limiting</label>
+                        <!-- =====================================
+                             Enable Rate Limiting select field
+                        ====================================== -->
+                        <field id="enable_rate_limiting" translate="label comment" sortOrder="5" showInDefault="1" showInStore="0" showInWebsite="0">
+                            <label>Enable Rate Limiting</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ToggleRateLimitingBtn</frontend_model>
+                        </field>
+                        <!-- =============================
+                             Rate Limited Paths button
+                        ============================== -->
+                        <field id="rate_limiting_paths" translate="label comment" sortOrder="6" showInDefault="1" showInStore="0" showInWebsite="0">
+                            <label>Rate Limited Paths</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\PathsBtn</frontend_model>
+                        </field>
+                        <!-- ==========================
+                             Rate Limit input field
+                        =========================== -->
+                        <field id="rate_limiting_limit" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                            <label>Rate Limit</label>
+                            <comment>Numeric value for the number of tolerated Rate Limit requests.</comment>
+                            <validate>required-entry validate-number validate-not-negative-number</validate>
+                        </field>
+                        <!-- ========================
+                             Rate Limit TTL field
+                        ========================= -->
+                        <field id="rate_limiting_ttl" translate="label comment" type="text" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                            <label>Rate Limit TTL</label>
+                            <comment>Time in seconds for the Rate Limit lifetime.</comment>
+                            <validate>required-entry validate-number validate-not-negative-number</validate>
                         </field>
                     </group>
                     <!-- ===============================

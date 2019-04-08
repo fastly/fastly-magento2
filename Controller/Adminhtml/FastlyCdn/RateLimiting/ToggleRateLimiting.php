@@ -129,8 +129,7 @@ class ToggleRateLimiting extends Action
 
             $condition = [
                 'name'      => Config::FASTLY_MAGENTO_MODULE . '_rate_limiting',
-                'statement' => 'req.http.rate-limiting',
-                'action'    => 'lookup',
+                'statement' => 'req.http.Rate-Limit',
                 'type'      => 'REQUEST',
                 'priority'  => 5
             ];
@@ -142,7 +141,8 @@ class ToggleRateLimiting extends Action
                     'name'              => $reqName,
                     'service_id'        => $service->id,
                     'version'           => $currActiveVersion['active_version'],
-                    'request_condition' => $createCondition->name
+                    'request_condition' => $createCondition->name,
+                    'action'            => 'lookup',
                 ];
 
                 $strippedValidPaths = $this->processPaths();

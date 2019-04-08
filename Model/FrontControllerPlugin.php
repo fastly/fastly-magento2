@@ -144,6 +144,7 @@ class FrontControllerPlugin
 
                 if ($usage >= $rateLimitingLimit) {
                     $response->setStatusHeader(429, null, 'API limit exceeded');
+                    $response->SetBody("Request limit exceeded");
                     $response->setNoCacheHeaders();
                     return $response;
                 } else {

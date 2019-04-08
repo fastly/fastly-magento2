@@ -627,6 +627,10 @@
                     ================================= -->
                     <group id="fastly_rate_limiting_settings" sortOrder="460" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Rate Limiting</label>
+                        <comment>
+                            <![CDATA[Experimental: Rate limit specific URL paths against abuse. Please read <a href="https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/RATE-LIMITING.md#vcl-upload"
+                            target="_blank">this guide</a> for more details]]>
+                        </comment>
                         <!-- =====================================
                              Enable Rate Limiting select field
                         ====================================== -->

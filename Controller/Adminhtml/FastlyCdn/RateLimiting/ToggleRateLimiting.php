@@ -163,6 +163,8 @@ class ToggleRateLimiting extends Action
 
                     $this->api->uploadSnippet($clone->number, $snippetData);
                 }
+                $this->uploadSnippets($clone);
+
                 $this->configWriter->save(
                     Config::XML_FASTLY_RATE_LIMITING_ENABLE,
                     1,
@@ -211,6 +213,32 @@ class ToggleRateLimiting extends Action
                 'status'    => false,
                 'msg'       => $e->getMessage()
             ]);
+        }
+    }
+
+    /**
+     * @param $clone
+     * @throws \Magento\Framework\Exception\FileSystemException
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    private function uploadSnippets($clone)
+    {
+        $snippets = $this->config->getVclSnippets(
+            Config::VCL_RATE_LIMITING_PATH
+        );
+
+        foreach ($snippets as $key => $value) {
+            if ($key != 'recv') {
+                $snippetData = [
+                    'name'      => Config::FASTLY_MAGENTO_MODULE . '_rate_limiting_' . $key,
+                    'type'      => $key,
+                    'dynamic'   => 0,
+                    'priority'  => 40,
+                    'content'   => $value
+                ];
+
+                $this->api->uploadSnippet($clone->number, $snippetData);
+            }
         }
     }
 

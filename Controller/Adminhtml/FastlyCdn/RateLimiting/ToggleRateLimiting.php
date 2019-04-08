@@ -30,6 +30,7 @@ use Fastly\Cdn\Helper\Vcl;
 use Magento\Framework\App\Config\Storage\WriterInterface as ConfigWriter;
 use Magento\Framework\App\Cache\TypeListInterface as CacheTypeList;
 use Magento\Config\App\Config\Type\System as SystemConfig;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Class ToggleRateLimiting
@@ -116,10 +117,11 @@ class ToggleRateLimiting extends Action
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
-            $clone = $this->api->cloneVersion($currActiveVersion);
-
             $reqName = Config::FASTLY_MAGENTO_MODULE . '_rate_limiting';
             $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);
+            $this->checkDictionary($currActiveVersion, $checkIfReqExist);
+            $clone = $this->api->cloneVersion($currActiveVersion);
+
             $snippet = $this->config->getVclSnippets(
                 Config::VCL_RATE_LIMITING_PATH,
                 Config::VCL_RATE_LIMITING_SNIPPET
@@ -259,6 +261,24 @@ class ToggleRateLimiting extends Action
         $result = substr($validPaths, 0, strrpos($validPaths, '||', -1));
 
         return $result;
+    }
+
+    /**
+     * @param $currActiveVersion
+     * @param $checkIfReqExist
+     * @throws LocalizedException
+     */
+    private function checkDictionary($currActiveVersion, $checkIfReqExist)
+    {
+        if (!$checkIfReqExist) {
+            $dictionaryName = Config::CONFIG_DICTIONARY_NAME;
+            $dictionary = $this->api->getSingleDictionary($currActiveVersion, $dictionaryName);
+            if (!$dictionary) {
+                throw new LocalizedException(__(
+                    'The required dictionary container does not exist. Please re-upload VCL.'
+                ));
+            }
+        }
     }
 
     /**

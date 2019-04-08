@@ -20,9 +20,9 @@ Magento admin > Stores > Configuration > Advanced > System > Full Page Cache > F
 ```
 Under *Rate Limiting* tab, you can enable by clicking **Enable/Disable** button
 
-![Rate Limiting Main Screen](../images/guides/rate-limiting/ratelimiting1.png "Rate Limiting Main Screen")
+![Rate Limiting Main Screen](../images/guides/rate-limiting/rate-limiting1.png "Rate Limiting Main Screen")
 
 After you have enabled the feature you will need to click on Manage Paths button
 
-![Rate Limiting Manage Paths](../images/guides/rate-limiting/ratelimiting2.png "Rate Limiting Manage Paths")
+![Rate Limiting Manage Paths](../images/guides/rate-limiting/rate-limiting2.png "Rate Limiting Manage Paths")
 

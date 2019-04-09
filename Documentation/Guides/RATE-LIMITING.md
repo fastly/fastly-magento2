@@ -2,7 +2,8 @@
 
 *THIS FUNCTIONALITY IS EXPERIMENTAL. IT MAY BE REMOVED IN FUTURE RELEASES*
 
-Please note Rate Limiting is available in version 1.2.93+ of the module. 
+Rate Limiting is available from version 1.2.93+ of the module. If you do not see it in your
+module you will need to update your module.
 
 This guide will show how to enable rate limiting. Rate limiting allows you to restrict how many requests a specific IP address
 can make in a period of time e.g. 10 requests in one hour. It's intended to guard against abuse of sensitive or computationally
@@ -24,7 +25,24 @@ Under *Rate Limiting* tab, you can enable by clicking **Enable/Disable** button
 
 ![Rate Limiting Main Screen](../images/guides/rate-limiting/rate-limiting1.png "Rate Limiting Main Screen")
 
-After you have enabled the feature you will need to click on Manage Paths button
+After you have enabled the feature you will need to click on Manage Paths button.
 
 ![Rate Limiting Manage Paths](../images/guides/rate-limiting/rate-limiting2.png "Rate Limiting Manage Paths")
+
+In the manage paths window you will need to specify URL paths that will be rate limited as regular expression. 
+For example to rate limit access to https://www.domain.com/paypal/transparent/requestSecureToken you would put
+
+```
+^/paypal/transparent/requestSecureToken
+```
+
+This will match any path starting with `/paypal/transparent/requestSecureToken` including
+
+```
+/paypal/transparent/requestSecureToken
+/paypal/transparent/requestSecureToken/
+/paypal/transparent/requestSecureToken/?something
+```
+
+You can test your regular expressions with [Regex Tester](https://regex101.com/).
 

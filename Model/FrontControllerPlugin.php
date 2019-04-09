@@ -120,14 +120,14 @@ class FrontControllerPlugin
             $rateLimitingTtl = $this->config->getRateLimitingTtl();
             $this->response->setHeader('Surrogate-Control', 'max-age=' . $rateLimitingTtl);
             $ip = $request->getServerValue('HTTP_FASTLY_CLIENT_IP') ?? $request->getClientIp();
-            $tag = self::FASTLY_CACHE_TAG . $path . '_' . $ip;
+            $tag = self::FASTLY_CACHE_TAG . $ip;
             $data = json_decode($this->cache->load($tag), true);
 
             if (empty($data)) {
                 $date = $this->coreDate->timestamp();
                 $data = json_encode([
                     'usage' => 1,
-                    'date' => $date
+                    'date'  => $date
                 ]);
 
                 $this->cache->save($data, $tag, [], $rateLimitingTtl);
@@ -138,8 +138,12 @@ class FrontControllerPlugin
                 $dateDiff = ($newDate - $date);
 
                 if ($dateDiff >= $rateLimitingTtl) {
-                    $this->cache->remove($tag);
-                    $usage = 0;
+                    $data = json_encode([
+                        'usage' => 1,
+                        'date'  => $newDate
+                    ]);
+                    $this->cache->save($data, $tag, [], $rateLimitingTtl);
+                    return $proceed(...$args);
                 }
 
                 if ($usage >= $rateLimitingLimit) {

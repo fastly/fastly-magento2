@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.93.
+
+- Experimental support for rate limiting https://github.com/fastly/fastly-magento2/pull/259
+
 ## 1.2.92
 
 - Improvements to maintenance mode support https://github.com/fastly/fastly-magento2/pull/258

@@ -237,10 +237,18 @@
                     =========================== -->
                     <group id="fastly_backend_settings" sortOrder="100" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Backend Settings</label>
+                        <!-- =========================
+                             Create Backend button
+                        ========================== -->
+                        <field id="create_backend" translate="label comment" sortOrder="5" showInDefault="1" showInStore="0" showInWebsite="0">
+                            <label><![CDATA[Create Backend]]></label>
+                            <comment><![CDATA[]]></comment>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\CreateBackendBtn</frontend_model>
+                        </field>
                         <!-- ==================
                              Backends field
                         =================== -->
-                        <field id="backends" translate="label comment tooltip" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <field id="backends" translate="label comment tooltip" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Backends</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Backend</frontend_model>
                             <comment>

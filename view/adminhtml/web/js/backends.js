@@ -19,13 +19,23 @@ define([
          */
         let backendOptions = {
             title: jQuery.mage.__(' '),
-                content: function () {
+            content: function () {
                 return document.getElementById('fastly-backend-template').textContent;
             },
             actionOk: function () {
                 if ($('#backend-upload-form').valid()) {
                     configureBackend(active_version);
                 }
+            }
+        };
+
+        let createBackendOptions = {
+            title: jQuery.mage.__('Create Backend'),
+            content: function () {
+                return document.getElementById('fastly-create-backend-template').textContent;
+            },
+            actionOk: function () {
+                // do something
             }
         };
 
@@ -113,6 +123,27 @@ define([
                 }
             });
         }
+
+        $('body').on('click', '#fastly_create_backend_button', function () {
+            if (isAlreadyConfigured !== true) {
+                $(this).attr('disabled', true);
+                return alert($.mage.__('Please save config prior to continuing.'));
+            }
+            $.ajax({
+                type: "GET",
+                url: config.serviceInfoUrl,
+                showLoader: true
+            }).done(function (checkService) {
+                active_version = checkService.active_version;
+                let next_version = checkService.next_version;
+                let service_name = checkService.service.name;
+
+                overlay(createBackendOptions);
+                setServiceLabel(active_version, next_version, service_name);
+
+
+            });
+        });
 
         /**
          * Edit Backend button on click event

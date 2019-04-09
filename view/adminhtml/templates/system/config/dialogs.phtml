@@ -426,6 +426,185 @@
     </form>
 </script>
 
+<script type="text/x-magento-template" id="fastly-create-backend-template">
+    <div class="messages">
+        <div class="message message-warning fastly-message-warning" style="display: none">
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("Your backend will be created in version #y.")?>
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="create-backend-form"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field">
+                <label for="condition" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Condition") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    This will happen all the time unless you <a href="#attach">Attach a condition</a>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="backend_name" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Name") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="backend_name" id="backend_name" class="admin__control-text">
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="backend_address" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Address") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="backend_address" id="backend_address" class="admin__control-text">
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label for="shield" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Shield") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="shield" id="backend_shield" class="admin__control-text">
+                        <option value="">(none)</option>
+                        <option value="fjr-ae">AE, Fujairah Al Mahta - Dubai</option>
+                        <option value="brisbane-au">AU, Brisbane</option>
+                        <option value="melbourne-au">AU, Melbourne</option>
+                        <option value="perth-au">AU, Perth</option>
+                        <option value="sydney-au">
+                            AU, Sydney - Recommended for AWS ap-southeast-2, GCP australia-southeast1 origins
+                        </option>
+                        <option value="gru-br-sa">
+                            BR, Sao Paulo - Recommended for AWS sa-east-1, GCP southamerica-east1
+                        </option>
+                        <option value="yyz-on-ca">CA, Toronto</option>
+                        <option value="yul-montreal-ca">
+                            CA, Montreal - Recommended for AWS ca-central-1, GCP northamerica-northeast1 origins
+                        </option>
+                        <option value="mad-madrid-es">ES, Madrid</option>
+                        <option value="hel-helsinki-fi">FI, Helsinki - Recommended for GCP europe-north1</option>
+                        <option value="cdg-par-fr">FR, Paris- Recommended for AWS eu-west3</option>
+                        <option value="hongkong-hk">HK, Hong Kong</option>
+                        <option value="hhn-frankfurt-de">
+                            DE, Frankfurt - Interxion - Recommended for GCP europe-west3 origins
+                        </option>
+                        <option value="frankfurt-de">DE, Frankfurt - Recommended for AWS eu-central1 origins</option>
+                        <option value="tokyo-jp2">JP, Tokyo - deprecated</option>
+                        <option value="tyo-tokyo-jp">JP, Tokyo - Recommended for AWS ap-northeast-1 origins</option>
+                        <option value="osaka-jp">JP, Osaka - Recommened for AWS ap-northeast-3 origins</option>
+                        <option value="amsterdam-nl">NL, Amsterdam - Recommended for GCP eu-west1/4 origins</option>
+                        <option value="auckland-akl">NZ, Auckland</option>
+                        <option value="wellington-wlg">NZ, Wellington</option>
+                        <option value="stockholm-bma">SE, Stockholm</option>
+                        <option value="singapore-sg">
+                            SG, Singapore - Recommended for AWS ap-southeast-1, GCP asia-southeast1 origins
+                        </option>
+                        <option value="london_city-uk">
+                            UK, London - LCY - Recommended for AWS eu-west1/2 origins
+                        </option>
+                        <option value="london-uk">UK, London - LHR - Recommended for GCP eu-west2 origins</option>
+                        <option value="atl-ga-us">US, Atlanta, GA</option>
+                        <option value="bos-ma-us">US, Boston, MA</option>
+                        <option value="mdw-il-us">US, Chicago, IL - Recommended for GCP us-central1 origins</option>
+                        <option value="den-co-us">US, Denver, CO</option>
+                        <option value="dallas-tx-us">US, Dallas, TX</option>
+                        <option value="iah-tx-us">US, Houston, TX</option>
+                        <option value="iad-va-us">
+                            US, Washington, DC - deprecated
+                        </option>
+                        <option value="bwi-va-us">
+                            US, Washington, DC - Recommended for AWS us-east1, GCP us-east1/4 origins
+                        </option>
+                        <option value="lax-ca-us">US, Los Angeles, CA - Recommended for GCP us-west2</option>
+                        <option value="miami-fl-us">US, Miami, FL</option>
+                        <option value="jfk-ny-us">US, New York City, NY</option>
+                        <option value="sjc-ca-us">US, San Jose, CA</option>
+                        <option value="sea-wa-us">
+                            US, Seattle, WA - Recommended for AWS us-west2, GCP us-west1 origins
+                        </option>
+                        <option value="cpt-capetown-za">ZA, Capetown</option>
+                        <option value="jnb-johannesburg-za">ZA, Johannesburg</option>
+                    </select>
+                    <div class="admin__field-note">
+                        The shield POP designated to reduce inbound load on this origin by serving the cached data to
+                        the rest of the network.
+                        <a href="https://docs.fastly.com/guides/performance-tuning/shielding"
+                           target="_blank">Click for more details.</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field _required">
+                <label for="connect_timeout" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Connect timeout") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="connect_timeout"
+                           type="number"
+                           required="required"
+                           id="backend_connect_timeout"
+                           class="admin__control-text
+                                    required-entry
+                                    validate-alphanum-with-spaces
+                                    validate-length
+                                    maximum-length-50">
+                    <div class="admin__field-note">How long to wait for a timeout in milliseconds.</div>
+                </div>
+            </div>
+
+            <div class="admin__field field _required">
+                <label for="between_bytes_timeout" class="admin__field-label">
+                    <span><?php /* @noEscape */  echo __("Between bytes timeout") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="between_bytes_timeout"
+                           type="number"
+                           required="required"
+                           id="backend_between_bytes_timeout"
+                           class="admin__control-text">
+                    <div class="admin__field-note">How long to wait between bytes in milliseconds.</div>
+                </div>
+            </div>
+
+            <div class="admin__field field _required">
+                <label for="first_byte_timeout " class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("First byte timeout ") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="first_byte_timeout"
+                           type="number"
+                           required="required"
+                           id="backend_first_byte_timeout"
+                           class="admin__control-text">
+                    <div class="admin__field-note">How long to wait for the first bytes in milliseconds.</div>
+                </div>
+            </div>
+
+            <div class="admin__field field maintenance-checkbox-container">
+                <label for="fastly_activate_backend" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+                </label>
+                <div class="admin__field-control">
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_backend"
+                               id="fastly_activate_backend"
+                               checked/>
+                        <label class="admin__field-label" for="fastly_activate_backend"></label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</script>
+
 <!-- Error page overlay template -->
 <script type="text/x-magento-template" id="fastly-error-page-template">
     <div class="messages">

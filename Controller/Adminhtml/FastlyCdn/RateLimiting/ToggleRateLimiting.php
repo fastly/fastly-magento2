@@ -165,7 +165,7 @@ class ToggleRateLimiting extends Action
 
                     $this->api->uploadSnippet($clone->number, $snippetData);
                 }
-                $this->uploadSnippets($clone);
+                $this->uploadSnippets($clone, $currActiveVersion);
 
                 $this->configWriter->save(
                     Config::XML_FASTLY_RATE_LIMITING_ENABLE,
@@ -220,27 +220,45 @@ class ToggleRateLimiting extends Action
 
     /**
      * @param $clone
+     * @param $currActiveVersion
+     * @throws LocalizedException
      * @throws \Magento\Framework\Exception\FileSystemException
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function uploadSnippets($clone)
+    private function uploadSnippets($clone, $currActiveVersion)
     {
         $snippets = $this->config->getVclSnippets(
             Config::VCL_RATE_LIMITING_PATH
         );
 
         foreach ($snippets as $key => $value) {
-            if ($key != 'recv') {
-                $snippetData = [
-                    'name'      => Config::FASTLY_MAGENTO_MODULE . '_rate_limiting_' . $key,
-                    'type'      => $key,
-                    'dynamic'   => 0,
-                    'priority'  => 40,
-                    'content'   => $value
-                ];
-
-                $this->api->uploadSnippet($clone->number, $snippetData);
+            if ($key == 'recv') {
+                continue;
             }
+
+            $snippetName = Config::FASTLY_MAGENTO_MODULE . '_rate_limiting_' . $key;
+            $dynamic = 0;
+
+            if ($key == 'hash') {
+                if ($this->api->hasSnippet($clone->number, $snippetName)) {
+                    $snippetId = $this->api->getSnippet($currActiveVersion, $snippetName)->id;
+                    $params = [
+                        'name'      => $snippetId,
+                        'content'   => $value
+                    ];
+                    $this->api->updateSnippet($params);
+                    continue;
+                }
+                $dynamic = 1;
+            }
+            $snippetData = [
+                'name'      => $snippetName,
+                'type'      => $key,
+                'dynamic'   => $dynamic,
+                'priority'  => 40,
+                'content'   => $value
+            ];
+
+            $this->api->uploadSnippet($clone->number, $snippetData);
         }
     }
 

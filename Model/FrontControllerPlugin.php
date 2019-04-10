@@ -35,6 +35,7 @@ class FrontControllerPlugin
 {
     /** @var string Cache tag for storing rate limit data */
     const FASTLY_CACHE_TAG = 'fastly_rate_limit_';
+    const FASTLY_CRAWLER_TAG = 'fastly_crawler_protection_';
 
     /**
      * @var CacheInterface
@@ -92,17 +93,32 @@ class FrontControllerPlugin
      */
     public function aroundDispatch(FrontController $subject, callable $proceed, ...$args) // @codingStandardsIgnoreLine - unused parameter
     {
-        if (!$this->config->isRateLimitingEnabled()) {
+        $isRateLimitingEnabled = $this->config->isRateLimitingEnabled();
+        $isCrawlerProtectionEnabled = $this->config->isCrawlerProtectionEnabled();
+
+        if (!$isRateLimitingEnabled && !$isCrawlerProtectionEnabled) {
             return $proceed(...$args);
         }
 
-        /** @var $subject \Magento\Framework\App\FrontController */
-        /** @var $request \Magento\Framework\App\Request\Http */
-        /** @var $response \Magento\Framework\App\Response\Http */
-        $request = $this->request;
-        $response = $this->response;
-        $path = strtolower($request->getPathInfo());
+        $path = strtolower($this->request->getPathInfo());
 
+        if ($isRateLimitingEnabled && $this->sensitivePathProtection($path)) {
+            return $this->response;
+        }
+
+        if ($isCrawlerProtectionEnabled && $this->crawlerProtection($path)) {
+            return $this->response;
+        }
+
+        return $proceed(...$args);
+    }
+
+    /**
+     * @param $path
+     * @return bool
+     */
+    private function sensitivePathProtection($path)
+    {
         $limitedPaths = json_decode($this->config->getRateLimitPaths());
         if (!$limitedPaths) {
             $limitedPaths = [];
@@ -119,46 +135,79 @@ class FrontControllerPlugin
             $rateLimitingLimit = $this->config->getRateLimitingLimit();
             $rateLimitingTtl = $this->config->getRateLimitingTtl();
             $this->response->setHeader('Surrogate-Control', 'max-age=' . $rateLimitingTtl);
-            $ip = $request->getServerValue('HTTP_FASTLY_CLIENT_IP') ?? $request->getClientIp();
+            $ip = $this->request->getServerValue('HTTP_FASTLY_CLIENT_IP') ?? $this->request->getClientIp();
             $tag = self::FASTLY_CACHE_TAG . $ip;
             $data = json_decode($this->cache->load($tag), true);
 
-            if (empty($data)) {
-                $date = $this->coreDate->timestamp();
-                $data = json_encode([
-                    'usage' => 1,
-                    'date'  => $date
-                ]);
-
-                $this->cache->save($data, $tag, [], $rateLimitingTtl);
-            } else {
-                $usage = $data['usage'] ?? 0;
-                $date = $data['date'] ?? null;
-                $newDate = $this->coreDate->timestamp();
-                $dateDiff = ($newDate - $date);
-
-                if ($dateDiff >= $rateLimitingTtl) {
-                    $data = json_encode([
-                        'usage' => 1,
-                        'date'  => $newDate
-                    ]);
-                    $this->cache->save($data, $tag, [], $rateLimitingTtl);
-                    return $proceed(...$args);
-                }
-
-                if ($usage >= $rateLimitingLimit) {
-                    $response->setStatusHeader(429, null, 'API limit exceeded');
-                    $response->SetBody("Request limit exceeded");
-                    $response->setNoCacheHeaders();
-                    return $response;
-                } else {
-                    $usage++;
-                    $data['usage'] = $usage;
-                    $this->cache->save(json_encode($data), $tag, []);
-                }
-            }
+            return $this->processData($data, $tag, $rateLimitingTtl, $rateLimitingLimit);
         }
 
-        return $proceed(...$args);
+        return false;
+    }
+
+    /**
+     * @param $path
+     * @return bool
+     */
+    private function crawlerProtection($path)
+    {
+        $pattern = '{^/(pub|var)/(static|view_preprocessed)/}';
+
+        if (preg_match($pattern, $path) == 1) {
+            return false;
+        }
+
+        $crawlerRateLimitingLimit = $this->config->getCrawlerRateLimitingLimit();
+        $crawlerRateLimitingTtl = $this->config->getCrawlerRateLimitingTtl();
+        $ip = $this->request->getServerValue('HTTP_FASTLY_CLIENT_IP') ?? $this->request->getClientIp();
+        $tag = self::FASTLY_CRAWLER_TAG . $ip;
+        $data = json_decode($this->cache->load($tag), true);
+
+        return $this->processData($data, $tag, $crawlerRateLimitingTtl, $crawlerRateLimitingLimit);
+    }
+
+    /**
+     * @param $data
+     * @param $tag
+     * @param $ttl
+     * @param $limit
+     * @return bool
+     */
+    private function processData($data, $tag, $ttl, $limit)
+    {
+        if (empty($data)) {
+            $date = $this->coreDate->timestamp();
+            $data = json_encode([
+                'usage' => 1,
+                'date'  => $date
+            ]);
+            $this->cache->save($data, $tag, [], $ttl);
+        } else {
+            $usage = $data['usage'] ?? 0;
+            $date = $data['date'] ?? null;
+            $newDate = $this->coreDate->timestamp();
+            $dateDiff = ($newDate - $date);
+
+            if ($dateDiff >= $ttl) {
+                $data = json_encode([
+                    'usage' => 1,
+                    'date'  => $newDate
+                ]);
+                $this->cache->save($data, $tag, [], $ttl);
+                return false;
+            }
+
+            if ($usage >= $limit) {
+                $this->response->setStatusHeader(429, null, 'API limit exceeded');
+                $this->response->setBody("Request limit exceeded");
+                $this->response->setNoCacheHeaders();
+                return true;
+            } else {
+                $usage++;
+                $data['usage'] = $usage;
+                $this->cache->save(json_encode($data), $tag, []);
+            }
+        }
+        return false;
     }
 }

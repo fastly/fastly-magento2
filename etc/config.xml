@@ -61,6 +61,9 @@
                     <fastly_rate_limiting_settings>
                         <rate_limiting_limit>10</rate_limiting_limit>
                         <rate_limiting_ttl>3600</rate_limiting_ttl>
+                        <enable_crawler_protection>0</enable_crawler_protection>
+                        <crawler_rate_limiting_limit>100</crawler_rate_limiting_limit>
+                        <crawler_rate_limiting_ttl>3600</crawler_rate_limiting_ttl>
                     </fastly_rate_limiting_settings>
                 </fastly>
             </full_page_cache>

@@ -631,9 +631,9 @@
                             <![CDATA[Experimental: Rate limit specific URL paths against abuse. Please read <a href="https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/RATE-LIMITING.md#vcl-upload"
                             target="_blank">this guide</a> for more details]]>
                         </comment>
-                        <!-- =====================================
-                             Enable Rate Limiting select field
-                        ====================================== -->
+                        <!-- ===============================
+                             Enable Rate Limiting button
+                        ================================ -->
                         <field id="enable_rate_limiting" translate="label comment" sortOrder="5" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label>Enable Rate Limiting</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ToggleRateLimitingBtn</frontend_model>
@@ -659,6 +659,38 @@
                         <field id="rate_limiting_ttl" translate="label comment" type="text" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                             <label>Rate Limit TTL</label>
                             <comment>Time in seconds for the Rate Limit lifetime.</comment>
+                            <validate>required-entry validate-number validate-not-negative-number</validate>
+                        </field>
+                        <!-- ==========================================
+                             Enable Crawler Protection select field
+                        =========================================== -->
+                        <field id="enable_crawler_protection" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Enable Crawler Protection</label>
+                            <comment>
+                                <![CDATA[]]>
+                            </comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <!-- =============================================
+                             Crawler Protection Rate Limit input field
+                        ============================================== -->
+                        <field id="crawler_rate_limiting_limit" translate="label comment" type="text" sortOrder="25" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                            <label>Crawler Protection Rate Limit</label>
+                            <comment>Numeric value for the number of tolerated Crawler Protection Rate Limit requests.</comment>
+                            <depends>
+                                <field id="enable_crawler_protection">1</field>
+                            </depends>
+                            <validate>required-entry validate-number validate-not-negative-number</validate>
+                        </field>
+                        <!-- ===========================================
+                             Crawler Protection Rate Limit TTL field
+                        ============================================ -->
+                        <field id="crawler_rate_limiting_ttl" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                            <label>Crawler Protection Rate Limit TTL</label>
+                            <comment>Time in seconds for the Crawler Protection Rate Limit lifetime.</comment>
+                            <depends>
+                                <field id="enable_crawler_protection">1</field>
+                            </depends>
                             <validate>required-entry validate-number validate-not-negative-number</validate>
                         </field>
                     </group>

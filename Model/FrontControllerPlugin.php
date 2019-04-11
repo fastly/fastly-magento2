@@ -162,7 +162,8 @@ class FrontControllerPlugin
     private function crawlerProtection($path)
     {
         $userAgent = $this->httpHeader->getHttpUserAgent();
-        $crawler = \Zend_Http_UserAgent_Bot::match($userAgent, $_SERVER);
+        $server = $this->request->getServer();
+        $crawler = \Zend_Http_UserAgent_Bot::match($userAgent, $server);
 
         if ($crawler) {
             $pattern = '{^/(pub|var)/(static|view_preprocessed)/}';

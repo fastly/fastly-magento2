@@ -25,6 +25,7 @@ use Magento\Framework\App\FrontController;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\App\RequestInterface as Request;
 use Magento\Framework\App\ResponseInterface as Response;
+use Magento\Framework\HTTP\Header;
 
 /**
  * Class FrontControllerPlugin
@@ -35,7 +36,8 @@ class FrontControllerPlugin
 {
     /** @var string Cache tag for storing rate limit data */
     const FASTLY_CACHE_TAG = 'fastly_rate_limit_';
-    const FASTLY_CRAWLER_TAG = 'fastly_crawler_protection_';
+    /** @var string Cache tag for storing crawler rate limit data */
+    const FASTLY_CRAWLER_TAG = 'fastly_crawler_protection';
 
     /**
      * @var CacheInterface
@@ -63,22 +65,30 @@ class FrontControllerPlugin
     private $response;
 
     /**
+     * @var Header
+     */
+    private $httpHeader;
+
+    /**
      * FrontControllerPlugin constructor.
      * @param Request $request
-     * @param \Fastly\Cdn\Model\Config $config
+     * @param Config $config
      * @param CacheInterface $cache
      * @param DateTime $coreDate
-     * @param \Magento\Framework\App\ResponseInterface $response
+     * @param Response $response
+     * @param Header $httpHeader
      */
     public function __construct(
         Request $request,
         Config $config,
         CacheInterface $cache,
         DateTime $coreDate,
-        Response $response
+        Response $response,
+        Header $httpHeader
     ) {
         $this->request = $request;
         $this->response = $response;
+        $this->httpHeader = $httpHeader;
         $this->config = $config;
         $this->cache = $cache;
         $this->coreDate = $coreDate;
@@ -151,19 +161,24 @@ class FrontControllerPlugin
      */
     private function crawlerProtection($path)
     {
-        $pattern = '{^/(pub|var)/(static|view_preprocessed)/}';
+        $userAgent = $this->httpHeader->getHttpUserAgent();
+        $crawler = \Zend_Http_UserAgent_Bot::match($userAgent, $_SERVER);
 
-        if (preg_match($pattern, $path) == 1) {
-            return false;
+        if ($crawler) {
+            $pattern = '{^/(pub|var)/(static|view_preprocessed)/}';
+
+            if (preg_match($pattern, $path) == 1) {
+                return false;
+            }
+
+            $crawlerRateLimitingLimit = $this->config->getCrawlerRateLimitingLimit();
+            $crawlerRateLimitingTtl = $this->config->getCrawlerRateLimitingTtl();
+            $tag = self::FASTLY_CRAWLER_TAG;
+            $data = json_decode($this->cache->load($tag), true);
+
+            return $this->processData($data, $tag, $crawlerRateLimitingTtl, $crawlerRateLimitingLimit);
         }
-
-        $crawlerRateLimitingLimit = $this->config->getCrawlerRateLimitingLimit();
-        $crawlerRateLimitingTtl = $this->config->getCrawlerRateLimitingTtl();
-        $ip = $this->request->getServerValue('HTTP_FASTLY_CLIENT_IP') ?? $this->request->getClientIp();
-        $tag = self::FASTLY_CRAWLER_TAG . $ip;
-        $data = json_decode($this->cache->load($tag), true);
-
-        return $this->processData($data, $tag, $crawlerRateLimitingTtl, $crawlerRateLimitingLimit);
+        return false;
     }
 
     /**

@@ -426,6 +426,7 @@
     </form>
 </script>
 
+<!-- Backend creation overlay template -->
 <script type="text/x-magento-template" id="fastly-create-backend-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -441,12 +442,30 @@
           class="form-inline"
           enctype="multipart/form-data">
         <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field maintenance-checkbox-container">
+                <label for="fastly_activate_backend" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+                </label>
+                <div class="admin__field-control">
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_backend"
+                               id="fastly_activate_backend"
+                               checked/>
+                        <label class="admin__field-label" for="fastly_activate_backend"></label>
+                    </div>
+                </div>
+            </div>
             <div class="admin__field field">
                 <label for="condition" class="admin__field-label">
                     <span><?php /* @noEscape */ echo __("Condition") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    This will happen all the time unless you <a href="#attach">Attach a condition</a>
+                    <button id="attach_condition">Attach Condition</button>
+                    <div class="admin__field-note">
+                        This will happen all the time unless you <a href="#attach">Attach a condition</a>
+                    </div>
                 </div>
             </div>
             <div class="admin__field field _required">
@@ -468,7 +487,7 @@
 
             <div class="admin__field field">
                 <label for="shield" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __("Shield") ?></span>
+                    <span><?php /* @noEscape */ echo __("Shielding") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <select name="shield" id="backend_shield" class="admin__control-text">
@@ -540,9 +559,62 @@
                 </div>
             </div>
 
+            <div class="admin__field field">
+                <label class="admin__field-label">
+                    <h2>Advanced options</h2>
+                </label>
+            </div>
+
+            <div class="admin__field field _required">
+                <label for="maximum_connections" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Maximum connections") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="maximum_connections"
+                           type="number"
+                           required="required"
+                           id="backend_maximum_connections"
+                           class="admin__control-text
+                                    required-entry
+                                    validate-alphanum-with-spaces
+                                    validate-length
+                                    maximum-length-50"
+                           value="200">
+                    <div class="admin__field-note">The maximum number of connections to your backend.
+                        By default, limited to 200 connections per cache node to protect origins from overload.</div>
+                </div>
+            </div>
+
+            <div class="admin__field field _required">
+                <label for="error_threshold" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Error threshold") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="error_threshold"
+                           type="number"
+                           required="required"
+                           id="backend_error_threshold"
+                           class="admin__control-text
+                                    required-entry
+                                    validate-alphanum-with-spaces
+                                    validate-length
+                                    maximum-length-50"
+                           value="0">
+                    <div class="admin__field-note">Number of errors to allow before the backend is marked as down.</div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label class="admin__field-label">
+                </label>
+                <label class="admin__field-label">
+                    TIMEOUTS
+                </label>
+            </div>
+
             <div class="admin__field field _required">
                 <label for="connect_timeout" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __("Connect timeout") ?></span>
+                    <span><?php /* @noEscape */ echo __("Connection timeout") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input name="connect_timeout"
@@ -553,22 +625,9 @@
                                     required-entry
                                     validate-alphanum-with-spaces
                                     validate-length
-                                    maximum-length-50">
+                                    maximum-length-50"
+                            value="1000">
                     <div class="admin__field-note">How long to wait for a timeout in milliseconds.</div>
-                </div>
-            </div>
-
-            <div class="admin__field field _required">
-                <label for="between_bytes_timeout" class="admin__field-label">
-                    <span><?php /* @noEscape */  echo __("Between bytes timeout") ?></span>
-                </label>
-                <div class="admin__field-control">
-                    <input name="between_bytes_timeout"
-                           type="number"
-                           required="required"
-                           id="backend_between_bytes_timeout"
-                           class="admin__control-text">
-                    <div class="admin__field-note">How long to wait between bytes in milliseconds.</div>
                 </div>
             </div>
 
@@ -581,24 +640,24 @@
                            type="number"
                            required="required"
                            id="backend_first_byte_timeout"
-                           class="admin__control-text">
+                           class="admin__control-text"
+                           value="15000">
                     <div class="admin__field-note">How long to wait for the first bytes in milliseconds.</div>
                 </div>
             </div>
 
-            <div class="admin__field field maintenance-checkbox-container">
-                <label for="fastly_activate_backend" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+            <div class="admin__field field _required">
+                <label for="between_bytes_timeout" class="admin__field-label">
+                    <span><?php /* @noEscape */  echo __("Between bytes timeout") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <div class="admin__field-option">
-                        <input class="admin__control-checkbox"
-                               type="checkbox"
-                               name="fastly_activate_backend"
-                               id="fastly_activate_backend"
-                               checked/>
-                        <label class="admin__field-label" for="fastly_activate_backend"></label>
-                    </div>
+                    <input name="between_bytes_timeout"
+                           type="number"
+                           required="required"
+                           id="backend_between_bytes_timeout"
+                           class="admin__control-text"
+                           value="10000">
+                    <div class="admin__field-note">How long to wait between bytes in milliseconds.</div>
                 </div>
             </div>
         </fieldset>

@@ -201,9 +201,9 @@ class ToggleRateLimiting extends Action
 
             $this->sendWebHook($checkIfReqExist, $clone);
 
-            $comment = ['comment' => 'Magento Module turned ON Rate Limiting'];
+            $comment = ['comment' => 'Magento Module turned ON Path Protection'];
             if ($checkIfReqExist) {
-                $comment = ['comment' => 'Magento Module turned OFF Rate Limiting'];
+                $comment = ['comment' => 'Magento Module turned OFF Path Protection'];
             }
             $this->api->addComment($clone->number, $comment);
 
@@ -307,9 +307,11 @@ class ToggleRateLimiting extends Action
     {
         if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
             if ($checkIfReqExist) {
-                $this->api->sendWebHook('*Rate Limiting has been turned OFF in Fastly version ' . $clone->number . '*');
+                $this->api->sendWebHook('*Path Protection has been turned OFF in Fastly version '
+                    . $clone->number . '*');
             } else {
-                $this->api->sendWebHook('*Rate Limiting has been turned ON in Fastly version ' . $clone->number . '*');
+                $this->api->sendWebHook('*Path Protection has been turned ON in Fastly version '
+                    . $clone->number . '*');
             }
         }
     }

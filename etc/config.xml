@@ -59,11 +59,15 @@
                         <publish_config_change_events>1</publish_config_change_events>
                     </fastly_web_hooks>
                     <fastly_rate_limiting_settings>
-                        <rate_limiting_limit>10</rate_limiting_limit>
-                        <rate_limiting_ttl>3600</rate_limiting_ttl>
-                        <enable_crawler_protection>0</enable_crawler_protection>
-                        <crawler_rate_limiting_limit>100</crawler_rate_limiting_limit>
-                        <crawler_rate_limiting_ttl>3600</crawler_rate_limiting_ttl>
+                        <fastly_path_protection>
+                            <rate_limiting_limit>10</rate_limiting_limit>
+                            <rate_limiting_ttl>3600</rate_limiting_ttl>
+                        </fastly_path_protection>
+                        <crawler_protection>
+                            <enable_crawler_protection>0</enable_crawler_protection>
+                            <crawler_rate_limiting_limit>100</crawler_rate_limiting_limit>
+                            <crawler_rate_limiting_ttl>3600</crawler_rate_limiting_ttl>
+                        </crawler_protection>
                     </fastly_rate_limiting_settings>
                 </fastly>
             </full_page_cache>

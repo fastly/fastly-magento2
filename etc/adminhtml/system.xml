@@ -631,68 +631,82 @@
                             <![CDATA[Experimental: Rate limit specific URL paths against abuse. Please read <a href="https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/RATE-LIMITING.md#vcl-upload"
                             target="_blank">this guide</a> for more details]]>
                         </comment>
-                        <!-- ===============================
-                             Enable Rate Limiting button
-                        ================================ -->
-                        <field id="enable_rate_limiting" translate="label comment" sortOrder="5" showInDefault="1" showInStore="0" showInWebsite="0">
-                            <label>Enable Rate Limiting</label>
-                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ToggleRateLimitingBtn</frontend_model>
-                        </field>
-                        <!-- =============================
-                             Rate Limited Paths button
-                        ============================== -->
-                        <field id="rate_limiting_paths" translate="label comment" sortOrder="6" showInDefault="1" showInStore="0" showInWebsite="0">
-                            <label>Rate Limited Paths</label>
-                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\PathsBtn</frontend_model>
-                        </field>
-                        <!-- ==========================
-                             Rate Limit input field
-                        =========================== -->
-                        <field id="rate_limiting_limit" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
-                            <label>Rate Limit</label>
-                            <comment>Numeric value for the number of tolerated Rate Limit requests.</comment>
-                            <validate>required-entry validate-number validate-not-negative-number</validate>
-                        </field>
-                        <!-- ========================
-                             Rate Limit TTL field
-                        ========================= -->
-                        <field id="rate_limiting_ttl" translate="label comment" type="text" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
-                            <label>Rate Limit TTL</label>
-                            <comment>Time in seconds for the Rate Limit lifetime.</comment>
-                            <validate>required-entry validate-number validate-not-negative-number</validate>
-                        </field>
-                        <!-- ==========================================
-                             Enable Crawler Protection select field
-                        =========================================== -->
-                        <field id="enable_crawler_protection" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
-                            <label>Enable Crawler Protection</label>
-                            <comment>
-                                <![CDATA[]]>
-                            </comment>
-                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                        </field>
-                        <!-- =============================================
-                             Crawler Protection Rate Limit input field
-                        ============================================== -->
-                        <field id="crawler_rate_limiting_limit" translate="label comment" type="text" sortOrder="25" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
-                            <label>Crawler Protection Rate Limit</label>
-                            <comment>Numeric value for the number of tolerated Crawler Protection Rate Limit requests.</comment>
-                            <depends>
-                                <field id="enable_crawler_protection">1</field>
-                            </depends>
-                            <validate>required-entry validate-number validate-not-negative-number</validate>
-                        </field>
-                        <!-- ===========================================
-                             Crawler Protection Rate Limit TTL field
-                        ============================================ -->
-                        <field id="crawler_rate_limiting_ttl" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
-                            <label>Crawler Protection Rate Limit TTL</label>
-                            <comment>Time in seconds for the Crawler Protection Rate Limit lifetime.</comment>
-                            <depends>
-                                <field id="enable_crawler_protection">1</field>
-                            </depends>
-                            <validate>required-entry validate-number validate-not-negative-number</validate>
-                        </field>
+                        <group id="fastly_path_protection" sortOrder="5" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Path Protection</label>
+                            <!-- =================================
+                                 Enable Path Protection button
+                            ================================== -->
+                            <field id="enable_rate_limiting" translate="label comment" sortOrder="5" showInDefault="1" showInStore="0" showInWebsite="0">
+                                <label>Enable Path Protection</label>
+                                <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ToggleRateLimitingBtn</frontend_model>
+                            </field>
+                            <!-- =============================
+                                 Protected Paths button
+                            ============================== -->
+                            <field id="rate_limiting_paths" translate="label comment" sortOrder="6" showInDefault="1" showInStore="0" showInWebsite="0">
+                                <label>Protected Paths</label>
+                                <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\PathsBtn</frontend_model>
+                            </field>
+                            <!-- ==========================================
+                                 Path Protection Rate Limit input field
+                            =========================================== -->
+                            <field id="rate_limiting_limit" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                                <label>Path Protection Rate Limit</label>
+                                <comment>Numeric value for the number of tolerated Path Protection Rate Limit requests.</comment>
+                                <validate>required-entry validate-number validate-not-negative-number</validate>
+                            </field>
+                            <!-- ========================================
+                                 Path Protection Rate Limit TTL field
+                            ========================================= -->
+                            <field id="rate_limiting_ttl" translate="label comment" type="text" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                                <label>Path Protection Rate Limit TTL</label>
+                                <comment>Time in seconds for the Path Protection Rate Limit lifetime.</comment>
+                                <validate>required-entry validate-number validate-not-negative-number</validate>
+                            </field>
+                        </group>
+                        <group id="crawler_protection" sortOrder="10" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Abusive Crawlers</label>
+                            <!-- ==========================================
+                                 Enable Crawler Protection select field
+                             =========================================== -->
+                            <field id="enable_crawler_protection" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                                <label>Enable Crawler Protection</label>
+                                <comment>
+                                    <![CDATA[]]>
+                                </comment>
+                                <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            </field>
+                            <!-- =============================================
+                                 Crawler Protection Rate Limit input field
+                            ============================================== -->
+                            <field id="crawler_rate_limiting_limit" translate="label comment" type="text" sortOrder="25" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                                <label>Crawler Protection Rate Limit</label>
+                                <comment>Numeric value for the number of tolerated Crawler Protection Rate Limit requests.</comment>
+                                <depends>
+                                    <field id="enable_crawler_protection">1</field>
+                                </depends>
+                                <validate>required-entry validate-number validate-not-negative-number</validate>
+                            </field>
+                            <!-- ===========================================
+                                 Crawler Protection Rate Limit TTL field
+                            ============================================ -->
+                            <field id="crawler_rate_limiting_ttl" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                                <label>Crawler Protection Rate Limit TTL</label>
+                                <comment>Time in seconds for the Crawler Protection Rate Limit lifetime.</comment>
+                                <depends>
+                                    <field id="enable_crawler_protection">1</field>
+                                </depends>
+                                <validate>required-entry validate-number validate-not-negative-number</validate>
+                            </field>
+                            <field id="exempt_good_bots" translate="label comment" type="select" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
+                                <label>Exempt Known Good Bots</label>
+                                <comment>Choose to exempt known good bots like Googlebot and Bingbot from Crawler Protection rate limiting</comment>
+                                <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                                <depends>
+                                    <field id="enable_crawler_protection">1</field>
+                                </depends>
+                            </field>
+                        </group>
                     </group>
                     <!-- ===============================
                          Webhook Notifications group

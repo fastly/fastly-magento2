@@ -37,7 +37,7 @@ class FrontControllerPlugin
     /** @var string Cache tag for storing rate limit data */
     const FASTLY_CACHE_TAG = 'fastly_rate_limit_';
     /** @var string Cache tag for storing crawler rate limit data */
-    const FASTLY_CRAWLER_TAG = 'fastly_crawler_protection';
+    const FASTLY_CRAWLER_TAG = 'fastly_crawler_protection_';
 
     /**
      * @var CacheInterface
@@ -161,25 +161,24 @@ class FrontControllerPlugin
      */
     private function crawlerProtection($path)
     {
-        $userAgent = $this->httpHeader->getHttpUserAgent();
-        $server = $this->request->getServer();
-        $crawler = \Zend_Http_UserAgent_Bot::match($userAgent, $server);
+        $ip = $this->request->getServerValue('HTTP_FASTLY_CLIENT_IP') ?? $this->request->getClientIp();
 
-        if ($crawler) {
-            $pattern = '{^/(pub|var)/(static|view_preprocessed)/}';
-
-            if (preg_match($pattern, $path) == 1) {
-                return false;
-            }
-
-            $crawlerRateLimitingLimit = $this->config->getCrawlerRateLimitingLimit();
-            $crawlerRateLimitingTtl = $this->config->getCrawlerRateLimitingTtl();
-            $tag = self::FASTLY_CRAWLER_TAG;
-            $data = json_decode($this->cache->load($tag), true);
-
-            return $this->processData($data, $tag, $crawlerRateLimitingTtl, $crawlerRateLimitingLimit);
+        if ($this->verifyBots($ip)) {
+            return false;
         }
-        return false;
+
+        $pattern = '{^/(pub|var)/(static|view_preprocessed)/}';
+
+        if (preg_match($pattern, $path) == 1) {
+            return false;
+        }
+
+        $crawlerRateLimitingLimit = $this->config->getCrawlerRateLimitingLimit();
+        $crawlerRateLimitingTtl = $this->config->getCrawlerRateLimitingTtl();
+        $tag = self::FASTLY_CRAWLER_TAG . $ip;
+        $data = json_decode($this->cache->load($tag), true);
+
+        return $this->processData($data, $tag, $crawlerRateLimitingTtl, $crawlerRateLimitingLimit);
     }
 
     /**
@@ -222,6 +221,64 @@ class FrontControllerPlugin
                 $usage++;
                 $data['usage'] = $usage;
                 $this->cache->save(json_encode($data), $tag, []);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param $haystack
+     * @param $needle
+     * @return bool
+     */
+    private function endsWith($haystack, $needle)
+    {
+        $length = strlen($needle);
+        if ($length == 0) {
+            return false;
+        }
+        return (substr($haystack, -$length) === $needle);
+    }
+
+    /**
+     * @param $ip
+     * @return bool
+     */
+    private function verifyBots($ip)
+    {
+        $userAgent = strtolower($this->httpHeader->getHttpUserAgent());
+        $goodBots = [
+            'googlebot' => [
+                'googlebot.com',
+                'google.com'
+            ],
+            'msnbot'    => [
+                'search.msn.com'
+            ],
+            'bingbot'   => [
+                'search.msn.com'
+            ]
+        ];
+
+        // for each good bot
+        foreach ($goodBots as $botName => $botDomains) {
+            // check if the user agent is a bot
+            if (strpos($userAgent, $botName) !== false) {
+                // get domain from ip value
+                $domain = gethostbyaddr($ip);
+                // for each verified bot domain
+                foreach ($botDomains as $botDomain) {
+                    // check if the verified and retrieved domains match
+                    $endsWith = $this->endsWith($domain, $botDomain);
+                    // if the domain is verified
+                    if ($endsWith !== false) {
+                        // confirm IP address
+                        $addr = gethostbyname($domain);
+                        if ($ip == $addr) {
+                            return true;
+                        }
+                    }
+                }
             }
         }
         return false;

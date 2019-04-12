@@ -86,7 +86,7 @@ define([
 
                 getRateLimitingSetting(active_version, true).done(function (resp) {
                     if (resp.status === false) {
-                        return errorPathsBtnMsg.text($.mage.__('Please make sure that Rate Limiting is enabled.')).show();
+                        return errorPathsBtnMsg.text($.mage.__('Please make sure that Path Protection is enabled.')).show();
                     }
                     $.when(
                         $.ajax({
@@ -117,7 +117,7 @@ define([
                             }
                             overlay(pathsOptions);
                             $('.upload-button span').text('Save');
-                            $('.modal-title').text($.mage.__('Rate Limiting path management'));
+                            $('.modal-title').text($.mage.__('Protected Paths management'));
 
                             $('#fastly-rate-limiting-table > tbody').html(pathsHtml);
                         }
@@ -153,10 +153,10 @@ define([
                     let upload_button = $('.upload-button span');
 
                     if (response.status === false) {
-                        $('.modal-title').text($.mage.__('You are about to enable Rate Limiting'));
+                        $('.modal-title').text($.mage.__('You are about to enable Path Protection'));
                         upload_button.text('Enable');
                     } else {
-                        $('.modal-title').text($.mage.__('You are about to disable Rate Limiting'));
+                        $('.modal-title').text($.mage.__('You are about to disable Path Protection'));
                         upload_button.text('Disable');
                     }
                     rateLimiting = response.status;
@@ -247,7 +247,7 @@ define([
                             disabledOrEnabled = 'disabled';
                         }
 
-                        successRateLimitingBtnMsg.text($.mage.__('Rate Limiting successfully ' + disabledOrEnabled + '.')).show();
+                        successRateLimitingBtnMsg.text($.mage.__('Path Protection successfully ' + disabledOrEnabled + '.')).show();
 
                         if (disabledOrEnabled === 'enabled') {
                             rateLimitingStateMsgSpan.find('#rate_limiting_state_disabled').hide();

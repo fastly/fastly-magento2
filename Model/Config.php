@@ -298,19 +298,19 @@ class Config extends \Magento\PageCache\Model\Config
      * XML path to Rate Limiting paths
      */
     const XML_FASTLY_RATE_LIMITING_PATHS
-        = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/rate_limiting_paths';
+        = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/fastly_path_protection/rate_limiting_paths';
 
     /**
      * XML path to Rate Limiting limit
      */
     const XML_FASTLY_RATE_LIMITING_LIMIT
-        = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/rate_limiting_limit';
+        = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/fastly_path_protection/rate_limiting_limit';
 
     /**
      * XML path to Rate Limiting TTL
      */
     const XML_FASTLY_RATE_LIMITING_TTL
-        = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/rate_limiting_ttl';
+        = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/fastly_path_protection/rate_limiting_ttl';
 
     /**
      * XML path to image optimizations flag
@@ -457,7 +457,28 @@ class Config extends \Magento\PageCache\Model\Config
      * XML path to enable Rate Limiting
      */
     const XML_FASTLY_RATE_LIMITING_ENABLE
-        = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/enable_rate_limiting';
+        = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/fastly_path_protection/enable_rate_limiting';
+
+    /**
+     * XML path to enable Crawler Protection
+     */
+    const XML_FASTLY_CRAWLER_PROTECTION_ENABLE
+        = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/crawler_protection/enable_crawler_protection';
+
+    /**
+     * XML path to Crawler Protection Rate Limiting limit
+     */
+    const XML_FASTLY_CRAWLER_RATE_LIMITING_LIMIT
+        = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/crawler_protection/crawler_rate_limiting_limit';
+
+    /**
+     * XML path to Crawler Protection Rate Limiting TTL
+     */
+    const XML_FASTLY_CRAWLER_RATE_LIMITING_TTL
+        = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/crawler_protection/crawler_rate_limiting_ttl';
+
+    const XML_FASTLY_EXEMPT_GOOD_BOTS
+        = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/crawler_protection/exempt_good_bots';
 
     /**
      * Check if Fastly is selected for Caching Application
@@ -898,6 +919,46 @@ class Config extends \Magento\PageCache\Model\Config
     public function getRateLimitingTtl()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_RATE_LIMITING_TTL);
+    }
+
+    /**
+     * return Crawler Protection status
+     *
+     * @return mixed
+     */
+    public function isCrawlerProtectionEnabled()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_CRAWLER_PROTECTION_ENABLE);
+    }
+
+    /**
+     * return Crawler Rate Limiting limit
+     *
+     * @return mixed
+     */
+    public function getCrawlerRateLimitingLimit()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_CRAWLER_RATE_LIMITING_LIMIT);
+    }
+
+    /**
+     * return Crawler Rate Limiting TTL
+     *
+     * @return mixed
+     */
+    public function getCrawlerRateLimitingTtl()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_CRAWLER_RATE_LIMITING_TTL);
+    }
+
+    /**
+     * Check if exempt good bots is enabled
+     *
+     * @return mixed
+     */
+    public function isExemptGoodBotsEnabled()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_EXEMPT_GOOD_BOTS);
     }
 
     /**

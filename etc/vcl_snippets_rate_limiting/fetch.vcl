@@ -9,3 +9,9 @@
             return(pass);
         }
     }
+
+    # If we get Fastly-Vary it means it was set by the Crawler Module. Unfortunately magento overwrites
+    # Vary headers so we had to set our own Fastly-Vary header we set here.
+    if ( beresp.status == 429 && beresp.http.Fastly-Vary ) {
+        set beresp.http.Vary = beresp.http.Fastly-Vary;
+    }

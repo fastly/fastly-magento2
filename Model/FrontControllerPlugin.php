@@ -146,7 +146,7 @@ class FrontControllerPlugin
 
         $limit = false;
         foreach ($limitedPaths as $key => $value) {
-            if (preg_match('{' . $value->path . '}', $path) == 1) {
+            if (preg_match('{' . $value->path . '}i', $path) == 1) {
                 $limit = true;
             }
         }
@@ -154,12 +154,11 @@ class FrontControllerPlugin
         if ($limit) {
             $rateLimitingLimit = $this->config->getRateLimitingLimit();
             $rateLimitingTtl = $this->config->getRateLimitingTtl();
-            $this->response->setHeader('Surrogate-Control', 'max-age=' . $rateLimitingTtl);
             $ip = $this->request->getServerValue('HTTP_FASTLY_CLIENT_IP') ?? $this->request->getClientIp();
             $tag = self::FASTLY_CACHE_TAG . $ip;
             $data = json_decode($this->cache->load($tag), true);
 
-            return $this->processData($data, $tag, $rateLimitingTtl, $rateLimitingLimit);
+            return $this->processData($data, $tag, $rateLimitingTtl, $rateLimitingLimit, "path");
         }
 
         return false;
@@ -194,7 +193,7 @@ class FrontControllerPlugin
         $tag = self::FASTLY_CRAWLER_TAG . $ip;
         $data = json_decode($this->cache->load($tag), true);
 
-        return $this->processData($data, $tag, $crawlerRateLimitingTtl, $crawlerRateLimitingLimit);
+        return $this->processData($data, $tag, $crawlerRateLimitingTtl, $crawlerRateLimitingLimit, "crawler");
     }
 
     /**
@@ -202,9 +201,10 @@ class FrontControllerPlugin
      * @param $tag
      * @param $ttl
      * @param $limit
+     * @param $limitingType - path or crawler
      * @return bool
      */
-    private function processData($data, $tag, $ttl, $limit)
+    private function processData($data, $tag, $ttl, $limit, $limitingType = "path")
     {
         if (empty($data)) {
             $date = $this->coreDate->timestamp();
@@ -230,7 +230,11 @@ class FrontControllerPlugin
 
             if ($usage >= $limit) {
                 $this->response->setStatusHeader(429, null, 'API limit exceeded');
-                $this->response->setBody("Request limit exceeded");
+                if ( $limitingType == "path" )
+                    $this->response->setHeader('Surrogate-Control', 'max-age=' . $ttl);
+                if ( $limitingType == "crawler" )
+                    $this->response->setHeader('Fastly-Vary', 'Fastly-Client-IP');
+                $this->response->setBody('<h1>Request limit exceeded</h1>');
                 $this->response->setNoCacheHeaders();
                 return true;
             } else {

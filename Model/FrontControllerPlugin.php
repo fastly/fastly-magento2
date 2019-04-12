@@ -26,6 +26,8 @@ use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\App\RequestInterface as Request;
 use Magento\Framework\App\ResponseInterface as Response;
 use Magento\Framework\HTTP\Header;
+use Magento\Framework\Filesystem;
+use Magento\Framework\App\Filesystem\DirectoryList;
 
 /**
  * Class FrontControllerPlugin
@@ -70,6 +72,11 @@ class FrontControllerPlugin
     private $httpHeader;
 
     /**
+     * @var Filesystem
+     */
+    private $filesystem;
+
+    /**
      * FrontControllerPlugin constructor.
      * @param Request $request
      * @param Config $config
@@ -77,6 +84,7 @@ class FrontControllerPlugin
      * @param DateTime $coreDate
      * @param Response $response
      * @param Header $httpHeader
+     * @param Filesystem $filesystem
      */
     public function __construct(
         Request $request,
@@ -84,7 +92,8 @@ class FrontControllerPlugin
         CacheInterface $cache,
         DateTime $coreDate,
         Response $response,
-        Header $httpHeader
+        Header $httpHeader,
+        Filesystem $filesystem
     ) {
         $this->request = $request;
         $this->response = $response;
@@ -92,6 +101,7 @@ class FrontControllerPlugin
         $this->config = $config;
         $this->cache = $cache;
         $this->coreDate = $coreDate;
+        $this->filesystem = $filesystem;
     }
 
     /**
@@ -163,7 +173,13 @@ class FrontControllerPlugin
     {
         $ip = $this->request->getServerValue('HTTP_FASTLY_CLIENT_IP') ?? $this->request->getClientIp();
 
-        if ($this->verifyBots($ip)) {
+        if ($this->config->isExemptGoodBotsEnabled()) {
+            if ($this->verifyBots($ip)) {
+                return false;
+            }
+        }
+
+        if ($this->readMaintenanceIp($ip)) {
             return false;
         }
 
@@ -278,6 +294,22 @@ class FrontControllerPlugin
                             return true;
                         }
                     }
+                }
+            }
+        }
+        return false;
+    }
+
+    private function readMaintenanceIp($ip)
+    {
+        $flagDir = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
+
+        if ($flagDir->isExist('.maintenance.ip')) {
+            $temp = $flagDir->readFile('.maintenance.ip');
+            $tempList = explode(',', trim($temp));
+            foreach ($tempList as $key => $value) {
+                if (!empty($value) && trim($value) == $ip) {
+                    return true;
                 }
             }
         }

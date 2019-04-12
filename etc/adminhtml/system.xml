@@ -698,6 +698,9 @@
                                 </depends>
                                 <validate>required-entry validate-number validate-not-negative-number</validate>
                             </field>
+                            <!-- =================================
+                                 Exempt Good Bots select field
+                            ================================== -->
                             <field id="exempt_good_bots" translate="label comment" type="select" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
                                 <label>Exempt Known Good Bots</label>
                                 <comment>Choose to exempt known good bots like Googlebot and Bingbot from Crawler Protection rate limiting</comment>

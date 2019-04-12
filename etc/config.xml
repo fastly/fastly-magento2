@@ -67,6 +67,7 @@
                             <enable_crawler_protection>0</enable_crawler_protection>
                             <crawler_rate_limiting_limit>100</crawler_rate_limiting_limit>
                             <crawler_rate_limiting_ttl>3600</crawler_rate_limiting_ttl>
+                            <exempt_good_bots>1</exempt_good_bots>
                         </crawler_protection>
                     </fastly_rate_limiting_settings>
                 </fastly>

@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.94
+
+- Fix for Auto WebP not being set
+- Experimental support for rate limiting abusive crawlers 
+
 ## 1.2.93.
 
 - Experimental support for rate limiting https://github.com/fastly/fastly-magento2/pull/259

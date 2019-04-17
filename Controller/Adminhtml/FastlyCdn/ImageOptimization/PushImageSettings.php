@@ -144,19 +144,25 @@ class PushImageSettings extends Action
                     $this->api->uploadSnippet($clone->number, $snippetData);
 
                     $id = $service->id . '-' . $clone->number . '-imageopto';
-                    $imageParams = json_encode([
+                    # Make sure we set webp to auto default
+                    $imageParams = [
                         'data' => [
                             'id'            => $id,
                             'type'          => 'io_settings',
                             'attributes'    => [
-                                'jpeg_quality'  => $imageQuality
+                                'webp'  	=> true
                             ]
                         ]
-                    ]);
+                    ];
 
+                    # Set image quality to magento default quality if selected
                     if ($imageQualityFlag === 'true') {
-                        $this->api->configureImageOptimizationDefaultConfigOptions($imageParams, $clone->number);
+                        $imageParams['data']['attributes']['webp_quality'] = $imageQuality;
+                        $imageParams['data']['attributes']['jpeg_quality'] = $imageQuality;
                     }
+
+                    $this->api->configureImageOptimizationDefaultConfigOptions(json_encode($imageParams), $clone->number);
+
                 }
             } else {
                 $this->api->deleteRequest($clone->number, $reqName);

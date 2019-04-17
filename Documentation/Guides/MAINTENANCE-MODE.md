@@ -1,5 +1,7 @@
 # Maintenance Mode guide
 
+Available in version 1.2.91 of the plugin and higher
+
 Enabling maintenance mode allows admin IPs (IPs specified in .maintenance.ip file) to access the site as normal while 
 returning an error page to everyone else.
 

@@ -127,6 +127,7 @@ class GetAction extends Action
                 $currentStore = $this->storeManager->getStore();
                 // only generate a redirect URL if current and new store are different
                 if ($currentStore->getId() != $targetStore->getId()) {
+                    $this->url->setScope($targetStore->getId());
                     $this->url->addQueryParams([
                         '___store'      => $targetStore->getCode(),
                         '___from_store' => $currentStore->getCode()

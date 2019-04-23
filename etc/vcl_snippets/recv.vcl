@@ -1,5 +1,8 @@
-    # VCL required to support maintenance mode
-    if (table.lookup(magentomodule_config, "allow_super_users_during_maint", "0") == "1" && !req.http.Fastly-Client-Ip ~ maint_allowlist ) {
+    # VCL required to support maintenance mode. Don't maintenance mode admin pages and supporting assets
+    if (table.lookup(magentomodule_config, "allow_super_users_during_maint", "0") == "1" &&
+        !req.http.Fastly-Client-Ip ~ maint_allowlist &&
+        !req.url ~ "^/(index\.php/)?####ADMIN_PATH####/" &&
+        !req.url ~ "^/pub/static/") {
         error 503 "Maintenance mode";
     }
 

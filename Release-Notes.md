@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.96
+
+- Fix for maintenance mode not using the custom maintenance/error page
+
 ## 1.2.95
 
 - Fix GeoIP not working for stores with different base URL https://github.com/fastly/fastly-magento2/pull/263

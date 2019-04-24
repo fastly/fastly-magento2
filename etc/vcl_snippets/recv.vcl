@@ -3,7 +3,14 @@
         !req.http.Fastly-Client-Ip ~ maint_allowlist &&
         !req.url ~ "^/(index\.php/)?####ADMIN_PATH####/" &&
         !req.url ~ "^/pub/static/") {
-        error 503 "Maintenance mode";
+
+        # If we end up here after a restart and there is a ResponseObject it means we got here after error
+        # page VCL restart. We shouldn't touch it. Otherwise return a plain 503 error page
+        if ( req.restarts > 0 && req.http.ResponseObject ) {
+            set req.http.ResponseObject = "970";
+        } else {
+            error 503 "Maintenance mode";
+        }
     }
 
     # Fixup for Varnish ESI not dealing with https:// absolute URLs well

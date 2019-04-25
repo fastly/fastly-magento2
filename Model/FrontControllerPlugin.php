@@ -230,10 +230,12 @@ class FrontControllerPlugin
 
             if ($usage >= $limit) {
                 $this->response->setStatusHeader(429, null, 'API limit exceeded');
-                if ( $limitingType == "path" )
+                if ($limitingType == "path") {
                     $this->response->setHeader('Surrogate-Control', 'max-age=' . $ttl);
-                if ( $limitingType == "crawler" )
+                }
+                if ($limitingType == "crawler") {
                     $this->response->setHeader('Fastly-Vary', 'Fastly-Client-IP');
+                }
                 $this->response->setBody('<h1>Request limit exceeded</h1>');
                 $this->response->setNoCacheHeaders();
                 return true;

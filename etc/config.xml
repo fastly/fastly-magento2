@@ -38,7 +38,7 @@
                         <purge_catalog_product>1</purge_catalog_product>
                         <purge_cms_page>0</purge_cms_page>
                         <enable_geoip>0</enable_geoip>
-                        <enable_fastly_edge_modules>0</enable_fastly_edge_modules>
+                        <enable_fastly_edge_modules>1</enable_fastly_edge_modules>
                     </fastly_advanced_configuration>
                     <fastly_blocking>
                         <blocking_type>0</blocking_type>

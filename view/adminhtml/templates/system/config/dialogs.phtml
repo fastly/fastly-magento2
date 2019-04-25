@@ -462,10 +462,11 @@
                     <span><?php /* @noEscape */ echo __("Condition") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <button id="attach_condition">Attach Condition</button>
-                    <div class="admin__field-note">
-                        This will happen all the time unless you <a href="#attach">Attach a condition</a>
-                    </div>
+                    <span id="attach_span" style>
+                        This will happen all the time unless you <a id="attach" href="#">Attach a condition</a>
+                    </span>
+                    <select name="conditions" id="conditions" class="admin__control-select"></select>
+                    <div class="admin__field-note"><a id="detach" href="#">Detach condition</a></div>
                 </div>
             </div>
             <div class="admin__field field _required">
@@ -561,7 +562,65 @@
 
             <div class="admin__field field">
                 <label class="admin__field-label">
-                    <h2>Advanced options</h2>
+                    Transport Layer Security (TLS)
+                </label>
+            </div>
+
+            <div class="admin__field field _required">
+                <label for="tls-radio" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Enable TLS?") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <table>
+                        <tr>
+                            <td>
+                                <input type="radio" id="tls-yes" class="admin__control-radio" name="tls-radio" value="1"/>
+                                <label class="admin__field-label" for="tls-no">
+                                    <b>Yes,</b> enable TLS and connect securely using port
+                                </label>
+                            </td>
+                            <td>
+                                <input name="tls-yes-port"
+                                       type="number"
+                                       required="required"
+                                       id="tls-yes-port"
+                                       class="admin__control-text
+                                        required-entry
+                                        validate-alphanum-with-spaces
+                                        validate-length
+                                        maximum-length-50
+                                        checkbox-input"
+                                       value="443">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" id="tls-no" class="admin__control-radio" name="tls-radio" value="0"/>
+                                <label class="admin__field-label" for="tls-no">
+                                    <b>No, do not enable TLS.</b> Instead connect using port &nbsp
+                                </label>
+                            </td>
+                            <td>
+                                <input name="tls-no-port"
+                                       type="number"
+                                       required="required"
+                                       id="tls-yes-port"
+                                       class="admin__control-text
+                                        required-entry
+                                        validate-alphanum-with-spaces
+                                        validate-length
+                                        maximum-length-50
+                                        checkbox-input"
+                                       value="80">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label class="admin__field-label">
+                    Advanced options
                 </label>
             </div>
 
@@ -2107,6 +2166,15 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
     .dialog-item {
         border: none;
         background-color: transparent;
+    }
+
+    #attach_span {
+        line-height: 3.2rem;
+        white-space: nowrap;
+    }
+
+    .checkbox-input {
+        margin-bottom: 5px;
     }
 
 </style>

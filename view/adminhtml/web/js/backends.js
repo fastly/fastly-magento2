@@ -71,6 +71,16 @@ define([
             });
         }
 
+        function getAllConditions(active_version, loaderVisibility)
+        {
+            return $.ajax({
+                type: "GET",
+                url: config.getAllConditionsUrl,
+                showLoader: loaderVisibility,
+                data: {'active_version': active_version}
+            });
+        }
+
         /**
          * Process and display the list of Backends
          *
@@ -140,8 +150,8 @@ define([
 
                 overlay(createBackendOptions);
                 setServiceLabel(active_version, next_version, service_name);
-
-
+                $('#conditions').hide();
+                $('#detach').hide();
             });
         });
 
@@ -187,6 +197,29 @@ define([
                     }
                 });
             });
+        });
+
+        $('body').on('click', '#attach', function () {
+            getAllConditions(active_version, true).done(function (response) {
+                let html = '';
+                $('#attach_span').hide();
+                if (response !== false) {
+                    let conditions = response.conditions;
+                    $.each(conditions, function (index, condition) {
+                        html += '<option value=""></option>';
+                        html += '<option value="'+condition.name+'">'+condition.name+' ('+condition.type+') '+condition.statement+'</option>';
+                    });
+                }
+                $('#conditions').show();
+                $('#detach').show();
+                $('#conditions').html(html);
+            })
+        });
+
+        $('body').on('click', '#detach', function () {
+            $('#conditions').hide();
+            $('#detach').hide();
+            $('#attach_span').show();
         });
     }
 });

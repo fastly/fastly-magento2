@@ -64,6 +64,9 @@ define([
                 $($(this).find('.modly-field')).each(function () {
                     name = $(this).attr('name');
                     value = $(this).val();
+                    if (value === "true" || value === "false") {
+                        value = (value === "true");
+                    }
                     data[name] = value;
                 });
                 groupData.push(data);

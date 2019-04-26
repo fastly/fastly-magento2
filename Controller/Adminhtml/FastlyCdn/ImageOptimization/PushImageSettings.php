@@ -150,7 +150,7 @@ class PushImageSettings extends Action
                             'id'            => $id,
                             'type'          => 'io_settings',
                             'attributes'    => [
-                                'webp'  	=> true
+                                'webp'      => true
                             ]
                         ]
                     ];
@@ -161,8 +161,10 @@ class PushImageSettings extends Action
                         $imageParams['data']['attributes']['jpeg_quality'] = $imageQuality;
                     }
 
-                    $this->api->configureImageOptimizationDefaultConfigOptions(json_encode($imageParams), $clone->number);
-
+                    $this->api->configureImageOptimizationDefaultConfigOptions(
+                        json_encode($imageParams),
+                        $clone->number
+                    );
                 }
             } else {
                 $this->api->deleteRequest($clone->number, $reqName);

@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.97
+
+- Cleaned up redundant x-pass request conditions https://github.com/fastly/fastly-magento2/pull/265
+- Fix for boolean mode edge modules not working correctly https://github.com/fastly/fastly-magento2/pull/264
+- Edge modules are turned on by default
+
 ## 1.2.96
 
 - Fix for maintenance mode not using the custom maintenance/error page

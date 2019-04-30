@@ -113,21 +113,11 @@ class PushImageSettings extends Action
             $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);
             $snippet = $this->config->getVclSnippets(Config::IO_VCL_SNIPPET_PATH, 'recv.vcl');
 
-            $condition = [
-                'name' => Config::FASTLY_MAGENTO_MODULE . '_image_optimization',
-                'statement' => 'req.http.x-pass',
-                'type'      => 'REQUEST',
-                'priority'  => 5
-            ];
-
-            $createCondition = $this->api->createCondition($clone->number, $condition);
-
             if (!$checkIfReqExist) {
                 $request = [
-                    'name' => $reqName,
-                    'service_id' => $service->id,
-                    'version' => $currActiveVersion['active_version'],
-                    'request_condition' => $createCondition->name
+                    'name'          => $reqName,
+                    'service_id'    => $service->id,
+                    'version'       => $currActiveVersion['active_version']
                 ];
 
                 $this->api->createRequest($clone->number, $request);

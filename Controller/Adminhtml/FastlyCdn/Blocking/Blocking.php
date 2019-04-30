@@ -112,22 +112,12 @@ class Blocking extends Action
             $blockedItems = $country_codes . $acls;
             $strippedBlockedItems = substr($blockedItems, 0, strrpos($blockedItems, '||', -1));
 
-            $condition = [
-                'name'      => Config::FASTLY_MAGENTO_MODULE . '_block',
-                'statement' => 'req.http.x-pass',
-                'type'      => 'REQUEST',
-                'priority'  => 5
-            ];
-
-            $createCondition = $this->api->createCondition($clone->number, $condition);
-
             if (!$checkIfReqExist) {
                 $request = [
-                    'name'              => $reqName,
-                    'service_id'        => $service->id,
-                    'version'           => $currActiveVersion['active_version'],
-                    'force_ssl'         => true,
-                    'request_condition' => $createCondition->name
+                    'name'          => $reqName,
+                    'service_id'    => $service->id,
+                    'version'       => $currActiveVersion['active_version'],
+                    'force_ssl'     => true
                 ];
 
                 $this->api->createRequest($clone->number, $request);

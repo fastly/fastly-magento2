@@ -103,22 +103,11 @@ class Upload extends Action
                 $this->api->uploadSnippet($clone->number, $snippetData);
             }
 
-            $condition = [
-                'name'      => Config::FASTLY_MODLY_MODULE.'_pass',
-                'statement' => 'req.http.x-pass',
-                'type'      => 'REQUEST',
-                'priority'  => 90
-            ];
-
-            $createCondition = $this->api->createCondition($clone->number, $condition);
-
             $request = [
-                'action'            => 'pass',
-                'max_stale_age'     => 3600,
-                'name'              => Config::FASTLY_MODLY_MODULE.'_request',
-                'request_condition' => $createCondition->name,
-                'service_id'        => $service->id,
-                'version'           => $currActiveVersion
+                'name'          => Config::FASTLY_MODLY_MODULE.'_request',
+                'service_id'    => $service->id,
+                'version'       => $currActiveVersion,
+                'force_ssl'     => true
             ];
 
             $this->api->createRequest($clone->number, $request);

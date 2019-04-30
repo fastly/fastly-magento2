@@ -110,22 +110,12 @@ class WafAllowlist extends Action
             $allowedItems = $acls;
             $strippedAllowedItems = substr($allowedItems, 0, strrpos($allowedItems, '||', -1));
 
-            $condition = [
-                'name'      => Config::FASTLY_MAGENTO_MODULE . '_waf',
-                'statement' => 'req.http.x-pass',
-                'type'      => 'REQUEST',
-                'priority'  => 5
-            ];
-
-            $createCondition = $this->api->createCondition($clone->number, $condition);
-
             if (!$checkIfReqExist) {
                 $request = [
-                    'name'              => $reqName,
-                    'service_id'        => $service->id,
-                    'version'           => $currActiveVersion['active_version'],
-                    'force_ssl'         => true,
-                    'request_condition' => $createCondition->name
+                    'name'          => $reqName,
+                    'service_id'    => $service->id,
+                    'version'       => $currActiveVersion['active_version'],
+                    'force_ssl'     => true
                 ];
 
                 $this->api->createRequest($clone->number, $request);

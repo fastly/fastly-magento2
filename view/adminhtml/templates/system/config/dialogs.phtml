@@ -560,6 +560,7 @@
                 </div>
             </div>
 
+            <hr>
             <div class="admin__field field">
                 <label class="admin__field-label">
                     Transport Layer Security (TLS)
@@ -574,8 +575,9 @@
                     <table>
                         <tr>
                             <td>
-                                <input type="radio" id="tls-yes" class="admin__control-radio" name="tls-radio" value="1"/>
-                                <label class="admin__field-label" for="tls-no">
+                                <input type="radio" id="tls-yes" class="admin__control-radio" name="tls-radio"
+                                       value="1" checked/>
+                                <label class="admin__field-label" for="tls-yes">
                                     <b>Yes,</b> enable TLS and connect securely using port
                                 </label>
                             </td>
@@ -595,7 +597,8 @@
                         </tr>
                         <tr>
                             <td>
-                                <input type="radio" id="tls-no" class="admin__control-radio" name="tls-radio" value="0"/>
+                                <input type="radio" id="tls-no" class="admin__control-radio" name="tls-radio"
+                                       value="0"/>
                                 <label class="admin__field-label" for="tls-no">
                                     <b>No, do not enable TLS.</b> Instead connect using port &nbsp
                                 </label>
@@ -617,6 +620,168 @@
                     </table>
                 </div>
             </div>
+
+            <div class="admin__field field _required">
+                <label for="certificate-radio" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Verify certificate?") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input type="radio" id="certificate-yes" class="admin__control-radio" name="certificate-radio"
+                           value="1" checked/>
+                    <label class="admin__field-label" for="certificate-yes">
+                        <b>Yes,</b> verify the authenticity of the TLS certificate
+                    </label>
+                </div>
+                <div class="admin__field-control">
+                    <input type="radio" id="certificate-no" class="admin__control-radio" name="certificate-radio"
+                           value="1"/>
+                    <label class="admin__field-label" for="certificate-no">
+                        <b>No,</b> do not verify my TLS certificate
+                    </label>
+                </div>
+            </div>
+
+            <div class="admin__field field _required">
+                <label for="certificate-hostname" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Certificate hostname") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="certificate-hostname"
+                           type="text"
+                           required="required"
+                           id="certificate-hostname"
+                           class="admin__control-text"
+                    >
+                    <div class="admin__field-note">This value is matched against the certificate common name (CN) or a
+                        subject alternate name (SAN).</div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label for="sni-hostname" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("SNI hostname") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="certificate-hostname"
+                           type="text"
+                           id="sni-hostname"
+                           class="admin__control-text"
+                    >
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="match-sni"
+                               id="match-sni"
+                               checked/>
+                        <label class="admin__field-label" for="match-sni">Match the SNI hostname to the Certificate
+                            hostname. This value identifies which certificate is to be used for the request to origin.
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field _required">
+                <label for="tls-ca-certificate" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("TLS CA certificate") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <textarea rows="6"
+                              name="tls-ca-certificate"
+                              required="required"
+                              id="tls-ca-certificate"
+                              class="admin__control-text"></textarea>
+                    <div class="admin__field-note">CA certificate used to verify the certificate from origin. Must be
+                        in PEM form.</div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label class="admin__field-label">
+                    Advanced TLS options
+                </label>
+            </div>
+
+            <div class="admin__field field _required">
+                <label for="minimum-tls" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("TLS CA certificate") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="minimum-tls" id="minimum-tls" class="admin__control-text">
+                        <option>none</option>
+                        <option value="1.0">1.0</option>
+                        <option value="1.0">1.1</option>
+                        <option value="1.0">1.2</option>
+                    </select>
+                    <div class="admin__field-note">The minimum TLS protocol version that Fastly will use to connect to
+                        your origin server.</div>
+                </div>
+            </div>
+
+            <div class="admin__field field _required">
+                <label for="maximum-tls" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("TLS CA certificate") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="maximum-tls" id="maximum-tls" class="admin__control-text">
+                        <option>none</option>
+                        <option value="1.0">1.0</option>
+                        <option value="1.0">1.1</option>
+                        <option value="1.0">1.2</option>
+                    </select>
+                    <div class="admin__field-note">The maximum TLS protocol version that Fastly will use to connect to
+                        your origin server. (Must be higher than the minimum TLS version.)</div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label for="ciphersuites" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Ciphersuites") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="ciphersuites"
+                           type="text"
+                           id="ciphersuites"
+                           class="admin__control-text"
+                    >
+                    <div class="admin__field-note">A list of OpenSSL ciphers to use when connecting to your origin.
+                        For more information see the OpenSSL documentation on cipher list format</div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label for="tls-client-certificate" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("TLS client certificate") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <textarea rows="6"
+                              name="tls-client-certificate"
+                              required="required"
+                              id="tls-client-certificate"
+                              class="admin__control-text"></textarea>
+                    <div class="admin__field-note">Certificate used to authenticate to the origin server. Must be in
+                        PEM form, and must be accompanied by a client certificate. It is advised to not used keys from
+                        anywhere else. A client certificate and client key allows your server to authenticate that
+                        Fastly is performing the connection.
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label for="tls-client-key" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("TLS client key") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <textarea rows="6"
+                              name="tls-client-key"
+                              required="required"
+                              id="tls-client-key"
+                              class="admin__control-text"></textarea>
+                    <div class="admin__field-note">Key used to authenticate to the backend server. Must be in PEM form,
+                        and must be accompanied by a client certificate.
+                    </div>
+                </div>
+            </div>
+            <hr>
 
             <div class="admin__field field">
                 <label class="admin__field-label">

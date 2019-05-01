@@ -1,0 +1,45 @@
+{
+	"name": "Increase timeouts for long running jobs",
+	"id": "increase_timeouts_long_jobs",
+	"description": "For selected requests, override default backend timeout. Often used for long running jobs that take over 1 minute. Please note these paths will no longer be cached. Fastly imposes hard limit 10 minute timeout.",
+	"version": 1,
+	"properties": [
+		{
+			"name": "rules",
+			"label": "Timeout override rules",
+			"type": "group",
+			"properties": [
+				{
+					"name": "pathpattern",
+					"label": "Path pattern",
+					"description": "Regular expressions are supported",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "timeout",
+					"label": "Timeout in seconds",
+					"type": "integer",
+					"default": "300",
+					"required": true
+				}
+			]
+		}
+	],
+	"vcl": [
+		{
+			"type": "recv",
+			"template": "if (req.restarts == 0) {\n    unset req.http.x-edge-module-timeout;\n}{{#each rules}}\nif (req.url ~ \"{{pathpattern}}\") {\n  set req.http.x-pass = \"1\";\n  set req.http.x-edge-module-timeout = \"{{timeout}}\";\n}\n{{/each}}"
+		},
+		{
+			"type": "pass",
+			"template": "if (req.http.x-edge-module-timeout) {\n  set bereq.first_byte_timeout = std.atof(req.http.x-edge-module-timeout);\n}"
+		}		
+	],
+	"test": {
+		"origins": [
+			"https://httpbin.org"
+		],
+		"reqUrl": "/html"
+	}
+}

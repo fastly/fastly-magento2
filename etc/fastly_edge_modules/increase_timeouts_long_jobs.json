@@ -29,7 +29,8 @@
 	"vcl": [
 		{
 			"type": "recv",
-			"template": "if (req.restarts == 0) {\n    unset req.http.x-edge-module-timeout;\n}{{#each rules}}\nif (req.url ~ \"{{pathpattern}}\") {\n  set req.http.x-pass = \"1\";\n  set req.http.x-edge-module-timeout = \"{{timeout}}\";\n}\n{{/each}}"
+			"template": "if (req.restarts == 0) {\n    unset req.http.x-edge-module-timeout;\n}{{#each rules}}\nif (req.url ~ \"{{pathpattern}}\") {\n  set req.http.x-pass = \"1\";\n  set req.http.x-edge-module-timeout = \"{{timeout}}\";\n}\n{{/each}}",
+			"priority": 80
 		},
 		{
 			"type": "pass",

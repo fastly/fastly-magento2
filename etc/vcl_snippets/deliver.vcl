@@ -1,10 +1,10 @@
     # Send no cache headers to end users for non-static content created by Magento
-    if (resp.http.X-Magento-Tags && !req.http.Fastly-FF ) {
+    if (resp.http.X-Magento-Tags && fastly.ff.visits_this_service == 0 ) {
         set resp.http.Cache-Control = "no-store, no-cache, must-revalidate, max-age=0";
     }
 
     # Execute only on the edge nodes
-    if ( !req.http.Fastly-FF ) {
+    if ( fastly.ff.visits_this_service == 0 ) {
         # Remove X-Magento-Vary and HTTPs Vary served to the user
         set resp.http.Vary = regsub(resp.http.Vary, "X-Magento-Vary,Https", "Cookie");
         remove resp.http.X-Magento-Tags;

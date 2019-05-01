@@ -68,7 +68,7 @@
         set req.http.Https = "on";
     }
 
-    if (req.http.Fastly-FF) {
+    if (fastly.ff.visits_this_service > 0) {
         # disable ESI processing on Origin Shield
         set req.esi = false;
         # Needed for proper handling of stale while revalidated when shielding is involved

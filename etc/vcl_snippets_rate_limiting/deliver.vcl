@@ -4,6 +4,6 @@ if ( resp.status == 429 && (req.http.Rate-Limit || resp.http.Fastly-Vary) ) {
   set resp.http.Vary = "Cookie";
 }
 
-if ( !req.http.Fastly-FF ) {
+if ( fastly.ff.visits_this_service == 0 ) {
   remove resp.http.Fastly-Vary;
 }

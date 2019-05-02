@@ -34,3 +34,5 @@ Currently following Edge Modules are bundled in
 a filesystem URL
 - [Redirect one domain to another](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-REDIRECT-DOMAIN.md) - redirect one domain to another e.g. domain.com 
 to www.domain.com. Useful for redirecting apex/naked domains to www.
+- [Hard Reload Cache Bypass for admins](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-HARD-RELOAD-CACHE-BYPASS.md) - allows admin IPs to force cache bypass on browser hard reload. [More details here](https://github.com/fastly/fastly-magento2/issues/147)
+- [Image Optimization Test Drive](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-IMAGE-OPTIMIZATION-TEST-DRIVE.md) - view your site with a configurable image quality and see what the savings could be in real time. Helps answer the question "What image quality level should I set".

@@ -18,7 +18,7 @@ define([
 
         let activeModuleOptions = {
             title: jQuery.mage.__(' '),
-                content: function () {
+            content: function () {
                 return document.getElementById('modly-active-module-template').textContent;
             },
             actionOk: function () {
@@ -28,7 +28,7 @@ define([
 
         let allModuleOptions = {
             title: jQuery.mage.__(' '),
-                content: function () {
+            content: function () {
                 return document.getElementById('modly-all-modules-template').textContent;
             },
             actionOk: function () {
@@ -146,7 +146,15 @@ define([
                     } else {
                         result = vclTemplate(fields);
                     }
-                    templates.push({"type": value.type, "snippet": result})
+                    let priority = 45;
+                    if (value.priority) {
+                        priority = value.priority;
+                    }
+                    templates.push({
+                        "type": value.type,
+                        "priority": priority,
+                        "snippet": result
+                    });
                 });
             });
             return templates;
@@ -344,7 +352,7 @@ define([
                 fieldValue = property.default;
             }
             if (property.required === true) {
-               field.prop(' _required');
+                field.prop(' _required');
             }
             if (property.description) {
                 description = property.description;
@@ -533,7 +541,7 @@ define([
                         selectOption = $('<option></option>');
                         selectOption.attr('value', key);
                         if (key === fieldValue) {
-                           selectOption.attr('selected', true);
+                            selectOption.attr('selected', true);
                         }
                         selectOption.append(option);
                         selectInput.append(selectOption);
@@ -650,7 +658,7 @@ define([
                 $('.upload-button span').text('Save');
 
                 if (response.modules.length > 0) {
-                   listModules(response.modules);
+                    listModules(response.modules);
                 } else {
                     showWarningMessage($.mage.__(response.msg));
                 }

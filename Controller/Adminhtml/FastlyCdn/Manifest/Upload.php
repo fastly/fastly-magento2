@@ -97,7 +97,7 @@ class Upload extends Action
                     'name'      => Config::FASTLY_MODLY_MODULE . '_' . $moduleId . '_' . $value->type,
                     'type'      => $value->type,
                     'dynamic'   => "0",
-                    'priority'  => 50,
+                    'priority'  => $value->priority,
                     'content'   => $value->snippet
                 ];
                 $this->api->uploadSnippet($clone->number, $snippetData);

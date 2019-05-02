@@ -78,7 +78,7 @@ class CheckTlsSetting extends Action
         $result = $this->resultJsonFactory->create();
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $req = $this->api->getRequest($activeVersion, Config::FORCE_TLS_SETTING_NAME);
+            $req = $this->api->hasSnippet($activeVersion, Config::FORCE_TLS_SETTING_NAME);
 
             if ($req == false) {
                 return $result->setData(['status' => false]);

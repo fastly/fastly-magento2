@@ -145,7 +145,7 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Force TLS setting name
      */
-    const FORCE_TLS_SETTING_NAME = 'magentomodule_force_tls';
+    const FORCE_TLS_SETTING_NAME = 'magentomodule_force_tls_recv';
 
     /**
      * Configure Dictionary name

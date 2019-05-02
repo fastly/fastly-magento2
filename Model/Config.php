@@ -85,7 +85,7 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Blocking setting name
      */
-    const BLOCKING_SETTING_NAME = 'magentomodule_blocking';
+    const BLOCKING_SETTING_NAME = 'magentomodule_blocking_recv';
 
     /**
      * Rate Limiting snippets directory path
@@ -115,7 +115,7 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * WAF setting name
      */
-    const WAF_SETTING_NAME = 'magentomodule_waf';
+    const WAF_SETTING_NAME = 'magentomodule_waf_recv';
 
     /**
      * Authentication snippets directory path
@@ -135,7 +135,7 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Image optimization setting name
      */
-    const IMAGE_SETTING_NAME = 'magentomodule_image_optimization';
+    const IMAGE_SETTING_NAME = 'magentomodule_image_optimization_recv';
 
     /**
      * Force TLS snippet path

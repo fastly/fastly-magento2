@@ -98,9 +98,8 @@ class Blocking extends Action
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
+            $checkIfSettingExists = $this->api->hasSnippet($activeVersion, Config::BLOCKING_SETTING_NAME);
 
-            $reqName = Config::FASTLY_MAGENTO_MODULE . '_blocking';
-            $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);
             $snippet = $this->config->getVclSnippets(
                 Config::VCL_BLOCKING_PATH,
                 Config::VCL_BLOCKING_SNIPPET
@@ -112,18 +111,15 @@ class Blocking extends Action
             $blockedItems = $country_codes . $acls;
             $strippedBlockedItems = substr($blockedItems, 0, strrpos($blockedItems, '||', -1));
 
-            if (!$checkIfReqExist) {
-                $request = [
-                    'name'          => $reqName,
-                    'service_id'    => $service->id,
-                    'version'       => $currActiveVersion['active_version'],
-                    'force_ssl'     => true
-                ];
-
-                $this->api->createRequest($clone->number, $request);
-
-                // Add blocking snippet
+            if (!$checkIfSettingExists) {
                 foreach ($snippet as $key => $value) {
+                    $name = Config::FASTLY_MAGENTO_MODULE . '_blocking_' . $key;
+
+                    if ($this->api->hasSnippet($clone->number, $name) == true) {
+                        $this->api->removeSnippet($clone->number, $name);
+                        continue;
+                    }
+
                     if ($strippedBlockedItems === '') {
                         $value = '';
                     } else {
@@ -132,7 +128,7 @@ class Blocking extends Action
                     }
 
                     $snippetData = [
-                        'name'      => Config::FASTLY_MAGENTO_MODULE . '_blocking_' . $key,
+                        'name'      => $name,
                         'type'      => $key,
                         'dynamic'   => 1,
                         'priority'  => 5,
@@ -142,11 +138,9 @@ class Blocking extends Action
                     $this->api->uploadSnippet($clone->number, $snippetData);
                 }
             } else {
-                $this->api->deleteRequest($clone->number, $reqName);
-
-                // Remove blocking snippet
                 foreach ($snippet as $key => $value) {
                     $name = Config::FASTLY_MAGENTO_MODULE . '_blocking_' . $key;
+
                     if ($this->api->hasSnippet($clone->number, $name) == true) {
                         $this->api->removeSnippet($clone->number, $name);
                     }
@@ -159,10 +153,10 @@ class Blocking extends Action
                 $this->api->activateVersion($clone->number);
             }
 
-            $this->sendWebhook($checkIfReqExist, $clone);
+            $this->sendWebhook($checkIfSettingExists, $clone);
 
             $comment = ['comment' => 'Magento Module turned ON Blocking'];
-            if ($checkIfReqExist) {
+            if ($checkIfSettingExists) {
                 $comment = ['comment' => 'Magento Module turned OFF Blocking'];
             }
             $this->api->addComment($clone->number, $comment);
@@ -218,10 +212,10 @@ class Blocking extends Action
         return $result;
     }
 
-    private function sendWebhook($checkIfReqExist, $clone)
+    private function sendWebhook($checkIfSettingExists, $clone)
     {
         if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-            if ($checkIfReqExist) {
+            if ($checkIfSettingExists) {
                 $this->api->sendWebHook('*Blocking has been turned OFF in Fastly version ' . $clone->number . '*');
             } else {
                 $this->api->sendWebHook('*Blocking has been turned ON in Fastly version ' . $clone->number . '*');

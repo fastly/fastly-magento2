@@ -103,14 +103,6 @@ class Upload extends Action
                 $this->api->uploadSnippet($clone->number, $snippetData);
             }
 
-            $request = [
-                'name'          => Config::FASTLY_MODLY_MODULE.'_request',
-                'service_id'    => $service->id,
-                'version'       => $currActiveVersion,
-                'force_ssl'     => true
-            ];
-
-            $this->api->createRequest($clone->number, $request);
             $this->api->validateServiceVersion($clone->number);
 
             $this->api->activateVersion($clone->number);

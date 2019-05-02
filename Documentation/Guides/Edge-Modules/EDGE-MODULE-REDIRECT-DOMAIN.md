@@ -27,7 +27,7 @@ Strip incoming path and set it to /. Default only rewrites host retaining the pa
 
 ## Enabling
 
-After any change to the settings you need to click Upload as that will upload require VCL code to Fastly.
+After any change to the settings you need to click Upload as that will activate the functionality you configured.
 
 ## Technical details
 

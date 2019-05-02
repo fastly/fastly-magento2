@@ -1,5 +1,12 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.98
+
+- Add Increase Timeouts for Long Running jobs edge module
+- Change req.http.Fastly-FF references to use the new fastly.ff datastructure
+- Add definition of snippet priority to edge modules https://github.com/fastly/fastly-magento2/pull/266
+- Another pass at removing redundant x-pass request conditions https://github.com/fastly/fastly-magento2/pull/267
+
 ## 1.2.97
 
 - Cleaned up redundant x-pass request conditions https://github.com/fastly/fastly-magento2/pull/265

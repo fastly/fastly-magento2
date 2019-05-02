@@ -12,7 +12,7 @@ Before you can use Fastly Edge Modules you need to [make sure they are enabled](
 
 When you click on the configuration you will be prompted with a screen like this
 
-![Fastly Edge Module Cloud increase timeouts for long jobs](../../images/guides/edge-modules/eedge-module-increase-timeouts-long-jobs.png "Fastly Edge Module Cloud increase timeouts for long jobs")
+![Fastly Edge Module Cloud increase timeouts for long jobs](../../images/guides/edge-modules/edge-module-increase-timeouts-long-jobs.png "Fastly Edge Module Cloud increase timeouts for long jobs")
 
 You can specify multiple paths by clicking *Add Group* button
 

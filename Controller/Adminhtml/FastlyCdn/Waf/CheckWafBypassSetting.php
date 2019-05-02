@@ -78,7 +78,7 @@ class CheckWafBypassSetting extends Action
         $result = $this->resultJsonFactory->create();
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $req = $this->api->getRequest($activeVersion, Config::WAF_SETTING_NAME);
+            $req = $this->api->hasSnippet($activeVersion, Config::WAF_SETTING_NAME);
 
             if ($req == false) {
                 return $result->setData([

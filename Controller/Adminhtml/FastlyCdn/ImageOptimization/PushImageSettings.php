@@ -109,19 +109,10 @@ class PushImageSettings extends Action
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
-            $reqName = Config::FASTLY_MAGENTO_MODULE . '_image_optimization';
-            $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);
+            $checkIfSettingExists = $this->api->hasSnippet($activeVersion, Config::IMAGE_SETTING_NAME);
             $snippet = $this->config->getVclSnippets(Config::IO_VCL_SNIPPET_PATH, 'recv.vcl');
 
-            if (!$checkIfReqExist) {
-                $request = [
-                    'name'          => $reqName,
-                    'service_id'    => $service->id,
-                    'version'       => $currActiveVersion['active_version']
-                ];
-
-                $this->api->createRequest($clone->number, $request);
-
+            if (!$checkIfSettingExists) {
                 foreach ($snippet as $key => $value) {
                     $snippetData = [
                         'name' => Config::FASTLY_MAGENTO_MODULE . '_image_optimization_' . $key,
@@ -157,8 +148,6 @@ class PushImageSettings extends Action
                     );
                 }
             } else {
-                $this->api->deleteRequest($clone->number, $reqName);
-
                 // Remove image optimization snippet
                 foreach ($snippet as $key => $value) {
                     $name = Config::FASTLY_MAGENTO_MODULE . '_image_optimization_' . $key;
@@ -174,10 +163,10 @@ class PushImageSettings extends Action
                 $this->api->activateVersion($clone->number);
             }
 
-            $this->sendWebhook($checkIfReqExist, $clone);
+            $this->sendWebhook($checkIfSettingExists, $clone);
 
             $comment = ['comment' => 'Magento Module pushed the Image Optimization snippet'];
-            if ($checkIfReqExist) {
+            if ($checkIfSettingExists) {
                 $comment = ['comment' => 'Magento Module removed the Image Optimization snippet'];
             }
             $this->api->addComment($clone->number, $comment);
@@ -193,10 +182,10 @@ class PushImageSettings extends Action
         }
     }
 
-    private function sendWebhook($checkIfReqExist, $clone)
+    private function sendWebhook($checkIfSettingExists, $clone)
     {
         if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-            if ($checkIfReqExist) {
+            if ($checkIfSettingExists) {
                 $this->api->sendWebHook(
                     '*Image optimization snippet has been removed in Fastly version ' . $clone->number . '*'
                 );

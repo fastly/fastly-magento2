@@ -78,7 +78,8 @@ class CheckBlockingSetting extends Action
         $result = $this->resultJsonFactory->create();
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $req = $this->api->getRequest($activeVersion, Config::BLOCKING_SETTING_NAME);
+            $snippet = Config::BLOCKING_SETTING_NAME;
+            $req = $this->api->hasSnippet($activeVersion, $snippet);
 
             if ($req == false) {
                 return $result->setData([

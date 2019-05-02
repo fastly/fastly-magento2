@@ -99,8 +99,7 @@ class WafAllowlist extends Action
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
 
-            $reqName = Config::FASTLY_MAGENTO_MODULE . '_waf';
-            $checkIfReqExist = $this->api->getRequest($activeVersion, $reqName);
+            $checkIfSettingExists = $this->api->hasSnippet($activeVersion, Config::WAF_SETTING_NAME);
             $snippet = $this->config->getVclSnippets(
                 Config::VCL_WAF_PATH,
                 Config::VCL_WAF_ALLOWLIST_SNIPPET
@@ -110,16 +109,7 @@ class WafAllowlist extends Action
             $allowedItems = $acls;
             $strippedAllowedItems = substr($allowedItems, 0, strrpos($allowedItems, '||', -1));
 
-            if (!$checkIfReqExist) {
-                $request = [
-                    'name'          => $reqName,
-                    'service_id'    => $service->id,
-                    'version'       => $currActiveVersion['active_version'],
-                    'force_ssl'     => true
-                ];
-
-                $this->api->createRequest($clone->number, $request);
-
+            if (!$checkIfSettingExists) {
                 // Add WAF allowlist snippet
                 foreach ($snippet as $key => $value) {
                     if ($strippedAllowedItems === '') {
@@ -139,8 +129,6 @@ class WafAllowlist extends Action
                     $this->api->uploadSnippet($clone->number, $snippetData);
                 }
             } else {
-                $this->api->deleteRequest($clone->number, $reqName);
-
                 // Remove WAF allowlist snippet
                 foreach ($snippet as $key => $value) {
                     $name = Config::FASTLY_MAGENTO_MODULE . '_waf_' . $key;
@@ -156,10 +144,10 @@ class WafAllowlist extends Action
                 $this->api->activateVersion($clone->number);
             }
 
-            $this->sendWebhook($checkIfReqExist, $clone);
+            $this->sendWebhook($checkIfSettingExists, $clone);
 
             $comment = ['comment' => 'Magento Module turned ON WAF ACL Bypass'];
-            if ($checkIfReqExist) {
+            if ($checkIfSettingExists) {
                 $comment = ['comment' => 'Magento Module turned OFF WAF ACL Bypass'];
             }
             $this->api->addComment($clone->number, $comment);
@@ -195,10 +183,10 @@ class WafAllowlist extends Action
         return $result;
     }
 
-    private function sendWebhook($checkIfReqExist, $clone)
+    private function sendWebhook($checkIfSettingExists, $clone)
     {
         if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-            if ($checkIfReqExist) {
+            if ($checkIfSettingExists) {
                 $this->api->sendWebHook('
                 *WAF ACL Bypass has been turned OFF in Fastly version ' . $clone->number . '*');
             } else {

@@ -55,7 +55,7 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Magento Error Page Response Object Name
      */
-    const ERROR_PAGE_RESPONSE_OBJECT = 'magentomodule_error_page_response_object';
+    const ERROR_PAGE_RESPONSE_OBJECT = self::FASTLY_MAGENTO_MODULE.'_error_page_response_object';
 
     /**
      * WAF Page Response Object Name
@@ -85,7 +85,7 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Blocking setting name
      */
-    const BLOCKING_SETTING_NAME = 'magentomodule_blocking_recv';
+    const BLOCKING_SETTING_NAME = self::FASTLY_MAGENTO_MODULE.'_blocking_recv';
 
     /**
      * Rate Limiting snippets directory path
@@ -100,7 +100,7 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Rate Limiting setting name
      */
-    const RATE_LIMITING_SETTING_NAME = 'magentomodule_rate_limiting';
+    const RATE_LIMITING_SETTING_NAME = self::FASTLY_MAGENTO_MODULE.'_rate_limiting';
 
     /**
      * WAF snippets directory path
@@ -115,7 +115,7 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * WAF setting name
      */
-    const WAF_SETTING_NAME = 'magentomodule_waf_recv';
+    const WAF_SETTING_NAME = self::FASTLY_MAGENTO_MODULE.'_waf_recv';
 
     /**
      * Authentication snippets directory path
@@ -130,12 +130,12 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Authentication dictionary name
      */
-    const AUTH_DICTIONARY_NAME = 'magentomodule_basic_auth';
+    const AUTH_DICTIONARY_NAME = self::FASTLY_MAGENTO_MODULE.'_basic_auth';
 
     /**
      * Image optimization setting name
      */
-    const IMAGE_SETTING_NAME = 'magentomodule_image_optimization_recv';
+    const IMAGE_SETTING_NAME = self::FASTLY_MAGENTO_MODULE.'_image_optimization_recv';
 
     /**
      * Force TLS snippet path
@@ -145,12 +145,12 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Force TLS setting name
      */
-    const FORCE_TLS_SETTING_NAME = 'magentomodule_force_tls_recv';
+    const FORCE_TLS_SETTING_NAME = self::FASTLY_MAGENTO_MODULE.'_force_tls_recv';
 
     /**
      * Configure Dictionary name
      */
-    const CONFIG_DICTIONARY_NAME = 'magentomodule_config';
+    const CONFIG_DICTIONARY_NAME = self::FASTLY_MAGENTO_MODULE.'_config';
 
     /**
      * Maintenance Allowlist name
@@ -477,6 +477,9 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_CRAWLER_RATE_LIMITING_TTL
         = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/crawler_protection/crawler_rate_limiting_ttl';
 
+    /**
+     * XML path to Exempt Good Bots flag
+     */
     const XML_FASTLY_EXEMPT_GOOD_BOTS
         = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/crawler_protection/exempt_good_bots';
 

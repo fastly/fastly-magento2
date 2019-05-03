@@ -1,0 +1,44 @@
+{
+  "name": "Other CMS/backend integration",
+  "id": "other_cms_integration",
+  "description": "This edge module is intended to integrate other CMSes/backend into your shop e.g. Wordpress blog etc. Sometimes referred to as domain masking",
+  "version": 1,
+  "properties": [
+    {
+      "name": "urls_dict",
+      "label": "URL prefixes Dictionary",
+      "description": "Pick the dictionary that contains a list of prefixes that should be sent to another CMS/backend",
+      "type": "dict",
+      "required": true
+    },
+    {
+      "name": "override_backend_hostname",
+      "label": "Override Backend Hostname",
+      "description": "Optional hostname to send to the backend. DEFAULT doesn't modify Host header sent to the origin.",
+      "type": "string",
+      "default": "DEFAULT",
+      "required": true
+    }
+  ],
+  "vcl": [
+    {
+      "priority": 70,
+      "type": "recv",
+      "template": "  # Make sure X-ExternalCMS is not set before proceeding\n  if ( req.restarts == 0 ) {\n     remove req.http.X-ExternalCMS;\n  }\n\n  # Extract first part of the path from a URL\n  if ( req.url.path ~ \"^/?([^:/\\s]+).*$\" ) {\n     # check if first part of the url is in the wordpress urls table\n     if ( table.lookup({{urls_dict}}, re.group.1, \"NOTFOUND\") != \"NOTFOUND\" ) {\n       set req.http.X-ExternalCMS = \"1\";\n       # There is an issue with load-scripts.php in Wordpress where the ordering of query arguments matter\n       # in compressing the JS. By default Magento sorts query arguments. Here we undo the sorting for wp-admin URLs\n       if ( req.url.path ~ \"/wp-admin\" ) {\n         set req.url = req.http.Magento-Original-URL;\n       }\n     }\n  }\n"
+    },
+    {
+      "type": "miss",
+      "template": "{{#ifEq override_backend_hostname \"DEFAULT\"}}\n # Intentionally empty {{else}} \n  if ( req.backend.is_origin && req.http.X-ExternalCMS ) {\n    set bereq.http.host = \"{{override_backend_hostname}}\";\n  }\n{{/ifEq}}"
+    },
+    {
+      "type": "pass",
+      "template": "{{#ifEq override_backend_hostname \"DEFAULT\"}}\n # Intentionally empty {{else}} \n  if ( req.backend.is_origin && req.http.X-ExternalCMS ) {\n    set bereq.http.host = \"{{override_backend_hostname}}\";\n  }\n{{/ifEq}}"
+    }
+  ],
+  "test": {
+    "origins": [
+      "https://httpbin.org"
+    ],
+    "reqUrl": "/status/500"
+  }
+}

@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.100
+
+- Add Edge Module to integrate other CMS/Backend
+- Additional fixes to the Edge Module
+
 ## 1.2.99
 
 - Bugfix for edge modules losing group values https://github.com/fastly/fastly-magento2/pull/268

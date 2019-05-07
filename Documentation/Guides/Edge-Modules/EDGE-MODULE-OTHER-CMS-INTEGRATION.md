@@ -20,6 +20,73 @@ value 1. You can see an example [here](https://devdocs.magento.com/guides/v2.3/c
 req.http.X-ExternalCMS == "1"
 ```
 
+If you don't have access to the Fastly UI you can use following Ruby script to add a backend to your Fastly service.
+
+```ruby
+require 'net/http'
+require 'uri'
+require 'json'
+
+# Enter your Fastly Key
+FASTLYKEY="XXXXXXXXXXXXXXXXXXXX"
+# Either IP or Hostname
+BACKEND_HOST="127.0.0.1"
+# If TLS leave 443 if not change to 80
+BACKEND_PORT=443
+# Change based on region ca-central1/us-east1/2 = dca-dc-us, eu-west1/2 = london-uk, ap-southeast-2 = sydney-au, us-west2 = sea-wa-us
+BACKEND_SHIELD="dca-dc-us"
+
+def fastlyAPICall(url, method = "GET", body = "")
+  uri = URI(url)
+  Net::HTTP.start(uri.host, uri.port, :use_ssl => true) do |http|
+    if method == "GET"
+        request = Net::HTTP::Get.new uri
+    end
+    if method == "POST"
+        request = Net::HTTP::Post.new uri
+        request.body = body
+    end
+    if method == "PUT"
+        request = Net::HTTP::Put.new uri
+    end
+    request['Fastly-Key'] = FASTLYKEY
+    response = http.request request # Net::HTTPResponse object
+    return response.body
+  end
+end
+
+# Get a list of services
+puts "Getting service info"
+services_info = JSON.parse(fastlyAPICall("https://api.fastly.com/services"))
+active_version = services_info["data"][0]["attributes"]["active_version"]
+service_id =  services_info["data"][0]["id"]
+puts "Service #{service_id} current active version #{active_version}"
+
+puts "Cloning active version"
+url = "https://api.fastly.com/service/" + service_id.to_s + "/version/" + active_version.to_s + "/clone"
+puts "Executing a PUT #{url}"
+clone_info = JSON.parse(fastlyAPICall(url, "PUT"))
+cloned_version = clone_info["number"]
+puts "Service #{service_id} cloned version #{cloned_version}"
+
+puts "Add External CMS condition"
+payload="name=choose_externalcms_backend&statement=req.http.X-ExternalCMS == \"1\"&type=REQUEST&priority=10"
+url = "https://api.fastly.com/service/" + service_id.to_s + "/version/" + cloned_version.to_s + "/condition"
+puts "Executing a POST #{url} with payload #{payload}"
+condition_add = JSON.parse(fastlyAPICall(url, "POST", payload))
+
+puts "Add Backend #{BACKEND_HOST}:#{BACKEND_PORT}"
+url = "https://api.fastly.com/service/" + service_id.to_s + "/version/" + cloned_version.to_s + "/backend"
+payload = "name=external_cms&request_condition=choose_externalcms_backend&port=" + BACKEND_PORT.to_s + "&address=" + BACKEND_HOST.to_s + "shield=" + BACKEND_SHIELD.to_s)
+backend_add = JSON.parse(fastlyAPICall(url, "POST", payload )
+
+puts "Activating #{cloned_version} for service #{service_id}"
+url = "https://api.fastly.com/service/" + service_id.to_s + "/version/" + cloned_version.to_s + "/activate"
+activate_info = JSON.parse(fastlyAPICall(url, "PUT"))
+puts activate_info
+```
+
+
 ## Configuration
 
 When you click on the configuration you will be prompted with a screen like this

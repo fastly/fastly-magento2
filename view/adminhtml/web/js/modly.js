@@ -705,6 +705,7 @@ define([
             let properties = [];
             let message = $('<div class="message"></div>');
             let title = '';
+            let fieldset = $('<div class="admin__fieldset form-list modly-group"></div>');
             let groups = [];
 
             // call getModule data function to retrieve a specific module's data
@@ -758,9 +759,7 @@ define([
                                         });
                                     });
                                 } else {
-                                    let fieldset = $('<div class="admin__fieldset form-list modly-group"></div>');
                                     fieldset.append(renderFields(property, parsedValues[0], active_version));
-                                    groups.push(fieldset);
                                 }
                             });
                         }
@@ -771,13 +770,13 @@ define([
                         setServiceLabel(active_version, next_version, service_name);
                         $('.module-messages').prepend(message);
                         let question = $('.question');
-                        $.each(groups, function (grIndex, grData) {
-                            question.append(grData);
-                        });
                         $('.modal-title').html(title);
                         $('#module-id').val(module_id);
-                        let groupBtn = '<button class="action-secondary group-button" type="button" data-role="action"><span>Add group</span></button>';
                         if (isGroup === true) {
+                            let groupBtn = '<button class="action-secondary group-button" type="button" data-role="action"><span>Add group</span></button>';
+                            $.each(groups, function (grIndex, grData) {
+                                question.append(grData);
+                            });
                             $('.modal-header').find(".page-actions-buttons").append(groupBtn);
                             question.find('.modly-group:first').find('.remove-group-button').closest('.field').hide();
                             $('.group-button').unbind('click').on('click', function () {
@@ -791,6 +790,8 @@ define([
                             $('.remove-group-button').unbind('click').on('click', function () {
                                 $(this).closest('.modly-group').remove();
                             });
+                        } else {
+                            question.append(fieldset)
                         }
                     }
                 });

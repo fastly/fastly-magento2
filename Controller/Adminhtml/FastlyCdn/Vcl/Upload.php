@@ -151,8 +151,6 @@ class Upload extends Action
                 $this->api->uploadSnippet($clone->number, $snippetData);
             }
 
-            $createGzipHeader = false;
-
             foreach ($customSnippets as $key => $value) {
                 $snippetNameData = $this->validateCustomSnippet($key);
                 $snippetType = $snippetNameData[0];
@@ -167,10 +165,9 @@ class Upload extends Action
                     'dynamic'   => '0'
                 ];
                 $this->api->uploadSnippet($clone->number, $customSnippetData);
-                $createGzipHeader = true;
             }
 
-            $this->createGzipHeader($createGzipHeader, $clone);
+            $this->createGzipHeader($clone);
 
             $condition = [
                 'name'      => Config::FASTLY_MAGENTO_MODULE.'_pass',
@@ -291,32 +288,29 @@ class Upload extends Action
     }
 
     /**
-     * @param $createGzipHeader
      * @param $clone
      * @throws LocalizedException
      */
-    private function createGzipHeader($createGzipHeader, $clone)
+    private function createGzipHeader($clone)
     {
-        if ($createGzipHeader !== false) {
-            $condition = [
-                'name'      => Config::FASTLY_MAGENTO_MODULE.'_gzip_safety',
-                'statement' => 'beresp.http.x-esi',
-                'type'      => 'CACHE',
-                'priority'  => 100
-            ];
-            $createCondition = $this->api->createCondition($clone->number, $condition);
+        $condition = [
+            'name'      => Config::FASTLY_MAGENTO_MODULE.'_gzip_safety',
+            'statement' => 'beresp.http.x-esi',
+            'type'      => 'CACHE',
+            'priority'  => 100
+        ];
+        $createCondition = $this->api->createCondition($clone->number, $condition);
 
-            $headerData = [
-                'name'              => Config::FASTLY_MAGENTO_MODULE . '_gzip_safety',
-                'type'              => 'cache',
-                'dst'               => 'gzip',
-                'action'            => 'set',
-                'priority'          => 1000,
-                'src'               => 'false',
-                'cache_condition' => $createCondition->name,
-            ];
+        $headerData = [
+            'name'              => Config::FASTLY_MAGENTO_MODULE . '_gzip_safety',
+            'type'              => 'cache',
+            'dst'               => 'gzip',
+            'action'            => 'set',
+            'priority'          => 1000,
+            'src'               => 'false',
+            'cache_condition'   => $createCondition->name,
+        ];
 
-            $this->api->createHeader($clone->number, $headerData);
-        }
+        $this->api->createHeader($clone->number, $headerData);
     }
 }

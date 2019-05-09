@@ -35,7 +35,7 @@ define([
                 return document.getElementById('fastly-create-backend-template').textContent;
             },
             actionOk: function () {
-                // do something
+                createBackend(active_version);
             }
         };
 
@@ -119,6 +119,80 @@ define([
                     'connect_timeout': $('#backend_connect_timeout').val(),
                     'between_bytes_timeout': $('#backend_between_bytes_timeout').val(),
                     'first_byte_timeout': $('#backend_first_byte_timeout').val()
+                },
+                showLoader: true,
+                success: function (response) {
+                    if (response.status === true) {
+                        $('#fastly-success-backend-button-msg').text($.mage.__('Backend "'+backend_name+'" is successfully updated.')).show();
+                        active_version = response.active_version;
+                        modal.modal('closeModal');
+                    } else {
+                        resetAllMessages();
+                        showErrorMessage(response.msg);
+                    }
+                }
+            });
+        }
+
+        function createBackend(active_version)
+        {
+            let activate_backend = false;
+
+            if ($('#fastly_activate_backend').is(':checked')) {
+                activate_backend = true;
+            }
+
+            let condition = $('#conditions').val();
+            let backendName = $('#backend_name').val();
+            let backendAddress = $('#backend_address').val();
+            let backendShield = $('#backend_shield').val();
+            let enableTls = $('input:radio[name=tls-radio]:checked').val();
+            let tlsYesPort = $('#tls-yes-port').val();
+            let tlsNoPort = $('#tls-no-port').val();
+            let verifyCertificate = $('input:radio[name=certificate-radio]:checked').val();
+            let certificateHostname = $('#certificate-hostname').val();
+            let sniHostname = $('#sni-hostname').val();
+            let matchSni = $('#match-sni').is(':checked');
+            let tlsCaCertificate = $('#tls-ca-certificate').val();
+            let minimumTls = $('#minimum-tls').val();
+            let maximumTls = $('#maximum-tls').val();
+            let ciphersuites = $('#ciphersuites').val();
+            let tlsClientCertificate = $('#tls-client-certificate').val();
+            let tlsClientKey = $('#tls-client-key').val();
+            let maximumConnections = $('#backend_maximum_connections').val();
+            let errorThreshold = $('#backend_error_threshold').val();
+            let connectionTimeout = $('#backend_connect_timeout').val();
+            let firstByteTimeout = $('#backend_first_byte_timeout').val();
+            let betweenBytesTimeout = $('#backend_between_bytes_timeout').val();
+
+            $.ajax({
+                type: "POST",
+                url: config.createBackendUrl,
+                data: {
+                    'active_version': active_version,
+                    'activate_flag': activate_backend,
+                    'request_condition': condition,
+                    'name': backendName,
+                    'address': backendAddress,
+                    'shield': backendShield,
+                    'use_ssl': enableTls,
+                    'tls_yes_port': tlsYesPort,
+                    'tls_no_port': tlsNoPort,
+                    'verify_certificate': verifyCertificate,
+                    'ssl_cert_hostname': certificateHostname,
+                    'ssl_sni_hostname': sniHostname,
+                    'match_sni': matchSni,
+                    'ssl_ca_cert': tlsCaCertificate,
+                    'max_tls_version': maximumTls,
+                    'min_tls_version': minimumTls,
+                    'ssl_ciphers': ciphersuites,
+                    'ssl_client_cert': tlsClientCertificate,
+                    'ssl_client_key': tlsClientKey,
+                    'max_conn': maximumConnections,
+                    'error_threshold': errorThreshold,
+                    'connect_timeout': connectionTimeout,
+                    'first_byte_timeout': firstByteTimeout,
+                    'between_bytes_timeout': betweenBytesTimeout
                 },
                 showLoader: true,
                 success: function (response) {

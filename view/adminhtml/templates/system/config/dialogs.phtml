@@ -491,7 +491,7 @@
                     <span><?php /* @noEscape */ echo __("Shielding") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <select name="shield" id="backend_shield" class="admin__control-text">
+                    <select name="shield" id="backend_shield" class="admin__control-select">
                         <option value="">(none)</option>
                         <option value="fjr-ae">AE, Fujairah Al Mahta - Dubai</option>
                         <option value="brisbane-au">AU, Brisbane</option>
@@ -607,7 +607,7 @@
                                 <input name="tls-no-port"
                                        type="number"
                                        required="required"
-                                       id="tls-yes-port"
+                                       id="tls-no-port"
                                        class="admin__control-text
                                         required-entry
                                         validate-alphanum-with-spaces
@@ -662,7 +662,7 @@
                     <span><?php /* @noEscape */ echo __("SNI hostname") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="certificate-hostname"
+                    <input name="sni-hostname"
                            type="text"
                            id="sni-hostname"
                            class="admin__control-text"
@@ -703,7 +703,7 @@
 
             <div class="admin__field field _required">
                 <label for="minimum-tls" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __("TLS CA certificate") ?></span>
+                    <span><?php /* @noEscape */ echo __("Minimum TLS version") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <select name="minimum-tls" id="minimum-tls" class="admin__control-text">
@@ -719,7 +719,7 @@
 
             <div class="admin__field field _required">
                 <label for="maximum-tls" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __("TLS CA certificate") ?></span>
+                    <span><?php /* @noEscape */ echo __("Maximum TLS version") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <select name="maximum-tls" id="maximum-tls" class="admin__control-text">
@@ -2134,6 +2134,7 @@ $toggleTlsSettingUrl =          $block->getUrl('adminhtml/fastlyCdn_Advanced/for
 // Backend
 $configureBackendUrl =          $block->getUrl('adminhtml/fastlyCdn_Backend/configureBackend');
 $fetchBackendsUrl =             $block->getUrl('adminhtml/fastlyCdn_Backend/getBackends');
+$createBackendUrl =             $block->getUrl('adminhtml/fastlyCdn_Backend/createBackend');
 // Basic Authentication
 $createAuthItem =               $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication_Item/create');
 $deleteAuthItem =               $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication_Item/delete');
@@ -2299,7 +2300,8 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "checkRateLimitingSettingUrl": "<?php echo $block->escapeJsQuote($checkRateLimitingSettingUrl);?>",
                     "checkSuSettingUrl": "<?php echo $block->escapeJsQuote($checkSuSettingUrl);?>",
                     "toggleSuSettingUrl": "<?php echo $block->escapeJsQuote($toggleSuSettingUrl);?>",
-                    "updateSuIpsUrl": "<?php echo $block->escapeJsQuote($updateSuIpsUrl);?>"
+                    "updateSuIpsUrl": "<?php echo $block->escapeJsQuote($updateSuIpsUrl);?>",
+                    "createBackendUrl": "<?php echo $block->escapeJsQuote($createBackendUrl);?>"
                 }
             }
         }

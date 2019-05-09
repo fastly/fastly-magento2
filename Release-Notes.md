@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.101
+
+- Add Gzip safety logic to avoid default Gzip policy interfering with ESI processing
+
 ## 1.2.100
 
 - Add Edge Module to integrate other CMS/Backend

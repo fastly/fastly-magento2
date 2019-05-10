@@ -475,6 +475,9 @@
                 </label>
                 <div class="admin__field-control">
                     <input name="backend_name" id="backend_name" class="admin__control-text">
+                    <div class="admin__field-note">
+                        The name of your origin, such as <b>My origin server</b>.
+                    </div>
                 </div>
             </div>
             <div class="admin__field field _required">
@@ -483,6 +486,9 @@
                 </label>
                 <div class="admin__field-control">
                     <input name="backend_address" id="backend_address" class="admin__control-text">
+                    <div class="admin__field-note">
+                        The IP address (or hostname) for your origin server.
+                    </div>
                 </div>
             </div>
 
@@ -560,11 +566,41 @@
                 </div>
             </div>
 
-            <hr>
+            <div class="admin__field field">
+                <label for="shield" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Auto load balance") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="auto_load_balance" id="auto_load_balance" class="admin__control-select">
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                    <div class="admin__field-note">
+                        Enables Fastly to
+                        <a href="https://docs.fastly.com/guides/basic-configuration/health-checks-tutorial"
+                           target="_blank">load balance between two or more backend hosts.</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field _required weight">
+                <label for="weight" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Weight") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="weight" id="weight" class="admin__control-text" value="100">
+                    <div class="admin__field-note">
+                        A portion of traffic to send to a specific origin. Each origin receives (weight ÷ total weight
+                        across origins) of the traffic.
+                    </div>
+                </div>
+            </div>
+
             <div class="admin__field field">
                 <label class="admin__field-label">
                     Transport Layer Security (TLS)
                 </label>
+                <div class="admin__field-control"><hr></div>
             </div>
 
             <div class="admin__field field _required">
@@ -634,7 +670,7 @@
                 </div>
                 <div class="admin__field-control">
                     <input type="radio" id="certificate-no" class="admin__control-radio" name="certificate-radio"
-                           value="1"/>
+                           value="0"/>
                     <label class="admin__field-label" for="certificate-no">
                         <b>No,</b> do not verify my TLS certificate
                     </label>
@@ -671,8 +707,7 @@
                         <input class="admin__control-checkbox"
                                type="checkbox"
                                name="match-sni"
-                               id="match-sni"
-                               checked/>
+                               id="match-sni"/>
                         <label class="admin__field-label" for="match-sni">Match the SNI hostname to the Certificate
                             hostname. This value identifies which certificate is to be used for the request to origin.
                         </label>
@@ -701,32 +736,32 @@
                 </label>
             </div>
 
-            <div class="admin__field field _required">
+            <div class="admin__field field">
                 <label for="minimum-tls" class="admin__field-label">
                     <span><?php /* @noEscape */ echo __("Minimum TLS version") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <select name="minimum-tls" id="minimum-tls" class="admin__control-text">
-                        <option>none</option>
+                        <option value="">none</option>
                         <option value="1.0">1.0</option>
-                        <option value="1.0">1.1</option>
-                        <option value="1.0">1.2</option>
+                        <option value="1.1">1.1</option>
+                        <option value="1.2">1.2</option>
                     </select>
                     <div class="admin__field-note">The minimum TLS protocol version that Fastly will use to connect to
                         your origin server.</div>
                 </div>
             </div>
 
-            <div class="admin__field field _required">
+            <div class="admin__field field">
                 <label for="maximum-tls" class="admin__field-label">
                     <span><?php /* @noEscape */ echo __("Maximum TLS version") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <select name="maximum-tls" id="maximum-tls" class="admin__control-text">
-                        <option>none</option>
+                        <option value="">none</option>
                         <option value="1.0">1.0</option>
-                        <option value="1.0">1.1</option>
-                        <option value="1.0">1.2</option>
+                        <option value="1.1">1.1</option>
+                        <option value="1.2">1.2</option>
                     </select>
                     <div class="admin__field-note">The maximum TLS protocol version that Fastly will use to connect to
                         your origin server. (Must be higher than the minimum TLS version.)</div>
@@ -759,7 +794,7 @@
                               id="tls-client-certificate"
                               class="admin__control-text"></textarea>
                     <div class="admin__field-note">Certificate used to authenticate to the origin server. Must be in
-                        PEM form, and must be accompanied by a client certificate. It is advised to not used keys from
+                        PEM form, and must be accompanied by a client key. It is advised to not used keys from
                         anywhere else. A client certificate and client key allows your server to authenticate that
                         Fastly is performing the connection.
                     </div>
@@ -781,12 +816,12 @@
                     </div>
                 </div>
             </div>
-            <hr>
 
             <div class="admin__field field">
                 <label class="admin__field-label">
                     Advanced options
                 </label>
+                <div class="admin__field-control"><hr></div>
             </div>
 
             <div class="admin__field field _required">

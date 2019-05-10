@@ -23,7 +23,10 @@ namespace Fastly\Cdn\Block\System\Config\Form\Field;
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 
-
+/**
+ * Class CreateBackendBtn
+ * @package Fastly\Cdn\Block\System\Config\Form\Field
+ */
 class CreateBackendBtn extends Field
 {
     protected function _construct() // @codingStandardsIgnoreLine - required by parent class

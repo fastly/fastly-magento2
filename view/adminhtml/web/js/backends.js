@@ -396,6 +396,7 @@ define([
         });
 
         $('body').on('click', '#detach', function () {
+            $('#conditions').html('');
             $('#conditions').hide();
             $('#detach').hide();
             $('#attach_span').show();

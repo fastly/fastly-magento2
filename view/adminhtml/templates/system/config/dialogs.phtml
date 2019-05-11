@@ -425,6 +425,503 @@
     </form>
 </script>
 
+<!-- Backend creation overlay template -->
+<script type="text/x-magento-template" id="fastly-create-backend-template">
+    <div class="messages">
+        <div class="message message-warning fastly-message-warning" style="display: none">
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("Your backend will be created in version #y.")?>
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="create-backend-form"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field maintenance-checkbox-container">
+                <label for="fastly_activate_backend" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+                </label>
+                <div class="admin__field-control">
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_backend"
+                               id="fastly_activate_backend"
+                               checked/>
+                        <label class="admin__field-label" for="fastly_activate_backend"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field">
+                <label for="condition" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Condition") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <span id="attach_span" style>
+                        This will happen all the time unless you <a id="attach" href="#">Attach a condition</a>
+                    </span>
+                    <select name="conditions" id="conditions" class="admin__control-select"></select>
+                    <div class="admin__field-note"><a id="detach" href="#">Detach condition</a></div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="backend_name" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Name") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="backend_name" id="backend_name" class="admin__control-text">
+                    <div class="admin__field-note">
+                        The name of your origin, such as <b>My origin server</b>.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="backend_address" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Address") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="backend_address" id="backend_address" class="admin__control-text">
+                    <div class="admin__field-note">
+                        The IP address (or hostname) for your origin server.
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label for="shield" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Shielding") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="shield" id="backend_shield" class="admin__control-select">
+                        <option value="">(none)</option>
+                        <option value="fjr-ae">AE, Fujairah Al Mahta - Dubai</option>
+                        <option value="brisbane-au">AU, Brisbane</option>
+                        <option value="melbourne-au">AU, Melbourne</option>
+                        <option value="perth-au">AU, Perth</option>
+                        <option value="sydney-au">
+                            AU, Sydney - Recommended for AWS ap-southeast-2, GCP australia-southeast1 origins
+                        </option>
+                        <option value="gru-br-sa">
+                            BR, Sao Paulo - Recommended for AWS sa-east-1, GCP southamerica-east1
+                        </option>
+                        <option value="yyz-on-ca">CA, Toronto</option>
+                        <option value="yul-montreal-ca">
+                            CA, Montreal - Recommended for AWS ca-central-1, GCP northamerica-northeast1 origins
+                        </option>
+                        <option value="mad-madrid-es">ES, Madrid</option>
+                        <option value="hel-helsinki-fi">FI, Helsinki - Recommended for GCP europe-north1</option>
+                        <option value="cdg-par-fr">FR, Paris- Recommended for AWS eu-west3</option>
+                        <option value="hongkong-hk">HK, Hong Kong</option>
+                        <option value="hhn-frankfurt-de">
+                            DE, Frankfurt - Interxion - Recommended for GCP europe-west3 origins
+                        </option>
+                        <option value="frankfurt-de">DE, Frankfurt - Recommended for AWS eu-central1 origins</option>
+                        <option value="tokyo-jp2">JP, Tokyo - deprecated</option>
+                        <option value="tyo-tokyo-jp">JP, Tokyo - Recommended for AWS ap-northeast-1 origins</option>
+                        <option value="osaka-jp">JP, Osaka - Recommened for AWS ap-northeast-3 origins</option>
+                        <option value="amsterdam-nl">NL, Amsterdam - Recommended for GCP eu-west1/4 origins</option>
+                        <option value="auckland-akl">NZ, Auckland</option>
+                        <option value="wellington-wlg">NZ, Wellington</option>
+                        <option value="stockholm-bma">SE, Stockholm</option>
+                        <option value="singapore-sg">
+                            SG, Singapore - Recommended for AWS ap-southeast-1, GCP asia-southeast1 origins
+                        </option>
+                        <option value="london_city-uk">
+                            UK, London - LCY - Recommended for AWS eu-west1/2 origins
+                        </option>
+                        <option value="london-uk">UK, London - LHR - Recommended for GCP eu-west2 origins</option>
+                        <option value="atl-ga-us">US, Atlanta, GA</option>
+                        <option value="bos-ma-us">US, Boston, MA</option>
+                        <option value="mdw-il-us">US, Chicago, IL - Recommended for GCP us-central1 origins</option>
+                        <option value="den-co-us">US, Denver, CO</option>
+                        <option value="dallas-tx-us">US, Dallas, TX</option>
+                        <option value="iah-tx-us">US, Houston, TX</option>
+                        <option value="iad-va-us">
+                            US, Washington, DC - deprecated
+                        </option>
+                        <option value="bwi-va-us">
+                            US, Washington, DC - Recommended for AWS us-east1, GCP us-east1/4 origins
+                        </option>
+                        <option value="lax-ca-us">US, Los Angeles, CA - Recommended for GCP us-west2</option>
+                        <option value="miami-fl-us">US, Miami, FL</option>
+                        <option value="jfk-ny-us">US, New York City, NY</option>
+                        <option value="sjc-ca-us">US, San Jose, CA</option>
+                        <option value="sea-wa-us">
+                            US, Seattle, WA - Recommended for AWS us-west2, GCP us-west1 origins
+                        </option>
+                        <option value="cpt-capetown-za">ZA, Capetown</option>
+                        <option value="jnb-johannesburg-za">ZA, Johannesburg</option>
+                    </select>
+                    <div class="admin__field-note">
+                        The shield POP designated to reduce inbound load on this origin by serving the cached data to
+                        the rest of the network.
+                        <a href="https://docs.fastly.com/guides/performance-tuning/shielding"
+                           target="_blank">Click for more details.</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label for="shield" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Auto load balance") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="auto_load_balance" id="auto_load_balance" class="admin__control-select">
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                    <div class="admin__field-note">
+                        Enables Fastly to
+                        <a href="https://docs.fastly.com/guides/basic-configuration/health-checks-tutorial"
+                           target="_blank">load balance between two or more backend hosts.</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field _required weight">
+                <label for="weight" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Weight") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="weight" id="weight" class="admin__control-text" value="100">
+                    <div class="admin__field-note">
+                        A portion of traffic to send to a specific origin. Each origin receives (weight ÷ total weight
+                        across origins) of the traffic.
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label class="admin__field-label">
+                    Transport Layer Security (TLS)
+                </label>
+                <div class="admin__field-control"><hr></div>
+            </div>
+
+            <div class="admin__field field _required">
+                <label for="tls-radio" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Enable TLS?") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <table>
+                        <tr>
+                            <td>
+                                <input type="radio" id="tls-yes" class="admin__control-radio" name="tls-radio"
+                                       value="1" checked/>
+                                <label class="admin__field-label" for="tls-yes">
+                                    <b>Yes,</b> enable TLS and connect securely using port
+                                </label>
+                            </td>
+                            <td>
+                                <input name="tls-yes-port"
+                                       type="number"
+                                       required="required"
+                                       id="tls-yes-port"
+                                       class="admin__control-text
+                                        required-entry
+                                        validate-alphanum-with-spaces
+                                        validate-length
+                                        maximum-length-50
+                                        checkbox-input"
+                                       value="443">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" id="tls-no" class="admin__control-radio" name="tls-radio"
+                                       value="0"/>
+                                <label class="admin__field-label" for="tls-no">
+                                    <b>No, do not enable TLS.</b> Instead connect using port &nbsp
+                                </label>
+                            </td>
+                            <td>
+                                <input name="tls-no-port"
+                                       type="number"
+                                       required="required"
+                                       id="tls-no-port"
+                                       class="admin__control-text
+                                        required-entry
+                                        validate-alphanum-with-spaces
+                                        validate-length
+                                        maximum-length-50
+                                        checkbox-input"
+                                       value="80">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="admin__field field _required">
+                <label for="certificate-radio" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Verify certificate?") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input type="radio" id="certificate-yes" class="admin__control-radio" name="certificate-radio"
+                           value="1" checked/>
+                    <label class="admin__field-label" for="certificate-yes">
+                        <b>Yes,</b> verify the authenticity of the TLS certificate
+                    </label>
+                </div>
+                <div class="admin__field-control">
+                    <input type="radio" id="certificate-no" class="admin__control-radio" name="certificate-radio"
+                           value="0"/>
+                    <label class="admin__field-label" for="certificate-no">
+                        <b>No,</b> do not verify my TLS certificate
+                    </label>
+                </div>
+            </div>
+
+            <div class="admin__field field _required">
+                <label for="certificate-hostname" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Certificate hostname") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="certificate-hostname"
+                           type="text"
+                           required="required"
+                           id="certificate-hostname"
+                           class="admin__control-text"
+                    >
+                    <div class="admin__field-note">This value is matched against the certificate common name (CN) or a
+                        subject alternate name (SAN).</div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label for="sni-hostname" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("SNI hostname") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="sni-hostname"
+                           type="text"
+                           id="sni-hostname"
+                           class="admin__control-text"
+                    >
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="match-sni"
+                               id="match-sni"/>
+                        <label class="admin__field-label" for="match-sni">Match the SNI hostname to the Certificate
+                            hostname. This value identifies which certificate is to be used for the request to origin.
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field _required">
+                <label for="tls-ca-certificate" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("TLS CA certificate") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <textarea rows="6"
+                              name="tls-ca-certificate"
+                              required="required"
+                              id="tls-ca-certificate"
+                              class="admin__control-text"></textarea>
+                    <div class="admin__field-note">CA certificate used to verify the certificate from origin. Must be
+                        in PEM form.</div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label class="admin__field-label">
+                    Advanced TLS options
+                </label>
+            </div>
+
+            <div class="admin__field field">
+                <label for="minimum-tls" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Minimum TLS version") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="minimum-tls" id="minimum-tls" class="admin__control-text">
+                        <option value="">none</option>
+                        <option value="1.0">1.0</option>
+                        <option value="1.1">1.1</option>
+                        <option value="1.2">1.2</option>
+                    </select>
+                    <div class="admin__field-note">The minimum TLS protocol version that Fastly will use to connect to
+                        your origin server.</div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label for="maximum-tls" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Maximum TLS version") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="maximum-tls" id="maximum-tls" class="admin__control-text">
+                        <option value="">none</option>
+                        <option value="1.0">1.0</option>
+                        <option value="1.1">1.1</option>
+                        <option value="1.2">1.2</option>
+                    </select>
+                    <div class="admin__field-note">The maximum TLS protocol version that Fastly will use to connect to
+                        your origin server. (Must be higher than the minimum TLS version.)</div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label for="ciphersuites" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Ciphersuites") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="ciphersuites"
+                           type="text"
+                           id="ciphersuites"
+                           class="admin__control-text"
+                    >
+                    <div class="admin__field-note">A list of OpenSSL ciphers to use when connecting to your origin.
+                        For more information see the OpenSSL documentation on cipher list format</div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label for="tls-client-certificate" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("TLS client certificate") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <textarea rows="6"
+                              name="tls-client-certificate"
+                              required="required"
+                              id="tls-client-certificate"
+                              class="admin__control-text"></textarea>
+                    <div class="admin__field-note">Certificate used to authenticate to the origin server. Must be in
+                        PEM form, and must be accompanied by a client key. It is advised to not used keys from
+                        anywhere else. A client certificate and client key allows your server to authenticate that
+                        Fastly is performing the connection.
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label for="tls-client-key" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("TLS client key") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <textarea rows="6"
+                              name="tls-client-key"
+                              required="required"
+                              id="tls-client-key"
+                              class="admin__control-text"></textarea>
+                    <div class="admin__field-note">Key used to authenticate to the backend server. Must be in PEM form,
+                        and must be accompanied by a client certificate.
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label class="admin__field-label">
+                    Advanced options
+                </label>
+                <div class="admin__field-control"><hr></div>
+            </div>
+
+            <div class="admin__field field _required">
+                <label for="maximum_connections" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Maximum connections") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="maximum_connections"
+                           type="number"
+                           required="required"
+                           id="backend_maximum_connections"
+                           class="admin__control-text
+                                    required-entry
+                                    validate-alphanum-with-spaces
+                                    validate-length
+                                    maximum-length-50"
+                           value="200">
+                    <div class="admin__field-note">The maximum number of connections to your backend.
+                        By default, limited to 200 connections per cache node to protect origins from overload.</div>
+                </div>
+            </div>
+
+            <div class="admin__field field _required">
+                <label for="error_threshold" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Error threshold") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="error_threshold"
+                           type="number"
+                           required="required"
+                           id="backend_error_threshold"
+                           class="admin__control-text
+                                    required-entry
+                                    validate-alphanum-with-spaces
+                                    validate-length
+                                    maximum-length-50"
+                           value="0">
+                    <div class="admin__field-note">Number of errors to allow before the backend is marked as down.</div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label class="admin__field-label">
+                </label>
+                <label class="admin__field-label">
+                    TIMEOUTS
+                </label>
+            </div>
+
+            <div class="admin__field field _required">
+                <label for="connect_timeout" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Connection timeout") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="connect_timeout"
+                           type="number"
+                           required="required"
+                           id="backend_connect_timeout"
+                           class="admin__control-text
+                                    required-entry
+                                    validate-alphanum-with-spaces
+                                    validate-length
+                                    maximum-length-50"
+                            value="1000">
+                    <div class="admin__field-note">How long to wait for a timeout in milliseconds.</div>
+                </div>
+            </div>
+
+            <div class="admin__field field _required">
+                <label for="first_byte_timeout " class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("First byte timeout ") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="first_byte_timeout"
+                           type="number"
+                           required="required"
+                           id="backend_first_byte_timeout"
+                           class="admin__control-text"
+                           value="15000">
+                    <div class="admin__field-note">How long to wait for the first bytes in milliseconds.</div>
+                </div>
+            </div>
+
+            <div class="admin__field field _required">
+                <label for="between_bytes_timeout" class="admin__field-label">
+                    <span><?php /* @noEscape */  echo __("Between bytes timeout") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="between_bytes_timeout"
+                           type="number"
+                           required="required"
+                           id="backend_between_bytes_timeout"
+                           class="admin__control-text"
+                           value="10000">
+                    <div class="admin__field-note">How long to wait between bytes in milliseconds.</div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</script>
+
 <!-- Error page overlay template -->
 <script type="text/x-magento-template" id="fastly-error-page-template">
     <div class="messages">
@@ -1671,6 +2168,7 @@ $toggleTlsSettingUrl =          $block->getUrl('adminhtml/fastlyCdn_Advanced/for
 // Backend
 $configureBackendUrl =          $block->getUrl('adminhtml/fastlyCdn_Backend/configureBackend');
 $fetchBackendsUrl =             $block->getUrl('adminhtml/fastlyCdn_Backend/getBackends');
+$createBackendUrl =             $block->getUrl('adminhtml/fastlyCdn_Backend/createBackend');
 // Basic Authentication
 $createAuthItem =               $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication_Item/create');
 $deleteAuthItem =               $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication_Item/delete');
@@ -1836,7 +2334,8 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "checkRateLimitingSettingUrl": "<?php echo $block->escapeJsQuote($checkRateLimitingSettingUrl);?>",
                     "checkSuSettingUrl": "<?php echo $block->escapeJsQuote($checkSuSettingUrl);?>",
                     "toggleSuSettingUrl": "<?php echo $block->escapeJsQuote($toggleSuSettingUrl);?>",
-                    "updateSuIpsUrl": "<?php echo $block->escapeJsQuote($updateSuIpsUrl);?>"
+                    "updateSuIpsUrl": "<?php echo $block->escapeJsQuote($updateSuIpsUrl);?>",
+                    "createBackendUrl": "<?php echo $block->escapeJsQuote($createBackendUrl);?>"
                 }
             }
         }
@@ -1868,6 +2367,15 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
     .dialog-item {
         border: none;
         background-color: transparent;
+    }
+
+    #attach_span {
+        line-height: 3.2rem;
+        white-space: nowrap;
+    }
+
+    .checkbox-input {
+        margin-bottom: 5px;
     }
 
 </style>

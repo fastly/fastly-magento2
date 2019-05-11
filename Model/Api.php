@@ -882,6 +882,20 @@ class Api
     }
 
     /**
+     * @param $params
+     * @param $version
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function createBackend($params, $version)
+    {
+        $url = $this->_getApiServiceUri(). 'version/'. $version. '/backend';
+        $result = $this->_fetch($url, \Zend_Http_Client::POST, $params);
+
+        return $result;
+    }
+
+    /**
      * Send message to Slack channel
      *
      * @param $message

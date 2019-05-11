@@ -206,6 +206,11 @@ define([
                         $('#fastly-success-backend-button-msg').text($.mage.__('Backend "'+backendName+'" is successfully created.')).show();
                         active_version = response.active_version;
                         modal.modal('closeModal');
+                        $('#fastly_add_backend_button').remove();
+                        $('#fastly_cancel_backend_button').remove();
+                        $('.hostname').remove();
+                        $('.backend-note').remove();
+                        $('#fastly_create_backend_button').show();
                         getBackends(active_version, false).done(function (resp) {
                             $('.loading-backends').hide();
                             if (resp !== false) {
@@ -226,62 +231,70 @@ define([
         }
 
         $('body').on('click', '#fastly_create_backend_button', function () {
-            prompt({
-                title: 'Create a host',
-                content: 'Enter a  hostname or IPv4 address for the backend',
-                actions: {
-                    confirm: function (input) {
-                        if (input !== '') {
-                            if (isAlreadyConfigured !== true) {
-                                $(this).attr('disabled', true);
-                                return alert($.mage.__('Please save config prior to continuing.'));
-                            }
-                            $.ajax({
-                                type: "GET",
-                                url: config.serviceInfoUrl,
-                                showLoader: true
-                            }).done(function (checkService) {
-                                $.ajax({
-                                    type: "POST",
-                                    url: config.createBackendUrl,
-                                    showLoader: true,
-                                    data: {
-                                        address: input,
-                                        form: false
-                                    }
-                                }).done(function (response) {
-                                    if (response.status !== false) {
-                                        active_version = checkService.active_version;
-                                        let next_version = checkService.next_version;
-                                        let service_name = checkService.service.name;
+            let hostname = $('<input type="text" class="hostname">');
+            let addBtn = $('<button id="fastly_add_backend_button" title="Add" type="button" class="action-default scalable" style="margin-right: 10px"><span>Add</span></button>');
+            let cancelBtn = $('<button id="fastly_cancel_backend_button" title="Cancel" type="button" class="action-default scalable" style=""><span>Cancel</span></button>');
+            $(this).after(hostname);
+            hostname.after(addBtn);
+            addBtn.after(cancelBtn);
+            hostname.after('<p class="note backend-note">Enter a hostname or IPv4 address for the backend</p>');
+            $(this).hide();
+        });
 
-                                        overlay(createBackendOptions);
-                                        setServiceLabel(active_version, next_version, service_name);
-                                        $('#conditions').hide();
-                                        $('#detach').hide();
-                                        $('#backend_address').val(input);
-                                        $('#sni-hostname').val(input);
-                                        $('#certificate-hostname').val(input);
-
-                                        if ($('#auto_load_balance').val() === '0') {
-                                            $('.weight').hide();
-                                        } else {
-                                            $('.weight').show();
-                                        }
-                                        $('#tls-no-port').attr('disabled', true);
-                                    } else {
-                                        $('#fastly-error-backend-button-msg').text($.mage.__(response.msg)).show();
-                                    }
-                                });
-                            });
-                        }
-                    },
-                    cancel: function () {
-
-                    },
-                    always: function () {}
+        $('body').on('click', '#fastly_add_backend_button', function () {
+            let hostnameVal = $('.hostname').val();
+            if (hostnameVal !== '') {
+                if (isAlreadyConfigured !== true) {
+                    $(this).attr('disabled', true);
+                    return alert($.mage.__('Please save config prior to continuing.'));
                 }
-            });
+                $.ajax({
+                    type: "GET",
+                    url: config.serviceInfoUrl,
+                    showLoader: true
+                }).done(function (checkService) {
+                    $.ajax({
+                        type: "POST",
+                        url: config.createBackendUrl,
+                        showLoader: true,
+                        data: {
+                            address: hostnameVal,
+                            form: false
+                        }
+                    }).done(function (response) {
+                        if (response.status !== false) {
+                            active_version = checkService.active_version;
+                            let next_version = checkService.next_version;
+                            let service_name = checkService.service.name;
+
+                            overlay(createBackendOptions);
+                            setServiceLabel(active_version, next_version, service_name);
+                            $('#conditions').hide();
+                            $('#detach').hide();
+                            $('#backend_address').val(hostnameVal);
+                            $('#sni-hostname').val(hostnameVal);
+                            $('#certificate-hostname').val(hostnameVal);
+
+                            if ($('#auto_load_balance').val() === '0') {
+                                $('.weight').hide();
+                            } else {
+                                $('.weight').show();
+                            }
+                            $('#tls-no-port').attr('disabled', true);
+                        } else {
+                            $('#fastly-error-create-backend-button-msg').text($.mage.__(response.msg)).show();
+                        }
+                    });
+                });
+            }
+        });
+
+        $('body').on('click', '#fastly_cancel_backend_button', function () {
+            $('#fastly_add_backend_button').remove();
+            $('#fastly_cancel_backend_button').remove();
+            $('.hostname').remove();
+            $('.backend-note').remove();
+            $('#fastly_create_backend_button').show();
         });
 
         $('body').on('change', '#auto_load_balance', function () {

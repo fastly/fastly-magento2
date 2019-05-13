@@ -12,6 +12,9 @@ define([
         let backends;
         let backend_name;
         let active_version = serviceStatus.active_version;
+        let conditionName;
+        let applyIf;
+        let conditionPriority;
 
         /**
          * Backend modal overlay options
@@ -37,6 +40,16 @@ define([
             },
             actionOk: function () {
                 createBackend(active_version);
+            }
+        };
+
+        let createConditionOptions = {
+            title: jQuery.mage.__('Create a new request condition'),
+            content: function () {
+                return document.getElementById('fastly-create-condition-template').textContent;
+            },
+            actionOk: function () {
+                createCondition();
             }
         };
 
@@ -230,6 +243,19 @@ define([
             });
         }
 
+        function createCondition()
+        {
+            conditionName = $('#condition_name').val();
+            applyIf = $('#apply_if').val();
+            conditionPriority = $('#condition_priority').val();
+            $('#conditions').append('<option value="'+conditionName+'"></option>');
+            if (applyIf.length > 512) {
+                showErrorMessage('The expression cannot contain more than 512 characters.');
+                return;
+            }
+            $('.upload-button span').text('Create');
+        }
+
         $('body').on('click', '#fastly_create_backend_button', function () {
             let hostname = $('<input type="text" class="hostname">');
             let addBtn = $('<button id="fastly_add_backend_button" title="Add" type="button" class="action-default scalable" style="margin-right: 10px"><span>Add</span></button>');
@@ -270,8 +296,11 @@ define([
 
                             overlay(createBackendOptions);
                             setServiceLabel(active_version, next_version, service_name);
+                            $('.upload-button span').text('Create');
                             $('#conditions').hide();
                             $('#detach').hide();
+                            $('#create-condition').hide();
+                            $('#sep').hide();
                             $('#backend_address').val(hostnameVal);
                             $('#sni-hostname').val(hostnameVal);
                             $('#certificate-hostname').val(hostnameVal);
@@ -407,6 +436,8 @@ define([
                 }
                 $('#conditions').show();
                 $('#detach').show();
+                $('#create-condition').show();
+                $('#sep').show();
                 $('#conditions').html(html);
             })
         });
@@ -415,7 +446,14 @@ define([
             $('#conditions').html('');
             $('#conditions').hide();
             $('#detach').hide();
+            $('#sep').hide();
+            $('#create-condition').hide();
             $('#attach_span').show();
+        });
+
+        $('body').on('click', '#create-condition', function () {
+            overlay(createConditionOptions);
+            $('.upload-button span').text('Save and apply');
         });
     }
 });

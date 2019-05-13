@@ -465,7 +465,9 @@
                         This will happen all the time unless you <a id="attach" href="#">Attach a condition</a>
                     </span>
                     <select name="conditions" id="conditions" class="admin__control-select"></select>
-                    <div class="admin__field-note"><a id="detach" href="#">Detach condition</a></div>
+                    <div class="admin__field-note"><a id="detach" href="#">Detach condition</a> <span id="sep">|</span>
+                        <a id="create-condition" href="#">Create a new request condition</a>
+                    </div>
                 </div>
             </div>
             <div class="admin__field field _required">
@@ -689,8 +691,8 @@
                                id="certificate-hostname"
                                class="admin__control-text"
                         >
-                        <div class="admin__field-note">This value is matched against the certificate common name (CN) or a
-                            subject alternate name (SAN).</div>
+                        <div class="admin__field-note">This value is matched against the certificate common name (CN)
+                            or a subject alternate name (SAN).</div>
                     </div>
                 </div>
 
@@ -710,7 +712,8 @@
                                    name="match-sni"
                                    id="match-sni"/>
                             <label class="admin__field-label" for="match-sni">Match the SNI hostname to the Certificate
-                                hostname. This value identifies which certificate is to be used for the request to origin.
+                                hostname. This value identifies which certificate is to be used for the request to
+                                origin.
                             </label>
                         </div>
                     </div>
@@ -726,8 +729,8 @@
                               required="required"
                               id="tls-ca-certificate"
                               class="admin__control-text"></textarea>
-                        <div class="admin__field-note">CA certificate used to verify the certificate from origin. Must be
-                            in PEM form.</div>
+                        <div class="admin__field-note">CA certificate used to verify the certificate from origin.
+                            Must be in PEM form.</div>
                     </div>
                 </div>
 
@@ -748,8 +751,8 @@
                             <option value="1.1">1.1</option>
                             <option value="1.2">1.2</option>
                         </select>
-                        <div class="admin__field-note">The minimum TLS protocol version that Fastly will use to connect to
-                            your origin server.</div>
+                        <div class="admin__field-note">The minimum TLS protocol version that Fastly will use to
+                            connect to your origin server.</div>
                     </div>
                 </div>
 
@@ -764,8 +767,8 @@
                             <option value="1.1">1.1</option>
                             <option value="1.2">1.2</option>
                         </select>
-                        <div class="admin__field-note">The maximum TLS protocol version that Fastly will use to connect to
-                            your origin server. (Must be higher than the minimum TLS version.)</div>
+                        <div class="admin__field-note">The maximum TLS protocol version that Fastly will use to
+                            connect to your origin server. (Must be higher than the minimum TLS version.)</div>
                     </div>
                 </div>
 
@@ -812,8 +815,8 @@
                               required="required"
                               id="tls-client-key"
                               class="admin__control-text"></textarea>
-                        <div class="admin__field-note">Key used to authenticate to the backend server. Must be in PEM form,
-                            and must be accompanied by a client certificate.
+                        <div class="admin__field-note">Key used to authenticate to the backend server.
+                            Must be in PEM form, and must be accompanied by a client certificate.
                         </div>
                     </div>
                 </div>
@@ -917,6 +920,62 @@
                            class="admin__control-text"
                            value="10000">
                     <div class="admin__field-note">How long to wait between bytes in milliseconds.</div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</script>
+
+<!-- Create condition template -->
+<script type="text/x-magento-template" id="fastly-create-condition-template">
+    <div class="messages">
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="vcl-upload-form"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field _required">
+                <label for="condition_name" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Name") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="condition_name" id="condition_name" class="admin__control-text">
+                </div>
+            </div>
+
+            <div class="admin__field field __required">
+                <label for="apply_if" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Apply if...") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <textarea rows="6"
+                              name="apply_if"
+                              required="required"
+                              id="apply_if"
+                              class="admin__control-text"></textarea>
+                    <div class="admin__field-note">The expression to decide whether this is run.
+                        Maximum length is 512 characters.
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label for="condition_priority" class="admin__field-label">
+                    <span><?php /* @noEscape */  echo __("Priority") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="condition_priority"
+                           type="number"
+                           required="required"
+                           id="condition_priority"
+                           class="admin__control-text"
+                           value="10">
+                    <div class="admin__field-note">For most configurations, the default (10) is best.
+                        Priority determines ordering for multiple conditions. Lower numbers execute first.</div>
                 </div>
             </div>
         </fieldset>

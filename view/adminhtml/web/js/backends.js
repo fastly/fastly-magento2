@@ -239,6 +239,7 @@ define([
             addBtn.after(cancelBtn);
             hostname.after('<p class="note backend-note">Enter a hostname or IPv4 address for the backend</p>');
             $(this).hide();
+            hostname.focus();
         });
 
         $('body').on('click', '#fastly_add_backend_button', function () {
@@ -397,9 +398,11 @@ define([
                 $('#attach_span').hide();
                 if (response !== false) {
                     let conditions = response.conditions;
+                    html += '<option value=""></option>';
                     $.each(conditions, function (index, condition) {
-                        html += '<option value=""></option>';
-                        html += '<option value="'+condition.name+'">'+condition.name+' ('+condition.type+') '+condition.statement+'</option>';
+                        if (condition.type === "REQUEST") {
+                            html += '<option value="'+condition.name+'">'+condition.name+' ('+condition.type+') '+condition.statement+'</option>';
+                        }
                     });
                 }
                 $('#conditions').show();

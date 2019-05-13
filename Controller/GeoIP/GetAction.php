@@ -125,7 +125,6 @@ class GetAction extends Action
 
             // get target store from country code
             $countryCode = $this->getRequest()->getParam(self::REQUEST_PARAM_COUNTRY);
-            $countryCode = 'hr';
             $storeId = $this->config->getGeoIpMappingForCountry($countryCode);
 
             if ($storeId !== null) {

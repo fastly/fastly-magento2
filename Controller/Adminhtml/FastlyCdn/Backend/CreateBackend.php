@@ -128,6 +128,13 @@ class CreateBackend extends Action
             $sslSniHostname = $this->processRequest('ssl_sni_hostname');
             $sslCaCert = $this->processRequest('ssl_ca_cert');
 
+            $conditionName = $this->getRequest()->getParam('condition_name');
+            $applyIf = $this->getRequest()->getParam('apply_if');
+            $conditionPriority = $this->getRequest()->getParam('condition_priority');
+            $selCondition = $this->getRequest()->getParam('request_condition');
+
+            $condition = $this->createCondition($clone, $conditionName, $applyIf, $conditionPriority, $selCondition);
+
             $params = [
                 'address'               => $this->getRequest()->getParam('address'),
                 'auto_loadbalance'      => $autoLoadBalance,
@@ -137,7 +144,7 @@ class CreateBackend extends Action
                 'max_conn'              => $this->getRequest()->getParam('max_conn'),
                 'name'                  => $name,
                 'port'                  => $port,
-                'request_condition'     => $this->getRequest()->getParam('request_condition'),
+                'request_condition'     => $condition,
                 'service_id'            => $service->id,
                 'shield'                => $this->getRequest()->getParam('shield'),
                 'use_ssl'               => $useSsl,
@@ -252,5 +259,30 @@ class CreateBackend extends Action
             return null;
         }
         return $request;
+    }
+
+    /**
+     * @param $clone
+     * @param $conditionName
+     * @param $applyIf
+     * @param $conditionPriority
+     * @param $selCondition
+     * @return mixed
+     * @throws LocalizedException
+     */
+    private function createCondition($clone, $conditionName, $applyIf, $conditionPriority, $selCondition)
+    {
+        if ($conditionName == $selCondition && !empty($selCondition) &&
+            !$this->api->getCondition($clone->number, $conditionName)) {
+            $condition = [
+                'name'      => $conditionName,
+                'statement' => $applyIf,
+                'type'      => 'REQUEST',
+                'priority'  => $conditionPriority
+            ];
+            $createCondition = $this->api->createCondition($clone->number, $condition);
+            return $createCondition->name;
+        }
+        return $selCondition;
     }
 }

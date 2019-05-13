@@ -4,17 +4,18 @@ define([
     "overlay",
     "resetAllMessages",
     "showErrorMessage",
-    "Magento_Ui/js/modal/prompt",
     'mage/translate'
-], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, prompt) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         let backends;
         let backend_name;
         let active_version = serviceStatus.active_version;
-        let conditionName;
-        let applyIf;
-        let conditionPriority;
+        let conditionName = null;
+        let applyIf = null;
+        let conditionPriority = null;
+        let backendModal;
+        let conditionModal;
 
         /**
          * Backend modal overlay options
@@ -50,7 +51,7 @@ define([
             },
             actionOk: function () {
                 createCondition();
-            }
+            },
         };
 
         /**
@@ -211,14 +212,18 @@ define([
                     'between_bytes_timeout': betweenBytesTimeout,
                     'auto_loadbalance': autoLoadBalance,
                     'weight': weight,
-                    'form': true
+                    'form': true,
+                    'condition_name': conditionName,
+                    'condition_priority': conditionPriority,
+                    'apply_if': applyIf
                 },
                 showLoader: true,
                 success: function (response) {
                     if (response.status === true) {
                         $('#fastly-success-backend-button-msg').text($.mage.__('Backend "'+backendName+'" is successfully created.')).show();
                         active_version = response.active_version;
-                        modal.modal('closeModal');
+
+                        backendModal.modal('closeModal');
                         $('#fastly_add_backend_button').remove();
                         $('#fastly_cancel_backend_button').remove();
                         $('.hostname').remove();
@@ -248,12 +253,19 @@ define([
             conditionName = $('#condition_name').val();
             applyIf = $('#apply_if').val();
             conditionPriority = $('#condition_priority').val();
-            $('#conditions').append('<option value="'+conditionName+'"></option>');
             if (applyIf.length > 512) {
                 showErrorMessage('The expression cannot contain more than 512 characters.');
                 return;
+            } else if (applyIf.length < 1 || conditionName.length < 1) {
+                showErrorMessage('Please fill in the required fields.');
+                return;
+            } else if (isNaN(parseInt(conditionPriority))) {
+                showErrorMessage('Priority value must be an integer.');
+                return;
             }
-            $('.upload-button span').text('Create');
+            $('#conditions').append('<option value="'+conditionName+'" selected="selected">'+conditionName+' (REQUEST) '+applyIf+'</option>');
+            conditionModal.modal('closeModal');
+            $('.fastly-message-error').hide();
         }
 
         $('body').on('click', '#fastly_create_backend_button', function () {
@@ -295,6 +307,7 @@ define([
                             let service_name = checkService.service.name;
 
                             overlay(createBackendOptions);
+                            backendModal = modal;
                             setServiceLabel(active_version, next_version, service_name);
                             $('.upload-button span').text('Create');
                             $('#conditions').hide();
@@ -427,7 +440,7 @@ define([
                 $('#attach_span').hide();
                 if (response !== false) {
                     let conditions = response.conditions;
-                    html += '<option value=""></option>';
+                    html += '<option value="">no condition</option>';
                     $.each(conditions, function (index, condition) {
                         if (condition.type === "REQUEST") {
                             html += '<option value="'+condition.name+'">'+condition.name+' ('+condition.type+') '+condition.statement+'</option>';
@@ -453,7 +466,8 @@ define([
 
         $('body').on('click', '#create-condition', function () {
             overlay(createConditionOptions);
-            $('.upload-button span').text('Save and apply');
+            conditionModal = modal;
+            $('.upload-button span').text('Create');
         });
     }
 });

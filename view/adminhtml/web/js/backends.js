@@ -16,6 +16,7 @@ define([
         let conditionPriority = null;
         let backendModal;
         let conditionModal;
+        let conditions;
 
         /**
          * Backend modal overlay options
@@ -263,6 +264,14 @@ define([
                 showErrorMessage('Priority value must be an integer.');
                 return;
             }
+            let html = '';
+            html += '<option value="">no condition</option>';
+            $.each(conditions, function (index, condition) {
+                if (condition.type === "REQUEST") {
+                    html += '<option value="'+condition.name+'">'+condition.name+' ('+condition.type+') '+condition.statement+'</option>';
+                }
+            });
+            $('#conditions').html(html);
             $('#conditions').append('<option value="'+conditionName+'" selected="selected">'+conditionName+' (REQUEST) '+applyIf+'</option>');
             conditionModal.modal('closeModal');
             $('.fastly-message-error').hide();
@@ -439,7 +448,7 @@ define([
                 let html = '';
                 $('#attach_span').hide();
                 if (response !== false) {
-                    let conditions = response.conditions;
+                    conditions = response.conditions;
                     html += '<option value="">no condition</option>';
                     $.each(conditions, function (index, condition) {
                         if (condition.type === "REQUEST") {

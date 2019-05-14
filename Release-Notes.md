@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.102
+
+- Added uenc to the GeoIP storeswitcher https://github.com/fastly/fastly-magento2/pull/276
+- add UI to create backends https://github.com/fastly/fastly-magento2/pull/274
+
 ## 1.2.101
 
 - Add Gzip safety logic to avoid default Gzip policy interfering with ESI processing

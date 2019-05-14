@@ -20,7 +20,33 @@ value 1. You can see an example [here](https://devdocs.magento.com/guides/v2.3/c
 req.http.X-ExternalCMS == "1"
 ```
 
-If you don't have access to the Fastly UI you can use following Ruby script to add a backend to your Fastly service.
+You can create a backend in the Fastly configuration (available in 1.2.102+) by clicking 
+
+```
+Magento admin > Stores > Configuration > Advanced > System > Full Page Cache > Fastly Configuration > Backend Settings > Create
+```
+
+Enter the domain name or the IP of your backend. When you do that you will be prompted with a screen like this
+
+![Fastly Edge Module Add New Backend](../../images/guides/edge-modules/edge-module-create-backend-1.png "Fastly Edge Module Add New Backend")
+
+- Click *Attach a condition*
+
+![Fastly Edge Module Add New Backend Attach Condition](../../images/guides/edge-modules/edge-module-create-backend-2.png "Fastly Edge Module Add New Backend Screen after Attach Condition")
+
+- Click on *Create a new Request Condition*
+
+You should see something like this
+
+![Fastly Edge Module Create a Request Condition](../../images/guides/edge-modules/edge-module-create-request-condition.png "Fastly Edge Module Create a Request Condition")
+
+Enter
+
+```
+req.http.X-ExternalCMS == "1"
+```
+
+Alternatively you can use following Ruby script to add a backend to your Fastly service.
 
 ```ruby
 require 'net/http'
@@ -86,6 +112,7 @@ activate_info = JSON.parse(fastlyAPICall(url, "PUT"))
 puts activate_info
 ```
 
+Once you are successful with adding a backend proceed to configuration.
 
 ## Configuration
 

@@ -53,9 +53,11 @@ adding a backend proceed to configuration.
 if your origin is in Netherlands pick our Amsterdam shield etc. Shield will greatly decrease the number of
 requests hitting your origin and is required for Image Optimization. [Read more about origin shielding](https://docs.fastly.com/guides/performance-tuning/shielding). 
 
-## Configuration
+## Edge Module Configuration
 
-When you click on the configuration you will be prompted with a screen like this
+If all the prerequisites are met enable the Other CMS/Backend integration Edge Module in the Edge Module
+management screen. Next you will need to click on the configuration for the edge module which will look
+like this
 
 ![Fastly Edge Module Other CMS/Backend integration](../../images/guides/edge-modules/edgemodule-othercms-integration.png "Fastly Edge Module Other CMS/Backend integration")
 

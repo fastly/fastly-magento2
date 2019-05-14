@@ -26,7 +26,7 @@ You can create a backend in the Fastly configuration (available in 1.2.102+) by 
 Magento admin > Stores > Configuration > Advanced > System > Full Page Cache > Fastly Configuration > Backend Settings > Create
 ```
 
-Enter the domain name or the IP of your backend. When you do that you will be prompted with a screen like this
+Enter the domain name or the IP of your backend. Then *Add a Backend* screen will pop up 
 
 ![Fastly Edge Module Add New Backend](../../images/guides/edge-modules/edge-module-create-backend-1.png "Fastly Edge Module Add New Backend")
 
@@ -36,17 +36,83 @@ Enter the domain name or the IP of your backend. When you do that you will be pr
 
 - Click on *Create a new Request Condition*
 
-You should see something like this
+Fill out the form as follows
 
 ![Fastly Edge Module Create a Request Condition](../../images/guides/edge-modules/edge-module-create-request-condition.png "Fastly Edge Module Create a Request Condition")
 
-Enter
+Apply if will be
 
 ```
 req.http.X-ExternalCMS == "1"
 ```
 
-Alternatively you can use following Ruby script to add a backend to your Fastly service.
+Click Create to create the request condition then Create to create a backend. Once you are successful with 
+adding a backend proceed to configuration.
+
+*Please note* you should specify a shield location for your backend and it should be close to your origin e.g.
+if your origin is in Netherlands pick our Amsterdam shield etc. Shield will greatly decrease the number of
+requests hitting your origin and is required for Image Optimization. [Read more about origin shielding](https://docs.fastly.com/guides/performance-tuning/shielding). 
+
+## Configuration
+
+When you click on the configuration you will be prompted with a screen like this
+
+![Fastly Edge Module Other CMS/Backend integration](../../images/guides/edge-modules/edgemodule-othercms-integration.png "Fastly Edge Module Other CMS/Backend integration")
+
+## Configurable options
+
+### URL prefixes dictionary
+
+This is the name of the dictionary containing URL prefixes you want routed to the other backend e.g. `wordpress_urls`
+
+### Override backend host name
+
+By default Fastly forwards the hostname of your shop back to the backend. In most instances your other backend will not recognize
+your shop name e.g. if you are using `blog.domain.com` for hosting your blog. If that is the case supply the hostname that should
+be sent to your alternate backend.
+
+## Enabling
+
+After any change to the settings you need to click Upload as that will activate the functionality you configured.
+
+## Technical details
+
+Following VCL is being uploaded 
+
+Snippet Type: vcl_recv
+
+```
+# Make sure X-ExternalCMS is not set before proceeding
+  if ( req.restarts == 0 ) {
+     remove req.http.X-ExternalCMS;
+  }
+
+  # Extract first part of the path from a URL
+  if ( req.url.path ~ "^/?([^:/\s]+).*$" ) {
+     # check if first part of the url is in the wordpress urls table
+     if ( table.lookup(magentomodule_config, re.group.1, "NOTFOUND") != "NOTFOUND" ) {
+       set req.http.X-ExternalCMS = "1";
+       # There is an issue with load-scripts.php in Wordpress where the ordering of query arguments matter
+       # in compressing the JS. By default Magento sorts query arguments. Here we undo the sorting for wp-admin URLs
+       if ( req.url.path ~ "/wp-admin" ) {
+         set req.url = req.http.Magento-Original-URL;
+       }
+     }
+  }
+```
+
+If you enter override backend host this content will be added in both vcl_pass and vcl_miss
+
+```
+ if ( req.backend.is_origin && req.http.X-ExternalCMS ) {
+    set bereq.http.host = "blog.domain.comoveride";
+  }
+```
+
+
+## Extras
+
+Ruby script that can be used to add a backend if you so choose.
 
 ```ruby
 require 'net/http'
@@ -110,62 +176,4 @@ puts "Activating #{cloned_version} for service #{service_id}"
 url = "https://api.fastly.com/service/" + service_id.to_s + "/version/" + cloned_version.to_s + "/activate"
 activate_info = JSON.parse(fastlyAPICall(url, "PUT"))
 puts activate_info
-```
-
-Once you are successful with adding a backend proceed to configuration.
-
-## Configuration
-
-When you click on the configuration you will be prompted with a screen like this
-
-![Fastly Edge Module Other CMS/Backend integration](../../images/guides/edge-modules/edgemodule-othercms-integration.png "Fastly Edge Module Other CMS/Backend integration")
-
-## Configurable options
-
-### URL prefixes dictionary
-
-This is the name of the dictionary containing URL prefixes you want routed to the other backend e.g. `wordpress_urls`
-
-### Override backend host name
-
-By default Fastly forwards the hostname of your shop back to the backend. In most instances your other backend will not recognize
-your shop name e.g. if you are using `blog.domain.com` for hosting your blog. If that is the case supply the hostname that should
-be sent to your alternate backend.
-
-## Enabling
-
-After any change to the settings you need to click Upload as that will activate the functionality you configured.
-
-## Technical details
-
-Following VCL is being uploaded 
-
-Snippet Type: vcl_recv
-
-```
-# Make sure X-ExternalCMS is not set before proceeding
-  if ( req.restarts == 0 ) {
-     remove req.http.X-ExternalCMS;
-  }
-
-  # Extract first part of the path from a URL
-  if ( req.url.path ~ "^/?([^:/\s]+).*$" ) {
-     # check if first part of the url is in the wordpress urls table
-     if ( table.lookup(magentomodule_config, re.group.1, "NOTFOUND") != "NOTFOUND" ) {
-       set req.http.X-ExternalCMS = "1";
-       # There is an issue with load-scripts.php in Wordpress where the ordering of query arguments matter
-       # in compressing the JS. By default Magento sorts query arguments. Here we undo the sorting for wp-admin URLs
-       if ( req.url.path ~ "/wp-admin" ) {
-         set req.url = req.http.Magento-Original-URL;
-       }
-     }
-  }
-```
-
-If you enter override backend host this content will be added in both vcl_pass and vcl_miss
-
-```
- if ( req.backend.is_origin && req.http.X-ExternalCMS ) {
-    set bereq.http.host = "blog.domain.comoveride";
-  }
 ```

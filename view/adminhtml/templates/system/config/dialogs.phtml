@@ -465,7 +465,9 @@
                         This will happen all the time unless you <a id="attach" href="#">Attach a condition</a>
                     </span>
                     <select name="conditions" id="conditions" class="admin__control-select"></select>
-                    <div class="admin__field-note"><a id="detach" href="#">Detach condition</a></div>
+                    <div class="admin__field-note"><a id="detach" href="#">Detach condition</a> <span id="sep">|</span>
+                        <a id="create-condition" href="#">Create a new request condition</a>
+                    </div>
                 </div>
             </div>
             <div class="admin__field field _required">
@@ -595,232 +597,234 @@
                 </div>
             </div>
 
-            <div class="admin__field field">
-                <label class="admin__field-label">
-                    Transport Layer Security (TLS)
-                </label>
-                <div class="admin__field-control"><hr></div>
-            </div>
-
-            <div class="admin__field field _required">
-                <label for="tls-radio" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __("Enable TLS?") ?></span>
-                </label>
-                <div class="admin__field-control">
-                    <table>
-                        <tr>
-                            <td>
-                                <input type="radio" id="tls-yes" class="admin__control-radio" name="tls-radio"
-                                       value="1" checked/>
-                                <label class="admin__field-label" for="tls-yes">
-                                    <b>Yes,</b> enable TLS and connect securely using port
-                                </label>
-                            </td>
-                            <td>
-                                <input name="tls-yes-port"
-                                       type="number"
-                                       required="required"
-                                       id="tls-yes-port"
-                                       class="admin__control-text
-                                        required-entry
-                                        validate-alphanum-with-spaces
-                                        validate-length
-                                        maximum-length-50
-                                        checkbox-input"
-                                       value="443">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="radio" id="tls-no" class="admin__control-radio" name="tls-radio"
-                                       value="0"/>
-                                <label class="admin__field-label" for="tls-no">
-                                    <b>No, do not enable TLS.</b> Instead connect using port &nbsp
-                                </label>
-                            </td>
-                            <td>
-                                <input name="tls-no-port"
-                                       type="number"
-                                       required="required"
-                                       id="tls-no-port"
-                                       class="admin__control-text
-                                        required-entry
-                                        validate-alphanum-with-spaces
-                                        validate-length
-                                        maximum-length-50
-                                        checkbox-input"
-                                       value="80">
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
-            <div class="admin__field field _required">
-                <label for="certificate-radio" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __("Verify certificate?") ?></span>
-                </label>
-                <div class="admin__field-control">
-                    <input type="radio" id="certificate-yes" class="admin__control-radio" name="certificate-radio"
-                           value="1" checked/>
-                    <label class="admin__field-label" for="certificate-yes">
-                        <b>Yes,</b> verify the authenticity of the TLS certificate
-                    </label>
-                </div>
-                <div class="admin__field-control">
-                    <input type="radio" id="certificate-no" class="admin__control-radio" name="certificate-radio"
-                           value="0"/>
-                    <label class="admin__field-label" for="certificate-no">
-                        <b>No,</b> do not verify my TLS certificate
-                    </label>
-                </div>
-            </div>
-
-            <div class="admin__field field _required">
-                <label for="certificate-hostname" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __("Certificate hostname") ?></span>
-                </label>
-                <div class="admin__field-control">
-                    <input name="certificate-hostname"
-                           type="text"
-                           required="required"
-                           id="certificate-hostname"
-                           class="admin__control-text"
-                    >
-                    <div class="admin__field-note">This value is matched against the certificate common name (CN) or a
-                        subject alternate name (SAN).</div>
-                </div>
-            </div>
-
-            <div class="admin__field field">
-                <label for="sni-hostname" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __("SNI hostname") ?></span>
-                </label>
-                <div class="admin__field-control">
-                    <input name="sni-hostname"
-                           type="text"
-                           id="sni-hostname"
-                           class="admin__control-text"
-                    >
-                    <div class="admin__field-option">
-                        <input class="admin__control-checkbox"
-                               type="checkbox"
-                               name="match-sni"
-                               id="match-sni"/>
-                        <label class="admin__field-label" for="match-sni">Match the SNI hostname to the Certificate
-                            hostname. This value identifies which certificate is to be used for the request to origin.
+            <div class="admin__fieldset recommended">
+                <div class="admin__fieldset message-recommend">
+                    <div class="admin__field field" id="recommended-title">
+                        <label class="admin__field-label">
+                            RECOMMENDED Transport Layer Security (TLS)
                         </label>
                     </div>
                 </div>
-            </div>
 
-            <div class="admin__field field _required">
-                <label for="tls-ca-certificate" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __("TLS CA certificate") ?></span>
-                </label>
-                <div class="admin__field-control">
+                <div class="admin__field field">
+                    <label for="tls-radio" class="admin__field-label">
+                        <span><?php /* @noEscape */ echo __("Enable TLS?") ?></span>
+                    </label>
+                    <div class="admin__field-control">
+                        <table>
+                            <tr>
+                                <td>
+                                    <input type="radio" id="tls-yes" class="admin__control-radio" name="tls-radio"
+                                           value="1" checked/>
+                                    <label class="admin__field-label" for="tls-yes">
+                                        <b>Yes,</b> enable TLS and connect securely using port
+                                    </label>
+                                </td>
+                                <td>
+                                    <input name="tls-yes-port"
+                                           type="number"
+                                           required="required"
+                                           id="tls-yes-port"
+                                           class="admin__control-text
+                                        required-entry
+                                        validate-alphanum-with-spaces
+                                        validate-length
+                                        maximum-length-50
+                                        checkbox-input"
+                                           value="443">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="radio" id="tls-no" class="admin__control-radio" name="tls-radio"
+                                           value="0"/>
+                                    <label class="admin__field-label" for="tls-no">
+                                        <b>No, do not enable TLS.</b> Instead connect using port &nbsp
+                                    </label>
+                                </td>
+                                <td>
+                                    <input name="tls-no-port"
+                                           type="number"
+                                           required="required"
+                                           id="tls-no-port"
+                                           class="admin__control-text
+                                        required-entry
+                                        validate-alphanum-with-spaces
+                                        validate-length
+                                        maximum-length-50
+                                        checkbox-input"
+                                           value="80">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="admin__field field">
+                    <label for="certificate-radio" class="admin__field-label">
+                        <span><?php /* @noEscape */ echo __("Verify certificate?") ?></span>
+                    </label>
+                    <div class="admin__field-control">
+                        <input type="radio" id="certificate-yes" class="admin__control-radio" name="certificate-radio"
+                               value="1" checked/>
+                        <label class="admin__field-label" for="certificate-yes">
+                            <b>Yes,</b> verify the authenticity of the TLS certificate
+                        </label>
+                    </div>
+                    <div class="admin__field-control">
+                        <input type="radio" id="certificate-no" class="admin__control-radio" name="certificate-radio"
+                               value="0"/>
+                        <label class="admin__field-label" for="certificate-no">
+                            <b>No,</b> do not verify my TLS certificate
+                        </label>
+                    </div>
+                </div>
+
+                <div class="admin__field field _required">
+                    <label for="certificate-hostname" class="admin__field-label">
+                        <span><?php /* @noEscape */ echo __("Certificate hostname") ?></span>
+                    </label>
+                    <div class="admin__field-control">
+                        <input name="certificate-hostname"
+                               type="text"
+                               required="required"
+                               id="certificate-hostname"
+                               class="admin__control-text"
+                        >
+                        <div class="admin__field-note">This value is matched against the certificate common name (CN)
+                            or a subject alternate name (SAN).</div>
+                    </div>
+                </div>
+
+                <div class="admin__field field">
+                    <label for="sni-hostname" class="admin__field-label">
+                        <span><?php /* @noEscape */ echo __("SNI hostname") ?></span>
+                    </label>
+                    <div class="admin__field-control">
+                        <input name="sni-hostname"
+                               type="text"
+                               id="sni-hostname"
+                               class="admin__control-text"
+                        >
+                        <div class="admin__field-option">
+                            <input class="admin__control-checkbox"
+                                   type="checkbox"
+                                   name="match-sni"
+                                   id="match-sni"/>
+                            <label class="admin__field-label" for="match-sni">Match the SNI hostname to the Certificate
+                                hostname. This value identifies which certificate is to be used for the request to
+                                origin.
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin__field field">
+                    <label for="tls-ca-certificate" class="admin__field-label">
+                        <span><?php /* @noEscape */ echo __("TLS CA certificate") ?></span>
+                    </label>
+                    <div class="admin__field-control">
                     <textarea rows="6"
                               name="tls-ca-certificate"
                               required="required"
                               id="tls-ca-certificate"
                               class="admin__control-text"></textarea>
-                    <div class="admin__field-note">CA certificate used to verify the certificate from origin. Must be
-                        in PEM form.</div>
+                        <div class="admin__field-note">CA certificate used to verify the certificate from origin.
+                            Must be in PEM form.</div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="admin__field field">
-                <label class="admin__field-label">
-                    Advanced TLS options
-                </label>
-            </div>
-
-            <div class="admin__field field">
-                <label for="minimum-tls" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __("Minimum TLS version") ?></span>
-                </label>
-                <div class="admin__field-control">
-                    <select name="minimum-tls" id="minimum-tls" class="admin__control-text">
-                        <option value="">none</option>
-                        <option value="1.0">1.0</option>
-                        <option value="1.1">1.1</option>
-                        <option value="1.2">1.2</option>
-                    </select>
-                    <div class="admin__field-note">The minimum TLS protocol version that Fastly will use to connect to
-                        your origin server.</div>
+                <div class="admin__field field">
+                    <label class="admin__field-label">
+                        Advanced TLS options
+                    </label>
                 </div>
-            </div>
 
-            <div class="admin__field field">
-                <label for="maximum-tls" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __("Maximum TLS version") ?></span>
-                </label>
-                <div class="admin__field-control">
-                    <select name="maximum-tls" id="maximum-tls" class="admin__control-text">
-                        <option value="">none</option>
-                        <option value="1.0">1.0</option>
-                        <option value="1.1">1.1</option>
-                        <option value="1.2">1.2</option>
-                    </select>
-                    <div class="admin__field-note">The maximum TLS protocol version that Fastly will use to connect to
-                        your origin server. (Must be higher than the minimum TLS version.)</div>
+                <div class="admin__field field">
+                    <label for="minimum-tls" class="admin__field-label">
+                        <span><?php /* @noEscape */ echo __("Minimum TLS version") ?></span>
+                    </label>
+                    <div class="admin__field-control">
+                        <select name="minimum-tls" id="minimum-tls" class="admin__control-text">
+                            <option value="">none</option>
+                            <option value="1.0">1.0</option>
+                            <option value="1.1">1.1</option>
+                            <option value="1.2">1.2</option>
+                        </select>
+                        <div class="admin__field-note">The minimum TLS protocol version that Fastly will use to
+                            connect to your origin server.</div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="admin__field field">
-                <label for="ciphersuites" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __("Ciphersuites") ?></span>
-                </label>
-                <div class="admin__field-control">
-                    <input name="ciphersuites"
-                           type="text"
-                           id="ciphersuites"
-                           class="admin__control-text"
-                    >
-                    <div class="admin__field-note">A list of OpenSSL ciphers to use when connecting to your origin.
-                        For more information see the OpenSSL documentation on cipher list format</div>
+                <div class="admin__field field">
+                    <label for="maximum-tls" class="admin__field-label">
+                        <span><?php /* @noEscape */ echo __("Maximum TLS version") ?></span>
+                    </label>
+                    <div class="admin__field-control">
+                        <select name="maximum-tls" id="maximum-tls" class="admin__control-text">
+                            <option value="">none</option>
+                            <option value="1.0">1.0</option>
+                            <option value="1.1">1.1</option>
+                            <option value="1.2">1.2</option>
+                        </select>
+                        <div class="admin__field-note">The maximum TLS protocol version that Fastly will use to
+                            connect to your origin server. (Must be higher than the minimum TLS version.)</div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="admin__field field">
-                <label for="tls-client-certificate" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __("TLS client certificate") ?></span>
-                </label>
-                <div class="admin__field-control">
+                <div class="admin__field field">
+                    <label for="ciphersuites" class="admin__field-label">
+                        <span><?php /* @noEscape */ echo __("Ciphersuites") ?></span>
+                    </label>
+                    <div class="admin__field-control">
+                        <input name="ciphersuites"
+                               type="text"
+                               id="ciphersuites"
+                               class="admin__control-text"
+                        >
+                        <div class="admin__field-note">A list of OpenSSL ciphers to use when connecting to your origin.
+                            For more information see the OpenSSL documentation on cipher list format</div>
+                    </div>
+                </div>
+
+                <div class="admin__field field">
+                    <label for="tls-client-certificate" class="admin__field-label">
+                        <span><?php /* @noEscape */ echo __("TLS client certificate") ?></span>
+                    </label>
+                    <div class="admin__field-control">
                     <textarea rows="6"
                               name="tls-client-certificate"
                               required="required"
                               id="tls-client-certificate"
                               class="admin__control-text"></textarea>
-                    <div class="admin__field-note">Certificate used to authenticate to the origin server. Must be in
-                        PEM form, and must be accompanied by a client key. It is advised to not used keys from
-                        anywhere else. A client certificate and client key allows your server to authenticate that
-                        Fastly is performing the connection.
+                        <div class="admin__field-note">Certificate used to authenticate to the origin server. Must be in
+                            PEM form, and must be accompanied by a client key. It is advised to not used keys from
+                            anywhere else. A client certificate and client key allows your server to authenticate that
+                            Fastly is performing the connection.
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="admin__field field">
-                <label for="tls-client-key" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __("TLS client key") ?></span>
-                </label>
-                <div class="admin__field-control">
+                <div class="admin__field field">
+                    <label for="tls-client-key" class="admin__field-label">
+                        <span><?php /* @noEscape */ echo __("TLS client key") ?></span>
+                    </label>
+                    <div class="admin__field-control">
                     <textarea rows="6"
                               name="tls-client-key"
                               required="required"
                               id="tls-client-key"
                               class="admin__control-text"></textarea>
-                    <div class="admin__field-note">Key used to authenticate to the backend server. Must be in PEM form,
-                        and must be accompanied by a client certificate.
+                        <div class="admin__field-note">Key used to authenticate to the backend server.
+                            Must be in PEM form, and must be accompanied by a client certificate.
+                        </div>
                     </div>
                 </div>
             </div>
-
             <div class="admin__field field">
                 <label class="admin__field-label">
                     Advanced options
                 </label>
-                <div class="admin__field-control"><hr></div>
             </div>
 
             <div class="admin__field field _required">
@@ -884,7 +888,7 @@
                                     validate-alphanum-with-spaces
                                     validate-length
                                     maximum-length-50"
-                            value="1000">
+                           value="1000">
                     <div class="admin__field-note">How long to wait for a timeout in milliseconds.</div>
                 </div>
             </div>
@@ -916,6 +920,62 @@
                            class="admin__control-text"
                            value="10000">
                     <div class="admin__field-note">How long to wait between bytes in milliseconds.</div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</script>
+
+<!-- Create condition template -->
+<script type="text/x-magento-template" id="fastly-create-condition-template">
+    <div class="messages">
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="vcl-upload-form"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field _required">
+                <label for="condition_name" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Name") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="condition_name" id="condition_name" class="admin__control-text">
+                </div>
+            </div>
+
+            <div class="admin__field field __required">
+                <label for="apply_if" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Apply if...") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <textarea rows="6"
+                              name="apply_if"
+                              required="required"
+                              id="apply_if"
+                              class="admin__control-text"></textarea>
+                    <div class="admin__field-note">The expression to decide whether this is run.
+                        Maximum length is 512 characters.
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label for="condition_priority" class="admin__field-label">
+                    <span><?php /* @noEscape */  echo __("Priority") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="condition_priority"
+                           type="number"
+                           required="required"
+                           id="condition_priority"
+                           class="admin__control-text"
+                           value="10">
+                    <div class="admin__field-note">For most configurations, the default (10) is best.
+                        Priority determines ordering for multiple conditions. Lower numbers execute first.</div>
                 </div>
             </div>
         </fieldset>
@@ -1164,61 +1224,61 @@
           id="fastly-dictionary-form"
           class="form-inline"
           enctype="multipart/form-data">
-    <div class="messages">
-        <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
-        <div class="message message-success fastly-message-success" style="display: none;"></div>
-    </div>
-    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
-          method="POST"
-          id="fastly-dictionary-form"
-          class="form-inline"
-          enctype="multipart/form-data">
-        <fieldset class="admin__fieldset form-list question">
-            <table class="admin__control-table" id="dictionary-items-table">
-                <thead>
-                <tr>
-                    <th><?php /* @noEscape */ echo __('Key') ?></th>
-                    <th><?php /* @noEscape */ echo __('Value') ?></th>
-                    <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Action') ?></th>
-                </tr>
-                </thead>
-                <tbody class="item-container">
-                <tr>
-                    <td>
-                        <input name="key"
-                               required="required"
-                               class="input-text admin__control-text dictionary-items-field"
-                               type="text">
-                    </td>
-                    <td>
-                        <input name="value"
-                               data-type="dictionary"
-                               required="required"
-                               class="input-text admin__control-text dictionary-items-field"
-                               type="text">
-                    </td>
-                    <td class="col-actions">
-                        <button class="action-delete fastly-save-action save_item" title="Save" type="button">
-                            <span>Save</span>
-                        </button>
-                        <button class="action-delete remove_item"  title="Delete" type="button">
-                            <span>Delete</span>
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-                <tfoot>
-                <tr>
-                    <td colspan="3" class="col-actions-add">
-                        <button id="add-dictionary-item" class="action-add" title="Add new item" type="button">
-                            <span><?php /* @noEscape */ echo __('Add new item') ?></span>
-                        </button>
-                    </td>
-                </tr>
-                </tfoot>
-            </table>
-        </fieldset>
-    </form>
+        <div class="messages">
+            <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
+            <div class="message message-success fastly-message-success" style="display: none;"></div>
+        </div>
+        <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+              method="POST"
+              id="fastly-dictionary-form"
+              class="form-inline"
+              enctype="multipart/form-data">
+            <fieldset class="admin__fieldset form-list question">
+                <table class="admin__control-table" id="dictionary-items-table">
+                    <thead>
+                    <tr>
+                        <th><?php /* @noEscape */ echo __('Key') ?></th>
+                        <th><?php /* @noEscape */ echo __('Value') ?></th>
+                        <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Action') ?></th>
+                    </tr>
+                    </thead>
+                    <tbody class="item-container">
+                    <tr>
+                        <td>
+                            <input name="key"
+                                   required="required"
+                                   class="input-text admin__control-text dictionary-items-field"
+                                   type="text">
+                        </td>
+                        <td>
+                            <input name="value"
+                                   data-type="dictionary"
+                                   required="required"
+                                   class="input-text admin__control-text dictionary-items-field"
+                                   type="text">
+                        </td>
+                        <td class="col-actions">
+                            <button class="action-delete fastly-save-action save_item" title="Save" type="button">
+                                <span>Save</span>
+                            </button>
+                            <button class="action-delete remove_item"  title="Delete" type="button">
+                                <span>Delete</span>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="3" class="col-actions-add">
+                            <button id="add-dictionary-item" class="action-add" title="Add new item" type="button">
+                                <span><?php /* @noEscape */ echo __('Add new item') ?></span>
+                            </button>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </fieldset>
+        </form>
 </script>
 
 <!-- Edge ACL creation overlay template -->
@@ -2376,6 +2436,23 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
 
     .checkbox-input {
         margin-bottom: 5px;
+    }
+
+    .recommended {
+        border: 1px solid #D8D8D8;
+        border-radius: 3px;
+        margin-bottom: 30px;
+    }
+
+    #recommended-title {
+        margin-bottom: 10px;
+    }
+
+    .message-recommend {
+        border: 1px solid #FEDF69;
+        background-color: #FFF9D5;
+        padding-top: 10px;
+        margin-bottom: 30px;
     }
 
 </style>

@@ -4,14 +4,19 @@ define([
     "overlay",
     "resetAllMessages",
     "showErrorMessage",
-    "Magento_Ui/js/modal/prompt",
     'mage/translate'
-], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, prompt) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         let backends;
         let backend_name;
         let active_version = serviceStatus.active_version;
+        let conditionName = null;
+        let applyIf = null;
+        let conditionPriority = null;
+        let backendModal;
+        let conditionModal;
+        let conditions;
 
         /**
          * Backend modal overlay options
@@ -38,6 +43,16 @@ define([
             actionOk: function () {
                 createBackend(active_version);
             }
+        };
+
+        let createConditionOptions = {
+            title: jQuery.mage.__('Create a new request condition'),
+            content: function () {
+                return document.getElementById('fastly-create-condition-template').textContent;
+            },
+            actionOk: function () {
+                createCondition();
+            },
         };
 
         /**
@@ -198,14 +213,18 @@ define([
                     'between_bytes_timeout': betweenBytesTimeout,
                     'auto_loadbalance': autoLoadBalance,
                     'weight': weight,
-                    'form': true
+                    'form': true,
+                    'condition_name': conditionName,
+                    'condition_priority': conditionPriority,
+                    'apply_if': applyIf
                 },
                 showLoader: true,
                 success: function (response) {
                     if (response.status === true) {
                         $('#fastly-success-backend-button-msg').text($.mage.__('Backend "'+backendName+'" is successfully created.')).show();
                         active_version = response.active_version;
-                        modal.modal('closeModal');
+
+                        backendModal.modal('closeModal');
                         $('#fastly_add_backend_button').remove();
                         $('#fastly_cancel_backend_button').remove();
                         $('.hostname').remove();
@@ -230,6 +249,34 @@ define([
             });
         }
 
+        function createCondition()
+        {
+            conditionName = $('#condition_name').val();
+            applyIf = $('#apply_if').val();
+            conditionPriority = $('#condition_priority').val();
+            if (applyIf.length > 512) {
+                showErrorMessage('The expression cannot contain more than 512 characters.');
+                return;
+            } else if (applyIf.length < 1 || conditionName.length < 1) {
+                showErrorMessage('Please fill in the required fields.');
+                return;
+            } else if (isNaN(parseInt(conditionPriority))) {
+                showErrorMessage('Priority value must be an integer.');
+                return;
+            }
+            let html = '';
+            html += '<option value="">no condition</option>';
+            $.each(conditions, function (index, condition) {
+                if (condition.type === "REQUEST") {
+                    html += '<option value="'+condition.name+'">'+condition.name+' ('+condition.type+') '+condition.statement+'</option>';
+                }
+            });
+            $('#conditions').html(html);
+            $('#conditions').append('<option value="'+conditionName+'" selected="selected">'+conditionName+' (REQUEST) '+applyIf+'</option>');
+            conditionModal.modal('closeModal');
+            $('.fastly-message-error').hide();
+        }
+
         $('body').on('click', '#fastly_create_backend_button', function () {
             let hostname = $('<input type="text" class="hostname">');
             let addBtn = $('<button id="fastly_add_backend_button" title="Add" type="button" class="action-default scalable" style="margin-right: 10px"><span>Add</span></button>');
@@ -239,6 +286,7 @@ define([
             addBtn.after(cancelBtn);
             hostname.after('<p class="note backend-note">Enter a hostname or IPv4 address for the backend</p>');
             $(this).hide();
+            hostname.focus();
         });
 
         $('body').on('click', '#fastly_add_backend_button', function () {
@@ -268,9 +316,13 @@ define([
                             let service_name = checkService.service.name;
 
                             overlay(createBackendOptions);
+                            backendModal = modal;
                             setServiceLabel(active_version, next_version, service_name);
+                            $('.upload-button span').text('Create');
                             $('#conditions').hide();
                             $('#detach').hide();
+                            $('#create-condition').hide();
+                            $('#sep').hide();
                             $('#backend_address').val(hostnameVal);
                             $('#sni-hostname').val(hostnameVal);
                             $('#certificate-hostname').val(hostnameVal);
@@ -396,14 +448,18 @@ define([
                 let html = '';
                 $('#attach_span').hide();
                 if (response !== false) {
-                    let conditions = response.conditions;
+                    conditions = response.conditions;
+                    html += '<option value="">no condition</option>';
                     $.each(conditions, function (index, condition) {
-                        html += '<option value=""></option>';
-                        html += '<option value="'+condition.name+'">'+condition.name+' ('+condition.type+') '+condition.statement+'</option>';
+                        if (condition.type === "REQUEST") {
+                            html += '<option value="'+condition.name+'">'+condition.name+' ('+condition.type+') '+condition.statement+'</option>';
+                        }
                     });
                 }
                 $('#conditions').show();
                 $('#detach').show();
+                $('#create-condition').show();
+                $('#sep').show();
                 $('#conditions').html(html);
             })
         });
@@ -412,7 +468,15 @@ define([
             $('#conditions').html('');
             $('#conditions').hide();
             $('#detach').hide();
+            $('#sep').hide();
+            $('#create-condition').hide();
             $('#attach_span').show();
+        });
+
+        $('body').on('click', '#create-condition', function () {
+            overlay(createConditionOptions);
+            conditionModal = modal;
+            $('.upload-button span').text('Create');
         });
     }
 });

@@ -1,0 +1,21 @@
+{
+  "name": "BlackFire integration",
+  "id": "blackfire_integration",
+  "description": "Necessary Fastly configuration to enable Blackfire profiling. Not required for Magento Commerce Cloud.",
+  "version": 1,
+  "properties": [
+  ],
+  "test": {
+    "origins": [
+      "https:\/\/httpbin.org"
+    ],
+    "reqUrl": "\/status\/500"
+  },
+  "vcl": [
+    {
+      "type": "recv",
+      "priority": 70,
+      "template": "   if (req.http.X-Blackfire-Query ) {\r\n    if (req.esi_level > 0) {\r\n        # ESI request should not be included in the profile.\r\n        # Instead you should profile them separately, each one\r\n        # in their dedicated profile.\r\n        # Removing the Blackfire header avoids to trigger the profiling.\r\n        # Not returning let it go trough your usual workflow as a regular\r\n        # ESI request without distinction.\r\n        unset req.http.X-Blackfire-Query;\r\n    } else {\r\n        set req.http.X-Pass = \"1\";\r\n    }\r\n  }"
+    }
+  ]
+}

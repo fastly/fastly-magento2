@@ -1,5 +1,5 @@
 {
-  "name": "BlackFire integration",
+  "name": "Blackfire integration",
   "id": "blackfire_integration",
   "description": "Necessary Fastly configuration to enable Blackfire profiling. Not required for Magento Commerce Cloud.",
   "version": 1,

@@ -28,6 +28,7 @@ configure them individually. Make sure you click Upload once you done configurin
 
 Currently following Edge Modules are bundled in
 
+- [Blackfire integration](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-BLACKFIRE-INTERGRATION.md)
 - [Increase timeouts for long running jobs](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-INCREASE-TIMEOUTS-LONG-JOBS.md) - Tweak timeouts for jobs/URLs that take longer than 1 minute
 - [CORS headers](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-CORS-HEADERS.md) - Set CORS headers sent to the end user
 - [Magento Cloud Sitemap rewrites](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-CLOUD-SITEMAP-REWRITE.md) - rewrite incoming /sitemap.xml URL to

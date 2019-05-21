@@ -106,6 +106,7 @@ class ToggleModules extends Action
                     }
                     $manifest->setManifestId($moduleId);
                     $manifest->setManifestStatus(0);
+                    $manifest->setLastUploaded(null);
                 }
                 $this->saveManifest($manifest);
             }

@@ -13,6 +13,7 @@ define([
         let successAllModulesBtnMsg = $('#fastly-success-all-modules-button-msg');
         let errorAllModulesBtnMsg = $('#fastly-error-all-modules-button-msg');
         let warningAllModulesBtnMsg = $('#fastly-warning-all-modules-button-msg');
+        let module_field;
 
         let active_version = setServiceLabel.active_version;
 
@@ -94,6 +95,7 @@ define([
                                 modal.modal('closeModal');
                                 resetAllMessages();
                                 successAllModulesBtnMsg.text($.mage.__('The '+ moduleId +' module has been successfully uploaded to the Fastly service.')).show();
+                                module_field.closest('tr').find('.col-date').text(response.last_uploaded);
                             } else {
                                 resetAllMessages();
                                 showErrorMessage(response.msg);
@@ -221,10 +223,12 @@ define([
                     let moduleNote = $('<p class="note"></p>');
                     let moduleNoteSpan = $('<span></span>');
                     let moduleActionCell = $('<td class="col-actions"></td>');
+                    let moduleDateCell = $('<td class="col-date"></td>');
                     let moduleActionButton = $('<button title="Edit module" type="button">');
 
                     moduleRow.attr('id', 'fastly_' + index);
                     moduleRow.append(moduleCell);
+                    moduleRow.append(moduleDateCell);
                     moduleRow.append(moduleActionCell);
                     moduleCell.append(moduleSpan);
                     moduleCell.append(moduleNote);
@@ -235,6 +239,11 @@ define([
                     moduleSpan.wrapInner('<b></b>');
                     moduleNote.append(moduleNoteSpan);
                     moduleNoteSpan.text(module.manifest_description);
+                    if (module.last_uploaded !== null) {
+                        moduleDateCell.text(module.last_uploaded);
+                    } else {
+                        moduleDateCell.text('Not uploaded');
+                    }
                     moduleActionCell.append(moduleActionButton);
                     moduleActionButton.attr('data-module-id', module.manifest_id);
                     moduleActionButton.attr('id', 'fastly-edit-active-modules' + index);
@@ -702,6 +711,7 @@ define([
 
         $('body').on('click', 'button.fastly-edit-active-modules-icon', function () {
             let module_id = $(this).data('module-id');
+            module_field = $(this);
             let properties = [];
             let message = $('<div class="message"></div>');
             let title = '';

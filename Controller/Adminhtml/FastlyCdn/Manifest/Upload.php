@@ -11,6 +11,8 @@ use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
 use Fastly\Cdn\Model\Config\Backend\CustomSnippetUpload;
 use Fastly\Cdn\Model\Modly\Manifest;
+use Fastly\Cdn\Model\ManifestFactory;
+use Fastly\Cdn\Model\ResourceModel\Manifest as ManifestResource;
 use Magento\Framework\Exception\LocalizedException;
 
 class Upload extends Action
@@ -40,7 +42,20 @@ class Upload extends Action
      */
     private $vcl;
 
+    /**
+     * @var Manifest
+     */
     private $manifest;
+
+    /***
+     * @var ManifestFactory
+     */
+    private $manifestFactory;
+
+    /**
+     * @var ManifestResource
+     */
+    private $manifestResource;
 
     /**
      * @var CustomSnippetUpload
@@ -49,7 +64,6 @@ class Upload extends Action
 
     /**
      * Upload constructor.
-     *
      * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
@@ -58,6 +72,8 @@ class Upload extends Action
      * @param Vcl $vcl
      * @param CustomSnippetUpload $customSnippetUpload
      * @param Manifest $manifest
+     * @param ManifestFactory $manifestFactory
+     * @param ManifestResource $manifestResource
      */
     public function __construct(
         Context $context,
@@ -67,7 +83,9 @@ class Upload extends Action
         Api $api,
         Vcl $vcl,
         CustomSnippetUpload $customSnippetUpload,
-        manifest $manifest
+        Manifest $manifest,
+        ManifestFactory $manifestFactory,
+        ManifestResource $manifestResource
     ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
@@ -76,6 +94,8 @@ class Upload extends Action
         $this->vcl = $vcl;
         $this->customSnippetUpload = $customSnippetUpload;
         $this->manifest = $manifest;
+        $this->manifestFactory = $manifestFactory;
+        $this->manifestResource = $manifestResource;
         parent::__construct($context);
     }
 
@@ -116,9 +136,17 @@ class Upload extends Action
             $comment = ['comment' => 'Magento Module uploaded the "'.$moduleId.'" Edge Module'];
             $this->api->addComment($clone->number, $comment);
 
+            $moduleUploadDate = date("Y-m-d H:i:s");
+            $manifest = $this->manifestFactory->create();
+            $manifest->setManifestId($moduleId);
+            $manifest->setLastUploaded($moduleUploadDate);
+
+            $this->manifestResource->save($manifest);
+
             return $result->setData([
                 'status'            => true,
-                'active_version'    => $clone->number
+                'active_version'    => $clone->number,
+                'last_uploaded'     => $moduleUploadDate
             ]);
         } catch (\Exception $e) {
             return $result->setData([

@@ -14,8 +14,7 @@ use Fastly\Cdn\Model\ResourceModel\Manifest\CollectionFactory;
 use Magento\Framework\Exception\LocalizedException;
 
 /**
- * Class Create
- *
+ * Class Save
  * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Manifest
  */
 class Save extends Action

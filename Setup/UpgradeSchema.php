@@ -51,6 +51,10 @@ class UpgradeSchema implements UpgradeSchemaInterface // @codingStandardsIgnoreL
             $this->createModlyManifestTable($installer);
         }
 
+        if (version_compare($context->getVersion(), '1.0.13', '<=')) {
+            $this->upgradeModlyManifestTable($installer);
+        }
+
         $installer->endSetup();
     }
 
@@ -179,6 +183,28 @@ class UpgradeSchema implements UpgradeSchemaInterface // @codingStandardsIgnoreL
             );
 
             $connection->createTable($table);
+        }
+    }
+
+    /**
+     * @param SchemaSetupInterface $installer
+     */
+    public function upgradeModlyManifestTable(
+        SchemaSetupInterface $installer
+    ) {
+        $connection = $installer->getConnection();
+        $tableName = $installer->getTable('fastly_modly_manifests');
+
+        if ($installer->getConnection()->isTableExists($tableName) == true) {
+            $connection->addColumn(
+                $tableName,
+                'last_uploaded',
+                [
+                    'type'      => \Magento\Framework\DB\Ddl\Table::TYPE_DATETIME,
+                    'nullable'  => true,
+                    'comment'   => 'Last uploaded',
+                ]
+            );
         }
     }
 }

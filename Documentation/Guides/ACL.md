@@ -22,8 +22,8 @@ To add new items we click on gear right of newly created entry under *Edge acl* 
 ![ACL_Item](../images/guides/acl/acl-item.png "ACL Item")
 
 Under **IP Value** enter the IP you want to handle. It is also possible to enter IPs in CIDR format, example: 192.168.1.0/24.
-Negate option allows you to exclude certain IP or prefix from matching an ACL. For example you can add an ACL for 
-192.168.1.0/24 but negate *192.168.1.5* which if ACL is applied for blocking access will block access to all IPs in
-192.168.1.0/24 except for *192.168.1.5*.
+Negate option allows you to exclude certain IP or prefix from matching an ACL. Negation is achieved by adding *!* before the IP or CIDR address.
+For example you can add an ACL for 192.168.1.0/24 but negate *!192.168.1.5* which if ACL is applied for blocking access will block access to all IPs in
+192.168.1.0/24 except for *192.168.1.5*. In general you are unlikely to need negation.
 
 Click **Save** button to the right of the newly created entry to save, or click **Delete** button to remove an entry.

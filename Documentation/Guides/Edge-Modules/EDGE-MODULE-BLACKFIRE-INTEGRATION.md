@@ -9,13 +9,12 @@ When you click on the configuration you will be prompted with a screen like this
 
 ![Fastly Edge Module Blackfire configuration](../../images/guides/edge-modules/edge-module-blackfire.png "Fastly Edge Module Blackfire configuration")
 
-There are no configurable options. All you need to do is click Upload.
-
 ## Configurable options
 
 ### ACL
 
-Pick ACL (Access Control List) that contains a list of admin IPs that are allowed to initiate profiling.
+Pick ACL (Access Control List) that contains a list of admin IPs that are allowed to initiate profiling. If there are no ACLs listed or you want to specify a new
+one [you can create it using the ACL interface](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/ACL.md).
 
 ## Enabling
 

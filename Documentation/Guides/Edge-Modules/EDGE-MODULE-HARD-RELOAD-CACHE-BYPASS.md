@@ -15,7 +15,9 @@ When you click on the configuration you will be prompted with a screen like this
 
 ### ACL
 
-Pick ACL (Access Control List) that contains a list of admin IPs.
+Pick ACL (Access Control List) that contains a list of admin IPs. If there are no ACLs listed or you want to specify a new
+one [you can create it using the ACL interface](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/ACL.md).
+
 
 ## Enabling
 

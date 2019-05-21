@@ -11,6 +11,12 @@ When you click on the configuration you will be prompted with a screen like this
 
 There are no configurable options. All you need to do is click Upload.
 
+## Configurable options
+
+### ACL
+
+Pick ACL (Access Control List) that contains a list of admin IPs that are allowed to initiate profiling.
+
 ## Enabling
 
 After any change to the settings you need to click Upload as that will upload require VCL code to Fastly.
@@ -22,17 +28,17 @@ Following VCL will be uploaded
 Snippet Type: vcl_recv
 
 ```vcl
-if (req.http.X-Blackfire-Query ) {
-    if (req.esi_level > 0) {
+   if (req.http.X-Blackfire-Query && req.http.Fastly-Client-IP ~ maint_allowlist) {
+     if (req.esi_level > 0) {
         # ESI request should not be included in the profile.
         # Instead you should profile them separately, each one
         # in their dedicated profile.
         # Removing the Blackfire header avoids to trigger the profiling.
-        # Not returning let it go trough your usual workflow as a regular
+        # Not returning let it go through your usual workflow as a regular
         # ESI request without distinction.
         unset req.http.X-Blackfire-Query;
-    } else {
+     } else {
         set req.http.X-Pass = "1";
-    }
-  }
+     }
+   }
 ```

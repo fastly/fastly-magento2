@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.103
+
+- Add Blackfire integration edge module
+- Add Time Edge module was last uploaded https://github.com/fastly/fastly-magento2/pull/278
+
 ## 1.2.102
 
 - Added uenc to the GeoIP storeswitcher https://github.com/fastly/fastly-magento2/pull/276

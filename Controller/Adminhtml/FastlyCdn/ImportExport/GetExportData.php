@@ -83,8 +83,12 @@ class GetExportData extends Action
 
             $read = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR);
             $snippetsPath = $read->getRelativePath(Config::CUSTOM_SNIPPET_PATH);
+            $absoluteSnippetPath = $read->getAbsolutePath(Config::CUSTOM_SNIPPET_PATH);
+            $customSnippets = [];
 
-            $customSnippets = $read->read($snippetsPath);
+            if ($read->isExist($absoluteSnippetPath)) {
+                $customSnippets = $read->read($snippetsPath);
+            }
             $dictionaries = $this->api->getDictionaries($currActiveVersion);
             $acls = $this->api->getAcls($currActiveVersion);
 

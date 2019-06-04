@@ -41,14 +41,14 @@ class DownloadExportData extends Action
             return $this->fileFactory->create(
                 Config::EXPORT_FILE_NAME,
                 [
-                    'type' => 'filename',
-                    'value' => 'export/' . Config::EXPORT_FILE_NAME,
-                    'rm' => true
+                    'type'  => 'filename',
+                    'value' => Config::EXPORT_FILE_NAME,
+                    'rm'    => true
                 ],
                 DirectoryList::VAR_DIR
             );
         } catch (\Exception $e) {
-            $this->messageManager->addErrorMessage('File not found.');
+            $this->messageManager->addErrorMessage($e->getMessage());
             return $this->_redirect($this->_redirect->getRefererUrl());
         }
     }

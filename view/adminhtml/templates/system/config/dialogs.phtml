@@ -2229,7 +2229,7 @@
           id="fastly-export-form"
           class="form-inline"
           enctype="multipart/form-data">
-        <input name="form_key" type="hidden" value="<?php echo $block->getFormKey() ?>" />
+        <input name="form_key" type="hidden" value="<?php /* @noEscape */ echo $block->getFormKey() ?>" />
         <fieldset class="admin__fieldset form-list question">
         </fieldset>
     </form>

@@ -108,7 +108,7 @@ class SaveExportData extends Action
 
             $fileName = Config::EXPORT_FILE_NAME;
             $write = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
-            $file = $write->getRelativePath('export/' . $fileName);
+            $file = $write->getRelativePath($fileName);
             $write->writeFile($file, json_encode($exportData, JSON_PRETTY_PRINT));
 
             return $result->setData([

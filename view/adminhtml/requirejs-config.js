@@ -25,7 +25,9 @@ let config = {
             wafBypass: 'Fastly_Cdn/js/wafBypass',
             domains: 'Fastly_Cdn/js/domains',
             rateLimiting: 'Fastly_Cdn/js/rate-limiting',
-            maintenance: 'Fastly_Cdn/js/maintenance'
+            maintenance: 'Fastly_Cdn/js/maintenance',
+            //fastlyImport: 'Fastly_Cdn/js/import',
+            fastlyExport: 'Fastly_Cdn/js/export'
         }
     }
 };

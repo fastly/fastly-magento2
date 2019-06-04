@@ -71,6 +71,7 @@ class ImportBtn extends Field
             'id'    => 'fastly_import',
             'label' => __('Import')
         ]);
+        $button->setDisabled('disabled');
 
         return $button->toHtml();
     }

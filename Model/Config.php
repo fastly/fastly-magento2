@@ -53,6 +53,11 @@ class Config extends \Magento\PageCache\Model\Config
     const FASTLY_MODLY_MODULE = 'edgemodule';
 
     /**
+     * File name used in the export functionality
+     */
+    const EXPORT_FILE_NAME = 'fastly_config.json';
+
+    /**
      * Magento Error Page Response Object Name
      */
     const ERROR_PAGE_RESPONSE_OBJECT = self::FASTLY_MAGENTO_MODULE.'_error_page_response_object';

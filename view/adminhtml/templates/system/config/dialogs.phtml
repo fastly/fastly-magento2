@@ -2217,6 +2217,23 @@
           enctype="multipart/form-data">
     </form>
 </script>
+
+<!-- Export template -->
+<script type="text/x-magento-template" id="fastly-export-template">
+    <div class="messages">
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_ImportExport/downloadExportData'); ?>"
+          method="POST"
+          id="fastly-export-form"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <input name="form_key" type="hidden" value="<?php echo $block->getFormKey() ?>" />
+        <fieldset class="admin__fieldset form-list question">
+        </fieldset>
+    </form>
+</script>
 <?php
 
 /**
@@ -2280,6 +2297,9 @@ $toggleImageSettingUrl =        $block->getUrl('adminhtml/fastlyCdn_ImageOptimiz
 $listIoDefaultConfigOptions =   $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/listAll');
 $configureIoUrl =               $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/ioDefaultConfigOptions');
 $isIoEnabled =                  $block->getConfig()->isImageOptimizationEnabled();
+// Import Export
+$getExportDataUrl =             $block->getUrl('adminhtml/fastlyCdn_ImportExport/getExportData');
+$exportDataUrl =                $block->getUrl('adminhtml/fastlyCdn_ImportExport/saveExportData');
 // Maintenance Support
 $checkSuSettingUrl =            $block->getUrl('adminhtml/fastlyCdn_Maintenance/CheckSuSetting');
 $toggleSuSettingUrl =           $block->getUrl('adminhtml/fastlyCdn_Maintenance/toggleSuSetting');
@@ -2395,7 +2415,9 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "checkSuSettingUrl": "<?php echo $block->escapeJsQuote($checkSuSettingUrl);?>",
                     "toggleSuSettingUrl": "<?php echo $block->escapeJsQuote($toggleSuSettingUrl);?>",
                     "updateSuIpsUrl": "<?php echo $block->escapeJsQuote($updateSuIpsUrl);?>",
-                    "createBackendUrl": "<?php echo $block->escapeJsQuote($createBackendUrl);?>"
+                    "createBackendUrl": "<?php echo $block->escapeJsQuote($createBackendUrl);?>",
+                    "getExportDataUrl": "<?php echo $block->escapeJsQuote($getExportDataUrl);?>",
+                    "exportDataUrl": "<?php echo $block->escapeJsQuote($exportDataUrl);?>"
                 }
             }
         }

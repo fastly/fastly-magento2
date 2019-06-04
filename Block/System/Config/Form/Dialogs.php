@@ -65,4 +65,9 @@ class Dialogs extends Template
     {
         return $this->config;
     }
+
+    public function getFormKey()
+    {
+        return $this->formKey->getFormKey();
+    }
 }

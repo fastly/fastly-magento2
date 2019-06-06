@@ -78,9 +78,17 @@ class SaveExportData extends Action
             if (isset($acls)) {
                 foreach ($acls as $id => $name) {
                     $aclItems = $this->api->aclItemsList($id);
+                    $items = [];
+                    foreach ($aclItems as $index => $item) {
+                        $items[$index] = [
+                            'ip'        => $item->ip,
+                            'negated'   => $item->negated,
+                            'comment'   => $item->comment,
+                            'subnet'    => $item->subnet
+                        ];
+                    }
                     $exportAcls[$name] = [
-                        'id'    => $id,
-                        'items' => $aclItems
+                        'items' => $items
                     ];
                 }
             }
@@ -89,9 +97,15 @@ class SaveExportData extends Action
             if (isset($dictionaries)) {
                 foreach ($dictionaries as $id => $name) {
                     $dictionaryItems = $this->api->dictionaryItemsList($id);
+                    $items = [];
+                    foreach ($dictionaryItems as $index => $item) {
+                        $items[$index] = [
+                            'item_key'      => $item->item_key,
+                            'item_value'    => $item->item_value
+                        ];
+                    }
                     $exportDictionaries[$name] = [
-                        'id'    => $id,
-                        'items' => $dictionaryItems
+                        'items' => $items
                     ];
                 }
             }

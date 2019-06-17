@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.104
+
+- Fix for "Catalog list image optimization not working in Magento" https://github.com/fastly/fastly-magento2/pull/283
+
 ## 1.2.103
 
 - Add Blackfire integration edge module

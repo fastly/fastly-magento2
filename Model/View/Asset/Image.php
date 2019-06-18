@@ -81,6 +81,17 @@ class Image extends ImageModel
      */
     private $miscParams;
 
+    /**
+     * Image constructor.
+     * @param ConfigInterface $mediaConfig
+     * @param ContextInterface $context
+     * @param EncryptorInterface $encryptor
+     * @param ScopeConfigInterface $scopeConfig
+     * @param ImageHelper $imageHelper
+     * @param StoreManagerInterface $storeManager
+     * @param $filePath
+     * @param array $miscParams
+     */
     public function __construct(
         ConfigInterface $mediaConfig,
         ContextInterface $context,
@@ -223,6 +234,9 @@ class Image extends ImageModel
         if ($this->miscParams['keep_aspect_ratio'] == true) {
             $this->fastlyParameters['fit'] = 'bounds';
         }
+        if (isset($this->miscParams['angle'])) {
+            $this->fastlyRotate($this->miscParams['angle']);
+        }
         $this->fastlyUrl = $url . '?' . $this->compileFastlyParameters();
     }
 
@@ -238,11 +252,46 @@ class Image extends ImageModel
             $this->fastlyParameters['width'] = $this->miscParams['image_width'];
         }
 
+        if ($this->scopeConfig->isSetFlag(Config::XML_FASTLY_IMAGE_OPTIMIZATION_CANVAS) == true) {
+            // Make sure Fastly delivers the specified size, even with letterboxing or pillarboxing.
+            // We'll use aspect ratio canvas to avoid issues when using dpr
+            $canvas = "{$this->miscParams['image_width']}:{$this->miscParams['image_height']}";
+            $this->fastlyParameters['canvas'] = $canvas;
+        }
+
         $params = [];
         foreach ($this->fastlyParameters as $key => $value) {
             $params[] = $key . '=' . $value;
         }
 
         return implode('&', $params);
+    }
+
+    /**
+     * @param $angle
+     * @return $this
+     */
+    private function fastlyRotate($angle)
+    {
+        $angle = (int) $angle;
+
+        $orient = null;
+        if ($angle == 90) {
+            $orient = 'r';
+        }
+
+        if ($angle == -90 || $angle == 270) {
+            $orient = 'l';
+        }
+
+        if ($angle == 180) {
+            $orient = 3;
+        }
+
+        if ($orient !== null) {
+            $this->fastlyParameters['orient'] = $orient;
+        }
+
+        return $this;
     }
 }

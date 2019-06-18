@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.105
+
+- Another fix for 2.3 IO - add orientation and canvas https://github.com/fastly/fastly-magento2/pull/284
+
 ## 1.2.104
 
 - Fix for "Catalog list image optimization not working in Magento" https://github.com/fastly/fastly-magento2/pull/283

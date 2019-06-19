@@ -99,7 +99,7 @@ class Image extends ImageModel
         ScopeConfigInterface $scopeConfig,
         ImageHelper $imageHelper,
         StoreManagerInterface $storeManager,
-        $filePath,
+        string $filePath,
         array $miscParams
     ) {
         $this->scopeConfig = $scopeConfig;

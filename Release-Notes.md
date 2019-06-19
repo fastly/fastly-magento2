@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.106
+
+- Fix for missing type in phpdoc which results in failed compilation https://github.com/fastly/fastly-magento2/pull/286
+
 ## 1.2.105
 
 - Another fix for 2.3 IO - add orientation and canvas https://github.com/fastly/fastly-magento2/pull/284

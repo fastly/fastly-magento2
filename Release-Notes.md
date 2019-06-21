@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.107
+
+- Fix for 1.2.106 caused issues during checkout https://github.com/fastly/fastly-magento2/pull/288
+
 ## 1.2.106
 
 - Fix for missing type in phpdoc which results in failed compilation https://github.com/fastly/fastly-magento2/pull/286

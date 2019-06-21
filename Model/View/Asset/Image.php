@@ -89,7 +89,7 @@ class Image extends ImageModel
      * @param ScopeConfigInterface $scopeConfig
      * @param ImageHelper $imageHelper
      * @param StoreManagerInterface $storeManager
-     * @param $filePath
+     * @param string $filePath
      * @param array $miscParams
      */
     public function __construct(
@@ -99,7 +99,7 @@ class Image extends ImageModel
         ScopeConfigInterface $scopeConfig,
         ImageHelper $imageHelper,
         StoreManagerInterface $storeManager,
-        string $filePath,
+        $filePath,
         array $miscParams
     ) {
         $this->scopeConfig = $scopeConfig;

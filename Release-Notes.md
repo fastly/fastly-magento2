@@ -1,5 +1,13 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.109
+
+- Change composer magento-framework requirement to 101+. This change abandons 2.1.x
+
+## 1.2.108
+
+- Retag of 1.2.103 in order to fix M2.1.x upgrading. 
+
 ## 1.2.107
 
 - Fix for 1.2.106 caused issues during checkout https://github.com/fastly/fastly-magento2/pull/288

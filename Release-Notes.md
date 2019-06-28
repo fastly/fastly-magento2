@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.108
+
+- Last 2.1.x release
+
 ## 1.2.103
 
 - Add Blackfire integration edge module

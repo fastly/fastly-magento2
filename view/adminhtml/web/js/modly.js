@@ -64,7 +64,7 @@ define([
             text: 'New ACL',
             class: 'action-secondary add-new-button',
             dataRole: 'action',
-            clickButton: function() {
+            clickButton: function () {
                 overlay(aclModalProperties);
                 aclModal = modal;
             }
@@ -74,7 +74,7 @@ define([
             text: 'New Dictionary',
             class: 'action-secondary add-new-button',
             dataRole: 'action',
-            clickButton: function() {
+            clickButton: function () {
                 overlay(dictionaryModalProperties);
                 dictionaryModal = modal;
             }
@@ -919,11 +919,11 @@ define([
                         $('.modal-title').html(title);
                         $('#module-id').val(module_id);
 
-                        if(acl === true){
+                        if (acl === true) {
                             createButton(aclAddNewButtonProperties);
                         }
 
-                        if(dict === true){
+                        if (dict === true) {
                             createButton(dictionaryAddNewButtonProperties);
                         }
 

@@ -14,6 +14,13 @@ define([
         let errorAllModulesBtnMsg = $('#fastly-error-all-modules-button-msg');
         let warningAllModulesBtnMsg = $('#fastly-warning-all-modules-button-msg');
         let module_field;
+        let moduleModal;
+        let aclModal;
+        let dictionaryModal;
+        let aclNewButton = false;
+        let dictNewButton = false;
+        let aclSelectId;
+        let dictSelectId;
 
         let active_version = setServiceLabel.active_version;
 
@@ -37,6 +44,46 @@ define([
             }
         };
 
+        let aclModalProperties = {
+            title: jQuery.mage.__('Create ACL container'),
+            content: function () {
+                return document.getElementById('fastly-acl-container-template').textContent;
+            },
+            actionOk: function () {
+                createAcl();
+            }
+        };
+
+        let dictionaryModalProperties = {
+            title: jQuery.mage.__('Create Dictionary'),
+            content: function () {
+                return document.getElementById('fastly-dictionary-container-template').textContent;
+            },
+            actionOk: function () {
+                createDictionary();
+            }
+        };
+
+        let aclAddNewButtonProperties = {
+            text: 'New ACL',
+            class: 'action-secondary add-new-button',
+            dataRole: 'action',
+            clickButton: function () {
+                overlay(aclModalProperties);
+                aclModal = modal;
+            }
+        };
+
+        let dictionaryAddNewButtonProperties = {
+            text: 'New Dictionary',
+            class: 'action-secondary add-new-button',
+            dataRole: 'action',
+            clickButton: function () {
+                overlay(dictionaryModalProperties);
+                dictionaryModal = modal;
+            }
+        };
+
         getActiveModules(false).done(function (response) {
             $('.loading-modules').hide();
             if (response.status !== false) {
@@ -52,6 +99,20 @@ define([
                 $('.no-modules').show();
             }
         });
+
+        function createButton(properties)
+        {
+            let addNewButton = document.createElement('button');
+            let text = document.createTextNode(properties.text);
+            addNewButton.setAttribute('class', properties.class);
+            addNewButton.setAttribute('type', 'button');
+            addNewButton.setAttribute('data-role', properties.dataRole);
+            addNewButton.appendChild(text);
+            addNewButton.on('click', function () {
+                return properties.clickButton();
+            });
+            $('.modal-header').find(".page-actions-buttons").append(addNewButton)
+        }
 
         function saveModuleConfig()
         {
@@ -92,7 +153,7 @@ define([
                         let parsedVcl = JSON.stringify(parseVcl(fieldData));
                         uploadModuleConfig(moduleId, parsedVcl, active_version).done(function (response) {
                             if (response.status === true) {
-                                modal.modal('closeModal');
+                                moduleModal.modal('closeModal');
                                 resetAllMessages();
                                 successAllModulesBtnMsg.text($.mage.__('The '+ moduleId +' module has been successfully uploaded to the Fastly service.')).show();
                                 module_field.closest('tr').find('.col-date').text(response.last_uploaded);
@@ -355,7 +416,6 @@ define([
             let description = '';
             let fieldName = property.name;
             let fieldValue = '';
-            let type = property.type;
 
             if (property.default) {
                 fieldValue = property.default;
@@ -395,6 +455,10 @@ define([
                             selectInput.append(selectOption);
                         });
                         control.append(selectInput);
+                        aclSelectId = property.name;
+                        if (!aclNewButton) {
+                            aclNewButton = true;
+                        }
                     }
                 });
             }
@@ -414,6 +478,10 @@ define([
                             selectInput.append(selectOption);
                         });
                         control.append(selectInput);
+                        dictSelectId = property.name;
+                        if (!dictNewButton) {
+                            dictNewButton = true;
+                        }
                     }
                 });
             }
@@ -652,6 +720,78 @@ define([
             });
         }
 
+        function createAcl()
+        {
+            let activate_flag = (($("#fastly_activate_vcl").val() === 'on') ? 'true' : false);
+            let acl_name = $('#acl_name').val();
+            let select = document.getElementById(aclSelectId);
+
+            $.ajax({
+                type: "POST",
+                url: config.createAcl,
+                data: {
+                    'active_version': active_version,
+                    'activate_flag': activate_flag,
+                    'acl_name': acl_name
+                },
+                showLoader: true,
+                success: function (response) {
+                    if (response.status === true) {
+                        active_version = response['active_version'];
+                        let option = document.createElement('option');
+                        let text = document.createTextNode(acl_name);
+                        option.setAttribute('value', acl_name);
+                        option.setAttribute('selected', 'selected');
+                        option.appendChild(text);
+                        select.append(option);
+                        aclModal.modal('closeModal');
+                    } else {
+                        resetAllMessages();
+                        showErrorMessage(response.msg);
+                    }
+                },
+                error: function () {
+                    return showErrorMessage('An error occurred while processing your request. Please try again.');
+                }
+            });
+        }
+
+        function createDictionary()
+        {
+            let activate_flag = (($("#fastly_activate_vcl").val() === 'on') ? 'true' : false);
+            let dictionary_name = $('#dictionary_name').val();
+            let select = document.getElementById(dictSelectId);
+
+            $.ajax({
+                type: "POST",
+                url: config.createDictionary,
+                data: {
+                    'active_version': active_version,
+                    'activate_flag': activate_flag,
+                    'dictionary_name': dictionary_name
+                },
+                showLoader: true,
+                success: function (response) {
+                    if (response.status === true) {
+                        active_version = response['active_version'];
+                        let option = document.createElement('option');
+                        let text = document.createTextNode(dictionary_name);
+                        option.setAttribute('value', dictionary_name);
+                        option.setAttribute('selected', 'selected');
+                        option.appendChild(text);
+                        select.append(option);
+                        dictionaryModal.modal('closeModal');
+                    } else {
+                        resetAllMessages();
+                        showErrorMessage(response.msg);
+                    }
+                },
+                error: function () {
+                    return showErrorMessage('An error occurred while processing your request. Please try again.');
+                }
+            });
+        }
+
         $('#modly_all_modules_btn').on('click', function () {
             $.when(
                 $.ajax({
@@ -777,11 +917,21 @@ define([
 
                     if (module != null && module_id != null) {
                         overlay(activeModuleOptions);
+                        moduleModal = modal;
                         setServiceLabel(active_version, next_version, service_name);
                         $('.module-messages').prepend(message);
                         let question = $('.question');
                         $('.modal-title').html(title);
                         $('#module-id').val(module_id);
+
+                        if (aclNewButton === true) {
+                            createButton(aclAddNewButtonProperties);
+                        }
+
+                        if (dictNewButton === true) {
+                            createButton(dictionaryAddNewButtonProperties);
+                        }
+
                         if (isGroup === true) {
                             let groupBtn = '<button class="action-secondary group-button" type="button" data-role="action"><span>Add group</span></button>';
                             $.each(groups, function (grIndex, grData) {

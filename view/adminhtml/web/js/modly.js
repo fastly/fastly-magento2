@@ -19,6 +19,8 @@ define([
         let dictionaryModal;
         let aclNewButton = false;
         let dictNewButton = false;
+        let aclSelectId;
+        let dictSelectId;
 
         let active_version = setServiceLabel.active_version;
 
@@ -453,6 +455,7 @@ define([
                             selectInput.append(selectOption);
                         });
                         control.append(selectInput);
+                        aclSelectId = property.name;
                         if (!aclNewButton) {
                             aclNewButton = true;
                         }
@@ -475,6 +478,7 @@ define([
                             selectInput.append(selectOption);
                         });
                         control.append(selectInput);
+                        dictSelectId = property.name;
                         if (!dictNewButton) {
                             dictNewButton = true;
                         }
@@ -720,7 +724,7 @@ define([
         {
             let activate_flag = (($("#fastly_activate_vcl").val() === 'on') ? 'true' : false);
             let acl_name = $('#acl_name').val();
-            let select = $("#Acl");
+            let select = document.getElementById(aclSelectId);
 
             $.ajax({
                 type: "POST",
@@ -756,7 +760,7 @@ define([
         {
             let activate_flag = (($("#fastly_activate_vcl").val() === 'on') ? 'true' : false);
             let dictionary_name = $('#dictionary_name').val();
-            let select = $("#urls_dict");
+            let select = document.getElementById(dictSelectId);
 
             $.ajax({
                 type: "POST",

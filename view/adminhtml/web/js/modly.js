@@ -17,6 +17,8 @@ define([
         let moduleModal;
         let aclModal;
         let dictionaryModal;
+        let aclNewButton = false;
+        let dictNewButton = false;
 
         let active_version = setServiceLabel.active_version;
 
@@ -451,6 +453,9 @@ define([
                             selectInput.append(selectOption);
                         });
                         control.append(selectInput);
+                        if (!aclNewButton) {
+                            aclNewButton = true;
+                        }
                     }
                 });
             }
@@ -470,6 +475,9 @@ define([
                             selectInput.append(selectOption);
                         });
                         control.append(selectInput);
+                        if (!dictNewButton) {
+                            dictNewButton = true;
+                        }
                     }
                 });
             }
@@ -862,8 +870,6 @@ define([
                     let service_name = checkService.service.name;
 
                     let isGroup = false;
-                    let acl = false;
-                    let dict = false;
 
                     if (module.manifest_id === module_id) {
                         message.text(module.manifest_description);
@@ -878,11 +884,6 @@ define([
                         if (module.manifest_properties !== '') {
                             properties = JSON.parse(module.manifest_properties);
                             $.each(properties, function (key, property) {
-                                if (property.type === 'acl') {
-                                    acl = true;
-                                } else if (property.type === 'dict') {
-                                    dict = true;
-                                }
                                 if (property.type === 'group') {
                                     groupName = property.name;
                                     isGroup = true;
@@ -919,11 +920,11 @@ define([
                         $('.modal-title').html(title);
                         $('#module-id').val(module_id);
 
-                        if (acl === true) {
+                        if (aclNewButton === true) {
                             createButton(aclAddNewButtonProperties);
                         }
 
-                        if (dict === true) {
+                        if (dictNewButton === true) {
                             createButton(dictionaryAddNewButtonProperties);
                         }
 

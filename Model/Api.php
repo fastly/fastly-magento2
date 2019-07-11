@@ -1365,6 +1365,10 @@ class Api
         return $result;
     }
 
+    public function getListOfVersions()
+    {
+    }
+
     /**
      * Wrapper for API calls towards Fastly service
      *

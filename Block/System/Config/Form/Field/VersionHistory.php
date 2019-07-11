@@ -16,7 +16,7 @@ class VersionHistory extends AbstractFieldArray
 
     protected function _construct()
     {
-        $this->addColumn('backend_name', ['label' => __('Version')]);
+        $this->addColumn('backend_name', ['label' => __('Id')]);
         $this->_addAfter = false;
         $this->_template = 'Fastly_Cdn::system/config/form/field/versionHistory.phtml';
         parent::_construct();

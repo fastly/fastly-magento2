@@ -18,15 +18,10 @@ define([
          * Trigger ACL container list
          */
         listVersions(active_version, false).done(function (response) {
-            console.log(response);
             $('.loading-versions').hide();
             if (response.status !== false) {
-                    if (response.versions.length > 0) {
-                        versions = response.versions;
-                        processAcls(response.versions);
-                    } else {
-                        $('.no-versions').show();
-                    }
+                console.log(response);
+                processVersions(response.versions);
             }
         }).fail(function () {
             return versionBtnErrorMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
@@ -42,7 +37,7 @@ define([
         function listVersions(active_version, loaderVisibility)
         {
             return $.ajax({
-                type: "POST",
+                type: "GET",
                 url: config.versionHistory,
                 showLoader: loaderVisibility,
                 data: {'active_version': active_version},
@@ -50,6 +45,25 @@ define([
                     $('.loading-versions').show();
                 }
             });
+        }
+
+        /**
+         * Process and display the list of ACL containers
+         *
+         * @param acls
+         */
+        function processVersions(versions)
+        {
+            let html = '';
+            $.each(versions, function (index, version) {
+                html += "<tr id='fastly_version_" + index + "'>";
+                html += "<td><input data-versionId='"+ version.number + "' id='version_" + index + "' value='"+ version.number +"' disabled='disabled' class='input-text' type='text'></td>";
+                html += "</tr>";
+            });
+            if (html !== '') {
+                $('.no-versions').hide();
+            }
+            $('#fastly-versions-list').html(html);
         }
     }
 });

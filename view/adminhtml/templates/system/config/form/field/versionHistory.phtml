@@ -19,20 +19,20 @@
             <tbody id="fastly-versions-list"></tbody>
         </table>
     </div>
-    <p class="loading-dictionaries list-loading">
+    <p class="loading-versions list-loading">
         <img class="processing"
              alt="Collecting"
              style="margin:0 5px;"
              src="<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/fastly16.gif') ?>" />
         <?php /* @noEscape */ echo __('Loading versions...'); ?>
     </p>
-    <p class="no-dictionaries" style="display: none;">
+    <p class="no-versions" style="display: none;">
         <?php /* @noEscape */ echo __('There are no versions configured yet.'); ?>
     </p>
 </div>
 
 <div class="message message-error fastly-button-messages"
-     id="fastly-error-dictionary-button-msg"
+     id="fastly-error-versions-button-msg"
      style="display: none"></div>
 
 <div class="message message-success fastly-button-messages"

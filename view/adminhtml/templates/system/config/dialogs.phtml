@@ -2234,11 +2234,18 @@
         </fieldset>
     </form>
 </script>
+
+<script type="text/x-magento-template" id="fastly-version-history-template">
+
+</script>
 <?php
 
 /**
  * AJAX urls passed to uploadvcl.js file
  */
+// Versioning
+$allFastlyVersions =            $block->getUrl('adminhtml/fastlyCdn_VersionHistory/listAll');
+
 // Advanced
 $checkTlsSettingUrl =           $block->getUrl('adminhtml/fastlyCdn_Advanced/checkTlsSetting');
 $toggleTlsSettingUrl =          $block->getUrl('adminhtml/fastlyCdn_Advanced/forceTls');
@@ -2417,7 +2424,8 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "updateSuIpsUrl": "<?php echo $block->escapeJsQuote($updateSuIpsUrl);?>",
                     "createBackendUrl": "<?php echo $block->escapeJsQuote($createBackendUrl);?>",
                     "getExportDataUrl": "<?php echo $block->escapeJsQuote($getExportDataUrl);?>",
-                    "exportDataUrl": "<?php echo $block->escapeJsQuote($exportDataUrl);?>"
+                    "exportDataUrl": "<?php echo $block->escapeJsQuote($exportDataUrl);?>",
+                    "versionHistory": "<?php echo $block->escapeJsQuote($allFastlyVersions);?>"
                 }
             }
         }

@@ -744,6 +744,21 @@
                             </field>
                         </group>
                     </group>
+                    <!-- ========================
+                             Tools
+                     ========================= -->
+                    <group id="fastly_tools" sortOrder="480" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>Tools</label>
+                        <field id="fastly_test" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Purge Category</label>
+                            <comment>Choose to purge all the category assets when saving a change to that category.</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="versions" translate="label comment tooltip" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Version History</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\VersionHistory</frontend_model>
+                        </field>
+                    </group>
                     <!-- ===============================
                          Webhook Notifications group
                     ================================ -->

@@ -27,7 +27,8 @@ let config = {
             rateLimiting: 'Fastly_Cdn/js/rate-limiting',
             maintenance: 'Fastly_Cdn/js/maintenance',
             //fastlyImport: 'Fastly_Cdn/js/import',
-            fastlyExport: 'Fastly_Cdn/js/export'
+            fastlyExport: 'Fastly_Cdn/js/export',
+            versionHistory: 'Fastly_Cdn/js/version-history'
         }
     }
 };

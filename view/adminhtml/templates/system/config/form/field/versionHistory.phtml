@@ -2,7 +2,13 @@
     $_htmlId = $block->getHtmlId() ? $block->getHtmlId() : '_' . uniqid();
     $_colspan = $block->isAddAfter() ? 2 : 1;
 ?>
-
+<button type="button"
+        style="margin-bottom: 10px;"
+        class="secondary"
+        id="list-versions-container-button">
+    <?php /* @noEscape */ echo __('List all versions') ?>
+</button>
+<!--
 <div class="design_theme_ua_regexp" id="grid<?php /* @noEscape */ echo $_htmlId; ?>">
     <div class="admin__control-table-wrapper">
         <table class="admin__control-table" id="<?php /* @noEscape */ echo $block->getElement()->getId(); ?>">
@@ -36,6 +42,8 @@
         <?php /* @noEscape */ echo __('There are no versions configured yet.'); ?>
     </p>
 </div>
+-->
+
 
 <div class="message message-error fastly-button-messages"
      id="fastly-error-versions-button-msg"

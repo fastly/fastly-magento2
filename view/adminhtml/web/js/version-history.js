@@ -15,13 +15,26 @@ define([
         let versionBtnErrorMsg = $("#fastly-error-versions-button-msg");
 
         /**
+         * ACL container modal overlay options
+         *
+         * @type {{title: *, content: (function(): string), actionOk: actionOk}}
+         */
+        let versionOptions = {
+
+            title: jQuery.mage.__('List of versions'),
+            content: function () {
+                return document.getElementById('fastly-version-history-template').textContent;
+            }
+        };
+
+        /**
          * Trigger ACL container list
          */
         listVersions(active_version, false).done(function (response) {
             $('.loading-versions').hide();
             if (response.status !== false) {
                 console.log(response);
-                processVersions(response.versions);
+                //processVersions(response.versions);
             }
         }).fail(function () {
             return versionBtnErrorMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
@@ -58,6 +71,7 @@ define([
             $.each(versions, function (index, version) {
                 html += "<tr id='fastly_version_" + index + "'>";
                 html += "<td><input data-versionId='"+ version.number + "' id='version_" + index + "' value='"+ version.number +"' disabled='disabled' class='input-text' type='text'></td>";
+                html += "<td><input data-versionId='"+ version.number + "' id='version_" + index + "' value='"+ version.number +"' disabled='disabled' class='input-text' type='text'></td>";
                 html += "</tr>";
             });
             if (html !== '') {
@@ -65,5 +79,40 @@ define([
             }
             $('#fastly-versions-list').html(html);
         }
+
+        /**
+         * Version container list  on click event
+         */
+        $('#list-versions-container-button').on('click', function () {
+            if (isAlreadyConfigured !== true) {
+                $(this).attr('disabled', true);
+                return alert($.mage.__('Please save config prior to continuing.'));
+            }
+
+            resetAllMessages();
+
+            $.when(
+                $.ajax({
+                    type: "GET",
+                    url: config.serviceInfoUrl,
+                    showLoader: true
+                })
+            ).done(function (service) {
+                if (service.status === false) {
+                    return errorAclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
+                }
+
+                active_version = service.active_version;
+                let next_version = service.next_version;
+                let service_name = service.service.name;
+
+                overlay(versionOptions);
+                setServiceLabel(active_version, next_version, service_name);
+                $('.upload-button span').text('Create');
+
+            }).fail(function () {
+                return versionBtnErrorMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+            });
+        });
     }
 });

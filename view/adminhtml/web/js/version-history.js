@@ -65,12 +65,19 @@ define([
          */
         function processVersions(versions)
         {
+            console.log(active_version);
             let html = '';
             $.each(versions, function (index, version) {
                 html += "<tr id='fastly_version_" + index + "'>";
-                html +=     "<td><input data-versionId='"+ version.number + "' id='version_" + index + "' value='"+ version.number +"' disabled='disabled' class='input-text' type='text'></td>";
-                html +=     "<td><input data-versionId='"+ version.number + "' id='version_" + index + "' value='"+ version.comment +"' disabled='disabled' class='input-text' type='text'></td>";
-                html +=     "<td><input data-versionId='"+ version.number + "' id='version_" + index + "' value='"+ version.updated_at +"' disabled='disabled' class='input-text' type='text'></td>";
+                html +=     "<td><input id='version_" + index + "' value='"+ version.number +"' disabled='disabled' class=\"input-text admin__control-text version-number-field\" type='text'></td>";
+                html +=     "<td><textarea id='version_" + index + "' disabled='disabled' class=\"input-text admin__control-text comment-field\" >version.comment</textarea></td>";
+                html +=     "<td><input id='version_" + index + "' value='"+ version.updated_at +"' disabled='disabled' class=\"input-text admin__control-text date-field\" type='text'></td>";
+
+                if(version.number !== active_version){
+                    html += '<td><button id=\'version_" + index + "\' class="action-delete fastly-edit-active-modules-icon" type="button"></button>'
+                }else {
+                    html += '<td></td>'
+                }
                 html += "</tr>";
             });
             if (html !== '') {

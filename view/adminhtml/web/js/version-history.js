@@ -19,26 +19,13 @@ define([
          *
          * @type {{title: *, content: (function(): string), actionOk: actionOk}}
          */
-        let versionOptions = {
+        let versionContainerOptions = {
 
             title: jQuery.mage.__('List of versions'),
             content: function () {
                 return document.getElementById('fastly-version-history-template').textContent;
             }
         };
-
-        /**
-         * Trigger ACL container list
-         */
-        listVersions(active_version, false).done(function (response) {
-            $('.loading-versions').hide();
-            if (response.status !== false) {
-                console.log(response);
-                //processVersions(response.versions);
-            }
-        }).fail(function () {
-            return versionBtnErrorMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-        });
 
         /**
          * Queries Fastly API to retrieve the list of Fastly versions
@@ -54,6 +41,17 @@ define([
                 url: config.versionHistory,
                 showLoader: loaderVisibility,
                 data: {'active_version': active_version},
+                success: function(response){
+
+                    $('.loading-versions').hide();
+                    if (response.status !== false) {
+                        processVersions(response.versions);
+                    }
+
+                },
+                fail: function(){
+                    return versionBtnErrorMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                },
                 beforeSend: function () {
                     $('.loading-versions').show();
                 }
@@ -63,21 +61,22 @@ define([
         /**
          * Process and display the list of ACL containers
          *
-         * @param acls
+         * @param versions
          */
         function processVersions(versions)
         {
             let html = '';
             $.each(versions, function (index, version) {
                 html += "<tr id='fastly_version_" + index + "'>";
-                html += "<td><input data-versionId='"+ version.number + "' id='version_" + index + "' value='"+ version.number +"' disabled='disabled' class='input-text' type='text'></td>";
-                html += "<td><input data-versionId='"+ version.number + "' id='version_" + index + "' value='"+ version.number +"' disabled='disabled' class='input-text' type='text'></td>";
+                html +=     "<td><input data-versionId='"+ version.number + "' id='version_" + index + "' value='"+ version.number +"' disabled='disabled' class='input-text' type='text'></td>";
+                html +=     "<td><input data-versionId='"+ version.number + "' id='version_" + index + "' value='"+ version.comment +"' disabled='disabled' class='input-text' type='text'></td>";
+                html +=     "<td><input data-versionId='"+ version.number + "' id='version_" + index + "' value='"+ version.updated_at +"' disabled='disabled' class='input-text' type='text'></td>";
                 html += "</tr>";
             });
             if (html !== '') {
                 $('.no-versions').hide();
             }
-            $('#fastly-versions-list').html(html);
+            $('.item-container').html(html);
         }
 
         /**
@@ -99,17 +98,16 @@ define([
                 })
             ).done(function (service) {
                 if (service.status === false) {
-                    return errorAclBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
+                    return versionBtnErrorMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
 
                 active_version = service.active_version;
                 let next_version = service.next_version;
                 let service_name = service.service.name;
 
-                overlay(versionOptions);
+                overlay(versionContainerOptions);
                 setServiceLabel(active_version, next_version, service_name);
-                $('.upload-button span').text('Create');
-
+                listVersions(active_version, true);
             }).fail(function () {
                 return versionBtnErrorMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
             });

@@ -2238,24 +2238,33 @@
 <script type="text/x-magento-template" id="fastly-version-history-template">
     <div class="admin__fieldset recommended">
             <div class="admin__field-control">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>
-                            Version number
-                        </th>
-                        <th>
-                            Comments
-                        </th>
-                        <th>
-                            Last Update
-                        </th>
-                        <th>
-                            Action
-                        </th>
-                    </tr>
-                    </thead>
-                </table>
+                <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+                      method="POST"
+                      id="fastly-versions-list-form"
+                      class="form-inline"
+                      enctype="multipart/form-data">
+
+                    <fieldset class="admin__fieldset form-list question">
+                        <table class="admin__control-table" id="versions-list-table">
+                            <thead>
+                            <tr>
+                                <th><?php /* @noEscape */ echo __('Version Number') ?></th>
+                                <th><?php /* @noEscape */ echo __('Comment') ?></th>
+                                <th><?php /* @noEscape */ echo __('Updated Time') ?></th>
+                                <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Action') ?></th>
+                            </tr>
+                            </thead>
+                            <tbody class="item-container">
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="4" class="col-actions-add">
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </fieldset>
+                </form>
             </div>
     </div>
 </script>
@@ -2504,6 +2513,10 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
         background-color: #FFF9D5;
         padding-top: 10px;
         margin-bottom: 30px;
+    }
+
+    td {
+        margin: 0% 50%;
     }
 
 </style>

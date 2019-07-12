@@ -65,13 +65,13 @@ define([
             });
         }
 
-        function activateServiceVersion(active_version, version, loaderVisibility)
+        function activateServiceVersion(active_version_param, version, loaderVisibility)
         {
             $.ajax({
                type: 'GET',
                url: config.activateVersion,
                showLoader: loaderVisibility,
-               data: {'version': version, 'active_version':active_version},
+               data: {'version': version, 'active_version':active_version_param},
                success: function(response){
                    if(!response.status){
                         showErrorMessage('Something went wrong, please try again later');
@@ -91,17 +91,12 @@ define([
                    span.setAttribute('data-version-number', response.version);
                    span.appendChild(text);
 
-                   console.log(response);
-                   console.log(active_version);
-
                    $("#action_version_" + response.old_version).remove();
                    $("#action_cell_" + response.old_version).append(button);
                    $("#action_version_" + response.version).remove();
                    $("#action_cell_" + response.version).append(span);
-                   active_version = response.version;
+                   active_version = version;
                    showSuccessMessage('Successfully activated version ' + response.version);
-                   console.log(response);
-                   console.log(active_version);
                 }
             });
         }
@@ -191,6 +186,10 @@ define([
 
         $('body').on('click', 'button.fastly-edit-active-modules-icon', function () {
             let version_number = $(this).data('version-number');
+            console.log("aktivna_verzija");
+            console.log(active_version);
+            console.log("željena verzija");
+            console.log(version_number);
             activateServiceVersion(active_version, version_number, true);
         });
     }

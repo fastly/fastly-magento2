@@ -27,6 +27,14 @@ define([
             }
         };
 
+        let activatedVersionOptions = {
+            title: jQuery.mage.__('Activated Version'),
+            content: function () {
+                return document.getElementById('fastly-version-activation').textContent;
+            }
+        }
+
+
         /**
          * Queries Fastly API to retrieve the list of Fastly versions
          *
@@ -36,13 +44,12 @@ define([
          */
         function listVersions(active_version, loaderVisibility)
         {
-            return $.ajax({
+            $.ajax({
                 type: "GET",
                 url: config.versionHistory,
                 showLoader: loaderVisibility,
                 data: {'active_version': active_version},
                 success: function(response){
-
                     $('.loading-versions').hide();
                     if (response.status !== false) {
                         processVersions(response.versions);
@@ -58,6 +65,47 @@ define([
             });
         }
 
+        function activateServiceVersion(active_version, version, loaderVisibility)
+        {
+            $.ajax({
+               type: 'GET',
+               url: config.activateVersion,
+               showLoader: loaderVisibility,
+               data: {'version': version, 'active_version':active_version},
+               success: function(response){
+                   if(!response.status){
+                        showErrorMessage('Something went wrong, please try again later');
+                        return;
+                   }
+                    //todo: fix id names
+                   let text = document.createTextNode('Activated');
+                   let span = document.createElement('span');
+                   let button = document.createElement('button');
+
+                   button.setAttribute('class', 'action-delete fastly-edit-active-modules-icon activate-action');
+                   button.setAttribute('id', 'action_version_' + response.old_version);
+                   button.setAttribute('title', 'Activate');
+                   button.setAttribute('data-version-number', response.old_version);
+
+                   span.setAttribute('id', 'action_version_' + response.version);
+                   span.setAttribute('data-version-number', response.version);
+                   span.appendChild(text);
+
+                   console.log(response);
+                   console.log(active_version);
+
+                   $("#action_version_" + response.old_version).remove();
+                   $("#action_cell_" + response.old_version).append(button);
+                   $("#action_version_" + response.version).remove();
+                   $("#action_cell_" + response.version).append(span);
+                   active_version = response.version;
+                   showSuccessMessage('Successfully activated version ' + response.version);
+                   console.log(response);
+                   console.log(active_version);
+                }
+            });
+        }
+
         /**
          * Process and display the list of ACL containers
          *
@@ -65,25 +113,45 @@ define([
          */
         function processVersions(versions)
         {
-            console.log(active_version);
-            let html = '';
             $.each(versions, function (index, version) {
-                html += "<tr id='fastly_version_" + index + "'>";
-                html +=     "<td><input id='version_" + index + "' value='"+ version.number +"' disabled='disabled' class=\"input-text admin__control-text version-number-field\" type='text'></td>";
-                html +=     "<td><textarea id='version_" + index + "' disabled='disabled' class=\"input-text admin__control-text comment-field\" >version.comment</textarea></td>";
-                html +=     "<td><input id='version_" + index + "' value='"+ version.updated_at +"' disabled='disabled' class=\"input-text admin__control-text date-field\" type='text'></td>";
-
-                if(version.number !== active_version){
-                    html += '<td><button id=\'version_" + index + "\' class="action-delete fastly-edit-active-modules-icon" type="button"></button>'
-                }else {
-                    html += '<td></td>'
+                let tr = document.createElement('tr');
+                let versionCell = document.createElement('td');
+                let commentCell = document.createElement('td');
+                let updatedCell = document.createElement('td');
+                let actionCell = document.createElement('td');
+                let button = '';
+                let versionText = document.createTextNode(version.number);
+                let commentText = document.createTextNode(version.comment);
+                let updatedText = document.createTextNode(version.updated_at);
+                actionCell.setAttribute('id', 'action_cell_' + version.number);
+                if(active_version !== version.number)
+                {
+                    button = document.createElement('button');
+                    button.setAttribute('class', 'action-delete fastly-edit-active-modules-icon activate-action');
+                    button.setAttribute('id', 'action_version_' + version.number);
+                    button.setAttribute('title', 'Activate');
+                    button.setAttribute('data-version-number', version.number);
+                } else {
+                    let text = document.createTextNode('Activated');
+                    button = document.createElement('span');
+                    button.setAttribute('id', 'action_version_' + version.number);
+                    button.setAttribute('data-version-number', version.number);
+                    button.appendChild(text);
                 }
-                html += "</tr>";
+
+
+                versionCell.appendChild(versionText);
+                commentCell.appendChild(commentText);
+                updatedCell.appendChild(updatedText);
+                actionCell.appendChild(button);
+                tr.setAttribute('id', 'fastly_version_' + version.number);
+                tr.append(versionCell);
+                tr.append(commentCell);
+                tr.append(updatedCell);
+                tr.append(actionCell);
+
+                $('.item-container').append(tr);
             });
-            if (html !== '') {
-                $('.no-versions').hide();
-            }
-            $('.item-container').html(html);
         }
 
         /**
@@ -113,11 +181,17 @@ define([
                 let service_name = service.service.name;
 
                 overlay(versionContainerOptions);
+                let versionsModal = modal;
                 setServiceLabel(active_version, next_version, service_name);
                 listVersions(active_version, true);
             }).fail(function () {
                 return versionBtnErrorMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
             });
+        });
+
+        $('body').on('click', 'button.fastly-edit-active-modules-icon', function () {
+            let version_number = $(this).data('version-number');
+            activateServiceVersion(active_version, version_number, true);
         });
     }
 });

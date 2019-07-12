@@ -32,12 +32,12 @@ class ListVersions extends Action
 
     public function execute()
     {
+        //todo: paginacija
         $result = $this->jsonFactory->create();
         $service = $this->api->getServiceDetails();
-
         return $result->setData([
             'status' => true,
-            'versions' => $service->versions,
+            'versions' => array_slice($service->versions, -10, 10),
             'active_version' => $service->active_version
         ]);
     }

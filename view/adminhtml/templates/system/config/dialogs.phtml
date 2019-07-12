@@ -2236,36 +2236,31 @@
 </script>
 
 <script type="text/x-magento-template" id="fastly-version-history-template">
+    <!-- Overlay template messages -->
+    <div class="messages">
+        <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
+        <div class="message message-success fastly-message-success" style="display: none;"></div>
+    </div>
     <div class="admin__fieldset recommended">
-            <div class="admin__field-control">
-                <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
-                      method="POST"
-                      id="fastly-versions-list-form"
-                      class="form-inline"
-                      enctype="multipart/form-data">
-
-                    <fieldset class="admin__fieldset form-list question">
-                        <table class="admin__control-table" id="versions-list-table">
-                            <thead>
-                            <tr>
-                                <th><?php /* @noEscape */ echo __('Version Number') ?></th>
-                                <th><?php /* @noEscape */ echo __('Comment') ?></th>
-                                <th><?php /* @noEscape */ echo __('Updated Time') ?></th>
-                                <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Action') ?></th>
-                            </tr>
-                            </thead>
-                            <tbody class="item-container">
-                            </tbody>
-                            <tfoot>
-                            <tr>
-                                <td colspan="4" class="col-actions-add">
-                                </td>
-                            </tr>
-                            </tfoot>
-                        </table>
-                    </fieldset>
-                </form>
-            </div>
+        <div class="admin__field-control">
+            <table class="admin__control-table" id="versions-list-table">
+                <thead>
+                    <tr>
+                        <th><?php /* @noEscape */ echo __('Version Number') ?></th>
+                        <th><?php /* @noEscape */ echo __('Comment') ?></th>
+                        <th><?php /* @noEscape */ echo __('Updated Time') ?></th>
+                        <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Action') ?></th>
+                    </tr>
+                </thead>
+                <tbody class="item-container">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="col-actions-add"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
 </script>
 <?php
@@ -2275,6 +2270,7 @@
  */
 // Versioning
 $allFastlyVersions =            $block->getUrl('adminhtml/fastlyCdn_VersionHistory/ListVersions');
+$activateVersion =              $block->getUrl('adminhtml/fastlyCdn_VersionHistory/Activate');
 
 // Advanced
 $checkTlsSettingUrl =           $block->getUrl('adminhtml/fastlyCdn_Advanced/checkTlsSetting');
@@ -2455,7 +2451,8 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "createBackendUrl": "<?php echo $block->escapeJsQuote($createBackendUrl);?>",
                     "getExportDataUrl": "<?php echo $block->escapeJsQuote($getExportDataUrl);?>",
                     "exportDataUrl": "<?php echo $block->escapeJsQuote($exportDataUrl);?>",
-                    "versionHistory": "<?php echo $block->escapeJsQuote($allFastlyVersions);?>"
+                    "versionHistory": "<?php echo $block->escapeJsQuote($allFastlyVersions);?>",
+                    "activateVersion": "<?php echo $block->escapeJsQuote($activateVersion); ?>"
                 }
             }
         }

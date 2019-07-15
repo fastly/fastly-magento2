@@ -207,7 +207,7 @@ define([
                 let service_name = service.service.name;
 
                 overlay(versionContainerOptions);
-                let versionsModal = modal;
+                $('.upload-button').remove();
                 setServiceLabel(active_version, next_version, service_name);
                 listVersions(active_version, true);
             }).fail(function () {
@@ -218,14 +218,23 @@ define([
         $('body').on('click', 'button.fastly-save-action', function () {
             resetAllMessages();
             let version_number = $(this).data('version-number');
-            activateServiceVersion(active_version, version_number, true);
+            confirm({
+                title: 'Activate Version',
+                content: 'Are you sure you want to activate the version #<b>'+version_number +'</b> ?',
+                actions: {
+                    confirm: function () {
+                        activateServiceVersion(active_version, version_number, true);
+                    },
+                    cancel: function () {}
+                }
+            });
         });
 
         $('body').on('click', 'button.fastly-edit-active-modules-icon', function () {
             resetAllMessages();
             let version_number = $(this).data('version-number');
             overlay(showVCLOptions);
-            let vclModal = modal;
+            $('.upload-button').remove();
             listOneVersion(version_number);
         });
     }

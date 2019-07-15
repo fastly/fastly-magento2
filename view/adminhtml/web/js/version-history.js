@@ -15,7 +15,8 @@ define([
         //todo: stavit da se učitava paginacija s zadnjih 10 elemenata
         let active_version = serviceStatus.active_version;
         let versions_response = [];
-        let catched_versions = false;
+        let page;   //value inside paggination-nav
+        let number_of_pages;
 
         let versionBtnErrorMsg = $("#fastly-error-versions-button-msg");
 
@@ -74,11 +75,12 @@ define([
                 success: function (response) {
                     $('.loading-versions').hide();
                     if (response.status !== false) {
-                        catched_versions = true;
                         versions_response = response;
+                        number_of_pages = response.number_of_pages;
                         let numb = page * 10;
                         let start = response.number_of_versions - numb;
                         let end = start + 10;
+                        $(".admin__control-support-text").append(document.createTextNode(number_of_pages));
                         processVersions(response.versions.slice(start, end));
                     }
 
@@ -221,7 +223,8 @@ define([
                 overlay(versionContainerOptions);
                 $('.upload-button').remove();
                 $("#paggination-nav").val(1);
-
+                page = $("#paggination-nav").val();
+                $(".action-previous").attr('disabled', 'disabled');
                 setServiceLabel(active_version, next_version, service_name);
                 listVersions(active_version, true, 1);
             }).fail(function () {
@@ -258,12 +261,23 @@ define([
             listOneVersion(version_number);
         });
 
-        $('body').on('click', 'button.action-next', function () {
-            if(!catched_versions){
-                return;
+        $('body').on('keypress', function(e){
+            if(e.which == 13){
+                
             }
-            let page = $("#paggination-nav").val();
-            page++;
+        });
+
+        $('body').on('click', 'button.action-next', function () {
+            if(++page > 1){
+                $(".action-previous").removeAttr('disabled');
+            }else {
+                $(".action-previous").attr('disabled', 'disabled');
+            }
+
+            if(page === (number_of_pages-1)){
+                $(".action-next").attr('disabled', 'disabled');
+            }
+
             $("#paggination-nav").val(page);
             $(".item-container").empty();
             let numb = page * 10;

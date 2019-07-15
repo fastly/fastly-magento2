@@ -10,6 +10,12 @@ define([
 ], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, showSuccessMessage, confirm) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
+        //todo: uredit komentare
+        //todo: upitat korisnika je li siguran u prebacivanje nov everzije
+        //todo: prečešljat kod i pregledat šta se da uredit
+        //todo: dodat novi button u akciju koji otvara VLC željene verzije
+        //todo: stavit da se učitava paginacija s zadnjih 10 elemenata
+        //todo: 
         let active_version = serviceStatus.active_version;
 
         let versionBtnErrorMsg = $("#fastly-error-versions-button-msg");
@@ -27,13 +33,12 @@ define([
             }
         };
 
-        let activatedVersionOptions = {
-            title: jQuery.mage.__('Activated Version'),
-            content: function () {
-                return document.getElementById('fastly-version-activation').textContent;
+        let showVCLOptions = {
+            title: jQuery.mage.__('Generated VCL'),
+            content: function() {
+                return document.getElementById('fastly-version-history-template').textContent;
             }
-        }
-
+        };
 
         /**
          * Queries Fastly API to retrieve the list of Fastly versions
@@ -81,20 +86,20 @@ define([
                    let text = document.createTextNode('Activated');
                    let span = document.createElement('span');
                    let button = document.createElement('button');
-
-                   button.setAttribute('class', 'action-delete fastly-edit-active-modules-icon activate-action');
+                   button.setAttribute('class', 'action-delete fastly-save-action activate-action');
                    button.setAttribute('id', 'action_version_' + response.old_version);
                    button.setAttribute('title', 'Activate');
                    button.setAttribute('data-version-number', response.old_version);
+                   button.setAttribute('style', 'margin-right: 2rem;');
 
                    span.setAttribute('id', 'action_version_' + response.version);
                    span.setAttribute('data-version-number', response.version);
+                   span.setAttribute('style', 'margin-right: 2rem;');
                    span.appendChild(text);
-
-                   $("#action_version_" + response.old_version).remove();
-                   $("#action_cell_" + response.old_version).append(button);
-                   $("#action_version_" + response.version).remove();
-                   $("#action_cell_" + response.version).append(span);
+                   $("#action_activate_version_" + response.old_version).empty();
+                   $("#action_activate_version_" + response.old_version).append(button);
+                   $("#action_activate_version_" + response.version).empty();
+                   $("#action_activate_version_" + response.version).append(span);
                    active_version = version;
                    showSuccessMessage('Successfully activated version ' + response.version);
                 }
@@ -114,6 +119,15 @@ define([
                 let commentCell = document.createElement('td');
                 let updatedCell = document.createElement('td');
                 let actionCell = document.createElement('td');
+                let span = document.createElement('span');
+
+                let showVCLButton = document.createElement('button');
+                showVCLButton.setAttribute('class', 'action-delete fastly-edit-active-modules-icon show-VCL-action');
+                showVCLButton.setAttribute('id', 'action_show_VCL_' + version.number);
+                showVCLButton.setAttribute('title', 'Show VCL');
+                showVCLButton.setAttribute('data-version-number', version.number);
+                span.setAttribute('id', 'action_activate_version_' + version.number);
+
                 let button = '';
                 let versionText = document.createTextNode(version.number);
                 let commentText = document.createTextNode(version.comment);
@@ -122,23 +136,27 @@ define([
                 if(active_version !== version.number)
                 {
                     button = document.createElement('button');
-                    button.setAttribute('class', 'action-delete fastly-edit-active-modules-icon activate-action');
+                    button.setAttribute('class', 'action-delete fastly-save-action activate-action');
                     button.setAttribute('id', 'action_version_' + version.number);
                     button.setAttribute('title', 'Activate');
                     button.setAttribute('data-version-number', version.number);
+                    button.setAttribute('style', 'margin-right: 2rem;');
+
                 } else {
                     let text = document.createTextNode('Activated');
                     button = document.createElement('span');
                     button.setAttribute('id', 'action_version_' + version.number);
                     button.setAttribute('data-version-number', version.number);
+                    button.setAttribute('style', 'margin-right: 2rem;');
                     button.appendChild(text);
                 }
-
+                span.appendChild(button);
 
                 versionCell.appendChild(versionText);
                 commentCell.appendChild(commentText);
                 updatedCell.appendChild(updatedText);
-                actionCell.appendChild(button);
+                actionCell.appendChild(span);
+                actionCell.appendChild(showVCLButton);
                 tr.setAttribute('id', 'fastly_version_' + version.number);
                 tr.append(versionCell);
                 tr.append(commentCell);
@@ -184,13 +202,13 @@ define([
             });
         });
 
-        $('body').on('click', 'button.fastly-edit-active-modules-icon', function () {
+        $('body').on('click', 'button.fastly-save-action', function () {
             let version_number = $(this).data('version-number');
-            console.log("aktivna_verzija");
-            console.log(active_version);
-            console.log("željena verzija");
-            console.log(version_number);
             activateServiceVersion(active_version, version_number, true);
+        });
+
+        $('body').on('click', 'button.fastly-edit-active-modules-icon', function(){
+           console.log("otvori prozor s VCL-om");
         });
     }
 });

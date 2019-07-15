@@ -32,7 +32,7 @@ class ListVersions extends Action
 
     public function execute()
     {
-        //todo: paginacija
+        //todo: paginacija i try caches (vidi u starim fileovima)
         $result = $this->jsonFactory->create();
         $service = $this->api->getServiceDetails();
         return $result->setData([

@@ -36,7 +36,7 @@ class Activate extends Action
 
     public function execute()
     {
-        //todo: try catches
+        //todo: try catches (vidi u starim fileovima)
         $result = $this->jsonFactory->create();
         $version = (int)$this->request->getParam('version');
         $oldVersion = (int)$this->request->getParam('active_version');

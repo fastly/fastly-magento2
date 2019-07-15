@@ -37,8 +37,10 @@ class ListVersions extends Action
         $service = $this->api->getServiceDetails();
         return $result->setData([
             'status' => true,
-            'versions' => array_slice($service->versions, -10, 10),
-            'active_version' => $service->active_version
+            'versions' => $service->versions,
+            'active_version' => $service->active_version,
+            'number_of_pages' => ceil(count($service->versions) / 10),
+            'number_of_versions' => count($service->versions)
         ]);
     }
 }

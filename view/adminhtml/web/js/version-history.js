@@ -11,10 +11,11 @@ define([
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         //todo: uredit komentare
-        //todo: upitat korisnika je li siguran u prebacivanje nov everzije
         //todo: prečešljat kod i pregledat šta se da uredit
         //todo: stavit da se učitava paginacija s zadnjih 10 elemenata
         let active_version = serviceStatus.active_version;
+        let versions_response = [];
+        let catched_versions = false;
 
         let versionBtnErrorMsg = $("#fastly-error-versions-button-msg");
 
@@ -64,7 +65,7 @@ define([
          * @param loaderVisibility
          * @returns array
          */
-        function listVersions(active_version, loaderVisibility) {
+        function listVersions(active_version, loaderVisibility, page) {
             $.ajax({
                 type: "GET",
                 url: config.versionHistory,
@@ -73,7 +74,12 @@ define([
                 success: function (response) {
                     $('.loading-versions').hide();
                     if (response.status !== false) {
-                        processVersions(response.versions);
+                        catched_versions = true;
+                        versions_response = response;
+                        let numb = page * 10;
+                        let start = response.number_of_versions - numb;
+                        let end = start + 10;
+                        processVersions(response.versions.slice(start, end));
                     }
 
                 },
@@ -86,6 +92,13 @@ define([
             });
         }
 
+        /**
+         * Activate specific version
+         *
+         * @param active_version_param
+         * @param version
+         * @param loaderVisibility
+         */
         function activateServiceVersion(active_version_param, version, loaderVisibility) {
             $.ajax({
                 type: 'GET',
@@ -122,7 +135,7 @@ define([
         }
 
         /**
-         * Process and display the list of ACL containers
+         * Process and display the list of versions
          *
          * @param versions
          */
@@ -181,7 +194,7 @@ define([
         }
 
         /**
-         * Version container list  on click event
+         * Version container list on click event
          */
         $('#list-versions-container-button').on('click', function () {
             if (isAlreadyConfigured !== true) {
@@ -198,23 +211,27 @@ define([
                     showLoader: true
                 })
             ).done(function (service) {
-                if (service.status === false) {
+                if (service.status !== true) {
                     return versionBtnErrorMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                 }
 
                 active_version = service.active_version;
                 let next_version = service.next_version;
                 let service_name = service.service.name;
-
                 overlay(versionContainerOptions);
                 $('.upload-button').remove();
+                $("#paggination-nav").val(1);
+
                 setServiceLabel(active_version, next_version, service_name);
-                listVersions(active_version, true);
+                listVersions(active_version, true, 1);
             }).fail(function () {
                 return versionBtnErrorMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
             });
         });
 
+        /**
+         * Activate version
+         */
         $('body').on('click', 'button.fastly-save-action', function () {
             resetAllMessages();
             let version_number = $(this).data('version-number');
@@ -230,6 +247,9 @@ define([
             });
         });
 
+        /**
+         * Show versions's VCL
+         */
         $('body').on('click', 'button.fastly-edit-active-modules-icon', function () {
             resetAllMessages();
             let version_number = $(this).data('version-number');
@@ -237,5 +257,19 @@ define([
             $('.upload-button').remove();
             listOneVersion(version_number);
         });
+
+        $('body').on('click', 'button.action-next', function () {
+            if(!catched_versions){
+                return;
+            }
+            let page = $("#paggination-nav").val();
+            page++;
+            $("#paggination-nav").val(page);
+            $(".item-container").empty();
+            let numb = page * 10;
+            let start = versions_response.number_of_versions - numb;
+            let end = start + 10;
+            processVersions(versions_response.versions.slice(start, end));
+        })
     }
 });

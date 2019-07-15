@@ -24,6 +24,7 @@ use Fastly\Cdn\Model\Config;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Context;
 use Magento\Framework\App\ResponseInterface as Response;
+use Magento\Framework\UrlInterface as Url;
 
 /**
  * Class GetAction
@@ -36,28 +37,33 @@ class GetAction extends AbstractBlock
      * @var Config
      */
     private $config;
-
     /**
      * @var Response
      */
     private $response;
+    /**
+     * @var Url
+     */
+    private $url;
 
     /**
      * GetAction constructor.
-     *
      * @param Config $config
      * @param Context $context
      * @param Response $response
+     * @param Url $url
      * @param array $data
      */
     public function __construct(
         Config $config,
         Context $context,
         Response $response,
+        Url $url,
         array $data = []
     ) {
         $this->config = $config;
         $this->response = $response;
+        $this->url = $url;
 
         parent::__construct($context, $data);
     }
@@ -75,6 +81,7 @@ class GetAction extends AbstractBlock
 
         /** @var string $actionUrl */
         $actionUrl = $this->getUrl('fastlyCdn/geoip/getaction');
+        $currentUrl = $this->url->getCurrentUrl();
 
         // This page has an esi tag, set x-esi header if it is not already set
         $header = $this->response->getHeader('x-esi');
@@ -85,7 +92,7 @@ class GetAction extends AbstractBlock
         // HTTPS ESIs are not supported so we need to turn them into HTTP
         return sprintf(
             '<esi:include src=\'%s\' />',
-            preg_replace("/^https/", "http", $actionUrl)
+            preg_replace("/^https/", "http", $actionUrl . '?url=' . $currentUrl)
         );
     }
 }

@@ -30,7 +30,6 @@ use Magento\Framework\View\Result\Layout;
 use Magento\Framework\View\Result\LayoutFactory;
 use Magento\Store\Api\StoreRepositoryInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Store\Model\StoreResolver;
 use Magento\Store\Api\Data\StoreInterface;
 use Psr\Log\LoggerInterface;
 use Magento\Framework\App\Action\Action;
@@ -126,6 +125,7 @@ class GetAction extends Action
             // get target store from country code
             $countryCode = $this->getRequest()->getParam(self::REQUEST_PARAM_COUNTRY);
             $storeId = $this->config->getGeoIpMappingForCountry($countryCode);
+            $targetUrl = $this->getRequest()->getParam('url');
 
             if ($storeId !== null) {
                 // get redirect URL
@@ -135,11 +135,8 @@ class GetAction extends Action
                 // only generate a redirect URL if current and new store are different
                 if ($currentStore->getId() != $targetStore->getId()) {
                     $this->url->setScope($targetStore->getId());
-                    $targetUrl = $this->url;
-                    $targetUrl->addQueryParams([
-                        '___store'      => $targetStore->getCode()
-                    ]);
-                    $encodedUrl = $this->urlEncoder->encode($targetUrl->getUrl());
+
+                    $encodedUrl = $this->urlEncoder->encode($targetUrl . '?___store=' . $targetStore->getCode());
                     $this->url->addQueryParams([
                         '___store'      => $targetStore->getCode(),
                         '___from_store' => $currentStore->getCode(),

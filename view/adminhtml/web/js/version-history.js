@@ -13,9 +13,7 @@ define([
         //todo: uredit komentare
         //todo: upitat korisnika je li siguran u prebacivanje nov everzije
         //todo: prečešljat kod i pregledat šta se da uredit
-        //todo: dodat novi button u akciju koji otvara VLC željene verzije
         //todo: stavit da se učitava paginacija s zadnjih 10 elemenata
-        //todo: 
         let active_version = serviceStatus.active_version;
 
         let versionBtnErrorMsg = $("#fastly-error-versions-button-msg");
@@ -36,9 +34,24 @@ define([
         let showVCLOptions = {
             title: jQuery.mage.__('Generated VCL'),
             content: function() {
-                return document.getElementById('fastly-version-history-template').textContent;
+                return document.getElementById('show-VCL-container').textContent;
             }
         };
+
+        function listOneVersion(version)
+        {
+            $.ajax({
+               type: 'GET',
+               url: config.versionReference,
+               showLoader: true,
+                data: {'version':version},
+                success: function (response) {
+                   console.log(response);
+                   let text = document.createTextNode(response.content);
+                    $("#version-vcl-container").append(text);
+                }
+            });
+        }
 
         /**
          * Queries Fastly API to retrieve the list of Fastly versions
@@ -208,7 +221,11 @@ define([
         });
 
         $('body').on('click', 'button.fastly-edit-active-modules-icon', function(){
-           console.log("otvori prozor s VCL-om");
+           console.log($("#show-VCL-container"));
+           let version_number = $(this).data('version-number');
+            listOneVersion(version_number);
+            overlay(showVCLOptions);
+            let vclModal = modal;
         });
     }
 });

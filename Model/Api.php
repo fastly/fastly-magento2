@@ -1283,6 +1283,22 @@ class Api
         return $result;
     }
 
+    public function getGeneratedVcl($version)
+    {
+        $url = $this->_getApiServiceUri() . 'version/' . $version . '/generated_vcl';
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    public function getParticularVersion($version)
+    {
+        $url = $this->_getApiServiceUri() . 'version/' . $version;
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
     /**
      * Check if image optimization is enabled for the Fastly service
      *
@@ -1363,10 +1379,6 @@ class Api
         $result = $this->_fetch($url, \Zend_Http_Client::GET);
 
         return $result;
-    }
-
-    public function getListOfVersions()
-    {
     }
 
     /**

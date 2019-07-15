@@ -2267,23 +2267,9 @@
 <script type="text/x-magento-template" id="show-VCL-container">
     <div class="admin__fieldset recommended">
         <div class="admin__field-control">
-            <table class="admin__control-table" id="versions-list-table">
-                <thead>
-                <tr>
-                    <th><?php /* @noEscape */ echo __('Version Number') ?></th>
-                    <th><?php /* @noEscape */ echo __('Comment') ?></th>
-                    <th><?php /* @noEscape */ echo __('Updated Time') ?></th>
-                    <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Action') ?></th>
-                </tr>
-                </thead>
-                <tbody class="item-container-row">
-                </tbody>
-                <tfoot>
-                <tr>
-                    <td colspan="4" class="col-actions-add"></td>
-                </tr>
-                </tfoot>
-            </table>
+            <textarea rows="200"
+                      id="version-vcl-container"
+                      class="admin__control-text"></textarea>
         </div>
     </div>
 </script>
@@ -2295,6 +2281,7 @@
 // Versioning
 $allFastlyVersions =            $block->getUrl('adminhtml/fastlyCdn_VersionHistory/ListVersions');
 $activateVersion =              $block->getUrl('adminhtml/fastlyCdn_VersionHistory/Activate');
+$versionReference =             $block->getUrl('adminhtml/fastlyCdn_VersionHistory/Reference');
 
 // Advanced
 $checkTlsSettingUrl =           $block->getUrl('adminhtml/fastlyCdn_Advanced/checkTlsSetting');
@@ -2476,7 +2463,8 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "getExportDataUrl": "<?php echo $block->escapeJsQuote($getExportDataUrl);?>",
                     "exportDataUrl": "<?php echo $block->escapeJsQuote($exportDataUrl);?>",
                     "versionHistory": "<?php echo $block->escapeJsQuote($allFastlyVersions);?>",
-                    "activateVersion": "<?php echo $block->escapeJsQuote($activateVersion); ?>"
+                    "activateVersion": "<?php echo $block->escapeJsQuote($activateVersion); ?>",
+                    "versionReference": "<?php echo $block->escapeJsQuote($versionReference); ?>"
                 }
             }
         }

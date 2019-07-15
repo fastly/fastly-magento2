@@ -13,12 +13,14 @@ define([
         //todo: uredit komentare
         //todo: prečešljat kod i pregledat šta se da uredit
         //todo: stavit da se učitava paginacija s zadnjih 10 elemenata
+        paginationHandle();
         let active_version = serviceStatus.active_version;
-        let versions_response = [];
-        let page;   //value inside paggination-nav
-        let number_of_pages;
-
+        let versions_response = [];    //response from config.versionHistory
+        let page;   //value inside $("#paggination-nav")
+        let number_of_pages;    //number that says how many pages are filled with data
+        let versions_requested = false;
         let versionBtnErrorMsg = $("#fastly-error-versions-button-msg");
+        let versionsPerPage = 10;
 
         /**
          * ACL container modal overlay options
@@ -39,6 +41,77 @@ define([
                 return document.getElementById('show-VCL-container').textContent;
             }
         };
+
+        /**
+         * method that returns start and end of the array that holds all the service versions
+         * @param perPage
+         * @returns {{start: number, end: *}}
+         */
+        function arraySlice(perPage)
+        {
+            page = $("#paggination-nav").val();
+            let numb = page * perPage;
+            let start = versions_response.number_of_versions - numb;
+            let end = start + perPage;
+            return {
+                'start': start,
+                'end': end
+            };
+        }
+
+        /**
+         * methods that handles pagination
+         */
+        function paginationHandle()
+        {
+            let previous_button = $(".action-previous");
+            let next_button = $(".action-next");
+
+            $('body').on('keypress', function(e){
+                if(e.which === 13){
+                    if($("#paggination-nav").val() > number_of_pages){
+                        $("#paggination-nav").val(number_of_pages);
+                    }else if($("#paggination-nav").val() < 1){
+                        $("#paggination-nav").val(1);
+                    }
+                    let pagination = arraySlice(versionsPerPage);
+                    $(".item-container").empty();
+                    processVersions(versions_response.versions.slice(pagination.start, pagination.end));
+                }
+            });
+            //todo: fix this
+            $('body').on('click', 'button.action-next', function () {
+                page ++; //move to next page
+                $("#paggination-nav").val(page);
+                resetAllMessages();
+
+                if(page > 1 && previous_button.attr('disabled') === 'disabled'){
+                    previous_button.removeAttr('disabled');
+                }else if(page <= 1 && previous_button.attr('disabled') !== 'disabled') {
+                    previous_button.attr('disabled', 'disabled');
+                }
+
+                if(page === number_of_pages){
+                    $(".action-next").attr('disabled', 'disabled');
+                }
+
+                $(".item-container").empty();
+                let pagination = arraySlice(versionsPerPage);
+                processVersions(versions_response.versions.slice(pagination.start, pagination.end));
+            });
+
+            $('body').on('click', 'button.action-previous', function(){
+                page--; //move to previous page
+                $("#paggination-nav").val(page);
+               resetAllMessages();
+               if(page <= 1 && previous_button.attr('disabled') !== 'disabled'){
+                   $(".action-previous").attr('disabled', 'disabled');
+               }else if(page > 1 && previous_button.attr('disabled') !== 'disabled') {
+                   $(".action-previous").attr('disabled', 'disabled');
+               }
+
+            });
+        }
 
         function listOneVersion(version) {
             $.ajax({
@@ -64,34 +137,36 @@ define([
          *
          * @param active_version
          * @param loaderVisibility
-         * @returns array
          */
-        function listVersions(active_version, loaderVisibility, page) {
-            $.ajax({
-                type: "GET",
-                url: config.versionHistory,
-                showLoader: loaderVisibility,
-                data: {'active_version': active_version},
-                success: function (response) {
-                    $('.loading-versions').hide();
-                    if (response.status !== false) {
-                        versions_response = response;
-                        number_of_pages = response.number_of_pages;
-                        let numb = page * 10;
-                        let start = response.number_of_versions - numb;
-                        let end = start + 10;
-                        $(".admin__control-support-text").append(document.createTextNode(number_of_pages));
-                        processVersions(response.versions.slice(start, end));
-                    }
+        function listVersions(active_version, loaderVisibility) {
 
-                },
-                fail: function () {
-                    return versionBtnErrorMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
-                },
-                beforeSend: function () {
-                    $('.loading-versions').show();
-                }
-            });
+            if(!versions_requested){
+                $.ajax({
+                    type: "GET",
+                    url: config.versionHistory,
+                    showLoader: loaderVisibility,
+                    data: {'active_version': active_version},
+                    success: function (response) {
+                        $('.loading-versions').hide();
+                        if (response.status !== false) {
+                            versions_response = response;
+                            number_of_pages = response.number_of_pages;
+                            versions_requested = true;
+                            let properties = arraySlice(versionsPerPage);
+                            $(".admin__control-support-text").append(document.createTextNode(number_of_pages));
+                            processVersions(response.versions.slice(properties.start, properties.end));
+                            return;
+                        }
+
+                        showErrorMessage(response.msg);
+                    },
+                    beforeSend: function () {
+                        $('.loading-versions').show();
+                    }
+                });
+                return;
+            }
+            showErrorMessage('Api version already requested earlier');
         }
 
         /**
@@ -102,6 +177,7 @@ define([
          * @param loaderVisibility
          */
         function activateServiceVersion(active_version_param, version, loaderVisibility) {
+            resetAllMessages();
             $.ajax({
                 type: 'GET',
                 url: config.activateVersion,
@@ -121,7 +197,6 @@ define([
                     button.setAttribute('title', 'Activate');
                     button.setAttribute('data-version-number', response.old_version);
                     button.setAttribute('style', 'margin-right: 2rem;');
-
                     span.setAttribute('id', 'action_version_' + response.version);
                     span.setAttribute('data-version-number', response.version);
                     span.setAttribute('style', 'margin-right: 2rem;');
@@ -179,7 +254,6 @@ define([
                     button.appendChild(text);
                 }
                 span.appendChild(button);
-
                 versionCell.appendChild(versionText);
                 commentCell.appendChild(commentText);
                 updatedCell.appendChild(updatedText);
@@ -223,10 +297,9 @@ define([
                 overlay(versionContainerOptions);
                 $('.upload-button').remove();
                 $("#paggination-nav").val(1);
-                page = $("#paggination-nav").val();
                 $(".action-previous").attr('disabled', 'disabled');
                 setServiceLabel(active_version, next_version, service_name);
-                listVersions(active_version, true, 1);
+                listVersions(active_version, true);
             }).fail(function () {
                 return versionBtnErrorMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
             });
@@ -260,30 +333,5 @@ define([
             $('.upload-button').remove();
             listOneVersion(version_number);
         });
-
-        $('body').on('keypress', function(e){
-            if(e.which == 13){
-                
-            }
-        });
-
-        $('body').on('click', 'button.action-next', function () {
-            if(++page > 1){
-                $(".action-previous").removeAttr('disabled');
-            }else {
-                $(".action-previous").attr('disabled', 'disabled');
-            }
-
-            if(page === (number_of_pages-1)){
-                $(".action-next").attr('disabled', 'disabled');
-            }
-
-            $("#paggination-nav").val(page);
-            $(".item-container").empty();
-            let numb = page * 10;
-            let start = versions_response.number_of_versions - numb;
-            let end = start + 10;
-            processVersions(versions_response.versions.slice(start, end));
-        })
     }
 });

@@ -32,15 +32,23 @@ class ListVersions extends Action
 
     public function execute()
     {
-        //todo: paginacija i try caches (vidi u starim fileovima)
         $result = $this->jsonFactory->create();
-        $service = $this->api->getServiceDetails();
-        return $result->setData([
-            'status' => true,
-            'versions' => $service->versions,
-            'active_version' => $service->active_version,
-            'number_of_pages' => ceil(count($service->versions) / 10),
-            'number_of_versions' => count($service->versions)
-        ]);
+        try {
+            $service = $this->api->getServiceDetails();
+            return $result->setData([
+                'status' => true,
+                'versions' => $service->versions,
+                'active_version' => $service->active_version,
+                'number_of_pages' => (int)ceil(count($service->versions) / 10),
+                'number_of_versions' => (int)count($service->versions)
+            ]);
+        }catch (\Exception $exception){
+            return $result->setData([
+                'status' => false,
+                'msg' => $exception->getMessage()
+            ]);
+        }
+
+
     }
 }

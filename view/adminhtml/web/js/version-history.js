@@ -33,21 +33,25 @@ define([
 
         let showVCLOptions = {
             title: jQuery.mage.__('Generated VCL'),
-            content: function() {
+            content: function () {
                 return document.getElementById('show-VCL-container').textContent;
             }
         };
 
-        function listOneVersion(version)
-        {
+        function listOneVersion(version) {
             $.ajax({
-               type: 'GET',
-               url: config.versionReference,
-               showLoader: true,
-                data: {'version':version},
+                type: 'GET',
+                url: config.versionReference,
+                showLoader: true,
+                data: {'version': version},
                 success: function (response) {
-                   console.log(response);
-                   let text = document.createTextNode(response.content);
+                    if (response.status !== true) {
+                        modal.modal('closeModal');
+                        showErrorMessage(response.msg);
+                        return;
+                    }
+
+                    let text = document.createTextNode(response.content);
                     $("#version-vcl-container").append(text);
                 }
             });
@@ -60,21 +64,20 @@ define([
          * @param loaderVisibility
          * @returns array
          */
-        function listVersions(active_version, loaderVisibility)
-        {
+        function listVersions(active_version, loaderVisibility) {
             $.ajax({
                 type: "GET",
                 url: config.versionHistory,
                 showLoader: loaderVisibility,
                 data: {'active_version': active_version},
-                success: function(response){
+                success: function (response) {
                     $('.loading-versions').hide();
                     if (response.status !== false) {
                         processVersions(response.versions);
                     }
 
                 },
-                fail: function(){
+                fail: function () {
                     return versionBtnErrorMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
                 },
                 beforeSend: function () {
@@ -83,38 +86,37 @@ define([
             });
         }
 
-        function activateServiceVersion(active_version_param, version, loaderVisibility)
-        {
+        function activateServiceVersion(active_version_param, version, loaderVisibility) {
             $.ajax({
-               type: 'GET',
-               url: config.activateVersion,
-               showLoader: loaderVisibility,
-               data: {'version': version, 'active_version':active_version_param},
-               success: function(response){
-                   if(!response.status){
-                        showErrorMessage('Something went wrong, please try again later');
+                type: 'GET',
+                url: config.activateVersion,
+                showLoader: loaderVisibility,
+                data: {'version': version, 'active_version': active_version_param},
+                success: function (response) {
+                    if (!response.status) {
+                        showErrorMessage(response.msg);
                         return;
-                   }
-                    //todo: fix id names
-                   let text = document.createTextNode('Activated');
-                   let span = document.createElement('span');
-                   let button = document.createElement('button');
-                   button.setAttribute('class', 'action-delete fastly-save-action activate-action');
-                   button.setAttribute('id', 'action_version_' + response.old_version);
-                   button.setAttribute('title', 'Activate');
-                   button.setAttribute('data-version-number', response.old_version);
-                   button.setAttribute('style', 'margin-right: 2rem;');
+                    }
 
-                   span.setAttribute('id', 'action_version_' + response.version);
-                   span.setAttribute('data-version-number', response.version);
-                   span.setAttribute('style', 'margin-right: 2rem;');
-                   span.appendChild(text);
-                   $("#action_activate_version_" + response.old_version).empty();
-                   $("#action_activate_version_" + response.old_version).append(button);
-                   $("#action_activate_version_" + response.version).empty();
-                   $("#action_activate_version_" + response.version).append(span);
-                   active_version = version;
-                   showSuccessMessage('Successfully activated version ' + response.version);
+                    let text = document.createTextNode('Activated');
+                    let span = document.createElement('span');
+                    let button = document.createElement('button');
+                    button.setAttribute('class', 'action-delete fastly-save-action activate-action');
+                    button.setAttribute('id', 'action_version_' + response.old_version);
+                    button.setAttribute('title', 'Activate');
+                    button.setAttribute('data-version-number', response.old_version);
+                    button.setAttribute('style', 'margin-right: 2rem;');
+
+                    span.setAttribute('id', 'action_version_' + response.version);
+                    span.setAttribute('data-version-number', response.version);
+                    span.setAttribute('style', 'margin-right: 2rem;');
+                    span.appendChild(text);
+                    $("#action_activate_version_" + response.old_version).empty();
+                    $("#action_activate_version_" + response.old_version).append(button);
+                    $("#action_activate_version_" + response.version).empty();
+                    $("#action_activate_version_" + response.version).append(span);
+                    active_version = version;
+                    showSuccessMessage('Successfully activated version ' + response.version);
                 }
             });
         }
@@ -124,8 +126,7 @@ define([
          *
          * @param versions
          */
-        function processVersions(versions)
-        {
+        function processVersions(versions) {
             $.each(versions, function (index, version) {
                 let tr = document.createElement('tr');
                 let versionCell = document.createElement('td');
@@ -146,8 +147,7 @@ define([
                 let commentText = document.createTextNode(version.comment);
                 let updatedText = document.createTextNode(version.updated_at);
                 actionCell.setAttribute('id', 'action_cell_' + version.number);
-                if(active_version !== version.number)
-                {
+                if (active_version !== version.number) {
                     button = document.createElement('button');
                     button.setAttribute('class', 'action-delete fastly-save-action activate-action');
                     button.setAttribute('id', 'action_version_' + version.number);
@@ -216,16 +216,17 @@ define([
         });
 
         $('body').on('click', 'button.fastly-save-action', function () {
+            resetAllMessages();
             let version_number = $(this).data('version-number');
             activateServiceVersion(active_version, version_number, true);
         });
 
-        $('body').on('click', 'button.fastly-edit-active-modules-icon', function(){
-           console.log($("#show-VCL-container"));
-           let version_number = $(this).data('version-number');
-            listOneVersion(version_number);
+        $('body').on('click', 'button.fastly-edit-active-modules-icon', function () {
+            resetAllMessages();
+            let version_number = $(this).data('version-number');
             overlay(showVCLOptions);
             let vclModal = modal;
+            listOneVersion(version_number);
         });
     }
 });

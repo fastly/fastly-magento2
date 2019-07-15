@@ -38,20 +38,27 @@ class Activate extends Action
     {
         //todo: try catches (vidi u starim fileovima)
         $result = $this->jsonFactory->create();
-        $version = (int)$this->request->getParam('version');
-        $oldVersion = (int)$this->request->getParam('active_version');
-        $answer = $this->api->activateVersion($version);
-        if (!$answer) {
-            return  $result->setData([
-                'status' => false
+
+        try {
+            $version = (int)$this->request->getParam('version');
+            $oldVersion = (int)$this->request->getParam('active_version');
+            $answer = $this->api->activateVersion($version);
+            if (!$answer) {
+                throw new \Exception('There is no version #' . $version);
+            }
+
+            return $result->setData([
+                'old_version' => $oldVersion,
+                'version' => $answer->number,
+                'comment' => $answer->comment,
+                'updated_at' => $answer->updated_at,
+                'status' => true
+            ]);
+        } catch (\Exception $exception) {
+            return $result->setData([
+                'status' => false,
+                'msg' => $exception->getMessage()
             ]);
         }
-        return $result->setData([
-           'old_version' => $oldVersion,
-           'version' => $answer->number,
-           'comment' => $answer->comment,
-           'updated_at' => $answer->updated_at,
-           'status' => true
-        ]);
     }
 }

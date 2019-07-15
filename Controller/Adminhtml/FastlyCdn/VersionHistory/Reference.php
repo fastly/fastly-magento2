@@ -6,6 +6,7 @@ use Fastly\Cdn\Model\Api;
 use Magento\Backend\App\Action;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Setup\Exception;
 
 class Reference extends Action
 {
@@ -22,14 +23,12 @@ class Reference extends Action
      */
     private $jsonFactory;
 
-    public function __construct
-    (
+    public function __construct(
         Action\Context $context,
         Api $api,
         Http $request,
         JsonFactory $jsonFactory
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->api = $api;
         $this->request = $request;
@@ -38,13 +37,23 @@ class Reference extends Action
 
     public function execute()
     {
-        //todo: try catches (vidi kako se radilo u ostalim fileovima)
         $result = $this->jsonFactory->create();
-        $version = $this->request->getParam('version');
-        $response = $this->api->getGeneratedVcl($version);
-        return $result->setData([
-           'version' => $response->version,
-           'content' => $response->content
-        ]);
+        try {
+            $version = (int)$this->request->getParam('version');
+            $response = $this->api->getGeneratedVcl($version);
+            if (!$response) {
+                throw new \Exception('There is no version #' . $version);
+            }
+            return $result->setData([
+                'status' => true,
+                'version' => $response->version,
+                'content' => $response->content
+            ]);
+        } catch (\Exception $exception) {
+            return $result->setData([
+                'status' => false,
+                'msg' => $exception->getMessage()
+            ]);
+        }
     }
 }

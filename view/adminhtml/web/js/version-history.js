@@ -12,7 +12,6 @@ define([
 
         let active_version = serviceStatus.active_version;
         let versions_response = [];    //response from config.versionHistory
-        let page;   //value inside $("#paggination-nav")
         let number_of_pages;    //number that says how many pages are filled with data
         let versionBtnErrorMsg = $("#fastly-error-versions-button-msg");
         let versionsPerPage = 10;
@@ -43,7 +42,7 @@ define([
          * @returns {{start: number, end: *}}
          */
         function arraySlice(perPage) {
-            page = parseInt($("#paggination-nav").val());
+            let page = parseInt($("#pagination-input").val());
             let numb = page * perPage;
             let start = versions_response.number_of_versions - numb;
             let end = start + perPage;
@@ -51,13 +50,6 @@ define([
                 'start': start,
                 'end': end
             };
-        }
-
-        /**
-         * methods that handles pagination
-         */
-        function paginationHandle() {
-
         }
 
         function listOneVersion(version) {
@@ -85,8 +77,9 @@ define([
         function paginationLogic() {
 
             $('body').on('click', 'button.action-next', function () {
-                page = $("#paggination-nav").val();
-                $("#paggination-nav").val(++page);
+                resetAllMessages();
+                let pagination_input = $("#pagination-input").val();
+                $("#pagination-input").val(++pagination_input);
                 handleInputNumber();
                 let properties = arraySlice(versionsPerPage);
                 processVersions(versions_response.versions.slice(properties.start, properties.end));
@@ -94,8 +87,9 @@ define([
 
             //handle next button
             $('body').on('click', 'button.action-previous', function () {
-                page = $("#paggination-nav").val();
-                $("#paggination-nav").val(--page);
+                resetAllMessages();
+                let pagination_input = $("#pagination-input").val();
+                $("#pagination-input").val(--pagination_input);
                 handleInputNumber();
                 let properties = arraySlice(versionsPerPage);
                 processVersions(versions_response.versions.slice(properties.start, properties.end));
@@ -107,6 +101,7 @@ define([
                 if (e.which != 13) {
                     return;
                 }
+                resetAllMessages();
                 handleInputNumber();
                 let properties = arraySlice(versionsPerPage);
                 processVersions(versions_response.versions.slice(properties.start, properties.end));
@@ -114,23 +109,23 @@ define([
 
             function handleInputNumber() {
                 //handle higher/lower then min and max input
-                if ($("#paggination-nav").val() > number_of_pages) {
-                    $("#paggination-nav").val(number_of_pages)
-                } else if ($("#paggination-nav").val() < 1) {
-                    $("#paggination-nav").val(1)
+                if ($("#pagination-input").val() > number_of_pages) {
+                    $("#pagination-input").val(number_of_pages)
+                } else if ($("#pagination-input").val() < 1) {
+                    $("#pagination-input").val(1)
                 }
 
                 //handle equal as min and max
-                if (parseInt($("#paggination-nav").val()) === 1) {
+                if (parseInt($("#pagination-input").val()) === 1) {
                     $(".action-previous").attr('disabled', 'disabled');
-                } else if (parseInt($("#paggination-nav").val()) === number_of_pages) {
+                } else if (parseInt($("#pagination-input").val()) === number_of_pages) {
                     $(".action-next").attr('disabled', 'disabled');
                 }
 
                 //handle disabled attributes on prev/next button
-                if ($("#paggination-nav").val() > 1 && $(".action-previous").attr('disabled') === 'disabled') {
+                if ($("#pagination-input").val() > 1 && $(".action-previous").attr('disabled') === 'disabled') {
                     $(".action-previous").removeAttr('disabled');
-                } else if ($("#paggination-nav").val() < number_of_pages && $(".action-next").attr('disabled') === 'disabled') {
+                } else if ($("#pagination-input").val() < number_of_pages && $(".action-next").attr('disabled') === 'disabled') {
                     $(".action-next").removeAttr('disabled');
                 }
             }
@@ -297,7 +292,7 @@ define([
                 let service_name = service.service.name;
                 overlay(versionContainerOptions);
                 $('.upload-button').remove();
-                $("#paggination-nav").val(1);
+                $("#pagination-input").val(1);
                 $(".action-previous").attr('disabled', 'disabled');
                 setServiceLabel(active_version, next_version, service_name);
                 listVersions(active_version, true);

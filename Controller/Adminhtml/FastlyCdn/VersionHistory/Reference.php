@@ -6,7 +6,6 @@ use Fastly\Cdn\Model\Api;
 use Magento\Backend\App\Action;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Setup\Exception;
 
 class Reference extends Action
 {

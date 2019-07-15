@@ -42,13 +42,11 @@ class ListVersions extends Action
                 'number_of_pages' => (int)ceil(count($service->versions) / 10),
                 'number_of_versions' => (int)count($service->versions)
             ]);
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             return $result->setData([
                 'status' => false,
                 'msg' => $exception->getMessage()
             ]);
         }
-
-
     }
 }

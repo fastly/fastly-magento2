@@ -10,15 +10,10 @@ define([
 ], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, showSuccessMessage, confirm) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
-        //todo: uredit komentare
-        //todo: prečešljat kod i pregledat šta se da uredit
-        //todo: stavit da se učitava paginacija s zadnjih 10 elemenata
-        paginationHandle();
         let active_version = serviceStatus.active_version;
         let versions_response = [];    //response from config.versionHistory
         let page;   //value inside $("#paggination-nav")
         let number_of_pages;    //number that says how many pages are filled with data
-        let versions_requested = false;
         let versionBtnErrorMsg = $("#fastly-error-versions-button-msg");
         let versionsPerPage = 10;
 
@@ -47,9 +42,8 @@ define([
          * @param perPage
          * @returns {{start: number, end: *}}
          */
-        function arraySlice(perPage)
-        {
-            page = $("#paggination-nav").val();
+        function arraySlice(perPage) {
+            page = parseInt($("#paggination-nav").val());
             let numb = page * perPage;
             let start = versions_response.number_of_versions - numb;
             let end = start + perPage;
@@ -62,55 +56,8 @@ define([
         /**
          * methods that handles pagination
          */
-        function paginationHandle()
-        {
-            let previous_button = $(".action-previous");
-            let next_button = $(".action-next");
+        function paginationHandle() {
 
-            $('body').on('keypress', function(e){
-                if(e.which === 13){
-                    if($("#paggination-nav").val() > number_of_pages){
-                        $("#paggination-nav").val(number_of_pages);
-                    }else if($("#paggination-nav").val() < 1){
-                        $("#paggination-nav").val(1);
-                    }
-                    let pagination = arraySlice(versionsPerPage);
-                    $(".item-container").empty();
-                    processVersions(versions_response.versions.slice(pagination.start, pagination.end));
-                }
-            });
-            //todo: fix this
-            $('body').on('click', 'button.action-next', function () {
-                page ++; //move to next page
-                $("#paggination-nav").val(page);
-                resetAllMessages();
-
-                if(page > 1 && previous_button.attr('disabled') === 'disabled'){
-                    previous_button.removeAttr('disabled');
-                }else if(page <= 1 && previous_button.attr('disabled') !== 'disabled') {
-                    previous_button.attr('disabled', 'disabled');
-                }
-
-                if(page === number_of_pages){
-                    $(".action-next").attr('disabled', 'disabled');
-                }
-
-                $(".item-container").empty();
-                let pagination = arraySlice(versionsPerPage);
-                processVersions(versions_response.versions.slice(pagination.start, pagination.end));
-            });
-
-            $('body').on('click', 'button.action-previous', function(){
-                page--; //move to previous page
-                $("#paggination-nav").val(page);
-               resetAllMessages();
-               if(page <= 1 && previous_button.attr('disabled') !== 'disabled'){
-                   $(".action-previous").attr('disabled', 'disabled');
-               }else if(page > 1 && previous_button.attr('disabled') !== 'disabled') {
-                   $(".action-previous").attr('disabled', 'disabled');
-               }
-
-            });
         }
 
         function listOneVersion(version) {
@@ -133,6 +80,63 @@ define([
         }
 
         /**
+         * logic that handles paging in pagination nav bar
+         */
+        function paginationLogic() {
+
+            $('body').on('click', 'button.action-next', function () {
+                page = $("#paggination-nav").val();
+                $("#paggination-nav").val(++page);
+                handleInputNumber();
+                let properties = arraySlice(versionsPerPage);
+                processVersions(versions_response.versions.slice(properties.start, properties.end));
+            });
+
+            //handle next button
+            $('body').on('click', 'button.action-previous', function () {
+                page = $("#paggination-nav").val();
+                $("#paggination-nav").val(--page);
+                handleInputNumber();
+                let properties = arraySlice(versionsPerPage);
+                processVersions(versions_response.versions.slice(properties.start, properties.end));
+
+            });
+
+            //handle pressing enter
+            $('body').on('keypress', function (e) {
+                if (e.which != 13) {
+                    return;
+                }
+                handleInputNumber();
+                let properties = arraySlice(versionsPerPage);
+                processVersions(versions_response.versions.slice(properties.start, properties.end));
+            });
+
+            function handleInputNumber() {
+                //handle higher/lower then min and max input
+                if ($("#paggination-nav").val() > number_of_pages) {
+                    $("#paggination-nav").val(number_of_pages)
+                } else if ($("#paggination-nav").val() < 1) {
+                    $("#paggination-nav").val(1)
+                }
+
+                //handle equal as min and max
+                if (parseInt($("#paggination-nav").val()) === 1) {
+                    $(".action-previous").attr('disabled', 'disabled');
+                } else if (parseInt($("#paggination-nav").val()) === number_of_pages) {
+                    $(".action-next").attr('disabled', 'disabled');
+                }
+
+                //handle disabled attributes on prev/next button
+                if ($("#paggination-nav").val() > 1 && $(".action-previous").attr('disabled') === 'disabled') {
+                    $(".action-previous").removeAttr('disabled');
+                } else if ($("#paggination-nav").val() < number_of_pages && $(".action-next").attr('disabled') === 'disabled') {
+                    $(".action-next").removeAttr('disabled');
+                }
+            }
+        }
+
+        /**
          * Queries Fastly API to retrieve the list of Fastly versions
          *
          * @param active_version
@@ -140,35 +144,30 @@ define([
          */
         function listVersions(active_version, loaderVisibility) {
 
-            if(!versions_requested){
-                $.ajax({
-                    type: "GET",
-                    url: config.versionHistory,
-                    showLoader: loaderVisibility,
-                    data: {'active_version': active_version},
-                    success: function (response) {
-                        $('.loading-versions').hide();
-                        if (response.status !== false) {
-                            versions_response = response;
-                            number_of_pages = response.number_of_pages;
-                            versions_requested = true;
-                            let properties = arraySlice(versionsPerPage);
-                            $(".admin__control-support-text").append(document.createTextNode(number_of_pages));
-                            processVersions(response.versions.slice(properties.start, properties.end));
-                            return;
-                        }
-
-                        showErrorMessage(response.msg);
-                    },
-                    beforeSend: function () {
-                        $('.loading-versions').show();
+            $.ajax({
+                type: "GET",
+                url: config.versionHistory,
+                showLoader: loaderVisibility,
+                data: {'active_version': active_version},
+                success: function (response) {
+                    $('.loading-versions').hide();
+                    if (response.status !== false) {
+                        versions_response = response;
+                        number_of_pages = response.number_of_pages;
+                        let properties = arraySlice(versionsPerPage);
+                        $(".admin__control-support-text").append(document.createTextNode(number_of_pages));
+                        processVersions(response.versions.slice(properties.start, properties.end));
+                        paginationLogic();
+                        return;
                     }
-                });
-                return;
-            }
-            showErrorMessage('Api version already requested earlier');
-        }
 
+                    showErrorMessage(response.msg);
+                },
+                beforeSend: function () {
+                    $('.loading-versions').show();
+                }
+            });
+        }
         /**
          * Activate specific version
          *
@@ -217,6 +216,8 @@ define([
          * @param versions
          */
         function processVersions(versions) {
+            $(".item-container").empty();
+
             $.each(versions, function (index, version) {
                 let tr = document.createElement('tr');
                 let versionCell = document.createElement('td');
@@ -313,12 +314,13 @@ define([
             let version_number = $(this).data('version-number');
             confirm({
                 title: 'Activate Version',
-                content: 'Are you sure you want to activate the version #<b>'+version_number +'</b> ?',
+                content: 'Are you sure you want to activate the version #<b>' + version_number + '</b> ?',
                 actions: {
                     confirm: function () {
                         activateServiceVersion(active_version, version_number, true);
                     },
-                    cancel: function () {}
+                    cancel: function () {
+                    }
                 }
             });
         });

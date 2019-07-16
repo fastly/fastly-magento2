@@ -40,7 +40,8 @@ define([
         /**
          * displays Active version: above list and renders VCL container on click
          */
-        function displayActiveVersion() {
+        function displayActiveVersion()
+        {
             $("#pagination-active-version").empty();
             let a = document.createElement('a');
             let span = document.createElement('span');
@@ -99,7 +100,8 @@ define([
         /**
          * logic that handles paging in pagination nav bar
          */
-        function paginationLogic() {
+        function paginationLogic()
+        {
 
             $('body').on('click', 'button.action-next', function () {
                 resetAllMessages();
@@ -132,7 +134,8 @@ define([
                 processVersions(versions_response.versions.slice(properties.start, properties.end));
             });
 
-            function handleInputNumber() {
+            function handleInputNumber()
+            {
                 //handle higher/lower then min and max input
                 if ($("#pagination-input").val() > number_of_pages) {
                     $("#pagination-input").val(number_of_pages)
@@ -163,7 +166,8 @@ define([
          * @param active_version
          * @param loaderVisibility
          */
-        function catchVersions(active_version, loaderVisibility) {
+        function catchVersions(active_version, loaderVisibility)
+        {
 
             $.ajax({
                 type: "GET",
@@ -201,7 +205,8 @@ define([
          * @param version
          * @param loaderVisibility
          */
-        function activateServiceVersion(active_version_param, version, loaderVisibility) {
+        function activateServiceVersion(active_version_param, version, loaderVisibility)
+        {
             resetAllMessages();
             $.ajax({
                 type: 'GET',

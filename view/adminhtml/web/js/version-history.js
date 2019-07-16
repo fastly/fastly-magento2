@@ -14,7 +14,7 @@ define([
         let versions_response = [];    //response from config.versionHistory
         let number_of_pages;    //number that says how many pages are filled with data
         let versionBtnErrorMsg = $("#fastly-error-versions-button-msg");
-        let versionsPerPage = 10;
+        let versions_per_page = 10;
 
         /**
          * ACL container modal overlay options
@@ -81,7 +81,7 @@ define([
                 let pagination_input = $("#pagination-input").val();
                 $("#pagination-input").val(++pagination_input);
                 handleInputNumber();
-                let properties = arraySlice(versionsPerPage);
+                let properties = arraySlice(versions_per_page);
                 processVersions(versions_response.versions.slice(properties.start, properties.end));
             });
 
@@ -91,7 +91,7 @@ define([
                 let pagination_input = $("#pagination-input").val();
                 $("#pagination-input").val(--pagination_input);
                 handleInputNumber();
-                let properties = arraySlice(versionsPerPage);
+                let properties = arraySlice(versions_per_page);
                 processVersions(versions_response.versions.slice(properties.start, properties.end));
 
             });
@@ -103,7 +103,7 @@ define([
                 }
                 resetAllMessages();
                 handleInputNumber();
-                let properties = arraySlice(versionsPerPage);
+                let properties = arraySlice(versions_per_page);
                 processVersions(versions_response.versions.slice(properties.start, properties.end));
             });
 
@@ -149,7 +149,7 @@ define([
                     if (response.status !== false) {
                         versions_response = response;
                         number_of_pages = response.number_of_pages;
-                        let properties = arraySlice(versionsPerPage);
+                        let properties = arraySlice(versions_per_page);
                         $(".admin__control-support-text").append(document.createTextNode(number_of_pages));
                         processVersions(response.versions.slice(properties.start, properties.end));
                         paginationLogic();
@@ -208,7 +208,7 @@ define([
         /**
          * Process and display the list of versions
          *
-         * @param versions
+         * @param versions, list of versions that will be displayed
          */
         function processVersions(versions) {
             $(".item-container").empty();

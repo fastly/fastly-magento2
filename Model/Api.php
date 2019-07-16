@@ -1283,6 +1283,13 @@ class Api
         return $result;
     }
 
+    /**
+     * method that fetches a VCL for specific version id
+     *
+     * @param $version
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
     public function getGeneratedVcl($version)
     {
         $url = $this->_getApiServiceUri() . 'version/' . $version . '/generated_vcl';

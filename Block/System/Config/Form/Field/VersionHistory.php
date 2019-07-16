@@ -5,14 +5,12 @@ namespace Fastly\Cdn\Block\System\Config\Form\Field;
 use Magento\Backend\Block\Template\Context;
 use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
 
+/**
+ * Class VersionHistory
+ * @package Fastly\Cdn\Block\System\Config\Form\Field
+ */
 class VersionHistory extends AbstractFieldArray
 {
-    public function __construct(
-        Context $context,
-        array $data = []
-    ) {
-        parent::__construct($context, $data);
-    }
 
     protected function _construct()
     {
@@ -20,10 +18,5 @@ class VersionHistory extends AbstractFieldArray
         $this->_addAfter = false;
         $this->_template = 'Fastly_Cdn::system/config/form/field/versionHistory.phtml';
         parent::_construct();
-    }
-
-    public function renderCellTemplate($columnName)
-    {
-        return parent::renderCellTemplate($columnName);
     }
 }

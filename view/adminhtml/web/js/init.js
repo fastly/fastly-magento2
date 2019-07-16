@@ -83,7 +83,6 @@ define([
                 }).done(function (checkService) {
 
                     if (checkService.status !== false) {
-
                         $('body').loader('hide');
                         active_version = checkService.active_version;
                         next_version = checkService.next_version;
@@ -186,7 +185,6 @@ define([
                                 versionHistory(config, serviceStatus, isAlreadyConfigured);
                             });
                         });
-
                     } else {
                         $(".processing").hide();
                         $(".state_unknown").show();

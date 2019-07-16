@@ -40,8 +40,7 @@ define([
         /**
          * displays Active version: above list and renders VCL container on click
          */
-        function displayActiveVersion()
-        {
+        function displayActiveVersion() {
             $("#pagination-active-version").empty();
             let a = document.createElement('a');
             let span = document.createElement('span');
@@ -66,19 +65,18 @@ define([
          * @param perPage
          * @returns {{start: number, end: *}}
          */
-        function arraySlice (perPage)
+        function arraySlice(perPage)
         {
             let input = parseInt($("#pagination-input").val());
             let start = versions_response.number_of_versions - (input * perPage);
             let end = start + perPage;
-
             return {
                 'start': start,
                 'end': end
             };
         }
 
-        function insertVCLContent (version)
+        function insertVCLContent(version)
         {
             $.ajax({
                 type: 'GET',
@@ -101,8 +99,7 @@ define([
         /**
          * logic that handles paging in pagination nav bar
          */
-        function paginationLogic()
-        {
+        function paginationLogic() {
 
             $('body').on('click', 'button.action-next', function () {
                 resetAllMessages();
@@ -135,8 +132,7 @@ define([
                 processVersions(versions_response.versions.slice(properties.start, properties.end));
             });
 
-            function handleInputNumber()
-            {
+            function handleInputNumber() {
                 //handle higher/lower then min and max input
                 if ($("#pagination-input").val() > number_of_pages) {
                     $("#pagination-input").val(number_of_pages)
@@ -167,8 +163,7 @@ define([
          * @param active_version
          * @param loaderVisibility
          */
-        function catchVersions(active_version, loaderVisibility)
-        {
+        function catchVersions(active_version, loaderVisibility) {
 
             $.ajax({
                 type: "GET",
@@ -183,10 +178,11 @@ define([
                         let properties = arraySlice(versions_per_page);
                         $(".admin__control-support-text").append(document.createTextNode(number_of_pages));
                         processVersions(response.versions.slice(properties.start, properties.end));
-                        if(!pagination_switch){
+                        if (!pagination_switch) {
                             paginationLogic();
                             pagination_switch = true;
                         }
+
                         return;
                     }
 
@@ -197,6 +193,7 @@ define([
                 }
             });
         }
+
         /**
          * Activate specific version
          *
@@ -204,8 +201,7 @@ define([
          * @param version
          * @param loaderVisibility
          */
-        function activateServiceVersion(active_version_param, version, loaderVisibility)
-        {
+        function activateServiceVersion(active_version_param, version, loaderVisibility) {
             resetAllMessages();
             $.ajax({
                 type: 'GET',
@@ -246,7 +242,8 @@ define([
          *
          * @param versions, list of versions that will be displayed
          */
-        function processVersions(versions) {
+        function processVersions(versions)
+        {
             $(".item-container").empty();
 
             $.each(versions, function (index, version) {
@@ -276,7 +273,6 @@ define([
                     button.setAttribute('title', 'Activate');
                     button.setAttribute('data-version-number', version.number);
                     button.setAttribute('style', 'margin-right: 2rem;');
-
                 } else {
                     let text = document.createTextNode('Activated');
                     button = document.createElement('span');
@@ -300,6 +296,7 @@ define([
                 $('.item-container').prepend(tr);
             });
         }
+
         /**
          * Version container list on click event
          */

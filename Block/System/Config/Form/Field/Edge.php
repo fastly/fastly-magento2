@@ -101,7 +101,6 @@ class Edge extends \Magento\Config\Block\System\Config\Form\Field\FieldArray\Abs
      */
     protected function getOptions($label = false) // @codingStandardsIgnoreLine - required by parent class
     {
-        echo "da";
         $options = [];
         foreach ($this->_storeManager->getStores() as $store) {
             $options[] = [

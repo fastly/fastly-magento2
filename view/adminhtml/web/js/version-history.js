@@ -38,6 +38,30 @@ define([
         };
 
         /**
+         * displays Active version: above list and renders VCL container on click
+         */
+        function displayActiveVersion()
+        {
+            $("#pagination-active-version").empty();
+            let a = document.createElement('a');
+            let span = document.createElement('span');
+            let text = document.createTextNode('Active Version: ');
+            let version = document.createTextNode(active_version);
+            a.setAttribute('data-version-number', active_version);
+            a.append(version);
+            span.append(text);
+            span.append(a);
+            a.on('click', function () {
+                resetAllMessages();
+                let version_number = $(this).data('version-number');
+                overlay(showVCLOptions);
+                $('.upload-button').remove();
+                insertVCLContent(version_number);
+            });
+            $("#pagination-active-version").append(span);
+        }
+
+        /**
          * method that returns start and end of the array that holds all the service versions
          * @param perPage
          * @returns {{start: number, end: *}}
@@ -54,7 +78,7 @@ define([
             };
         }
 
-        function listOneVersion (version)
+        function insertVCLContent (version)
         {
             $.ajax({
                 type: 'GET',
@@ -211,6 +235,7 @@ define([
                     $("#action_activate_version_" + response.version).empty();
                     $("#action_activate_version_" + response.version).append(span);
                     active_version = version;
+                    displayActiveVersion();
                     showSuccessMessage('Successfully activated version ' + response.version);
                 }
             });
@@ -307,6 +332,7 @@ define([
                 $('.upload-button').remove();
                 $("#pagination-input").val(1);
                 $(".action-previous").attr('disabled', 'disabled');
+                displayActiveVersion();
 
                 setServiceLabel(active_version, next_version, service_name);
                 catchVersions(active_version, true);
@@ -343,7 +369,7 @@ define([
             let version_number = $(this).data('version-number');
             overlay(showVCLOptions);
             $('.upload-button').remove();
-            listOneVersion(version_number);
+            insertVCLContent(version_number);
         });
     }
 });

@@ -12,7 +12,7 @@ use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
 class VersionHistory extends AbstractFieldArray
 {
 
-    protected function _construct()
+    protected function _construct()  // @codingStandardsIgnoreLine - required by parent class
     {
         $this->addColumn('backend_name', ['label' => __('Id')]);
         $this->_addAfter = false;

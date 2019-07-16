@@ -44,13 +44,12 @@ define([
          */
         function arraySlice (perPage)
         {
-            //fix this
             let input = parseInt($("#pagination-input").val());
-            let end = perPage * input;
-            let begin = -(end * 2);
-            end = versions_response.number_of_versions - end;
+            let start = versions_response.number_of_versions - (input * perPage);
+            let end = start + perPage;
+
             return {
-                'begin': begin,
+                'start': start,
                 'end': end
             };
         }
@@ -87,7 +86,7 @@ define([
                 $("#pagination-input").val(++pagination_input);
                 handleInputNumber();
                 let properties = arraySlice(versions_per_page);
-                processVersions(response.versions.slice(- properties.start, - properties.end));
+                processVersions(versions_response.versions.slice(properties.start, properties.end));
             });
 
             //handle next button
@@ -97,7 +96,7 @@ define([
                 $("#pagination-input").val(--pagination_input);
                 handleInputNumber();
                 let properties = arraySlice(versions_per_page);
-                processVersions(response.versions.slice(- properties.start, - properties.end));
+                processVersions(versions_response.versions.slice(properties.start, properties.end));
 
             });
 
@@ -109,7 +108,7 @@ define([
                 resetAllMessages();
                 handleInputNumber();
                 let properties = arraySlice(versions_per_page);
-                processVersions(response.versions.slice(- properties.start, - properties.end));
+                processVersions(versions_response.versions.slice(properties.start, properties.end));
             });
 
             function handleInputNumber()
@@ -159,7 +158,7 @@ define([
                         number_of_pages = response.number_of_pages;
                         let properties = arraySlice(versions_per_page);
                         $(".admin__control-support-text").append(document.createTextNode(number_of_pages));
-                        processVersions(response.versions.slice(properties.begin, properties.end));
+                        processVersions(response.versions.slice(properties.start, properties.end));
                         if(!pagination_switch){
                             paginationLogic();
                             pagination_switch = true;
@@ -273,7 +272,7 @@ define([
                 tr.append(updatedCell);
                 tr.append(actionCell);
 
-                $('.item-container').append(tr);
+                $('.item-container').prepend(tr);
             });
         }
         /**

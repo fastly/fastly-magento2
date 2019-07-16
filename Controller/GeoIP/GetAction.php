@@ -33,7 +33,6 @@ use Magento\Store\Model\StoreManagerInterface;
 use Magento\Store\Api\Data\StoreInterface;
 use Psr\Log\LoggerInterface;
 use Magento\Framework\App\Action\Action;
-use Magento\Framework\Url\EncoderInterface;
 
 /**
  * Class GetAction
@@ -71,10 +70,6 @@ class GetAction extends Action
      * @var LoggerInterface
      */
     private $logger;
-    /**
-     * @var EncoderInterface
-     */
-    private $urlEncoder;
 
     /**
      * GetAction constructor.
@@ -85,7 +80,6 @@ class GetAction extends Action
      * @param LayoutFactory $resultLayoutFactory
      * @param LocaleResolverInterface $localeResolver
      * @param LoggerInterface $logger
-     * @param EncoderInterface $urlEncoder
      */
     public function __construct(
         Context $context,
@@ -94,8 +88,7 @@ class GetAction extends Action
         StoreManagerInterface $storeManager,
         LayoutFactory $resultLayoutFactory,
         LocaleResolverInterface $localeResolver,
-        LoggerInterface $logger,
-        EncoderInterface $urlEncoder
+        LoggerInterface $logger
     ) {
         parent::__construct($context);
         $this->config               = $config;
@@ -104,7 +97,6 @@ class GetAction extends Action
         $this->resultLayoutFactory  = $resultLayoutFactory;
         $this->localeResolver       = $localeResolver;
         $this->logger               = $logger;
-        $this->urlEncoder           = $urlEncoder;
 
         $this->url  = $context->getUrl();
     }
@@ -125,7 +117,7 @@ class GetAction extends Action
             // get target store from country code
             $countryCode = $this->getRequest()->getParam(self::REQUEST_PARAM_COUNTRY);
             $storeId = $this->config->getGeoIpMappingForCountry($countryCode);
-            $targetUrl = $this->getRequest()->getParam('url');
+            $targetUrl = $this->getRequest()->getParam('uenc');
 
             if ($storeId !== null) {
                 // get redirect URL
@@ -136,11 +128,10 @@ class GetAction extends Action
                 if ($currentStore->getId() != $targetStore->getId()) {
                     $this->url->setScope($targetStore->getId());
 
-                    $encodedUrl = $this->urlEncoder->encode($targetUrl . '?___store=' . $targetStore->getCode());
                     $this->url->addQueryParams([
                         '___store'      => $targetStore->getCode(),
                         '___from_store' => $currentStore->getCode(),
-                        'uenc'          => $encodedUrl
+                        'uenc'          => $targetUrl
                     ]);
                     $redirectUrl = $this->url->getUrl('stores/store/switch');
                 }

@@ -85,7 +85,7 @@
             error 980 "GeoIP already processed";
         } else {
             # append parameter with country code only if it doesn't exist already
-            if ( req.url.qs !~ "country_code=" && req.url.qs !~ "url=") {
+            if ( req.url.qs !~ "country_code=" && req.url.qs !~ "uenc=") {
                 set req.url = req.url "?country_code=" if ( req.http.geo_override, req.http.geo_override, client.geo.country_code);
             } else {
                 set req.url = req.url "&country_code=" if ( req.http.geo_override, req.http.geo_override, client.geo.country_code);

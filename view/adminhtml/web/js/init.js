@@ -167,9 +167,9 @@ define([
                         });
 
                         importExportHead.one('click', function () {
-                            // requirejs(['fastlyImport'], function (fastlyImport) {
-                            //     fastlyImport(config, serviceStatus, isAlreadyConfigured);
-                            // });
+                             requirejs(['fastlyImport'], function (fastlyImport) {
+                                 fastlyImport(config, serviceStatus, isAlreadyConfigured);
+                             });
                             requirejs(['fastlyExport'], function (fastlyExport) {
                                 fastlyExport(config, serviceStatus, isAlreadyConfigured);
                             });

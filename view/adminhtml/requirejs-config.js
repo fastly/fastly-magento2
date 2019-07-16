@@ -26,7 +26,7 @@ let config = {
             domains: 'Fastly_Cdn/js/domains',
             rateLimiting: 'Fastly_Cdn/js/rate-limiting',
             maintenance: 'Fastly_Cdn/js/maintenance',
-            //fastlyImport: 'Fastly_Cdn/js/import',
+            fastlyImport: 'Fastly_Cdn/js/import',
             fastlyExport: 'Fastly_Cdn/js/export'
         }
     }

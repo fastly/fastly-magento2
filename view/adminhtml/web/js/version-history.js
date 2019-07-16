@@ -15,6 +15,7 @@ define([
         let number_of_pages;    //number that says how many pages are filled with data
         let versionBtnErrorMsg = $("#fastly-error-versions-button-msg");
         let versions_per_page = 10;
+        let pagination_switch = false;
 
         /**
          * ACL container modal overlay options
@@ -41,18 +42,21 @@ define([
          * @param perPage
          * @returns {{start: number, end: *}}
          */
-        function arraySlice(perPage) {
-            let page = parseInt($("#pagination-input").val());
-            let numb = page * perPage;
-            let start = versions_response.number_of_versions - numb;
-            let end = start + perPage;
+        function arraySlice (perPage)
+        {
+            //fix this
+            let input = parseInt($("#pagination-input").val());
+            let end = perPage * input;
+            let begin = -(end * 2);
+            end = versions_response.number_of_versions - end;
             return {
-                'start': start,
+                'begin': begin,
                 'end': end
             };
         }
 
-        function listOneVersion(version) {
+        function listOneVersion (version)
+        {
             $.ajax({
                 type: 'GET',
                 url: config.versionReference,
@@ -74,7 +78,8 @@ define([
         /**
          * logic that handles paging in pagination nav bar
          */
-        function paginationLogic() {
+        function paginationLogic()
+        {
 
             $('body').on('click', 'button.action-next', function () {
                 resetAllMessages();
@@ -82,7 +87,7 @@ define([
                 $("#pagination-input").val(++pagination_input);
                 handleInputNumber();
                 let properties = arraySlice(versions_per_page);
-                processVersions(versions_response.versions.slice(properties.start, properties.end));
+                processVersions(response.versions.slice(- properties.start, - properties.end));
             });
 
             //handle next button
@@ -92,7 +97,7 @@ define([
                 $("#pagination-input").val(--pagination_input);
                 handleInputNumber();
                 let properties = arraySlice(versions_per_page);
-                processVersions(versions_response.versions.slice(properties.start, properties.end));
+                processVersions(response.versions.slice(- properties.start, - properties.end));
 
             });
 
@@ -104,10 +109,11 @@ define([
                 resetAllMessages();
                 handleInputNumber();
                 let properties = arraySlice(versions_per_page);
-                processVersions(versions_response.versions.slice(properties.start, properties.end));
+                processVersions(response.versions.slice(- properties.start, - properties.end));
             });
 
-            function handleInputNumber() {
+            function handleInputNumber()
+            {
                 //handle higher/lower then min and max input
                 if ($("#pagination-input").val() > number_of_pages) {
                     $("#pagination-input").val(number_of_pages)
@@ -133,11 +139,13 @@ define([
 
         /**
          * Queries Fastly API to retrieve the list of Fastly versions
+         * - set api response into versions_response variable
          *
          * @param active_version
          * @param loaderVisibility
          */
-        function listVersions(active_version, loaderVisibility) {
+        function catchVersions(active_version, loaderVisibility)
+        {
 
             $.ajax({
                 type: "GET",
@@ -151,8 +159,11 @@ define([
                         number_of_pages = response.number_of_pages;
                         let properties = arraySlice(versions_per_page);
                         $(".admin__control-support-text").append(document.createTextNode(number_of_pages));
-                        processVersions(response.versions.slice(properties.start, properties.end));
-                        paginationLogic();
+                        processVersions(response.versions.slice(properties.begin, properties.end));
+                        if(!pagination_switch){
+                            paginationLogic();
+                            pagination_switch = true;
+                        }
                         return;
                     }
 
@@ -170,7 +181,8 @@ define([
          * @param version
          * @param loaderVisibility
          */
-        function activateServiceVersion(active_version_param, version, loaderVisibility) {
+        function activateServiceVersion(active_version_param, version, loaderVisibility)
+        {
             resetAllMessages();
             $.ajax({
                 type: 'GET',
@@ -264,11 +276,11 @@ define([
                 $('.item-container').append(tr);
             });
         }
-
         /**
          * Version container list on click event
          */
         $('#list-versions-container-button').on('click', function () {
+
             if (isAlreadyConfigured !== true) {
                 $(this).attr('disabled', true);
                 return alert($.mage.__('Please save config prior to continuing.'));
@@ -290,12 +302,16 @@ define([
                 active_version = service.active_version;
                 let next_version = service.next_version;
                 let service_name = service.service.name;
+
                 overlay(versionContainerOptions);
+
                 $('.upload-button').remove();
                 $("#pagination-input").val(1);
                 $(".action-previous").attr('disabled', 'disabled');
+
                 setServiceLabel(active_version, next_version, service_name);
-                listVersions(active_version, true);
+                catchVersions(active_version, true);
+
             }).fail(function () {
                 return versionBtnErrorMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
             });

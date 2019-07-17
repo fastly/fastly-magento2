@@ -109,14 +109,14 @@ class GetExportData extends Action
                 }
             }
 
-            $activeEdgeModules = [];
             $activeEdgeModules = $this->manifest->getActiveModlyManifests();
 
             return $result->setData([
                 'status'            => true,
                 'custom_snippets'   => $snippets,
                 'dictionaries'      => $dictionaries,
-                'acls'              => $acls
+                'acls'              => $acls,
+                'active_modules'    => $activeEdgeModules
             ]);
         } catch (\Exception $e) {
             return $result->setData([

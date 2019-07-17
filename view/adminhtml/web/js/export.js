@@ -54,6 +54,7 @@ define([
                     customSnippets = response.custom_snippets;
                     dictionaries = response.dictionaries;
                     acls = response.acls;
+                    activeModules = response.active_modules;
 
                     html += '<div class="admin__field field"><div class="admin__field-control export-field">';
                     html += '<label class="admin__field-label"><b>Edge ACLs</b></label></div></div>';
@@ -102,6 +103,22 @@ define([
                         html += '<label class="admin__field-label"></label><label>There are no Custom Snippets</label></div></div></div>';
                     }
 
+                    html += '<div class="admin__field field"><div class="admin__field-control export-field">';
+                    html += '<label class="admin__field-label"><b>Active Edge Modules</b></label></div></div>';
+                    $.each(activeModules, function (index, module) {
+                        console.log(module);
+                        html += '<div class="admin__field field"><div class="admin__field-control export-field">';
+                        html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-active-modules" type="checkbox" name="'+module.manifest_name+'" id="'+module.manifest_id+'" checked/>';
+                        html += '<label class="admin__field-label"></label><label for="'+module.id+'">'+module.manifest_name+'</label>';
+                        html += '<button class="action-delete export-list-icon active-modules-btn" title="Show Items" type="button"></div></div></div>';
+                    });
+                    if (activeModules === undefined || activeModules.length == 0) {
+                        html += '<div class="admin__field field"><div class="admin__field-control export-field">';
+                        html += '<div class="admin__field-option admin__control-table">';
+                        html += '<label class="admin__field-label"></label><label>There is no Active Modules</label></div></div></div>';
+                    }
+
+                    console.log(response);
                     $('.question').html(html);
                 });
             });
@@ -205,7 +222,11 @@ define([
                         });
                         acl_field.after(itemsHtml);
                     } else {
-                        itemsHtml += '<div class="admin__field field"><div class="admin__field-note export-note">no items</div></div>';
+                        if ($('.export-acl-note') !== 0) {
+                            $('.export-acl-note').remove();
+                        }
+
+                        itemsHtml += '<div class="admin__field field export-acl-note"><div class="admin__field-note export-note">no items</div></div>';
                         acl_field.after(itemsHtml);
                     }
                 }
@@ -231,11 +252,21 @@ define([
                         });
                         dictionary_field.after(itemsHtml);
                     } else {
-                        itemsHtml += '<div class="admin__field field"><div class="admin__field-note export-note">no items</div></div>';
+                        if ($('.export-dictionary-note') !== 0) {
+                            $('.export-dictionary-note').remove();
+                        }
+
+                        itemsHtml += '<div class="admin__field field export-dictionary-note"><div class="admin__field-note export-note">no items</div></div>';
                         dictionary_field.after(itemsHtml);
                     }
                 }
             });
+        });
+
+        $('body').on('click', '.active-modules-btn', function () {
+            let module_id = $(this).closest('.admin__field-option').find(".admin__control-checkbox").attr('id');
+            let module_field = $(this).parents('div.field');
+            console.log(module_id);
         });
     }
 });

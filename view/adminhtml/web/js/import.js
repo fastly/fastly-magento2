@@ -7,7 +7,6 @@ define([
     'mage/translate'
 ], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
-        console.log("da");
         let successButtonMsg = $("#fastly-success-import-button-msg");
         let errorButtonMsg = $("#fastly-error-import-button-msg");
         let warningButtonMsg = $("#fastly-warning-import-button-msg");

@@ -2,14 +2,14 @@
 
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\ImportExport;
 
+use Fastly\Cdn\Model\Api;
+use Fastly\Cdn\Model\Config;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Fastly\Cdn\Model\Config;
-use Fastly\Cdn\Model\Api;
 use Magento\Framework\Filesystem;
-use Magento\Framework\App\Filesystem\DirectoryList;
 
 /**
  * Class SaveExportData
@@ -73,6 +73,7 @@ class SaveExportData extends Action
             $acls = $this->getRequest()->getParam('acls');
             $dictionaries = $this->getRequest()->getParam('dictionaries');
             $customSnippets = $this->getRequest()->getParam('custom_snippets');
+            $activeModules = $this->getRequest()->getParam('active_modules');
 
             $exportAcls = [];
             if (isset($acls)) {
@@ -114,16 +115,24 @@ class SaveExportData extends Action
                 $customSnippets = [];
             }
 
+            $exportActiveModules = [];
+            if (isset($activeModules)) {
+                foreach ($activeModules as $index => $module) {
+                    $exportActiveModules[$module['manifest_id']] = json_decode($module['manifest_content'], true);
+                }
+            }
+
             $exportData = [
                 'edge_acls'         => $exportAcls,
                 'edge_dictionaries' => $exportDictionaries,
-                'custom_snippets'   => $customSnippets
+                'custom_snippets'   => $customSnippets,
+                'active_modules'    => $exportActiveModules
             ];
 
             $fileName = Config::EXPORT_FILE_NAME;
             $write = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
             $file = $write->getRelativePath($fileName);
-            $write->writeFile($file, json_encode($exportData, JSON_PRETTY_PRINT));
+            $write->writeFile($file, json_encode($exportData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
             return $result->setData([
                 'status'    => true

@@ -48,7 +48,7 @@ define([
 
                 getExportData(active_version, true).done(function (response) {
                     overlay(exportOptions);
-                    $('.modal-title').text($.mage.__('Export Edge ACLs, Edge Dictionaries and Custom Snippets'));
+                    $('.modal-title').text($.mage.__('Export Edge ACLs, Edge Dictionaries, Active Edge Modules and Custom Snippets'));
                     $('.upload-button span').text('Export');
                     let html = '';
                     customSnippets = response.custom_snippets;
@@ -160,12 +160,24 @@ define([
                     }
                 });
             });
-            if ($.isEmptyObject(checkedAcls) && $.isEmptyObject(checkedDictionaries) && $.isEmptyObject(checkedCustomSnippets)) {
+
+            let checkedActiveModules = {};
+            $('.export-active-modules:checked').each(function () {
+                let module_id = $(this).attr('id');
+                $.each(activeModules, function (index, content) {
+                    if(module_id === content.manifest_id){
+                        checkedActiveModules[index] = content;
+                    }
+                });
+            });
+
+            if ($.isEmptyObject(checkedAcls) && $.isEmptyObject(checkedDictionaries) && $.isEmptyObject(checkedCustomSnippets
+                && $.isEmptyObject(checkedActiveModules) ))
+            {
                 resetAllMessages();
                 showErrorMessage('At least one item must be selected.');
                 return;
             }
-
             $.ajax({
                 type: "POST",
                 url: config.exportDataUrl,
@@ -173,7 +185,8 @@ define([
                 data: {
                     'acls': checkedAcls,
                     'dictionaries': checkedDictionaries,
-                    'custom_snippets': checkedCustomSnippets
+                    'custom_snippets': checkedCustomSnippets,
+                    'active_modules': checkedActiveModules
                 }
             }).done(function (response) {
                 if (response !== false) {

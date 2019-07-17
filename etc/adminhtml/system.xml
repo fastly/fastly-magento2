@@ -464,7 +464,7 @@
                             <label>Export</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ExportBtn</frontend_model>
                             <comment>
-                                <![CDATA[Export Edge ACLs, Edge Dictionaries and Custom Snippets]]>
+                                <![CDATA[Export Edge ACLs, Edge Dictionaries, Active Edge Modules and Custom Snippets]]>
                             </comment>
                         </field>
                     </group>

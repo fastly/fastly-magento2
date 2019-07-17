@@ -86,7 +86,15 @@ class GetAction extends AbstractBlock
 
         /** @var string $actionUrl */
         $actionUrl = $this->getUrl('fastlyCdn/geoip/getaction');
-        $currentUrl = $this->urlEncoder->encode($this->url->getCurrentUrl());
+        $currentUrl = $this->url->getCurrentUrl();
+        $baseUrl = $this->url->getBaseUrl();
+        $webTypeUrl = $this->url->getBaseUrl(['_type' => Url::URL_TYPE_WEB]);
+        
+        if (strpos($currentUrl, $baseUrl) !== false) {
+            $targetUrl = $currentUrl;
+        } else {
+            $targetUrl = str_replace($webTypeUrl, $baseUrl, $currentUrl);
+        }
 
         // This page has an esi tag, set x-esi header if it is not already set
         $header = $this->response->getHeader('x-esi');
@@ -97,7 +105,11 @@ class GetAction extends AbstractBlock
         // HTTPS ESIs are not supported so we need to turn them into HTTP
         return sprintf(
             '<esi:include src=\'%s\' />',
-            preg_replace("/^https/", "http", $actionUrl . '?uenc=' . $currentUrl)
+            preg_replace(
+                "/^https/",
+                "http",
+                $actionUrl . '?uenc=' . $this->urlEncoder->encode($targetUrl)
+            )
         );
     }
 }

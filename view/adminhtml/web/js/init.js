@@ -4,6 +4,7 @@ define([
     'mage/translate'
 ], function ($) {
     return function (config) {
+
         $(document).ready(function () {
             let allOpen = '';
             let allActive = '';
@@ -39,6 +40,7 @@ define([
              */
             function init()
             {
+
                 $('body').loader('show');
                 $.ajax({
                     type: "GET",
@@ -63,6 +65,7 @@ define([
                 let domainsHead = $('#system_full_page_cache_fastly_fastly_domains-head');
                 let rateLimitingHead = $('#system_full_page_cache_fastly_fastly_rate_limiting_settings-head');
                 let importExportHead = $('#system_full_page_cache_fastly_fastly_import_export-head');
+                let versionHistoryHead = $('#system_full_page_cache_fastly_fastly_tools-head');
                 $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_owasp_restricted_extensions').hide();
                 $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_owasp_allowed_methods').hide();
                 $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_waf_bypass').hide();
@@ -78,6 +81,7 @@ define([
                     url: config.serviceInfoUrl,
                     showLoader: true
                 }).done(function (checkService) {
+
                     if (checkService.status !== false) {
                         $('body').loader('hide');
                         active_version = checkService.active_version;
@@ -172,6 +176,13 @@ define([
                             // });
                             requirejs(['fastlyExport'], function (fastlyExport) {
                                 fastlyExport(config, serviceStatus, isAlreadyConfigured);
+                            });
+                        });
+
+                        versionHistoryHead.one('click', function () {
+
+                            requirejs(['versionHistory'], function (versionHistory) {
+                                versionHistory(config, serviceStatus, isAlreadyConfigured);
                             });
                         });
                     } else {

@@ -1,27 +1,14 @@
 <?php
-/**
- * Copyright © 2015 Magento. All rights reserved.
- * See COPYING.txt for license details.
- */
-
-/**
- * Copied from Mage_Config::view/adminhtml/templates/system/config/form/field/array.phtml.
- * Currently necessary for work around a missing feature in the M2 core.
- *
- * @see https://github.com/magento/magento2/pull/3469
- */
-?>
-
-<?php
-$_htmlId = $block->getHtmlId() ? $block->getHtmlId() : '_' . uniqid();
-$_colspan = $block->isAddAfter() ? 2 : 1;
+    $_htmlId = $block->getHtmlId() ? $block->getHtmlId() : '_' . uniqid();
+    $_colspan = $block->isAddAfter() ? 2 : 1;
 ?>
 <button type="button"
         style="margin-bottom: 10px;"
-        class="primary"
-        id="add-dictionary-container-button">
-    <?php /* @noEscape */ echo __('Add dictionary') ?>
+        class="secondary"
+        id="list-versions-container-button">
+    <?php /* @noEscape */ echo __('List all versions') ?>
 </button>
+<!--
 <div class="design_theme_ua_regexp" id="grid<?php /* @noEscape */ echo $_htmlId; ?>">
     <div class="admin__control-table-wrapper">
         <table class="admin__control-table" id="<?php /* @noEscape */ echo $block->getElement()->getId(); ?>">
@@ -31,27 +18,35 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
                     <th><?php /* @noEscape */ echo $column['label']; ?></th>
                 <?php endforeach;?>
                 <th class="col-actions" colspan="<?php /* @noEscape */ echo $_colspan; ?>">
+                    <?php /* @noEscape */ echo __('Comment') ?>
+                </th>
+                <th class="col-actions" colspan="<?php /* @noEscape */ echo $_colspan; ?>">
+                    <?php /* @noEscape */ echo __('Last Edited') ?>
+                </th>
+                <th class="col-actions" colspan="<?php /* @noEscape */ echo $_colspan; ?>">
                     <?php /* @noEscape */ echo __('Actions') ?>
                 </th>
             </tr>
             </thead>
-            <tbody id="fastly-dictionaries-list"></tbody>
+            <tbody id="fastly-versions-list"></tbody>
         </table>
     </div>
-    <p class="loading-dictionaries list-loading">
+    <p class="loading-versions list-loading">
         <img class="processing"
              alt="Collecting"
              style="margin:0 5px;"
              src="<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/fastly16.gif') ?>" />
-        <?php /* @noEscape */ echo __('Loading dictionaries...'); ?>
+        <?php /* @noEscape */ echo __('Loading versions...'); ?>
     </p>
-    <p class="no-dictionaries" style="display: none;">
-        <?php /* @noEscape */ echo __('There are no dictionaries configured yet.'); ?>
+    <p class="no-versions" style="display: none;">
+        <?php /* @noEscape */ echo __('There are no versions configured yet.'); ?>
     </p>
 </div>
+-->
+
 
 <div class="message message-error fastly-button-messages"
-     id="fastly-error-dictionary-button-msg"
+     id="fastly-error-versions-button-msg"
      style="display: none"></div>
 
 <div class="message message-success fastly-button-messages"

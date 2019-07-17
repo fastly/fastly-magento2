@@ -27,7 +27,8 @@ define([
             }
         };
 
-        $('#fastly_export').on('click', function () {
+        $('#fastly_export').on('click', function ()
+        {
             if (isAlreadyConfigured !== true) {
                 $(this).attr('disabled', true);
                 return alert($.mage.__('Please save config prior to continuing.'));
@@ -122,7 +123,8 @@ define([
             });
         });
 
-        function getExportData(active_version, loaderVisibility) {
+        function getExportData(active_version, loaderVisibility)
+        {
             return $.ajax({
                 type: "GET",
                 url: config.getExportDataUrl,
@@ -130,7 +132,8 @@ define([
             });
         }
 
-        function fastlyExport() {
+        function fastlyExport()
+        {
             let checkedAcls = {};
             $('.export-acl:checked').each(function () {
                 let aclId = $(this).attr('id');
@@ -192,6 +195,7 @@ define([
                 if (response !== false) {
                     $('#fastly-export-form').submit();
                     modal.modal('closeModal');
+                    return successExportBtnMsg.text($.mage.__('Successfully exported.')).show();
                 } else {
                     resetAllMessages();
                     showErrorMessage(response.msg);

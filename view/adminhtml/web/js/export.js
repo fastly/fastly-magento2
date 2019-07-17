@@ -60,8 +60,8 @@ define([
                     html += '<label class="admin__field-label"><b>Edge ACLs</b></label></div></div>';
                     $.each(acls, function (index, acl) {
                         html += '<div class="admin__field field"><div class="admin__field-control export-field">';
-                        html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-acl" type="checkbox" name="'+acl.name+'" id="'+acl.id+'" checked/>';
-                        html += '<label class="admin__field-label"></label><label for="'+acl.id+'">'+acl.name+'</label>';
+                        html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-acl" type="checkbox" name="' + acl.name + '" id="' + acl.id + '" checked/>';
+                        html += '<label class="admin__field-label"></label><label for="' + acl.id + '">' + acl.name + '</label>';
                         html += '<button class="action-delete export-list-icon acl-items-btn" title="Show Items" type="button"></div></div></div>';
                     });
                     if (acls === undefined || acls.length == 0) {
@@ -75,11 +75,11 @@ define([
                     $.each(dictionaries, function (index, dictionary) {
                         html += '<div class="admin__field field"><div class="admin__field-control export-field">';
                         if (dictionary.name.split('_', 1)[0] === 'magentomodule') {
-                            html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-dictionary" type="checkbox" name="'+dictionary.name+'" id="'+dictionary.id+'"/>';
+                            html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-dictionary" type="checkbox" name="' + dictionary.name + '" id="' + dictionary.id + '"/>';
                         } else {
-                            html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-dictionary" type="checkbox" name="'+dictionary.name+'" id="'+dictionary.id+'" checked/>';
+                            html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-dictionary" type="checkbox" name="' + dictionary.name + '" id="' + dictionary.id + '" checked/>';
                         }
-                        html += '<label class="admin__field-label"></label><label for="'+dictionary.id+'">'+dictionary.name+'</label>';
+                        html += '<label class="admin__field-label"></label><label for="' + dictionary.id + '">' + dictionary.name + '</label>';
                         html += '<button class="action-delete export-list-icon dictionary-items-btn" title="Show Items" type="button"></div></div></div>';
                     });
                     if (dictionaries === undefined || dictionaries.length == 0) {
@@ -92,9 +92,9 @@ define([
                     html += '<label class="admin__field-label"><b>Custom Snippets</b></label></div></div>';
                     $.each(customSnippets, function (index, content) {
                         html += '<div class="admin__field field"><div class="admin__field-control export-field">';
-                        html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-custom-snippet" type="checkbox" name="'+index+'" checked/>';
-                        html += '<label class="admin__field-label"></label><label for="'+index+'">'+index+'</label></div></div></div>';
-                        html += '<div class="admin__field field"><div class="admin__field-note export-note" id="'+index+'">' + content;
+                        html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-custom-snippet" type="checkbox" name="' + index + '" checked/>';
+                        html += '<label class="admin__field-label"></label><label for="' + index + '">' + index + '</label></div></div></div>';
+                        html += '<div class="admin__field field"><div class="admin__field-note export-note" id="' + index + '">' + content;
                         html += '</div></div>';
                     });
                     if (customSnippets === undefined || customSnippets.length == 0) {
@@ -106,10 +106,9 @@ define([
                     html += '<div class="admin__field field"><div class="admin__field-control export-field">';
                     html += '<label class="admin__field-label"><b>Active Edge Modules</b></label></div></div>';
                     $.each(activeModules, function (index, module) {
-                        console.log(module);
                         html += '<div class="admin__field field"><div class="admin__field-control export-field">';
-                        html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-active-modules" type="checkbox" name="'+module.manifest_name+'" id="'+module.manifest_id+'" checked/>';
-                        html += '<label class="admin__field-label"></label><label for="'+module.id+'">'+module.manifest_name+'</label>';
+                        html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-active-modules" type="checkbox" name="' + module.manifest_name + '" id="' + module.manifest_id + '" checked/>';
+                        html += '<label class="admin__field-label"></label><label for="' + module.id + '">' + module.manifest_name + '</label>';
                         html += '<button class="action-delete export-list-icon active-modules-btn" title="Show Items" type="button"></div></div></div>';
                     });
                     if (activeModules === undefined || activeModules.length == 0) {
@@ -118,14 +117,12 @@ define([
                         html += '<label class="admin__field-label"></label><label>There is no Active Modules</label></div></div></div>';
                     }
 
-                    console.log(response);
                     $('.question').html(html);
                 });
             });
         });
 
-        function getExportData(active_version, loaderVisibility)
-        {
+        function getExportData(active_version, loaderVisibility) {
             return $.ajax({
                 type: "GET",
                 url: config.getExportDataUrl,
@@ -133,8 +130,7 @@ define([
             });
         }
 
-        function fastlyExport()
-        {
+        function fastlyExport() {
             let checkedAcls = {};
             $('.export-acl:checked').each(function () {
                 let aclId = $(this).attr('id');
@@ -191,12 +187,23 @@ define([
         }
 
         $('body').on('click', '.acl-items-btn', function () {
+
+            if ($('.export-acl-items').length !== 0) {
+                $('.export-acl-items').remove();
+                return;
+            }
+
+            if ($('.export-acl-note').length !== 0) {
+                $('.export-acl-note').remove();
+                return;
+            }
+
             let acl_id = $(this).closest('.admin__field-option').find(".admin__control-checkbox").attr('id');
             let acl_field = $(this).parents('div.field');
             $.ajax({
                 type: "POST",
                 url: config.getAclItems,
-                showLoader: true,
+                showLoader: false,
                 data: {'acl_id': acl_id}
             }).done(function (response) {
                 if (response.status !== false) {
@@ -221,29 +228,40 @@ define([
                             itemsHtml += '</div></div>';
                         });
                         acl_field.after(itemsHtml);
+                        return;
                     } else {
-                        if ($('.export-acl-note') !== 0) {
-                            $('.export-acl-note').remove();
-                        }
-
                         itemsHtml += '<div class="admin__field field export-acl-note"><div class="admin__field-note export-note">no items</div></div>';
                         acl_field.after(itemsHtml);
+                        return;
                     }
                 }
+
+                modal.modal('closeModal');
+                return errorExportBtnMsg.text($.mage.__(response.msg)).show();
             });
         });
 
         $('body').on('click', '.dictionary-items-btn', function () {
+            if ($(".export-dictionary-items").length !== 0) {
+                $(".export-dictionary-items").remove();
+                return;
+            }
+
+            if ($('.export-dictionary-note').length !== 0) {
+                $('.export-dictionary-note').remove();
+                return;
+            }
+
             let dictionary_id = $(this).closest('.admin__field-option').find(".admin__control-checkbox").attr('id');
             let dictionary_field = $(this).parents('div.field');
             $.ajax({
                 type: "POST",
                 url: config.getDictionaryItems,
-                showLoader: true,
+                showLoader: false,
                 data: {'dictionary_id': dictionary_id}
             }).done(function (response) {
                 if (response.status !== false) {
-                    let itemsHtml = '';
+                    let itemsHtml = '<div class="admin__field field export-dictionary-items">';
                     if (response.dictionaryItems.length > 0) {
                         $.each(response.dictionaryItems, function (index, item) {
                             itemsHtml += '<div class="admin__field field"><div class="admin__field-note export-note">' + item.item_key;
@@ -251,22 +269,46 @@ define([
                             itemsHtml += '</div></div>';
                         });
                         dictionary_field.after(itemsHtml);
+                        return;
                     } else {
-                        if ($('.export-dictionary-note') !== 0) {
-                            $('.export-dictionary-note').remove();
-                        }
-
                         itemsHtml += '<div class="admin__field field export-dictionary-note"><div class="admin__field-note export-note">no items</div></div>';
                         dictionary_field.after(itemsHtml);
+                        return;
                     }
                 }
+
+                modal.modal('closeModal');
+                return errorExportBtnMsg.text($.mage.__(response.msg)).show();
             });
         });
 
         $('body').on('click', '.active-modules-btn', function () {
+            if ($(".export-active-module-note").length !== 0) {
+                $('.export-active-module-note').remove();
+                return;
+            }
+
             let module_id = $(this).closest('.admin__field-option').find(".admin__control-checkbox").attr('id');
             let module_field = $(this).parents('div.field');
-            console.log(module_id);
+            $.ajax({
+                type: 'POST',
+                url: config.getModuleDataUrl,
+                showLoader: false,
+                data: {'module_id': module_id},
+                success: function (response) {
+                    if (response.status !== false) {
+                        let module = response.module;
+                        let itemsHtml = '';
+                        itemsHtml += '<div class="admin__field field export-active-module-note"><div class="admin__field-note export-note">' + module.manifest_description;
+                        itemsHtml += '</div></div>';
+                        module_field.after(itemsHtml);
+                        return;
+                    }
+
+                    modal.modal('closeModal');
+                    return errorExportBtnMsg.text($.mage.__(response.msg)).show();
+                }
+            })
         });
     }
 });

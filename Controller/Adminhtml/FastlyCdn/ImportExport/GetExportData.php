@@ -2,15 +2,16 @@
 
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\ImportExport;
 
+use Fastly\Cdn\Helper\Vcl;
+use Fastly\Cdn\Model\Api;
+use Fastly\Cdn\Model\Config;
+use Fastly\Cdn\Model\Modly\Manifest;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Fastly\Cdn\Model\Config;
-use Fastly\Cdn\Model\Api;
-use Fastly\Cdn\Helper\Vcl;
 use Magento\Framework\Filesystem;
-use Magento\Framework\App\Filesystem\DirectoryList;
 
 /**
  * Class GetExportData
@@ -42,6 +43,10 @@ class GetExportData extends Action
      * @var Filesystem
      */
     private $filesystem;
+    /**
+     * @var Manifest
+     */
+    private $manifest;
 
     /**
      * GetExportData constructor.
@@ -52,6 +57,7 @@ class GetExportData extends Action
      * @param Api $api
      * @param Vcl $vcl
      * @param Filesystem $filesystem
+     * @param Manifest $manifest
      */
     public function __construct(
         Context $context,
@@ -60,7 +66,8 @@ class GetExportData extends Action
         Config $config,
         Api $api,
         Vcl $vcl,
-        Filesystem $filesystem
+        Filesystem $filesystem,
+        Manifest $manifest
     ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
@@ -68,6 +75,7 @@ class GetExportData extends Action
         $this->api = $api;
         $this->vcl = $vcl;
         $this->filesystem = $filesystem;
+        $this->manifest = $manifest;
         parent::__construct($context);
     }
 
@@ -100,6 +108,9 @@ class GetExportData extends Action
                     $snippets[$snippetName] = $content;
                 }
             }
+
+            $activeEdgeModules = [];
+            $activeEdgeModules = $this->manifest->getActiveModlyManifests();
 
             return $result->setData([
                 'status'            => true,

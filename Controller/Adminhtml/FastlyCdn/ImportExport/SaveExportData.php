@@ -78,38 +78,12 @@ class SaveExportData extends Action
 
             $exportAcls = [];
             if (isset($acls)) {
-                foreach ($acls as $id => $name) {
-                    $aclItems = $this->api->aclItemsList($id);
-                    $items = [];
-                    foreach ($aclItems as $index => $item) {
-                        $items[$index] = [
-                            'ip'        => $item->ip,
-                            'negated'   => $item->negated,
-                            'comment'   => $item->comment,
-                            'subnet'    => $item->subnet
-                        ];
-                    }
-                    $exportAcls[$name] = [
-                        'items' => $items
-                    ];
-                }
+                $exportAcls = $this->exportAcls($acls);
             }
 
             $exportDictionaries = [];
             if (isset($dictionaries)) {
-                foreach ($dictionaries as $id => $name) {
-                    $dictionaryItems = $this->api->dictionaryItemsList($id);
-                    $items = [];
-                    foreach ($dictionaryItems as $index => $item) {
-                        $items[$index] = [
-                            'item_key'      => $item->item_key,
-                            'item_value'    => $item->item_value
-                        ];
-                    }
-                    $exportDictionaries[$name] = [
-                        'items' => $items
-                    ];
-                }
+                $exportDictionaries = $this->exportDictionaries($dictionaries);
             }
 
             $exportAdminTimeout = [];
@@ -156,5 +130,45 @@ class SaveExportData extends Action
         $write = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
         $file = $write->getRelativePath($fileName);
         $write->writeFile($file, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    }
+
+    private function exportDictionaries($dictionaries)
+    {
+        $exportDictionaries = [];
+            foreach ($dictionaries as $id => $name) {
+                $dictionaryItems = $this->api->dictionaryItemsList($id);
+                $items = [];
+                foreach ($dictionaryItems as $index => $item) {
+                    $items[$index] = [
+                        'item_key'      => $item->item_key,
+                        'item_value'    => $item->item_value
+                    ];
+                }
+                $exportDictionaries[$name] = [
+                    'items' => $items
+                ];
+            }
+            return $exportDictionaries;
+    }
+
+    private function exportAcls($acls)
+    {
+        $exportAcls = [];
+        foreach ($acls as $id => $name) {
+            $aclItems = $this->api->aclItemsList($id);
+            $items = [];
+            foreach ($aclItems as $index => $item) {
+                $items[$index] = [
+                    'ip'        => $item->ip,
+                    'negated'   => $item->negated,
+                    'comment'   => $item->comment,
+                    'subnet'    => $item->subnet
+                ];
+            }
+            $exportAcls[$name] = [
+                'items' => $items
+            ];
+        }
+        return $exportAcls;
     }
 }

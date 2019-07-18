@@ -66,7 +66,7 @@ class SaveExportData extends Action
     /**
      * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Json|\Magento\Framework\Controller\ResultInterface
      */
-    public function execute()
+    public function execute() // @codingStandardsIgnoreLine - can't be less complex
     {
         $result = $this->resultJson->create();
         try {

@@ -66,7 +66,7 @@ class SaveExportData extends Action
     /**
      * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Json|\Magento\Framework\Controller\ResultInterface
      */
-    public function execute() // @codingStandardsIgnoreLine - can't be less complex
+    public function execute()
     {
         $result = $this->resultJson->create();
         try {
@@ -138,10 +138,7 @@ class SaveExportData extends Action
                 'admin_timeout'     => $exportAdminTimeout
             ];
 
-            $fileName = Config::EXPORT_FILE_NAME;
-            $write = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
-            $file = $write->getRelativePath($fileName);
-            $write->writeFile($file, json_encode($exportData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+            $this->writeJson($exportData, Config::EXPORT_FILE_NAME);
 
             return $result->setData([
                 'status'    => true
@@ -152,5 +149,12 @@ class SaveExportData extends Action
                 'msg'       => $e->getMessage()
             ]);
         }
+    }
+
+    private function writeJson($data, $fileName)
+    {
+        $write = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
+        $file = $write->getRelativePath($fileName);
+        $write->writeFile($file, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     }
 }

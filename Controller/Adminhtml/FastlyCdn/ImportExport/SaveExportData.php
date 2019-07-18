@@ -112,7 +112,8 @@ class SaveExportData extends Action
                 }
             }
 
-            if(isset($adminTimeout)) {
+            $exportAdminTimeout = [];
+            if (isset($adminTimeout)) {
                 $exportAdminTimeout = [
                     'seconds' => $adminTimeout
                 ];

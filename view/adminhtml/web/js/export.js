@@ -29,8 +29,7 @@ define([
             }
         };
 
-        $('#fastly_export').on('click', function ()
-        {
+        $('#fastly_export').on('click', function () {
             if (isAlreadyConfigured !== true) {
                 $(this).attr('disabled', true);
                 return alert($.mage.__('Please save config prior to continuing.'));
@@ -177,21 +176,20 @@ define([
             $('.export-active-modules:checked').each(function () {
                 let module_id = $(this).attr('id');
                 $.each(activeModules, function (index, content) {
-                    if(module_id === content.manifest_id){
+                    if (module_id === content.manifest_id) {
                         checkedActiveModules[index] = content;
                     }
                 });
             });
 
             let adminTimeoutPath;
-            if($('.export-admin-timeout').prop('checked')){
+            if ($('.export-admin-timeout').prop('checked')) {
                 adminTimeoutPath = adminTimeout;
             }
 
 
             if ($.isEmptyObject(checkedAcls) && $.isEmptyObject(checkedDictionaries) && $.isEmptyObject(checkedCustomSnippets
-                && $.isEmptyObject(checkedActiveModules) ))
-            {
+                && $.isEmptyObject(checkedActiveModules))) {
                 resetAllMessages();
                 showErrorMessage('At least one item must be selected.');
                 return;

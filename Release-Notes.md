@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.111
+
+- Add Fastly Version UI https://github.com/fastly/fastly-magento2/pull/293
+- Add page URL to the GeoIP switcher https://github.com/fastly/fastly-magento2/pull/292
+
 ## 1.2.110
 
 - Rework the rate limiting UI  https://github.com/fastly/fastly-magento2/pull/291

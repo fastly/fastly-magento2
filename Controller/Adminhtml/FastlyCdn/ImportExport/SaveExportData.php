@@ -74,6 +74,7 @@ class SaveExportData extends Action
             $dictionaries = $this->getRequest()->getParam('dictionaries');
             $customSnippets = $this->getRequest()->getParam('custom_snippets');
             $activeModules = $this->getRequest()->getParam('active_modules');
+            $adminTimeout = $this->getRequest()->getParam('admin_timeout');
 
             $exportAcls = [];
             if (isset($acls)) {
@@ -111,6 +112,12 @@ class SaveExportData extends Action
                 }
             }
 
+            if(isset($adminTimeout)) {
+                $exportAdminTimeout = [
+                    'seconds' => $adminTimeout
+                ];
+            }
+
             if (!isset($customSnippets)) {
                 $customSnippets = [];
             }
@@ -126,7 +133,8 @@ class SaveExportData extends Action
                 'edge_acls'         => $exportAcls,
                 'edge_dictionaries' => $exportDictionaries,
                 'custom_snippets'   => $customSnippets,
-                'active_modules'    => $exportActiveModules
+                'active_modules'    => $exportActiveModules,
+                'admin_timeout'     => $exportAdminTimeout
             ];
 
             $fileName = Config::EXPORT_FILE_NAME;

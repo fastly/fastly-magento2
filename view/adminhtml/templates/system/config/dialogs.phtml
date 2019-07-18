@@ -2333,8 +2333,6 @@ $getOwaspSettingsUrl =          $block->getUrl('adminhtml/fastlyCdn_Waf/getOwasp
 $toggleWafBypassSettingUrl =    $block->getUrl('adminhtml/fastlyCdn_Waf/wafAllowlist');
 $checkWafBypassSettingUrl =     $block->getUrl('adminhtml/fastlyCdn_Waf/checkWafBypassSetting');
 $updateWafBypassUrl =           $block->getUrl('adminhtml/fastlyCdn_Waf/updateWafAllowlist');
-//timeout
-$adminUrl =                 $block->getUrl('adminhtml/fastlyCdn_AdminTimeout/getAdminUrl');
 
 // This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application
 $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
@@ -2420,8 +2418,7 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "updateSuIpsUrl": "<?php echo $block->escapeJsQuote($updateSuIpsUrl);?>",
                     "createBackendUrl": "<?php echo $block->escapeJsQuote($createBackendUrl);?>",
                     "getExportDataUrl": "<?php echo $block->escapeJsQuote($getExportDataUrl);?>",
-                    "exportDataUrl": "<?php echo $block->escapeJsQuote($exportDataUrl);?>",
-                    "adminUrl": "<?php echo $block->escapeJsQuote($adminUrl);?>"
+                    "exportDataUrl": "<?php echo $block->escapeJsQuote($exportDataUrl);?>"
                 }
             }
         }

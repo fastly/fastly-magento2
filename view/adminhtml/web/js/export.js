@@ -15,6 +15,8 @@ define([
         let customSnippets;
         let acls;
         let dictionaries;
+        let adminTimeout = $("#system_full_page_cache_fastly_fastly_advanced_configuration_admin_path_timeout").val();
+
 
         let exportOptions = {
             id: 'fastly-export-options',
@@ -118,6 +120,13 @@ define([
                         html += '<label class="admin__field-label"></label><label>There is no Active Modules</label></div></div></div>';
                     }
 
+                    html += '<div class="admin__field field"><div class="admin__field-control export-field">';
+                    html += '<label class="admin__field-label"><b>Advanced Configuration</b></label></div></div>';
+                    html += '<div class="admin__field field"><div class="admin__field-control export-field">';
+                    html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-admin-timeout" type="checkbox" name="admin-timeout" id="admin-timeout" checked/>';
+                    html += '<label class="admin__field-label"></label><label for="admin-timeout">Admin Path Timeout</label>';
+                    html += '<button class="action-delete export-list-icon admin-timeout-btn" title="Show Items" type="button"></div></div></div>';
+
                     $('.question').html(html);
                 });
             });
@@ -174,6 +183,12 @@ define([
                 });
             });
 
+            let adminTimeoutPath;
+            if($('.export-admin-timeout').prop('checked')){
+                adminTimeoutPath = adminTimeout;
+            }
+
+
             if ($.isEmptyObject(checkedAcls) && $.isEmptyObject(checkedDictionaries) && $.isEmptyObject(checkedCustomSnippets
                 && $.isEmptyObject(checkedActiveModules) ))
             {
@@ -189,7 +204,8 @@ define([
                     'acls': checkedAcls,
                     'dictionaries': checkedDictionaries,
                     'custom_snippets': checkedCustomSnippets,
-                    'active_modules': checkedActiveModules
+                    'active_modules': checkedActiveModules,
+                    'admin_timeout': adminTimeoutPath
                 }
             }).done(function (response) {
                 if (response !== false) {
@@ -326,6 +342,19 @@ define([
                     return errorExportBtnMsg.text($.mage.__(response.msg)).show();
                 }
             })
+        });
+
+        $('body').on('click', '.admin-timeout-btn', function () {
+            if ($(".export-admin-path-timeout").length !== 0) {
+                $('.export-admin-path-timeout').remove();
+                return;
+            }
+
+            let module_field = $(this).parents('div.field');
+            let itemsHtml = '';
+            itemsHtml += '<div class="admin__field field export-admin-path-timeout"><div class="admin__field-note export-note">' + adminTimeout + 's';
+            itemsHtml += '</div></div>';
+            module_field.after(itemsHtml);
         });
     }
 });

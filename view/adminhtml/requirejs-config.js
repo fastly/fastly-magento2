@@ -27,8 +27,7 @@ let config = {
             rateLimiting: 'Fastly_Cdn/js/rate-limiting',
             maintenance: 'Fastly_Cdn/js/maintenance',
             fastlyImport: 'Fastly_Cdn/js/import',
-            fastlyExport: 'Fastly_Cdn/js/export',
-            adminTimeout: 'Fastly_Cdn/js/timeout'
+            fastlyExport: 'Fastly_Cdn/js/export'
         }
     }
 };

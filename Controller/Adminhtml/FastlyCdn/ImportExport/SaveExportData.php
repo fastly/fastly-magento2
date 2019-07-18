@@ -58,8 +58,7 @@ class SaveExportData extends Action
         Config $config,
         Api $api,
         Filesystem $filesystem
-    )
-    {
+    ){
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
         $this->config = $config;

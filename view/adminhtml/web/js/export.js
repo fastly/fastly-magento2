@@ -15,6 +15,7 @@ define([
         let customSnippets;
         let acls;
         let dictionaries;
+        let activeModules;
         let adminTimeout = $("#system_full_page_cache_fastly_fastly_advanced_configuration_admin_path_timeout").val();
 
 
@@ -107,24 +108,26 @@ define([
 
                     html += '<div class="admin__field field"><div class="admin__field-control export-field">';
                     html += '<label class="admin__field-label"><b>Active Edge Modules</b></label></div></div>';
-                    $.each(activeModules, function (index, module) {
+                    $.each(activeModules, function (index, edgeModule) {
                         html += '<div class="admin__field field"><div class="admin__field-control export-field">';
-                        html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-active-modules" type="checkbox" name="' + module.manifest_name + '" id="' + module.manifest_id + '" checked/>';
-                        html += '<label class="admin__field-label"></label><label for="' + module.id + '">' + module.manifest_name + '</label>';
-                        html += '<button class="action-delete export-list-icon active-modules-btn" title="Show Items" type="button"></div></div></div>';
+                        html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-active-modules" type="checkbox" name="' + edgeModule.manifest_name + '" id="' + edgeModule.manifest_id + '" checked/>';
+                        html += '<label class="admin__field-label"></label><label for="' + edgeModule.id + '">' + edgeModule.manifest_name + '</label></div></div></div>';
+                        html += '<div class="admin__field field"><div class="admin__field-note export-note" id="' + index + '">' + edgeModule.manifest_description;
+                        html += '</div></div>';
                     });
                     if (activeModules === undefined || activeModules.length == 0) {
                         html += '<div class="admin__field field"><div class="admin__field-control export-field">';
                         html += '<div class="admin__field-option admin__control-table">';
-                        html += '<label class="admin__field-label"></label><label>There is no Active Modules</label></div></div></div>';
+                        html += '<label class="admin__field-label"></label><label>There are no Active Modules</label></div></div></div>';
                     }
 
                     html += '<div class="admin__field field"><div class="admin__field-control export-field">';
                     html += '<label class="admin__field-label"><b>Advanced Configuration</b></label></div></div>';
                     html += '<div class="admin__field field"><div class="admin__field-control export-field">';
                     html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-admin-timeout" type="checkbox" name="admin-timeout" id="admin-timeout" checked/>';
-                    html += '<label class="admin__field-label"></label><label for="admin-timeout">Admin Path Timeout</label>';
-                    html += '<button class="action-delete export-list-icon admin-timeout-btn" title="Show Items" type="button"></div></div></div>';
+                    html += '<label class="admin__field-label"></label><label for="admin-timeout">Admin Path Timeout</label></div></div></div>';
+                    html += '<div class="admin__field field"><div class="admin__field-note export-note">' + adminTimeout + 's';
+                    html += '</div></div>';
 
                     $('.question').html(html);
                 });
@@ -328,9 +331,9 @@ define([
                 data: {'module_id': module_id},
                 success: function (response) {
                     if (response.status !== false) {
-                        let module = response.module;
+                        let edgeModule = response.module;
                         let itemsHtml = '';
-                        itemsHtml += '<div class="admin__field field export-active-module-note"><div class="admin__field-note export-note">' + module.manifest_description;
+                        itemsHtml += '<div class="admin__field field export-active-module-note"><div class="admin__field-note export-note">' + edgeModule.manifest_description;
                         itemsHtml += '</div></div>';
                         module_field.after(itemsHtml);
                         return;

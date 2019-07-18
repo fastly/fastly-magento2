@@ -13,6 +13,8 @@ use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\FileSystemException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Filesystem;
 
 /**
@@ -129,6 +131,11 @@ class SaveExportData extends Action
         }
     }
 
+    /**
+     * @param $acls
+     * @return array
+     * @throws LocalizedException
+     */
     private function exportAcls($acls)
     {
         $exportAcls = [];
@@ -150,6 +157,11 @@ class SaveExportData extends Action
         return $exportAcls;
     }
 
+    /**
+     * @param $dictionaries
+     * @return array
+     * @throws LocalizedException
+     */
     private function exportDictionaries($dictionaries)
     {
         $exportDictionaries = [];
@@ -169,6 +181,11 @@ class SaveExportData extends Action
         return $exportDictionaries;
     }
 
+    /**
+     * @param $data
+     * @param $fileName
+     * @throws FileSystemException
+     */
     private function writeJson($data, $fileName)
     {
         $write = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);

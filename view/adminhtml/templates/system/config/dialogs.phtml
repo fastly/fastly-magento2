@@ -2500,6 +2500,30 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
         font-size: 2rem;
     }
 
+    .admin__control-table .fastly-activate-vcl-action {
+        background-image: url("<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/cloud.svg') ?>");
+        width: 2.5rem;
+        height: 2.5rem;
+        background-color: transparent;
+        border-color: transparent;
+        box-shadow: none;
+        padding-left: 0;
+        padding-right: 0;
+        background-repeat: no-repeat;
+    }
+
+    .admin__control-table .fastly-view-vcl-action {
+        background-image: url("<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/view.svg') ?>");
+        width: 2.5rem;
+        height: 2.5rem;
+        background-color: transparent;
+        border-color: transparent;
+        box-shadow: none;
+        padding-left: 0;
+        padding-right: 0;
+        background-repeat: no-repeat;
+    }
+
     .dialog-item {
         border: none;
         background-color: transparent;

@@ -222,7 +222,7 @@ define([
                     let text = document.createTextNode('Activated');
                     let span = document.createElement('span');
                     let button = document.createElement('button');
-                    button.setAttribute('class', 'action-delete fastly-save-action activate-action');
+                    button.setAttribute('class', 'fastly-activate-vcl-action activate-action');
                     button.setAttribute('id', 'action_version_' + response.old_version);
                     button.setAttribute('title', 'Activate');
                     button.setAttribute('data-version-number', response.old_version);
@@ -260,7 +260,7 @@ define([
                 let span = document.createElement('span');
 
                 let showVCLButton = document.createElement('button');
-                showVCLButton.setAttribute('class', 'action-delete fastly-edit-active-modules-icon show-VCL-action');
+                showVCLButton.setAttribute('class', 'fastly-view-vcl-action show-vcl-action');
                 showVCLButton.setAttribute('id', 'action_show_VCL_' + version.number);
                 showVCLButton.setAttribute('title', 'Show VCL');
                 showVCLButton.setAttribute('data-version-number', version.number);
@@ -273,7 +273,7 @@ define([
                 actionCell.setAttribute('id', 'action_cell_' + version.number);
                 if (active_version !== version.number) {
                     button = document.createElement('button');
-                    button.setAttribute('class', 'action-delete fastly-save-action activate-action');
+                    button.setAttribute('class', 'fastly-activate-vcl-action activate-action');
                     button.setAttribute('id', 'action_version_' + version.number);
                     button.setAttribute('title', 'Activate');
                     button.setAttribute('data-version-number', version.number);
@@ -347,7 +347,7 @@ define([
         /**
          * Activate version
          */
-        $('body').on('click', 'button.fastly-save-action', function () {
+        $('body').on('click', 'button.activate-action', function () {
             resetAllMessages();
             let version_number = $(this).data('version-number');
             confirm({
@@ -366,7 +366,7 @@ define([
         /**
          * Show versions's VCL
          */
-        $('body').on('click', 'button.fastly-edit-active-modules-icon', function () {
+        $('body').on('click', 'button.show-vcl-action', function () {
             resetAllMessages();
             let version_number = $(this).data('version-number');
             overlay(showVCLOptions);

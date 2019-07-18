@@ -221,23 +221,12 @@ define([
         }
 
         $('body').on('click', '.acl-items-btn', function () {
-
-            if ($('.export-acl-items').length !== 0) {
-                $('.export-acl-items').remove();
-                return;
-            }
-
-            if ($('.export-acl-note').length !== 0) {
-                $('.export-acl-note').remove();
-                return;
-            }
-
             let acl_id = $(this).closest('.admin__field-option').find(".admin__control-checkbox").attr('id');
             let acl_field = $(this).parents('div.field');
             $.ajax({
                 type: "POST",
                 url: config.getAclItems,
-                showLoader: false,
+                showLoader: true,
                 data: {'acl_id': acl_id}
             }).done(function (response) {
                 if (response.status !== false) {
@@ -254,17 +243,19 @@ define([
                                 ip_output = '!' + ip_output;
                             }
                             let created_at = new Date(item.created_at);
-                            itemsHtml += '<div class="admin__field field"><div class="admin__field-note export-note">' + ip_output;
+                            itemsHtml += '<div class="admin__field field '+acl_id+'"><div class="admin__field-note export-note">' + ip_output;
                             if (item.comment !== "") {
                                 itemsHtml += ' (' + item.comment + ')';
                             }
                             itemsHtml += ' ' + created_at.toUTCString();
                             itemsHtml += '</div></div>';
                         });
+                        $('.'+acl_id).remove();
                         acl_field.after(itemsHtml);
                         return;
                     } else {
-                        itemsHtml += '<div class="admin__field field export-acl-note"><div class="admin__field-note export-note">no items</div></div>';
+                        itemsHtml += '<div class="admin__field field export-acl-note '+acl_id+'"><div class="admin__field-note export-note">no items</div></div>';
+                        $('.'+acl_id).remove();
                         acl_field.after(itemsHtml);
                         return;
                     }
@@ -276,36 +267,28 @@ define([
         });
 
         $('body').on('click', '.dictionary-items-btn', function () {
-            if ($(".export-dictionary-items").length !== 0) {
-                $(".export-dictionary-items").remove();
-                return;
-            }
-
-            if ($('.export-dictionary-note').length !== 0) {
-                $('.export-dictionary-note').remove();
-                return;
-            }
-
             let dictionary_id = $(this).closest('.admin__field-option').find(".admin__control-checkbox").attr('id');
             let dictionary_field = $(this).parents('div.field');
             $.ajax({
                 type: "POST",
                 url: config.getDictionaryItems,
-                showLoader: false,
+                showLoader: true,
                 data: {'dictionary_id': dictionary_id}
             }).done(function (response) {
                 if (response.status !== false) {
-                    let itemsHtml = '<div class="admin__field field export-dictionary-items">';
+                    let itemsHtml = '<div class="admin__field field export-dictionary-items '+dictionary_id+'">';
                     if (response.dictionaryItems.length > 0) {
                         $.each(response.dictionaryItems, function (index, item) {
                             itemsHtml += '<div class="admin__field field"><div class="admin__field-note export-note">' + item.item_key;
                             itemsHtml += ' (' + item.item_value + ')';
                             itemsHtml += '</div></div>';
                         });
+                        $('.'+dictionary_id).remove();
                         dictionary_field.after(itemsHtml);
                         return;
                     } else {
                         itemsHtml += '<div class="admin__field field export-dictionary-note"><div class="admin__field-note export-note">no items</div></div>';
+                        $('.'+dictionary_id).remove();
                         dictionary_field.after(itemsHtml);
                         return;
                     }
@@ -314,48 +297,6 @@ define([
                 modal.modal('closeModal');
                 return errorExportBtnMsg.text($.mage.__(response.msg)).show();
             });
-        });
-
-        $('body').on('click', '.active-modules-btn', function () {
-            if ($(".export-active-module-note").length !== 0) {
-                $('.export-active-module-note').remove();
-                return;
-            }
-
-            let module_id = $(this).closest('.admin__field-option').find(".admin__control-checkbox").attr('id');
-            let module_field = $(this).parents('div.field');
-            $.ajax({
-                type: 'POST',
-                url: config.getModuleDataUrl,
-                showLoader: false,
-                data: {'module_id': module_id},
-                success: function (response) {
-                    if (response.status !== false) {
-                        let edgeModule = response.module;
-                        let itemsHtml = '';
-                        itemsHtml += '<div class="admin__field field export-active-module-note"><div class="admin__field-note export-note">' + edgeModule.manifest_description;
-                        itemsHtml += '</div></div>';
-                        module_field.after(itemsHtml);
-                        return;
-                    }
-
-                    modal.modal('closeModal');
-                    return errorExportBtnMsg.text($.mage.__(response.msg)).show();
-                }
-            })
-        });
-
-        $('body').on('click', '.admin-timeout-btn', function () {
-            if ($(".export-admin-path-timeout").length !== 0) {
-                $('.export-admin-path-timeout').remove();
-                return;
-            }
-
-            let module_field = $(this).parents('div.field');
-            let itemsHtml = '';
-            itemsHtml += '<div class="admin__field field export-admin-path-timeout"><div class="admin__field-note export-note">' + adminTimeout + 's';
-            itemsHtml += '</div></div>';
-            module_field.after(itemsHtml);
         });
     }
 });

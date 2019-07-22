@@ -2378,6 +2378,7 @@ $savePageErrorHtml =            $block->getUrl('adminhtml/fastlyCdn_SyntheticPag
 $saveWafPage =                  $block->getUrl('adminhtml/fastlyCdn_SyntheticPages/saveWafPage');
 // VCL
 $vclUploadUrl =                 $block->getUrl('adminhtml/fastlyCdn_Vcl/upload');
+$vclComparison =                $block->getUrl('adminhtml/fastlyCdn_Vcl/comparison');
 // Web Application Firewall
 $getWafSettingsUrl =            $block->getUrl('adminhtml/fastlyCdn_Waf/getWafSettings');
 $getOwaspSettingsUrl =          $block->getUrl('adminhtml/fastlyCdn_Waf/getOwaspSettings');
@@ -2471,7 +2472,8 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "exportDataUrl": "<?php echo $block->escapeJsQuote($exportDataUrl);?>",
                     "versionHistory": "<?php echo $block->escapeJsQuote($allFastlyVersions);?>",
                     "activateVersion": "<?php echo $block->escapeJsQuote($activateVersion); ?>",
-                    "versionReference": "<?php echo $block->escapeJsQuote($versionReference); ?>"
+                    "versionReference": "<?php echo $block->escapeJsQuote($versionReference); ?>",
+                    "vclComparison": "<?php echo $block->escapeJsQuote($vclComparison); ?>"
                 }
             }
         }

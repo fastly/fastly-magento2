@@ -13,6 +13,8 @@ define([
         let active_version = serviceStatus.active_version;
 
         $(document).ready(function () {
+            compareVclVersions(active_version);
+
             let uploadOptions = {
                 title: jQuery.mage.__('You are about to upload VCL to Fastly '),
                 content: function () {
@@ -22,6 +24,28 @@ define([
                     uploadVcl(active_version);
                 }
             };
+
+            function compareVclVersions()
+            {
+                $("#row_system_full_page_cache_fastly_fastly_service_id td:eq(2)").append(esi)
+
+                $.ajax({
+                   type: 'GET',
+                   url: config.vclComparison,
+                   showLoader: false,
+                   data: {'active_version':active_version},
+                   success: function (response) {
+                       if(response.status !== true) {
+                           let text = document.createTextNode(response.msg);
+                           let warning = document.createElement('div');
+                           warning.setAttribute('class', 'message message-warning');
+                           warning.setAttribute('id', 'fastly-warning-vcl');
+                           warning.append(text);
+                           $("#row_system_full_page_cache_fastly_fastly_service_id td:eq(2)").append(warning);
+                       }
+                   }
+                });
+            }
 
             /**
              * VCL Upload button on click event

@@ -1,0 +1,412 @@
+{
+  "edge_acls": {
+    "loggingAclTest": {
+      "items": []
+    },
+    "test": {
+      "items": []
+    }
+  },
+  "edge_dictionaries": {
+    "loggingDictionaryTest": {
+      "items": []
+    }
+  },
+  "custom_snippets": [],
+  "active_modules": {
+    "blackfire_integration": {
+      "description": "Necessary Fastly configuration to enable Blackfire profiling. Not required for Magento Commerce Cloud.",
+      "id": "blackfire_integration",
+      "name": "Blackfire integration",
+      "properties": [
+        {
+          "description": "ACL that contains IPs of users allowing to profile",
+          "label": "ACL",
+          "name": "Acl",
+          "required": true,
+          "type": "acl"
+        }
+      ],
+      "test": {
+        "origins": [
+          "https://httpbin.org"
+        ],
+        "reqUrl": "/status/500"
+      },
+      "vcl": [
+        {
+          "priority": 70,
+          "template": "   if (req.http.X-Blackfire-Query && req.http.Fastly-Client-IP ~ {{Acl}}) {\r\n     if (req.esi_level > 0) {\r\n        # ESI request should not be included in the profile.\r\n        # Instead you should profile them separately, each one\r\n        # in their dedicated profile.\r\n        # Removing the Blackfire header avoids to trigger the profiling.\r\n        # Not returning let it go through your usual workflow as a regular\r\n        # ESI request without distinction.\r\n        unset req.http.X-Blackfire-Query;\r\n     } else {\r\n        set req.http.X-Pass = \"1\";\r\n     }\r\n   }",
+          "type": "recv"
+        }
+      ],
+      "version": 1
+    },
+    "cors_headers": {
+      "description": "Set CORS headers",
+      "id": "cors_headers",
+      "name": "CORS headers",
+      "properties": [
+        {
+          "default": "anyone",
+          "description": "What origins are allowed",
+          "label": "Origins allowed",
+          "name": "origin",
+          "options": {
+            "anyone": "Allow anyone (*)",
+            "regex-match": "Regex matching set of origins. Do not supply http://"
+          },
+          "required": true,
+          "type": "select"
+        },
+        {
+          "default": "GET,HEAD,POST,OPTIONS",
+          "description": "Allowed HTTP Methods that requestor can use",
+          "label": "Allowed HTTP Methods",
+          "name": "cors_allowed_methods",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "description": "Regex matching origins that are allowed to access this service",
+          "label": "Regex matching origins",
+          "name": "cors_allowed_origins_regex",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "test": {
+        "origins": [
+          "https://httpbin.org"
+        ],
+        "reqUrl": "/html"
+      },
+      "vcl": [
+        {
+          "template": "  if (req.http.Origin && !resp.http.Access-Control-Allow-Origin && !resp.http.Access-Control-Allow-Methods) {\n{{#ifEq origin \"anyone\"}}\n    set resp.http.Access-Control-Allow-Origin = \"*\";\n{{/ifEq}}\n{{#ifEq origin \"regex-match\"}}\n    if ( req.http.Origin ~ \"^https?://{{cors_allowed_origins_regex}}\" ) {\n      set resp.http.Access-Control-Allow-Origin = req.http.origin;\n    }\n{{/ifEq}}\n    set resp.http.Access-Control-Allow-Methods = \"{{cors_allowed_methods}}\";\n  \n  }\n",
+          "type": "deliver"
+        }
+      ],
+      "version": 1
+    },
+    "force_cache_miss_on_hard_reload_for_admins": {
+      "name": "Hard Reload cache bypass for set of admin IPs",
+      "id": "force_cache_miss_on_hard_reload_for_admins",
+      "description": "Force cache miss for users on allowlist. Invoke it on your browser by pressing CMD/CTRL + SHIFT + R or SHIFT + F5 depending on your browser. It only affects your own session. It will not affected already cached content.",
+      "version": 1,
+      "properties": [
+        {
+          "name": "Acl",
+          "label": "ACL",
+          "description": "ACL that contains IPs of users allowing to force cache misses",
+          "type": "acl",
+          "required": true
+        }
+      ],
+      "vcl": [
+        {
+          "type": "recv",
+          "template": "if ( req.http.Fastly-Client-IP ~ {{Acl}} && req.http.pragma ~ \"no-cache\" ) {\n  set req.hash_always_miss = true;\n}"
+        },
+        {
+          "type": "hash",
+          "template": "if ( req.http.Fastly-Client-IP ~ {{Acl}} && req.http.pragma ~ \"no-cache\" ) {\n  set req.hash += \"NOCACHE\";\n\n}"
+        }
+      ],
+      "test": {
+        "origins": [
+          "https://httpbin.org"
+        ],
+        "reqUrl": "/status/500"
+      }
+    },
+    "inchoo_testing_module": {
+      "name": "Inchoo Testin module",
+      "id": "inchoo_testing_module",
+      "description": "Please note these paths will no longer be cached. Fastly imposes hard limit 10 minute timeout.",
+      "version": 1,
+      "properties": [
+        {
+          "name": "rules",
+          "label": "Timeout override rules",
+          "type": "group",
+          "properties": [
+            {
+              "name": "dict-inchoo",
+              "label": "Path pattern",
+              "description": "Regular expressions are supported",
+              "type": "dict",
+              "required": true
+            },
+            {
+              "name": "acl-inchoo",
+              "label": "Select ACL",
+              "description": "Regular expressions are supported",
+              "type": "acl",
+              "required": true
+            },
+            {
+              "name": "adawfag",
+              "label": "Select Dictionary",
+              "description": "Regular expressions are supported",
+              "type": "acl",
+              "required": true
+            }
+          ]
+        }
+      ],
+      "vcl": [
+        {
+          "type": "recv",
+          "template": "if (req.restarts == 0) {\n    unset req.http.x-edge-module-timeout;\n}{{#each rules}}\nif (req.url ~ \"{{pathpattern}}\") {\n  set req.http.x-pass = \"1\";\n  set req.http.x-edge-module-timeout = \"{{timeout}}\";\n}\n{{/each}}",
+          "priority": 80
+        },
+        {
+          "type": "pass",
+          "template": "if (req.http.x-edge-module-timeout) {\n  set bereq.first_byte_timeout = std.atof(req.http.x-edge-module-timeout);\n}"
+        }
+      ],
+      "test": {
+        "origins": [
+          "https://httpbin.org"
+        ],
+        "reqUrl": "/html"
+      }
+    },
+    "increase_timeouts_long_jobs": {
+      "name": "Increase timeouts for long running jobs",
+      "id": "increase_timeouts_long_jobs",
+      "description": "For selected requests, override default backend timeout. Often used for long running jobs that take over 1 minute. Please note these paths will no longer be cached. Fastly imposes hard limit 10 minute timeout.",
+      "version": 1,
+      "properties": [
+        {
+          "name": "rules",
+          "label": "Timeout override rules",
+          "type": "group",
+          "properties": [
+            {
+              "name": "pathpattern",
+              "label": "Path pattern",
+              "description": "Regular expressions are supported",
+              "type": "string",
+              "required": true
+            },
+            {
+              "name": "timeout",
+              "label": "Timeout in seconds",
+              "type": "integer",
+              "default": "300",
+              "required": true
+            }
+          ]
+        }
+      ],
+      "vcl": [
+        {
+          "type": "recv",
+          "template": "if (req.restarts == 0) {\n    unset req.http.x-edge-module-timeout;\n}{{#each rules}}\nif (req.url ~ \"{{pathpattern}}\") {\n  set req.http.x-pass = \"1\";\n  set req.http.x-edge-module-timeout = \"{{timeout}}\";\n}\n{{/each}}",
+          "priority": 80
+        },
+        {
+          "type": "pass",
+          "template": "if (req.http.x-edge-module-timeout) {\n  set bereq.first_byte_timeout = std.atof(req.http.x-edge-module-timeout);\n}"
+        }
+      ],
+      "test": {
+        "origins": [
+          "https://httpbin.org"
+        ],
+        "reqUrl": "/html"
+      }
+    },
+    "io_test_drive": {
+      "description": "Allows you to test drive Image optimization on your site without turning it on for all users. You can also use it to test drive specific quality level of images. Creates a special URL which will set a special cookie which turns on IO with selected quality settings only for you.",
+      "id": "io_test_drive",
+      "name": "Test Drive Image Optimization",
+      "properties": [
+        {
+          "default": "/.fastly-test-drive",
+          "description": "This is the URL that will be exposed on your domain for enabling test drive e.g. https://www.domain.com/.fastly-test-drive. Once is you enable this module go to the URL to enable it for yourself.",
+          "label": "Incoming URL path",
+          "name": "setupURL",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "test": {
+        "origins": [
+          "https://httpbin.org"
+        ],
+        "reqUrl": "/sourcePath"
+      },
+      "vcl": [
+        {
+          "template": "if (fastly.ff.visits_this_service == 0 && req.http.Fastly-IO-Test && !req.http.overlay-percent ) {\n\n  if ( resp.http.fastly-io-warning ) {\n    set req.http.overlay-percent = \"0\";\n    restart;\n  } else if (resp.http.fastly-io-info) {\n    if ( resp.http.fastly-io-info ~ \"ifsz=(\\d+).+ ofsz=(\\d+)\") {\n      declare local var.ifsz INTEGER;\n      declare local var.ofsz INTEGER;\n      set var.ifsz = std.atoi(re.group.1);\n      set var.ofsz = std.atoi(re.group.2);\n      declare local var.difference INTEGER;\n      set var.difference =  var.ifsz;\n      set var.difference -= var.ofsz;\n      set var.difference *=  100;\n      set var.difference /= var.ifsz;\n      set req.http.overlay-percent = var.difference;\n      restart;\n    }\n  }\n\n}\n\n\nif ( fastly.ff.visits_this_service == 0 && req.http.overlay-percent ) {\n  set resp.http.overlay-percent = req.http.overlay-percent;\n}\n\nif (fastly.ff.visits_this_service == 0 && req.http.Fastly-IO-Test && resp.http.fastly-io-info ) {\n  set resp.http.Cache-Control = \"max-age=0\";\n}",
+          "type": "deliver"
+        },
+        {
+          "template": "# Sets up synthetic responses\nif ( req.url.path == \"{{setupURL}}\" ) {\n  if ( req.url.qs == \"\" ) {\n    error 798;\n  } else {\n    set req.url = querystring.filter_except(req.url, \"quality\" + querystring.filtersep() + \"bgcolor\");\n    error 799;\n  }\n}\n\n# Enable IO only for users with the Fastly-IO-Test cookie\nif ( (req.http.fastly-io-test || req.http.Cookie:fastly-io-test ) && req.url.ext ~ \"(?i)^(gif|png|jpg|jpeg|webp)$\") {\n\n  set req.http.X-Fastly-Imageopto-Api = \"fastly\";\n\n  if ( !req.http.fastly-io-test ) {\n    set req.http.fastly-io-test = req.http.Cookie:fastly-io-test;\n  }\n    set req.url = querystring.set(req.url, \"auto\", \"webp\") + \"&\" + req.http.fastly-io-test;\n  \n}\n\nif ( req.http.fastly-io-test&& req.http.overlay-percent   ) {\n  set req.http.Fastly-Force-Shield = \"1\";  \n  declare local var.percent_url STRING;\n  set var.percent_url = \"/fastly-overlays/percent-overlay/\" req.http.overlay-percent;\n  set req.url = querystring.add(req.url, \"overlay\", var.percent_url);\n  set req.http.X-fastly-imageopto-overlay = \"overlay-align=bottom&overlay=\" var.percent_url;\n}",
+          "type": "recv"
+        },
+        {
+          "template": "  if (obj.status == 798 ) {\n    set obj.http.Content-Type = \"text/html; charset=utf-8\";\n    set obj.status = 200;\n    synthetic {\"<HTML>\n      <HEAD>\n      <TITLE>Image Optimization Test</TITLE>\n      <link rel='stylesheet' href='https://unpkg.com/purecss@1.0.0/build/pure-min.css'>       <META HTTP-EQUIV='Content-Type' CONTENT='text/html;'>\n      </HEAD>\n      <BODY>\n      <form>\n        Enter the quality level you want to test. This will set a cookie that will\n        allow you to test the site with the said quality level. If you want to try a different\n        quality level come back to this page. Also best used in Incognito or Private Window mod\n        <p>\n        <h2>Quality level 0-100 <input name=quality size=3></h2>\n        <input type=submit>\n      </form>\n      </BODY>\n      </HTML>\"};\n      return (deliver);\n  }\n  \n  if (obj.status == 799 ) {\n    set obj.http.Content-Type = \"text/html; charset=utf-8\";\n    set obj.http.Set-Cookie = \"fastly-io-test=\" req.url.qs \"; Max-Age=3600; path=/; HttpOnly\";\n    set obj.status = 200;\n    synthetic {\"Cookie has been set for 1 hour. Please browse the site as you normally would.\"};\n    return (deliver);\n  }",
+          "type": "error"
+        },
+        {
+          "template": " backend F_fastly_overlays {\n    .between_bytes_timeout = 10s;\n    .connect_timeout = 1s;\n    .dynamic = true;\n    .first_byte_timeout = 15s;\n    .host = \"overlays.global.ssl.fastly.net\";\n    .max_connections = 200;\n    .port = \"443\";\n    .host_header = \"overlays.global.ssl.fastly.net\";\n    .always_use_host_header = true;\n    .share_key = \"FASTLYOVERLAYSBACKEND\";\n    .ssl = true;\n    .ssl_cert_hostname = \"overlays.global.ssl.fastly.net\";\n    .ssl_check_cert = always;\n    .ssl_sni_hostname = \"overlays.global.ssl.fastly.net\";\n    .probe = {\n        .dummy = true;\n        .initial = 5;\n        .request = \"HEAD / HTTP/1.1\"  \"Host: overlays.global.ssl.fastly.net\" \"Connection: close\";\n        .threshold = 1;\n        .timeout = 2s;\n        .window = 5;\n      }\n}",
+          "type": "init"
+        },
+        {
+          "template": "if ( req.url.path ~ \"^/fastly-overlays/\" ) {\n  set req.backend = F_fastly_overlays;\n  set bereq.http.host = \"overlays.global.ssl.fastly.net\";\n}",
+          "type": "miss"
+        }
+      ],
+      "version": 1
+    },
+    "magento_cloud_sitemap_rewrite": {
+      "description": "URL rewrite /sitemap.xml path to point to the correct URL on the backend",
+      "id": "magento_cloud_sitemap_rewrite",
+      "name": "Magento Cloud Sitemap rewrites",
+      "properties": [
+        {
+          "entryTemplate": "{{source}} => {{dest}}",
+          "label": "Rules",
+          "name": "rules",
+          "properties": [
+            {
+              "default": "/sitemap.xml",
+              "description": "Incoming URL path only (no host) exact match e.g. /sitemap.xml",
+              "label": "Source path",
+              "name": "source",
+              "required": true,
+              "type": "path"
+            },
+            {
+              "default": "/media/sitemap.xml",
+              "description": "Destination path on origin (no host)",
+              "label": "Destination path",
+              "name": "dest",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "type": "group"
+        }
+      ],
+      "test": {
+        "origins": [
+          "https://httpbin.org"
+        ],
+        "reqUrl": "/sourcePath"
+      },
+      "vcl": [
+        {
+          "template": "{{#each rules}}\nif (!req.backend.is_shield && req.url.path == \"{{source}}\") {\n  set bereq.url = \"{{dest}}\";\n}\n{{/each}}",
+          "type": "miss"
+        },
+        {
+          "template": "{{#each rules}}\nif (!req.backend.is_shield && req.url.path == \"{{source}}\") {\n  set bereq.url = \"{{dest}}\";\n}\n{{/each}}",
+          "type": "pass"
+        }
+      ],
+      "version": 1
+    },
+    "other_cms_integration": {
+      "name": "Other CMS/backend integration",
+      "id": "other_cms_integration",
+      "description": "This edge module is intended to integrate other CMSes/backend into your shop e.g. Wordpress blog etc. Sometimes referred to as domain masking",
+      "version": 1,
+      "properties": [
+        {
+          "name": "urls_dict",
+          "label": "URL prefixes Dictionary",
+          "description": "Pick the dictionary that contains a list of prefixes that should be sent to another CMS/backend",
+          "type": "dict",
+          "required": true
+        },
+        {
+          "name": "override_backend_hostname",
+          "label": "Override Backend Hostname",
+          "description": "Optional hostname to send to the backend. DEFAULT doesn't modify Host header sent to the origin.",
+          "type": "string",
+          "default": "DEFAULT",
+          "required": true
+        }
+      ],
+      "vcl": [
+        {
+          "priority": 70,
+          "type": "recv",
+          "template": "  # Make sure X-ExternalCMS is not set before proceeding\n  if ( req.restarts == 0 ) {\n     remove req.http.X-ExternalCMS;\n  }\n\n  # Extract first part of the path from a URL\n  if ( req.url.path ~ \"^/?([^:/\\s]+).*$\" ) {\n     # check if first part of the url is in the wordpress urls table\n     if ( table.lookup({{urls_dict}}, re.group.1, \"NOTFOUND\") != \"NOTFOUND\" ) {\n       set req.http.X-ExternalCMS = \"1\";\n       # There is an issue with load-scripts.php in Wordpress where the ordering of query arguments matter\n       # in compressing the JS. By default Magento sorts query arguments. Here we undo the sorting for wp-admin URLs\n       if ( req.url.path ~ \"/wp-admin\" ) {\n         set req.url = req.http.Magento-Original-URL;\n       }\n     }\n  }\n"
+        },
+        {
+          "type": "miss",
+          "template": "{{#ifEq override_backend_hostname \"DEFAULT\"}}\n # Intentionally empty {{else}} \n  if ( req.backend.is_origin && req.http.X-ExternalCMS ) {\n    set bereq.http.host = \"{{override_backend_hostname}}\";\n  }\n{{/ifEq}}"
+        },
+        {
+          "type": "pass",
+          "template": "{{#ifEq override_backend_hostname \"DEFAULT\"}}\n # Intentionally empty {{else}} \n  if ( req.backend.is_origin && req.http.X-ExternalCMS ) {\n    set bereq.http.host = \"{{override_backend_hostname}}\";\n  }\n{{/ifEq}}"
+        }
+      ],
+      "test": {
+        "origins": [
+          "https://httpbin.org"
+        ],
+        "reqUrl": "/status/500"
+      }
+    },
+    "redirect_hosts": {
+      "description": "Set up domain/host redirects (301) e.g. domain.com => www.domain.com",
+      "id": "redirect_hosts",
+      "name": "Redirect one domain to another",
+      "properties": [
+        {
+          "entryTemplate": "{{incomingHost}} => {{destinationHost}}",
+          "label": "Rules",
+          "name": "rules",
+          "properties": [
+            {
+              "description": "Incoming domain/host e.g. www.domain.com",
+              "label": "Incoming Domain/Host",
+              "name": "incomingHost",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "description": "Destination domain/host",
+              "label": "Destination domain/host",
+              "name": "destinationHost",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "description": "Strip incoming path and set it to /. Default only rewrites host retaining the path e.g. http://domain.com/category is redirected to https://www.domain.com/category",
+              "name": "ignorePath",
+              "default": false,
+              "required": true,
+              "type": "boolean",
+              "label": "Ignore path"
+            }
+          ],
+          "type": "group"
+        }
+      ],
+      "test": {
+        "origins": [
+          "https://httpbin.org"
+        ],
+        "reqUrl": "/sourcePath"
+      },
+      "vcl": [
+        {
+          "template": "{{#each rules}}\nif (req.http.host == \"{{incomingHost}}\") {\n  set req.http.host = \"{{destinationHost}}\";\n  {{#if ignorePath }}\n  set req.url = \"/\";\n{{/if}}  error 801;\n}\n{{/each}}",
+          "type": "recv"
+        }
+      ],
+      "version": 1
+    }
+  },
+  "admin_timeout": {
+    "seconds": "200"
+  }
+}

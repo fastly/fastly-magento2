@@ -2234,11 +2234,62 @@
         </fieldset>
     </form>
 </script>
+
+<script type="text/x-magento-template" id="fastly-version-history-template">
+    <!-- Overlay template messages -->
+    <div class="messages">
+        <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
+        <div class="message message-success fastly-message-success" style="display: none;"></div>
+    </div>
+    <div class="admin__fieldset recommended">
+        <div class="admin__field-control">
+            <div class="admin__data-grid-pager">
+                <span id="pagination-active-version" style="margin-right: 2rem;"></span>
+                <button class="action-previous" type="button"  title="Previous Page"></button>
+                <input class="admin__control-text" id="pagination-input" type="number" value="">
+                <label class="admin__control-support-text"></label>
+                <button class="action-next" type="button" title="Next Page"></button>
+            </div>
+            <table class="admin__control-table" id="versions-list-table">
+                <thead>
+                    <tr>
+                        <th><?php /* @noEscape */ echo __('Version Number') ?></th>
+                        <th><?php /* @noEscape */ echo __('Comment') ?></th>
+                        <th><?php /* @noEscape */ echo __('Updated Time') ?></th>
+                        <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Action') ?></th>
+                    </tr>
+                </thead>
+                <tbody class="item-container">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="col-actions-add"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-magento-template" id="show-VCL-container">
+    <div class="admin__fieldset recommended">
+        <div class="admin__field-control">
+            <textarea rows="200"
+                      id="version-vcl-container"
+                      class="admin__control-text"></textarea>
+        </div>
+    </div>
+</script>
 <?php
 
 /**
  * AJAX urls passed to uploadvcl.js file
  */
+// Versioning
+$allFastlyVersions =            $block->getUrl('adminhtml/fastlyCdn_VersionHistory/ListVersions');
+$activateVersion =              $block->getUrl('adminhtml/fastlyCdn_VersionHistory/Activate');
+$versionReference =             $block->getUrl('adminhtml/fastlyCdn_VersionHistory/Reference');
+
 // Advanced
 $checkTlsSettingUrl =           $block->getUrl('adminhtml/fastlyCdn_Advanced/checkTlsSetting');
 $toggleTlsSettingUrl =          $block->getUrl('adminhtml/fastlyCdn_Advanced/forceTls');
@@ -2418,7 +2469,10 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "updateSuIpsUrl": "<?php echo $block->escapeJsQuote($updateSuIpsUrl);?>",
                     "createBackendUrl": "<?php echo $block->escapeJsQuote($createBackendUrl);?>",
                     "getExportDataUrl": "<?php echo $block->escapeJsQuote($getExportDataUrl);?>",
-                    "exportDataUrl": "<?php echo $block->escapeJsQuote($exportDataUrl);?>"
+                    "exportDataUrl": "<?php echo $block->escapeJsQuote($exportDataUrl);?>",
+                    "versionHistory": "<?php echo $block->escapeJsQuote($allFastlyVersions);?>",
+                    "activateVersion": "<?php echo $block->escapeJsQuote($activateVersion); ?>",
+                    "versionReference": "<?php echo $block->escapeJsQuote($versionReference); ?>"
                 }
             }
         }
@@ -2445,6 +2499,30 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
     .admin__control-table .fastly-edit-action::before {
         content: '\e610';
         font-size: 2rem;
+    }
+
+    .admin__control-table .fastly-activate-vcl-action {
+        background-image: url("<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/cloud.svg') ?>");
+        width: 2.5rem;
+        height: 2.5rem;
+        background-color: transparent;
+        border-color: transparent;
+        box-shadow: none;
+        padding-left: 0;
+        padding-right: 0;
+        background-repeat: no-repeat;
+    }
+
+    .admin__control-table .fastly-view-vcl-action {
+        background-image: url("<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/view.svg') ?>");
+        width: 2.5rem;
+        height: 2.5rem;
+        background-color: transparent;
+        border-color: transparent;
+        box-shadow: none;
+        padding-left: 0;
+        padding-right: 0;
+        background-repeat: no-repeat;
     }
 
     .dialog-item {

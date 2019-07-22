@@ -521,14 +521,21 @@ class Api
             $snippet['content'] = str_replace('####QUERY_PARAMETERS####', $queryParameters, $snippet['content']);
         }
 
-        $checkIfExists = $this->hasSnippet($version, $snippet['name']);
+        $snippetName = $snippet['name'];
+        $checkIfExists = $this->hasSnippet($version, $snippetName);
         $url = $this->_getApiServiceUri(). 'version/' .$version. '/snippet';
+
         if (!$checkIfExists) {
             $verb = \Zend_Http_Client::POST;
         } else {
             $verb = \Zend_Http_Client::PUT;
-            $url .= '/'.$snippet['name'];
-            unset($snippet['name'], $snippet['type'], $snippet['dynamic'], $snippet['priority']);
+            if (!isset($snippet['dynamic']) || $snippet['dynamic'] != 1) {
+                $url .= '/'.$snippetName;
+                unset($snippet['name'], $snippet['type'], $snippet['dynamic'], $snippet['priority']);
+            } else {
+                $snippet['name'] = $this->getSnippet($version, $snippetName)->id;
+                $url = $this->_getApiServiceUri(). 'snippet' . '/'.$snippet['name'];
+            }
         }
 
         $result = $this->_fetch($url, $verb, $snippet);
@@ -1279,6 +1286,29 @@ class Api
             . $parameters['sample_rate'];
 
         $result = $this->_fetch($uri);
+
+        return $result;
+    }
+
+    /**
+     * method that fetches a VCL for specific version id
+     *
+     * @param $version
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function getGeneratedVcl($version)
+    {
+        $url = $this->_getApiServiceUri() . 'version/' . $version . '/generated_vcl';
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+
+        return $result;
+    }
+
+    public function getParticularVersion($version)
+    {
+        $url = $this->_getApiServiceUri() . 'version/' . $version;
+        $result = $this->_fetch($url, \Zend_Http_Client::GET);
 
         return $result;
     }

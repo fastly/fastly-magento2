@@ -35,8 +35,6 @@ After any change to the settings you need to click Upload as that will activate 
 
 Following VCL snippets are being uploaded
 
-### Ignore path
-
 Snippet Type: vcl_recv
 Priority: 60
 
@@ -48,11 +46,11 @@ if (req.url ~ "^/even_longer_timeout") {
   set req.http.x-pass = "1";
   set req.http.x-edge-module-timeout = "500";
 }
+
 ```
 
-### Leave path alone
-
-Snippet Type: vcl_recv
+Snippet Type: vcl_pass
+Priority: 60
 
 ```vcl
 if (req.http.x-edge-module-timeout) {

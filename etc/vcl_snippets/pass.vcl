@@ -10,3 +10,6 @@
       set bereq.first_byte_timeout = ####ADMIN_PATH_TIMEOUT####s;
 
     }
+
+    # Send VCL version uploaded to the backend
+    set bereq.http.Fastly-Magento-VCL-Uploaded = "1.2.111";

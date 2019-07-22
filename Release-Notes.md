@@ -1,5 +1,39 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.111
+
+- Add Fastly Version UI https://github.com/fastly/fastly-magento2/pull/293
+- Add page URL to the GeoIP switcher https://github.com/fastly/fastly-magento2/pull/292
+
+## 1.2.110
+
+- Rework the rate limiting UI  https://github.com/fastly/fastly-magento2/pull/291
+- Allow creation of dictionaries or ACLs from Edge Module configuration screens https://github.com/fastly/fastly-magento2/pull/290
+
+## 1.2.109
+
+- Change composer magento-framework requirement to 101+. This change abandons 2.1.x
+
+## 1.2.108
+
+- Retag of 1.2.103 in order to fix M2.1.x upgrading. 
+
+## 1.2.107
+
+- Fix for 1.2.106 caused issues during checkout https://github.com/fastly/fastly-magento2/pull/288
+
+## 1.2.106
+
+- Fix for missing type in phpdoc which results in failed compilation https://github.com/fastly/fastly-magento2/pull/286
+
+## 1.2.105
+
+- Another fix for 2.3 IO - add orientation and canvas https://github.com/fastly/fastly-magento2/pull/284
+
+## 1.2.104
+
+- Fix for "Catalog list image optimization not working in Magento" https://github.com/fastly/fastly-magento2/pull/283
+
 ## 1.2.103
 
 - Add Blackfire integration edge module

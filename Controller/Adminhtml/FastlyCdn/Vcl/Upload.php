@@ -20,19 +20,19 @@
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
 
+use Fastly\Cdn\Helper\Vcl;
+use Fastly\Cdn\Model\Api;
+use Fastly\Cdn\Model\Config;
+use Fastly\Cdn\Model\Config\Backend\CustomSnippetUpload;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Fastly\Cdn\Model\Config;
-use Fastly\Cdn\Model\Api;
-use Fastly\Cdn\Helper\Vcl;
-use Fastly\Cdn\Model\Config\Backend\CustomSnippetUpload;
-use Magento\Framework\Stdlib\DateTime\DateTime;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Filesystem;
-use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Stdlib\DateTime\DateTime;
+use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 
 /**
  * Class Upload
@@ -170,7 +170,7 @@ class Upload extends Action
             $this->createGzipHeader($clone);
 
             $condition = [
-                'name'      => Config::FASTLY_MAGENTO_MODULE.'_pass',
+                'name'      => Config::FASTLY_MAGENTO_MODULE . '_pass',
                 'statement' => 'req.http.x-pass',
                 'type'      => 'REQUEST',
                 'priority'  => 90
@@ -179,7 +179,7 @@ class Upload extends Action
             $request = [
                 'action'            => 'pass',
                 'max_stale_age'     => 3600,
-                'name'              => Config::FASTLY_MAGENTO_MODULE.'_request',
+                'name'              => Config::FASTLY_MAGENTO_MODULE . '_request',
                 'request_condition' => $createCondition->name,
                 'service_id'        => $service->id,
                 'version'           => $currActiveVersion
@@ -294,7 +294,7 @@ class Upload extends Action
     private function createGzipHeader($clone)
     {
         $condition = [
-            'name'      => Config::FASTLY_MAGENTO_MODULE.'_gzip_safety',
+            'name'      => Config::FASTLY_MAGENTO_MODULE . '_gzip_safety',
             'statement' => 'beresp.http.x-esi',
             'type'      => 'CACHE',
             'priority'  => 100

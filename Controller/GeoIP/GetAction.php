@@ -128,11 +128,14 @@ class GetAction extends Action
                 if ($currentStore->getId() != $targetStore->getId()) {
                     $this->url->setScope($targetStore->getId());
 
-                    $this->url->addQueryParams([
+                    $queryParams = [
                         '___store'      => $targetStore->getCode(),
-                        '___from_store' => $currentStore->getCode(),
-                        'uenc'          => $targetUrl
-                    ]);
+                        '___from_store' => $currentStore->getCode()
+                    ];
+                    if ($targetUrl) {
+                        array_push($queryParams, ['uenc' => $targetUrl]);
+                    }
+                    $this->url->addQueryParams($queryParams);
                     $redirectUrl = $this->url->getUrl('stores/store/switch');
                 }
 

@@ -86,6 +86,7 @@ class GetAction extends AbstractBlock
 
         /** @var string $actionUrl */
         $actionUrl = $this->getUrl('fastlyCdn/geoip/getaction');
+        $vclUploaded = $this->_request->getServer('HTTP_FASTLY_MAGENTO_VCL_UPLOADED');
         $currentUrl = $this->url->getCurrentUrl();
         $baseUrl = $this->url->getBaseUrl();
         $webTypeUrl = $this->url->getBaseUrl(['_type' => Url::URL_TYPE_WEB]);
@@ -96,19 +97,22 @@ class GetAction extends AbstractBlock
             $targetUrl = str_replace($webTypeUrl, $baseUrl, $currentUrl);
         }
 
+        if ($vclUploaded) {
+            $actionUrl = $actionUrl . '?uenc=' . $this->urlEncoder->encode($targetUrl);
+        }
+
         // This page has an esi tag, set x-esi header if it is not already set
         $header = $this->response->getHeader('x-esi');
         if (empty($header)) {
             $this->response->setHeader("x-esi", "1");
         }
-
         // HTTPS ESIs are not supported so we need to turn them into HTTP
         return sprintf(
             '<esi:include src=\'%s\' />',
             preg_replace(
                 "/^https/",
                 "http",
-                $actionUrl . '?uenc=' . $this->urlEncoder->encode($targetUrl)
+                $actionUrl
             )
         );
     }

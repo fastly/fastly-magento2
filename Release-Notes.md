@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.112
+
+- Enhance export functionality to export Edge Module configs https://github.com/fastly/fastly-magento2/pull/295
+- Make sure we don't set uenc unless VCL version 1.2.111  https://github.com/fastly/fastly-magento2/pull/296
+
 ## 1.2.111
 
 - Add Fastly Version UI https://github.com/fastly/fastly-magento2/pull/293

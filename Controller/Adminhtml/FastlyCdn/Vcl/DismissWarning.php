@@ -10,6 +10,7 @@ use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Json\Helper\Data;
 use Magento\Framework\Serialize\Serializer\Serialize;
+use Magento\Framework\App\Cache\TypeListInterface as CacheTypeList;
 
 class DismissWarning extends Action
 {
@@ -26,10 +27,6 @@ class DismissWarning extends Action
      */
     private $request;
     /**
-     * @var Serialize
-     */
-    private $serialize;
-    /**
      * @var JsonFactory
      */
     private $jsonFactory;
@@ -37,33 +34,37 @@ class DismissWarning extends Action
      * @var Config
      */
     private $config;
+    /**
+     * @var CacheTypeList
+     */
+    private $typeList;
 
     /**
      * DismissWarning constructor.
      * @param ScopeConfigInterface $scopeConfig
-     * @param Serialize $serialize
      * @param JsonFactory $jsonFactory
      * @param Data $jsonHelper
      * @param Http $request
      * @param Config $config
+     * @param CacheTypeList $typeList
      * @param Action\Context $context
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
-        Serialize $serialize,
         JsonFactory $jsonFactory,
         Data $jsonHelper,
         Http $request,
         Config $config,
+        CacheTypeList $typeList,
         Action\Context $context
     ) {
         parent::__construct($context);
         $this->scopeConfig = $scopeConfig;
         $this->jsonHelper = $jsonHelper;
         $this->request = $request;
-        $this->serialize = $serialize;
         $this->jsonFactory = $jsonFactory;
         $this->config = $config;
+        $this->typeList = $typeList;
     }
 
     public function execute()
@@ -82,6 +83,7 @@ class DismissWarning extends Action
             $coreConfigData[] = $activeVersion;
             $coreConfigData = $this->jsonHelper->jsonEncode($coreConfigData);
             $this->config->saveConfig(FastlyConfig::VERSIONS_WITH_DISMISSED_WARNING, $coreConfigData);
+            $this->typeList->cleanType('config');
             return $result->setData([
                 'status' => true,
                 'msg'   => 'Successfully dismissed warning'

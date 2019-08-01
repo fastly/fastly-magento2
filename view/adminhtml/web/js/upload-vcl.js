@@ -4,8 +4,9 @@ define([
     "overlay",
     "resetAllMessages",
     "showErrorMessage",
+    "Magento_Ui/js/modal/prompt",
     'mage/translate'
-], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, prompt) {
     return function (config, serviceStatus, isAlreadyConfigured) {
         /* VCL button messages */
         let successVclBtnMsg = $('#fastly-success-vcl-button-msg');
@@ -50,7 +51,7 @@ define([
                 $.ajax({
                    type: 'GET',
                    url: config.vclComparison,
-                   showLoader: false,
+                   showLoader: true,
                    data: {'active_version':active_version},
                    success: function (response) {
                       if(response.status !== true){
@@ -134,20 +135,24 @@ define([
 
             function openDismissModal()
             {
-                let dismissWarningOptions = {
-                    title: jQuery.mage.__('Dismiss warning'),
-                    content: function () {
-                        return document.getElementById('fastly-dismiss-vcl-warning-template').textContent;
-                    },
-                    actionOk: function () {
-                        dismissWarning(active_version);
-                    }
-                };
-
                 $("#fastly-warning-vcl").on('click', function () {
-                    resetAllMessages();
-                    overlay(dismissWarningOptions);
-                    $(".upload-button").text('Dismiss');
+
+                    prompt({
+                        title: 'Dismiss VCL warning',
+                        content: 'Dismissing VCL warning on this version will block displaying "Plugin VCL version is outdated! Please re-Upload."'
+                                + '. This action will work only for current version #' + active_version
+                                + '. Please consider about re-Uploading VCL. Type in the input field "I ACKNOWLEDGE" to confirm '
+                                + 'dismissing the warning.',
+                        actions: {
+                            confirm: function (input) {
+                                if (input !== 'I ACKNOWLEDGE') {
+                                    return;
+                                }
+                                dismissWarning(active_version);
+                            },
+                            always: function () {}
+                        }
+                    });
                 });
 
                 function dismissWarning(version)
@@ -160,10 +165,8 @@ define([
                        success: function (response) {
                            if(response.status !== false){
                                $("#fastly-warning-vcl").remove();
-                               modal.modal('closeModal');
                                return successVclBtnMsg.text($.mage.__(response.msg)).show();
                            }
-                           modal.modal('closeModal');
                            return errorVclBtnMsg.text($.mage.__(response.msg)).show();
                        }
                     });

@@ -2280,6 +2280,33 @@
         </div>
     </div>
 </script>
+
+<script type="text/x-magento-template" id="fastly-dismiss-vcl-warning-template">
+    <div class="messages">
+        <div class="message message-warning fastly-message-warning" style="display: none">
+            <?php /* @noEscape */ echo __("You are about to dismiss outdated VCL for current version.")?>
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+        <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field maintenance-checkbox-container">
+                <label for="fastly_dismiss_vcl_warning" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('You are about to dismiss warning for outdated VCL for current version.')?></span>
+                </label>
+                <div class="admin__field-control">
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_dismiss_vcl_warning"
+                               id="fastly_dismiss_vcl_warning"
+                               checked/>
+                        <label class="admin__field-label" for="fastly_dismiss_vcl_warning"></label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+</script>
 <?php
 
 /**
@@ -2378,7 +2405,9 @@ $savePageErrorHtml =            $block->getUrl('adminhtml/fastlyCdn_SyntheticPag
 $saveWafPage =                  $block->getUrl('adminhtml/fastlyCdn_SyntheticPages/saveWafPage');
 // VCL
 $vclUploadUrl =                 $block->getUrl('adminhtml/fastlyCdn_Vcl/upload');
+$dismissWarning =               $block->getUrl('adminhtml/fastlyCdn_Vcl/dismissWarning');
 $vclComparison =                $block->getUrl('adminhtml/fastlyCdn_Vcl/comparison');
+$isWarningDismissed =           $block->getUrl('adminhtml/fastlyCdn_Vcl/isWarningDismissed');
 // Web Application Firewall
 $getWafSettingsUrl =            $block->getUrl('adminhtml/fastlyCdn_Waf/getWafSettings');
 $getOwaspSettingsUrl =          $block->getUrl('adminhtml/fastlyCdn_Waf/getOwaspSettings');
@@ -2474,7 +2503,9 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "versionHistory": "<?php echo $block->escapeJsQuote($allFastlyVersions);?>",
                     "activateVersion": "<?php echo $block->escapeJsQuote($activateVersion); ?>",
                     "versionReference": "<?php echo $block->escapeJsQuote($versionReference); ?>",
-                    "vclComparison": "<?php echo $block->escapeJsQuote($vclComparison); ?>"
+                    "vclComparison": "<?php echo $block->escapeJsQuote($vclComparison); ?>",
+                    "dismissWarning": "<?php echo $block->escapeJsQuote($dismissWarning); ?>",
+                    "isWarningDismissed": "<?php echo $block->escapeJsQuote($isWarningDismissed); ?>"
                 }
             }
         }

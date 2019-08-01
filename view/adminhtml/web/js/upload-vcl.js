@@ -13,7 +13,7 @@ define([
         let active_version = serviceStatus.active_version;
 
         $(document).ready(function () {
-            compareVclVersions(active_version);
+            isWarningDismissed(active_version);
 
             let uploadOptions = {
                 title: jQuery.mage.__('You are about to upload VCL to Fastly '),
@@ -25,24 +25,46 @@ define([
                 }
             };
 
+            function isWarningDismissed(activeVersion)
+            {
+                $.ajax({
+                    type: 'GET',
+                    url: config.isWarningDismissed,
+                    data: {active_version: activeVersion},
+                    showLoader: true,
+                    success: function (response) {
+                        if(response.status !== false){
+                            if(response.dismissed !== true){
+                                compareVclVersions(activeVersion);
+                                return;
+                            }
+                            return;
+                        }
+                        return errorVclBtnMsg.text($.mage.__(response.msg)).show();
+                    }
+                })
+            }
+
             function compareVclVersions()
             {
-                $("#row_system_full_page_cache_fastly_fastly_service_id td:eq(2)").append(esi)
-
                 $.ajax({
                    type: 'GET',
                    url: config.vclComparison,
                    showLoader: false,
                    data: {'active_version':active_version},
                    success: function (response) {
-                       if(response.status !== true) {
-                           let text = document.createTextNode(response.msg);
-                           let warning = document.createElement('div');
-                           warning.setAttribute('class', 'message message-warning');
-                           warning.setAttribute('id', 'fastly-warning-vcl');
-                           warning.append(text);
-                           $("#row_system_full_page_cache_fastly_fastly_service_id td:eq(2)").append(warning);
-                       }
+                      if(response.status !== true){
+                          let span = document.createElement('span');
+                          span.setAttribute('id','dismiss-vcl-warning');
+                          let text = document.createTextNode(response.msg);
+                          span.append(text);
+                          let warning = document.createElement('div');
+                          warning.setAttribute('class', 'message message-warning');
+                          warning.setAttribute('id', 'fastly-warning-vcl');
+                          warning.append(span);
+                          $("#row_system_full_page_cache_fastly_fastly_service_id td:last-child").append(warning);
+                          openDismissModal();
+                      }
                    }
                 });
             }
@@ -108,6 +130,44 @@ define([
                         showErrorMessage(response.msg);
                     }
                 });
+            }
+
+            function openDismissModal()
+            {
+                let dismissWarningOptions = {
+                    title: jQuery.mage.__('Dismiss warning'),
+                    content: function () {
+                        return document.getElementById('fastly-dismiss-vcl-warning-template').textContent;
+                    },
+                    actionOk: function () {
+                        dismissWarning(active_version);
+                    }
+                };
+
+                $("#fastly-warning-vcl").on('click', function () {
+                    resetAllMessages();
+                    overlay(dismissWarningOptions);
+                    $(".upload-button").text('Dismiss');
+                });
+
+                function dismissWarning(version)
+                {
+                    $.ajax({
+                       type: 'GET',
+                       url: config.dismissWarning,
+                       showLoader: true,
+                       data: {active_version: version},
+                       success: function (response) {
+                           if(response.status !== false){
+                               $("#fastly-warning-vcl").remove();
+                               modal.modal('closeModal');
+                               return successVclBtnMsg.text($.mage.__(response.msg)).show();
+                           }
+                           modal.modal('closeModal');
+                           return errorVclBtnMsg.text($.mage.__(response.msg)).show();
+                       }
+                    });
+                }
             }
         });
     }

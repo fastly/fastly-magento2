@@ -11,6 +11,7 @@ define([
         /* VCL button messages */
         let successVclBtnMsg = $('#fastly-success-vcl-button-msg');
         let errorVclBtnMsg = $('#fastly-error-vcl-button-msg');
+        let outdatedErrorMsg = $("#fastly-warning-outdated-vcl-button-msg");
         let active_version = serviceStatus.active_version;
 
         $(document).ready(function () {
@@ -34,7 +35,7 @@ define([
                     showLoader: true,
                     success: function (response) {
                         if(response.status !== false){
-                            $("#row_system_full_page_cache_fastly_fastly_service_id td:last-child").empty();
+                            resetAllMessages();
                             if(response.dismissed !== true){
                                 compareVclVersions(activeVersion);
                                 return;
@@ -55,19 +56,11 @@ define([
                    data: {'active_version':active_version},
                    success: function (response) {
                       if(response.status !== true){
-                          let button = document.createElement('button');
-                          button.setAttribute('class', 'fastly-dismiss-warning-action');
-                          button.setAttribute('title', 'Dismiss Warning');
                           let span = document.createElement('span');
-                          span.setAttribute('id','dismiss-vcl-warning');
-                          let text = document.createTextNode(response.msg);
-                          span.append(text);
-                          let warning = document.createElement('div');
-                          warning.setAttribute('class', 'message message-warning');
-                          warning.setAttribute('id', 'fastly-warning-vcl');
-                          warning.append(span);
-                          warning.append(button);
-                          $("#row_system_full_page_cache_fastly_fastly_service_id td:last-child").append(warning);
+                          span.setAttribute('class', 'fastly-dismiss-warning-action');
+                          span.setAttribute('title', 'Dismiss Warning');
+                          outdatedErrorMsg.text($.mage.__(response.msg)).show();
+                          outdatedErrorMsg.append(span);
                           openDismissModal();
                       }
                    }
@@ -139,7 +132,11 @@ define([
 
             function openDismissModal()
             {
-                $("#fastly-warning-vcl").on('click', function () {
+                $("#fastly-warning-outdated-vcl-button-msg").on('hover', function(){
+                   $(this).css('cursor', 'pointer');
+                });
+
+                $("#fastly-warning-outdated-vcl-button-msg").on('click', function () {
                     confirm({
                         title: 'Dismiss outdated VCL warning',
                         content: 'Are you sure you want to dismiss warning for the current version #<b>' + active_version + '</b> ?',
@@ -162,7 +159,7 @@ define([
                        data: {active_version: version},
                        success: function (response) {
                            if(response.status !== false){
-                               $("#fastly-warning-vcl").remove();
+                               resetAllMessages();
                                return successVclBtnMsg.text($.mage.__(response.msg)).show();
                            }
                            return errorVclBtnMsg.text($.mage.__(response.msg)).show();

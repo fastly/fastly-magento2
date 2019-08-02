@@ -32,7 +32,7 @@ define([
                     type: 'GET',
                     url: config.isWarningDismissed,
                     data: {active_version: activeVersion},
-                    showLoader: true,
+                    showLoader: false,
                     success: function (response) {
                         if(response.status !== false){
                             resetAllMessages();
@@ -52,7 +52,7 @@ define([
                 $.ajax({
                    type: 'GET',
                    url: config.vclComparison,
-                   showLoader: true,
+                   showLoader: false,
                    data: {'active_version':active_version},
                    success: function (response) {
                       if(response.status !== true){

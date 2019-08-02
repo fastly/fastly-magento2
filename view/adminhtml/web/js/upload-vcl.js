@@ -55,6 +55,9 @@ define([
                    data: {'active_version':active_version},
                    success: function (response) {
                       if(response.status !== true){
+                          let button = document.createElement('button');
+                          button.setAttribute('class', 'fastly-dismiss-warning-action');
+                          button.setAttribute('title', 'Dismiss Warning');
                           let span = document.createElement('span');
                           span.setAttribute('id','dismiss-vcl-warning');
                           let text = document.createTextNode(response.msg);
@@ -63,6 +66,7 @@ define([
                           warning.setAttribute('class', 'message message-warning');
                           warning.setAttribute('id', 'fastly-warning-vcl');
                           warning.append(span);
+                          warning.append(button);
                           $("#row_system_full_page_cache_fastly_fastly_service_id td:last-child").append(warning);
                           openDismissModal();
                       }

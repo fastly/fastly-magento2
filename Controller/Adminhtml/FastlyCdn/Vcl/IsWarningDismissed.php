@@ -10,7 +10,10 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Json\Helper\Data;
 use Magento\Framework\App\Cache\TypeListInterface as CacheTypeList;
 
-
+/**
+ * Class IsWarningDismissed
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
+ */
 class IsWarningDismissed extends Action
 {
     /**
@@ -71,7 +74,6 @@ class IsWarningDismissed extends Action
             ]);
         }
 
-        //$this->typeList->cleanType('config'); - remove comment if there will be enable warrning again
         $coreConfigData = $this->scopeConfig->getValue(FastlyConfig::VERSIONS_WITH_DISMISSED_WARNING);
         if (!$coreConfigData) {
             return $result->setData([

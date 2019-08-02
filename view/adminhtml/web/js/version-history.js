@@ -6,8 +6,9 @@ define([
     "showErrorMessage",
     "showSuccessMessage",
     "Magento_Ui/js/modal/confirm",
+    'uploadVcl',
     'mage/translate'
-], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, showSuccessMessage, confirm) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, showSuccessMessage, confirm, uploadVcl) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         let active_version = serviceStatus.active_version;
@@ -218,7 +219,6 @@ define([
                         showErrorMessage(response.msg);
                         return;
                     }
-
                     let text = document.createTextNode('Activated');
                     let span = document.createElement('span');
                     let button = document.createElement('button');
@@ -236,6 +236,8 @@ define([
                     $("#action_activate_version_" + response.version).empty();
                     $("#action_activate_version_" + response.version).append(span);
                     active_version = version;
+                    serviceStatus.active_version = active_version;
+                    uploadVcl(config, serviceStatus, isAlreadyConfigured);
                     displayActiveVersion();
                     showSuccessMessage('Successfully activated version ' + response.version);
                 }

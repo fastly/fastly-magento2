@@ -9,7 +9,6 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Json\Helper\Data;
-use Magento\Framework\Serialize\Serializer\Serialize;
 use Magento\Framework\App\Cache\TypeListInterface as CacheTypeList;
 
 class DismissWarning extends Action

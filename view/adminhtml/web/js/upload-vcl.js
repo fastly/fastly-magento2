@@ -4,9 +4,9 @@ define([
     "overlay",
     "resetAllMessages",
     "showErrorMessage",
-    "Magento_Ui/js/modal/prompt",
+    "Magento_Ui/js/modal/confirm",
     'mage/translate'
-], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, prompt) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, confirm) {
     return function (config, serviceStatus, isAlreadyConfigured) {
         /* VCL button messages */
         let successVclBtnMsg = $('#fastly-success-vcl-button-msg');
@@ -15,7 +15,6 @@ define([
 
         $(document).ready(function () {
             isWarningDismissed(active_version);
-
             let uploadOptions = {
                 title: jQuery.mage.__('You are about to upload VCL to Fastly '),
                 content: function () {
@@ -35,6 +34,7 @@ define([
                     showLoader: true,
                     success: function (response) {
                         if(response.status !== false){
+                            $("#row_system_full_page_cache_fastly_fastly_service_id td:last-child").empty();
                             if(response.dismissed !== true){
                                 compareVclVersions(activeVersion);
                                 return;
@@ -140,21 +140,15 @@ define([
             function openDismissModal()
             {
                 $("#fastly-warning-vcl").on('click', function () {
-
-                    prompt({
-                        title: 'Dismiss VCL warning',
-                        content: 'Dismissing VCL warning on this version will block displaying "Plugin VCL version is outdated! Please re-Upload."'
-                                + '. This action will work only for current version #' + active_version
-                                + '. Please consider about re-Uploading VCL. Type in the input field "I ACKNOWLEDGE" to confirm '
-                                + 'dismissing the warning.',
+                    confirm({
+                        title: 'Dismiss outdated VCL warning',
+                        content: 'Are you sure you want to dismiss warning for the current version #<b>' + active_version + '</b> ?',
                         actions: {
-                            confirm: function (input) {
-                                if (input !== 'I ACKNOWLEDGE') {
-                                    return;
-                                }
+                            confirm: function () {
                                 dismissWarning(active_version);
                             },
-                            always: function () {}
+                            cancel: function () {
+                            }
                         }
                     });
                 });

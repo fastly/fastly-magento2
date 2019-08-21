@@ -4,15 +4,18 @@ define([
     "overlay",
     "resetAllMessages",
     "showErrorMessage",
+    "Magento_Ui/js/modal/confirm",
     'mage/translate'
-], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, confirm) {
     return function (config, serviceStatus, isAlreadyConfigured) {
         /* VCL button messages */
         let successVclBtnMsg = $('#fastly-success-vcl-button-msg');
         let errorVclBtnMsg = $('#fastly-error-vcl-button-msg');
+        let outdatedErrorMsg = $("#fastly-warning-outdated-vcl-button-msg");
         let active_version = serviceStatus.active_version;
 
         $(document).ready(function () {
+            isWarningDismissed(active_version);
             let uploadOptions = {
                 title: jQuery.mage.__('You are about to upload VCL to Fastly '),
                 content: function () {
@@ -22,6 +25,47 @@ define([
                     uploadVcl(active_version);
                 }
             };
+
+            function isWarningDismissed(activeVersion)
+            {
+                $.ajax({
+                    type: 'GET',
+                    url: config.isWarningDismissed,
+                    data: {active_version: activeVersion},
+                    showLoader: false,
+                    success: function (response) {
+                        if(response.status !== false){
+                            resetAllMessages();
+                            if(response.dismissed !== true){
+                                compareVclVersions(activeVersion);
+                                return;
+                            }
+                            return;
+                        }
+                        return errorVclBtnMsg.text($.mage.__(response.msg)).show();
+                    }
+                })
+            }
+
+            function compareVclVersions()
+            {
+                $.ajax({
+                   type: 'GET',
+                   url: config.vclComparison,
+                   showLoader: false,
+                   data: {'active_version':active_version},
+                   success: function (response) {
+                      if(response.status !== true){
+                          let span = document.createElement('span');
+                          span.setAttribute('class', 'fastly-dismiss-warning-action');
+                          span.setAttribute('title', 'Dismiss Warning');
+                          outdatedErrorMsg.text($.mage.__(response.msg)).show();
+                          outdatedErrorMsg.append(span);
+                          openDismissModal();
+                      }
+                   }
+                });
+            }
 
             /**
              * VCL Upload button on click event
@@ -84,6 +128,44 @@ define([
                         showErrorMessage(response.msg);
                     }
                 });
+            }
+
+            function openDismissModal()
+            {
+                $("#fastly-warning-outdated-vcl-button-msg").on('hover', function(){
+                   $(this).css('cursor', 'pointer');
+                });
+
+                $("#fastly-warning-outdated-vcl-button-msg").on('click', function () {
+                    confirm({
+                        title: 'Dismiss outdated VCL warning',
+                        content: 'Are you sure you want to dismiss warning for the current version #<b>' + active_version + '</b> ?',
+                        actions: {
+                            confirm: function () {
+                                dismissWarning(active_version);
+                            },
+                            cancel: function () {
+                            }
+                        }
+                    });
+                });
+
+                function dismissWarning(version)
+                {
+                    $.ajax({
+                       type: 'GET',
+                       url: config.dismissWarning,
+                       showLoader: true,
+                       data: {active_version: version},
+                       success: function (response) {
+                           if(response.status !== false){
+                               resetAllMessages();
+                               return successVclBtnMsg.text($.mage.__(response.msg)).show();
+                           }
+                           return errorVclBtnMsg.text($.mage.__(response.msg)).show();
+                       }
+                    });
+                }
             }
         });
     }

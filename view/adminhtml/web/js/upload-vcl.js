@@ -79,7 +79,8 @@ define(
                      * VCL Upload button on click event
                      */
                     $('#fastly_vcl_upload_button').on(
-                        'click', function () {
+                        'click',
+                        function () {
                             if (isAlreadyConfigured !== true) {
                                 $(this).attr('disabled', true);
                                 return alert($.mage.__('Please save config prior to continuing.'));
@@ -159,7 +160,8 @@ define(
                         );
 
                         $("#fastly-warning-outdated-vcl-button-msg").on(
-                            'click', function () {
+                            'click',
+                            function () {
                                 confirm(
                                     {
                                         title: 'Dismiss outdated VCL warning',
@@ -185,10 +187,11 @@ define(
                                     showLoader: true,
                                     data: {active_version: version},
                                     success: function (response) {
-                                        if(response.status !== false) {
+                                        if (response.status !== false) {
                                             resetAllMessages();
                                             return successVclBtnMsg.text($.mage.__(response.msg)).show();
                                         }
+
                                         return errorVclBtnMsg.text($.mage.__(response.msg)).show();
                                     }
                                 }

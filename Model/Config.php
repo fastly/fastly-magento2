@@ -500,8 +500,8 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * core_config path for versions that has dismissed warning for outdated vcl
      */
-    const VERSIONS_WITH_DISMISSED_WARNING = 'Fastly/Cdn/versions_with_dismissed_vcl_warning';
-
+    const VERSIONS_WITH_DISMISSED_WARNING
+        = 'Fastly/Cdn/versions_with_dismissed_vcl_warning';
 
     /**
      * Check if Fastly is selected for Caching Application

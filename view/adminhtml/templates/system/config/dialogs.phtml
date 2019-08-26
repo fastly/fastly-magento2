@@ -2292,7 +2292,12 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_dismiss_vcl_warning" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __('You are about to dismiss warning for outdated VCL for current version.')?></span>
+                    <span>
+                        <?php
+                        /* @noEscape */ echo __('You are about to dismiss warning for'
+                                                . 'outdated VCL for current version.')
+                        ?>
+                    </span>
                 </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">

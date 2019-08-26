@@ -25,6 +25,7 @@ class Comparison extends Action
      * @var Data
      */
     private $jsonHelper;
+
     /**
      * @var Notification
      */
@@ -32,11 +33,12 @@ class Comparison extends Action
 
     /**
      * Comparison constructor.
+     *
      * @param Action\Context $context
-     * @param Http $request
-     * @param JsonFactory $jsonFactory
-     * @param Data $jsonHelper
-     * @param Notification $notification
+     * @param Http           $request
+     * @param JsonFactory    $jsonFactory
+     * @param Data           $jsonHelper
+     * @param Notification   $notification
      */
     public function __construct(
         Action\Context $context,
@@ -52,20 +54,27 @@ class Comparison extends Action
         $this->notification = $notification;
     }
 
+    /**
+     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Json|\Magento\Framework\Controller\ResultInterface
+     */
     public function execute()
     {
         $result = $this->jsonFactory->create();
         $vclVersion = $this->notification->getLastVersion();
         $localVersion = $this->request->getHeader(Config::REQUEST_HEADER);
         if ($vclVersion != $localVersion) {
-            return $result->setData([
+            return $result->setData(
+                [
                 'status' => false,
                 'msg'   => 'Plugin VCL version is outdated! Please re-Upload.'
-            ]);
+                ]
+            );
         }
 
-        return $result->setData([
+        return $result->setData(
+            [
             'status'    => true
-        ]);
+            ]
+        );
     }
 }

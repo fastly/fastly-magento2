@@ -7,7 +7,8 @@ define(
     "showErrorMessage",
     "Magento_Ui/js/modal/confirm",
     'mage/translate'
-    ], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, confirm) {
+    ],
+    function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, confirm) {
         return function (config, serviceStatus, isAlreadyConfigured) {
             /* VCL button messages */
             let successVclBtnMsg = $('#fastly-success-vcl-button-msg');
@@ -154,7 +155,8 @@ define(
                     function openDismissModal()
                     {
                         $("#fastly-warning-outdated-vcl-button-msg").on(
-                            'hover', function () {
+                            'hover',
+                            function () {
                                 $(this).css('cursor', 'pointer');
                             }
                         );

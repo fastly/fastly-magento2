@@ -63,6 +63,7 @@ class Comparison extends Action
                 'msg'   => 'Plugin VCL version is outdated! Please re-Upload.'
             ]);
         }
+
         return $result->setData([
             'status'    => true
         ]);

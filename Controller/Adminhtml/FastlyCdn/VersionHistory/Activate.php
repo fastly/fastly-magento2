@@ -4,6 +4,7 @@ namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\VersionHistory;
 
 use Fastly\Cdn\Model\Api;
 use Magento\Backend\App\Action;
+use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Exception\LocalizedException;
@@ -28,17 +29,23 @@ class Activate extends Action
      * @var JsonFactory
      */
     private $jsonFactory;
+    /**
+     * @var TypeListInterface
+     */
+    private $typeList;
 
     /**
      * Activate constructor.
      * @param Action\Context $context
      * @param JsonFactory $jsonFactory
+     * @param TypeListInterface $typeList
      * @param Api $api
      * @param Http $request
      */
     public function __construct(
         Action\Context $context,
         JsonFactory $jsonFactory,
+        TypeListInterface $typeList,
         Api $api,
         Http $request
     ) {
@@ -46,6 +53,7 @@ class Activate extends Action
         $this->api = $api;
         $this->request = $request;
         $this->jsonFactory = $jsonFactory;
+        $this->typeList = $typeList;
     }
 
     /**
@@ -66,7 +74,7 @@ class Activate extends Action
                     'msg' => 'There is no version #' . $version
                 ]);
             }
-
+            $this->typeList->cleanType('config');
             return $result->setData([
                 'old_version' => $oldVersion,
                 'version' => $answer->number,

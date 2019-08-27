@@ -488,6 +488,22 @@ class Config extends \Magento\PageCache\Model\Config
         = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/crawler_protection/exempt_good_bots';
 
     /**
+     * Request Header for VCL comparison
+     */
+    const REQUEST_HEADER = 'Fastly-Magento-VCL-Uploaded';
+
+    /**
+     * Fastly module name
+     */
+    const FASTLY_MODULE_NAME = 'Fastly_Cdn';
+
+    /**
+     * core_config path for versions that has dismissed warning for outdated vcl
+     */
+    const VERSIONS_WITH_DISMISSED_WARNING
+        = 'Fastly/Cdn/versions_with_dismissed_vcl_warning';
+
+    /**
      * Check if Fastly is selected for Caching Application
      *
      * @return bool

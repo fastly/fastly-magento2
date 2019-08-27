@@ -96,9 +96,9 @@ define([
                             requirejs(['tls'], function (tls) {
                                 tls(config, serviceStatus, isAlreadyConfigured);
                             });
-                            requirejs(['adminTimeout'], function (adminTimeout) {
-                                adminTimeout(config, serviceStatus, isAlreadyConfigured);
-                            })
+                            requirejs(['overrideHost'], function (overrideHost) {
+                                overrideHost(config, serviceStatus, isAlreadyConfigured);
+                            });
                         });
 
                         blockingConfigurationHead.one('click', function () {

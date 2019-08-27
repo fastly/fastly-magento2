@@ -80,6 +80,10 @@ define([
                     setServiceLabel(response.active_version, response.next_version, response.service.name);
                 }
             });
-        })
+        });
+
+        $("#fastly_override_host_button").on('click', function () {
+            console.log("dadada");
+        });
     }
 });

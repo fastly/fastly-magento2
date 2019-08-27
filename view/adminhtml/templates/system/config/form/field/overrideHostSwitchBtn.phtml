@@ -1,0 +1,51 @@
+<?php echo $block->getButtonHtml() ?>
+
+<span class="collect-indicator" id="override_host_switch_span">
+    <span id="fastly_override_host_state_message_span"><b>Current state:</b>
+        <img class="processing"
+             alt="Collecting"
+             style="margin:0 5px;"
+             src="<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/fastly16.gif') ?>" />
+        <span style="display:none;" class="override_host_span state_enabled"
+              id="override_host_enabled"> enabled</span>
+        <span style="display:none;" class="override_host state_disabled"
+              id="override_host_disabled"> disabled</span>
+        <span style="display:none;" class="override_host_span state_unknown"
+              id="override_host_unknown"> unknown</span>
+    </span>
+</span>
+
+<div class="message message-error fastly-button-messages"
+     id="fastly-error-override-host-button-msg"
+     style="display: none">
+</div>
+
+<div class="message message-success fastly-button-messages"
+     id="fastly-success-override-host-button-msg"
+     style="display: none">
+</div>
+
+<div class="message message-warning fastly-button-messages"
+     id="fastly-warning-override-host-button-msg"
+     style="display: none">
+</div>
+
+<style type="text/css">
+    .fastly-button-messages {
+        font-size: 1.2rem;
+        margin-top: 5px;
+        padding: 1.4rem 4rem 1.4rem 5.5rem;
+    }
+
+    #override_host_enabled {
+        color: #008000;
+    }
+
+    #override_host_disabled {
+        color: #808080;
+    }
+
+    #override_host_unknown {
+        color: #ff0000;
+    }
+</style>

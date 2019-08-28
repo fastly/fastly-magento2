@@ -38,7 +38,7 @@ class OverrideHostSwitchBtn extends Field
         $button = $this->getLayout()->createBlock(
             'Magento\Backend\Block\Widget\Button'
         )->setData([
-            'id'    => 'fastly_override_host_button',
+            'id'    => 'fastly_override_switcher_button',
             'label' => __('Enable/Disable')
         ]);
 

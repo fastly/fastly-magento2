@@ -114,8 +114,7 @@ define([
                         next_version = response.next_version;
                         overrideHost = response.override_host;
                         checkOverrideHostStatus(active_version);
-                        return successOverrideHostBtnMsg.text($.mage.__('Successfully updated ' +
-                            'the Override Host for the version #' + response.edited_version)).show();
+                        return successOverrideHostBtnMsg.text($.mage.__('Successfully updated ' +'the Override Host')).show();
                     }
                     return errorOverrideHostBtnMsg.text($.mage.__(response.msg)).show();
                 }

@@ -18,15 +18,12 @@ define([
         let overrideHostMsgSpan = $("#fastly_override_host_state_message_span");
         let overrideHost;
         let defaultTtl;
+        let overrideHostStatus;
 
         /* Override Host messages */
         let errorOverrideHostBtnMsg = $("#fastly-error-override-host-button-msg");
         let successOverrideHostBtnMsg = $("#fastly-success-override-host-button-msg");
         let warningOverrideHostBtnMsg = $("#fastly-warning-override-host-button-msg");
-
-        /* Modal window message warning */
-        let warningMsgModal = $(".fastly-message-warning");
-
 
         overrideHostStateSpan.find('.processing').show();
         checkOverrideHostStatus(active_version);
@@ -37,7 +34,7 @@ define([
                 return document.getElementById('fastly-disable-override-host-template').textContent;
             },
             actionOk: function () {
-                changeOverrideHost(active_version, defaultTtl, false);
+                changeOverrideHost(active_version, defaultTtl, overrideHostStatus);
             }
         };
 
@@ -47,48 +44,53 @@ define([
                 return document.getElementById('fastly-override-host-template').textContent;
             },
             actionOk: function () {
-                changeOverrideHost(active_version, defaultTtl, true);
+                changeOverrideHost(active_version, defaultTtl, overrideHostStatus);
             }
         };
 
+        /**
+         * Checks current default_host and default_ttl of the service.
+         * Displays override host status as "enabled" or "disabled".
+         * @param activeVersion
+         */
         function checkOverrideHostStatus(activeVersion)
         {
             $.ajax({
-               type: 'GET',
-               url: config.overrideHostStatus,
-               data: { 'active_version' : activeVersion },
-               showLoader: true,
-               success: function (response) {
-                   let overrideHostStateEnabled = $("#override_host_enabled");
-                   let overrideHostStateDisabled = $("#override_host_disabled");
-                   let overrideHostStateUnknown = $("#override_host_unknown");
-
-                   if (response.status !== false) {
-                       overrideHost = response.general_default_host;
-                       defaultTtl = response.general_default_ttl;
-                       overrideHostStateSpan.find('.processing').hide();
-                        if (response.override_host_switcher !== 'disabled') {
-                            console.log(overrideHostStateSpan.find('.disabled').hide());
-                            overrideHostStateEnabled.show();
+                type: 'GET',
+                url: config.overrideHostStatus,
+                data: {'active_version': activeVersion},
+                showLoader: true,
+                success: function (response) {
+                    let overrideHostStateEnabled = $("#override_host_enabled");
+                    let overrideHostStateDisabled = $("#override_host_disabled");
+                    if (response.status !== false) {
+                        overrideHost = response.general_default_host;
+                        defaultTtl = response.general_default_ttl;
+                        overrideHostStateSpan.find('.processing').hide();
+                        overrideHostStatus = response.override_host_status;
+                        if (!overrideHostStatus) {
+                            overrideHostStateSpan.find('.enabled').hide();
+                            overrideHostStateDisabled.show();
                             return;
                         }
-                       console.log(overrideHostStateSpan.find('.enabled').hide());
-                       overrideHostStateDisabled.show();
-                   }
-               }
+
+                        overrideHostStateSpan.find('.disabled').hide();
+                        overrideHostStateEnabled.show();
+                    }
+                }
             });
         }
 
         /**
-         * After submitting the input field for override host
+         * After submitting the input field for the override host.
          * @param activeVersion
-         * @param enable
+         * @param status
          * @param defaultTtlValue
          */
-        function changeOverrideHost(activeVersion, defaultTtlValue, enable)
+        function changeOverrideHost(activeVersion, defaultTtlValue, status)
         {
             let activate = $("#fastly_activate_vcl").is(':checked') ? true : false;
-            let overrideHostInput = (enable === true) ? $("#host_name").val() : '';
+            let overrideHostInput = !status ? $("#host_name").val() : '';
 
             $.ajax({
                 type: 'GET',
@@ -97,9 +99,9 @@ define([
                 data: {
                     'active_version': activeVersion,
                     'override_host': overrideHostInput,
-                    'default_ttl' : defaultTtlValue,
+                    'default_ttl': defaultTtlValue,
                     'activate': activate,
-                    'enable': enable
+                    'status': status
                 },
                 success: function (response) {
                     resetAllMessages();
@@ -109,39 +111,23 @@ define([
                         next_version = response.next_version;
                         overrideHost = response.override_host;
                         checkOverrideHostStatus(active_version);
-                        return;
+                        return successOverrideHostBtnMsg.text($.mage.__('Successfully updated ' +
+                            'the Override Host for the version #' + active_version)).show();
                     }
-                    return errorOverrideHostBtnMsg.text($.mage.__(response.msg));
+                    return errorOverrideHostBtnMsg.text($.mage.__(response.msg)).show();
                 }
             });
         }
 
-        /**
-         * after click on Override Host's Configure button
-         */
-        $("#override_host_container_button").on('click', function () {
-            resetAllMessages();
-            $.ajax({
-                type: 'GET',
-                url: config.serviceInfoUrl,
-                showLoader: true,
-                data: {'active_version': active_version},
-                success: function (response) {
-                    overlay(overrideHostOptions);
-                    setServiceLabel(response.active_version, response.next_version, response.service.name);
-                }
-            });
-        });
-
         $("#fastly_override_switcher_button").on('click', function () {
             resetAllMessages();
-            if (overrideHost !== '') {
-                overlay(overrideHostOptionsDisable);
+            if (!overrideHostStatus) {
+                overlay(overrideHostOptionsEnable);
                 setServiceLabel(active_version, next_version, service_name);
                 return;
             }
 
-            overlay(overrideHostOptionsEnable);
+            overlay(overrideHostOptionsDisable);
             setServiceLabel(active_version, next_version, service_name);
         });
     }

@@ -54,38 +54,25 @@ class OverrideHostSwitcher extends Action
         }
 
         $overrideHost = $this->request->getParam('override_host');
-        $activate = $this->request->getParam('activate');
-        $activate = $activate === 'true' ? true : false;
-        $enable = $this->request->getParam('enable');
-        $enable = $enable === 'true' ? true : false;
+        $status = $this->request->getParam('status') === 'true' ? true : false;
         $ttl = $this->request->getParam('default_ttl');
+        $params = [
+            'general.default_host'  => $overrideHost,
+            'general.default_ttl'   => $ttl
+        ];
         try {
-            $clone = $this->api->cloneVersion($version);
-            if (!$clone) {
-                return $json->setData([
-                    'status'    => false,
-                    'msg'       => 'Something went wrong, please try again'
-                ]);
-            }
-
-            $version = $clone->number;
-            $params = [
-                'general.default_host'  => $overrideHost,
-                'general.default_ttl'   => $ttl
-            ];
-            if (!$enable) {
-                $result = $this->_disableOverrideHost($version, $ttl);
-            } else {
+            if (!$status) {
                 $result = $this->_enableOverrideHost($version, $params);
+            } else {
+                $result = $this->_disableOverrideHost($version, $ttl);
             }
 
-            if ($activate) {
-                $this->api->activateVersion($version);
+            if ($result['status'] !== false) {
+                $result = $this->_handleActiveVersion($version, $result);
+                $service = $this->api->checkServiceDetails();
+                $result['next_version'] = $this->vcl->getNextVersion($service->versions);
             }
 
-            $service = $this->api->checkServiceDetails();
-            $nextVersion = $this->vcl->getNextVersion($service->versions);
-            $result['next_version'] = $nextVersion;
             return $json->setData($result);
         } catch (LocalizedException $e) {
             return $json->setData([
@@ -109,12 +96,19 @@ class OverrideHostSwitcher extends Action
                 'msg'       => 'URL format is not correct. Correct format e.g. `<yourbucket>.s3.amazonaws.com`'
             ];
         }
-
+        $version = $this->_getClonedVersionNumber($version);
+        if (!$version) {
+            return [
+                'status'    => false,
+                'msg'       => 'Something went wrong, please try again'
+            ];
+        }
         $result = $this->api->createOverrideHost($version, $params);
         if (!$result) {
             return [
                 'status'    => false,
-                'msg'       => 'Something went wrong, please try again'
+                'msg'       => 'Something went wrong, please try again or review valid domain format. e.g. '
+                                . '<yourbucket>.s3.amazonaws.com'
             ];
         }
 
@@ -139,6 +133,14 @@ class OverrideHostSwitcher extends Action
             'general.default_host'   => '',
             'general.default_ttl'   => $ttl
         ];
+        $version = $this->_getClonedVersionNumber($version);
+        if (!$version) {
+            return [
+                'status'    => false,
+                'msg'       => 'Something went wrong, please try again'
+            ];
+        }
+
         $result = $this->api->createOverrideHost($version, $params);
         if (!$result) {
             return [
@@ -154,5 +156,36 @@ class OverrideHostSwitcher extends Action
             'override_host'  =>  $params['general.default_host'],
             'ttl'        => $params['general.default_ttl']
         ];
+    }
+
+    /**
+     * @param $version
+     * @return int
+     * @throws LocalizedException
+     */
+    private function _getClonedVersionNumber($version)
+    {
+        $clone = $this->api->cloneVersion($version);
+        if (!$clone) {
+            return 0;
+        }
+
+        return $clone->number;
+    }
+
+    /**
+     * @param array $params
+     * @return array
+     * @throws LocalizedException
+     */
+    private function _handleActiveVersion($ajaxedVersion, $params = [])
+    {
+        $activate = $this->request->getParam('activate') === 'true' ? true : false;
+        if ($activate) {
+            $this->api->activateVersion($params['version']);
+            return $params;
+        }
+        $params['version']  = $ajaxedVersion;
+        return $params;
     }
 }

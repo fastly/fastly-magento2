@@ -64,18 +64,10 @@ class OverrideHostStatus extends Action
 
         $override_host = 'general.default_host';
         $ttl = 'general.default_ttl';
-        if ($result->{$override_host} !== '') {
-            return $json->setData([
-                'status'    => true,
-                'override_host_switcher' => 'enabled',
-                'general_default_host'     => $result->{$override_host},
-                'general_default_ttl'       => $result->{$ttl}
-            ]);
-        }
-
+        $status = $result->{$override_host} !== '' ? true : false;
         return $json->setData([
-           'status'     => true,
-           'override_host_switcher'  => 'disabled',
+           'status'                  => true,
+           'override_host_status'    => $status,
            'general_default_host'    => $result->{$override_host},
            'general_default_ttl'     => $result->{$ttl}
         ]);

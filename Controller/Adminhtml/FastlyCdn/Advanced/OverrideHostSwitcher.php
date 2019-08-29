@@ -9,25 +9,40 @@ use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Exception\LocalizedException;
 
+/**
+ * Class OverrideHostSwitcher
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Advanced
+ */
 class OverrideHostSwitcher extends Action
 {
     /**
      * @var Http
      */
     private $request;
+
     /**
      * @var Api
      */
     private $api;
+
     /**
      * @var JsonFactory
      */
     private $jsonFactory;
+
     /**
      * @var Vcl
      */
     private $vcl;
 
+    /**
+     * OverrideHostSwitcher constructor.
+     * @param Action\Context $context
+     * @param Http $request
+     * @param Api $api
+     * @param Vcl $vcl
+     * @param JsonFactory $jsonFactory
+     */
     public function __construct(
         Action\Context $context,
         Http $request,
@@ -83,6 +98,7 @@ class OverrideHostSwitcher extends Action
     }
 
     /**
+     * Clone version and create override_host for it.
      * @param $version
      * @param array $params
      * @return array
@@ -114,7 +130,6 @@ class OverrideHostSwitcher extends Action
 
         return  [
            'status'     => true,
-           'switcher'   => 'enabled',
            'version'    => $version,
            'override_host'  =>  $params['general.default_host'],
            'ttl'        => $params['general.default_ttl']
@@ -122,6 +137,7 @@ class OverrideHostSwitcher extends Action
     }
 
     /**
+     * Clone version and set override_host to empty string. (Disable it)
      * @param $version
      * @param $ttl
      * @return array
@@ -151,7 +167,6 @@ class OverrideHostSwitcher extends Action
 
         return  [
             'status'     => true,
-            'switcher'   => 'disabled',
             'version'    => $version,
             'override_host'  =>  $params['general.default_host'],
             'ttl'        => $params['general.default_ttl']
@@ -159,6 +174,7 @@ class OverrideHostSwitcher extends Action
     }
 
     /**
+     * Clone version and return its number.
      * @param $version
      * @return int
      * @throws LocalizedException
@@ -174,6 +190,8 @@ class OverrideHostSwitcher extends Action
     }
 
     /**
+     * Check if client wants to activate edited version,
+     * and activate it if its necessary.
      * @param array $params
      * @return array
      * @throws LocalizedException
@@ -181,6 +199,7 @@ class OverrideHostSwitcher extends Action
     private function _handleActiveVersion($ajaxedVersion, $params = [])
     {
         $activate = $this->request->getParam('activate') === 'true' ? true : false;
+        $params['edited_version']   = $params['version'];
         if ($activate) {
             $this->api->activateVersion($params['version']);
             return $params;

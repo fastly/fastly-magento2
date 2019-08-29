@@ -235,7 +235,7 @@
                             Fastly override host configuration
                         ====================================== -->
                         <field id="override_host_switch" translate="label comment" sortOrder="83" showInDefault="1" showInStore="0" showInWebsite="0">
-                            <label><![CDATA[Override Host Switch]]></label>
+                            <label><![CDATA[Override Host]]></label>
                             <comment>
                                 <![CDATA[Use this if you have multiple domains tied to a service and want them all served by the same origin,
                                    or if the domain your origin is expecting is different than one specified in your Fastly service.]]>

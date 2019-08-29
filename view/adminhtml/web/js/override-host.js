@@ -76,7 +76,10 @@ define([
 
                         overrideHostStateSpan.find('.disabled').hide();
                         overrideHostStateEnabled.show();
+                        return;
                     }
+
+                    errorOverrideHostBtnMsg.text($.mage.__(response.msg)).show();
                 }
             });
         }
@@ -112,13 +115,16 @@ define([
                         overrideHost = response.override_host;
                         checkOverrideHostStatus(active_version);
                         return successOverrideHostBtnMsg.text($.mage.__('Successfully updated ' +
-                            'the Override Host for the version #' + active_version)).show();
+                            'the Override Host for the version #' + response.edited_version)).show();
                     }
                     return errorOverrideHostBtnMsg.text($.mage.__(response.msg)).show();
                 }
             });
         }
 
+        /**
+         * Enable/Disable button pressed
+         */
         $("#fastly_override_switcher_button").on('click', function () {
             resetAllMessages();
             if (!overrideHostStatus) {

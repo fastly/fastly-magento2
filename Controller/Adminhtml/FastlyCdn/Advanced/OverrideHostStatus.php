@@ -8,21 +8,34 @@ use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Exception\LocalizedException;
 
+/**
+ * Class OverrideHostStatus
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Advanced
+ */
 class OverrideHostStatus extends Action
 {
     /**
      * @var JsonFactory
      */
     private $jsonFactory;
+
     /**
      * @var Http
      */
     private $request;
+
     /**
      * @var Api
      */
     private $api;
 
+    /**
+     * OverrideHostStatus constructor.
+     * @param Action\Context $context
+     * @param Api $api
+     * @param Http $request
+     * @param JsonFactory $jsonFactory
+     */
     public function __construct(
         Action\Context $context,
         Api $api,

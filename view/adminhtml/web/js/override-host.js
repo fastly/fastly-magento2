@@ -63,10 +63,10 @@ define([
                 success: function (response) {
                     let overrideHostStateEnabled = $("#override_host_enabled");
                     let overrideHostStateDisabled = $("#override_host_disabled");
+                    overrideHostStateSpan.find('.processing').hide();
                     if (response.status !== false) {
                         overrideHost = response.general_default_host;
                         defaultTtl = response.general_default_ttl;
-                        overrideHostStateSpan.find('.processing').hide();
                         overrideHostStatus = response.override_host_status;
                         if (!overrideHostStatus) {
                             overrideHostStateSpan.find('.enabled').hide();
@@ -79,6 +79,9 @@ define([
                         return;
                     }
 
+                    overrideHostStateSpan.find('.enabled').hide();
+                    overrideHostStateSpan.find('.disabled').hide();
+                    overrideHostStateSpan.find('.unknown').show();
                     errorOverrideHostBtnMsg.text($.mage.__(response.msg)).show();
                 }
             });
@@ -114,7 +117,8 @@ define([
                         next_version = response.next_version;
                         overrideHost = response.override_host;
                         checkOverrideHostStatus(active_version);
-                        return successOverrideHostBtnMsg.text($.mage.__('Successfully updated ' +'the Override Host')).show();
+                        return successOverrideHostBtnMsg.text($.mage.__('Successfully updated '
+                            +'the Override Host for the #' + response.edited_version)).show();
                     }
                     return errorOverrideHostBtnMsg.text($.mage.__(response.msg)).show();
                 }

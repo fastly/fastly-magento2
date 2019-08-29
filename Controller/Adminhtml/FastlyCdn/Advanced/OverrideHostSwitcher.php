@@ -56,6 +56,8 @@ class OverrideHostSwitcher extends Action
         $overrideHost = $this->request->getParam('override_host');
         $activate = $this->request->getParam('activate');
         $activate = $activate === 'true' ? true : false;
+        $enable = $this->request->getParam('enable');
+        $enable = $enable === 'true' ? true : false;
         $ttl = $this->request->getParam('default_ttl');
         try {
             $clone = $this->api->cloneVersion($version);
@@ -71,18 +73,18 @@ class OverrideHostSwitcher extends Action
                 'general.default_host'  => $overrideHost,
                 'general.default_ttl'   => $ttl
             ];
-            if ($overrideHost !== '') {
-                $result = $this->_enableOverrideHost($version, $params);
-            } else {
+            if (!$enable) {
                 $result = $this->_disableOverrideHost($version, $ttl);
+            } else {
+                $result = $this->_enableOverrideHost($version, $params);
             }
 
             if ($activate) {
                 $this->api->activateVersion($version);
             }
 
-            $service = $this->api->getServiceDetails();
-            $nextVersion = $service->getNextVersion($version);
+            $service = $this->api->checkServiceDetails();
+            $nextVersion = $this->vcl->getNextVersion($service->versions);
             $result['next_version'] = $nextVersion;
             return $json->setData($result);
         } catch (LocalizedException $e) {

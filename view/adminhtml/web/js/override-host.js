@@ -37,7 +37,7 @@ define([
                 return document.getElementById('fastly-disable-override-host-template').textContent;
             },
             actionOk: function () {
-                changeOverrideHost(active_version, defaultTtl);
+                changeOverrideHost(active_version, defaultTtl, false);
             }
         };
 
@@ -47,7 +47,7 @@ define([
                 return document.getElementById('fastly-override-host-template').textContent;
             },
             actionOk: function () {
-                changeOverrideHost(active_version, defaultTtl);
+                changeOverrideHost(active_version, defaultTtl, true);
             }
         };
 
@@ -68,12 +68,12 @@ define([
                        defaultTtl = response.general_default_ttl;
                        overrideHostStateSpan.find('.processing').hide();
                         if (response.override_host_switcher !== 'disabled') {
-                            overrideHostStateSpan.find('.disabled').hide();
+                            console.log(overrideHostStateSpan.find('.disabled').hide());
                             overrideHostStateEnabled.show();
                             return;
                         }
-                       overrideHostStateSpan.find('.enabled').hide();
-                        overrideHostStateDisabled.show();
+                       console.log(overrideHostStateSpan.find('.enabled').hide());
+                       overrideHostStateDisabled.show();
                    }
                }
             });
@@ -82,33 +82,32 @@ define([
         /**
          * After submitting the input field for override host
          * @param activeVersion
-         * @param overrideHostValue
+         * @param enable
          * @param defaultTtlValue
-         * successOverrideHostBtnMsg.text($.mage.__('Override Host ("' + overrideHostValue
-         + '") is successfully enabled')).show();
          */
-        function changeOverrideHost(activeVersion, defaultTtlValue)
+        function changeOverrideHost(activeVersion, defaultTtlValue, enable)
         {
-            resetAllMessages();
             let activate = $("#fastly_activate_vcl").is(':checked') ? true : false;
-            let overrideHostValue = $("#host_name").val();
-            console.log(overrideHostValue);
-            debugger;
+            let overrideHostInput = (enable === true) ? $("#host_name").val() : '';
+
             $.ajax({
                 type: 'GET',
                 url: config.overrideHostSwitcher,
                 showLoader: true,
                 data: {
                     'active_version': activeVersion,
-                    'override_host': overrideHostValue,
+                    'override_host': overrideHostInput,
                     'default_ttl' : defaultTtlValue,
-                    'activate': activate
+                    'activate': activate,
+                    'enable': enable
                 },
                 success: function (response) {
+                    resetAllMessages();
                     modal.modal('closeModal');
                     if (response.status !== false) {
                         active_version = response.version;
                         next_version = response.next_version;
+                        overrideHost = response.override_host;
                         checkOverrideHostStatus(active_version);
                         return;
                     }

@@ -148,7 +148,8 @@ class CreateBackend extends Action
                 'service_id'            => $service->id,
                 'shield'                => $this->getRequest()->getParam('shield'),
                 'use_ssl'               => $useSsl,
-                'version'               => $clone->number
+                'version'               => $clone->number,
+                'override_host'         => $this->getRequest()->getParam('override_host')
             ];
 
             if ($useSsl == '1') {

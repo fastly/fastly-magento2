@@ -97,6 +97,8 @@ class CreateBackend extends Action
                 return $result->setData(['status' => true]);
             }
 
+            $override = $this->validateOverride($this->getRequest()->getParam('override_host'));
+
             $name = $this->getRequest()->getParam('name');
             $this->validateName($name);
 
@@ -149,7 +151,7 @@ class CreateBackend extends Action
                 'shield'                => $this->getRequest()->getParam('shield'),
                 'use_ssl'               => $useSsl,
                 'version'               => $clone->number,
-                'override_host'         => $this->getRequest()->getParam('override_host')
+                'override_host'         => $override
             ];
 
             if ($useSsl == '1') {
@@ -220,8 +222,26 @@ class CreateBackend extends Action
     {
         if (!filter_var($address, FILTER_VALIDATE_IP) &&
             !filter_var($address, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
-            throw new LocalizedException(__('Address '.$address.' is not a valid IPv4, IPv6 or hostname'));
+            throw new LocalizedException(__('Address '.$address.' is not a valid IPv4, IPv6 or hostname.'));
         }
+    }
+
+    /**
+     * @param $override
+     * @return string|null
+     * @throws LocalizedException
+     */
+    private function validateOverride($override)
+    {
+        if ($override === '') {
+            return null;
+        }
+
+        if (!filter_var($override, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
+            throw new LocalizedException(__('Override host ' . $override . ' is not a valid hostname.'));
+        }
+
+        return $override;
     }
 
     /**

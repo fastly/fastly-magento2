@@ -922,6 +922,23 @@
                     <div class="admin__field-note">How long to wait between bytes in milliseconds.</div>
                 </div>
             </div>
+
+            <div class="admin__field field">
+                <label for="override_host" class="admin__field-label">
+                    <span><?php /* @noEscape */
+                        echo __("Override host") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="override_host"
+                           type="text"
+                           id="override_host"
+                           class="admin__control-text"
+                           value="">
+                    <div class="admin__field-note">Override the host header being sent to your origin regardless of the
+                        host used in the initial request. Only necessary if the domain your origin is expecting is
+                        different than what Fastly hosts. </div>
+                </div>
+            </div>
         </fieldset>
     </form>
 </script>

@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.114
+
+- Add Override Host option to backend creation
+
 ## 1.2.113
 
 - Warning when vcl is out of date https://github.com/fastly/fastly-magento2/pull/297

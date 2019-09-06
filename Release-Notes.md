@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.115
+
+- Remove conflicting WAF bypass statement
+
 ## 1.2.114
 
 - Add Override Host option to backend creation

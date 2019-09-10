@@ -8,16 +8,13 @@
 <script type="text/x-magento-template" id="fastly-uploadvcl-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("We'll upload your VCL to version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll upload your VCL to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="vcl-upload-form"
           class="form-inline"
@@ -25,8 +22,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_activate_vcl" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __('Activate VCL after upload') ?></span>
+                    <span><?php /* @noEscape */ echo __('Activate VCL after upload')?></span>
                 </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
@@ -47,16 +43,13 @@
 <script type="text/x-magento-template" id="fastly-tls-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("We'll make the changes to version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="vcl-upload-form"
           class="form-inline"
@@ -64,8 +57,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_activate_vcl" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __('Activate after the change') ?></span>
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
                 </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
@@ -86,17 +78,14 @@
 <script type="text/x-magento-template" id="fastly-image-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("We'll make the changes to version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-warning" id="fastly-image-template-notifications" style="display: none"></div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="vcl-upload-form"
           class="form-inline"
@@ -105,8 +94,7 @@
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_activate_vcl"
                        class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __('Activate after the change') ?></span></label>
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span></label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
                         <input class="admin__control-checkbox"
@@ -121,8 +109,7 @@
                 <label for="fastly_image_quality_flag"
                        class="admin__field-label">
                     <span>
-                        <?php /* @noEscape */
-                        echo __('Set image quality to Magento default') ?>
+                        <?php /* @noEscape */ echo __('Set image quality to Magento default')?>
                     </span>
                 </label>
                 <div class="admin__field-control">
@@ -143,16 +130,13 @@
 <script type="text/x-magento-template" id="fastly-blocking-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("We'll make the changes to version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="vcl-upload-form"
           class="form-inline"
@@ -160,8 +144,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_activate_vcl" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __('Activate after the change') ?></span>
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
                 </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
@@ -184,16 +167,13 @@
         <div class="message message-notice fastly-message-notice" style="display: none">
         </div>
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("We'll make the changes to version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="vcl-upload-form"
           class="form-inline"
@@ -201,8 +181,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_activate_vcl" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __('Activate after the change') ?></span>
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
                 </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
@@ -223,16 +202,13 @@
 <script type="text/x-magento-template" id="fastly-waf-bypass-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("We'll make the changes to version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="vcl-upload-form"
           class="form-inline"
@@ -240,8 +216,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_activate_vcl" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __('Activate after the change') ?></span>
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
                 </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
@@ -262,18 +237,15 @@
 <script type="text/x-magento-template" id="fastly-auth-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("We'll make the changes to version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error"
              id="fastly-auth-toggle-message-error"
              style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="vcl-upload-form"
           class="form-inline"
@@ -281,8 +253,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_activate_vcl" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __('Activate after the change') ?></span>
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
                 </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
@@ -303,16 +274,13 @@
 <script type="text/x-magento-template" id="fastly-backend-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("Your backend will be reconfigured in version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("Your backend will be reconfigured in version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="backend-upload-form"
           class="form-inline"
@@ -321,8 +289,7 @@
             <input hidden="hidden" name="backend_name" id="backend_name" class="admin__control-text">
             <div class="admin__field field">
                 <label for="shield" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Shield") ?></span>
+                    <span><?php /* @noEscape */ echo __("Shield") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <select name="shield" id="backend_shield" class="admin__control-text">
@@ -395,8 +362,7 @@
 
             <div class="admin__field field _required">
                 <label for="connect_timeout" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Connect timeout") ?></span>
+                    <span><?php /* @noEscape */ echo __("Connect timeout") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input name="connect_timeout"
@@ -414,8 +380,7 @@
 
             <div class="admin__field field _required">
                 <label for="between_bytes_timeout" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Between bytes timeout") ?></span>
+                    <span><?php /* @noEscape */  echo __("Between bytes timeout") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input name="between_bytes_timeout"
@@ -429,8 +394,7 @@
 
             <div class="admin__field field _required">
                 <label for="first_byte_timeout " class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("First byte timeout ") ?></span>
+                    <span><?php /* @noEscape */ echo __("First byte timeout ") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input name="first_byte_timeout"
@@ -444,8 +408,7 @@
 
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_activate_backend" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __('Activate after the change') ?></span>
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
                 </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
@@ -466,16 +429,13 @@
 <script type="text/x-magento-template" id="fastly-create-backend-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("Your backend will be created in version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("Your backend will be created in version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="create-backend-form"
           class="form-inline"
@@ -483,8 +443,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_activate_backend" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __('Activate after the change') ?></span>
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
                 </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
@@ -499,8 +458,7 @@
             </div>
             <div class="admin__field field">
                 <label for="condition" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Condition") ?></span>
+                    <span><?php /* @noEscape */ echo __("Condition") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <span id="attach_span" style>
@@ -514,8 +472,7 @@
             </div>
             <div class="admin__field field _required">
                 <label for="backend_name" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Name") ?></span>
+                    <span><?php /* @noEscape */ echo __("Name") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input name="backend_name" id="backend_name" class="admin__control-text">
@@ -526,8 +483,7 @@
             </div>
             <div class="admin__field field _required">
                 <label for="backend_address" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Address") ?></span>
+                    <span><?php /* @noEscape */ echo __("Address") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input name="backend_address" id="backend_address" class="admin__control-text">
@@ -539,8 +495,7 @@
 
             <div class="admin__field field">
                 <label for="shield" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Shielding") ?></span>
+                    <span><?php /* @noEscape */ echo __("Shielding") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <select name="shield" id="backend_shield" class="admin__control-select">
@@ -614,8 +569,7 @@
 
             <div class="admin__field field">
                 <label for="shield" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Auto load balance") ?></span>
+                    <span><?php /* @noEscape */ echo __("Auto load balance") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <select name="auto_load_balance" id="auto_load_balance" class="admin__control-select">
@@ -632,8 +586,7 @@
 
             <div class="admin__field field _required weight">
                 <label for="weight" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Weight") ?></span>
+                    <span><?php /* @noEscape */ echo __("Weight") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input name="weight" id="weight" class="admin__control-text" value="100">
@@ -655,8 +608,7 @@
 
                 <div class="admin__field field">
                     <label for="tls-radio" class="admin__field-label">
-                        <span><?php /* @noEscape */
-                            echo __("Enable TLS?") ?></span>
+                        <span><?php /* @noEscape */ echo __("Enable TLS?") ?></span>
                     </label>
                     <div class="admin__field-control">
                         <table>
@@ -710,8 +662,7 @@
 
                 <div class="admin__field field">
                     <label for="certificate-radio" class="admin__field-label">
-                        <span><?php /* @noEscape */
-                            echo __("Verify certificate?") ?></span>
+                        <span><?php /* @noEscape */ echo __("Verify certificate?") ?></span>
                     </label>
                     <div class="admin__field-control">
                         <input type="radio" id="certificate-yes" class="admin__control-radio" name="certificate-radio"
@@ -731,8 +682,7 @@
 
                 <div class="admin__field field _required">
                     <label for="certificate-hostname" class="admin__field-label">
-                        <span><?php /* @noEscape */
-                            echo __("Certificate hostname") ?></span>
+                        <span><?php /* @noEscape */ echo __("Certificate hostname") ?></span>
                     </label>
                     <div class="admin__field-control">
                         <input name="certificate-hostname"
@@ -742,15 +692,13 @@
                                class="admin__control-text"
                         >
                         <div class="admin__field-note">This value is matched against the certificate common name (CN)
-                            or a subject alternate name (SAN).
-                        </div>
+                            or a subject alternate name (SAN).</div>
                     </div>
                 </div>
 
                 <div class="admin__field field">
                     <label for="sni-hostname" class="admin__field-label">
-                        <span><?php /* @noEscape */
-                            echo __("SNI hostname") ?></span>
+                        <span><?php /* @noEscape */ echo __("SNI hostname") ?></span>
                     </label>
                     <div class="admin__field-control">
                         <input name="sni-hostname"
@@ -773,8 +721,7 @@
 
                 <div class="admin__field field">
                     <label for="tls-ca-certificate" class="admin__field-label">
-                        <span><?php /* @noEscape */
-                            echo __("TLS CA certificate") ?></span>
+                        <span><?php /* @noEscape */ echo __("TLS CA certificate") ?></span>
                     </label>
                     <div class="admin__field-control">
                     <textarea rows="6"
@@ -783,8 +730,7 @@
                               id="tls-ca-certificate"
                               class="admin__control-text"></textarea>
                         <div class="admin__field-note">CA certificate used to verify the certificate from origin.
-                            Must be in PEM form.
-                        </div>
+                            Must be in PEM form.</div>
                     </div>
                 </div>
 
@@ -796,8 +742,7 @@
 
                 <div class="admin__field field">
                     <label for="minimum-tls" class="admin__field-label">
-                        <span><?php /* @noEscape */
-                            echo __("Minimum TLS version") ?></span>
+                        <span><?php /* @noEscape */ echo __("Minimum TLS version") ?></span>
                     </label>
                     <div class="admin__field-control">
                         <select name="minimum-tls" id="minimum-tls" class="admin__control-text">
@@ -807,15 +752,13 @@
                             <option value="1.2">1.2</option>
                         </select>
                         <div class="admin__field-note">The minimum TLS protocol version that Fastly will use to
-                            connect to your origin server.
-                        </div>
+                            connect to your origin server.</div>
                     </div>
                 </div>
 
                 <div class="admin__field field">
                     <label for="maximum-tls" class="admin__field-label">
-                        <span><?php /* @noEscape */
-                            echo __("Maximum TLS version") ?></span>
+                        <span><?php /* @noEscape */ echo __("Maximum TLS version") ?></span>
                     </label>
                     <div class="admin__field-control">
                         <select name="maximum-tls" id="maximum-tls" class="admin__control-text">
@@ -825,15 +768,13 @@
                             <option value="1.2">1.2</option>
                         </select>
                         <div class="admin__field-note">The maximum TLS protocol version that Fastly will use to
-                            connect to your origin server. (Must be higher than the minimum TLS version.)
-                        </div>
+                            connect to your origin server. (Must be higher than the minimum TLS version.)</div>
                     </div>
                 </div>
 
                 <div class="admin__field field">
                     <label for="ciphersuites" class="admin__field-label">
-                        <span><?php /* @noEscape */
-                            echo __("Ciphersuites") ?></span>
+                        <span><?php /* @noEscape */ echo __("Ciphersuites") ?></span>
                     </label>
                     <div class="admin__field-control">
                         <input name="ciphersuites"
@@ -842,15 +783,13 @@
                                class="admin__control-text"
                         >
                         <div class="admin__field-note">A list of OpenSSL ciphers to use when connecting to your origin.
-                            For more information see the OpenSSL documentation on cipher list format
-                        </div>
+                            For more information see the OpenSSL documentation on cipher list format</div>
                     </div>
                 </div>
 
                 <div class="admin__field field">
                     <label for="tls-client-certificate" class="admin__field-label">
-                        <span><?php /* @noEscape */
-                            echo __("TLS client certificate") ?></span>
+                        <span><?php /* @noEscape */ echo __("TLS client certificate") ?></span>
                     </label>
                     <div class="admin__field-control">
                     <textarea rows="6"
@@ -868,8 +807,7 @@
 
                 <div class="admin__field field">
                     <label for="tls-client-key" class="admin__field-label">
-                        <span><?php /* @noEscape */
-                            echo __("TLS client key") ?></span>
+                        <span><?php /* @noEscape */ echo __("TLS client key") ?></span>
                     </label>
                     <div class="admin__field-control">
                     <textarea rows="6"
@@ -891,8 +829,7 @@
 
             <div class="admin__field field _required">
                 <label for="maximum_connections" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Maximum connections") ?></span>
+                    <span><?php /* @noEscape */ echo __("Maximum connections") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input name="maximum_connections"
@@ -906,15 +843,13 @@
                                     maximum-length-50"
                            value="200">
                     <div class="admin__field-note">The maximum number of connections to your backend.
-                        By default, limited to 200 connections per cache node to protect origins from overload.
-                    </div>
+                        By default, limited to 200 connections per cache node to protect origins from overload.</div>
                 </div>
             </div>
 
             <div class="admin__field field _required">
                 <label for="error_threshold" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Error threshold") ?></span>
+                    <span><?php /* @noEscape */ echo __("Error threshold") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input name="error_threshold"
@@ -941,8 +876,7 @@
 
             <div class="admin__field field _required">
                 <label for="connect_timeout" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Connection timeout") ?></span>
+                    <span><?php /* @noEscape */ echo __("Connection timeout") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input name="connect_timeout"
@@ -961,8 +895,7 @@
 
             <div class="admin__field field _required">
                 <label for="first_byte_timeout " class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("First byte timeout ") ?></span>
+                    <span><?php /* @noEscape */ echo __("First byte timeout ") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input name="first_byte_timeout"
@@ -977,8 +910,7 @@
 
             <div class="admin__field field _required">
                 <label for="between_bytes_timeout" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Between bytes timeout") ?></span>
+                    <span><?php /* @noEscape */  echo __("Between bytes timeout") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input name="between_bytes_timeout"
@@ -988,6 +920,23 @@
                            class="admin__control-text"
                            value="10000">
                     <div class="admin__field-note">How long to wait between bytes in milliseconds.</div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label for="override_host" class="admin__field-label">
+                    <span><?php /* @noEscape */
+                        echo __("Override host") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="override_host"
+                           type="text"
+                           id="override_host"
+                           class="admin__control-text"
+                           value="">
+                    <div class="admin__field-note">Override the host header being sent to your origin regardless of the
+                        host used in the initial request. Only necessary if the domain your origin is expecting is
+                        different than what Fastly hosts. </div>
                 </div>
             </div>
         </fieldset>
@@ -1000,8 +949,7 @@
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="vcl-upload-form"
           class="form-inline"
@@ -1009,8 +957,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field _required">
                 <label for="condition_name" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Name") ?></span>
+                    <span><?php /* @noEscape */ echo __("Name") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input name="condition_name" id="condition_name" class="admin__control-text">
@@ -1019,8 +966,7 @@
 
             <div class="admin__field field __required">
                 <label for="apply_if" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Apply if...") ?></span>
+                    <span><?php /* @noEscape */ echo __("Apply if...") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <textarea rows="6"
@@ -1036,8 +982,7 @@
 
             <div class="admin__field field">
                 <label for="condition_priority" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Priority") ?></span>
+                    <span><?php /* @noEscape */  echo __("Priority") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input name="condition_priority"
@@ -1047,8 +992,7 @@
                            class="admin__control-text"
                            value="10">
                     <div class="admin__field-note">For most configurations, the default (10) is best.
-                        Priority determines ordering for multiple conditions. Lower numbers execute first.
-                    </div>
+                        Priority determines ordering for multiple conditions. Lower numbers execute first.</div>
                 </div>
             </div>
         </fieldset>
@@ -1059,16 +1003,13 @@
 <script type="text/x-magento-template" id="fastly-error-page-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("We'll make the changes to version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="vcl-error-page-form"
           class="form-inline"
@@ -1076,8 +1017,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_activate_vcl" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __('Activate after the change') ?></span>
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
                 </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
@@ -1092,8 +1032,7 @@
             </div>
             <div class="admin__field field _required">
                 <label for="error_page_html" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("HTML (max 65535 characters)") ?></span>
+                    <span><?php /* @noEscape */ echo __("HTML (max 65535 characters)") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <textarea rows="10"
@@ -1111,16 +1050,13 @@
 <script type="text/x-magento-template" id="fastly-waf-page-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("We'll make the changes to version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="vcl-waf-page-form"
           class="form-inline"
@@ -1128,8 +1064,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_activate_vcl" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __('Activate after the change') ?></span>
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
                 </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
@@ -1144,8 +1079,7 @@
             </div>
             <div class="admin__field field _required">
                 <label for="waf_page_status" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Status") ?></span>
+                    <span><?php /* @noEscape */ echo __("Status") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <select name="waf_page_status" id="waf_page_status" class="admin__control-text">
@@ -1213,8 +1147,7 @@
             </div>
             <div class="admin__field field _required">
                 <label for="waf_page_type" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("MIME Type") ?></span>
+                    <span><?php /* @noEscape */ echo __("MIME Type") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input type="text"
@@ -1230,8 +1163,7 @@
             </div>
             <div class="admin__field field _required">
                 <label for="waf_page_content" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Content (max 65535 characters)") ?></span>
+                    <span><?php /* @noEscape */ echo __("Content (max 65535 characters)") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <textarea rows="10"
@@ -1252,16 +1184,13 @@
 <script type="text/x-magento-template" id="fastly-dictionary-container-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("We'll make the changes to version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="dictionary-container-form"
           class="form-inline"
@@ -1270,8 +1199,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field _required">
                 <label for="dictionary_name" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Dictionary name") ?></span>
+                    <span><?php /* @noEscape */ echo __("Dictionary name") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input name="dictionary_name"
@@ -1283,8 +1211,7 @@
             </div>
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_activate_vcl" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __('Activate after the change') ?></span>
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
                 </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
@@ -1309,8 +1236,7 @@
 
 <!-- Edge Dictionary configuration overlay template -->
 <script type="text/x-magento-template" id="fastly-dictionary-item-template">
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="fastly-dictionary-form"
           class="form-inline"
@@ -1319,8 +1245,7 @@
             <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
             <div class="message message-success fastly-message-success" style="display: none;"></div>
         </div>
-        <form action="<?php /* @noEscape */
-        echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+        <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
               method="POST"
               id="fastly-dictionary-form"
               class="form-inline"
@@ -1329,12 +1254,9 @@
                 <table class="admin__control-table" id="dictionary-items-table">
                     <thead>
                     <tr>
-                        <th><?php /* @noEscape */
-                            echo __('Key') ?></th>
-                        <th><?php /* @noEscape */
-                            echo __('Value') ?></th>
-                        <th class="col-actions" colspan="1"><?php /* @noEscape */
-                            echo __('Action') ?></th>
+                        <th><?php /* @noEscape */ echo __('Key') ?></th>
+                        <th><?php /* @noEscape */ echo __('Value') ?></th>
+                        <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Action') ?></th>
                     </tr>
                     </thead>
                     <tbody class="item-container">
@@ -1356,7 +1278,7 @@
                             <button class="action-delete fastly-save-action save_item" title="Save" type="button">
                                 <span>Save</span>
                             </button>
-                            <button class="action-delete remove_item" title="Delete" type="button">
+                            <button class="action-delete remove_item"  title="Delete" type="button">
                                 <span>Delete</span>
                             </button>
                         </td>
@@ -1366,8 +1288,7 @@
                     <tr>
                         <td colspan="3" class="col-actions-add">
                             <button id="add-dictionary-item" class="action-add" title="Add new item" type="button">
-                                <span><?php /* @noEscape */
-                                    echo __('Add new item') ?></span>
+                                <span><?php /* @noEscape */ echo __('Add new item') ?></span>
                             </button>
                         </td>
                     </tr>
@@ -1381,16 +1302,13 @@
 <script type="text/x-magento-template" id="fastly-acl-container-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("We'll make the changes to version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */  echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="acl-container-form"
           class="form-inline"
@@ -1399,8 +1317,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field _required">
                 <label for="acl_name" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("ACL name") ?></span>
+                    <span><?php /* @noEscape */ echo __("ACL name") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input name="acl_name" type="text" required="required" id="acl_name" class="admin__control-text">
@@ -1408,8 +1325,7 @@
             </div>
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_activate_vcl" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __('Activate after the change') ?></span>
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
                 </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
@@ -1430,18 +1346,15 @@
 <script type="text/x-magento-template" id="fastly-delete-dictionary-container-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("We'll make the changes to version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
         <div class="message message-warning" id="fastly-container-warning" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST" id="fastly-delete-dictionary-form"
           class="form-inline"
           enctype="multipart/form-data">
@@ -1449,8 +1362,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_activate_vcl" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __('Activate after the change') ?></span>
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
                 </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
@@ -1473,18 +1385,15 @@
 <script type="text/x-magento-template" id="fastly-delete-acl-container-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("We'll make the changes to version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
         <div class="message message-warning" id="fastly-container-warning" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST" id="fastly-delete-acl-form"
           class="form-inline"
           enctype="multipart/form-data">
@@ -1492,8 +1401,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_activate_vcl" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __('Activate after the change') ?></span>
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
                 </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
@@ -1517,12 +1425,11 @@
     <div class="messages">
         <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
         <div class="message message-success fastly-message-success" style="display: none;"></div>
-        <div class="message message-notice fastly-message-notice">
+        <div class="message message-notice fastly-message-notice" >
             To add a subnet mask, use a slash ("192.0.2.0/24"). To exclude, use an exclamation mark ("!192.0.2.0").
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST" id="fastly-acl-form"
           class="form-inline"
           enctype="multipart/form-data">
@@ -1531,14 +1438,10 @@
             <table class="admin__control-table" id="acl-items-table">
                 <thead>
                 <tr>
-                    <th><?php /* @noEscape */
-                        echo __('Address') ?></th>
-                    <th><?php /* @noEscape */
-                        echo __('Comment (Optional)') ?></th>
-                    <th><?php /* @noEscape */
-                        echo __('Date Added') ?></th>
-                    <th class="col-actions" colspan="1"><?php /* @noEscape */
-                        echo __('Action') ?></th>
+                    <th><?php /* @noEscape */ echo __('Address') ?></th>
+                    <th><?php /* @noEscape */ echo __('Comment (Optional)') ?></th>
+                    <th><?php /* @noEscape */ echo __('Date Added') ?></th>
+                    <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Action') ?></th>
                 </tr>
                 </thead>
                 <tbody class="item-container">
@@ -1564,7 +1467,7 @@
                         <button class="action-delete fastly-save-action save_item" title="Save" type="button">
                             <span>Save</span>
                         </button>
-                        <button class="action-delete remove_item" title="Delete" type="button">
+                        <button class="action-delete remove_item"  title="Delete" type="button">
                             <span>Delete</span>
                         </button>
                     </td>
@@ -1574,8 +1477,7 @@
                 <tr>
                     <td colspan="4" class="col-actions-add">
                         <button id="add-acl-item" class="action-add" title="Add new item" type="button">
-                            <span><?php /* @noEscape */
-                                echo __('Add new item') ?></span>
+                            <span><?php /* @noEscape */ echo __('Add new item') ?></span>
                         </button>
                     </td>
                 </tr>
@@ -1589,16 +1491,13 @@
 <script type="text/x-magento-template" id="fastly-auth-container-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("We'll make the changes to version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="auth-container-form"
           class="form-inline"
@@ -1607,8 +1506,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_activate_vcl" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __('Activate after the change') ?></span>
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
                 </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
@@ -1629,16 +1527,13 @@
 <script type="text/x-magento-template" id="fastly-auth-delete-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("We'll make the changes to version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="auth-delete-container-form"
           class="form-inline"
@@ -1647,8 +1542,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_activate_vcl" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __('Activate after the change') ?></span>
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
                 </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
@@ -1671,8 +1565,7 @@
         <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
         <div class="message message-success fastly-message-success" style="display: none;"></div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="fastly-auth-form"
           class="form-inline"
@@ -1682,12 +1575,9 @@
             <table class="admin__control-table" id="auth-items-table">
                 <thead>
                 <tr>
-                    <th><?php /* @noEscape */
-                        echo __('Username') ?></th>
-                    <th><?php /* @noEscape */
-                        echo __('Password') ?></th>
-                    <th class="col-actions" colspan="1"><?php /* @noEscape */
-                        echo __('Action') ?></th>
+                    <th><?php /* @noEscape */ echo __('Username') ?></th>
+                    <th><?php /* @noEscape */ echo __('Password') ?></th>
+                    <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Action') ?></th>
                 </tr>
                 </thead>
                 <tbody class="item-container">
@@ -1718,8 +1608,7 @@
                 <tr>
                     <td colspan="3" class="col-actions-add">
                         <button id="add-auth-item" class="action-add" title="Add new user" type="button">
-                            <span><?php /* @noEscape */
-                                echo __('Add new user') ?></span>
+                            <span><?php /* @noEscape */ echo __('Add new user') ?></span>
                         </button>
                     </td>
                 </tr>
@@ -1733,10 +1622,8 @@
 <script type="text/x-magento-template" id="fastly-io-default-config-options-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("Your image configuration will be reconfigured in version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("Your image configuration will be reconfigured in version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
@@ -1745,8 +1632,7 @@
             applied in the URL query string or in your VCL.
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="fastly-io-default-config-options-form"
           class="form-inline"
@@ -1755,8 +1641,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_activate_io_vcl" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __('Activate VCL after upload') ?></span>
+                    <span><?php /* @noEscape */ echo __('Activate VCL after upload')?></span>
                 </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
@@ -1775,8 +1660,7 @@
                     <td>
                         <div class="admin__field field _required">
                             <label class="admin__field-label">
-                                <span><?php /* @noEscape */
-                                    echo __("Auto WebP?") ?></span>
+                                <span><?php /* @noEscape */ echo __("Auto WebP?") ?></span>
                             </label>
                         </div>
                     </td>
@@ -1799,8 +1683,7 @@
                     <td>
                         <div class="admin__field field _required">
                             <label for="webp_quality" class="admin__field-label">
-                                <span><?php /* @noEscape */
-                                    echo __("Default WebP (lossy) quality") ?></span>
+                                <span><?php /* @noEscape */ echo __("Default WebP (lossy) quality") ?></span>
                             </label>
                         </div>
                     </td>
@@ -1822,8 +1705,7 @@
                     <td>
                         <div class="admin__field field _required">
                             <label class="admin__field-label">
-                                <span><?php /* @noEscape */
-                                    echo __("Default JPEG format") ?></span>
+                                <span><?php /* @noEscape */ echo __("Default JPEG format") ?></span>
                             </label>
                         </div>
                     </td>
@@ -1865,8 +1747,7 @@
                     <td>
                         <div class="admin__field field _required">
                             <label for="jpeg_quality" class="admin__field-label">
-                                <span><?php /* @noEscape */
-                                    echo __("Default JPEG quality") ?></span>
+                                <span><?php /* @noEscape */ echo __("Default JPEG quality") ?></span>
                             </label>
                         </div>
                     </td>
@@ -1888,8 +1769,7 @@
                     <td>
                         <div class="admin__field field _required">
                             <label class="admin__field-label">
-                                <span><?php /* @noEscape */
-                                    echo __("Allow upscaling?") ?></span>
+                                <span><?php /* @noEscape */ echo __("Allow upscaling?") ?></span>
                             </label>
                         </div>
                     </td>
@@ -1921,8 +1801,7 @@
                     <td>
                         <div class="admin__field field _required">
                             <label class="admin__field-label">
-                                <span><?php /* @noEscape */
-                                    echo __("Resize filter") ?></span>
+                                <span><?php /* @noEscape */ echo __("Resize filter") ?></span>
                             </label>
                         </div>
                     </td>
@@ -1991,14 +1870,12 @@
 <script type="text/x-magento-template" id="fastly-custom-snippet-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to create a custom snippet.") ?>
+            <?php /* @noEscape */ echo __("You are about to create a custom snippet.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/createCustomSnippet'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/createCustomSnippet'); ?>"
           method="POST"
           id="fastly-custom-snippet-form"
           class="form-inline"
@@ -2007,8 +1884,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field _required">
                 <label for="custom_snippet_name" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Name") ?></span>
+                    <span><?php /* @noEscape */ echo __("Name") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input type="text"
@@ -2020,8 +1896,7 @@
             </div>
             <div class="admin__field field _required">
                 <label for="custom_snippet_type" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Type") ?></span>
+                    <span><?php /* @noEscape */ echo __("Type") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <select name="custom_snippet_type" id="custom_snippet_type" class="admin__control-text">
@@ -2044,8 +1919,7 @@
             </div>
             <div class="admin__field field _required">
                 <label for="custom_snippet_priority" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Priority") ?></span>
+                    <span><?php /* @noEscape */ echo __("Priority") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input type="text"
@@ -2062,8 +1936,7 @@
             </div>
             <div class="admin__field field _required">
                 <label for="custom_snippet_content" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("VCL") ?></span>
+                    <span><?php /* @noEscape */ echo __("VCL") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <textarea rows="10"
@@ -2081,14 +1954,12 @@
 <script type="text/x-magento-template" id="fastly-custom-snippet-edit-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to edit a custom snippet.") ?>
+            <?php /* @noEscape */ echo __("You are about to edit a custom snippet.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/editCustomSnippet'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/editCustomSnippet'); ?>"
           method="POST"
           id="fastly-custom-snippet-edit-form"
           class="form-inline"
@@ -2098,8 +1969,7 @@
             <input hidden="hidden" name="original_snippet_name" id="original_snippet_name" class="admin__control-text">
             <div class="admin__field field _required">
                 <label for="custom_snippet_name" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Name") ?></span>
+                    <span><?php /* @noEscape */ echo __("Name") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input type="text"
@@ -2111,8 +1981,7 @@
             </div>
             <div class="admin__field field _required">
                 <label for="custom_snippet_type" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Type") ?></span>
+                    <span><?php /* @noEscape */ echo __("Type") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <select name="custom_snippet_type" id="custom_snippet_type" class="admin__control-text">
@@ -2135,8 +2004,7 @@
             </div>
             <div class="admin__field field _required">
                 <label for="custom_snippet_priority" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Priority") ?></span>
+                    <span><?php /* @noEscape */ echo __("Priority") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <input type="text"
@@ -2153,8 +2021,7 @@
             </div>
             <div class="admin__field field _required">
                 <label for="custom_snippet_content" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("VCL") ?></span>
+                    <span><?php /* @noEscape */ echo __("VCL") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <textarea rows="10"
@@ -2174,8 +2041,7 @@
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/setActiveModuleConfig'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/setActiveModuleConfig'); ?>"
           method="POST"
           id="fastly-active-module-config-form"
           class="form-inline"
@@ -2197,8 +2063,7 @@
         <div class="message message-warning fastly-message-warning" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/setActiveModules'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/setActiveModules'); ?>"
           method="POST"
           id="modly-all-modules-form"
           class="form-inline"
@@ -2208,12 +2073,9 @@
             <table class="admin__control-table" id="modly-all-modules-table">
                 <thead>
                 <tr>
-                    <th><?php /* @noEscape */
-                        echo __('Module') ?></th>
-                    <th><?php /* @noEscape */
-                        echo __('Description') ?></th>
-                    <th class="col-actions" colspan="1"><?php /* @noEscape */
-                        echo __('Enabled') ?></th>
+                    <th><?php /* @noEscape */ echo __('Module') ?></th>
+                    <th><?php /* @noEscape */ echo __('Description') ?></th>
+                    <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Enabled') ?></th>
                 </tr>
                 </thead>
                 <tbody class="item-container">
@@ -2233,8 +2095,7 @@
         <div class="message message-warning fastly-message-warning" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/setActiveModules'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/setActiveModules'); ?>"
           method="POST"
           id="fastly-rate-limiting-form"
           class="form-inline"
@@ -2244,12 +2105,9 @@
             <table class="admin__control-table" id="fastly-rate-limiting-table">
                 <thead>
                 <tr>
-                    <th><?php /* @noEscape */
-                        echo __('Path (regular expression)') ?></th>
-                    <th><?php /* @noEscape */
-                        echo __('Comment (optional)') ?></th>
-                    <th class="col-actions" colspan="1"><?php /* @noEscape */
-                        echo __('Action') ?></th>
+                    <th><?php /* @noEscape */ echo __('Path (regular expression)') ?></th>
+                    <th><?php /* @noEscape */ echo __('Comment (optional)') ?></th>
+                    <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Action') ?></th>
                 </tr>
                 </thead>
                 <tbody class="item-container">
@@ -2258,8 +2116,7 @@
                 <tr>
                     <td colspan="3" class="col-actions-add">
                         <button id="add-path" class="action-add" title="Add new path" type="button">
-                            <span><?php /* @noEscape */
-                                echo __('Add new path') ?></span>
+                            <span><?php /* @noEscape */ echo __('Add new path') ?></span>
                         </button>
                     </td>
                 </tr>
@@ -2273,16 +2130,13 @@
 <script type="text/x-magento-template" id="fastly-rate-limiting-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("We'll make the changes to version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="vcl-upload-form"
           class="form-inline"
@@ -2290,8 +2144,7 @@
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field maintenance-checkbox-container">
                 <label for="fastly_activate_vcl" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __('Activate after the change') ?></span>
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
                 </label>
                 <div class="admin__field-control">
                     <div class="admin__field-option">
@@ -2314,8 +2167,7 @@
         <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
         <div class="message message-success fastly-message-success" style="display: none;"></div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="fastly-domains-list-form"
           class="form-inline"
@@ -2325,12 +2177,9 @@
             <table class="admin__control-table" id="domains-list-table">
                 <thead>
                 <tr>
-                    <th><?php /* @noEscape */
-                        echo __('Name') ?></th>
-                    <th><?php /* @noEscape */
-                        echo __('Comment') ?></th>
-                    <th class="col-actions" colspan="1"><?php /* @noEscape */
-                        echo __('Action') ?></th>
+                    <th><?php /* @noEscape */ echo __('Name') ?></th>
+                    <th><?php /* @noEscape */ echo __('Comment') ?></th>
+                    <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Action') ?></th>
                 </tr>
                 </thead>
                 <tbody class="item-container">
@@ -2358,8 +2207,7 @@
                 <tr>
                     <td colspan="3" class="col-actions-add">
                         <button id="add-domain" class="action-add" title="Add new domain" type="button">
-                            <span><?php /* @noEscape */
-                                echo __('Add Domain') ?></span>
+                            <span><?php /* @noEscape */ echo __('Add Domain') ?></span>
                         </button>
                     </td>
                 </tr>
@@ -2373,16 +2221,13 @@
 <script type="text/x-magento-template" id="fastly-su-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("We'll upload your VCL to version #y.") ?>
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll upload your VCL to version #y.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
           method="POST"
           id="fastly-su-form"
           class="form-inline"
@@ -2396,14 +2241,12 @@
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */
-    echo $block->getUrl('adminhtml/fastlyCdn_ImportExport/downloadExportData'); ?>"
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_ImportExport/downloadExportData'); ?>"
           method="POST"
           id="fastly-export-form"
           class="form-inline"
           enctype="multipart/form-data">
-        <input name="form_key" type="hidden" value="<?php /* @noEscape */
-        echo $block->getFormKey() ?>"/>
+        <input name="form_key" type="hidden" value="<?php /* @noEscape */ echo $block->getFormKey() ?>" />
         <fieldset class="admin__fieldset form-list question">
         </fieldset>
     </form>
@@ -2419,30 +2262,26 @@
         <div class="admin__field-control">
             <div class="admin__data-grid-pager">
                 <span id="pagination-active-version" style="margin-right: 2rem;"></span>
-                <button class="action-previous" type="button" title="Previous Page"></button>
+                <button class="action-previous" type="button"  title="Previous Page"></button>
                 <input class="admin__control-text" id="pagination-input" type="number" value="">
                 <label class="admin__control-support-text"></label>
                 <button class="action-next" type="button" title="Next Page"></button>
             </div>
             <table class="admin__control-table" id="versions-list-table">
                 <thead>
-                <tr>
-                    <th><?php /* @noEscape */
-                        echo __('Version Number') ?></th>
-                    <th><?php /* @noEscape */
-                        echo __('Comment') ?></th>
-                    <th><?php /* @noEscape */
-                        echo __('Updated Time') ?></th>
-                    <th class="col-actions" colspan="1"><?php /* @noEscape */
-                        echo __('Action') ?></th>
-                </tr>
+                    <tr>
+                        <th><?php /* @noEscape */ echo __('Version Number') ?></th>
+                        <th><?php /* @noEscape */ echo __('Comment') ?></th>
+                        <th><?php /* @noEscape */ echo __('Updated Time') ?></th>
+                        <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Action') ?></th>
+                    </tr>
                 </thead>
                 <tbody class="item-container">
                 </tbody>
                 <tfoot>
-                <tr>
-                    <td colspan="4" class="col-actions-add"></td>
-                </tr>
+                    <tr>
+                        <td colspan="4" class="col-actions-add"></td>
+                    </tr>
                 </tfoot>
             </table>
         </div>
@@ -2462,75 +2301,33 @@
 <script type="text/x-magento-template" id="fastly-dismiss-vcl-warning-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to dismiss outdated VCL for current version.") ?>
+            <?php /* @noEscape */ echo __("You are about to dismiss outdated VCL for current version.")?>
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <fieldset class="admin__fieldset form-list question">
-        <div class="admin__field field maintenance-checkbox-container">
-            <label for="fastly_dismiss_vcl_warning" class="admin__field-label">
+        <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field maintenance-checkbox-container">
+                <label for="fastly_dismiss_vcl_warning" class="admin__field-label">
                     <span>
                         <?php
-                        /* @noEscape */
-                        echo __('You are about to dismiss warning for'
-                            . 'outdated VCL for current version.')
+                        /* @noEscape */ echo __('You are about to dismiss warning for'
+                                                . 'outdated VCL for current version.')
                         ?>
                     </span>
-            </label>
-            <div class="admin__field-control">
-                <div class="admin__field-option">
-                    <input class="admin__control-checkbox"
-                           type="checkbox"
-                           name="fastly_dismiss_vcl_warning"
-                           id="fastly_dismiss_vcl_warning"
-                           checked/>
-                    <label class="admin__field-label" for="fastly_dismiss_vcl_warning"></label>
+                </label>
+                <div class="admin__field-control">
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_dismiss_vcl_warning"
+                               id="fastly_dismiss_vcl_warning"
+                               checked/>
+                        <label class="admin__field-label" for="fastly_dismiss_vcl_warning"></label>
+                    </div>
                 </div>
             </div>
-        </div>
-    </fieldset>
-</script>
-<script type="text/x-magento-template" id="fastly-override-host-template">
-    <div class="messages">
-        <div class="message message-warning fastly-message-warning" style="display: none">
-            <?php /* @noEscape */
-            echo __("You are about to clone your active version #x.") ?>
-            <?php /* @noEscape */
-            echo __("We'll make the changes to version #y.") ?>
-        </div>
-        <div class="message message-error fastly-message-error" style="display: none">
-        </div>
-    </div><br>
-    <fieldset class="admin__fieldset form-list question">
-        <div class="admin__field field _required">
-            <label for="host_name" class="admin__field-label">
-                <span><?php /* @noEscape */
-                    echo __("Host name") ?></span>
-            </label>
-            <div class="admin__field-control">
-                <input name="host_name" type="text" required="required" id="host_name" class="admin__control-text">
-            </div>
-        </div>
-        <div class="admin__field field maintenance-checkbox-container">
-            <label for="fastly_activate_vcl" class="admin__field-label">
-                <span><?php /* @noEscape */
-                    echo __('Activate after the change') ?></span>
-            </label>
-            <div class="admin__field-control">
-                <div class="admin__field-option">
-                    <input class="admin__control-checkbox"
-                           type="checkbox"
-                           name="fastly_activate_vcl"
-                           id="fastly_activate_vcl"
-                           checked
-                    />
-                    <label class="admin__field-label" for="fastly_activate_tls"></label>
-                </div>
-            </div>
-        </div>
-    </fieldset>
+        </fieldset>
 </script>
 <?php
 
@@ -2538,205 +2335,202 @@
  * AJAX urls passed to uploadvcl.js file
  */
 // Versioning
-$allFastlyVersions = $block->getUrl('adminhtml/fastlyCdn_VersionHistory/ListVersions');
-$activateVersion = $block->getUrl('adminhtml/fastlyCdn_VersionHistory/Activate');
-$versionReference = $block->getUrl('adminhtml/fastlyCdn_VersionHistory/Reference');
+$allFastlyVersions =            $block->getUrl('adminhtml/fastlyCdn_VersionHistory/ListVersions');
+$activateVersion =              $block->getUrl('adminhtml/fastlyCdn_VersionHistory/Activate');
+$versionReference =             $block->getUrl('adminhtml/fastlyCdn_VersionHistory/Reference');
 
 // Advanced
-$checkTlsSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Advanced/checkTlsSetting');
-$toggleTlsSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Advanced/forceTls');
-$overrideHost = $block->getUrl('adminhtml/fastlyCdn_Advanced/overrideHost');
+$checkTlsSettingUrl =           $block->getUrl('adminhtml/fastlyCdn_Advanced/checkTlsSetting');
+$toggleTlsSettingUrl =          $block->getUrl('adminhtml/fastlyCdn_Advanced/forceTls');
 // Backend
-$configureBackendUrl = $block->getUrl('adminhtml/fastlyCdn_Backend/configureBackend');
-$fetchBackendsUrl = $block->getUrl('adminhtml/fastlyCdn_Backend/getBackends');
-$createBackendUrl = $block->getUrl('adminhtml/fastlyCdn_Backend/createBackend');
+$configureBackendUrl =          $block->getUrl('adminhtml/fastlyCdn_Backend/configureBackend');
+$fetchBackendsUrl =             $block->getUrl('adminhtml/fastlyCdn_Backend/getBackends');
+$createBackendUrl =             $block->getUrl('adminhtml/fastlyCdn_Backend/createBackend');
 // Basic Authentication
-$createAuthItem = $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication_Item/create');
-$deleteAuthItem = $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication_Item/delete');
-$getAuthItems = $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication_Item/listAll');
-$checkAuthDictionaryUrl = $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication/checkAuthDictionary');
-$checkAuthSettingUrl = $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication/checkAuthSetting');
-$checkAuthUsersAvailable = $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication/checkAuthUsersAvailable');
-$createAuth = $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication/create');
-$deleteAuth = $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication/delete');
-$toggleAuthSettingUrl = $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication/enableAuth');
+$createAuthItem =               $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication_Item/create');
+$deleteAuthItem =               $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication_Item/delete');
+$getAuthItems =                 $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication_Item/listAll');
+$checkAuthDictionaryUrl =       $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication/checkAuthDictionary');
+$checkAuthSettingUrl =          $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication/checkAuthSetting');
+$checkAuthUsersAvailable =      $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication/checkAuthUsersAvailable');
+$createAuth =                   $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication/create');
+$deleteAuth =                   $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication/delete');
+$toggleAuthSettingUrl =         $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication/enableAuth');
 // Blocking
-$toggleBlockingSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Blocking/blocking');
-$checkBlockingSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Blocking/checkBlockingSetting');
-$updateBlockingUrl = $block->getUrl('adminhtml/fastlyCdn_Blocking/updateBlocking');
+$toggleBlockingSettingUrl =     $block->getUrl('adminhtml/fastlyCdn_Blocking/blocking');
+$checkBlockingSettingUrl =      $block->getUrl('adminhtml/fastlyCdn_Blocking/checkBlockingSetting');
+$updateBlockingUrl =            $block->getUrl('adminhtml/fastlyCdn_Blocking/updateBlocking');
 // Configuration
-$isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
-$serviceInfoUrl = $block->getUrl('adminhtml/fastlyCdn_Configuration/serviceInfo');
-$testServiceUrl = $block->getUrl('adminhtml/fastlyCdn_Configuration/testConnection');
-$isAlreadyConfiguredUrl = $block->getUrl('adminhtml/fastlyCdn_Configuration/isAlreadyConfigured');
-$getFastlyServiceInfoUrl = $block->getUrl('adminhtml/fastlyCdn_Configuration/getFastlyServiceInfo');
+$isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
+$serviceInfoUrl =               $block->getUrl('adminhtml/fastlyCdn_Configuration/serviceInfo');
+$testServiceUrl =               $block->getUrl('adminhtml/fastlyCdn_Configuration/testConnection');
+$isAlreadyConfiguredUrl =       $block->getUrl('adminhtml/fastlyCdn_Configuration/isAlreadyConfigured');
+$getFastlyServiceInfoUrl =      $block->getUrl('adminhtml/fastlyCdn_Configuration/getFastlyServiceInfo');
 // Custom Snippet
-$createCustomSnippetUrl = $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/createCustomSnippet');
-$deleteCustomSnippet = $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/deleteCustomSnippet');
-$getCustomSnippetsUrl = $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/getCustomSnippets');
-$getCustomSnippet = $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/getCustomSnippet');
-$checkCustomSnippet = $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/checkCustomSnippet');
+$createCustomSnippetUrl =       $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/createCustomSnippet');
+$deleteCustomSnippet =          $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/deleteCustomSnippet');
+$getCustomSnippetsUrl =         $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/getCustomSnippets');
+$getCustomSnippet =             $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/getCustomSnippet');
+$checkCustomSnippet =           $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/checkCustomSnippet');
 // Domains
-$getDomainsUrl = $block->getUrl('adminhtml/fastlyCdn_Domains/getDomains');
-$pushDomainsUrl = $block->getUrl('adminhtml/fastlyCdn_Domains/pushDomains');
+$getDomainsUrl =                $block->getUrl('adminhtml/fastlyCdn_Domains/getDomains');
+$pushDomainsUrl =               $block->getUrl('adminhtml/fastlyCdn_Domains/pushDomains');
 // Edge ACL
-$createAcl = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/create');
-$deleteAcl = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/delete');
-$listAcls = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/listAll');
-$aclItems = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/listAll');
-$createAclItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/create');
-$deleteAclItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/delete');
-$updateAclItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/update');
+$createAcl =                    $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/create');
+$deleteAcl =                    $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/delete');
+$listAcls =                     $block->getUrl('adminhtml/fastlyCdn_Edge_Acl/listAll');
+$aclItems =                     $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/listAll');
+$createAclItem =                $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/create');
+$deleteAclItem =                $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/delete');
+$updateAclItem =                $block->getUrl('adminhtml/fastlyCdn_Edge_Acl_Item/update');
 // Edge Dictionary
-$createDictionary = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary/create');
-$deleteDictionary = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary/delete');
-$listDictionaries = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary/listAll');
-$dictionaryItems = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item/listAll');
-$createDictionaryItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item/create');
-$deleteDictionaryItem = $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item/delete');
+$createDictionary =             $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary/create');
+$deleteDictionary =             $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary/delete');
+$listDictionaries =             $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary/listAll');
+$dictionaryItems =              $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item/listAll');
+$createDictionaryItem =         $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item/create');
+$deleteDictionaryItem =         $block->getUrl('adminhtml/fastlyCdn_Edge_Dictionary_Item/delete');
 // Image Optimization
-$checkImageSettingUrl = $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/checkImageSetting');
-$checkFastlyIoSettingUrl = $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/checkFastlyIoSetting');
-$toggleImageSettingUrl = $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/pushImageSettings');
-$listIoDefaultConfigOptions = $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/listAll');
-$configureIoUrl = $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/ioDefaultConfigOptions');
-$isIoEnabled = $block->getConfig()->isImageOptimizationEnabled();
+$checkImageSettingUrl =         $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/checkImageSetting');
+$checkFastlyIoSettingUrl =      $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/checkFastlyIoSetting');
+$toggleImageSettingUrl =        $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/pushImageSettings');
+$listIoDefaultConfigOptions =   $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/listAll');
+$configureIoUrl =               $block->getUrl('adminhtml/fastlyCdn_ImageOptimization/ioDefaultConfigOptions');
+$isIoEnabled =                  $block->getConfig()->isImageOptimizationEnabled();
 // Import Export
-$getExportDataUrl = $block->getUrl('adminhtml/fastlyCdn_ImportExport/getExportData');
-$exportDataUrl = $block->getUrl('adminhtml/fastlyCdn_ImportExport/saveExportData');
+$getExportDataUrl =             $block->getUrl('adminhtml/fastlyCdn_ImportExport/getExportData');
+$exportDataUrl =                $block->getUrl('adminhtml/fastlyCdn_ImportExport/saveExportData');
 // Maintenance Support
-$checkSuSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Maintenance/CheckSuSetting');
-$toggleSuSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Maintenance/toggleSuSetting');
-$updateSuIpsUrl = $block->getUrl('adminhtml/fastlyCdn_Maintenance/updateSuIps');
+$checkSuSettingUrl =            $block->getUrl('adminhtml/fastlyCdn_Maintenance/CheckSuSetting');
+$toggleSuSettingUrl =           $block->getUrl('adminhtml/fastlyCdn_Maintenance/toggleSuSetting');
+$updateSuIpsUrl =               $block->getUrl('adminhtml/fastlyCdn_Maintenance/updateSuIps');
 // Manifest
-$createManifestsUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/Create');
-$toggleModulesUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/ToggleModules');
-$getAllModulesUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getAllModules');
-$saveModuleConfigUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/save');
-$getActiveModulesUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getActiveModules');
-$getModuleDataUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getModuleData');
-$getAllConditionsUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getAllConditions');
-$getAllDomainsUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getAllDomains');
-$getCountriesUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/getCountries');
-$uploadModuleSnippetUrl = $block->getUrl('adminhtml/fastlyCdn_Manifest/upload');
+$createManifestsUrl =           $block->getUrl('adminhtml/fastlyCdn_Manifest/Create');
+$toggleModulesUrl =             $block->getUrl('adminhtml/fastlyCdn_Manifest/ToggleModules');
+$getAllModulesUrl =             $block->getUrl('adminhtml/fastlyCdn_Manifest/getAllModules');
+$saveModuleConfigUrl =          $block->getUrl('adminhtml/fastlyCdn_Manifest/save');
+$getActiveModulesUrl =          $block->getUrl('adminhtml/fastlyCdn_Manifest/getActiveModules');
+$getModuleDataUrl =             $block->getUrl('adminhtml/fastlyCdn_Manifest/getModuleData');
+$getAllConditionsUrl =          $block->getUrl('adminhtml/fastlyCdn_Manifest/getAllConditions');
+$getAllDomainsUrl =             $block->getUrl('adminhtml/fastlyCdn_Manifest/getAllDomains');
+$getCountriesUrl =              $block->getUrl('adminhtml/fastlyCdn_Manifest/getCountries');
+$uploadModuleSnippetUrl =       $block->getUrl('adminhtml/fastlyCdn_Manifest/upload');
 // Rate Limiting
-$getPathsUrl = $block->getUrl('adminhtml/fastlyCdn_RateLimiting/getPaths');
-$toggleRateLimitingUrl = $block->getUrl('adminhtml/fastlyCdn_RateLimiting/toggleRateLimiting');
-$updatePathsUrl = $block->getUrl('adminhtml/fastlyCdn_RateLimiting/updatePaths');
-$checkRateLimitingSettingUrl = $block->getUrl('adminhtml/fastlyCdn_RateLimiting/checkRateLimitingSetting');
+$getPathsUrl =                  $block->getUrl('adminhtml/fastlyCdn_RateLimiting/getPaths');
+$toggleRateLimitingUrl =        $block->getUrl('adminhtml/fastlyCdn_RateLimiting/toggleRateLimiting');
+$updatePathsUrl =               $block->getUrl('adminhtml/fastlyCdn_RateLimiting/updatePaths');
+$checkRateLimitingSettingUrl =  $block->getUrl('adminhtml/fastlyCdn_RateLimiting/checkRateLimitingSetting');
 // Synthetic Pages
-$getErrorPageRespObjUrl = $block->getUrl('adminhtml/fastlyCdn_SyntheticPages/getErrorPageRespObj');
-$getWafPageRespObjUrl = $block->getUrl('adminhtml/fastlyCdn_SyntheticPages/getWafPageRespObj');
-$savePageErrorHtml = $block->getUrl('adminhtml/fastlyCdn_SyntheticPages/saveErrorPageHtml');
-$saveWafPage = $block->getUrl('adminhtml/fastlyCdn_SyntheticPages/saveWafPage');
+$getErrorPageRespObjUrl =       $block->getUrl('adminhtml/fastlyCdn_SyntheticPages/getErrorPageRespObj');
+$getWafPageRespObjUrl =         $block->getUrl('adminhtml/fastlyCdn_SyntheticPages/getWafPageRespObj');
+$savePageErrorHtml =            $block->getUrl('adminhtml/fastlyCdn_SyntheticPages/saveErrorPageHtml');
+$saveWafPage =                  $block->getUrl('adminhtml/fastlyCdn_SyntheticPages/saveWafPage');
 // VCL
-$vclUploadUrl = $block->getUrl('adminhtml/fastlyCdn_Vcl/upload');
-$dismissWarning = $block->getUrl('adminhtml/fastlyCdn_Vcl/dismissWarning');
-$vclComparison = $block->getUrl('adminhtml/fastlyCdn_Vcl/comparison');
-$isWarningDismissed = $block->getUrl('adminhtml/fastlyCdn_Vcl/isWarningDismissed');
+$vclUploadUrl =                 $block->getUrl('adminhtml/fastlyCdn_Vcl/upload');
+$dismissWarning =               $block->getUrl('adminhtml/fastlyCdn_Vcl/dismissWarning');
+$vclComparison =                $block->getUrl('adminhtml/fastlyCdn_Vcl/comparison');
+$isWarningDismissed =           $block->getUrl('adminhtml/fastlyCdn_Vcl/isWarningDismissed');
 // Web Application Firewall
-$getWafSettingsUrl = $block->getUrl('adminhtml/fastlyCdn_Waf/getWafSettings');
-$getOwaspSettingsUrl = $block->getUrl('adminhtml/fastlyCdn_Waf/getOwaspSettings');
-$toggleWafBypassSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Waf/wafAllowlist');
-$checkWafBypassSettingUrl = $block->getUrl('adminhtml/fastlyCdn_Waf/checkWafBypassSetting');
-$updateWafBypassUrl = $block->getUrl('adminhtml/fastlyCdn_Waf/updateWafAllowlist');
+$getWafSettingsUrl =            $block->getUrl('adminhtml/fastlyCdn_Waf/getWafSettings');
+$getOwaspSettingsUrl =          $block->getUrl('adminhtml/fastlyCdn_Waf/getOwaspSettings');
+$toggleWafBypassSettingUrl =    $block->getUrl('adminhtml/fastlyCdn_Waf/wafAllowlist');
+$checkWafBypassSettingUrl =     $block->getUrl('adminhtml/fastlyCdn_Waf/checkWafBypassSetting');
+$updateWafBypassUrl =           $block->getUrl('adminhtml/fastlyCdn_Waf/updateWafAllowlist');
 
 // This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application
-$isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
+$isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
 ?>
 
 <script type="text/x-magento-init">
         {
             "*": {
                 "Fastly_Cdn/js/init": {
-                    "serviceInfoUrl": "<?php echo $block->escapeJsQuote($serviceInfoUrl); ?>",
-                    "vclUploadUrl": "<?php echo $block->escapeJsQuote($vclUploadUrl); ?>",
-                    "testServiceUrl": "<?php echo $block->escapeJsQuote($testServiceUrl); ?>",
-                    "checkTlsSettingUrl": "<?php echo $block->escapeJsQuote($checkTlsSettingUrl); ?>",
-                    "toggleTlsSettingUrl": "<?php echo $block->escapeJsQuote($toggleTlsSettingUrl); ?>",
-                    "checkImageSettingUrl": "<?php echo $block->escapeJsQuote($checkImageSettingUrl); ?>",
-                    "checkFastlyIoSettingUrl": "<?php echo $block->escapeJsQuote($checkFastlyIoSettingUrl); ?>",
-                    "toggleImageSettingUrl": "<?php echo $block->escapeJsQuote($toggleImageSettingUrl); ?>",
-                    "checkBlockingSettingUrl": "<?php echo $block->escapeJsQuote($checkBlockingSettingUrl); ?>",
-                    "toggleBlockingSettingUrl": "<?php echo $block->escapeJsQuote($toggleBlockingSettingUrl); ?>",
-                    "isFastlyEnabled": "<?php echo $block->escapeJsQuote($isFastlyEnabled); ?>",
-                    "isIoEnabled": "<?php echo $block->escapeJsQuote($isIoEnabled); ?>",
-                    "fetchBackendsUrl": "<?php echo $block->escapeJsQuote($fetchBackendsUrl); ?>",
-                    "configureBackendUrl": "<?php echo $block->escapeJsQuote($configureBackendUrl); ?>",
-                    "isAlreadyConfiguredUrl": "<?php echo $block->escapeJsQuote($isAlreadyConfiguredUrl); ?>",
-                    "saveErrorPageHtmlUrl": "<?php echo $block->escapeJsQuote($savePageErrorHtml); ?>",
-                    "saveWafPageUrl": "<?php echo $block->escapeJsQuote($saveWafPage); ?>",
-                    "getErrorPageRespObj": "<?php echo $block->escapeJsQuote($getErrorPageRespObjUrl); ?>",
-                    "getWafPageRespObj": "<?php echo $block->escapeJsQuote($getWafPageRespObjUrl); ?>",
-                    "createDictionary": "<?php echo $block->escapeJsQuote($createDictionary); ?>",
-                    "deleteDictionary": "<?php echo $block->escapeJsQuote($deleteDictionary); ?>",
-                    "getDictionaries": "<?php echo $block->escapeJsQuote($listDictionaries); ?>",
-                    "getDictionaryItems": "<?php echo $block->escapeJsQuote($dictionaryItems); ?>",
-                    "createDictionaryItem": "<?php echo $block->escapeJsQuote($createDictionaryItem); ?>",
-                    "deleteDictionaryItem": "<?php echo $block->escapeJsQuote($deleteDictionaryItem); ?>",
-                    "createAcl": "<?php echo $block->escapeJsQuote($createAcl); ?>",
-                    "deleteAcl": "<?php echo $block->escapeJsQuote($deleteAcl); ?>",
-                    "deleteCustomSnippet": "<?php echo $block->escapeJsQuote($deleteCustomSnippet); ?>",
-                    "getCustomSnippet": "<?php echo $block->escapeJsQuote($getCustomSnippet); ?>",
-                    "checkCustomSnippet": "<?php echo $block->escapeJsQuote($checkCustomSnippet); ?>",
-                    "getAcls": "<?php echo $block->escapeJsQuote($listAcls); ?>",
-                    "getAclItems": "<?php echo $block->escapeJsQuote($aclItems); ?>",
-                    "createAclItem": "<?php echo $block->escapeJsQuote($createAclItem); ?>",
-                    "deleteAclItem": "<?php echo $block->escapeJsQuote($deleteAclItem); ?>",
-                    "updateAclItem": "<?php echo $block->escapeJsQuote($updateAclItem); ?>",
-                    "getAuths": "<?php echo $block->escapeJsQuote($getAuthItems); ?>",
-                    "createAuth": "<?php echo $block->escapeJsQuote($createAuth); ?>",
-                    "deleteAuth": "<?php echo $block->escapeJsQuote($deleteAuth); ?>",
-                    "createAuthItem": "<?php echo $block->escapeJsQuote($createAuthItem); ?>",
-                    "deleteAuthItem": "<?php echo $block->escapeJsQuote($deleteAuthItem); ?>",
-                    "checkAuthSettingUrl": "<?php echo $block->escapeJsQuote($checkAuthSettingUrl); ?>",
-                    "checkAuthDictionaryUrl": "<?php echo $block->escapeJsQuote($checkAuthDictionaryUrl); ?>",
-                    "toggleAuthSettingUrl": "<?php echo $block->escapeJsQuote($toggleAuthSettingUrl); ?>",
-                    "checkAuthUsersAvailable": "<?php echo $block->escapeJsQuote($checkAuthUsersAvailable); ?>",
-                    "listIoDefaultConfigOptions": "<?php echo $block->escapeJsQuote($listIoDefaultConfigOptions); ?>",
-                    "toggleModulesUrl": "<?php echo $block->escapeJsQuote($toggleModulesUrl); ?>",
-                    "configureIoUrl": "<?php echo $block->escapeJsQuote($configureIoUrl); ?>",
-                    "createCustomSnippetUrl": "<?php echo $block->escapeJsQuote($createCustomSnippetUrl); ?>",
-                    "getCustomSnippetsUrl": "<?php echo $block->escapeJsQuote($getCustomSnippetsUrl); ?>",
-                    "createManifestsUrl": "<?php echo $block->escapeJsQuote($createManifestsUrl); ?>",
-                    "getAllModulesUrl": "<?php echo $block->escapeJsQuote($getAllModulesUrl); ?>",
-                    "saveModuleConfigUrl": "<?php echo $block->escapeJsQuote($saveModuleConfigUrl); ?>",
-                    "getActiveModulesUrl": "<?php echo $block->escapeJsQuote($getActiveModulesUrl); ?>",
-                    "getModuleDataUrl": "<?php echo $block->escapeJsQuote($getModuleDataUrl); ?>",
-                    "getAllConditionsUrl": "<?php echo $block->escapeJsQuote($getAllConditionsUrl); ?>",
-                    "getAllDomainsUrl": "<?php echo $block->escapeJsQuote($getAllDomainsUrl); ?>",
-                    "getCountriesUrl": "<?php echo $block->escapeJsQuote($getCountriesUrl); ?>",
-                    "uploadModuleSnippetUrl": "<?php echo $block->escapeJsQuote($uploadModuleSnippetUrl); ?>",
-                    "updateBlockingUrl": "<?php echo $block->escapeJsQuote($updateBlockingUrl); ?>",
-                    "getFastlyServiceInfoUrl": "<?php echo $block->escapeJsQuote($getFastlyServiceInfoUrl); ?>",
-                    "getWafSettingsUrl": "<?php echo $block->escapeJsQuote($getWafSettingsUrl); ?>",
-                    "getOwaspSettingsUrl": "<?php echo $block->escapeJsQuote($getOwaspSettingsUrl); ?>",
-                    "toggleWafBypassSettingUrl": "<?php echo $block->escapeJsQuote($toggleWafBypassSettingUrl); ?>",
-                    "checkWafBypassSettingUrl": "<?php echo $block->escapeJsQuote($checkWafBypassSettingUrl); ?>",
-                    "updateWafBypassUrl": "<?php echo $block->escapeJsQuote($updateWafBypassUrl); ?>",
-                    "getDomainsUrl": "<?php echo $block->escapeJsQuote($getDomainsUrl); ?>",
-                    "pushDomainsUrl": "<?php echo $block->escapeJsQuote($pushDomainsUrl); ?>",
-                    "getPathsUrl": "<?php echo $block->escapeJsQuote($getPathsUrl); ?>",
-                    "toggleRateLimitingUrl": "<?php echo $block->escapeJsQuote($toggleRateLimitingUrl); ?>",
-                    "updatePathsUrl": "<?php echo $block->escapeJsQuote($updatePathsUrl); ?>",
-                    "checkRateLimitingSettingUrl": "<?php echo $block->escapeJsQuote($checkRateLimitingSettingUrl); ?>",
-                    "checkSuSettingUrl": "<?php echo $block->escapeJsQuote($checkSuSettingUrl); ?>",
-                    "toggleSuSettingUrl": "<?php echo $block->escapeJsQuote($toggleSuSettingUrl); ?>",
-                    "updateSuIpsUrl": "<?php echo $block->escapeJsQuote($updateSuIpsUrl); ?>",
-                    "createBackendUrl": "<?php echo $block->escapeJsQuote($createBackendUrl); ?>",
-                    "getExportDataUrl": "<?php echo $block->escapeJsQuote($getExportDataUrl); ?>",
-                    "exportDataUrl": "<?php echo $block->escapeJsQuote($exportDataUrl); ?>",
-                    "versionHistory": "<?php echo $block->escapeJsQuote($allFastlyVersions); ?>",
+                    "serviceInfoUrl": "<?php echo $block->escapeJsQuote($serviceInfoUrl);?>",
+                    "vclUploadUrl": "<?php echo $block->escapeJsQuote($vclUploadUrl);?>",
+                    "testServiceUrl": "<?php echo $block->escapeJsQuote($testServiceUrl);?>",
+                    "checkTlsSettingUrl": "<?php echo $block->escapeJsQuote($checkTlsSettingUrl);?>",
+                    "toggleTlsSettingUrl": "<?php echo $block->escapeJsQuote($toggleTlsSettingUrl);?>",
+                    "checkImageSettingUrl": "<?php echo $block->escapeJsQuote($checkImageSettingUrl);?>",
+                    "checkFastlyIoSettingUrl": "<?php echo $block->escapeJsQuote($checkFastlyIoSettingUrl);?>",
+                    "toggleImageSettingUrl": "<?php echo $block->escapeJsQuote($toggleImageSettingUrl);?>",
+                    "checkBlockingSettingUrl": "<?php echo $block->escapeJsQuote($checkBlockingSettingUrl);?>",
+                    "toggleBlockingSettingUrl": "<?php echo $block->escapeJsQuote($toggleBlockingSettingUrl);?>",
+                    "isFastlyEnabled": "<?php echo $block->escapeJsQuote($isFastlyEnabled);?>",
+                    "isIoEnabled": "<?php echo $block->escapeJsQuote($isIoEnabled);?>",
+                    "fetchBackendsUrl": "<?php echo $block->escapeJsQuote($fetchBackendsUrl);?>",
+                    "configureBackendUrl": "<?php echo $block->escapeJsQuote($configureBackendUrl);?>",
+                    "isAlreadyConfiguredUrl": "<?php echo $block->escapeJsQuote($isAlreadyConfiguredUrl);?>",
+                    "saveErrorPageHtmlUrl": "<?php echo $block->escapeJsQuote($savePageErrorHtml);?>",
+                    "saveWafPageUrl": "<?php echo $block->escapeJsQuote($saveWafPage);?>",
+                    "getErrorPageRespObj": "<?php echo $block->escapeJsQuote($getErrorPageRespObjUrl);?>",
+                    "getWafPageRespObj": "<?php echo $block->escapeJsQuote($getWafPageRespObjUrl);?>",
+                    "createDictionary": "<?php echo $block->escapeJsQuote($createDictionary);?>",
+                    "deleteDictionary": "<?php echo $block->escapeJsQuote($deleteDictionary);?>",
+                    "getDictionaries": "<?php echo $block->escapeJsQuote($listDictionaries);?>",
+                    "getDictionaryItems": "<?php echo $block->escapeJsQuote($dictionaryItems);?>",
+                    "createDictionaryItem": "<?php echo $block->escapeJsQuote($createDictionaryItem);?>",
+                    "deleteDictionaryItem": "<?php echo $block->escapeJsQuote($deleteDictionaryItem);?>",
+                    "createAcl": "<?php echo $block->escapeJsQuote($createAcl);?>",
+                    "deleteAcl": "<?php echo $block->escapeJsQuote($deleteAcl);?>",
+                    "deleteCustomSnippet": "<?php echo $block->escapeJsQuote($deleteCustomSnippet);?>",
+                    "getCustomSnippet": "<?php echo $block->escapeJsQuote($getCustomSnippet);?>",
+                    "checkCustomSnippet": "<?php echo $block->escapeJsQuote($checkCustomSnippet);?>",
+                    "getAcls": "<?php echo $block->escapeJsQuote($listAcls);?>",
+                    "getAclItems": "<?php echo $block->escapeJsQuote($aclItems);?>",
+                    "createAclItem": "<?php echo $block->escapeJsQuote($createAclItem);?>",
+                    "deleteAclItem": "<?php echo $block->escapeJsQuote($deleteAclItem);?>",
+                    "updateAclItem": "<?php echo $block->escapeJsQuote($updateAclItem);?>",
+                    "getAuths": "<?php echo $block->escapeJsQuote($getAuthItems);?>",
+                    "createAuth": "<?php echo $block->escapeJsQuote($createAuth);?>",
+                    "deleteAuth": "<?php echo $block->escapeJsQuote($deleteAuth);?>",
+                    "createAuthItem": "<?php echo $block->escapeJsQuote($createAuthItem);?>",
+                    "deleteAuthItem": "<?php echo $block->escapeJsQuote($deleteAuthItem);?>",
+                    "checkAuthSettingUrl": "<?php echo $block->escapeJsQuote($checkAuthSettingUrl);?>",
+                    "checkAuthDictionaryUrl": "<?php echo $block->escapeJsQuote($checkAuthDictionaryUrl);?>",
+                    "toggleAuthSettingUrl": "<?php echo $block->escapeJsQuote($toggleAuthSettingUrl);?>",
+                    "checkAuthUsersAvailable": "<?php echo $block->escapeJsQuote($checkAuthUsersAvailable);?>",
+                    "listIoDefaultConfigOptions": "<?php echo $block->escapeJsQuote($listIoDefaultConfigOptions);?>",
+                    "toggleModulesUrl": "<?php echo $block->escapeJsQuote($toggleModulesUrl);?>",
+                    "configureIoUrl": "<?php echo $block->escapeJsQuote($configureIoUrl);?>",
+                    "createCustomSnippetUrl": "<?php echo $block->escapeJsQuote($createCustomSnippetUrl);?>",
+                    "getCustomSnippetsUrl": "<?php echo $block->escapeJsQuote($getCustomSnippetsUrl);?>",
+                    "createManifestsUrl": "<?php echo $block->escapeJsQuote($createManifestsUrl);?>",
+                    "getAllModulesUrl": "<?php echo $block->escapeJsQuote($getAllModulesUrl);?>",
+                    "saveModuleConfigUrl": "<?php echo $block->escapeJsQuote($saveModuleConfigUrl);?>",
+                    "getActiveModulesUrl": "<?php echo $block->escapeJsQuote($getActiveModulesUrl);?>",
+                    "getModuleDataUrl": "<?php echo $block->escapeJsQuote($getModuleDataUrl);?>",
+                    "getAllConditionsUrl": "<?php echo $block->escapeJsQuote($getAllConditionsUrl);?>",
+                    "getAllDomainsUrl": "<?php echo $block->escapeJsQuote($getAllDomainsUrl);?>",
+                    "getCountriesUrl": "<?php echo $block->escapeJsQuote($getCountriesUrl);?>",
+                    "uploadModuleSnippetUrl": "<?php echo $block->escapeJsQuote($uploadModuleSnippetUrl);?>",
+                    "updateBlockingUrl": "<?php echo $block->escapeJsQuote($updateBlockingUrl);?>",
+                    "getFastlyServiceInfoUrl": "<?php echo $block->escapeJsQuote($getFastlyServiceInfoUrl);?>",
+                    "getWafSettingsUrl": "<?php echo $block->escapeJsQuote($getWafSettingsUrl);?>",
+                    "getOwaspSettingsUrl": "<?php echo $block->escapeJsQuote($getOwaspSettingsUrl);?>",
+                    "toggleWafBypassSettingUrl": "<?php echo $block->escapeJsQuote($toggleWafBypassSettingUrl);?>",
+                    "checkWafBypassSettingUrl": "<?php echo $block->escapeJsQuote($checkWafBypassSettingUrl);?>",
+                    "updateWafBypassUrl": "<?php echo $block->escapeJsQuote($updateWafBypassUrl);?>",
+                    "getDomainsUrl": "<?php echo $block->escapeJsQuote($getDomainsUrl);?>",
+                    "pushDomainsUrl": "<?php echo $block->escapeJsQuote($pushDomainsUrl);?>",
+                    "getPathsUrl": "<?php echo $block->escapeJsQuote($getPathsUrl);?>",
+                    "toggleRateLimitingUrl": "<?php echo $block->escapeJsQuote($toggleRateLimitingUrl);?>",
+                    "updatePathsUrl": "<?php echo $block->escapeJsQuote($updatePathsUrl);?>",
+                    "checkRateLimitingSettingUrl": "<?php echo $block->escapeJsQuote($checkRateLimitingSettingUrl);?>",
+                    "checkSuSettingUrl": "<?php echo $block->escapeJsQuote($checkSuSettingUrl);?>",
+                    "toggleSuSettingUrl": "<?php echo $block->escapeJsQuote($toggleSuSettingUrl);?>",
+                    "updateSuIpsUrl": "<?php echo $block->escapeJsQuote($updateSuIpsUrl);?>",
+                    "createBackendUrl": "<?php echo $block->escapeJsQuote($createBackendUrl);?>",
+                    "getExportDataUrl": "<?php echo $block->escapeJsQuote($getExportDataUrl);?>",
+                    "exportDataUrl": "<?php echo $block->escapeJsQuote($exportDataUrl);?>",
+                    "versionHistory": "<?php echo $block->escapeJsQuote($allFastlyVersions);?>",
                     "activateVersion": "<?php echo $block->escapeJsQuote($activateVersion); ?>",
                     "versionReference": "<?php echo $block->escapeJsQuote($versionReference); ?>",
                     "vclComparison": "<?php echo $block->escapeJsQuote($vclComparison); ?>",
                     "dismissWarning": "<?php echo $block->escapeJsQuote($dismissWarning); ?>",
-                    "isWarningDismissed": "<?php echo $block->escapeJsQuote($isWarningDismissed); ?>",
-                    "overrideHost": "<?php echo $block->escapeJsQuote($overrideHost); ?>"
+                    "isWarningDismissed": "<?php echo $block->escapeJsQuote($isWarningDismissed); ?>"
                 }
             }
         }
-
 </script>
 
 <style type="text/css">
@@ -2748,7 +2542,7 @@ $isFastlyEnabled = $block->getConfig()->isFastlyEnabled();
         width: 100%;
     }
 
-    .highlighted > td {
+    .highlighted > td{
         background: #fffbbb;
     }
 

@@ -182,6 +182,7 @@ define([
             let betweenBytesTimeout = $('#backend_between_bytes_timeout').val();
             let autoLoadBalance = $('#auto_load_balance').val();
             let weight = $('#weight').val();
+            let overrideHost = $('#override_host').val();
 
             $.ajax({
                 type: "POST",
@@ -216,7 +217,8 @@ define([
                     'form': true,
                     'condition_name': conditionName,
                     'condition_priority': conditionPriority,
-                    'apply_if': applyIf
+                    'apply_if': applyIf,
+                    'override_host': overrideHost
                 },
                 showLoader: true,
                 success: function (response) {

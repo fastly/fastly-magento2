@@ -721,19 +721,6 @@ class Api
     }
 
     /**
-     * Creates a override host
-     * @param $version
-     * @param array $params
-     */
-    public function createOverrideHost($version, $params = [])
-    {
-        $url = $this->_getApiServiceUri(). 'version/' .$version. '/settings';
-        $result = $this->_fetch($url, \Zend_Http_Client::PUT, $params);
-
-        return $result;
-    }
-
-    /**
      * Gets the specified Response Object.
      *
      * @param string $version

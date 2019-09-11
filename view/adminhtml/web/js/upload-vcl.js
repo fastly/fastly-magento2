@@ -67,6 +67,13 @@ define(
                                         let span = document.createElement('span');
                                         span.setAttribute('class', 'fastly-dismiss-warning-action');
                                         span.setAttribute('title', 'Dismiss Warning');
+                                        outdatedErrorMsg.removeClass('fastly-button-messages');
+                                        outdatedErrorMsg.addClass('changed-vcl-snippet-warning');
+                                        outdatedErrorMsg.css({
+                                            'font-size': '1.2rem',
+                                            'margin-top': '5px',
+                                            'padding': '1.4rem 4rem 1.4rem 5.5rem'
+                                        });
                                         outdatedErrorMsg.text($.mage.__(response.msg)).show();
                                         outdatedErrorMsg.append(span);
                                         openDismissModal();
@@ -143,6 +150,8 @@ define(
                             function (response) {
                                 if (response.status === true) {
                                     modal.modal('closeModal');
+                                    $(".changed-vcl-snippet-warning").text();
+                                    $(".changed-vcl-snippet-warning").hide();
                                     successVclBtnMsg.text($.mage.__('VCL file is successfully uploaded to the Fastly service.')).show();
                                 } else {
                                     resetAllMessages();
@@ -154,14 +163,14 @@ define(
 
                     function openDismissModal()
                     {
-                        $("#fastly-warning-outdated-vcl-button-msg").on(
+                        outdatedErrorMsg.on(
                             'hover',
                             function () {
                                 $(this).css('cursor', 'pointer');
                             }
                         );
 
-                        $("#fastly-warning-outdated-vcl-button-msg").on(
+                        outdatedErrorMsg.on(
                             'click',
                             function () {
                                 confirm(

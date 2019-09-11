@@ -18,6 +18,8 @@ define([
         let snippet_id;
         let closestTr;
 
+        invokeAppendingTrWithDivOnTable();
+
         /**
          * Custom Snippet creation modal overlay options
          *
@@ -58,6 +60,51 @@ define([
             }
         };
 
+        function invokeAppendingTrWithDivOnTable()
+        {
+            if ($('#warning-message-after-change').length !== 0) {
+                return;
+            }
+
+            appendTableRowWithDiv(
+                $('#row_system_full_page_cache_fastly_fastly_custom_snippets .form-list > tbody'),
+                'warning-message-after-change',
+                'message message-warning changed-vcl-snippet-warning',
+                {
+                    'font-size': '1.2rem',
+                    'margin-top': '5px',
+                    'padding': '1.4rem 4rem 1.4rem 5.5rem',
+                    'display': 'none'
+                }
+            );
+        }
+
+        function updateVclMsgUnderUploadButton()
+        {
+            let button = $(".changed-vcl-snippet-warning");
+            button.text($.mage.__("Upload VCL to activate modified custom snippet")).show();
+            button.off('click');
+        }
+
+        function appendTableRowWithDiv(field, id, classSelector, style)
+        {
+            let tr = document.createElement('tr');
+            let td = document.createElement('td');
+            let td2 = document.createElement('td');
+            let td3 = document.createElement('td');
+            let div = document.createElement('div');
+            div.setAttribute('class', classSelector);
+            div.setAttribute('id', id);
+            td.setAttribute('class', 'label');
+            tr.append(td);
+            td2.setAttribute('class', 'value');
+            td2.append(div);
+            tr.append(td2);
+            tr.append(td3);
+            field.append(tr);
+            $("#" + id).css(style);
+        }
+
         /**
          * Trigger the Custom Snippet list call
          */
@@ -69,7 +116,6 @@ define([
             } else {
                 $('.no-snippets').show();
             }
-
         });
 
         /**
@@ -104,6 +150,8 @@ define([
                         active_version = response.active_version;
                         modal.modal('closeModal');
                         successCustomSnippetBtnMsg.text($.mage.__('Custom snippet successfully created.')).show();
+                        $("#warning-message-after-change").text($.mage.__('Upload VCL to activate modified custom snippet')).show();
+                        updateVclMsgUnderUploadButton();
                         getCustomSnippets().done(function (snippetsResp) {
                             $('.loading-snippets').hide();
                             if (snippetsResp.status !== false) {
@@ -187,6 +235,8 @@ define([
                         modal.modal('closeModal');
                         closestTr.remove();
                         successCustomSnippetBtnMsg.text($.mage.__('Custom snippet successfully deleted.')).show();
+                        $("#warning-message-after-change").text($.mage.__('Upload VCL to activate modified custom snippet')).show();
+                        updateVclMsgUnderUploadButton();
                     } else {
                         resetAllMessages();
                         showErrorMessage(response.msg);
@@ -229,6 +279,9 @@ define([
                         active_version = response.active_version;
                         modal.modal('closeModal');
                         successCustomSnippetBtnMsg.text($.mage.__('Custom snippet successfully updated.')).show();
+                        $("#warning-message-after-change").text($.mage.__('Upload VCL to activate modified custom snippet')).show();
+                        $("#fastly-warning-outdated-vcl-button-msg").text($.mage.__('Upload VCL to activate modified custom snippet')).show();
+                        updateVclMsgUnderUploadButton();
                         getCustomSnippets(false).done(function (snippetsResp) {
                             $('.loading-snippets').hide();
                             if (snippetsResp.status !== false) {

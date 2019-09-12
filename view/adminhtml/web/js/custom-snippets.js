@@ -256,7 +256,6 @@ define([
                     if (response.status === true) {
                         modal.modal('closeModal');
                         closestTr.remove();
-                        setUpdateFlagToFalse();
                         successCustomSnippetBtnMsg.text($.mage.__('Custom snippet successfully deleted.')).show();
                     } else {
                         resetAllMessages();

@@ -1,12 +1,12 @@
 define(
     [
-    "jquery",
-    "setServiceLabel",
-    "overlay",
-    "resetAllMessages",
-    "showErrorMessage",
-    "Magento_Ui/js/modal/confirm",
-    'mage/translate'
+        "jquery",
+        "setServiceLabel",
+        "overlay",
+        "resetAllMessages",
+        "showErrorMessage",
+        "Magento_Ui/js/modal/confirm",
+        'mage/translate'
     ],
     function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, confirm) {
         return function (config, serviceStatus, isAlreadyConfigured) {
@@ -36,8 +36,7 @@ define(
                         }
                     };
 
-                    function isWarningDismissed(activeVersion)
-                    {
+                    function isWarningDismissed(activeVersion) {
                         $.ajax(
                             {
                                 type: 'GET',
@@ -61,31 +60,29 @@ define(
                         )
                     }
 
-                    function checkUpdateFlag()
-                    {
-                       $.ajax({
-                           type: 'GET',
-                           url: config.getUpdateFlag,
-                           showLoader: false,
-                           success: function (response) {
-                               if (response.flag !== true) {    //if VCL is not Uploaded
-                                   $(".changed-vcl-snippet-warning").text($.mage.__(response.msg)).show().off('click');
-                                   return;
-                               }
+                    function checkUpdateFlag() {
+                        $.ajax({
+                            type: 'GET',
+                            url: config.getUpdateFlag,
+                            showLoader: false,
+                            success: function (response) {
+                                if (response.flag !== true) {    //if VCL is not Uploaded
+                                    $(".changed-vcl-snippet-warning").text($.mage.__(response.msg)).show().off('click');
+                                    return;
+                                }
 
-                               isWarningDismissed(active_version);
-                           }
-                       })
+                                isWarningDismissed(active_version);
+                            }
+                        })
                     }
 
-                    function compareVclVersions()
-                    {
+                    function compareVclVersions() {
                         $.ajax(
                             {
                                 type: 'GET',
                                 url: config.vclComparison,
                                 showLoader: false,
-                                data: {'active_version':active_version},
+                                data: {'active_version': active_version},
                                 success: function (response) {
                                     if (response.status !== true) {
                                         let span = document.createElement('span');
@@ -145,8 +142,7 @@ define(
                     /**
                      * Upload VCL snippets to the Fastly service
                      */
-                    function uploadVcl()
-                    {
+                    function uploadVcl() {
                         let activate_vcl_flag = false;
 
                         if ($('#fastly_activate_vcl').is(':checked')) {
@@ -178,8 +174,7 @@ define(
                         );
                     }
 
-                    function openDismissModalOnClick()
-                    {
+                    function openDismissModalOnClick() {
                         outdatedErrorMsg.on(
                             'hover',
                             function () {
@@ -206,8 +201,7 @@ define(
                             }
                         );
 
-                        function dismissWarning(version)
-                        {
+                        function dismissWarning(version) {
                             $.ajax(
                                 {
                                     type: 'GET',

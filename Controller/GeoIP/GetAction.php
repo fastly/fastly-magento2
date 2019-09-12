@@ -171,7 +171,7 @@ class GetAction extends Action
      * @return string
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    private function getMessageInStoreLocale(StoreInterface $emulatedStore)
+    protected function getMessageInStoreLocale(StoreInterface $emulatedStore)
     {
         $currentStore = $this->storeManager->getStore();
 

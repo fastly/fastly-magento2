@@ -18,7 +18,7 @@ define([
         let snippet_id;
         let closestTr;
 
-        invokeAppendingTrWithDivOnTable();
+        invokeAppendingTableRowWithDivOnTable();
 
         /**
          * Custom Snippet creation modal overlay options
@@ -60,7 +60,7 @@ define([
             }
         };
 
-        function invokeAppendingTrWithDivOnTable()
+        function invokeAppendingTableRowWithDivOnTable()
         {
             if ($('#warning-message-after-change').length !== 0) {
                 return;
@@ -77,13 +77,6 @@ define([
                     'display': 'none'
                 }
             );
-        }
-
-        function updateVclMsgUnderUploadButton()
-        {
-            let button = $(".changed-vcl-snippet-warning");
-            button.text($.mage.__("Upload VCL to activate modified custom snippet")).show();
-            button.off('click');
         }
 
         function appendTableRowWithDiv(field, id, classSelector, style)
@@ -150,8 +143,7 @@ define([
                         active_version = response.active_version;
                         modal.modal('closeModal');
                         successCustomSnippetBtnMsg.text($.mage.__('Custom snippet successfully created.')).show();
-                        $("#warning-message-after-change").text($.mage.__('Upload VCL to activate modified custom snippet')).show();
-                        updateVclMsgUnderUploadButton();
+                        setUpdateFlagToFalse();
                         getCustomSnippets().done(function (snippetsResp) {
                             $('.loading-snippets').hide();
                             if (snippetsResp.status !== false) {
@@ -206,6 +198,21 @@ define([
         }
 
         /**
+         * set flag "updated" to false inside core_config_data when VCL is modified
+         */
+        function setUpdateFlagToFalse()
+        {
+            $.ajax({
+                type: 'GET',
+                url: config.changeUpdateFlag,
+                showLoader: true,
+                success: function (response) {
+                    $(".changed-vcl-snippet-warning").text($.mage.__(response.msg)).show().off('click');
+                }
+            })
+        }
+
+        /**
          * Delete a Custom Snippet
          *
          * @param snippet_id
@@ -234,9 +241,8 @@ define([
                     if (response.status === true) {
                         modal.modal('closeModal');
                         closestTr.remove();
+                        setUpdateFlagToFalse();
                         successCustomSnippetBtnMsg.text($.mage.__('Custom snippet successfully deleted.')).show();
-                        $("#warning-message-after-change").text($.mage.__('Upload VCL to activate modified custom snippet')).show();
-                        updateVclMsgUnderUploadButton();
                     } else {
                         resetAllMessages();
                         showErrorMessage(response.msg);
@@ -279,9 +285,7 @@ define([
                         active_version = response.active_version;
                         modal.modal('closeModal');
                         successCustomSnippetBtnMsg.text($.mage.__('Custom snippet successfully updated.')).show();
-                        $("#warning-message-after-change").text($.mage.__('Upload VCL to activate modified custom snippet')).show();
-                        $("#fastly-warning-outdated-vcl-button-msg").text($.mage.__('Upload VCL to activate modified custom snippet')).show();
-                        updateVclMsgUnderUploadButton();
+                        setUpdateFlagToFalse();
                         getCustomSnippets(false).done(function (snippetsResp) {
                             $('.loading-snippets').hide();
                             if (snippetsResp.status !== false) {

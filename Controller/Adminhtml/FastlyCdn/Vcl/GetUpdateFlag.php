@@ -59,6 +59,7 @@ class GetUpdateFlag extends Action
                 'msg'       => 'Upload VCL to activate modified custom snippet'
             ]);
         }
+
         return $json->setData([
             'flag'   => true
         ]);

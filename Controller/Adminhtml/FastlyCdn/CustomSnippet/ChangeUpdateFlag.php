@@ -9,6 +9,10 @@ use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Config\Model\ResourceModel\Config as CoreConfig;
 
+/**
+ * Class ChangeUpdateFlag
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\CustomSnippet
+ */
 class ChangeUpdateFlag extends Action
 {
     /**

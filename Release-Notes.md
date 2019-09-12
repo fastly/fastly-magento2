@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.116
+
+- Add notification to upload custom VCL snippets when they are changed
+
 ## 1.2.115
 
 - Remove conflicting WAF bypass statement

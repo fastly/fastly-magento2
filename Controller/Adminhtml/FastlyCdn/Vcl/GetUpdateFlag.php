@@ -40,7 +40,6 @@ class GetUpdateFlag extends Action
         JsonFactory $jsonFactory,
         ScopeConfigInterface $scopeConfig,
         TypeList $typeList
-
     ) {
         parent::__construct($context);
         $this->scopeConfig = $scopeConfig;

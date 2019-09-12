@@ -21,7 +21,8 @@ define([
         invokeAppendingTableRowWithDivOnTable();
         checkUpdateFlag();
 
-        function checkUpdateFlag() {
+        function checkUpdateFlag()
+        {
             $.ajax({
                 type: 'GET',
                 url: config.getUpdateFlag,
@@ -74,7 +75,8 @@ define([
             }
         };
 
-        function invokeAppendingTableRowWithDivOnTable() {
+        function invokeAppendingTableRowWithDivOnTable()
+        {
             if ($('#warning-message-after-change').length !== 0) {
                 return;
             }
@@ -92,7 +94,8 @@ define([
             );
         }
 
-        function appendTableRowWithDiv(field, id, classSelector, style) {
+        function appendTableRowWithDiv(field, id, classSelector, style)
+        {
             let tr = document.createElement('tr');
             let td = document.createElement('td');
             let td2 = document.createElement('td');
@@ -126,7 +129,8 @@ define([
         /**
          * Save a Custom Snippet
          */
-        function saveCustomSnippet() {
+        function saveCustomSnippet()
+        {
             let custom_name = $('#custom_snippet_name').val();
             let custom_type = $('#custom_snippet_type').val();
             let custom_priority = $('#custom_snippet_priority').val();
@@ -179,7 +183,8 @@ define([
          *
          * @returns {*}
          */
-        function getCustomSnippets() {
+        function getCustomSnippets()
+        {
             return $.ajax({
                 type: "GET",
                 url: config.getCustomSnippetsUrl,
@@ -192,7 +197,8 @@ define([
          *
          * @param snippets
          */
-        function processCustomSnippets(snippets) {
+        function processCustomSnippets(snippets)
+        {
             let html = '';
             $.each(snippets, function (index, snippet) {
                 html += "<tr id='fastly_" + index + "'>";
@@ -209,7 +215,8 @@ define([
         /**
          * set flag "updated" to false inside core_config_data when VCL is modified
          */
-        function setUpdateFlagToFalse() {
+        function setUpdateFlagToFalse()
+        {
             $.ajax({
                 type: 'GET',
                 url: config.changeUpdateFlag,
@@ -226,7 +233,8 @@ define([
          * @param snippet_id
          * @returns {*}
          */
-        function deleteCustomSnippet(snippet_id) {
+        function deleteCustomSnippet(snippet_id)
+        {
             let activate_flag = false;
 
             if ($('#fastly_delete_custom_snippet_activate').is(':checked')) {
@@ -260,7 +268,8 @@ define([
         /**
          * Update a Custom Snippet
          */
-        function updateCustomSnippet() {
+        function updateCustomSnippet()
+        {
             let custom_name = $('#custom_snippet_name').val();
             let original_name = $('#original_snippet_name').val();
             let custom_type = $('#custom_snippet_type').val();

@@ -36,7 +36,8 @@ define(
                         }
                     };
 
-                    function isWarningDismissed(activeVersion) {
+                    function isWarningDismissed(activeVersion)
+                    {
                         $.ajax(
                             {
                                 type: 'GET',
@@ -60,7 +61,8 @@ define(
                         )
                     }
 
-                    function checkUpdateFlag() {
+                    function checkUpdateFlag()
+                    {
                         $.ajax({
                             type: 'GET',
                             url: config.getUpdateFlag,
@@ -76,7 +78,8 @@ define(
                         })
                     }
 
-                    function compareVclVersions() {
+                    function compareVclVersions()
+                    {
                         $.ajax(
                             {
                                 type: 'GET',
@@ -142,7 +145,8 @@ define(
                     /**
                      * Upload VCL snippets to the Fastly service
                      */
-                    function uploadVcl() {
+                    function uploadVcl()
+                    {
                         let activate_vcl_flag = false;
 
                         if ($('#fastly_activate_vcl').is(':checked')) {
@@ -174,7 +178,8 @@ define(
                         );
                     }
 
-                    function openDismissModalOnClick() {
+                    function openDismissModalOnClick()
+                    {
                         outdatedErrorMsg.on(
                             'hover',
                             function () {
@@ -201,7 +206,8 @@ define(
                             }
                         );
 
-                        function dismissWarning(version) {
+                        function dismissWarning(version)
+                        {
                             $.ajax(
                                 {
                                     type: 'GET',

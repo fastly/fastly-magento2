@@ -52,8 +52,8 @@ class GetUpdateFlag extends Action
     {
         $json = $this->jsonFactory->create();
         $this->typeList->cleanType('config');
-        $flag = (int)$this->scopeConfig->getValue(Config::UPDATED_VCL_FLAG);
-        if (!$flag) {
+        $flag = $this->scopeConfig->getValue(Config::UPDATED_VCL_FLAG);
+        if (!$flag && $flag !== null) {
             return $json->setData([
                 'flag'   => false,
                 'msg'       => 'Upload VCL to activate modified custom snippet'

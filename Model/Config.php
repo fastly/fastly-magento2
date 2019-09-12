@@ -504,6 +504,11 @@ class Config extends \Magento\PageCache\Model\Config
         = 'Fastly/Cdn/versions_with_dismissed_vcl_warning';
 
     /**
+     * core_config path for last update VCL to Fastly time
+     */
+    const UPDATED_VCL_FLAG = 'Fastly/Cdn/updated_VCL_to_Fastly_flag';
+
+    /**
      * Check if Fastly is selected for Caching Application
      *
      * @return bool

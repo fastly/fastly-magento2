@@ -33,6 +33,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
+use Magento\Config\Model\ResourceModel\Config as CoreConfig;
 
 /**
  * Class Upload
@@ -77,6 +78,10 @@ class Upload extends Action
      * @var Filesystem
      */
     private $filesystem;
+    /**
+     * @var CoreConfig
+     */
+    private $coreConfig;
 
     /**
      * Upload constructor.
@@ -91,6 +96,7 @@ class Upload extends Action
      * @param DateTime $time
      * @param TimezoneInterface $timezone
      * @param Filesystem $filesystem
+     * @param CoreConfig $coreConfig
      */
     public function __construct(
         Context $context,
@@ -102,7 +108,8 @@ class Upload extends Action
         CustomSnippetUpload $customSnippetUpload,
         DateTime $time,
         TimezoneInterface $timezone,
-        Filesystem $filesystem
+        Filesystem $filesystem,
+        CoreConfig $coreConfig
     ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
@@ -114,6 +121,7 @@ class Upload extends Action
         $this->timezone = $timezone;
         $this->filesystem = $filesystem;
         parent::__construct($context);
+        $this->coreConfig = $coreConfig;
     }
 
     /**
@@ -207,7 +215,7 @@ class Upload extends Action
 
             $comment = ['comment' => 'Magento Module uploaded VCL'];
             $this->api->addComment($clone->number, $comment);
-
+            $this->coreConfig->saveConfig(Config::UPDATED_VCL_FLAG, 1);
             return $result->setData([
                 'status'            => true,
                 'active_version'    => $clone->number

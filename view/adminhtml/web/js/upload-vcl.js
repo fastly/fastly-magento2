@@ -1,12 +1,12 @@
 define(
     [
-    "jquery",
-    "setServiceLabel",
-    "overlay",
-    "resetAllMessages",
-    "showErrorMessage",
-    "Magento_Ui/js/modal/confirm",
-    'mage/translate'
+        "jquery",
+        "setServiceLabel",
+        "overlay",
+        "resetAllMessages",
+        "showErrorMessage",
+        "Magento_Ui/js/modal/confirm",
+        'mage/translate'
     ],
     function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, confirm) {
         return function (config, serviceStatus, isAlreadyConfigured) {
@@ -18,7 +18,14 @@ define(
 
             $(document).ready(
                 function () {
-                    isWarningDismissed(active_version);
+                    outdatedErrorMsg.removeClass('fastly-button-messages');
+                    outdatedErrorMsg.addClass('changed-vcl-snippet-warning');
+                    outdatedErrorMsg.css({
+                        'font-size': '1.2rem',
+                        'margin-top': '5px',
+                        'padding': '1.4rem 4rem 1.4rem 5.5rem'
+                    });
+                    checkUpdateFlag();
                     let uploadOptions = {
                         title: jQuery.mage.__('You are about to upload VCL to Fastly '),
                         content: function () {
@@ -36,12 +43,12 @@ define(
                                 type: 'GET',
                                 url: config.isWarningDismissed,
                                 data: {active_version: activeVersion},
-                                showLoader: false,
+                                showLoader: true,
                                 success: function (response) {
                                     if (response.status !== false) {
                                         resetAllMessages();
                                         if (response.dismissed !== true) {
-                                            compareVclVersions(activeVersion);
+                                            compareVclVersions();
                                             return;
                                         }
 
@@ -54,6 +61,23 @@ define(
                         )
                     }
 
+                    function checkUpdateFlag()
+                    {
+                        $.ajax({
+                            type: 'GET',
+                            url: config.getUpdateFlag,
+                            showLoader: false,
+                            success: function (response) {
+                                if (response.flag !== true) {    //if VCL is not Uploaded
+                                    $(".changed-vcl-snippet-warning").text($.mage.__(response.msg)).show().off('click');
+                                    return;
+                                }
+
+                                isWarningDismissed(active_version);
+                            }
+                        })
+                    }
+
                     function compareVclVersions()
                     {
                         $.ajax(
@@ -61,7 +85,7 @@ define(
                                 type: 'GET',
                                 url: config.vclComparison,
                                 showLoader: false,
-                                data: {'active_version':active_version},
+                                data: {'active_version': active_version},
                                 success: function (response) {
                                     if (response.status !== true) {
                                         let span = document.createElement('span');
@@ -69,7 +93,7 @@ define(
                                         span.setAttribute('title', 'Dismiss Warning');
                                         outdatedErrorMsg.text($.mage.__(response.msg)).show();
                                         outdatedErrorMsg.append(span);
-                                        openDismissModal();
+                                        openDismissModalOnClick();
                                     }
                                 }
                             }
@@ -143,6 +167,8 @@ define(
                             function (response) {
                                 if (response.status === true) {
                                     modal.modal('closeModal');
+                                    $(".changed-vcl-snippet-warning").text();
+                                    $(".changed-vcl-snippet-warning").hide();
                                     successVclBtnMsg.text($.mage.__('VCL file is successfully uploaded to the Fastly service.')).show();
                                 } else {
                                     resetAllMessages();
@@ -152,16 +178,16 @@ define(
                         );
                     }
 
-                    function openDismissModal()
+                    function openDismissModalOnClick()
                     {
-                        $("#fastly-warning-outdated-vcl-button-msg").on(
+                        outdatedErrorMsg.on(
                             'hover',
                             function () {
                                 $(this).css('cursor', 'pointer');
                             }
                         );
 
-                        $("#fastly-warning-outdated-vcl-button-msg").on(
+                        outdatedErrorMsg.on(
                             'click',
                             function () {
                                 confirm(

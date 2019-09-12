@@ -2372,6 +2372,7 @@ $deleteCustomSnippet =          $block->getUrl('adminhtml/fastlyCdn_CustomSnippe
 $getCustomSnippetsUrl =         $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/getCustomSnippets');
 $getCustomSnippet =             $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/getCustomSnippet');
 $checkCustomSnippet =           $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/checkCustomSnippet');
+$changeUpdateFlag =             $block->getUrl('adminhtml/fastlyCdn_CustomSnippet/changeUpdateFlag');
 // Domains
 $getDomainsUrl =                $block->getUrl('adminhtml/fastlyCdn_Domains/getDomains');
 $pushDomainsUrl =               $block->getUrl('adminhtml/fastlyCdn_Domains/pushDomains');
@@ -2430,6 +2431,7 @@ $vclUploadUrl =                 $block->getUrl('adminhtml/fastlyCdn_Vcl/upload')
 $dismissWarning =               $block->getUrl('adminhtml/fastlyCdn_Vcl/dismissWarning');
 $vclComparison =                $block->getUrl('adminhtml/fastlyCdn_Vcl/comparison');
 $isWarningDismissed =           $block->getUrl('adminhtml/fastlyCdn_Vcl/isWarningDismissed');
+$getUpdateFlag =            $block->getUrl('adminhtml/fastlyCdn_Vcl/getUpdateFlag');
 // Web Application Firewall
 $getWafSettingsUrl =            $block->getUrl('adminhtml/fastlyCdn_Waf/getWafSettings');
 $getOwaspSettingsUrl =          $block->getUrl('adminhtml/fastlyCdn_Waf/getOwaspSettings');
@@ -2527,7 +2529,9 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "versionReference": "<?php echo $block->escapeJsQuote($versionReference); ?>",
                     "vclComparison": "<?php echo $block->escapeJsQuote($vclComparison); ?>",
                     "dismissWarning": "<?php echo $block->escapeJsQuote($dismissWarning); ?>",
-                    "isWarningDismissed": "<?php echo $block->escapeJsQuote($isWarningDismissed); ?>"
+                    "isWarningDismissed": "<?php echo $block->escapeJsQuote($isWarningDismissed); ?>",
+                    "getUpdateFlag": "<?php echo $block->escapeJsQuote($getUpdateFlag); ?>",
+                    "changeUpdateFlag": "<?php echo $block->escapeJsQuote($changeUpdateFlag); ?>"
                 }
             }
         }

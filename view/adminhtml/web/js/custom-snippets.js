@@ -18,6 +18,23 @@ define([
         let snippet_id;
         let closestTr;
 
+        invokeAppendingTableRowWithDivOnTable();
+        checkUpdateFlag();
+
+        function checkUpdateFlag()
+        {
+            $.ajax({
+                type: 'GET',
+                url: config.getUpdateFlag,
+                showLoader: false,
+                success: function (response) {
+                    if (response.flag !== true) {    //if VCL is not Uploaded
+                        $(".changed-vcl-snippet-warning").text($.mage.__(response.msg)).show().off('click');
+                    }
+                }
+            })
+        }
+
         /**
          * Custom Snippet creation modal overlay options
          *
@@ -58,6 +75,44 @@ define([
             }
         };
 
+        function invokeAppendingTableRowWithDivOnTable()
+        {
+            if ($('#warning-message-after-change').length !== 0) {
+                return;
+            }
+
+            appendTableRowWithDiv(
+                $('#row_system_full_page_cache_fastly_fastly_custom_snippets .form-list > tbody'),
+                'warning-message-after-change',
+                'message message-warning changed-vcl-snippet-warning',
+                {
+                    'font-size': '1.2rem',
+                    'margin-top': '5px',
+                    'padding': '1.4rem 4rem 1.4rem 5.5rem',
+                    'display': 'none'
+                }
+            );
+        }
+
+        function appendTableRowWithDiv(field, id, classSelector, style)
+        {
+            let tr = document.createElement('tr');
+            let td = document.createElement('td');
+            let td2 = document.createElement('td');
+            let td3 = document.createElement('td');
+            let div = document.createElement('div');
+            div.setAttribute('class', classSelector);
+            div.setAttribute('id', id);
+            td.setAttribute('class', 'label');
+            tr.append(td);
+            td2.setAttribute('class', 'value');
+            td2.append(div);
+            tr.append(td2);
+            tr.append(td3);
+            field.append(tr);
+            $("#" + id).css(style);
+        }
+
         /**
          * Trigger the Custom Snippet list call
          */
@@ -69,7 +124,6 @@ define([
             } else {
                 $('.no-snippets').show();
             }
-
         });
 
         /**
@@ -104,6 +158,7 @@ define([
                         active_version = response.active_version;
                         modal.modal('closeModal');
                         successCustomSnippetBtnMsg.text($.mage.__('Custom snippet successfully created.')).show();
+                        setUpdateFlagToFalse();
                         getCustomSnippets().done(function (snippetsResp) {
                             $('.loading-snippets').hide();
                             if (snippetsResp.status !== false) {
@@ -147,14 +202,29 @@ define([
             let html = '';
             $.each(snippets, function (index, snippet) {
                 html += "<tr id='fastly_" + index + "'>";
-                html += "<td><input data-snippetId='"+ index + "' id='snippet_" + index + "' value='"+ snippet +"' disabled='disabled' class='input-text' type='text'></td>";
-                html += "<td class='col-actions'><button class='action-delete fastly-edit-snippet-icon' data-snippet-id='" + snippet + "' id='fastly-edit-snippet"+ index + "' title='Edit custom snippet' type='button'></button>";
-                html += "<span>&nbsp;&nbsp;</span><button class='action-delete fastly-delete-snippet-icon' data-snippet-id='" + snippet + "' id='fastly-delete-snippet"+ index + "' title='Delete custom snippet' type='button'></button></td></tr>"
+                html += "<td><input data-snippetId='" + index + "' id='snippet_" + index + "' value='" + snippet + "' disabled='disabled' class='input-text' type='text'></td>";
+                html += "<td class='col-actions'><button class='action-delete fastly-edit-snippet-icon' data-snippet-id='" + snippet + "' id='fastly-edit-snippet" + index + "' title='Edit custom snippet' type='button'></button>";
+                html += "<span>&nbsp;&nbsp;</span><button class='action-delete fastly-delete-snippet-icon' data-snippet-id='" + snippet + "' id='fastly-delete-snippet" + index + "' title='Delete custom snippet' type='button'></button></td></tr>"
             });
             if (html !== '') {
                 $('.no-snippets').hide();
             }
             $('#fastly-snippets-list').html(html);
+        }
+
+        /**
+         * set flag "updated" to false inside core_config_data when VCL is modified
+         */
+        function setUpdateFlagToFalse()
+        {
+            $.ajax({
+                type: 'GET',
+                url: config.changeUpdateFlag,
+                showLoader: true,
+                success: function (response) {
+                    $(".changed-vcl-snippet-warning").text($.mage.__(response.msg)).show().off('click');
+                }
+            })
         }
 
         /**
@@ -229,6 +299,7 @@ define([
                         active_version = response.active_version;
                         modal.modal('closeModal');
                         successCustomSnippetBtnMsg.text($.mage.__('Custom snippet successfully updated.')).show();
+                        setUpdateFlagToFalse();
                         getCustomSnippets(false).done(function (snippetsResp) {
                             $('.loading-snippets').hide();
                             if (snippetsResp.status !== false) {

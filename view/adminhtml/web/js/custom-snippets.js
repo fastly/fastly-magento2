@@ -19,6 +19,21 @@ define([
         let closestTr;
 
         invokeAppendingTableRowWithDivOnTable();
+        checkUpdateFlag();
+
+        function checkUpdateFlag()
+        {
+            $.ajax({
+                type: 'GET',
+                url: config.getUpdateFlag,
+                showLoader: false,
+                success: function (response) {
+                    if (response.flag !== true) {    //if VCL is not Uploaded
+                        $(".changed-vcl-snippet-warning").text($.mage.__(response.msg)).show().off('click');
+                    }
+                }
+            })
+        }
 
         /**
          * Custom Snippet creation modal overlay options

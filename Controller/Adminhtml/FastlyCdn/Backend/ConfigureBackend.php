@@ -20,13 +20,14 @@
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Backend;
 
+use Fastly\Cdn\Helper\Vcl;
+use Fastly\Cdn\Model\Api;
+use Fastly\Cdn\Model\Config;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Fastly\Cdn\Model\Api;
-use Fastly\Cdn\Helper\Vcl;
-use Fastly\Cdn\Model\Config;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Class ConfigureBackend
@@ -91,26 +92,92 @@ class ConfigureBackend extends Action
     {
         $result = $this->resultJson->create();
         try {
+            $oldName = $this->getRequest()->getParam('old_name');
+            $address = $this->getRequest()->getParam('backend_address');
+            $this->validateAddress($address);
+
+            $override = $this->validateOverride($this->getRequest()->getParam('override_host'));
+
+            $name = $this->getRequest()->getParam('name');
+            $this->validateName($name);
+
+            $maxTls = $this->processRequest('max_tls_version');
+            $minTls = $this->processRequest('min_tls_version');
+            $this->validateVersion((float)$maxTls, (float)$minTls);
+
             $activate_flag = $this->getRequest()->getParam('activate_flag');
             $activeVersion = $this->getRequest()->getParam('active_version');
-            $oldName = $this->getRequest()->getParam('name');
-            $params = [
-                'name'                  => $this->getRequest()->getParam('name'),
-                'shield'                => $this->getRequest()->getParam('shield'),
-                'connect_timeout'       => $this->getRequest()->getParam('connect_timeout'),
-                'between_bytes_timeout' => $this->getRequest()->getParam('between_bytes_timeout'),
-                'first_byte_timeout'    => $this->getRequest()->getParam('first_byte_timeout'),
-            ];
+
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
+
+            $tlsYesPort = $this->getRequest()->getParam('tls_yes_port');
+            $tlsNoPort = $this->getRequest()->getParam('tls_no_port');
+
+            $port = $tlsYesPort;
+            $useSsl = $this->getRequest()->getParam('use_ssl');
+
+            $autoLoadBalance = $this->getRequest()->getParam('autoload_balance');
+
+            if ($useSsl != '1') {
+                $port = $tlsNoPort;
+            }
+
+            $sslCertHostname = $this->processRequest('ssl_cert_hostname');
+            $sslSniHostname = $this->processRequest('ssl_sni_hostname');
+            $sslCaCert = $this->processRequest('ssl_ca_cert');
+
+            $conditionName = $this->getRequest()->getParam('condition_name');
+            $applyIf = $this->getRequest()->getParam('apply_if');
+            $conditionPriority = $this->getRequest()->getParam('condition_priority');
+            $selCondition = $this->getRequest()->getParam('request_condition');
+
+            $condition = $this->createCondition($clone, $conditionName, $applyIf, $conditionPriority, $selCondition);
+
+            $params = [
+                'address'               => $this->getRequest()->getParam('address'),
+                'autoload_balance'      => $autoLoadBalance,
+                'between_bytes_timeout' => $this->getRequest()->getParam('between_bytes_timeout'),
+                'connect_timeout'       => $this->getRequest()->getParam('connect_timeout'),
+                'first_byte_timeout'    => $this->getRequest()->getParam('first_byte_timeout'),
+                'max_conn'              => $this->getRequest()->getParam('max_conn'),
+                'name'                  => $name,
+                'port'                  => $port,
+                'request_condition'     => $condition,
+                'service_id'            => $service->id,
+                'shield'                => $this->getRequest()->getParam('shield'),
+                'use_ssl'               => $useSsl,
+                'version'               => $clone->number,
+                'override_host'         => $override
+            ];
+
+            if ($useSsl == '1') {
+                $params += [
+                    'ssl_ca_cert'           => $sslCaCert,
+                    'ssl_cert_hostname'     => $sslCertHostname,
+                    'ssl_ciphers'           => $this->processRequest('ssl_ciphers'),
+                    'ssl_client_cert'       => $this->processRequest('ssl_client_cert'),
+                    'ssl_client_key'        => $this->processRequest('ssl_client_key'),
+                    'ssl_sni_hostname'      => $sslSniHostname,
+                    'max_tls_version'       => $maxTls,
+                    'min_tls_version'       => $minTls,
+                ];
+            }
+
+            if ($autoLoadBalance == '1') {
+                $params += [
+                    'weight' => $this->getRequest()->getParam('weight')
+                ];
+            }
+
             $configureBackend = $this->api->configureBackend($params, $clone->number, $oldName);
 
             if (!$configureBackend) {
                 return $result->setData([
                     'status'    => false,
-                    'msg'       => 'Failed to update Backend configuration.'
+                    'msg'       => 'Failed to create Backend.'
                 ]);
             }
 
@@ -119,17 +186,20 @@ class ConfigureBackend extends Action
             if ($activate_flag === 'true') {
                 $this->api->activateVersion($clone->number);
             }
+
             if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
                 $this->api->sendWebHook(
                     '*Backend '
                     . $this->getRequest()->getParam('name')
-                    . ' has been changed in Fastly version '
+                    . ' has been updated at Fastly version '
                     . $clone->number
                     . '*'
                 );
             }
 
-            $comment = ['comment' => 'Magento Module updated the "'.$oldName.'" Backend Configuration'];
+            $comment = [
+                'comment' => 'Magento Module configured the "' . $this->getRequest()->getParam('name') . '" Backend '
+            ];
             $this->api->addComment($clone->number, $comment);
 
             return $result->setData([
@@ -142,5 +212,98 @@ class ConfigureBackend extends Action
                 'msg'       => $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * @param $param
+     * @return mixed|null
+     */
+    private function processRequest($param)
+    {
+        $request = $this->getRequest()->getParam($param);
+        if ($request == '') {
+            return null;
+        }
+        return $request;
+    }
+
+    /**
+     * @param float $maxTls
+     * @param float $minTls
+     * @throws LocalizedException
+     */
+    private function validateVersion($maxTls, $minTls)
+    {
+        if ($maxTls == 0) {
+            return;
+        } elseif ($maxTls < $minTls) {
+            throw new LocalizedException(__("Maximum TLS version must be higher than the minimum TLS version."));
+        }
+    }
+
+    /**
+     * @param $name
+     * @throws LocalizedException
+     */
+    private function validateName($name)
+    {
+        if (trim($name) == "") {
+            throw new LocalizedException(__("Name can't be blank"));
+        }
+    }
+
+    /**
+     * @param $address
+     * @throws LocalizedException
+     */
+    private function validateAddress($address)
+    {
+        if (!filter_var($address, FILTER_VALIDATE_IP) &&
+            !filter_var($address, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
+            throw new LocalizedException(__('Address ' . $address . ' is not a valid IPv4, IPv6 or hostname.'));
+        }
+    }
+
+    /**
+     * @param $override
+     * @return string|null
+     * @throws LocalizedException
+     */
+    private function validateOverride($override)
+    {
+        if ($override === '') {
+            return null;
+        }
+
+        if (!filter_var($override, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
+            throw new LocalizedException(__('Override host ' . $override . ' is not a valid hostname.'));
+        }
+
+        return $override;
+    }
+
+    /**
+     * @param $clone
+     * @param $conditionName
+     * @param $applyIf
+     * @param $conditionPriority
+     * @param $selCondition
+     * @return mixed
+     * @throws LocalizedException
+     */
+    private function createCondition($clone, $conditionName, $applyIf, $conditionPriority, $selCondition)
+    {
+        if ($conditionName == $selCondition && !empty($selCondition) &&
+            !$this->api->getCondition($clone->number, $conditionName)) {
+            $condition = [
+                'name'      => $conditionName,
+                'statement' => $applyIf,
+                'type'      => 'REQUEST',
+                'priority'  => $conditionPriority
+            ];
+            $createCondition = $this->api->createCondition($clone->number, $condition);
+            return $createCondition->name;
+        }
+        return $selCondition;
     }
 }

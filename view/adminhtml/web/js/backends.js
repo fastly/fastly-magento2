@@ -17,6 +17,7 @@ define([
         let backendModal;
         let conditionModal;
         let conditions;
+        let oldName;
 
         /**
          * Backend modal overlay options
@@ -26,12 +27,11 @@ define([
         let backendOptions = {
             title: jQuery.mage.__(' '),
             content: function () {
-                return document.getElementById('fastly-backend-template').textContent;
+                return document.getElementById('fastly-create-backend-template').textContent;
             },
             actionOk: function () {
-                if ($('#backend-upload-form').valid()) {
-                    configureBackend(active_version);
-                }
+                //validate_form
+                configureBackend(active_version);
             }
         };
 
@@ -130,11 +130,27 @@ define([
                 data: {
                     'active_version': active_version,
                     'activate_flag': activate_backend,
+                    'old_name': oldName,
                     'name': $('#backend_name').val(),
+                    'backend_address': $('#backend_address').val(),
+                    'autoload_balance': $('#auto_load_balance').val(),
+                    'weight': $('#weight').val(),
                     'shield': $('#backend_shield').val(),
+                    'use_ssl': $('input:radio[name=tls-radio]:checked').val(),
+                    'tls_yes_port': $('#tls-yes-port').val(),
+                    'tls_no_port': $('#tls-no-port').val(),
+                    'ssl_cert_hostname': $('#certificate-hostname').val(),
+                    'ssl_sni_hostname': $('#sni-hostname').val(),
+                    'ssl_ca_cert': $('#tls-ca-certificate').val(),
+                    'min_tls_version': $('#minimum-tls').val(),
+                    'max_tls_version': $('#maximum-tls').val(),
+                    'ssl_ciphers': $('#ciphersuites').val(),
+                    'max_conn': $('#backend_maximum_connections').val(),
+                    'error_threshold': $('#backend_error_threshold').val(),
                     'connect_timeout': $('#backend_connect_timeout').val(),
+                    'first_byte_timeout': $('#backend_first_byte_timeout').val(),
                     'between_bytes_timeout': $('#backend_between_bytes_timeout').val(),
-                    'first_byte_timeout': $('#backend_first_byte_timeout').val()
+                    'override_host': $('#override_host').val()
                 },
                 showLoader: true,
                 success: function (response) {
@@ -142,6 +158,17 @@ define([
                         $('#fastly-success-backend-button-msg').text($.mage.__('Backend "'+backend_name+'" is successfully updated.')).show();
                         active_version = response.active_version;
                         modal.modal('closeModal');
+                        getBackends(active_version, false).done(function (resp) {
+                            $('.loading-backends').hide();
+                            if (resp !== false) {
+                                if (resp.backends.length > 0) {
+                                    backends = resp.backends;
+                                    processBackends(resp.backends);
+                                } else {
+                                    $('.no-backends').show();
+                                }
+                            }
+                        })
                     } else {
                         resetAllMessages();
                         showErrorMessage(response.msg);
@@ -401,6 +428,55 @@ define([
             }
         });
 
+        function initValues(backend)
+        {
+            $('#backend_name').val(backend.name);
+            $('#backend_address').val(backend.address);
+            $('#backend_shield option[value=\'' + backend.shield +'\']').attr('selected','selected');
+            let loadBalance = backend.auto_loadbalance === true ? 1 : 0;
+            $('#auto_load_balance option[value=\'' + loadBalance +'\']').attr('selected', 'selected');
+            $('#weight').val(backend.weight);
+            if (backend.use_ssl) {
+                $('#tls-yes').prop('checked', true);
+                $('#tls-no').prop('checked', false);
+            } else {
+                $('#tls-yes').prop('checked', false);
+                $('#tls-no').prop('checked', true);
+                $('#tls-no-port').val(backend.port);
+                $('#certificate-hostname').prop('disabled', true);
+                $('#tls-ca-certificate').prop('disabled', true);
+                $('#certificate-yes').prop('disabled', true);
+                $('#certificate-no').prop('disabled', true);
+                $('#sni-hostname').prop('disabled', true);
+                $('#minimum-tls').prop('disabled', true);
+                $('#match-sni').prop('disabled', true);
+                $('#maximum-tls').prop('disabled', true);
+                $('#ciphersuites').prop('disabled', true);
+                $('#tls-client-key').prop('disabled', true);
+                $('#tls-yes-port').prop('disabled', true);
+                $('#tls-client-certificate').prop('disabled', true);
+            }
+
+            if (backend.auto_loadbalance !== true) {
+                $('#weight').parent().parent().hide();
+            }
+
+            $('#certificate-hostname').val(backend.ssl_cert_hostname);
+            $('#sni-hostname').val(backend.ssl_sni_hostname);
+            $('#tls-ca-certificate').val(backend.ssl_ca_cert);
+            $('#minimum-tls').val(backend.min_tls_version);
+            $('#maximum-tls').val(backend.max_tls_version);
+            $('#ciphersuites').val(backend.ssl_ciphers);
+            $('#tls-client-certificate').val(backend.ssl_client_cert);
+            $('#tls-client-key').val(backend.ssl_client_key);
+            $('#backend_maximum_connections').val(backend.max_conn);
+            $('#backend_error_threshold').val(backend.error_threshold);
+            $('#backend_connect_timeout').val(backend.connect_timeout);
+            $('#backend_first_byte_timeout').val(backend.first_byte_timeout);
+            $('#backend_between_bytes_timeout').val(backend.between_bytes_timeout);
+            $('#override_host').val(backend.override_host);
+        }
+
         /**
          * Edit Backend button on click event
          */
@@ -431,15 +507,12 @@ define([
                     if (backends != null && backend_id != null) {
                         overlay(backendOptions);
                         setServiceLabel(active_version, next_version, service_name);
-
+                        $('#conditions').hide();
+                        initValues(backends[backend_id]);
+                        oldName = $('#backend_name').val();
                         $('.upload-button span').text('Update');
                         backend_name = backends[backend_id].name;
                         $('.modal-title').text($.mage.__('Backend "'+backend_name+'" configuration'));
-                        $('#backend_name').val(backends[backend_id].name);
-                        $('#backend_shield option[value=\'' + backends[backend_id].shield +'\']').attr('selected','selected');
-                        $('#backend_connect_timeout').val(backends[backend_id].connect_timeout);
-                        $('#backend_between_bytes_timeout').val(backends[backend_id].between_bytes_timeout);
-                        $('#backend_first_byte_timeout').val(backends[backend_id].first_byte_timeout);
                     }
                 });
             });

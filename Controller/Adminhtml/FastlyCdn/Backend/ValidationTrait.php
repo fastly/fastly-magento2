@@ -99,4 +99,3 @@ trait ValidationTrait
         return $selCondition;
     }
 }
-

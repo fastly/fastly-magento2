@@ -161,7 +161,7 @@ define([
                     if (response.status === true) {
                         $('#fastly-success-backend-button-msg').text($.mage.__('Backend "'+backend_name+'" is successfully updated.')).show();
                         active_version = response.active_version;
-                        modal.modal('closeModal');
+                        backendModal.modal('closeModal');
                         getBackends(active_version, false).done(function (resp) {
                             $('.loading-backends').hide();
                             if (resp !== false) {
@@ -515,6 +515,7 @@ define([
 
                     if (backends != null && backend_id != null) {
                         overlay(backendOptions);
+                        backendModal = modal;
                         setServiceLabel(active_version, next_version, service_name);
                         $('#conditions').hide();
                         initValues(backends[backend_id]);

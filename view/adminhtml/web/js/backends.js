@@ -256,7 +256,6 @@ define([
                     if (response.status === true) {
                         $('#fastly-success-backend-button-msg').text($.mage.__('Backend "'+backendName+'" is successfully created.')).show();
                         active_version = response.active_version;
-
                         backendModal.modal('closeModal');
                         $('#fastly_add_backend_button').remove();
                         $('#fastly_cancel_backend_button').remove();
@@ -518,6 +517,9 @@ define([
                         backendModal = modal;
                         setServiceLabel(active_version, next_version, service_name);
                         $('#conditions').hide();
+                        $('#detach').hide();
+                        $('#create-condition').hide();
+                        $('#sep').hide();
                         initValues(backends[backend_id]);
                         oldName = $('#backend_name').val();
                         $('.upload-button span').text('Update');

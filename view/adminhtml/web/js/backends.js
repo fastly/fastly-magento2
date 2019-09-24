@@ -133,7 +133,7 @@ define([
                     'old_name': oldName,
                     'name': $('#backend_name').val(),
                     'backend_address': $('#backend_address').val(),
-                    'autoload_balance': $('#auto_load_balance').val(),
+                    'auto_loadbalance': $('#auto_loadbalance').val(),
                     'weight': $('#weight').val(),
                     'shield': $('#backend_shield').val(),
                     'use_ssl': $('input:radio[name=tls-radio]:checked').val(),
@@ -150,7 +150,11 @@ define([
                     'connect_timeout': $('#backend_connect_timeout').val(),
                     'first_byte_timeout': $('#backend_first_byte_timeout').val(),
                     'between_bytes_timeout': $('#backend_between_bytes_timeout').val(),
-                    'override_host': $('#override_host').val()
+                    'override_host': $('#override_host').val(),
+                    'condition_name': $('#condition_name').val(),
+                    'apply_if': $('#apply_if').val(),
+                    'condition_priority': $('#condition_priority').val(),
+                    'request_condition': $('#conditions').val()
                 },
                 showLoader: true,
                 success: function (response) {
@@ -207,7 +211,7 @@ define([
             let connectionTimeout = $('#backend_connect_timeout').val();
             let firstByteTimeout = $('#backend_first_byte_timeout').val();
             let betweenBytesTimeout = $('#backend_between_bytes_timeout').val();
-            let autoLoadBalance = $('#auto_load_balance').val();
+            let autoLoadBalance = $('#auto_loadbalance').val();
             let weight = $('#weight').val();
             let overrideHost = $('#override_host').val();
 
@@ -356,7 +360,7 @@ define([
                             $('#sni-hostname').val(hostnameVal);
                             $('#certificate-hostname').val(hostnameVal);
 
-                            if ($('#auto_load_balance').val() === '0') {
+                            if ($('#auto_loadbalance').val() === '0') {
                                 $('.weight').hide();
                             } else {
                                 $('.weight').show();
@@ -378,7 +382,7 @@ define([
             $('#fastly_create_backend_button').show();
         });
 
-        $('body').on('change', '#auto_load_balance', function () {
+        $('body').on('change', '#auto_loadbalance', function () {
             if (this.value === '1') {
                 $('.weight').show();
             } else {
@@ -434,11 +438,16 @@ define([
             $('#backend_address').val(backend.address);
             $('#backend_shield option[value=\'' + backend.shield +'\']').attr('selected','selected');
             let loadBalance = backend.auto_loadbalance === true ? 1 : 0;
-            $('#auto_load_balance option[value=\'' + loadBalance +'\']').attr('selected', 'selected');
+            $('#auto_loadbalance option[value=\'' + loadBalance +'\']').attr('selected', 'selected');
             $('#weight').val(backend.weight);
+            if (!loadBalance) {
+                $('#weight').parent().parent().hide();
+            }
+
             if (backend.use_ssl) {
                 $('#tls-yes').prop('checked', true);
                 $('#tls-no').prop('checked', false);
+                $('#tls-no-port').prop('disabled', true);
             } else {
                 $('#tls-yes').prop('checked', false);
                 $('#tls-no').prop('checked', true);

@@ -36,6 +36,8 @@ use Magento\Framework\Exception\LocalizedException;
  */
 class ConfigureBackend extends Action
 {
+    use ValidationTrait;
+
     /**
      * @var Http
      */
@@ -105,7 +107,7 @@ class ConfigureBackend extends Action
             $minTls = $this->processRequest('min_tls_version');
             $this->validateVersion((float)$maxTls, (float)$minTls);
 
-            $activate_flag = $this->getRequest()->getParam('activate_flag');
+            $activate_flag = $this->getRequest()->getParam('activate_flag') === 'true' ? true : false;
             $activeVersion = $this->getRequest()->getParam('active_version');
 
             $service = $this->api->checkServiceDetails();
@@ -117,11 +119,11 @@ class ConfigureBackend extends Action
             $tlsNoPort = $this->getRequest()->getParam('tls_no_port');
 
             $port = $tlsYesPort;
-            $useSsl = $this->getRequest()->getParam('use_ssl');
+            $useSsl = $this->getRequest()->getParam('use_ssl') === '1' ? true : false;
 
-            $autoLoadBalance = $this->getRequest()->getParam('autoload_balance');
+            $autoLoadBalance = $this->getRequest()->getParam('auto_loadbalance') === '1' ? true : false;
 
-            if ($useSsl != '1') {
+            if (!$useSsl) {
                 $port = $tlsNoPort;
             }
 
@@ -137,8 +139,8 @@ class ConfigureBackend extends Action
             $condition = $this->createCondition($clone, $conditionName, $applyIf, $conditionPriority, $selCondition);
 
             $params = [
-                'address'               => $this->getRequest()->getParam('address'),
-                'autoload_balance'      => $autoLoadBalance,
+                'address'               => $address,
+                'auto_loadbalance'      => $autoLoadBalance,
                 'between_bytes_timeout' => $this->getRequest()->getParam('between_bytes_timeout'),
                 'connect_timeout'       => $this->getRequest()->getParam('connect_timeout'),
                 'first_byte_timeout'    => $this->getRequest()->getParam('first_byte_timeout'),
@@ -153,7 +155,7 @@ class ConfigureBackend extends Action
                 'override_host'         => $override
             ];
 
-            if ($useSsl == '1') {
+            if (!$useSsl) {
                 $params += [
                     'ssl_ca_cert'           => $sslCaCert,
                     'ssl_cert_hostname'     => $sslCertHostname,
@@ -166,7 +168,7 @@ class ConfigureBackend extends Action
                 ];
             }
 
-            if ($autoLoadBalance == '1') {
+            if ($autoLoadBalance !== false) {
                 $params += [
                     'weight' => $this->getRequest()->getParam('weight')
                 ];
@@ -177,13 +179,13 @@ class ConfigureBackend extends Action
             if (!$configureBackend) {
                 return $result->setData([
                     'status'    => false,
-                    'msg'       => 'Failed to create Backend.'
+                    'msg'       => 'Failed to update Backend.'
                 ]);
             }
 
             $this->api->validateServiceVersion($clone->number);
 
-            if ($activate_flag === 'true') {
+            if ($activate_flag !== false) {
                 $this->api->activateVersion($clone->number);
             }
 
@@ -212,98 +214,5 @@ class ConfigureBackend extends Action
                 'msg'       => $e->getMessage()
             ]);
         }
-    }
-
-    /**
-     * @param $param
-     * @return mixed|null
-     */
-    private function processRequest($param)
-    {
-        $request = $this->getRequest()->getParam($param);
-        if ($request == '') {
-            return null;
-        }
-        return $request;
-    }
-
-    /**
-     * @param float $maxTls
-     * @param float $minTls
-     * @throws LocalizedException
-     */
-    private function validateVersion($maxTls, $minTls)
-    {
-        if ($maxTls == 0) {
-            return;
-        } elseif ($maxTls < $minTls) {
-            throw new LocalizedException(__("Maximum TLS version must be higher than the minimum TLS version."));
-        }
-    }
-
-    /**
-     * @param $name
-     * @throws LocalizedException
-     */
-    private function validateName($name)
-    {
-        if (trim($name) == "") {
-            throw new LocalizedException(__("Name can't be blank"));
-        }
-    }
-
-    /**
-     * @param $address
-     * @throws LocalizedException
-     */
-    private function validateAddress($address)
-    {
-        if (!filter_var($address, FILTER_VALIDATE_IP) &&
-            !filter_var($address, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
-            throw new LocalizedException(__('Address ' . $address . ' is not a valid IPv4, IPv6 or hostname.'));
-        }
-    }
-
-    /**
-     * @param $override
-     * @return string|null
-     * @throws LocalizedException
-     */
-    private function validateOverride($override)
-    {
-        if ($override === '') {
-            return null;
-        }
-
-        if (!filter_var($override, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
-            throw new LocalizedException(__('Override host ' . $override . ' is not a valid hostname.'));
-        }
-
-        return $override;
-    }
-
-    /**
-     * @param $clone
-     * @param $conditionName
-     * @param $applyIf
-     * @param $conditionPriority
-     * @param $selCondition
-     * @return mixed
-     * @throws LocalizedException
-     */
-    private function createCondition($clone, $conditionName, $applyIf, $conditionPriority, $selCondition)
-    {
-        if ($conditionName == $selCondition && !empty($selCondition) &&
-            !$this->api->getCondition($clone->number, $conditionName)) {
-            $condition = [
-                'name'      => $conditionName,
-                'statement' => $applyIf,
-                'type'      => 'REQUEST',
-                'priority'  => $conditionPriority
-            ];
-            $createCondition = $this->api->createCondition($clone->number, $condition);
-            return $createCondition->name;
-        }
-        return $selCondition;
     }
 }

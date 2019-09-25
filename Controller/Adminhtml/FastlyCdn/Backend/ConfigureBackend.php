@@ -27,7 +27,6 @@ use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Class ConfigureBackend
@@ -114,7 +113,6 @@ class ConfigureBackend extends Action
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
-
             $tlsYesPort = $this->getRequest()->getParam('tls_yes_port');
             $tlsNoPort = $this->getRequest()->getParam('tls_no_port');
 
@@ -127,7 +125,16 @@ class ConfigureBackend extends Action
                 $port = $tlsNoPort;
             }
 
+            $sslVerifyCert = $this->getRequest()->getParam('ssl_check_cert') === '1' ? true : false;
             $sslCertHostname = $this->processRequest('ssl_cert_hostname');
+
+            if ($sslVerifyCert && !$sslCertHostname) {
+                return $result->setData([
+                    'status'    => false,
+                    'msg'       => 'Certified hostname must be entered if certificate verification is chosen'
+                ]);
+            }
+
             $sslSniHostname = $this->processRequest('ssl_sni_hostname');
             $sslCaCert = $this->processRequest('ssl_ca_cert');
 
@@ -155,9 +162,10 @@ class ConfigureBackend extends Action
                 'override_host'         => $override
             ];
 
-            if (!$useSsl) {
+            if ($useSsl) {
                 $params += [
                     'ssl_ca_cert'           => $sslCaCert,
+                    'ssl_check_cert'        => $sslVerifyCert,
                     'ssl_cert_hostname'     => $sslCertHostname,
                     'ssl_ciphers'           => $this->processRequest('ssl_ciphers'),
                     'ssl_client_cert'       => $this->processRequest('ssl_client_cert'),

@@ -30,7 +30,6 @@ define([
                 return document.getElementById('fastly-create-backend-template').textContent;
             },
             actionOk: function () {
-                //validate_form
                 configureBackend(active_version);
             }
         };
@@ -139,6 +138,7 @@ define([
                     'use_ssl': $('input:radio[name=tls-radio]:checked').val(),
                     'tls_yes_port': $('#tls-yes-port').val(),
                     'tls_no_port': $('#tls-no-port').val(),
+                    'ssl_check_cert': $('input:radio[name=certificate-radio]:checked').val(),
                     'ssl_cert_hostname': $('#certificate-hostname').val(),
                     'ssl_sni_hostname': $('#sni-hostname').val(),
                     'ssl_ca_cert': $('#tls-ca-certificate').val(),
@@ -228,7 +228,7 @@ define([
                     'use_ssl': enableTls,
                     'tls_yes_port': tlsYesPort,
                     'tls_no_port': tlsNoPort,
-                    'verify_certificate': verifyCertificate,
+                    'ssl_check_cert': verifyCertificate,
                     'ssl_cert_hostname': certificateHostname,
                     'ssl_sni_hostname': sniHostname,
                     'match_sni': matchSni,
@@ -358,6 +358,7 @@ define([
                             $('#backend_address').val(hostnameVal);
                             $('#sni-hostname').val(hostnameVal);
                             $('#certificate-hostname').val(hostnameVal);
+                            verifyCertificateNotification();
 
                             if ($('#auto_loadbalance').val() === '0') {
                                 $('.weight').hide();
@@ -443,6 +444,15 @@ define([
                 $('#weight').parent().parent().hide();
             }
 
+            if (backend.ssl_check_cert !== false) {
+                $('#certificate-yes').prop('checked', true);
+                $('#certificate-hostname').val(backend.ssl_cert_hostname);
+            } else {
+                $('#certificate-no').prop('checked', true);
+                $('#certificate-hostname').prop('disabled', true);
+                $('#match-sni').prop('disabled', true);
+            }
+
             if (backend.use_ssl) {
                 $('#tls-yes').prop('checked', true);
                 $('#tls-no').prop('checked', false);
@@ -485,6 +495,26 @@ define([
             $('#override_host').val(backend.override_host);
         }
 
+        function verifyCertificateNotification()
+        {
+            $('#certificate-no').on('change', function () {
+                $('#certificate-no-msg').empty();
+                let msg = document.createTextNode('Not verifying the certificate has serious security implications,' +
+                    ' including vulnerability to');
+
+                let a = document.createElement('a');
+                let text = document.createTextNode(' man-in-the-middle attacks.');
+                a.appendChild(text);
+                a.title = 'man-in-the-middle attacks';
+                a.href = 'https://en.wikipedia.org/wiki/Man-in-the-middle_attack';
+                a.target = '_blank';
+                $('#certificate-no-msg').append(msg);
+                $('#certificate-no-msg').append(a);
+            });
+            $('#certificate-yes').on('change', function () {
+                $('#certificate-no-msg').empty();
+            });
+        }
         /**
          * Edit Backend button on click event
          */
@@ -521,6 +551,7 @@ define([
                         $('#create-condition').hide();
                         $('#sep').hide();
                         initValues(backends[backend_id]);
+                        verifyCertificateNotification();
                         oldName = $('#backend_name').val();
                         $('.upload-button span').text('Update');
                         backend_name = backends[backend_id].name;
@@ -567,3 +598,4 @@ define([
         });
     }
 });
+

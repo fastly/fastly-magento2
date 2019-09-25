@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.117
+
+- Expose all options for configuring the backend. Previously we only exposed only selected fields https://github.com/fastly/fastly-magento2/pull/308
+
 ## 1.2.116
 
 - Add notification to upload custom VCL snippets when they are changed

@@ -130,6 +130,14 @@ class CreateBackend extends Action
             $sslCertHostname = $this->processRequest('ssl_cert_hostname');
             $sslSniHostname = $this->processRequest('ssl_sni_hostname');
             $sslCaCert = $this->processRequest('ssl_ca_cert');
+            $sslVerifyCert = $this->getRequest()->getParam('ssl_check_cert') === '1' ? true : false;
+
+            if ($sslVerifyCert && !$sslCertHostname) {
+                return $result->setData([
+                    'status'    => false,
+                    'msg'       => 'Certified hostname must be entered if certificate verification is chosen'
+                ]);
+            }
 
             $conditionName = $this->getRequest()->getParam('condition_name');
             $applyIf = $this->getRequest()->getParam('apply_if');
@@ -158,6 +166,7 @@ class CreateBackend extends Action
             if ($useSsl == '1') {
                 $params += [
                     'ssl_ca_cert'           => $sslCaCert,
+                    'ssl_check_cert'        => $sslVerifyCert,
                     'ssl_cert_hostname'     => $sslCertHostname,
                     'ssl_ciphers'           => $this->processRequest('ssl_ciphers'),
                     'ssl_client_cert'       => $this->processRequest('ssl_client_cert'),
@@ -215,3 +224,4 @@ class CreateBackend extends Action
         }
     }
 }
+

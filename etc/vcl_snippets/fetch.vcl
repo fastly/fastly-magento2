@@ -62,7 +62,7 @@
     }
 
     # Add Varying on X-Magento-Vary
-    if (beresp.http.Content-Type ~ "text/(html|xml)") {
+    if (beresp.http.Content-Type ~ "text/(html|xml)" || (req.url ~ "/graphql" && req.request == "GET")) {
         if (!beresp.http.Vary ~ "X-Magento-Vary,Https") {
             if (beresp.http.Vary) {
                 set beresp.http.Vary = beresp.http.Vary ",X-Magento-Vary,Https";

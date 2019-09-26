@@ -27,7 +27,7 @@
     }
     
     # User's Cookie may contain some Magento Vary items we should vary on
-    if (req.http.cookie:X-Magento-Vary ) {
+    if (req.http.cookie:X-Magento-Vary) {
         set req.http.X-Magento-Vary = req.http.cookie:X-Magento-Vary;
     } else {
         unset req.http.X-Magento-Vary;
@@ -127,3 +127,22 @@
         unset req.http.Cookie;
     }
 
+    unset req.http.graphql;
+    # GraphQL special headers handling because this area doesn't rely on X-Magento-Vary cookie
+    if (req.request == "GET" && req.url.path ~ "/graphql" && req.url.qs ~ "query=") {
+        if ( req.http.Authorization ~ "^Bearer" ) {
+            set req.http.x-pass = "1";
+        } else {
+            set req.http.graphql = "1";
+            if (req.http.Store) {
+                set req.http.X-Magento-Vary = req.http.Store;
+            }
+            if (req.http.Content-Currency) {
+                if (req.http.X-Magento-Vary) {
+                    set req.http.X-Magento-Vary = req.http.X-Magento-Vary req.http.Content-Currency;
+                } else {
+                    set req.http.X-Magento-Vary = req.http.Content-Currency;
+                }
+            }
+        }
+    }

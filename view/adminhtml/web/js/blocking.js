@@ -19,6 +19,16 @@ define([
         /* Update Blocking button messages */
         let blockingSuccessBtnMsg = $('#fastly-update-blocking-success-button-msg');
         let blockingErrorBtnMsg = $('#fastly-update-blocking-error-button-msg');
+        let blockingWarningBtnMsg = $('#fastly-update-blocking-warning-button-msg');
+        /* <select> elements */
+        let blockingTypeSelect = $('#system_full_page_cache_fastly_fastly_blocking_blocking_type');
+        let countryListSelect = $('#system_full_page_cache_fastly_fastly_blocking_block_by_country');
+        let aclSelect = $('#system_full_page_cache_fastly_fastly_blocking_block_by_acl');
+
+        countryListSelect.add(aclSelect).on('change', function () {
+            blockingWarningBtnMsg.text($.mage.__('Please Update Blocking Configuration')).show();
+        });
+
 
         let active_version = serviceStatus.active_version;
 
@@ -174,6 +184,7 @@ define([
                             if (input !== 'I ACKNOWLEDGE') {
                                 $('#system_full_page_cache_fastly_fastly_blocking_blocking_type').val('0');
                             }
+                            blockingWarningBtnMsg.text($.mage.__('Please Update Blocking Configuration')).show();
                         },
                         cancel: function () {
                             $('#system_full_page_cache_fastly_fastly_blocking_blocking_type').val('0');

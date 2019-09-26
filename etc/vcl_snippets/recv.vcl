@@ -33,24 +33,6 @@
         unset req.http.X-Magento-Vary;
     }
 
-    # GraphQl special headers handling because this area doesn't rely on X-Magento-Vary cookie
-    if (req.url ~ "/graphql" && req.request == "GET" && req.url.qs ~ "query=") {
-        if (req.http.Store) {
-            if (req.http.X-Magento-Vary) {
-                set req.http.X-Magento-Vary = req.http.X-Magento-Vary req.http.Store;
-            } else {
-                set req.http.X-Magento-Vary = req.http.Store;
-            }
-        }
-        if (req.http.Content-Currency) {
-            if (req.http.X-Magento-Vary) {
-                set req.http.X-Magento-Vary = req.http.X-Magento-Vary req.http.Content-Currency;
-            } else {
-                set req.http.X-Magento-Vary = req.http.Content-Currency;
-            }
-        }
-    }
-
     ############################################################################################################
     # Following code block controls purge by URL. By default we want to protect all URL purges. In general this
     # is addressed by adding Fastly-Purge-Requires-Auth request header in vcl_recv however this runs the risk of
@@ -145,7 +127,21 @@
         unset req.http.Cookie;
     }
 
-    # GraphQl doesn't yet cache the authenticated/logged-in customer queries
-    if (req.request == "GET" && req.url.path ~ "/graphql" && req.http.Authorization ~ "^Bearer" && req.url.qs ~ "query=") {
-        set req.http.x-pass = "1";
+    # GraphQL special headers handling because this area doesn't rely on X-Magento-Vary cookie
+    if (req.request == "GET" && req.url.path ~ "/graphql" && req.url.qs ~ "query=") {
+        set req.http.graphql = "1";
+        if ( req.http.Authorization ~ "^Bearer" ) {
+            set req.http.x-pass = "1";
+        } else {
+            if (req.http.Store) {
+                set req.http.X-Magento-Vary = req.http.Store;
+            }
+            if (req.http.Content-Currency) {
+                if (req.http.X-Magento-Vary) {
+                    set req.http.X-Magento-Vary = req.http.X-Magento-Vary req.http.Content-Currency;
+                } else {
+                    set req.http.X-Magento-Vary = req.http.Content-Currency;
+                }
+            }
+        }
     }

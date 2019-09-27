@@ -133,7 +133,7 @@ class GetAction extends Action
                         '___from_store' => $currentStore->getCode()
                     ];
                     if ($targetUrl) {
-                        array_push($queryParams, ['uenc' => $targetUrl]);
+                        $queryParams['uenc'] = $targetUrl;
                     }
                     $this->url->addQueryParams($queryParams);
                     $redirectUrl = $this->url->getUrl('stores/store/switch');

@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.118
+
+- Add notification to update Blocking Config when blocking changes are made https://github.com/fastly/fastly-magento2/pull/310
+- Add handling for GraphQL paths. This may be removed in the future after Magento core adds Vary GraphQL requests https://github.com/fastly/fastly-magento2/pull/307
+- Add fix for uenc brackets [] when using GeoIP https://github.com/fastly/fastly-magento2/pull/311
+
 ## 1.2.117
 
 - Expose all options for configuring the backend. Previously we only exposed only selected fields https://github.com/fastly/fastly-magento2/pull/308

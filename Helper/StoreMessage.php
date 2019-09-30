@@ -20,9 +20,8 @@
  */
 namespace Fastly\Cdn\Helper;
 
-
 use Magento\Framework\App\Helper\Context;
-use \Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Locale\ResolverInterface as LocaleResolverInterface;
 use Magento\Store\Api\Data\StoreInterface;

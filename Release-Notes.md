@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.119
+
+- GeoIP fixes https://github.com/fastly/fastly-magento2/pull/314 and https://github.com/fastly/fastly-magento2/pull/311
+- Update visibility in getmessageinstorelocale function https://github.com/fastly/fastly-magento2/pull/312
+
 ## 1.2.118
 
 - Add notification to update Blocking Config when blocking changes are made https://github.com/fastly/fastly-magento2/pull/310

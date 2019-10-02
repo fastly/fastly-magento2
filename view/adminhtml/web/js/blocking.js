@@ -26,7 +26,7 @@ define([
         let aclSelect = $('#system_full_page_cache_fastly_fastly_blocking_block_by_acl');
 
         countryListSelect.add(aclSelect).on('change', function () {
-            blockingWarningBtnMsg.text($.mage.__('Please Update Blocking Configuration')).show();
+            blockingWarningBtnMsg.text($.mage.__('Changes not active until Update Blocking Configuration is clicked')).show();
         });
 
 

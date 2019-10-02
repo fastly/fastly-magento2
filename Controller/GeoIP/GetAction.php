@@ -30,9 +30,9 @@ use Magento\Framework\View\Result\Layout;
 use Magento\Framework\View\Result\LayoutFactory;
 use Magento\Store\Api\StoreRepositoryInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Store\Api\Data\StoreInterface;
 use Psr\Log\LoggerInterface;
 use Magento\Framework\App\Action\Action;
+use Fastly\Cdn\Helper\StoreMessage;
 
 /**
  * Class GetAction
@@ -63,13 +63,13 @@ class GetAction extends Action
      */
     private $resultLayoutFactory;
     /**
-     * @var LocaleResolverInterface
-     */
-    private $localeResolver;
-    /**
      * @var LoggerInterface
      */
     private $logger;
+    /**
+     * @var StoreMessage
+     */
+    private $storeMessage;
 
     /**
      * GetAction constructor.
@@ -78,8 +78,8 @@ class GetAction extends Action
      * @param StoreRepositoryInterface $storeRepository
      * @param StoreManagerInterface $storeManager
      * @param LayoutFactory $resultLayoutFactory
-     * @param LocaleResolverInterface $localeResolver
      * @param LoggerInterface $logger
+     * @param StoreMessage $storeMessage
      */
     public function __construct(
         Context $context,
@@ -87,16 +87,16 @@ class GetAction extends Action
         StoreRepositoryInterface $storeRepository,
         StoreManagerInterface $storeManager,
         LayoutFactory $resultLayoutFactory,
-        LocaleResolverInterface $localeResolver,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        StoreMessage $storeMessage
     ) {
         parent::__construct($context);
         $this->config               = $config;
         $this->storeRepository      = $storeRepository;
         $this->storeManager         = $storeManager;
         $this->resultLayoutFactory  = $resultLayoutFactory;
-        $this->localeResolver       = $localeResolver;
         $this->logger               = $logger;
+        $this->storeMessage         = $storeMessage;
 
         $this->url  = $context->getUrl();
     }
@@ -133,7 +133,7 @@ class GetAction extends Action
                         '___from_store' => $currentStore->getCode()
                     ];
                     if ($targetUrl) {
-                        array_push($queryParams, ['uenc' => $targetUrl]);
+                        $queryParams['uenc'] = $targetUrl;
                     }
                     $this->url->addQueryParams($queryParams);
                     $redirectUrl = $this->url->getUrl('stores/store/switch');
@@ -145,7 +145,7 @@ class GetAction extends Action
                         case Config::GEOIP_ACTION_DIALOG:
                             $resultLayout->getLayout()->getUpdate()->load(['geoip_getaction_dialog']);
                             $resultLayout->getLayout()->getBlock('geoip_getaction')->setMessage(
-                                $this->getMessageInStoreLocale($targetStore)
+                                $this->storeMessage->getMessageInStoreLocale($targetStore)
                             );
                             break;
                         case Config::GEOIP_ACTION_REDIRECT:
@@ -163,31 +163,5 @@ class GetAction extends Action
 
         $resultLayout->setHeader("x-esi", "1");
         return $resultLayout;
-    }
-
-    /**
-     * Gets the dialog message in the locale of the target store.
-     * @param StoreInterface $emulatedStore
-     * @return string
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     */
-    private function getMessageInStoreLocale(StoreInterface $emulatedStore)
-    {
-        $currentStore = $this->storeManager->getStore();
-
-        // emulate locale and store of new store to fetch message translation
-        $this->localeResolver->emulate($emulatedStore->getId());
-        $this->storeManager->setCurrentStore($emulatedStore->getId());
-
-        $message = __(
-            'You are in the wrong store. Click OK to visit the %1 store.',
-            [$emulatedStore->getName()]
-        )->__toString();
-
-        // revert locale and store emulation
-        $this->localeResolver->revert();
-        $this->storeManager->setCurrentStore($currentStore->getId());
-
-        return $message;
     }
 }

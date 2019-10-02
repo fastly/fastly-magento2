@@ -26,7 +26,7 @@ use Magento\Framework\Cache\InvalidateLogger;
 use Fastly\Cdn\Helper\Data;
 use Fastly\Cdn\Helper\Vcl;
 use Psr\Log\LoggerInterface;
-use Magento\Backend\Model\Auth\Session\Proxy;
+use Magento\Backend\Model\Auth\Session;
 use Magento\Framework\App\State;
 
 /**
@@ -72,15 +72,13 @@ class Api
      */
     private $vcl;
     /**
-     * @var Proxy
+     * @var Session
      */
     private $authSession;
     /**
      * @var State
      */
     private $state;
-
-    private $resultJson;
 
     /**
      * Api constructor.
@@ -91,7 +89,7 @@ class Api
      * @param Data $helper
      * @param LoggerInterface $log
      * @param Vcl $vcl
-     * @param Proxy $authSession
+     * @param Session $authSession
      * @param State $state
      */
     public function __construct(
@@ -101,7 +99,7 @@ class Api
         Data $helper,
         LoggerInterface $log,
         Vcl $vcl,
-        Proxy $authSession,
+        Session $authSession,
         State $state
     ) {
         $this->config = $config;

@@ -57,7 +57,9 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $readFactoryMock = $this->getMock('Magento\Framework\Filesystem\Directory\ReadFactory', [], [], '', false);
         $this->_coreConfigMock = $this->getMock('Magento\Framework\App\Config\ScopeConfigInterface');
         $this->_cacheState = $this->getMockForAbstractClass('Magento\Framework\App\Cache\StateInterface');
-
+        $serializer = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
+            \Magento\Framework\Serialize\Serializer\Json::class
+        );
         $modulesDirectoryMock = $this->getMock(
             'Magento\Framework\Filesystem\Directory\Write',
             [],
@@ -108,7 +110,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
                         \Magento\PageCache\Model\Config::XML_VARNISH_PAGECACHE_DESIGN_THEME_REGEX,
                         \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                         null,
-                        serialize([['regexp' => '(?i)pattern', 'value' => 'value_for_pattern']])
+                        $serializer->serialize([['regexp' => '(?i)pattern', 'value' => 'value_for_pattern']])
                     ],
                 ]
             )

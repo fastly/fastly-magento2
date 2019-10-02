@@ -24,7 +24,8 @@ use Fastly\Cdn\Model\Config;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Locale\ResolverInterface as LocaleResolverInterface;
+use Magento\Framework\Url\EncoderInterface;
+use Magento\Framework\Url\DecoderInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Result\Layout;
 use Magento\Framework\View\Result\LayoutFactory;
@@ -70,6 +71,14 @@ class GetAction extends Action
      * @var StoreMessage
      */
     private $storeMessage;
+    /**
+     * @var EncoderInterface
+     */
+    private $urlEncoder;
+    /**
+     * @var DecoderInterface
+     */
+    private $urlDecoder;
 
     /**
      * GetAction constructor.
@@ -80,6 +89,8 @@ class GetAction extends Action
      * @param LayoutFactory $resultLayoutFactory
      * @param LoggerInterface $logger
      * @param StoreMessage $storeMessage
+     * @param EncoderInterface $urlEncoder
+     * @param DecoderInterface $urlDecoder
      */
     public function __construct(
         Context $context,
@@ -88,7 +99,9 @@ class GetAction extends Action
         StoreManagerInterface $storeManager,
         LayoutFactory $resultLayoutFactory,
         LoggerInterface $logger,
-        StoreMessage $storeMessage
+        StoreMessage $storeMessage,
+        EncoderInterface $urlEncoder,
+        DecoderInterface $urlDecoder
     ) {
         parent::__construct($context);
         $this->config               = $config;
@@ -97,6 +110,8 @@ class GetAction extends Action
         $this->resultLayoutFactory  = $resultLayoutFactory;
         $this->logger               = $logger;
         $this->storeMessage         = $storeMessage;
+        $this->urlEncoder           = $urlEncoder;
+        $this->urlDecoder           = $urlDecoder;
 
         $this->url  = $context->getUrl();
     }
@@ -175,12 +190,12 @@ class GetAction extends Action
      */
     private function getTargetUrl($targetUrl, $targetStoreCode, $currentStoreCode): string
     {
-        $decodedTargetUrl = base64_decode($targetUrl);
+        $decodedTargetUrl = $this->urlDecoder->decode($targetUrl);
         $search = '/' . $currentStoreCode . '/';
         $replace = '/' . $targetStoreCode . '/';
 
         if (strpos($decodedTargetUrl, $search)) {
-            $targetUrl = base64_encode(str_replace($search, $replace, $decodedTargetUrl));
+            $targetUrl = $this->urlEncoder->encode(str_replace($search, $replace, $decodedTargetUrl));
             return explode('%', $targetUrl)[0];
         }
         return $targetUrl;

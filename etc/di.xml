@@ -48,4 +48,9 @@
     <type name="Magento\Framework\View\Asset\Minification">
         <plugin name="fastly_exclude" type="Fastly\Cdn\Plugin\ExcludeFilesFromMinification" />
     </type>
+    <type name="Fastly\Cdn\Model\Api">
+        <arguments>
+                <argument name="authSession" xsi:type="object">Magento\Backend\Model\Auth\Session\Proxy</argument>
+        </arguments>
+    </type>
 </config>

@@ -24,6 +24,7 @@ use Magento\Framework\App\Cache\Manager;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\ProductMetadataInterface;
+use Magento\Framework\Serialize\SerializerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -54,18 +55,24 @@ class JsonToSerialize extends Command
      * @var Manager
      */
     private $cacheManager;
+    /**
+     * @var SerializerInterface
+     */
+    private $serializer;
 
     /**
      * JsonToSerialize constructor.
      * @param ScopeConfigInterface $scopeConfig
      * @param WriterInterface $configWriter
      * @param ProductMetadataInterface $productMetadata
+     * @param SerializerInterface $serializer
      * @param Manager $cacheManager
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         WriterInterface $configWriter,
         ProductMetadataInterface $productMetadata,
+        SerializerInterface $serializer,
         Manager $cacheManager
     ) {
         parent::__construct();
@@ -74,6 +81,7 @@ class JsonToSerialize extends Command
         $this->configWriter = $configWriter;
         $this->productMetadata = $productMetadata;
         $this->cacheManager = $cacheManager;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -116,7 +124,7 @@ class JsonToSerialize extends Command
             }
 
             $oldData = (is_array($oldData)) ? $oldData : [];
-            $newData = serialize($oldData);
+            $newData = $this->serializer->serialize($oldData);
 
             if (false === $newData) {
                 throw new \InvalidArgumentException('Unable to serialize data.');

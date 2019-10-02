@@ -24,7 +24,8 @@ use Fastly\Cdn\Model\Config;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Locale\ResolverInterface as LocaleResolverInterface;
+use Magento\Framework\Url\EncoderInterface;
+use Magento\Framework\Url\DecoderInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Result\Layout;
 use Magento\Framework\View\Result\LayoutFactory;
@@ -70,6 +71,14 @@ class GetAction extends Action
      * @var StoreMessage
      */
     private $storeMessage;
+    /**
+     * @var EncoderInterface
+     */
+    private $urlEncoder;
+    /**
+     * @var DecoderInterface
+     */
+    private $urlDecoder;
 
     /**
      * GetAction constructor.
@@ -80,6 +89,8 @@ class GetAction extends Action
      * @param LayoutFactory $resultLayoutFactory
      * @param LoggerInterface $logger
      * @param StoreMessage $storeMessage
+     * @param EncoderInterface $urlEncoder
+     * @param DecoderInterface $urlDecoder
      */
     public function __construct(
         Context $context,
@@ -88,7 +99,9 @@ class GetAction extends Action
         StoreManagerInterface $storeManager,
         LayoutFactory $resultLayoutFactory,
         LoggerInterface $logger,
-        StoreMessage $storeMessage
+        StoreMessage $storeMessage,
+        EncoderInterface $urlEncoder,
+        DecoderInterface $urlDecoder
     ) {
         parent::__construct($context);
         $this->config               = $config;
@@ -97,6 +110,8 @@ class GetAction extends Action
         $this->resultLayoutFactory  = $resultLayoutFactory;
         $this->logger               = $logger;
         $this->storeMessage         = $storeMessage;
+        $this->urlEncoder           = $urlEncoder;
+        $this->urlDecoder           = $urlDecoder;
 
         $this->url  = $context->getUrl();
     }
@@ -125,15 +140,17 @@ class GetAction extends Action
                 $targetStore = $this->storeRepository->getActiveStoreById($storeId);
                 $currentStore = $this->storeManager->getStore();
                 // only generate a redirect URL if current and new store are different
-                if ($currentStore->getId() != $targetStore->getId()) {
+                if ($currentStore->getId() !== $targetStore->getId()) {
                     $this->url->setScope($targetStore->getId());
+                    $targetStoreCode = $targetStore->getCode();
+                    $currentStoreCode = $currentStore->getCode();
 
                     $queryParams = [
-                        '___store'      => $targetStore->getCode(),
-                        '___from_store' => $currentStore->getCode()
+                        '___store'      => $targetStoreCode,
+                        '___from_store' => $currentStoreCode
                     ];
                     if ($targetUrl) {
-                        $queryParams['uenc'] = $targetUrl;
+                        $queryParams['uenc'] = $this->getTargetUrl($targetUrl, $targetStoreCode, $currentStoreCode);
                     }
                     $this->url->addQueryParams($queryParams);
                     $redirectUrl = $this->url->getUrl('stores/store/switch');
@@ -163,5 +180,25 @@ class GetAction extends Action
 
         $resultLayout->setHeader("x-esi", "1");
         return $resultLayout;
+    }
+
+    /**
+     * @param $targetUrl
+     * @param $targetStoreCode
+     * @param $currentStoreCode
+     * @return string
+     */
+    private function getTargetUrl($targetUrl, $targetStoreCode, $currentStoreCode): string
+    {
+        $decodedTargetUrl = $this->urlDecoder->decode($targetUrl);
+        $search = '/' . $currentStoreCode . '/';
+        $replace = '/' . $targetStoreCode . '/';
+
+        if (strpos($decodedTargetUrl, $search) !== false) {
+            $searchPattern = '/\/' . $currentStoreCode . '\//';
+            $targetUrl = $this->urlEncoder->encode(preg_replace($searchPattern, $replace, $decodedTargetUrl, 1));
+            return explode('%', $targetUrl)[0];
+        }
+        return $targetUrl;
     }
 }

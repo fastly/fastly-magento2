@@ -46,7 +46,9 @@ class GetAction extends AbstractBlock
      * @var Url
      */
     private $url;
-
+    /**
+     * @var EncoderInterface
+     */
     private $urlEncoder;
 
     /**

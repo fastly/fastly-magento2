@@ -140,7 +140,7 @@ class GetAction extends Action
                 $targetStore = $this->storeRepository->getActiveStoreById($storeId);
                 $currentStore = $this->storeManager->getStore();
                 // only generate a redirect URL if current and new store are different
-                if ($currentStore->getId() != $targetStore->getId()) {
+                if ($currentStore->getId() !== $targetStore->getId()) {
                     $this->url->setScope($targetStore->getId());
                     $targetStoreCode = $targetStore->getCode();
                     $currentStoreCode = $currentStore->getCode();
@@ -194,8 +194,9 @@ class GetAction extends Action
         $search = '/' . $currentStoreCode . '/';
         $replace = '/' . $targetStoreCode . '/';
 
-        if (strpos($decodedTargetUrl, $search)) {
-            $targetUrl = $this->urlEncoder->encode(str_replace($search, $replace, $decodedTargetUrl));
+        if (strpos($decodedTargetUrl, $search) !== false) {
+            $searchPattern = '/\/' . $currentStoreCode . '\//';
+            $targetUrl = $this->urlEncoder->encode(preg_replace($searchPattern, $replace, $decodedTargetUrl, 1));
             return explode('%', $targetUrl)[0];
         }
         return $targetUrl;

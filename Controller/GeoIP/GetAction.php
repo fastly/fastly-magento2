@@ -127,13 +127,15 @@ class GetAction extends Action
                 // only generate a redirect URL if current and new store are different
                 if ($currentStore->getId() != $targetStore->getId()) {
                     $this->url->setScope($targetStore->getId());
+                    $targetStoreCode = $targetStore->getCode();
+                    $currentStoreCode = $currentStore->getCode();
 
                     $queryParams = [
-                        '___store'      => $targetStore->getCode(),
-                        '___from_store' => $currentStore->getCode()
+                        '___store'      => $targetStoreCode,
+                        '___from_store' => $currentStoreCode
                     ];
                     if ($targetUrl) {
-                        $queryParams['uenc'] = $targetUrl;
+                        $queryParams['uenc'] = $this->getTargetUrl($targetUrl, $targetStoreCode, $currentStoreCode);
                     }
                     $this->url->addQueryParams($queryParams);
                     $redirectUrl = $this->url->getUrl('stores/store/switch');
@@ -163,5 +165,24 @@ class GetAction extends Action
 
         $resultLayout->setHeader("x-esi", "1");
         return $resultLayout;
+    }
+
+    /**
+     * @param $targetUrl
+     * @param $targetStoreCode
+     * @param $currentStoreCode
+     * @return string
+     */
+    private function getTargetUrl($targetUrl, $targetStoreCode, $currentStoreCode): string
+    {
+        $decodedTargetUrl = base64_decode($targetUrl);
+        $search = '/' . $currentStoreCode . '/';
+        $replace = '/' . $targetStoreCode . '/';
+
+        if (strpos($decodedTargetUrl, $search)) {
+            $targetUrl = base64_encode(str_replace($search, $replace, $decodedTargetUrl));
+            return explode('%', $targetUrl)[0];
+        }
+        return $targetUrl;
     }
 }

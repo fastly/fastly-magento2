@@ -33,7 +33,7 @@
                "components": {
                    "redirect": {
                        "component": "Fastly_Cdn/js/redirect",
-                       "redirect_url": "<?php /* @noEscape */ echo $block->getRedirectUrl() ?>"
+                       "redirect_url": "<?= /* @noEscape */ $block->getRedirectUrl() ?>"
                    }
                 }
            }

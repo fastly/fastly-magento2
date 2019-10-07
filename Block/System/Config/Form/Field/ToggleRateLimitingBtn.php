@@ -4,6 +4,7 @@ namespace Fastly\Cdn\Block\System\Config\Form\Field;
 
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
+use Magento\Backend\Block\Widget\Button;
 
 class ToggleRateLimitingBtn extends Field
 {
@@ -46,7 +47,7 @@ class ToggleRateLimitingBtn extends Field
     public function getButtonHtml()
     {
         $button = $this->getLayout()->createBlock(
-            'Magento\Backend\Block\Widget\Button'
+            Button::class
         )->setData(
             [
                 'id' => 'fastly_toggle_rate_limiting_btn',

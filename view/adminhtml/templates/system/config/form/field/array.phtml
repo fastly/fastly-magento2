@@ -47,39 +47,39 @@ $arrayRows = json_encode($arrayRows, JSON_FORCE_OBJECT);
 $isAddAfter = (int)$block->isAddAfter();
 ?>
 
-<div class="design_theme_ua_regexp" id="grid<?php /* @noEscape */ echo $_htmlId; ?>">
+<div class="design_theme_ua_regexp" id="grid<?= /* @noEscape */ $_htmlId ?>">
     <div class="admin__control-table-wrapper">
-        <table class="admin__control-table" id="<?php /* @noEscape */ echo $block->getElement()->getId(); ?>">
+        <table class="admin__control-table" id="<?= /* @noEscape */ $block->getElement()->getId() ?>">
             <thead>
             <tr>
                 <?php foreach ($block->getColumns() as $columnName => $column) : ?>
-                    <th><?php /* @noEscape */ echo $column['label']; ?></th>
+                    <th><?= /* @noEscape */ $column['label'] ?></th>
                 <?php endforeach;?>
-                <th class="col-actions" colspan="<?php /* @noEscape */ echo $_colspan; ?>">Action</th>
+                <th class="col-actions" colspan="<?= /* @noEscape */ $_colspan ?>">Action</th>
             </tr>
             </thead>
             <tfoot>
             <tr>
-                <td colspan="<?php /* @noEscape */ echo count($block->getColumns())+$_colspan; ?>"
+                <td colspan="<?= /* @noEscape */ count($block->getColumns())+$_colspan ?>"
                     class="col-actions-add">
-                    <button id="addToEndBtn<?php /* @noEscape */ echo $_htmlId; ?>"
+                    <button id="addToEndBtn<?= /* @noEscape */ $_htmlId ?>"
                             class="action-add"
-                            title="<?php /* @noEscape */ echo __('Add'); ?>"
+                            title="<?= /* @noEscape */ __('Add') ?>"
                             type="button">
                         <span>
-                            <?php /* @noEscape */ echo $block->getAddButtonLabel(); ?>
+                            <?= /* @noEscape */ $block->getAddButtonLabel() ?>
                             <?php if (empty($block->getAddButtonLabel())) : ?>
-                                <?php /* @noEscape */ echo __('Add'); ?>
+                                <?= /* @noEscape */ __('Add') ?>
                             <?php endif; ?>
                         </span>
                     </button>
                 </td>
             </tr>
             </tfoot>
-            <tbody id="addRow<?php /* @noEscape */ echo $_htmlId; ?>"></tbody>
+            <tbody id="addRow<?= /* @noEscape */ $_htmlId ?>"></tbody>
         </table>
     </div>
-    <input type="hidden" name="<?php /* @noEscape */ echo $block->getElement()->getName(); ?>[__empty]" value="" />
+    <input type="hidden" name="<?= /* @noEscape */ $block->getElement()->getName() ?>[__empty]" value="" />
     <script type="text/x-magento-init">
        {
            "*": {
@@ -87,12 +87,12 @@ $isAddAfter = (int)$block->isAddAfter();
                    "components": {
                        "array": {
                            "component": "Fastly_Cdn/js/system/config/form/field/array",
-                           "htmlId": "<?php /* @noEscape */ echo $_htmlId; ?>",
-                           "disabled": "<?php /* @noEscape */ echo $disabled ?>",
-                           "arrayRows": <?php /* @noEscape */ echo $arrayRows ?>,
-                           "templateValues": <?php /* @noEscape */ echo $templateValues; ?>,
-                           "isAddAfter": "<?php /* @noEscape */ echo $isAddAfter; ?>",
-                           "html": <?php /* @noEscape */ echo $html; ?>
+                           "htmlId": "<?= /* @noEscape */ $_htmlId ?>",
+                           "disabled": "<?= /* @noEscape */ $disabled ?>",
+                           "arrayRows": <?= /* @noEscape */ $arrayRows ?>,
+                           "templateValues": <?= /* @noEscape */ $templateValues ?>,
+                           "isAddAfter": "<?= /* @noEscape */ $isAddAfter ?>",
+                           "html": <?= /* @noEscape */ $html ?>
                        }
                    }
                }

@@ -22,6 +22,7 @@ namespace Fastly\Cdn\Block\System\Config\Form\Field;
 
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
+use Magento\Backend\Block\Widget\Button;
 
 /**
  * Class ErrorPageBtn
@@ -79,7 +80,7 @@ class ErrorPageBtn extends Field
     public function getButtonHtml()
     {
         $button = $this->getLayout()->createBlock(
-            'Magento\Backend\Block\Widget\Button'
+            Button::class
         )->setData([
             'id'    => 'fastly_error_page_button',
             'label' => __('Set HTML')

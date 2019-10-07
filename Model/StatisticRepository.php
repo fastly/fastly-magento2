@@ -74,8 +74,8 @@ class StatisticRepository
         $collection->addFieldToFilter('action', $action);
         $collection->setOrder('created_at', 'DESC');
 
-        $collection->getSelect()->limit(1); // @codingStandardsIgnoreLine - forced limit to 1
-        return $collection->getFirstItem(); // @codingStandardsIgnoreLine - forced limit 1 on collection on line before
+        $collection->getSelect()->limit(1);
+        return $collection->getFirstItem();
     }
 
     public function getValidatedNonValidated()

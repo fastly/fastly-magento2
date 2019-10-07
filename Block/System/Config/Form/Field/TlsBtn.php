@@ -22,6 +22,7 @@ namespace Fastly\Cdn\Block\System\Config\Form\Field;
 
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
+use Magento\Backend\Block\Widget\Button;
 
 /**
  * Class TlsBtn
@@ -79,7 +80,7 @@ class TlsBtn extends Field
     public function getButtonHtml()
     {
         $button = $this->getLayout()->createBlock(
-            'Magento\Backend\Block\Widget\Button'
+            Button::class
         )->setData([
             'id'    => 'fastly_force_tls_button',
             'label' => __('Enable/Disable')

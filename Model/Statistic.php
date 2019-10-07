@@ -37,6 +37,7 @@ use Magento\Framework\Registry;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\Request\Http;
+use Fastly\Cdn\Model\ResourceModel\Statistic as StatResource;
 
 /**
  * Class Statistic
@@ -45,27 +46,14 @@ use Magento\Framework\App\Request\Http;
  */
 class Statistic extends AbstractModel implements IdentityInterface
 {
-    /**
-     * Fastly INSTALLED Flag
-     */
     const FASTLY_INSTALLED_FLAG = 'installed';
-    /**
-     * Fastly CONFIGURED Flag
-     */
     const FASTLY_CONFIGURED_FLAG = 'configured';
-    /**
-     * Fastly NOT_CONFIGURED Flag
-     */
     const FASTLY_NOT_CONFIGURED_FLAG = 'not_configured';
     const FASTLY_VALIDATED_FLAG = 'validated';
     const FASTLY_NON_VALIDATED_FLAG = 'non_validated';
-
     const FASTLY_CONFIGURATION_FLAG = 'configuration';
     const FASTLY_VALIDATION_FLAG = 'validation';
 
-    /**
-     * Fastly upgrade flag
-     */
     const FASTLY_UPGRADE_FLAG = 'upgrade';
     const FASTLY_UPGRADED_FLAG = 'upgraded';
 
@@ -196,7 +184,7 @@ class Statistic extends AbstractModel implements IdentityInterface
 
     protected function _construct() // @codingStandardsIgnoreLine - required by parent class
     {
-        $this->_init('Fastly\Cdn\Model\ResourceModel\Statistic');
+        $this->_init(StatResource::class);
     }
 
     public function getIdentities()

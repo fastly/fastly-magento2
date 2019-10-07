@@ -71,7 +71,7 @@ class ExportVarnishConfigTest extends \PHPUnit_Framework_TestCase
         $this->fileFactoryMock = $this->getMockBuilder(
             'Magento\Framework\App\Response\Http\FileFactory'
         )->disableOriginalConstructor()->getMock();
-        $this->configMock = $this->getMockBuilder   (
+        $this->configMock = $this->getMockBuilder(
             'Fastly\Cdn\Model\Config'
         )->disableOriginalConstructor()->getMock();
         $contextMock = $this->getMockBuilder(

@@ -4,6 +4,7 @@ namespace Fastly\Cdn\Block\System\Config\Form\Field;
 
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
+use Magento\Backend\Block\Widget\Button;
 
 class AllModulesBtn extends Field
 {
@@ -46,7 +47,7 @@ class AllModulesBtn extends Field
     public function getButtonHtml()
     {
         $button = $this->getLayout()->createBlock(
-            'Magento\Backend\Block\Widget\Button'
+            Button::class
         )->setData(
             [
                 'id' => 'modly_all_modules_btn',

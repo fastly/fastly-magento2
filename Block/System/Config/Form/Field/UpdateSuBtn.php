@@ -22,6 +22,7 @@ namespace Fastly\Cdn\Block\System\Config\Form\Field;
 
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
+use Magento\Backend\Block\Widget\Button;
 
 /**
  * Class UpdateSuBtn
@@ -78,7 +79,7 @@ class UpdateSuBtn extends Field
     public function getButtonHtml()
     {
         $button = $this->getLayout()->createBlock(
-            'Magento\Backend\Block\Widget\Button'
+            Button::class
         )->setData([
             'id'    => 'update_su_button',
             'label' => __('Update IPs')

@@ -24,6 +24,7 @@ use Fastly\Cdn\Model\Config;
 use Magento\Backend\Block\Template\Context;
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
+use Magento\Backend\Block\Widget\Button;
 
 /**
  * Class IoConfigOptionsBtn
@@ -81,7 +82,7 @@ class IoConfigOptionsBtn extends Field
     public function getButtonHtml()
     {
         $button = $this->getLayout()->createBlock(
-            'Magento\Backend\Block\Widget\Button'
+            Button::class
         )->setData([
             'id'    => 'fastly_io_default_config',
             'label' => __('Configure')

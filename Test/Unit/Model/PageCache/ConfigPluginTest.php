@@ -72,12 +72,36 @@ class ConfigPluginTest extends \PHPUnit_Framework_TestCase
         $fastlyConfigMock = $this->getMock('Fastly\Cdn\Model\Config', [], [], '', false);
 
         return [
-            'Config: Fastly, Cache Type: Fastly, Expected: Fastly' => [$fastlyConfigMock, Config::FASTLY, Config::FASTLY],
-            'Config: Fastly, Cache Type: Varnish, Expected: Varnish' => [$fastlyConfigMock, Config::VARNISH, Config::VARNISH],
-            'Config: Fastly, Cache Type: Builtin, Expected: Builtin' => [$fastlyConfigMock, Config::BUILT_IN, Config::BUILT_IN],
-            'Config: PageCache, Cache Type: Fastly, Expected: Varnish' => [$pageCacheConfigMock, Config::FASTLY, Config::VARNISH],
-            'Config: PageCache, Cache Type: Varnish, Expected: Varnish' => [$pageCacheConfigMock, Config::VARNISH, Config::VARNISH],
-            'Config: PageCache, Cache Type: Builtin, Expected: Builtin' => [$pageCacheConfigMock, Config::BUILT_IN, Config::BUILT_IN],
+            'Config: Fastly, Cache Type: Fastly, Expected: Fastly' => [
+                $fastlyConfigMock,
+                Config::FASTLY,
+                Config::FASTLY
+            ],
+            'Config: Fastly, Cache Type: Varnish, Expected: Varnish' => [
+                $fastlyConfigMock,
+                Config::VARNISH,
+                Config::VARNISH
+            ],
+            'Config: Fastly, Cache Type: Builtin, Expected: Builtin' => [
+                $fastlyConfigMock,
+                Config::BUILT_IN,
+                Config::BUILT_IN
+            ],
+            'Config: PageCache, Cache Type: Fastly, Expected: Varnish' => [
+                $pageCacheConfigMock,
+                Config::FASTLY,
+                Config::VARNISH
+            ],
+            'Config: PageCache, Cache Type: Varnish, Expected: Varnish' => [
+                $pageCacheConfigMock,
+                Config::VARNISH,
+                Config::VARNISH
+            ],
+            'Config: PageCache, Cache Type: Builtin, Expected: Builtin' => [
+                $pageCacheConfigMock,
+                Config::BUILT_IN,
+                Config::BUILT_IN
+            ],
         ];
     }
 }

@@ -33,8 +33,8 @@
                "components": {
                    "dialog": {
                        "component": "Fastly_Cdn/js/dialog",
-                       "redirect_url": "<?php /* @noEscape */ echo $block->getRedirectUrl() ?>",
-                       "message": "<?php /* @noEscape */ echo $block->escapeJsQuote($block->getMessage())?>"
+                       "redirect_url": "<?= /* @noEscape */ $block->getRedirectUrl() ?>",
+                       "message": "<?= /* @noEscape */ $block->escapeJsQuote($block->getMessage())?>"
                    }
                 }
            }

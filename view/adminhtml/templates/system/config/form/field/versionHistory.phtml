@@ -6,44 +6,8 @@
         style="margin-bottom: 10px;"
         class="secondary"
         id="list-versions-container-button">
-    <?php /* @noEscape */ echo __('List all versions') ?>
+    <?= /* @noEscape */ __('List all versions') ?>
 </button>
-<!--
-<div class="design_theme_ua_regexp" id="grid<?php /* @noEscape */ echo $_htmlId; ?>">
-    <div class="admin__control-table-wrapper">
-        <table class="admin__control-table" id="<?php /* @noEscape */ echo $block->getElement()->getId(); ?>">
-            <thead>
-            <tr>
-                <?php foreach ($block->getColumns() as $columnName => $column) : ?>
-                    <th><?php /* @noEscape */ echo $column['label']; ?></th>
-                <?php endforeach;?>
-                <th class="col-actions" colspan="<?php /* @noEscape */ echo $_colspan; ?>">
-                    <?php /* @noEscape */ echo __('Comment') ?>
-                </th>
-                <th class="col-actions" colspan="<?php /* @noEscape */ echo $_colspan; ?>">
-                    <?php /* @noEscape */ echo __('Last Edited') ?>
-                </th>
-                <th class="col-actions" colspan="<?php /* @noEscape */ echo $_colspan; ?>">
-                    <?php /* @noEscape */ echo __('Actions') ?>
-                </th>
-            </tr>
-            </thead>
-            <tbody id="fastly-versions-list"></tbody>
-        </table>
-    </div>
-    <p class="loading-versions list-loading">
-        <img class="processing"
-             alt="Collecting"
-             style="margin:0 5px;"
-             src="<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/fastly16.gif') ?>" />
-        <?php /* @noEscape */ echo __('Loading versions...'); ?>
-    </p>
-    <p class="no-versions" style="display: none;">
-        <?php /* @noEscape */ echo __('There are no versions configured yet.'); ?>
-    </p>
-</div>
--->
-
 
 <div class="message message-error fastly-button-messages"
      id="fastly-error-versions-button-msg"

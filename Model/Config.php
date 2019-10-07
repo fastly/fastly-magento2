@@ -20,7 +20,13 @@
  */
 namespace Fastly\Cdn\Model;
 
+use Magento\Framework\App\Cache\StateInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Filesystem\Directory\ReadFactory;
 use Magento\Framework\Module\Dir;
+use Magento\Framework\Serialize\Serializer\Json;
+use Magento\PageCache\Model\Varnish\VclGeneratorFactory;
+use Magento\Framework\Serialize\SerializerInterface;
 
 /**
  * Model is responsible for replacing default vcl template
@@ -37,349 +43,348 @@ use Magento\Framework\Module\Dir;
 class Config extends \Magento\PageCache\Model\Config
 {
     /**
-     * Cache types
+     * @description Cache types
      */
     const FASTLY = 'fastly';
 
     /**
-     * Magento module prefix used for naming vcl snippets, condition and request
+     * @description Magento module prefix used for naming vcl snippets, condition and request
      */
     const FASTLY_MAGENTO_MODULE = 'magentomodule';
 
     /**
-     * Edge module prefix used for naming edge module snippets
+     * @description Edge module prefix used for naming edge module snippets
      */
     const FASTLY_MODLY_MODULE = 'edgemodule';
 
     /**
-     * File name used in the export functionality
+     * @description File name used in the export functionality
      */
     const EXPORT_FILE_NAME = 'fastly_config.json';
 
     /**
-     * Magento Error Page Response Object Name
+     * @description Magento Error Page Response Object Name
      */
     const ERROR_PAGE_RESPONSE_OBJECT = self::FASTLY_MAGENTO_MODULE . '_error_page_response_object';
 
     /**
-     * WAF Page Response Object Name
+     * @description WAF Page Response Object Name
      */
     const WAF_PAGE_RESPONSE_OBJECT = 'WAF_Response';
 
     /**
-     * GeoIP action "dialog"
+     * @description GeoIP action "dialog"
      */
     const GEOIP_ACTION_DIALOG = 'dialog';
 
     /**
-     * GeoIP action "redirect"
+     * @description GeoIP action "redirect"
      */
     const GEOIP_ACTION_REDIRECT = 'redirect';
 
     /**
-     * Blocking snippets directory path
+     * @description Blocking snippets directory path
      */
     const VCL_BLOCKING_PATH = '/vcl_snippets_blocking';
 
     /**
-     * VCL blocking snippet
+     * @description VCL blocking snippet name value
      */
     const VCL_BLOCKING_SNIPPET = 'recv.vcl';
 
     /**
-     * Blocking setting name
+     * @description Blocking setting name value
      */
     const BLOCKING_SETTING_NAME = self::FASTLY_MAGENTO_MODULE . '_blocking_recv';
 
     /**
-     * Rate Limiting snippets directory path
+     * @description Rate Limiting snippets directory path
      */
     const VCL_RATE_LIMITING_PATH = '/vcl_snippets_rate_limiting';
 
     /**
-     * Rate limiting snippet
+     * @description Rate limiting snippet
      */
     const VCL_RATE_LIMITING_SNIPPET = 'recv.vcl';
 
     /**
-     * Rate Limiting setting name
+     * @description Rate Limiting setting name value
      */
     const RATE_LIMITING_SETTING_NAME = self::FASTLY_MAGENTO_MODULE . '_rate_limiting';
 
     /**
-     * WAF snippets directory path
+     * @description WAF snippets directory path
      */
     const VCL_WAF_PATH = '/vcl_snippets_waf';
 
     /**
-     * VCL WAF snippet
+     * @description VCL WAF snippet
      */
     const VCL_WAF_ALLOWLIST_SNIPPET = 'recv.vcl';
 
     /**
-     * WAF setting name
+     * @description WAF setting name value
      */
     const WAF_SETTING_NAME = self::FASTLY_MAGENTO_MODULE . '_waf_recv';
 
     /**
-     * Authentication snippets directory path
+     * @description Authentication snippets directory path
      */
     const VCL_AUTH_SNIPPET_PATH = '/vcl_snippets_basic_auth';
 
     /**
-     * Maintenance snippets directory path
+     * @description Maintenance snippets directory path
      */
     const VCL_MAINT_SNIPPET_PATH = '/vcl_snippets_maintenance';
 
     /**
-     * Authentication dictionary name
+     * @description Authentication dictionary name
      */
     const AUTH_DICTIONARY_NAME = self::FASTLY_MAGENTO_MODULE . '_basic_auth';
 
     /**
-     * Image optimization setting name
+     * @description Image optimization setting name
      */
     const IMAGE_SETTING_NAME = self::FASTLY_MAGENTO_MODULE . '_image_optimization_recv';
 
     /**
-     * Force TLS snippet path
+     * @description Force TLS snippet path
      */
     const FORCE_TLS_PATH = '/vcl_snippets_force_tls';
 
     /**
-     * Force TLS setting name
+     * @description Force TLS setting name value
      */
     const FORCE_TLS_SETTING_NAME = self::FASTLY_MAGENTO_MODULE . '_force_tls_recv';
 
     /**
-     * Configure Dictionary name
+     * @description Configure Dictionary name
      */
     const CONFIG_DICTIONARY_NAME = self::FASTLY_MAGENTO_MODULE . '_config';
 
     /**
-     * Maintenance Allowlist name
+     * @description Maintenance Allowlist name
      */
     const MAINT_ACL_NAME = 'maint_allowlist';
 
     /**
-     * Config Dictionary key
+     * @description Config Dictionary key value
      */
     const CONFIG_DICTIONARY_KEY = 'allow_super_users_during_maint';
 
     /**
-     * Custom snippet path
+     * @description Custom snippet path value
      */
     const CUSTOM_SNIPPET_PATH = 'vcl_snippets_custom/';
 
     /**
-     * Image optimization condition name
+     * @description Image optimization condition name
      */
     const IO_CONDITION_NAME = 'fastly-image-optimizer-condition';
 
     /**
-     * Image optimization header name
+     * @description Image optimization header name
      */
     const IO_HEADER_NAME = 'fastly-image-optimizer-header';
 
     /**
-     * Image optimization snippet path
+     * @description Image optimization snippet path
      */
     const IO_VCL_SNIPPET_PATH = '/vcl_snippets_image_optimizations';
 
     /**
-     * Error page snippet path
+     * @description Error page snippet path
      */
     const VCL_ERROR_SNIPPET_PATH = '/vcl_snippets_error_page';
 
     /**
-     * Error page snippet
+     * @description Error page snippet
      */
     const VCL_ERROR_SNIPPET = 'deliver.vcl';
 
     /**
-     * XML path to Fastly config template path
+     * @description XML path to Fastly config template path
      */
     const FASTLY_CONFIGURATION_PATH = 'system/full_page_cache/fastly/path';
 
     /**
-     * Path to Fastly service ID
+     * @description Path to Fastly service ID
      */
     const FASTLY_API_ENDPOINT = 'https://api.fastly.com/';
 
     /**
-     * XML path to Fastly service ID
+     * @description XML path to Fastly service ID
      */
     const XML_FASTLY_SERVICE_ID = 'system/full_page_cache/fastly/fastly_service_id';
 
     /**
-     * XML path to Fastly API token
+     * @description XML path to Fastly API token
      */
     const XML_FASTLY_API_KEY = 'system/full_page_cache/fastly/fastly_api_key';
 
     /**
-     * XML path to stale ttl path
+     * @description XML path to stale ttl path
      */
     const XML_FASTLY_STALE_TTL = 'system/full_page_cache/fastly/fastly_advanced_configuration/stale_ttl';
 
     /**
-     * config path to basic auth status
+     * @description config path to basic auth status
      */
     const FASTLY_BASIC_AUTH_ENABLE = 'system/full_page_cache/fastly/fastly_basic_auth/enable_basic_auth';
 
     /**
-     * XML path to stale error ttl path
+     * @description XML path to stale error ttl path
      */
     const XML_FASTLY_STALE_ERROR_TTL = 'system/full_page_cache/fastly/fastly_advanced_configuration/stale_error_ttl';
 
     /**
-     * XML path to Fastly admin path timeout
+     * @description XML path to Fastly admin path timeout
      */
     const XML_FASTLY_ADMIN_PATH_TIMEOUT
         = 'system/full_page_cache/fastly/fastly_advanced_configuration/admin_path_timeout';
 
     /**
-     * Max first byte timeout value
+     * @description Max first byte timeout value
      */
     const XML_FASTLY_MAX_FIRST_BYTE_TIMEOUT = 600;
 
     /**
-     * XML path to Fastly ignored url parameters
+     * @description XML path to Fastly ignored url parameters
      */
     const XML_FASTLY_IGNORED_URL_PARAMETERS
         = 'system/full_page_cache/fastly/fastly_advanced_configuration/ignored_url_parameters';
 
     /**
-     * XML path to X-Magento-Tags size value
+     * @description XML path to X-Magento-Tags size value
      */
-
     const XML_FASTLY_X_MAGENTO_TAGS_SIZE
         = 'system/full_page_cache/fastly/fastly_advanced_configuration/x_magento_tags_size';
 
     /**
-     * XML path to purge catalog category
+     * @description XML path to purge catalog category
      */
     const XML_FASTLY_PURGE_CATALOG_CATEGORY
         = 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_catalog_category';
 
     /**
-     * XML path to purge catalog product
+     * @description XML path to purge catalog product
      */
     const XML_FASTLY_PURGE_CATALOG_PRODUCT
         = 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_catalog_product';
 
     /**
-     * XML path to purge CMS page
+     * @description XML path to purge CMS page
      */
     const XML_FASTLY_PURGE_CMS_PAGE = 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_cms_page';
 
     /**
-     * XML path to config preserve_static
+     * @description XML path to config preserve_static
      */
     const XML_FASTLY_PRESERVE_STATIC = 'system/full_page_cache/fastly/fastly_advanced_configuration/preserve_static';
 
     /**
-     * XML path to soft purge
+     * @description XML path to soft purge
      */
     const XML_FASTLY_SOFT_PURGE = 'system/full_page_cache/fastly/fastly_advanced_configuration/soft_purge';
 
     /**
-     * XML path to enable GeoIP
+     * @description XML path to enable GeoIP
      */
     const XML_FASTLY_GEOIP_ENABLED = 'system/full_page_cache/fastly/fastly_advanced_configuration/enable_geoip';
 
     /**
-     * XML path to GeoIP action
+     * @description XML path to GeoIP action
      */
     const XML_FASTLY_GEOIP_ACTION = 'system/full_page_cache/fastly/fastly_advanced_configuration/geoip_action';
 
     /**
-     * XML path to GeoIP redirect mapping
+     * @description XML path to GeoIP redirect mapping
      */
     const XML_FASTLY_GEOIP_COUNTRY_MAPPING
         = 'system/full_page_cache/fastly/fastly_advanced_configuration/geoip_country_mapping';
 
     /**
-     * XML path to Rate Limiting paths
+     * @description XML path to Rate Limiting paths
      */
     const XML_FASTLY_RATE_LIMITING_PATHS
         = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/rate_limiting_paths';
 
     /**
-     * XML path to Rate Limiting limit
+     * @description XML path to Rate Limiting limit
      */
     const XML_FASTLY_RATE_LIMITING_LIMIT
         = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/rate_limiting_limit';
 
     /**
-     * XML path to Rate Limiting TTL
+     * @description XML path to Rate Limiting TTL
      */
     const XML_FASTLY_RATE_LIMITING_TTL
         = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/rate_limiting_ttl';
 
     /**
-     * XML path to image optimizations flag
+     * @description XML path to image optimizations flag
      */
     const XML_FASTLY_IMAGE_OPTIMIZATIONS
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimizations';
 
     /**
-     * XML path to image optimization force lossy flag
+     * @description XML path to image optimization force lossy flag
      */
     const XML_FASTLY_FORCE_LOSSY
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimization_force_lossy';
 
     /**
-     * XML path to image optimization bg color flag
+     * @description XML path to image optimization bg color flag
      */
     const XML_FASTLY_IMAGE_OPTIMIZATION_BG_COLOR
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimization_bg_color';
 
     /**
-     * XML path to image optimization image quality value
+     * @description XML path to image optimization image quality value
      */
     const XML_FASTLY_IMAGE_OPTIMIZATION_IMAGE_QUALITY
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimization_image_quality';
 
     /**
-     * XML path to image optimization canvas flag
+     * @description XML path to image optimization canvas flag
      */
     const XML_FASTLY_IMAGE_OPTIMIZATION_CANVAS
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimization_canvas';
 
     /**
-     * XML path to image optimizations pixel ratio flag
+     * @description XML path to image optimizations pixel ratio flag
      */
     const XML_FASTLY_IMAGE_OPTIMIZATIONS_PIXEL_RATIO
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimizations_pixel_ratio';
 
     /**
-     * XML path to image optimizations pixel ratios
+     * @description XML path to image optimizations pixel ratios
      */
     const XML_FASTLY_IMAGE_OPTIMIZATIONS_RATIOS
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimizations_ratios';
 
     /**
-     * XML path to Google analytics CID
+     * @description XML path to Google analytics CID
      */
     const XML_FASTLY_GA_CID = 'system/full_page_cache/fastly/fastly_ga_cid';
 
     /**
-     * XML path to Last checked issued Fastly M2 version
+     * @description XML path to Last checked issued Fastly M2 version
      */
     const XML_FASTLY_LAST_CHECKED_ISSUED_VERSION = 'system/full_page_cache/fastly/last_checked_issues_version';
 
     /**
-     * XML path to Fastly module version
+     * @description XML path to Fastly module version
      */
     const XML_FASTLY_MODULE_VERSION = 'system/full_page_cache/fastly/current_version';
 
     /**
-     * XML path to Fastly list of blocked countries
+     * @description XML path to Fastly list of blocked countries
      */
     const XML_FASTLY_BLOCK_BY_COUNTRY = 'system/full_page_cache/fastly/fastly_blocking/block_by_country';
 
     /**
-     * XML path to Fastly list of blocked Acls
+     * @description XML path to Fastly list of blocked Acls
      */
     const XML_FASTLY_BLOCK_BY_ACL = 'system/full_page_cache/fastly/fastly_blocking/block_by_acl';
 
@@ -389,124 +394,152 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_BLOCKING_TYPE = 'system/full_page_cache/fastly/fastly_blocking/blocking_type';
 
     /**
-     * XML path to Fastly list of WAF allowed Acls
+     * @description XML path to Fastly list of WAF allowed Acls
      */
     const XML_FASTLY_WAF_ALLOW_BY_ACL =
         'system/full_page_cache/fastly/fastly_web_application_firewall/waf_allow_by_acl';
 
     /**
-     * XML path to enable Webhooks
+     * @description XML path to enable Webhooks
      */
     const XML_FASTLY_WEBHOOKS_ENABLED = 'system/full_page_cache/fastly/fastly_web_hooks/enable_webhooks';
 
     /**
-     * XML path to Webhook Username
+     * @description XML path to Webhook Username
      */
     const XML_FASTLY_WEBHOOKS_USERNAME = 'system/full_page_cache/fastly/fastly_web_hooks/webhooks_username';
 
     /**
-     * XML path to Incoming webhook URL
+     * @description XML path to Incoming webhook URL
      */
     const XML_FASTLY_INCOMING_WEBHOOK_URL = 'system/full_page_cache/fastly/fastly_web_hooks/incoming_webhook_url';
 
     /**
-     * XML path to enable Publish Key and URL Purge Events
+     * @description XML path to enable Publish Key and URL Purge Events
      */
     const XML_FASTLY_PUBLISH_KEY_URL_PURGE_EVENTS
         = 'system/full_page_cache/fastly/fastly_web_hooks/publish_key_url_purge_events';
 
     /**
-     * XML path to enable Publish Purge All/Clean All Items Events
+     * @description XML path to enable Publish Purge All/Clean All Items Events
      */
     const XML_FASTLY_PUBLISH_PURGE_ALL_EVENTS
         = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_all_items_events';
 
     /**
-     * XML path to enable Publish Purge Events
+     * @description XML path to enable Publish Purge Events
      */
     const XML_FASTLY_PUBLISH_PURGE_EVENTS
         = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_events';
 
     /**
-     * XML path to enable Publish Purge All/Clean backtrace
+     * @description XML path to enable Publish Purge All/Clean backtrace
      */
     const XML_FASTLY_PUBLISH_PURGE_ALL_TRACE
         = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_all_trace';
 
     /**
-     * XML path to enable Publish Purge By Key backtrace
+     * @description XML path to enable Publish Purge By Key backtrace
      */
     const XML_FASTLY_PUBLISH_PURGE_BY_KEY_TRACE
         = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_by_key_trace';
 
     /**
-     * XML path to enable Publish Generic Purge
+     * @description XML path to enable Publish Generic Purge
      */
     const XML_FASTLY_PUBLISH_PURGE_TRACE
         = 'system/full_page_cache/fastly/fastly_web_hooks/publish_purge_trace';
 
     /**
-     * XML path to enable Publish Config change events
+     * @description XML path to enable Publish Config change events
      */
     const XML_FASTLY_PUBLISH_CONFIG_CHANGE_EVENTS
         = 'system/full_page_cache/fastly/fastly_web_hooks/publish_config_change_events';
 
     /**
-     * XML path to enable Publish Config change events
+     * @description XML path to enable Publish Config change events
      */
     const XML_FASTLY_WEBHOOK_MESSAGE_PREFIX
         = 'system/full_page_cache/fastly/fastly_web_hooks/webhook_message_prefix';
 
     /**
-     * XML path to enable Rate Limiting
+     * @description XML path to enable Rate Limiting
      */
     const XML_FASTLY_RATE_LIMITING_ENABLE
         = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/enable_rate_limiting';
 
     /**
-     * XML path to enable Crawler Protection
+     * @description XML path to enable Crawler Protection
      */
     const XML_FASTLY_CRAWLER_PROTECTION_ENABLE
         = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/crawler_protection/enable_crawler_protection';
 
     /**
-     * XML path to Crawler Protection Rate Limiting limit
+     * @description XML path to Crawler Protection Rate Limiting limit
      */
     const XML_FASTLY_CRAWLER_RATE_LIMITING_LIMIT
         = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/crawler_protection/crawler_rate_limiting_limit';
 
     /**
-     * XML path to Crawler Protection Rate Limiting TTL
+     * @description XML path to Crawler Protection Rate Limiting TTL
      */
     const XML_FASTLY_CRAWLER_RATE_LIMITING_TTL
         = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/crawler_protection/crawler_rate_limiting_ttl';
 
     /**
-     * XML path to Exempt Good Bots flag
+     * @description XML path to Exempt Good Bots flag
      */
     const XML_FASTLY_EXEMPT_GOOD_BOTS
         = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/crawler_protection/exempt_good_bots';
 
     /**
-     * Request Header for VCL comparison
+     * @description Request Header for VCL comparison
      */
     const REQUEST_HEADER = 'Fastly-Magento-VCL-Uploaded';
 
     /**
-     * Fastly module name
+     * @description Fastly module name value
      */
     const FASTLY_MODULE_NAME = 'Fastly_Cdn';
 
     /**
-     * core_config path for versions that has dismissed warning for outdated vcl
+     * @description core_config path for versions that has dismissed warning for outdated vcl
      */
     const VERSIONS_WITH_DISMISSED_WARNING
         = 'Fastly/Cdn/versions_with_dismissed_vcl_warning';
 
     /**
-     * core_config path for last update VCL to Fastly time
+     * @description core_config path for last update VCL to Fastly time
      */
     const UPDATED_VCL_FLAG = 'Fastly/Cdn/updated_VCL_to_Fastly_flag';
+
+    /**
+     * @var SerializerInterface
+     */
+    private $serializerInterface;
+
+    /**
+     * Config constructor.
+     * @param ReadFactory $readFactory
+     * @param ScopeConfigInterface $scopeConfig
+     * @param StateInterface $cacheState
+     * @param Dir\Reader $reader
+     * @param VclGeneratorFactory $vclGeneratorFactory
+     * @param SerializerInterface $serializerInterface
+     * @param Json|null $serializer
+     */
+    public function __construct(
+        ReadFactory $readFactory,
+        ScopeConfigInterface $scopeConfig,
+        StateInterface $cacheState,
+        Dir\Reader $reader,
+        VclGeneratorFactory $vclGeneratorFactory,
+        SerializerInterface $serializerInterface,
+        Json $serializer = null
+    ) {
+        $this->serializerInterface = $serializerInterface;
+        parent::__construct($readFactory, $scopeConfig, $cacheState, $reader, $vclGeneratorFactory, $serializer);
+    }
 
     /**
      * Check if Fastly is selected for Caching Application
@@ -1016,7 +1049,7 @@ class Config extends \Magento\PageCache\Model\Config
         $extractMapping = json_decode($mapping, true);
         if (!$extractMapping) {
             try {
-                $extractMapping = unserialize($mapping); // @codingStandardsIgnoreLine
+                $extractMapping = $this->serializerInterface->unserialize($mapping);
             } catch (\Exception $e) {
                 $extractMapping = [];
             }
@@ -1203,7 +1236,7 @@ class Config extends \Magento\PageCache\Model\Config
         );
         if ($expressions) {
             try {
-                $expressions = unserialize($expressions); // @codingStandardsIgnoreLine - used for conversion of old Magento format to json_decode
+                $expressions = $this->serializerInterface->unserialize($expressions);
             } catch (\Exception $e) {
                 $expressions = [];
             }

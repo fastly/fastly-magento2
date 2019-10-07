@@ -3,6 +3,8 @@
 namespace Fastly\Cdn\Model\ResourceModel\Manifest;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
+use Fastly\Cdn\Model\ResourceModel\Manifest;
+use Fastly\Cdn\Model\Manifest as ManifestModel;
 
 class Collection extends AbstractCollection
 {
@@ -18,8 +20,8 @@ class Collection extends AbstractCollection
     protected function _construct() // @codingStandardsIgnoreLine - required by parent class
     {
         $this->_init(
-            'Fastly\Cdn\Model\Manifest',
-            'Fastly\Cdn\Model\ResourceModel\Manifest'
+            ManifestModel::class,
+            Manifest::class
         );
     }
 }

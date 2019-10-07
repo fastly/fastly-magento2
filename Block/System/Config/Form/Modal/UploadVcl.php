@@ -21,6 +21,7 @@
 namespace Fastly\Cdn\Block\System\Config\Form\Modal;
 
 use \Magento\Backend\Block\Template;
+use Fastly\Cdn\Block\System\Config\Form\Dialogs;
 
 /**
  * Class UploadVcl
@@ -38,7 +39,7 @@ class UploadVcl extends Template
     {
         parent::_prepareLayout();
 
-        $this->addChild('dialogs', 'Fastly\Cdn\Block\System\Config\Form\Dialogs');
+        $this->addChild('dialogs', Dialogs::class);
     }
 
     /**

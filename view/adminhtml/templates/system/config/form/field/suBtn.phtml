@@ -1,11 +1,11 @@
-<?php echo $block->getButtonHtml() ?>
+<?= $block->getButtonHtml() ?>
 
 <span class="collect-indicator" id="su_state_span">
     <span id="su_state_message_span"><b>Current state:</b>
         <img class="processing"
              alt="Collecting"
              style="margin:0 5px;"
-             src="<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/fastly16.gif') ?>" />
+             src="<?= /* @noEscape */ $block->getViewFileUrl('Fastly_Cdn::images/fastly16.gif') ?>" />
         <span style="display:none;" class="su_state_span state_enabled"
               id="su_state_enabled"> enabled</span>
         <span style="display:none;" class="su_state_span state_disabled"

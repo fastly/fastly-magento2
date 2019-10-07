@@ -21,6 +21,8 @@
 namespace Fastly\Cdn\Model\ResourceModel\Statistic;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
+use Fastly\Cdn\Model\Statistic as StatisticModel;
+use Fastly\Cdn\Model\ResourceModel\Statistic;
 
 /**
  * Class Collection
@@ -41,8 +43,8 @@ class Collection extends AbstractCollection
     protected function _construct() // @codingStandardsIgnoreLine - required by parent class
     {
         $this->_init(
-            'Fastly\Cdn\Model\Statistic',
-            'Fastly\Cdn\Model\ResourceModel\Statistic'
+            StatisticModel::class,
+            Statistic::class
         );
     }
 }

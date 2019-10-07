@@ -17,15 +17,15 @@ $_htmlId = $block->getHtmlId() ? $block->getHtmlId() : '_' . uniqid();
 $_colspan = $block->isAddAfter() ? 2 : 1;
 ?>
 
-<div class="design_theme_ua_regexp" id="grid<?php /* @noEscape */ echo $_htmlId; ?>">
+<div class="design_theme_ua_regexp" id="grid<?= /* @noEscape */ $_htmlId ?>">
     <div class="admin__control-table-wrapper">
-        <table class="admin__control-table" id="<?php /* @noEscape */ echo $block->getElement()->getId(); ?>">
+        <table class="admin__control-table" id="<?= /* @noEscape */ $block->getElement()->getId() ?>">
             <thead>
             <tr>
                 <?php foreach ($block->getColumns() as $columnName => $column) : ?>
-                    <th><?php /* @noEscape */ echo $column['label']; ?></th>
+                    <th><?= /* @noEscape */ $column['label'] ?></th>
                 <?php endforeach;?>
-                <th class="col-actions" colspan="<?php /* @noEscape */ echo $_colspan; ?>">Action</th>
+                <th class="col-actions" colspan="<?= /* @noEscape */ $_colspan ?>">Action</th>
             </tr>
             </thead>
             <tbody id="fastly-snippets-list"></tbody>
@@ -35,11 +35,11 @@ $_colspan = $block->isAddAfter() ? 2 : 1;
         <img class="processing"
              alt="Collecting"
              style="margin:0 5px;"
-             src="<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/fastly16.gif') ?>" />
-        <?php /* @noEscape */ echo __('Loading snippets...'); ?>
+             src="<?= /* @noEscape */ $block->getViewFileUrl('Fastly_Cdn::images/fastly16.gif') ?>" />
+        <?= /* @noEscape */ __('Loading snippets...') ?>
     </p>
     <p class="no-snippets" style="display: none;">
-        <?php /* @noEscape */ echo __('There are no custom snippets yet.'); ?>
+        <?= /* @noEscape */ __('There are no custom snippets yet.') ?>
     </p>
 </div>
 

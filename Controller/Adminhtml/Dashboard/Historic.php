@@ -21,6 +21,7 @@
 namespace Fastly\Cdn\Controller\Adminhtml\Dashboard;
 
 use Magento\Backend\Controller\Adminhtml\Dashboard\AjaxBlock;
+use Fastly\Cdn\Block\Dashboard\Tab\Stats\Historic as HistoricStats;
 
 /**
  * Class Historic
@@ -37,7 +38,7 @@ class Historic extends AjaxBlock
     public function execute()
     {
         $output = $this->layoutFactory->create()
-            ->createBlock('Fastly\Cdn\Block\Dashboard\Tab\Stats\Historic')
+            ->createBlock(HistoricStats::class)
             ->toHtml();
         $resultRaw = $this->resultRawFactory->create();
         return $resultRaw->setContents($output);

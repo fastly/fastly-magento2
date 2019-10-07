@@ -126,7 +126,16 @@ class UpdatePaths extends Action
                     unset($paths[$key]);
                     continue;
                 }
+
+                if (substr($value['path'], -1) === '\\') {
+                    return $result->setData([
+                        'status'    => false,
+                        'msg'       => $value['path'] . ' is not a valid regular expression'
+                    ]);
+                }
+
                 $pregMatch = preg_match('{' . $value['path'] . '}', null);
+
                 if ($pregMatch === false) {
                     return $result->setData([
                         'status'    => false,

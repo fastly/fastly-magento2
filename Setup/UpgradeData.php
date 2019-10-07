@@ -29,8 +29,9 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
-use Fastly\Cdn\Model\Statistic;
 use Magento\Framework\Stdlib\DateTime\DateTime;
+use Magento\Framework\Serialize\SerializerInterface;
+use Fastly\Cdn\Model\Statistic;
 
 /**
  * Class UpgradeData
@@ -68,6 +69,10 @@ class UpgradeData implements UpgradeDataInterface
      * @var ProductMetadataInterface
      */
     private $productMetadata;
+    /**
+     * @var SerializerInterface
+     */
+    private $serializeInterface;
 
     /**
      * UpgradeData constructor.
@@ -78,6 +83,7 @@ class UpgradeData implements UpgradeDataInterface
      * @param Manager $cacheManager
      * @param Data $helper
      * @param ProductMetadataInterface $productMetadata
+     * @param SerializerInterface $serializeInterface
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
@@ -86,7 +92,8 @@ class UpgradeData implements UpgradeDataInterface
         DateTime $date,
         Manager $cacheManager,
         Data $helper,
-        ProductMetadataInterface $productMetadata
+        ProductMetadataInterface $productMetadata,
+        SerializerInterface $serializeInterface
     ) {
         $this->date = $date;
         $this->scopeConfig = $scopeConfig;
@@ -95,6 +102,7 @@ class UpgradeData implements UpgradeDataInterface
         $this->helper = $helper;
         $this->productMetadata = $productMetadata;
         $this->cacheManager = $cacheManager;
+        $this->serializeInterface = $serializeInterface;
     }
 
     /**
@@ -221,7 +229,7 @@ class UpgradeData implements UpgradeDataInterface
     {
         $oldData = $this->scopeConfig->getValue($newConfigPaths['geoip_country_mapping']);
         try {
-            $oldData = unserialize($oldData); // @codingStandardsIgnoreLine - used for conversion of old Magento format to json_decode
+            $oldData = $this->serializeInterface->unserialize($oldData);
         } catch (\Exception $e) {
             $oldData = [];
         }

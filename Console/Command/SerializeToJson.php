@@ -112,7 +112,7 @@ class SerializeToJson extends Command
             $oldData = $this->scopeConfig->getValue($path);
 
             try {
-                $oldData = unserialize($oldData); // @codingStandardsIgnoreLine - used for conversion of old Magento format to json_decode
+                $oldData = $this->productMetadata->unserialize($oldData);
             } catch (\Exception $e) {
                 $oldData = false;
             }

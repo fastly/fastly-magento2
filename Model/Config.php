@@ -20,7 +20,13 @@
  */
 namespace Fastly\Cdn\Model;
 
+use Magento\Framework\App\Cache\StateInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Filesystem\Directory\ReadFactory;
 use Magento\Framework\Module\Dir;
+use Magento\Framework\Serialize\Serializer\Json;
+use Magento\PageCache\Model\Varnish\VclGeneratorFactory;
+use Magento\Framework\Serialize\SerializerInterface;
 
 /**
  * Model is responsible for replacing default vcl template
@@ -507,6 +513,33 @@ class Config extends \Magento\PageCache\Model\Config
      * core_config path for last update VCL to Fastly time
      */
     const UPDATED_VCL_FLAG = 'Fastly/Cdn/updated_VCL_to_Fastly_flag';
+
+    /**
+     * @var SerializerInterface
+     */
+    private $serializerInterface;
+    /**
+     * Config constructor.
+     * @param ReadFactory $readFactory
+     * @param ScopeConfigInterface $scopeConfig
+     * @param StateInterface $cacheState
+     * @param Dir\Reader $reader
+     * @param VclGeneratorFactory $vclGeneratorFactory
+     * @param SerializerInterface $serializerInterface
+     * @param Json|null $serializer
+     */
+    public function __construct(
+        ReadFactory $readFactory,
+        ScopeConfigInterface $scopeConfig,
+        StateInterface $cacheState,
+        Dir\Reader $reader,
+        VclGeneratorFactory $vclGeneratorFactory,
+        SerializerInterface $serializerInterface,
+        Json $serializer = null
+    ) {
+        $this->serializerInterface = $serializerInterface;
+        parent::__construct($readFactory, $scopeConfig, $cacheState, $reader, $vclGeneratorFactory, $serializer);
+    }
 
     /**
      * Check if Fastly is selected for Caching Application
@@ -1016,7 +1049,7 @@ class Config extends \Magento\PageCache\Model\Config
         $extractMapping = json_decode($mapping, true);
         if (!$extractMapping) {
             try {
-                $extractMapping = unserialize($mapping); // @codingStandardsIgnoreLine
+                $extractMapping = $this->serializerInterface->unserialize($mapping);
             } catch (\Exception $e) {
                 $extractMapping = [];
             }
@@ -1203,7 +1236,7 @@ class Config extends \Magento\PageCache\Model\Config
         );
         if ($expressions) {
             try {
-                $expressions = unserialize($expressions); // @codingStandardsIgnoreLine - used for conversion of old Magento format to json_decode
+                $expressions = $this->serializerInterface->unserialize($expressions);
             } catch (\Exception $e) {
                 $expressions = [];
             }

@@ -79,7 +79,7 @@ class Geoipcountry extends ArraySerialized
         );
     }
 
-    protected function _afterLoad()
+    protected function _afterLoad() // @codingStandardsIgnoreLine - required by parent class
     {
         $value = $this->getValue();
 

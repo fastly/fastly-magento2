@@ -21,6 +21,14 @@
 namespace Fastly\Cdn\Model\Config\Backend;
 
 use Magento\Config\Model\Config\Backend\Serialized\ArraySerialized;
+use Magento\Framework\App\Cache\TypeListInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Data\Collection\AbstractDb;
+use Magento\Framework\Model\Context;
+use Magento\Framework\Model\ResourceModel\AbstractResource;
+use Magento\Framework\Registry;
+use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Framework\Serialize\SerializerInterface;
 
 /**
  * Class Geoipcountry
@@ -30,6 +38,46 @@ use Magento\Config\Model\Config\Backend\Serialized\ArraySerialized;
  */
 class Geoipcountry extends ArraySerialized
 {
+    /**
+     * @var SerializerInterface
+     */
+    private $serializerInterface;
+    /**
+     * Geoipcountry constructor.
+     * @param Context $context
+     * @param Registry $registry
+     * @param ScopeConfigInterface $config
+     * @param TypeListInterface $cacheTypeList
+     * @param SerializerInterface $serializerInterface
+     * @param AbstractResource|null $resource
+     * @param AbstractDb|null $resourceCollection
+     * @param array $data
+     * @param Json|null $serializer
+     */
+    public function __construct(
+        Context $context,
+        Registry $registry,
+        ScopeConfigInterface $config,
+        TypeListInterface $cacheTypeList,
+        SerializerInterface $serializerInterface,
+        AbstractResource $resource = null,
+        AbstractDb $resourceCollection = null,
+        array $data = [],
+        Json $serializer = null
+    ) {
+        $this->serializerInterface = $serializerInterface;
+        parent::__construct(
+            $context,
+            $registry,
+            $config,
+            $cacheTypeList,
+            $resource,
+            $resourceCollection,
+            $data,
+            $serializer
+        );
+    }
+
     protected function _afterLoad() // @codingStandardsIgnoreLine - required by parent class
     {
         $value = $this->getValue();
@@ -37,7 +85,7 @@ class Geoipcountry extends ArraySerialized
         $oldData = json_decode($value, true);
         if (!$oldData) {
             try {
-                $oldData = unserialize($value); // @codingStandardsIgnoreLine - fallback to prior magento versions
+                $oldData = $this->serializerInterface->unserialize($value);
             } catch (\Exception $e) {
                 $oldData = false;
             }

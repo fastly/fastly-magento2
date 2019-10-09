@@ -26,7 +26,6 @@ use Magento\Framework\Filesystem\Directory\ReadFactory;
 use Magento\Framework\Module\Dir;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\PageCache\Model\Varnish\VclGeneratorFactory;
-use Magento\Framework\Serialize\SerializerInterface;
 
 /**
  * Model is responsible for replacing default vcl template
@@ -515,9 +514,10 @@ class Config extends \Magento\PageCache\Model\Config
     const UPDATED_VCL_FLAG = 'Fastly/Cdn/updated_VCL_to_Fastly_flag';
 
     /**
-     * @var SerializerInterface
+     * @var Json|null
      */
-    private $serializerInterface;
+    private $serializer;
+
     /**
      * Config constructor.
      * @param ReadFactory $readFactory
@@ -525,7 +525,6 @@ class Config extends \Magento\PageCache\Model\Config
      * @param StateInterface $cacheState
      * @param Dir\Reader $reader
      * @param VclGeneratorFactory $vclGeneratorFactory
-     * @param SerializerInterface $serializerInterface
      * @param Json|null $serializer
      */
     public function __construct(
@@ -534,10 +533,9 @@ class Config extends \Magento\PageCache\Model\Config
         StateInterface $cacheState,
         Dir\Reader $reader,
         VclGeneratorFactory $vclGeneratorFactory,
-        SerializerInterface $serializerInterface,
         Json $serializer = null
     ) {
-        $this->serializerInterface = $serializerInterface;
+        $this->serializer = $serializer;
         parent::__construct($readFactory, $scopeConfig, $cacheState, $reader, $vclGeneratorFactory, $serializer);
     }
 
@@ -1049,7 +1047,7 @@ class Config extends \Magento\PageCache\Model\Config
         $extractMapping = json_decode($mapping, true);
         if (!$extractMapping) {
             try {
-                $extractMapping = $this->serializerInterface->unserialize($mapping);
+                $extractMapping = $this->serializer->unserialize($mapping);
             } catch (\Exception $e) {
                 $extractMapping = [];
             }
@@ -1236,7 +1234,7 @@ class Config extends \Magento\PageCache\Model\Config
         );
         if ($expressions) {
             try {
-                $expressions = $this->serializerInterface->unserialize($expressions);
+                $expressions = $this->serializer->unserialize($expressions);
             } catch (\Exception $e) {
                 $expressions = [];
             }

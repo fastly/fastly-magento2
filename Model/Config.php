@@ -26,7 +26,6 @@ use Magento\Framework\Filesystem\Directory\ReadFactory;
 use Magento\Framework\Module\Dir;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\PageCache\Model\Varnish\VclGeneratorFactory;
-use Magento\Framework\Serialize\SerializerInterface;
 
 /**
  * Model is responsible for replacing default vcl template
@@ -515,9 +514,10 @@ class Config extends \Magento\PageCache\Model\Config
     const UPDATED_VCL_FLAG = 'Fastly/Cdn/updated_VCL_to_Fastly_flag';
 
     /**
-     * @var SerializerInterface
+     * @var Json|null
      */
     private $serializer;
+
     /**
      * Config constructor.
      * @param ReadFactory $readFactory

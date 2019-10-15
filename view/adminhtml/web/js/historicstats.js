@@ -317,7 +317,7 @@ define([
         {
             let data = new google.visualization.DataTable();
             data.addColumn('datetime', 'Date');
-            data.addColumn('number', 'Bandwith');
+            data.addColumn('number', 'Bandwidth');
             data.addRows(bandwith);
 
             // custom format data values

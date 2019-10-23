@@ -30,6 +30,7 @@ use Fastly\Cdn\Helper\Vcl;
 use Magento\Framework\App\Config\Storage\WriterInterface as ConfigWriter;
 use Magento\Framework\App\Cache\TypeListInterface as CacheTypeList;
 use Magento\Config\App\Config\Type\System as SystemConfig;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Class UpdateBlocking
@@ -147,7 +148,13 @@ class UpdateBlocking extends Action
                 }
 
                 $snippetName = Config::FASTLY_MAGENTO_MODULE . '_blocking_' . $key;
-                $snippetId = $this->api->getSnippet($currActiveVersion['active_version'], $snippetName)->id;
+                $snippetId = $this->api->getSnippet($currActiveVersion['active_version'], $snippetName);
+
+                if (!$snippetId) {
+                    throw new LocalizedException(__('Please make sure that blocking is enabled.'));
+                }
+
+                $snippetId = $snippetId->id;
                 $params = [
                     'name'      =>  $snippetId,
                     'content'   => $value

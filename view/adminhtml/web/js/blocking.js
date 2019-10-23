@@ -157,7 +157,7 @@ define([
                 cache: false,
                 success: function (response) {
                     if (response.status === false) {
-                        return blockingErrorBtnMsg.text($.mage.__('Please make sure that blocking is enabled.')).show();
+                        return blockingErrorBtnMsg.text($.mage.__(response.msg)).show();
                     } else {
                         return blockingSuccessBtnMsg.text($.mage.__('Blocking snippet has been updated successfully.')).show();
                     }

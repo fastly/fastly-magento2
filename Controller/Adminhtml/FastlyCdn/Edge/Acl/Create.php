@@ -95,7 +95,7 @@ class Create extends Action
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
-            $aclName = $this->getRequest()->getParam('acl_name');
+            $aclName = str_replace(' ', '_', $this->getRequest()->getParam('acl_name'));
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
@@ -107,7 +107,7 @@ class Create extends Action
             if (!$createAcl) {
                 return $result->setData([
                     'status'    => false,
-                    'msg'       => 'Failed to create Acl container.'
+                    'msg'       => 'Failed to create ACL container.'
                 ]);
             }
 

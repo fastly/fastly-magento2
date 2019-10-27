@@ -43,7 +43,7 @@ define(
                                 type: 'GET',
                                 url: config.isWarningDismissed,
                                 data: {active_version: activeVersion},
-                                showLoader: true,
+                                showLoader: false,
                                 success: function (response) {
                                     if (response.status !== false) {
                                         resetAllMessages();

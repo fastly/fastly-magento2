@@ -59,6 +59,8 @@
                         <publish_config_change_events>1</publish_config_change_events>
                     </fastly_web_hooks>
                     <fastly_rate_limiting_settings>
+                            <enable_rate_limiting_master>0</enable_rate_limiting_master>
+                            <enable_rate_limiting>0</enable_rate_limiting>
                             <rate_limiting_limit>10</rate_limiting_limit>
                             <rate_limiting_ttl>3600</rate_limiting_ttl>
                             <crawler_protection>

@@ -60,7 +60,8 @@ define([
             rateLimitingStateMsgSpan.find('#rate_limiting_state_unknown').show();
         });
 
-        function getRateLimitingSetting(active_version, loaderVisibility) {
+        function getRateLimitingSetting(active_version, loaderVisibility)
+        {
             return $.ajax({
                 type: "POST",
                 url: config.checkRateLimitingSettingUrl,

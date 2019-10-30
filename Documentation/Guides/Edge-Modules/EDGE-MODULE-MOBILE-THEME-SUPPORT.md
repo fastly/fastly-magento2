@@ -2,7 +2,7 @@
 
 You should use this module in case you use mobile themes with your Magento setup. By default Fastly does not
 take into account device type and for caching purposes will store only a single version of a page. This module
-add detection of a broad group of devices e.g.
+adds detection of mobile devices currently in these three categories
 
 * iPhone and iPod devices
 * Android Mobile devices
@@ -13,7 +13,16 @@ It does so by inspecting the User-Agent header from the browser and broadly clas
 1. Desktop (default)
 1. Mobile
 
-It is possible to add additional categories and additional matching based 
+For these two categories it will keep two distinct versions of a page.
+
+It is possible to add additional categories and additional matching by adding new snippets e.g. you can add VCL
+snippet to put bots and crawlers in their own pool e.g.
+
+```vcl
+if ( req.http.User-Agent ~ "(?i)(ads|google|bing|msn|yandex|baidu|ro|career|seznam|)bot" ) {
+  set req.http.X-UA-Device = "bot";
+}
+```
 
 Before you can use Fastly Edge Modules you need to [make sure they are enabled](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULES.md) and that you have selected the Mobile Theme support.
 

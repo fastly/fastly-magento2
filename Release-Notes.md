@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.121
+
+- Rewrite the Vary VCL code to use accessors
+- Add Mobile Theme support Edge module https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-MOBILE-THEME-SUPPORT.md
+
 ## 1.2.120
 
 - Convert whitespaces to underscores when creating Edge ACLs and Dictionaries to avoid syntax errors https://github.com/fastly/fastly-magento2/pull/319

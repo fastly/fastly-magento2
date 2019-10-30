@@ -62,10 +62,8 @@
 
     # Add Varying on X-Magento-Vary
     if (beresp.http.Content-Type ~ "text/(html|xml)" || req.http.graphql) {
-        if (!beresp.http.Vary ~ "(?i)X-Magento-Vary,Https") {
-            set beresp.http.Vary:X-Magento-Vary = "";
-            set beresp.http.Vary:Https = "";
-        }
+        set beresp.http.Vary:X-Magento-Vary = "";
+        set beresp.http.Vary:Https = "";
     }
 
     # Just in case the Request Setting for x-pass is missing

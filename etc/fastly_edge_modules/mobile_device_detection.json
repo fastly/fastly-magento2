@@ -1,0 +1,29 @@
+{
+  "name": "Mobile Theme support",
+  "id": "mobile_device_detection",
+  "description": "By default Fastly caches a single version of a page ignoring device type e.g. mobile/desktop. This module adds Vary-ing by a device type. It supports iPhone, Android and Tizen mobile device detection. It will cache separate page versions for mobile and desktop",
+  "version": 1,
+  "vcl": [
+    {
+      "priority": 45,
+      "type": "recv",
+      "template": "  # Mobile device detection for mobile themes\n  set req.http.X-UA-Device = \"desktop\";\n\n  if (req.http.User-Agent ~ \"(?i)ip(hone|od)\") {\n      set req.http.X-UA-Device = \"mobile\";\n  } elsif (req.http.User-Agent ~ \"(?i)android.*(mobile|mini)\") {\n      set req.http.X-UA-Device = \"mobile\";\n  } elsif (req.http.User-Agent ~ \"(?i)tizen.*mobile\") {\n      set req.http.X-UA-Device = \"mobile\";\n  }"
+    },
+    {
+      "priority": 70,
+      "type": "fetch",
+      "template": "  # Add X-UA-Device Vary for HTML\n  if ( beresp.http.Content-Type ~ \"text/html\" ) {\n    set beresp.http.Vary:X-UA-Device = \"\";\n  }"
+    },
+    {
+      "priority": 70,
+      "type": "deliver",
+      "template": "  # Execute only on the edge nodes\n  if ( fastly.ff.visits_this_service == 0 && !req.http.Fastly-Debug ) {\n    unset resp.http.Vary:X-UA-Device;\n  }"
+    }
+  ],
+  "test": {
+    "origins": [
+      "https://httpbin.org"
+    ],
+    "reqUrl": "/status/500"
+  }
+}

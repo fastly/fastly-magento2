@@ -6,7 +6,7 @@
     # Execute only on the edge nodes
     if ( fastly.ff.visits_this_service == 0 ) {
         # Remove X-Magento-Vary and HTTPs Vary served to the user
-        set resp.http.Vary = regsub(resp.http.Vary, "X-Magento-Vary,Https", "Cookie");
+        set resp.http.Vary = regsub(resp.http.Vary, "(?i)X-Magento-Vary,Https", "Cookie");
         remove resp.http.X-Magento-Tags;
     }
 

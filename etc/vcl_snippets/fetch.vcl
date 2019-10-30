@@ -30,8 +30,7 @@
     # Fix Vary Header in some cases. In 99.9% of cases Varying on User-Agent is counterproductive
     # https://www.varnish-cache.org/trac/wiki/VCLExampleFixupVary
     if (beresp.http.Vary ~ "User-Agent") {
-        set beresp.http.Vary = regsub(beresp.http.Vary, ",? *User-Agent *", "");
-        set beresp.http.Vary = regsub(beresp.http.Vary, "^, *", "");
+        unset beresp.http.Vary:User-Agent;
         if (beresp.http.Vary == "") {
             unset beresp.http.Vary;
         }
@@ -63,12 +62,9 @@
 
     # Add Varying on X-Magento-Vary
     if (beresp.http.Content-Type ~ "text/(html|xml)" || req.http.graphql) {
-        if (!beresp.http.Vary ~ "X-Magento-Vary,Https") {
-            if (beresp.http.Vary) {
-                set beresp.http.Vary = beresp.http.Vary ",X-Magento-Vary,Https";
-            } else {
-                set beresp.http.Vary = "X-Magento-Vary,Https";
-            }
+        if (!beresp.http.Vary ~ "(?i)X-Magento-Vary,Https") {
+            set beresp.http.Vary:X-Magento-Vary = "";
+            set beresp.http.Vary:Https = "";
         }
     }
 

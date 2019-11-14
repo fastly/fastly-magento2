@@ -665,35 +665,60 @@
                             target="_blank">this guide</a> for more details]]>
                         </comment>
                         <!-- =================================
-                             Enable Path Protection button
+                             Enable Rate Limiting button
                         ================================== -->
-                        <field id="enable_rate_limiting" translate="label comment" sortOrder="5" showInDefault="1" showInStore="0" showInWebsite="0">
-                            <label>Enable Path Protection</label>
-                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ToggleRateLimitingBtn</frontend_model>
+                        <field id="enable_rate_limiting_master" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInStore="0" showInWebsite="0">
+                            <label>Enable Rate Limiting</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
-                        <!-- =============================
-                             Protected Paths button
-                        ============================== -->
-                        <field id="rate_limiting_paths" translate="label comment" sortOrder="6" showInDefault="1" showInStore="0" showInWebsite="0">
-                            <label>Protected Paths</label>
-                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\PathsBtn</frontend_model>
-                        </field>
-                        <!-- ==========================================
-                             Path Protection Rate Limit input field
-                        =========================================== -->
-                        <field id="rate_limiting_limit" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
-                            <label>Path Protection Rate Limit</label>
-                            <comment>Numeric value for the number of tolerated Path Protection Rate Limit requests.</comment>
-                            <validate>required-entry validate-number validate-not-negative-number</validate>
-                        </field>
-                        <!-- ========================================
-                             Path Protection Rate Limit TTL field
-                        ========================================= -->
-                        <field id="rate_limiting_ttl" translate="label comment" type="text" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
-                            <label>Path Protection Rate Limit TTL</label>
-                            <comment>Time in seconds for the Path Protection Rate Limit lifetime.</comment>
-                            <validate>required-entry validate-number validate-not-negative-number</validate>
-                        </field>
+                        <group id="path_protection" sortOrder="15" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Path Protection</label>
+                            <!-- =================================
+                                 Enable Path Protection button
+                            ================================== -->
+                            <field id="enable_rate_limiting" translate="label comment" sortOrder="5" showInDefault="1" showInStore="0" showInWebsite="0">
+                                <label>Enable Path Protection</label>
+                                <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ToggleRateLimitingBtn</frontend_model>
+                                <depends>
+                                    <field id="enable_rate_limiting_master">1</field>
+                                </depends>
+                            </field>
+                            <!-- =============================
+                                 Protected Paths button
+                            ============================== -->
+                            <field id="rate_limiting_paths" translate="label comment" sortOrder="6" showInDefault="1" showInStore="0" showInWebsite="0">
+                                <label>Protected Paths</label>
+                                <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\PathsBtn</frontend_model>
+                                <depends>
+                                    <field id="enable_rate_limiting_master">1</field>
+                                </depends>
+                            </field>
+                            <!-- ==========================================
+                                 Path Protection Rate Limit input field
+                            =========================================== -->
+                            <field id="rate_limiting_limit" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                                <label>Path Protection Rate Limit</label>
+                                <comment>Numeric value for the number of tolerated Path Protection Rate Limit requests.</comment>
+                                <validate>required-entry validate-number validate-not-negative-number</validate>
+                                <depends>
+                                    <field id="enable_rate_limiting_master">1</field>
+                                </depends>
+                            </field>
+                            <!-- ========================================
+                                 Path Protection Rate Limit TTL field
+                            ========================================= -->
+                            <field id="rate_limiting_ttl" translate="label comment" type="text" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                                <label>Path Protection Rate Limit TTL</label>
+                                <comment>Time in seconds for the Path Protection Rate Limit lifetime.</comment>
+                                <validate>required-entry validate-number validate-not-negative-number</validate>
+                                <depends>
+                                    <field id="enable_rate_limiting_master">1</field>
+                                </depends>
+                            </field>
+                            <depends>
+                                <field id="enable_rate_limiting_master">1</field>
+                            </depends>
+                        </group>
                         <group id="crawler_protection" sortOrder="20" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Abusive Crawlers</label>
                             <!-- ==========================================
@@ -739,6 +764,9 @@
                                     <field id="enable_crawler_protection">1</field>
                                 </depends>
                             </field>
+                            <depends>
+                                <field id="enable_rate_limiting_master">1</field>
+                            </depends>
                         </group>
                     </group>
                     <!-- ========================

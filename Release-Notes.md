@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.122
+
+- Make the rate limiting UI clearer by providing a top level on/off switch https://github.com/fastly/fastly-magento2/pull/321
+
 ## 1.2.121
 
 - Rewrite the Vary VCL code to use accessors

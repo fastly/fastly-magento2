@@ -61,7 +61,7 @@ class Comparison extends Action
     {
         $result = $this->jsonFactory->create();
         $vclVersion = $this->notification->getLastVersion();
-        $localVersion = $this->request->getHeader(Config::REQUEST_HEADER);
+        $localVersion = $this->request->getHeader(Config::REQUEST_HEADER, true);
         if ($vclVersion != $localVersion) {
             return $result->setData(
                 [

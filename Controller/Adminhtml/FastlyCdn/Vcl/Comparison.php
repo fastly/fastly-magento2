@@ -3,11 +3,16 @@
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl;
 
 use Fastly\Cdn\Model\Config;
-use Fastly\Cdn\Model\Notification;
 use Magento\Backend\App\Action;
 use Magento\Framework\App\Request\Http;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\Result\Json as JsonResult;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Framework\Json\Helper\Data;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\FileSystemException;
+use Magento\Framework\Filesystem\Driver\File;
+use Magento\Framework\Module\Dir;
+use Magento\Framework\Serialize\Serializer\Json;
 
 class Comparison extends Action
 {
@@ -22,58 +27,80 @@ class Comparison extends Action
     private $request;
 
     /**
-     * @var Data
+     * @var Json
      */
-    private $jsonHelper;
+    private $json;
 
     /**
-     * @var Notification
+     * @var File
      */
-    private $notification;
+    private $file;
+
+    /**
+     * @var Dir
+     */
+    private $dir;
 
     /**
      * Comparison constructor.
      *
      * @param Action\Context $context
-     * @param Http           $request
-     * @param JsonFactory    $jsonFactory
-     * @param Data           $jsonHelper
-     * @param Notification   $notification
+     * @param Http $request
+     * @param File $file
+     * @param Dir $dir
+     * @param Json $json
+     * @param JsonFactory $jsonFactory
      */
     public function __construct(
         Action\Context $context,
         Http $request,
-        JsonFactory $jsonFactory,
-        Data $jsonHelper,
-        Notification $notification
+        File $file,
+        Dir $dir,
+        Json $json,
+        JsonFactory $jsonFactory
     ) {
         parent::__construct($context);
         $this->jsonFactory = $jsonFactory;
         $this->request = $request;
-        $this->jsonHelper = $jsonHelper;
-        $this->notification = $notification;
+        $this->json = $json;
+        $this->file = $file;
+        $this->dir = $dir;
     }
 
     /**
-     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Json|\Magento\Framework\Controller\ResultInterface
+     * @return ResponseInterface|JsonResult|ResultInterface
      */
     public function execute()
     {
         $result = $this->jsonFactory->create();
-        $vclVersion = $this->notification->getLastVersion();
-        $localVersion = $this->request->getHeader(Config::REQUEST_HEADER);
-        if ($vclVersion != $localVersion) {
+        $headerVersion = $this->request->getHeader(Config::REQUEST_HEADER, true);
+        $etc = $this->dir->getDir($this->request->getControllerModule(), Dir::MODULE_ETC_DIR) . '/';
+        $composer = $etc . '../composer.json';
+        try {
+            $localVersion = $this->json->unserialize($this->file->fileGetContents($composer))['version'];
+        } catch (FileSystemException $e) {
             return $result->setData(
                 [
-                'status' => false,
-                'msg'   => 'Plugin VCL version is outdated! Please re-Upload.'
+                    'status' => false,
+                    'msg'   => $e->getMessage()
+                ]
+            );
+        }
+
+        if ($localVersion !== $headerVersion) {
+            return $result->setData(
+                [
+                    'status' => false,
+                    'local'  => $localVersion,
+                    'header' => $headerVersion,
+                    'msg'   => 'Plugin VCL version is outdated! Please re-Upload.'
                 ]
             );
         }
 
         return $result->setData(
             [
-            'status'    => true
+                'status'    => true
             ]
         );
     }

@@ -501,7 +501,7 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Request Header for VCL comparison
      */
-    const REQUEST_HEADER = 'Fastly-Magento-VCL-Uploaded';
+    const REQUEST_HEADER = 'Fastly-Magento-Vcl-Uploaded';
 
     /**
      * Fastly module name

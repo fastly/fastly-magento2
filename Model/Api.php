@@ -80,6 +80,8 @@ class Api
      */
     private $state;
 
+    private $errorMessage;
+
     /**
      * Api constructor.
      *
@@ -570,6 +572,10 @@ class Api
     {
         $url = $this->_getApiServiceUri(). 'snippet' . '/'.$snippet['name'];
         $result = $this->_fetch($url, \Zend_Http_Client::PUT, $snippet);
+
+        if (!$result) {
+            throw new LocalizedException(__($this->errorMessage));
+        }
 
         return $result;
     }
@@ -1476,7 +1482,8 @@ class Api
             if ($logError == true) {
                 $this->logger->critical('Return status ' . $responseCode, $uri);
             }
-
+            $errorDetails = $this->extractErrorDetails($responseBody, $responseMessage);
+            $this->errorMessage = $errorDetails;
             return false;
         }
 
@@ -1496,5 +1503,21 @@ class Api
         }
 
         $this->sendWebHook('*'. $type .' backtrace:*```' .  implode("\n", $trace) . '```');
+    }
+
+    /**
+     * @param $responseBody
+     * @param $responseMessage
+     * @return string
+     */
+    private function extractErrorDetails($responseBody, $responseMessage)
+    {
+        if ($responseBody) {
+            $decodedBody = json_decode($responseBody);
+            if (isset($decodedBody->detail)) {
+                return $responseMessage . ': ' . $decodedBody->detail;
+            }
+        }
+        return $responseMessage;
     }
 }

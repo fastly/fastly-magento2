@@ -70,6 +70,34 @@ define([
             });
         }
 
+        $('#system_full_page_cache_fastly_fastly_rate_limiting_settings_enable_rate_limiting_master').on('change', function () {
+            if (this.value === '0') {
+                $.ajax({
+                    type: "POST",
+                    url: config.disableRateLimitingUrl,
+                    data: {
+                        'active_version': active_version,
+                        'activate_flag': true
+                    },
+                    showLoader: true,
+                    success: function (response) {
+                        if (response.status === true) {
+                            rateLimitingStateMsgSpan.find('#rate_limiting_state_enabled').hide();
+                            rateLimitingStateMsgSpan.find('#rate_limiting_state_disabled').show();
+                            $('#system_full_page_cache_fastly_fastly_rate_limiting_settings_crawler_protection_enable_crawler_protection').val(0);
+                            active_version = response.active_version;
+                        } else {
+                            resetAllMessages();
+                            showErrorMessage(response.msg);
+                        }
+                    },
+                    error: function () {
+                        return errorPathsBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                    }
+                });
+            }
+        });
+
         $('#fastly_paths_btn').on('click', function () {
             resetAllMessages();
 

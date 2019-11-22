@@ -66,6 +66,7 @@ define([
                 let rateLimitingHead = $('#system_full_page_cache_fastly_fastly_rate_limiting_settings-head');
                 let importExportHead = $('#system_full_page_cache_fastly_fastly_import_export-head');
                 let versionHistoryHead = $('#system_full_page_cache_fastly_fastly_tools-head');
+                let tlsManagementHead = $('#system_full_page_cache_fastly_fastly_https_and_network-head');
                 $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_owasp_restricted_extensions').hide();
                 $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_owasp_allowed_methods').hide();
                 $('#row_system_full_page_cache_fastly_fastly_web_application_firewall_waf_bypass').hide();
@@ -183,6 +184,12 @@ define([
 
                             requirejs(['versionHistory'], function (versionHistory) {
                                 versionHistory(config, serviceStatus, isAlreadyConfigured);
+                            });
+                        });
+
+                        tlsManagementHead.one('click', function () {
+                            requirejs(['tlsManagement'], function (tlsManagement) {
+                                tlsManagement(config, serviceStatus, isAlreadyConfigured);
                             });
                         });
                     } else {

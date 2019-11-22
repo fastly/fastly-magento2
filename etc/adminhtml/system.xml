@@ -443,6 +443,43 @@
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Edge</frontend_model>
                         </field>
                     </group>
+                    <!-- ===========================
+                            HTTPS and network
+                        ============================ -->
+                    <group id="fastly_https_and_network" sortOrder="415" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>HTTPS and Network</label>
+                        <comment>
+                            <![CDATA[Fastly offers an API for uploading and managing your keys and certificates used to enable TLS for your domains on Fastly.
+                            To start, you must generate a new key and certificate with your preferred certification authority.
+                            You may then use our endpoints to upload a key and then upload the matching certificate.
+                            To terminate TLS for a specific domain, you'll need to enable that domain for a given certificate by creating a protocol policy.
+                            Finally, for Fastly to begin to terminate TLS you will need to update the DNS records for the domain with the provided DNS Names returned to you.]]>
+                        </comment>
+                        <!-- =======================
+                             TLS domains button
+                        ======================== -->
+                        <field id="tls_domains" translate="label comment tooltip" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>TLS domains</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\TlsDomainsButton</frontend_model>
+                            <comment>
+                                <![CDATA[TLS domains are all the domains (including wildcard domains) included in any TLS certificate's Subject Alternative Names (SAN) list.]]>
+                            </comment>
+                        </field>
+                        <field id="tls_certificates" translate="label comment tooltip" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>TLS certificates</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\TlsCertificationsButton</frontend_model>
+                            <comment>
+                                <![CDATA[A TLS certificate is used to terminate TLS traffic for one or more of your TLS domains.]]>
+                            </comment>
+                        </field>
+                        <field id="tls_configurations" translate="label comment tooltip" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>TLS configurations</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\TlsConfigurationsButton</frontend_model>
+                            <comment>
+                                <![CDATA[Customers with access to multiple sets of IP pools are able to apply different configuration options to their TLS enabled domains.]]>
+                            </comment>
+                        </field>
+                    </group>
                     <!-- =======================
                          Import/Export group
                     ======================== -->

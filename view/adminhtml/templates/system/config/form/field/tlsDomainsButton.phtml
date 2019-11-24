@@ -1,10 +1,24 @@
 <button type="button"
         style="margin-bottom: 10px;"
-        class="secondary"
-        id="tls-domains-button">
-    <?php /* @noEscape */ echo __('Configure') ?>
+        class="primary"
+        id="secure-another-domain">
+    <?php /* @noEscape */ echo __('Secure Another Domain') ?>
 </button>
+<div class="design_theme_ua_regexp">
+    <div class="admin__control-table-wrapper">
+        <table class="admin__control-table">
+            <thead>
+                <tr>
+                    <th><?php /* @noEscape */ echo __('Domains') ?></th>
+                    <th><?php /* @noEscape */ echo __('TLS Status') ?></th>
+                </tr>
+            </thead>
+            <tbody id="tls-domains-item-container"></tbody>
+        </table>
+    </div>
+</div>
 
+<!-- tls-domains-button -->
 <div class="message message-error fastly-button-messages"
      id="fastly-error-tls-domains-button"
      style="display: none"></div>

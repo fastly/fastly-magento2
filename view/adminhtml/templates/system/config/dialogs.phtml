@@ -2348,15 +2348,13 @@
                 <tr>
                     <th><?php /* @noEscape */ echo __('Domain') ?></th>
                     <th><?php /* @noEscape */ echo __('TLS Status') ?></th>
-                    <th><?php /* @noEscape */ echo __('CNAME Records') ?></th>
-                    <th><?php /* @noEscape */ echo __('A Records') ?></th>
                 </tr>
                 </thead>
                 <tbody class="tls-domains-item-container">
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="4" class="col-actions-add"></td>
+                    <td colspan="2" class="col-actions-add"></td>
                 </tr>
                 </tfoot>
             </table>
@@ -2734,46 +2732,6 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
         background-color: #FFF9D5;
         padding-top: 10px;
         margin-bottom: 30px;
-    }
-
-    .fastly-delete-tls-domain {
-        cursor: pointer;
-    }
-
-    .fastly-enable-domain-span {
-        background-color: transparent;
-        border: 1px solid transparent;
-        border-radius: 3px;
-        color: #147fbd;
-        cursor: pointer;
-        display: inline-block;
-        letter-spacing: 0.1rem;
-        padding: 0.75rem 1.5rem;
-        transition: all 0.4s ease;
-        margin-left: 2rem;
-    }
-
-    .fastly-disable-domain-span {
-        background-color: transparent;
-        border: 1px solid transparent;
-        border-radius: 3px;
-        color: #147fbd;
-        cursor: pointer;
-        display: inline-block;
-        letter-spacing: 0.1rem;
-        padding: 0.75rem 1.5rem;
-        transition: all 0.4s ease;
-        margin-left: 2rem;
-    }
-
-    #secure-another-domain {
-        margin-right: 3rem;
-        background-color: transparent;
-        border-color: #9b9b9bac;
-    }
-
-    #secure-another-domain:hover {
-        box-shadow: 0 3px 12px -3px;
     }
 
 </style>

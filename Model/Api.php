@@ -1576,7 +1576,7 @@ class Api
         $responseMessage = \Zend_Http_Response::extractMessage($response);
 
         // Return error based on response code
-        if ($responseCode == '429' || $responseCode == '400') {
+        if ($responseCode == '429') {
             throw new LocalizedException(__($responseMessage), null, $responseCode);
         } elseif ($responseCode != '200' && $responseCode != '201' && $responseCode != '204') {
             if ($logError == true) {

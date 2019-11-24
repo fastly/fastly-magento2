@@ -11,7 +11,6 @@ define([
 ], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, showSuccessMessage, showWarningMessage, confirm) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
-
         let configurations;
         let anotherDomainModal;
 
@@ -55,6 +54,24 @@ define([
                 }
 
                 configurations = response.configurations.length !== 0 ? response.configurations : [];
+                getTlsSubscriptions(true).done(function (response) {
+                    if (response.status !== true || response.flag !== true) {
+                        return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
+                    }
+
+                    $.each(response.data, function (index, subscription) {
+                        let domain = subscription.relationships.tls_domains.data[0].id;
+                        let tlsStatus = subscription.attributes.state;
+                        let tdDomain = document.createElement('td');
+                        tdDomain.append(document.createTextNode(domain));
+                        let tdStatus = document.createElement('td');
+                        tdStatus.append(document.createTextNode(tlsStatus));
+                        let tr = document.createElement('tr');
+                        tr.append(tdDomain);
+                        tr.append(tdStatus);
+                        $('#tls-domains-item-container').append(tr);
+                    });
+                });
             });
         });
 
@@ -65,57 +82,6 @@ define([
             });
         }
 
-
-        /** Domains */
-        $('#tls-domains-button').on('click', function () {
-
-            let tlsDomainsModalOptions = {
-                title: $.mage.__('TLS Domains'),
-                content: function () {
-                    return document.getElementById('fastly-tls-domains-template').textContent
-                }
-            };
-
-            resetAllMessages();
-
-            if (isAlreadyConfigured !== true) {
-                $(this).attr('disabled', true);
-                return alert($.mage.__('Please save config prior to continuing.'));
-            }
-
-            overlay(tlsDomainsModalOptions);
-            getTlsSubscriptions(true).done(function (response) {
-                if (response.status !== true || response.flag !== true) {
-                    return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
-                }
-
-                $.each(response.data, function (index, subscription) {
-
-                    let domain = subscription.relationships.tls_domains.data[0].id;
-                    let tlsStatus = subscription.attributes.state;
-                    let attributes = response.included[index].attributes;
-                    let cname = attributes.challenges[1] !== undefined ? attributes.challenges[1].record_name : attributes.challenges[0].record_name;
-                    let aRecord = attributes.challenges[2] !== undefined ? attributes.challenges[2].record_name : attributes.challenges[0].record_name;
-                    let tdDomain = document.createElement('td');
-                    tdDomain.append(document.createTextNode(domain));
-                    let tdStatus = document.createElement('td');
-                    tdStatus.append(document.createTextNode(tlsStatus));
-                    let tdCname = document.createElement('td');
-                    tdCname.append(document.createTextNode(cname));
-                    let tdARecord = document.createElement('td');
-                    tdARecord.append(document.createTextNode(aRecord));
-                    let tr = document.createElement('tr');
-                    tr.append(tdDomain);
-                    tr.append(tdStatus);
-                    tr.append(tdCname);
-                    tr.append(tdARecord);
-                    $('.tls-domains-item-container').append(tr);
-                });
-            });
-            $('.upload-button').remove();
-
-        });
-
         $('body').on('click', '#secure-another-domain', function () {
             let anotherDomainModalOptions = {
                 title: $.mage.__('Secure Another Domain'),
@@ -125,10 +91,9 @@ define([
             };
 
             overlay(anotherDomainModalOptions);
-            anotherDomainModal = modal;
             $('.upload-button').remove();
             createRowElements();
-            $('body').on('click', 'button#add-domain-item', function () {
+            $('#add-domain-item').on('click', function () {
                 createRowElements();
             });
         });
@@ -180,8 +145,8 @@ define([
                 let confInput = $(conf).val();
                 saveDomain(domainInput, confInput, true).done(function (response) {
                     if (response.status !== true || response.flag !== true) {
-                        anotherDomainModal.modal('closeModal');
-                        return showErrorMessage(response.msg);
+                        modal.modal('closeModal');
+                        return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
                     }
                 });
             });
@@ -189,6 +154,11 @@ define([
 
         /** Ajax calls */
 
+        /**
+         * https://docs.fastly.com/api/tls#tls_configurations
+         * @param loader
+         * @returns {jQuery}
+         */
         function getTlsConfigurations(loader)
         {
             return $.ajax({
@@ -207,6 +177,13 @@ define([
             });
         }
 
+        /**
+         * https://docs.fastly.com/api/tls-subscriptions#tls_subscriptions
+         * @param name
+         * @param conf
+         * @param loader
+         * @returns {jQuery}
+         */
         function saveDomain(name, conf, loader)
         {
             return $.ajax({
@@ -217,6 +194,11 @@ define([
             });
         }
 
+        /**
+         * https://docs.fastly.com/api/tls-subscriptions#tls_subscriptions
+         * @param loader
+         * @returns {jQuery}
+         */
         function getTlsSubscriptions(loader)
         {
             console.log(config.getTlsSubscriptions);

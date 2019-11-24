@@ -170,17 +170,6 @@ define([
                             });
                         });
 
-                        /*
-                        importExportHead.one('click', function () {
-                             requirejs(['fastlyImport'], function (fastlyImport) {
-                                 fastlyImport(config, serviceStatus, isAlreadyConfigured);
-                             });
-                            requirejs(['fastlyExport'], function (fastlyExport) {
-                                fastlyExport(config, serviceStatus, isAlreadyConfigured);
-                            });
-                        });
-                        */
-
                         versionHistoryHead.one('click', function () {
 
                             requirejs(['versionHistory'], function (versionHistory) {

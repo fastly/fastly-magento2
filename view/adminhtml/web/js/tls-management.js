@@ -59,18 +59,24 @@ define([
                         return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
                     }
 
-                    $.each(response.data, function (index, subscription) {
-                        let domain = subscription.relationships.tls_domains.data[0].id;
-                        let tlsStatus = subscription.attributes.state;
-                        let tdDomain = document.createElement('td');
-                        tdDomain.append(document.createTextNode(domain));
-                        let tdStatus = document.createElement('td');
-                        tdStatus.append(document.createTextNode(tlsStatus));
-                        let tr = document.createElement('tr');
-                        tr.append(tdDomain);
-                        tr.append(tdStatus);
-                        $('#tls-domains-item-container').append(tr);
-                    });
+                    $('.loading-tls-domains').hide();
+                    if (response.data.length !== 0) {
+                        $.each(response.data, function (index, subscription) {
+                            let domain = subscription.relationships.tls_domains.data[0].id;
+                            let tlsStatus = subscription.attributes.state;
+                            let tdDomain = document.createElement('td');
+                            tdDomain.append(document.createTextNode(domain));
+                            let tdStatus = document.createElement('td');
+                            tdStatus.append(document.createTextNode(tlsStatus));
+                            let tr = document.createElement('tr');
+                            tr.append(tdDomain);
+                            tr.append(tdStatus);
+                            $('#tls-domains-item-container').append(tr);
+                        });
+                        return;
+                    }
+
+                    $('.no-tls-domains').show();
                 });
             });
         });

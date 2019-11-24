@@ -105,9 +105,9 @@ class SecureAnotherDomain extends Action
         if (!$response) {
             return $result->setData([
                 'status'    => true,
-                'msg'   => 'A technical problem with the server created an error.'
+                'msg'   => __('A technical problem with the server created an error.'
                            . 'Try again to continue what you were doing.'
-                           . 'If the problem persists, try again later.',
+                           . 'If the problem persists, try again later.'),
                 'flag'  => false
             ]);
         }
@@ -119,7 +119,7 @@ class SecureAnotherDomain extends Action
             'flag'  => true,
             'domain' => $response->data->relationships->tls_domains->data[0]->id,
             'state' => __('Fastly is verifying domain ownership.'),
-            'msg' => __('Create a CNAME for ' . $cname . ' and point it to ' . $value . '.fastly-validations.com')
+            'msg' => __("Successfully! What's next? Fastly is verifying domain ownership.")
         ]);
     }
 }

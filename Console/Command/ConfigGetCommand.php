@@ -58,7 +58,7 @@ class ConfigGetCommand extends Command
     protected function configure() // @codingStandardsIgnoreLine - required by parent class
     {
         $this->setName('fastly:conf:get')
-            ->setDescription('Enables Fastly as Full Page Cache Caching Application');
+            ->setDescription('Get Fastly configuration');
 
         $this->addOption(
             'fastly-status',

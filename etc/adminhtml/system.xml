@@ -472,13 +472,6 @@
                                 <![CDATA[A TLS certificate is used to terminate TLS traffic for one or more of your TLS domains.]]>
                             </comment>
                         </field>
-                        <field id="tls_configurations" translate="label comment tooltip" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
-                            <label>TLS configurations</label>
-                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\TlsConfigurationsButton</frontend_model>
-                            <comment>
-                                <![CDATA[Customers with access to multiple sets of IP pools are able to apply different configuration options to their TLS enabled domains.]]>
-                            </comment>
-                        </field>
                     </group>
                     <!-- =======================
                          Import/Export group

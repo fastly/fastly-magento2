@@ -63,8 +63,7 @@ class GetTlsSubscriptions extends Action
         return $result->setData([
             'status'    => true,
             'flag'      => true,
-            'data'      => $response->data,
-            'included'  => $response->included
+            'data'      => $response->data
         ]);
     }
 }

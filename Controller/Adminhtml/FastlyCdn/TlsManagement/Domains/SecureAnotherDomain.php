@@ -112,10 +112,14 @@ class SecureAnotherDomain extends Action
             ]);
         }
 
+        $cname = $response->included[0]->attributes->challenges[0]->record_name;
+        $value = $response->included[0]->attributes->challenges[0]->values[0];
         return $result->setData([
             'status'    => true,
             'flag'  => true,
-            'challenges' => $response->attributes->challenges
+            'domain' => $response->data->relationships->tls_domains->data[0]->id,
+            'state' => __('Fastly is verifying domain ownership.'),
+            'msg' => __('Create a CNAME for ' . $cname . ' and point it to ' . $value . '.fastly-validations.com')
         ]);
     }
 }

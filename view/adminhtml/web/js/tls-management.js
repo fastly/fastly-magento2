@@ -84,7 +84,7 @@ define([
 
         $('body').on('click', '#secure-another-domain', function () {
             let anotherDomainModalOptions = {
-                title: $.mage.__('Secure Another Domain'),
+                title: $.mage.__('Enter the domain you want Fastly to secure'),
                 content: function () {
                     return document.getElementById('fastly-tls-new-domains-template').textContent
                 }
@@ -144,10 +144,21 @@ define([
                 let domainInput = $(domain).val();
                 let confInput = $(conf).val();
                 saveDomain(domainInput, confInput, true).done(function (response) {
+                    resetAllMessages();
+                    modal.modal('closeModal');
                     if (response.status !== true || response.flag !== true) {
-                        modal.modal('closeModal');
                         return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
                     }
+
+                    let tr = document.createElement('tr');
+                    let tdDomain = document.createElement('td');
+                    let tdState = document.createElement('td');
+                    tdDomain.append(document.createTextNode(response.domain));
+                    tdState.append(document.createTextNode(response.state));
+                    tr.append(tdDomain);
+                    tr.append(tdState);
+                    $('#tls-domains-item-container').append(tr);
+                    return domainSuccessButtonMsg.text($.mage.__(response.msg)).show();
                 });
             });
         }
@@ -201,7 +212,6 @@ define([
          */
         function getTlsSubscriptions(loader)
         {
-            console.log(config.getTlsSubscriptions);
             return $.ajax({
                 type: 'get',
                 url: config.getTlsSubscriptions,

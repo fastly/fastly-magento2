@@ -112,14 +112,13 @@ class SecureAnotherDomain extends Action
             ]);
         }
 
-        $cname = $response->included[0]->attributes->challenges[0]->record_name;
-        $value = $response->included[0]->attributes->challenges[0]->values[0];
         return $result->setData([
             'status'    => true,
             'flag'  => true,
             'domain' => $response->data->relationships->tls_domains->data[0]->id,
             'state' => __('Fastly is verifying domain ownership.'),
-            'msg' => __("Successfully! What's next? Fastly is verifying domain ownership.")
+            'msg' => __("Successfully! What's next? Fastly is verifying domain ownership"
+                        . 'and Fastly is waiting for the Certificate Authority’s response.')
         ]);
     }
 }

@@ -12,16 +12,6 @@ define([
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         let configurations;
-        let anotherDomainModal;
-
-        /** Versions */
-        let activeVersion = serviceStatus.active_version;
-        let nextVersion = serviceStatus.next_version;
-
-        /** Buttons */
-        let domainsButton = $('#tls-domains-button');
-        let certificateButton = $('#tls-certifications-button');
-        let configurationsButton = $('#tls-configurations-button');
 
         /** Domains buttons */
         let domainErrorButtonMsg = $('#fastly-error-tls-domains-button');
@@ -31,63 +21,42 @@ define([
         /** Messages */
         let notAuthorisedMsg = $('#fastly-warning-not-authorized-button-msg');
 
-        getServiceInfoUrl(true).done(function (response) {
-            if (response.status !== true) {
-                switchButtons(true, [
-                    domainsButton,
-                    certificateButton,
-                    configurationsButton
-                ]);
+        //check if client has permissions
+        getTlsConfigurations(true).done(function (response) {
+            if (response.status !== true || response.flag !== true) {
+                $('#secure-another-domain').attr('disabled', true);
                 return notAuthorisedMsg.text($.mage.__(response.msg)).show();
             }
 
-            activeVersion = response.active_version;
-            nextVersion = response.next_version;
-            getTlsConfigurations(true).done(function (response) {
+            configurations = response.configurations.length !== 0 ? response.configurations : [];
+            //catch all secured domains
+            getTlsSubscriptions(true).done(function (response) {
                 if (response.status !== true || response.flag !== true) {
-                    switchButtons(true, [
-                        domainsButton,
-                        certificateButton,
-                        configurationsButton
-                    ]);
-                    return notAuthorisedMsg.text($.mage.__(response.msg)).show();
+                    return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
                 }
 
-                configurations = response.configurations.length !== 0 ? response.configurations : [];
-                getTlsSubscriptions(true).done(function (response) {
-                    if (response.status !== true || response.flag !== true) {
-                        return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
-                    }
+                $('.loading-tls-domains').hide();
+                if (response.data.length !== 0) {
+                    $.each(response.data, function (index, subscription) {
+                        let domain = subscription.relationships.tls_domains.data[0].id;
+                        let tlsStatus = subscription.attributes.state;
+                        let tdDomain = document.createElement('td');
+                        tdDomain.append(document.createTextNode(domain));
+                        let tdStatus = document.createElement('td');
+                        tdStatus.append(document.createTextNode(tlsStatus));
+                        let tr = document.createElement('tr');
+                        tr.append(tdDomain);
+                        tr.append(tdStatus);
+                        $('#tls-domains-item-container').append(tr);
+                    });
+                    return;
+                }
 
-                    $('.loading-tls-domains').hide();
-                    if (response.data.length !== 0) {
-                        $.each(response.data, function (index, subscription) {
-                            let domain = subscription.relationships.tls_domains.data[0].id;
-                            let tlsStatus = subscription.attributes.state;
-                            let tdDomain = document.createElement('td');
-                            tdDomain.append(document.createTextNode(domain));
-                            let tdStatus = document.createElement('td');
-                            tdStatus.append(document.createTextNode(tlsStatus));
-                            let tr = document.createElement('tr');
-                            tr.append(tdDomain);
-                            tr.append(tdStatus);
-                            $('#tls-domains-item-container').append(tr);
-                        });
-                        return;
-                    }
-
-                    $('.no-tls-domains').show();
-                });
+                $('.no-tls-domains').text($.mage.__('There are no TLS domains configured yet.')).show();
             });
         });
 
-        function switchButtons(turnOff, buttons = [])
-        {
-            buttons.forEach(function (button) {
-                button.attr('disabled', turnOff);
-            });
-        }
-
+        //when client clicks "secure another domain"
         $('body').on('click', '#secure-another-domain', function () {
             let anotherDomainModalOptions = {
                 title: $.mage.__('Enter the domain you want Fastly to secure'),
@@ -185,15 +154,6 @@ define([
             });
         }
 
-        function getServiceInfoUrl(loader)
-        {
-            return $.ajax({
-                type: 'get',
-                url: config.serviceInfoUrl,
-                showLoader: loader
-            });
-        }
-
         /**
          * https://docs.fastly.com/api/tls-subscriptions#tls_subscriptions
          * @param name
@@ -228,11 +188,6 @@ define([
         /** Load certifications modal */
         $('#tls-certifications-button').on('click', function () {
             console.log("tls-certifications-button");
-        });
-
-        /** Load configurations modal */
-        $('#tls-configurations-button').on('click', function () {
-            console.log("tls-configurations-button");
         });
     }
 });

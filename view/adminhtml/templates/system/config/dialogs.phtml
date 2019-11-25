@@ -2331,37 +2331,6 @@
         </fieldset>
 </script>
 
-<script type="text/x-magento-template" id="fastly-tls-domains-template">
-    <!-- Overlay template messages -->
-    <div class="messages">
-        <div class="message message-error fastly-message-error" style="display: none; margin-bottom: 15px;"></div>
-        <div class="message message-success fastly-message-success" style="display: none;"></div>
-        <div class="message message-warning fastly-message-warning" style="display: none;"></div>
-    </div>
-    <div class="admin__fieldset recommended">
-        <div class="admin__field-control">
-            <div class="admin__data-grid-pager" style="float:right;">
-                <button id="secure-another-domain" class="secure-domain">SECURE ANOTHER DOMAIN</button>
-            </div>
-            <table class="admin__control-table" id="tls-domains-table">
-                <thead>
-                <tr>
-                    <th><?php /* @noEscape */ echo __('Domain') ?></th>
-                    <th><?php /* @noEscape */ echo __('TLS Status') ?></th>
-                </tr>
-                </thead>
-                <tbody class="tls-domains-item-container">
-                </tbody>
-                <tfoot>
-                <tr>
-                    <td colspan="2" class="col-actions-add"></td>
-                </tr>
-                </tfoot>
-            </table>
-        </div>
-    </div>
-</script>
-
 <script type="text/x-magento-template" id="fastly-tls-new-domains-template">
     <div class="messages">
         <div class="message message-warning fastly-message-warning" style="display: none">
@@ -2369,7 +2338,7 @@
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_TlsManagement_Domains/secureAnotherDomain'); ?>"
+    <form action="<?= /* @noEscape */ $block->getUrl('adminhtml/fastlyCdn_TlsManagement/secureAnotherDomain'); ?>"
           method="POST" id="fastly-secure-another-domain"
           class="form-inline"
           enctype="multipart/form-data">
@@ -2541,9 +2510,7 @@ $updateWafBypassUrl =           $block->getUrl('adminhtml/fastlyCdn_Waf/updateWa
 //TLS Management
 $getTlsConfigurations =         $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getTlsConfigurations');
 $getTlsDomains =                $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getTlsDomains');
-$disableTls =                   $block->getUrl('adminhtml/fastlyCdn_TlsManagement_Domains/disableTls');
-$enableTls =                    $block->getUrl('adminhtml/fastlyCdn_TlsManagement_Domains/enableTls');
-$secureAnotherDomain =          $block->getUrl('adminhtml/fastlyCdn_TlsManagement_Domains/secureAnotherDomain');
+$secureAnotherDomain =          $block->getUrl('adminhtml/fastlyCdn_TlsManagement/secureAnotherDomain');
 $getTlsSubscriptions =          $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getTlsSubscriptions');
 
 // This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application
@@ -2642,8 +2609,6 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "changeUpdateFlag": "<?php echo $block->escapeJsQuote($changeUpdateFlag); ?>",
                     "getTlsConfigurations": "<?php echo $block->escapeJsQuote($getTlsConfigurations); ?>",
                     "getTlsDomains": "<?php echo $block->escapeJsQuote($getTlsDomains); ?>",
-                    "disableTls": "<?php echo $block->escapeJsQuote($disableTls); ?>",
-                    "enableTls": "<?php echo $block->escapeJsQuote($enableTls); ?>",
                     "secureAnotherDomain": "<?php echo $block->escapeJsQuote($secureAnotherDomain); ?>",
                     "getTlsSubscriptions": "<?php echo $block->escapeJsQuote($getTlsSubscriptions); ?>"
                 }

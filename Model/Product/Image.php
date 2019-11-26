@@ -22,8 +22,10 @@ namespace Fastly\Cdn\Model\Product;
 
 use Fastly\Cdn\Model\Config;
 use Magento\Catalog\Model\Product\Image as ImageModel;
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\PageCache\Model\Config as PageCacheConfig;
 use Magento\Catalog\Helper\Image as ImageHelper;
+use Magento\Framework\Filesystem;
 
 /**
  * Class Image
@@ -302,6 +304,15 @@ class Image extends ImageModel
     {
         $baseFile = $this->getBaseFile();
         $url = $this->getBaseFileUrl($baseFile);
+
+        $filesystem = \Magento\Framework\App\ObjectManager::getInstance()->get(Filesystem::class);
+        $mediaDir = $filesystem->getDirectoryWrite(DirectoryList::MEDIA);
+        $imageAbsolutePath = $mediaDir->getAbsolutePath($baseFile);
+
+        if (!$this->_fileExists($imageAbsolutePath)) {
+            $imageHelper = \Magento\Framework\App\ObjectManager::getInstance()->get(ImageHelper::class);
+            $url = $imageHelper->getDefaultPlaceholderUrl($this->getDestinationSubdir());
+        }
 
         $imageQuality = $this->_scopeConfig->getValue(Config::XML_FASTLY_IMAGE_OPTIMIZATION_IMAGE_QUALITY);
 

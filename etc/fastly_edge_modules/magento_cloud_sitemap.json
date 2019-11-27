@@ -36,11 +36,11 @@
     },
     "vcl": [
         {
-            "template": "{{#each rules}}\nif (!req.backend.is_shield && req.url.path == \"{{source}}\") {\n  set bereq.url = \"{{dest}}\";\n}\n{{/each}}",
+            "template": "{{#each rules}}\nif (req.backend.is_origin && req.url.path == \"{{source}}\") {\n  set bereq.url = \"{{dest}}\";\n}\n{{/each}}",
             "type": "miss"
         },
         {
-            "template": "{{#each rules}}\nif (!req.backend.is_shield && req.url.path == \"{{source}}\") {\n  set bereq.url = \"{{dest}}\";\n}\n{{/each}}",
+            "template": "{{#each rules}}\nif (req.backend.is_origin && req.url.path == \"{{source}}\") {\n  set bereq.url = \"{{dest}}\";\n}\n{{/each}}",
             "type": "pass"
         }
     ],

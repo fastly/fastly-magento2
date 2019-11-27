@@ -11,7 +11,7 @@
 			"properties": [
 				{
 					"name": "pathpattern",
-					"label": "Path pattern",
+					"label": "Path pattern (regular expression)",
 					"description": "Regular expressions are supported",
 					"type": "string",
 					"required": true

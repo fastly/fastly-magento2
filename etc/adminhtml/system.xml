@@ -573,6 +573,17 @@
                             <source_model>Fastly\Cdn\Model\Config\Backend\PixelRatios</source_model>
                             <validate>required_entry</validate>
                         </field>
+                        <!-- =========================================
+                             Image Verify select field
+                        ========================================== -->
+                        <field id="image_verify" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Verify Image</label>
+                            <comment>Verify image actually exists on the disk. May cause performance issues especially on systems with shared filesystems.</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="image_optimizations">1</field>
+                            </depends>
+                        </field>
                     </group>
                     <!-- ============================
                         Maintenance Support group

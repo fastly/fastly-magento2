@@ -328,6 +328,12 @@ class Config extends \Magento\PageCache\Model\Config
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimizations';
 
     /**
+     * XML path to image verify flag
+     */
+    const XML_FASTLY_IMAGE_VERIFY
+        = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_verify';
+
+    /**
      * XML path to image optimization force lossy flag
      */
     const XML_FASTLY_FORCE_LOSSY

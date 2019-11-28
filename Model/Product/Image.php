@@ -182,17 +182,6 @@ class Image extends ImageModel
 
     private function adjustSize()
     {
-        $originalImage = $this->_mediaDirectory->getAbsolutePath($this->getBaseFile());
-        $originalSize = getimagesize($originalImage);
-
-        if ($this->getWidth() > $originalSize[0]) {
-            $this->setWidth($originalSize[0]);
-        }
-
-        if ($this->getHeight() > $originalSize[1]) {
-            $this->setHeight($originalSize[1]);
-        }
-
         $this->fastlyParameters['width'] = $this->_width;
         $this->fastlyParameters['height'] = $this->_height;
 
@@ -201,38 +190,6 @@ class Image extends ImageModel
             // We'll use aspect ratio canvas to avoid issues when using dpr
             $this->fastlyParameters['canvas'] = "{$this->_width}:{$this->_height}";
         }
-    }
-
-    /**
-     * Return resized product image information
-     *
-     * @return array
-     */
-    public function getResizedImageInfo()
-    {
-        if ($this->isFastlyImageOptimizationEnabled() == false) {
-            return parent::getResizedImageInfo();
-        }
-
-        // Return image data
-        if ($this->getBaseFile() !== null) {
-            return [
-                0 => $this->getWidth(),
-                1 => $this->getHeight()
-            ];
-        }
-
-        // No image, parse the placeholder
-        $asset = $this->_assetRepo->createAsset(
-            "Magento_Catalog::images/product/placeholder/{$this->getDestinationSubdir()}.jpg"
-        );
-        $img = $asset->getSourceFile();
-        $imageInfo = getimagesize($img);
-
-        $this->setWidth($imageInfo[0]);
-        $this->setHeight($imageInfo[1]);
-
-        return $imageInfo;
     }
 
     /**
@@ -302,13 +259,6 @@ class Image extends ImageModel
     {
         $baseFile = $this->getBaseFile();
         $url = $this->getBaseFileUrl($baseFile);
-
-        $imageAbsolutePath = $this->_mediaDirectory->getAbsolutePath($baseFile);
-
-        if (!$this->_fileExists($imageAbsolutePath)) {
-            $imageHelper = \Magento\Framework\App\ObjectManager::getInstance()->get(ImageHelper::class);
-            $url = $imageHelper->getDefaultPlaceholderUrl($this->getDestinationSubdir());
-        }
 
         $imageQuality = $this->_scopeConfig->getValue(Config::XML_FASTLY_IMAGE_OPTIMIZATION_IMAGE_QUALITY);
 

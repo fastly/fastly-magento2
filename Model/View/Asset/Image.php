@@ -67,6 +67,10 @@ class Image extends ImageModel
      */
     private $fastlyUrl = null;
     /**
+     * @var null
+     */
+    private $isImageVerifyEnabled = null;
+    /**
      * @var ScopeConfigInterface
      */
     private $scopeConfig;
@@ -246,12 +250,14 @@ class Image extends ImageModel
         $baseFile = $this->getSourceFile();
         $url = $this->getBaseFileUrl($baseFile);
 
-        $mediaDir = $this->filesystem->getDirectoryWrite(DirectoryList::MEDIA);
-        $imageAbsolutePath = $mediaDir->getAbsolutePath($baseFile);
+        if ($this->isImageVerifyEnabled()) {
+            $mediaDir = $this->filesystem->getDirectoryWrite(DirectoryList::MEDIA);
+            $imageAbsolutePath = $mediaDir->getAbsolutePath($baseFile);
 
-        if (!$this->file->fileExists($imageAbsolutePath)) {
-            $imageHelper = \Magento\Framework\App\ObjectManager::getInstance()->get(ImageHelper::class);
-            $url = $imageHelper->getDefaultPlaceholderUrl($this->miscParams['image_type']);
+            if (!$this->file->fileExists($imageAbsolutePath)) {
+                $imageHelper = \Magento\Framework\App\ObjectManager::getInstance()->get(ImageHelper::class);
+                $url = $imageHelper->getDefaultPlaceholderUrl($this->miscParams['image_type']);
+            }
         }
 
         $imageQuality = $this->scopeConfig->getValue(Config::XML_FASTLY_IMAGE_OPTIMIZATION_IMAGE_QUALITY);
@@ -323,5 +329,23 @@ class Image extends ImageModel
         }
 
         return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    private function isImageVerifyEnabled()
+    {
+        if ($this->isImageVerifyEnabled !== null) {
+            return $this->isImageVerifyEnabled;
+        }
+
+        $this->isImageVerifyEnabled = true;
+
+        if ($this->scopeConfig->isSetFlag(Config::XML_FASTLY_IMAGE_VERIFY) == false) {
+            $this->isImageVerifyEnabled = false;
+        }
+
+        return $this->isImageVerifyEnabled;
     }
 }

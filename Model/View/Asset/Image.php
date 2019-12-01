@@ -24,13 +24,17 @@ use Fastly\Cdn\Model\Config;
 use Magento\Catalog\Helper\Image as ImageHelper;
 use Magento\Catalog\Model\Product\Media\ConfigInterface;
 use Magento\Catalog\Model\View\Asset\Image as ImageModel;
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Encryption\EncryptorInterface;
+use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\View\Asset\ContextInterface;
 use Magento\PageCache\Model\Config as PageCacheConfig;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Filesystem\Io\File;
+use Magento\Framework\Filesystem;
 
 /**
  * Class Image
@@ -63,6 +67,10 @@ class Image extends ImageModel
      */
     private $fastlyUrl = null;
     /**
+     * @var null
+     */
+    private $isImageVerifyEnabled = null;
+    /**
      * @var ScopeConfigInterface
      */
     private $scopeConfig;
@@ -82,6 +90,16 @@ class Image extends ImageModel
     private $miscParams;
 
     /**
+     * @var File
+     */
+    private $file;
+
+    /**
+     * @var Filesystem
+     */
+    private $filesystem;
+
+    /**
      * Image constructor.
      * @param ConfigInterface $mediaConfig
      * @param ContextInterface $context
@@ -89,7 +107,9 @@ class Image extends ImageModel
      * @param ScopeConfigInterface $scopeConfig
      * @param ImageHelper $imageHelper
      * @param StoreManagerInterface $storeManager
-     * @param string $filePath
+     * @param File $file
+     * @param Filesystem $filesystem
+     * @param $filePath
      * @param array $miscParams
      */
     public function __construct(
@@ -99,6 +119,8 @@ class Image extends ImageModel
         ScopeConfigInterface $scopeConfig,
         ImageHelper $imageHelper,
         StoreManagerInterface $storeManager,
+        File $file,
+        Filesystem $filesystem,
         $filePath,
         array $miscParams
     ) {
@@ -106,11 +128,14 @@ class Image extends ImageModel
         $this->imageHelper = $imageHelper;
         $this->storeManager = $storeManager;
         $this->miscParams = $miscParams;
+        $this->file = $file;
+        $this->filesystem = $filesystem;
         parent::__construct($mediaConfig, $context, $encryptor, $filePath, $miscParams);
     }
 
     /**
      * @return string|null
+     * @throws FileSystemException
      * @throws NoSuchEntityException
      */
     public function getUrl()
@@ -218,11 +243,22 @@ class Image extends ImageModel
 
     /**
      * @throws NoSuchEntityException
+     * @throws FileSystemException
      */
     public function getFastlyUrl()
     {
         $baseFile = $this->getSourceFile();
         $url = $this->getBaseFileUrl($baseFile);
+
+        if ($this->isImageVerifyEnabled()) {
+            $mediaDir = $this->filesystem->getDirectoryWrite(DirectoryList::MEDIA);
+            $imageAbsolutePath = $mediaDir->getAbsolutePath($baseFile);
+
+            if (!$this->file->fileExists($imageAbsolutePath)) {
+                $imageHelper = \Magento\Framework\App\ObjectManager::getInstance()->get(ImageHelper::class);
+                $url = $imageHelper->getDefaultPlaceholderUrl($this->miscParams['image_type']);
+            }
+        }
 
         $imageQuality = $this->scopeConfig->getValue(Config::XML_FASTLY_IMAGE_OPTIMIZATION_IMAGE_QUALITY);
 
@@ -293,5 +329,23 @@ class Image extends ImageModel
         }
 
         return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    private function isImageVerifyEnabled()
+    {
+        if ($this->isImageVerifyEnabled !== null) {
+            return $this->isImageVerifyEnabled;
+        }
+
+        $this->isImageVerifyEnabled = true;
+
+        if ($this->scopeConfig->isSetFlag(Config::XML_FASTLY_IMAGE_VERIFY) == false) {
+            $this->isImageVerifyEnabled = false;
+        }
+
+        return $this->isImageVerifyEnabled;
     }
 }

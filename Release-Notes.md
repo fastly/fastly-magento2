@@ -1,5 +1,12 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.123
+
+- Introduce Verify images exist on the disk tunable. In most cases verifying images exist on the disk results in heavy IO penalty
+  especially when images are stored on a shared filesystem https://github.com/fastly/fastly-magento2/pull/330
+- Fix bug with UI showing VCL update is needed when it's not https://github.com/fastly/fastly-magento2/pull/326
+- Strip Listrak query arguments by default https://github.com/fastly/fastly-magento2/pull/325
+
 ## 1.2.122
 
 - Make the rate limiting UI clearer by providing a top level on/off switch https://github.com/fastly/fastly-magento2/pull/321

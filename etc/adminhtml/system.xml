@@ -443,31 +443,6 @@
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Edge</frontend_model>
                         </field>
                     </group>
-                    <!-- =======================
-                         Import/Export group
-                    ======================== -->
-                    <group id="fastly_import_export" sortOrder="425" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0">
-                        <label>Import/Export</label>
-                        <comment>
-                        </comment>
-                        <!-- =================
-                             Import button
-                        ================== -->
-                        <field id="import" translate="label comment tooltip" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
-                            <label>Import</label>
-                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ImportBtn</frontend_model>
-                        </field>
-                        <!-- =================
-                             Export button
-                        ================== -->
-                        <field id="export" translate="label comment tooltip" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
-                            <label>Export</label>
-                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ExportBtn</frontend_model>
-                            <comment>
-                                <![CDATA[Export Edge ACLs, Edge Dictionaries, Active Edge Modules and Custom Snippets]]>
-                            </comment>
-                        </field>
-                    </group>
                     <!-- ============================
                          Image Optimization group
                     ============================= -->
@@ -788,6 +763,23 @@
                         <field id="versions" translate="label comment tooltip" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Version History</label>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\VersionHistory</frontend_model>
+                        </field>
+                        <!-- =================
+                             Import button
+                        ================== -->
+                        <field id="import" translate="label comment tooltip" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Import</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ImportBtn</frontend_model>
+                        </field>
+                        <!-- =================
+                             Export button
+                        ================== -->
+                        <field id="export" translate="label comment tooltip" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Export</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ExportBtn</frontend_model>
+                            <comment>
+                                <![CDATA[Export Edge ACLs, Edge Dictionaries, Active Edge Modules and Custom Snippets]]>
+                            </comment>
                         </field>
                     </group>
                     <!-- ===============================

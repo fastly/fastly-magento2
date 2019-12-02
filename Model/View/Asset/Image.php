@@ -109,7 +109,7 @@ class Image extends ImageModel
      * @param StoreManagerInterface $storeManager
      * @param File $file
      * @param Filesystem $filesystem
-     * @param $filePath
+     * @param string $filePath
      * @param array $miscParams
      */
     public function __construct(

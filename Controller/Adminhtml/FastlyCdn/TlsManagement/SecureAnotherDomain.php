@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\TlsManagement\Domains;
+namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\TlsManagement;
 
 use Fastly\Cdn\Model\Api;
 use Magento\Backend\App\Action;
@@ -16,7 +16,7 @@ use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
 
 /**
  * Class SecureAnotherDomain
- * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\TlsManagement\Domains
+ * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\TlsManagement
  */
 class SecureAnotherDomain extends Action
 {

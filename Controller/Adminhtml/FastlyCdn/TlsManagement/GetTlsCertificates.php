@@ -13,10 +13,10 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 
 /**
- * Class GetTlsConfigurations
+ * Class GetTlsCertificates
  * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\TlsManagement
  */
-class GetTlsConfigurations extends Action
+class GetTlsCertificates extends Action
 {
     /**
      * @var JsonFactory
@@ -29,7 +29,7 @@ class GetTlsConfigurations extends Action
     private $api;
 
     /**
-     * CheckTlsPermission constructor.
+     * GetTlsCertificates constructor.
      * @param Action\Context $context
      * @param JsonFactory $jsonFactory
      * @param Api $api
@@ -47,32 +47,30 @@ class GetTlsConfigurations extends Action
     /**
      * @return ResponseInterface|Json|ResultInterface
      */
-    public function execute()
+    public function execute(): Json
     {
-        $json = $this->jsonFactory->create();
+        $result = $this->jsonFactory->create();
         try {
-            $result = $this->api->getTlsConfigurations();
+            $response = $this->api->getTlsCertificates();
         } catch (LocalizedException $e) {
-            return $json->setData([
-               'status' => false,
-               'msg'    => $e->getMessage()
+            return $result->setData([
+                'status'    => false,
+                'msg'   => $e->getMessage()
             ]);
         }
 
-        if (!$result) {
-            return $json->setData([
-                'status' => true,
-                'flag'   => false,
-                'msg'    => 'Adding a domain to a shared certificate requires a valid payment method on your account. '
-                            . 'Please upgrade to a paid account in order to use this service or reach out to support@fastly.com.'
+        if (!$response) {
+            return $result->setData([
+                'status'    => true,
+                'flag'  => false,
+                'msg'   => 'test'
             ]);
         }
 
-        return $json->setData([
-            'status' => true,
-            'flag'  => true,
-            'configurations'    => $result->data,
-            'meta'  => $result->meta
+        return $result->setData([
+            'status'    => true,
+            'flag'    => true,
+            'data'  => $response->data ?: []
         ]);
     }
 }

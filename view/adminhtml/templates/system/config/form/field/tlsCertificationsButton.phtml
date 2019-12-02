@@ -1,9 +1,35 @@
 <button type="button"
         style="margin-bottom: 10px;"
-        class="secondary"
-        id="tls-certifications-button">
-    <?php /* @noEscape */ echo __('Configure') ?>
+        class="primary"
+        id="secure-another-certificate">
+    <?php /* @noEscape */ echo __('Browse for key file') ?>
 </button>
+
+<input class="primary" id="fastly-input-tls-certificate-file" type="file" style="display:none;">
+
+<div class="design_theme_ua_regexp">
+    <div class="admin__control-table-wrapper">
+        <table class="admin__control-table">
+            <thead>
+            <tr>
+                <th><?php /* @noEscape */ echo __('Name') ?></th>
+                <th><?php /* @noEscape */ echo __('Issuer') ?></th>
+                <th><?php /* @noEscape */ echo __('Issued to') ?></th>
+            </tr>
+            </thead>
+            <tbody id="tls-certificates-item-container"></tbody>
+        </table>
+    </div>
+    <p class="loading-tls-certificates list-loading">
+        <img class="processing"
+             alt="Collecting"
+             style="margin:0 5px;"
+             src="<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/fastly16.gif') ?>" />
+        <?php /* @noEscape */ echo __('Loading TLS certificates...'); ?>
+    </p>
+    <p class="no-tls-certificates" style="display: none;">
+    </p>
+</div>
 
 <div class="message message-error fastly-button-messages"
      id="fastly-error-tls-certifications-button"
@@ -16,7 +42,3 @@
 <div class="message message-warning fastly-button-messages"
      id="fastly-warning-tls-certifications-button"
      style="display: none"></div>
-
-<div class="message message-warning fastly-button-messages"
-     id="fastly-warning-not-authorized-button-msg" style="display: none">
-</div>

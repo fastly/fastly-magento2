@@ -1469,6 +1469,11 @@ class Api
         );
     }
 
+    /**
+     * @param array $params
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
     public function secureAnotherDomain($params = [])
     {
         $url = $this->config->getApiEndpoint() . 'tls/subscriptions';
@@ -1483,6 +1488,10 @@ class Api
         );
     }
 
+    /**
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
     public function getTlsSubscriptions()
     {
         $url = $this->config->getApiEndpoint() . 'tls/subscriptions?include=tls_authorizations';
@@ -1496,6 +1505,43 @@ class Api
             'application/vnd.api+json'
         );
     }
+
+    /**
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function getTlsCertificates()
+    {
+        $url = $this->config->getApiEndpoint() . 'tls/certificates';
+        return $this->_fetch(
+            $url,
+            \Zend_Http_Client::GET,
+            '',
+            false,
+            null,
+            true,
+            'application/vnd.api+json'
+        );
+    }
+
+    /**
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function createTlsCertificate($parameters)
+    {
+        $url = $this->config->getApiEndpoint() . 'tls/certificates';
+        return $this->_fetch(
+            $url,
+            \Zend_Http_Client::GET,
+            '',
+            false,
+            null,
+            true,
+            'application/vnd.api+json'
+        );
+    }
+
 
     /**
      * Wrapper for API calls towards Fastly service

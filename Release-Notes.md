@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.124
+
+- Fix for setup:di:compile issue https://github.com/fastly/fastly-magento2/pull/334
+- Move Import/Export menu under Tools menu https://github.com/fastly/fastly-magento2/pulls?q=is%3Apr+is%3Aclosed
+
 ## 1.2.123
 
 - Introduce Verify images exist on the disk tunable. In most cases verifying images exist on the disk results in heavy IO penalty

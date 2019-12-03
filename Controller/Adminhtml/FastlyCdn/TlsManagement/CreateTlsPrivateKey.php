@@ -15,10 +15,10 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
 
 /**
- * Class CreateTlsCertificate
+ * Class CreateTlsPrivateKey
  * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\TlsManagement
  */
-class CreateTlsCertificate extends Action
+class CreateTlsPrivateKey extends Action
 {
     /**
      * @var JsonFactory
@@ -69,16 +69,16 @@ class CreateTlsCertificate extends Action
     {
         $result = $this->jsonFactory->create();
         $data['data'] = [
-            'type'  => 'tls_certificate',
+            'type'  => 'tls_private_key',
             'attributes'    => [
-                'cert_blob' => $this->request->getParam('certificate'),
+                'key' => $this->request->getParam('private_key'),
                 'name'  => $this->request->getParam('name')
             ]
         ];
 
         try {
             $data = $this->json->serialize($data);
-            $response = $this->api->createTlsCertificate($data);
+            $response = $this->api->createTlsPrivateKey($data);
         } catch (LocalizedException $e) {
             return $result->setData([
                 'status'    => false,
@@ -86,7 +86,7 @@ class CreateTlsCertificate extends Action
             ]);
         }
 
-        if ($response) {
+        if (!$response) {
             return $result->setData([
                 'status'    => true,
                 'flag'  => false,
@@ -97,6 +97,7 @@ class CreateTlsCertificate extends Action
         return $result->setData([
             'status'    => true,
             'flag'  => true,
+            'msg'   => 'You successfully uploaded this private key to Fastly. Now, upload the matching certificate.',
             'data'   => $response->data
         ]);
     }

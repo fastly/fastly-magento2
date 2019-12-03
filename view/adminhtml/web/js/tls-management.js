@@ -12,6 +12,7 @@ define([
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         let configurations;
+        let certificateModal;
 
         /** Domains messages */
         let domainErrorButtonMsg = $('#fastly-error-tls-domains-button');
@@ -155,6 +156,59 @@ define([
             $('.new-domain-item-container').append(tr);
         }
 
+        function onClickSaveTlsPrivateKey(button, nameInput, keyInput)
+        {
+            let private_key = '';
+
+            $(keyInput).on('change', function (event) {
+                let reader = new FileReader();
+                let files = event.target.files;
+
+                reader.onload = function (event) {
+                    private_key = event.target.result;
+                };
+
+                reader.readAsText(files[0]);
+            });
+
+            $(button).on('click', function () {
+                let name = $(nameInput).val();
+                let form_key = $('#form-key').val();
+
+                return createTlsPrivateKey(true, private_key, name, form_key).done(function (response) {
+                    if (response.status !== true || response.flag !== true) {
+                        modal.modal('closeModal');
+                        return certErrorButtonMsg.text($.mage.__(response.msg)).show();
+                    }
+
+                    let anotherDomainModalOptions = {
+                        title: $.mage.__('Upload the matching certificate.'),
+                        content: function () {
+                            return document.getElementById('fastly-tls-certificate-template').textContent
+                        }
+                    };
+
+                    overlay(anotherDomainModalOptions);
+                    certificateModal = modal;
+                    createNewCertificateElements();
+                    $('#add-certificate-item').on('click', function () {
+                        createNewCertificateElements();
+                    });
+                });
+
+                /*
+                return createTlsCertificate(true, private_key, name, form_key).done(function (response) {
+                    modal.modal('closeModal');
+                    if (response.status !== true || response.flag !== true) {
+                        return certErrorButtonMsg.text($.mage.__(response.msg)).show();
+                    }
+
+                    return certSuccessButtonMsg.text($.mage.__(response.msg)).show();
+                });
+                */
+            });
+        }
+
         function onClickInvokeSavingDomain(button, domain, conf)
         {
             $(button).on('click', function () {
@@ -180,25 +234,7 @@ define([
             });
         }
 
-
-        /** Load certifications modal */
-        $('#secure-another-certificate').on('click', function () {
-            let anotherDomainModalOptions = {
-                title: $.mage.__('Upload your key file securely.'),
-                content: function () {
-                    return document.getElementById('fastly-tls-configurations-template').textContent
-                }
-            };
-
-            overlay(anotherDomainModalOptions);
-            $('.upload-button').remove();
-            createNewCertificateRowElements();
-            $('#add-certificate-item').on('click', function () {
-                createNewCertificateRowElements();
-            });
-        });
-
-        function createNewCertificateRowElements()
+        function createNewPrivateKeyElements()
         {
             let tr = document.createElement('tr');
             let tdName = document.createElement('td');
@@ -208,53 +244,110 @@ define([
             let inputName = document.createElement('input');
             inputName.setAttribute('class', 'admin__control-text');
             inputName.setAttribute('type', 'text');
-            inputName.setAttribute('name', 'certificate-name');
-            let inputFile = document.createElement('input');
-            inputFile.setAttribute('type', 'file');
-            inputFile.setAttribute('name', 'certificate-file');
+            inputName.setAttribute('name', 'private-key-name');
+            let inputKey = document.createElement('input');
+            inputKey.setAttribute('name', 'private-key-file');
+            inputKey.setAttribute('id', 'private-key-file');
+            inputKey.setAttribute('type', 'file');
+            inputKey.setAttribute('class', 'admin__control-text');
             let inputAction = document.createElement('span');
-            inputAction.setAttribute('class', 'action-delete fastly-save-action save_certificate');
-            inputAction.setAttribute('title', 'Save Certificate');
+            inputAction.setAttribute('class', 'action-delete fastly-save-action save_private_key');
+            inputAction.setAttribute('title', 'Save Private Key');
             inputAction.setAttribute('type', 'button');
             tdName.append(inputName);
-            tdFile.append(inputFile);
+            tdFile.append(inputKey);
             tdAction.append(inputAction);
             tr.append(tdName);
             tr.append(tdFile);
             tr.append(tdAction);
-            onClickSaveTlsCertificate(inputAction, inputName, inputFile);
-            $('.new-tls-certificate-item-container').append(tr);
+            onClickSaveTlsPrivateKey(inputAction, inputName, inputKey);
+            $('.new-tls-private-key-item-container').append(tr);
         }
 
-        function onClickSaveTlsCertificate(button, nameInput, fileInput)
+        function createNewCertificateElements()
         {
-            $(button).on('click', function () {
-                let name = $(nameInput).val();
-                let files = $(fileInput)[0].files;
-                let key = '';
+            let tr = document.createElement('tr');
+            let tdName = document.createElement('td');
+            let tdFile = document.createElement('td');
+            let tdAction = document.createElement('td');
 
+            let inputName = document.createElement('input');
+            inputName.setAttribute('class', 'admin__control-text');
+            inputName.setAttribute('type', 'text');
+            inputName.setAttribute('name', 'certificate-key-name');
+            let inputKey = document.createElement('input');
+            inputKey.setAttribute('name', 'certificate-key-file');
+            inputKey.setAttribute('id', 'certificate-key-file');
+            inputKey.setAttribute('type', 'file');
+            inputKey.setAttribute('class', 'admin__control-text');
+            let inputAction = document.createElement('span');
+            inputAction.setAttribute('class', 'action-delete fastly-save-action save_private_key');
+            inputAction.setAttribute('title', 'Save Private Key');
+            inputAction.setAttribute('type', 'button');
+            tdName.append(inputName);
+            tdFile.append(inputKey);
+            tdAction.append(inputAction);
+            tr.append(tdName);
+            tr.append(tdFile);
+            tr.append(tdAction);
+            onClickSaveTlsCertificate(inputAction, inputName, inputKey);
+            $('.new-tls-private-key-item-container').append(tr);
+        }
+
+
+        /** Load certifications modal */
+        $('#secure-another-certificate').on('click', function () {
+            let createCertificateModalOptions = {
+                title: $.mage.__('Upload your key file securely.'),
+                content: function () {
+                    return document.getElementById('fastly-tls-private-key-template').textContent
+                }
+            };
+
+            overlay(createCertificateModalOptions);
+            $('.upload-button').remove();
+            createNewPrivateKeyElements();
+            $('#add-certificate-item').on('click', function () {
+                createNewPrivateKeyElements();
+            });
+        });
+
+        function onClickSaveTlsCertificate(button, nameInput, certInput)
+        {
+            let certificate = '';
+
+            $(certInput).on('change', function (event) {
                 let reader = new FileReader();
+                let files = event.target.files;
+
                 reader.onload = function (event) {
-                    key = event.target.result;
+                    certificate = event.target.result;
                 };
 
-                createTlsCertificate(true, key, name).done(function (response) {
-                    modal.modal('closeModal');
+                reader.readAsText(files[0]);
+            });
+
+            $(button).on('click', function () {
+                let name = $(nameInput).val();
+                let form_key = $('#form-key').val();
+
+                return createTlsCertificate(true, certificate, name, form_key).done(function (response) {
                     if (response.status !== true || response.flag !== true) {
-                        return certErrorButtonMsg.text($.mage.__(response.msg)).show();
+                        modal.modal('closeModal');
+                        return showErrorMessage(response.msg);
                     }
 
-                    return certSuccessButtonMsg.text($.mage.__(response.msg)).show();
+                    certificateModal.modal('closeModal');
+                    modal.modal('closeModal');
+                    certSuccessButtonMsg($.mage.__(response.msg));
                 });
-
-                return reader.readAsText(files[0]);
             });
         }
 
         /** Ajax calls */
 
         /**
-         * https://docs.fastly.com/api/tls#tls_configurations
+         * https://docs.fastly.com/api/tls#tls_configurations_309cdce31802712ca4b043e9b2ef674a
          * @param loader
          * @returns {jQuery}
          */
@@ -268,7 +361,7 @@ define([
         }
 
         /**
-         * https://docs.fastly.com/api/tls-subscriptions#tls_subscriptions
+         * https://docs.fastly.com/api/tls-subscriptions#tls_subscriptions_cdd1217479c84ef986bc63eca6473403
          * @param name
          * @param conf
          * @param loader
@@ -285,7 +378,7 @@ define([
         }
 
         /**
-         * https://docs.fastly.com/api/tls-subscriptions#tls_subscriptions
+         * https://docs.fastly.com/api/tls-subscriptions#tls_subscriptions_92add1384ab77a70d8c236c275116ecd
          * @param loader
          * @returns {jQuery}
          */
@@ -299,7 +392,7 @@ define([
         }
 
         /**
-         * https://docs.fastly.com/api/tls#tls_certificates
+         * https://docs.fastly.com/api/tls#tls_certificates_8f7f856e0dfc70a5855b0e58a65a7041
          * @param loader
          * @returns {jQuery}
          */
@@ -312,11 +405,38 @@ define([
             });
         }
 
-        function createTlsCertificate(loader, private_key, cert_name)
+        /**
+         * https://docs.fastly.com/api/tls#tls_configurations_309cdce31802712ca4b043e9b2ef674a
+         * @param loader
+         * @param private_key
+         * @param cert_name
+         * @param form_key
+         * @returns {jQuery}
+         */
+        function createTlsCertificate(loader, certificate, cert_name, form_key)
         {
             return $.ajax({
-                type: 'get',
+                type: 'post',
                 url: config.createTlsCertificate,
+                data: {'form_key': form_key, 'certificate': certificate, 'name': cert_name},
+                showLoader: loader
+            });
+        }
+
+        /**
+         * https://docs.fastly.com/api/tls#tls_private_keys_8df12494b971ab303bb6228cb6bc5f2c
+         * @param loader
+         * @param private_key
+         * @param key_name
+         * @param form_key
+         * @returns {jQuery}
+         */
+        function createTlsPrivateKey(loader, private_key, key_name, form_key)
+        {
+            return $.ajax({
+                type: 'post',
+                url: config.createTlsPrivateKey,
+                data: {'form_key': form_key, 'private_key': private_key, 'name': key_name},
                 showLoader: loader
             });
         }

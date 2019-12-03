@@ -1533,8 +1533,8 @@ class Api
         $url = $this->config->getApiEndpoint() . 'tls/certificates';
         return $this->_fetch(
             $url,
-            \Zend_Http_Client::GET,
-            '',
+            \Zend_Http_Client::POST,
+            $parameters,
             false,
             null,
             true,
@@ -1542,6 +1542,24 @@ class Api
         );
     }
 
+    /**
+     * @param $parameters
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function createTlsPrivateKey($parameters)
+    {
+        $url = $this->config->getApiEndpoint() . 'tls/private_keys';
+        return $this->_fetch(
+            $url,
+            \Zend_Http_Client::POST,
+            $parameters,
+            false,
+            null,
+            true,
+            'application/vnd.api+json'
+        );
+    }
 
     /**
      * Wrapper for API calls towards Fastly service
@@ -1622,7 +1640,7 @@ class Api
         $responseMessage = \Zend_Http_Response::extractMessage($response);
 
         // Return error based on response code
-        if ($responseCode == '429') {
+        if ($responseCode == '429' || $responseCode == '400') {
             throw new LocalizedException(__($responseMessage), null, $responseCode);
         } elseif ($responseCode != '200' && $responseCode != '201' && $responseCode != '204') {
             if ($logError == true) {

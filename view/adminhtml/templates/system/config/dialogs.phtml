@@ -2333,6 +2333,8 @@
 
 <script type="text/x-magento-template" id="fastly-tls-new-domains-template">
     <div class="messages">
+        <div class="message message-success fastly-message-success" style="display: none">
+        </div>
         <div class="message message-warning fastly-message-warning" style="display: none">
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
@@ -2356,9 +2358,6 @@
                 <tfoot>
                 <tr>
                     <td colspan="4" class="col-actions-add">
-                        <button id="add-domain-item" class="action-add" title="Add new item" type="button">
-                            <span><?php /* @noEscape */ echo __('Add new item') ?></span>
-                        </button>
                     </td>
                 </tr>
                 </tfoot>
@@ -2369,6 +2368,8 @@
 
 <script type="text/x-magento-template" id="fastly-tls-private-key-template">
     <div class="messages">
+        <div class="message message-success fastly-message-success" style="display: none">
+        </div>
         <div class="message message-warning fastly-message-warning" style="display: none">
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
@@ -2392,11 +2393,7 @@
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="4" class="col-actions-add">
-                        <button id="add-certificate-item" class="action-add" title="Add new item" type="button">
-                            <span><?php /* @noEscape */ echo __('Add new item') ?></span>
-                        </button>
-                    </td>
+                    <td colspan="4" class="col-actions-add"></td>
                 </tr>
                 </tfoot>
             </table>
@@ -2406,6 +2403,8 @@
 
 <script type="text/x-magento-template" id="fastly-tls-certificate-template">
     <div class="messages">
+        <div class="message message-success fastly-message-success" style="display: none">
+        </div>
         <div class="message message-warning fastly-message-warning" style="display: none">
         </div>
         <div class="message message-error fastly-message-error" style="display: none">
@@ -2429,11 +2428,62 @@
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="4" class="col-actions-add">
-                        <button id="add-certificate-item" class="action-add" title="Add new item" type="button">
-                            <span><?php /* @noEscape */ echo __('Add new item') ?></span>
-                        </button>
-                    </td>
+                    <td colspan="4" class="col-actions-add"></td>
+                </tr>
+                </tfoot>
+            </table>
+        </fieldset>
+    </form>
+    <fieldset class="admin__fieldset form-list" id="keys-with-no-certificate" style="margin-top: 3rem; display:none;">
+        <table class="admin__control-table">
+            <thead>
+            <tr>
+                <th><?php /* @noEscape */ echo __('Private Key') ?></th>
+                <th><?php /* @noEscape */ echo __('Fastly Key Id') ?></th>
+            </tr>
+            </thead>
+            <tbody class="no-certificate-container">
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="4" class="col-actions-add"></td>
+            </tr>
+            </tfoot>
+        </table>
+    </fieldset>
+</script>
+
+<script type="text/x-magento-template" id="fastly-show-tls-certificate-template">
+    <div class="messages">
+        <div class="message message-success fastly-message-success" style="display: none">
+        </div>
+        <div class="message message-warning fastly-message-warning" style="display: none">
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?= /* @noEscape */ $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getCertificateWithId'); ?>"
+          method="POST"
+          id="fastly-tls-private-key"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list">
+            <table class="admin__control-table" id="fastly-tls-specific-certificate">
+                <thead>
+                <tr>
+                    <th><?php /* @noEscape */ echo __('Id') ?></th>
+                    <th><?php /* @noEscape */ echo __('Created At') ?></th>
+                    <th><?php /* @noEscape */ echo __('Issued To') ?></th>
+                    <th><?php /* @noEscape */ echo __('Issuer') ?></th>
+                    <th><?php /* @noEscape */ echo __('Expires') ?></th>
+                    <th><?php /* @noEscape */ echo __('Signature algorithm') ?></th>
+                </tr>
+                </thead>
+                <tbody class="specific-certificate-container">
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="6" class="col-actions-add"></td>
                 </tr>
                 </tfoot>
             </table>
@@ -2557,8 +2607,10 @@ $getTlsDomains =                $block->getUrl('adminhtml/fastlyCdn_TlsManagemen
 $secureAnotherDomain =          $block->getUrl('adminhtml/fastlyCdn_TlsManagement/secureAnotherDomain');
 $getTlsSubscriptions =          $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getTlsSubscriptions');
 $getTlsCertificates =           $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getTlsCertificates');
-$createTlsCertificate =           $block->getUrl('adminhtml/fastlyCdn_TlsManagement/createTlsCertificate');
-$createTlsPrivateKey =           $block->getUrl('adminhtml/fastlyCdn_TlsManagement/createTlsPrivateKey');
+$createTlsCertificate =         $block->getUrl('adminhtml/fastlyCdn_TlsManagement/createTlsCertificate');
+$createTlsPrivateKey =          $block->getUrl('adminhtml/fastlyCdn_TlsManagement/createTlsPrivateKey');
+$getPrivateKeyFlag =            $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getPrivateKeyFlag');
+$getCertificateWithId =         $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getCertificateWithId');
 
 // This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application
 $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
@@ -2660,7 +2712,9 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "getTlsSubscriptions": "<?php echo $block->escapeJsQuote($getTlsSubscriptions); ?>",
                     "getTlsCertificates": "<?php echo $block->escapeJsQuote($getTlsCertificates); ?>",
                     "createTlsCertificate": "<?php echo $block->escapeJsQuote($createTlsCertificate); ?>",
-                    "createTlsPrivateKey": "<?php echo $block->escapeJsQuote($createTlsPrivateKey); ?>"
+                    "getPrivateKeyFlag": "<?php echo $block->escapeJsQuote($getPrivateKeyFlag); ?>",
+                    "createTlsPrivateKey": "<?php echo $block->escapeJsQuote($createTlsPrivateKey); ?>",
+                    "getCertificateWithId": "<?php echo $block->escapeJsQuote($getCertificateWithId); ?>"
                 }
             }
         }

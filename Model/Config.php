@@ -519,6 +519,10 @@ class Config extends \Magento\PageCache\Model\Config
      */
     const UPDATED_VCL_FLAG = 'Fastly/Cdn/updated_VCL_to_Fastly_flag';
 
+    const IS_PRIVATE_KEY_UPDATED = 'Fastly/Cdn/Is_private_key_updated';
+
+    const LAST_INSERTED_PRIVATE_KEY = 'Fastly/Cdn/Last_inserted_private_key';
+
     /**
      * @var Json|null
      */

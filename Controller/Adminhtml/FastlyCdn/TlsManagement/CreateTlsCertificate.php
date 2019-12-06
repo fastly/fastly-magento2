@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\TlsManagement;
 
 use Fastly\Cdn\Model\Api;
+use Fastly\Cdn\Model\Config;
 use Magento\Backend\App\Action;
+use Magento\Framework\App\Cache\TypeListInterface;
+use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\Json;
@@ -39,6 +42,14 @@ class CreateTlsCertificate extends Action
      * @var JsonSerializer
      */
     private $json;
+    /**
+     * @var TypeListInterface
+     */
+    private $typeList;
+    /**
+     * @var WriterInterface
+     */
+    private $writer;
 
     /**
      * CreateTlsCertificate constructor.
@@ -46,6 +57,8 @@ class CreateTlsCertificate extends Action
      * @param JsonFactory $jsonFactory
      * @param JsonSerializer $json
      * @param Http $request
+     * @param WriterInterface $writer
+     * @param TypeListInterface $typeList
      * @param Api $api
      */
     public function __construct(
@@ -53,6 +66,8 @@ class CreateTlsCertificate extends Action
         JsonFactory $jsonFactory,
         JsonSerializer $json,
         Http $request,
+        WriterInterface $writer,
+        TypeListInterface $typeList,
         Api $api
     ) {
         parent::__construct($context);
@@ -60,6 +75,8 @@ class CreateTlsCertificate extends Action
         $this->api = $api;
         $this->request = $request;
         $this->json = $json;
+        $this->typeList = $typeList;
+        $this->writer = $writer;
     }
 
     /**
@@ -86,7 +103,7 @@ class CreateTlsCertificate extends Action
             ]);
         }
 
-        if ($response) {
+        if (!$response) {
             return $result->setData([
                 'status'    => true,
                 'flag'  => false,
@@ -94,10 +111,14 @@ class CreateTlsCertificate extends Action
             ]);
         }
 
+        $this->writer->save(Config::IS_PRIVATE_KEY_UPDATED, 'false');
+        $this->writer->save(Config::LAST_INSERTED_PRIVATE_KEY, '');
+        $this->typeList->cleanType('config');
         return $result->setData([
             'status'    => true,
             'flag'  => true,
-            'data'   => $response->data
+            'data'   => $response->data,
+            'msg'   => 'You successfully uploaded this certificate to Fastly'
         ]);
     }
 }

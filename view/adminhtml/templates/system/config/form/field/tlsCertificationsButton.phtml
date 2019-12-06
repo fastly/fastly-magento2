@@ -1,8 +1,15 @@
 <button type="button"
         style="margin-bottom: 10px;"
-        class="primary"
-        id="secure-another-certificate">
-    <?php /* @noEscape */ echo __('Browse for key file') ?>
+        class="primary secure"
+        id="secure-private-key">
+    <?php /* @noEscape */ echo __('Create private key') ?>
+</button>
+
+<button type="button"
+        style="margin-bottom: 10px; display:none;"
+        class="primary secure"
+        id="secure-certificate">
+    <?php /* @noEscape */ echo __('Create tls certificate') ?>
 </button>
 
 <div class="design_theme_ua_regexp">
@@ -13,6 +20,7 @@
                 <th><?php /* @noEscape */ echo __('Name') ?></th>
                 <th><?php /* @noEscape */ echo __('Issuer') ?></th>
                 <th><?php /* @noEscape */ echo __('Issued to') ?></th>
+                <th><?php /* @noEscape */ echo __('Action') ?></th>
             </tr>
             </thead>
             <tbody id="tls-certificates-item-container">

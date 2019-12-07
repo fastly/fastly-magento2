@@ -67,8 +67,6 @@ define([
 
             if (response.isPrivateKeyCreatedWithoutCertificate) {
                 lastInsertedPrivateKey = response.privateKey;
-                $('#secure-private-key').hide();
-                $('#secure-certificate').show();
             }
 
             $('.loading-tls-domains').hide();
@@ -123,28 +121,75 @@ define([
             });
         });
 
+        function onChange(event)
+        {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                return e.target.result;
+            };
+
+            reader.readAsText(file);
+        }
+
         /** When client wants to add new certificate */
-        $('body').on('click', '.secure', function () {
+        $('body').on('click', '#secure-certificate', function () {
+            let privateKey = '';
+            let certificate = '';
             resetAllMessages();
-            getPrivateKeyFlag(true).done(function (response) {
+            let html = generateCertificateFormFields();
+            overlay(certificateModalSettings);
+            $('.new-tls-certificate-item-container').append(html);
 
-                if (response.flag !== true) {
-                    overlay(privateKeyModalSettings);
-                    $('.upload-button').remove();
-                    let html = generatePrivateKeyFormFields();
-                    $('.new-tls-private-key-item-container').append(html);
-                    handleModalForNewPrivateKey();
-                    return;
-                }
+            $('#private-key-file').change(function () {
+                let file = $('#private-key-file')[0].files;
+                let reader = new FileReader();
 
-                overlay(certificateModalSettings);
-                $('.upload-button').remove();
-                let html = generateCertificateFormFields();
-                $('.new-tls-certificate-item-container').append(html);
-                $('#keys-with-no-certificate').show();
-                html = generateTableBodyForNewlyCreatedPrivateKey(response.privateKey.name, response.privateKey.key);
-                $('.no-certificate-container').append(html);
-                handleModalForNewCertificate(modal);
+                reader.onload = function (event) {
+                    privateKey = event.target.result;
+                };
+                reader.readAsText(file[0]);
+            });
+
+            $('#certificate-key-file').change(function () {
+                let file = $('#certificate-key-file')[0].files;
+                let reader = new FileReader();
+
+                reader.onload = function (event) {
+                    certificate = event.target.result;
+                };
+                reader.readAsText(file[0]);
+            });
+
+            //when clients wants to save certificate
+            $('.save_certificate').on('click', function () {
+                let formKey = $('#form-key').val();
+                let privateKeyName = $('#private-key-name').val();
+                let certificateName = $('#certificate-key-name').val();
+
+                createTlsPrivateKey(true, privateKey, privateKeyName, formKey).done(function (response) {
+                    if (response.status !== true || response.flag !== true) {
+                        modal.modal('closeModal');
+                        return certErrorButtonMsg.text($.mage.__(response.msg)).show();
+                    }
+
+                    showSuccessMessage(response.msg);
+                    createTlsCertificate(true, certificate, certificateName, formKey).done(function (response) {
+                        modal.modal('closeModal');
+                        resetAllMessages();
+                        if (response.status !== true || response.flag !== true) {
+                            certErrorButtonMsg.text($.mage.__(response.msg)).show();
+                            return deletePrivateKey(privateKey, false); //todo: implement this
+                        }
+
+                        let attributes = response.data.attributes;
+                        let html = generateCertificateTableBody(attributes.name, attributes.issuer, attributes.issued_to, response.data.id);
+                        $('.no-tls-certificates').hide();
+                        $('#tls-certificates-item-container').append(html);
+                        return certSuccessButtonMsg.text($.mage.__(response.msg)).show();
+                    });
+                });
+            });
         });
 
         $('body').on('click', '.show-certificate', function () {
@@ -206,94 +251,6 @@ define([
             });
         }
 
-        /**
-         * displaying form for adding new private key
-         */
-        function handleModalForNewPrivateKey()
-        {
-            let privateKey = '';
-
-            //handle file input
-            $('#private-key-file').on('change', function (event) {
-                let reader = new FileReader();
-                let files = event.target.files;
-
-                reader.onload = function (event) {
-                    privateKey =  event.target.result;
-                };
-
-                reader.readAsText(files[0]);
-            });
-
-            //when client wants to save the private key
-            $('.save_private_key').on('click', function () {
-
-                let name = $('#private-key-name').val();
-                let form_key = $('#form-key').val();
-
-                createTlsPrivateKey(true, privateKey, name, form_key).done(function (response) {
-
-                    resetAllMessages();
-                    modal.modal('closeModal');
-                    if (response.status !== true || response.flag !== true) {
-                        return certErrorButtonMsg.text($.mage.__(response.msg)).show();
-                    }
-
-                    $('#secure-another-certificate').val('Browse for certificate file');
-                    $('#secure-certificate').show();
-                    $('#secure-private-key').hide();
-
-                    return certSuccessButtonMsg.text($.mage.__(response.msg)).show();
-                });
-            });
-        }
-
-        /**
-         * creating new certificate
-         * @param certModal
-         */
-        function handleModalForNewCertificate(certModal)
-        {
-            let certificate = '';
-
-            //handle certificate file input
-            $('#certificate-key-file').on('change', function (event) {
-                let reader = new FileReader();
-                let files = event.target.files;
-
-                reader.onload = function (event) {
-                    certificate =  event.target.result;
-                };
-
-                reader.readAsText(files[0]);
-            });
-
-            //handle certificate click on save button
-            $('.save_certificate_key').on('click', function () {
-                let name = $('#certificate-key-name').val();
-                let form_key = $('#form-key').val();
-
-                createTlsCertificate(true, certificate, name, form_key).done(function (response) {
-                    resetAllMessages();
-                    certModal.modal('closeModal');
-
-                    if (response.status !== true || response.flag !== true) {
-                        return certErrorButtonMsg.text($.mage.__(response.msg)).show();
-                    }
-
-                    $('.no-tls-certificates').hide();
-
-                    let attributes = response.data.attributes;
-                    let html = generateCertificateTableBody(attributes.name, attributes.issuer, attributes.issued_to, response.data.id);
-                    $('#tls-certificates-item-container').append(html);
-                    $('#secure-certificate').hide();
-                    $('#secure-private-key').show();
-
-                    return certSuccessButtonMsg.text($.mage.__(response.msg)).show();
-                });
-            });
-        }
-
         /** ----- Generate html ----- */
         function generateCertificateTableBody(name, issuer, issuedTo, id)
         {
@@ -335,9 +292,11 @@ define([
             let html = '';
 
             html += '<tr>';
+            html += '<td><input class="admin__control-text" type="text" id="private-key-name" name="private-key-name"></td>';
+            html += '<td><input id="private-key-file" name="private-key-file" type="file" class="admin__control-text"></td>';
             html += '<td><input class="admin__control-text" type="text" id="certificate-key-name" name="certificate-key-name"></td>';
             html += '<td><input id="certificate-key-file" name="certificate-key-file" type="file" class="admin__control-text"></td>';
-            html += '<td><span class="action-delete fastly-save-action save_certificate_key" title="Save Private Key" type="button"></span></td>';
+            html += '<td><span class="action-delete fastly-save-action save_certificate" title="Save Certificate" type="button"></span></td>';
             html += '</tr>';
             return html;
         }
@@ -506,6 +465,16 @@ define([
                 type: 'post',
                 url: config.getCertificateWithId,
                 data: {'form_key':formKey, 'id':id},
+                showLoader: loader
+            });
+        }
+
+        function deletePrivateKey(privateKey, loader)
+        {
+            return $.ajax({
+                type: 'get',
+                url: config.deletePrivateKey,
+                data: {formKey, 'privateKey':privateKey},
                 showLoader: loader
             });
         }

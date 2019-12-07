@@ -111,9 +111,6 @@ class CreateTlsCertificate extends Action
             ]);
         }
 
-        $this->writer->save(Config::IS_PRIVATE_KEY_UPDATED, 'false');
-        $this->writer->save(Config::LAST_INSERTED_PRIVATE_KEY, '');
-        $this->typeList->cleanType('config');
         return $result->setData([
             'status'    => true,
             'flag'  => true,

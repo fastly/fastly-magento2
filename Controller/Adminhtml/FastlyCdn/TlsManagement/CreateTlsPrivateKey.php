@@ -114,14 +114,10 @@ class CreateTlsPrivateKey extends Action
             ]);
         }
 
-        $this->typeList->cleanType('config');
-        $privateKeyJson = $this->json->serialize(['name' => $name, 'key' => $response->data->id]);
-        $this->writer->save(Config::LAST_INSERTED_PRIVATE_KEY, $privateKeyJson);
-        $this->writer->save(Config::IS_PRIVATE_KEY_UPDATED, 'true');
         return $result->setData([
             'status'    => true,
             'flag'  => true,
-            'msg'   => 'You successfully uploaded this private key to Fastly. Now, upload the matching certificate.',
+            'msg'   => 'You successfully uploaded this private key to Fastly.',
             'data'   => $response->data
         ]);
     }

@@ -2419,7 +2419,9 @@
             <table class="admin__control-table" id="fastly-tls-certificate-table">
                 <thead>
                 <tr>
-                    <th><?php /* @noEscape */ echo __('Name') ?></th>
+                    <th><?php /* @noEscape */ echo __('Private Key Name') ?></th>
+                    <th><?php /* @noEscape */ echo __('Private Key File') ?></th>
+                    <th><?php /* @noEscape */ echo __('Certificate Name') ?></th>
                     <th><?php /* @noEscape */ echo __('Certificate File') ?></th>
                     <th><?php /* @noEscape */ echo __('Action') ?></th>
                 </tr>
@@ -2428,7 +2430,7 @@
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="4" class="col-actions-add"></td>
+                    <td colspan="5" class="col-actions-add"></td>
                 </tr>
                 </tfoot>
             </table>
@@ -2611,6 +2613,7 @@ $createTlsCertificate =         $block->getUrl('adminhtml/fastlyCdn_TlsManagemen
 $createTlsPrivateKey =          $block->getUrl('adminhtml/fastlyCdn_TlsManagement/createTlsPrivateKey');
 $getPrivateKeyFlag =            $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getPrivateKeyFlag');
 $getCertificateWithId =         $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getCertificateWithId');
+$deletePrivateKey =             $block->getUrl('adminhtml/fastlyCdn_TlsManagement/deletePrivateKey');
 
 // This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application
 $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
@@ -2714,7 +2717,8 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "createTlsCertificate": "<?php echo $block->escapeJsQuote($createTlsCertificate); ?>",
                     "getPrivateKeyFlag": "<?php echo $block->escapeJsQuote($getPrivateKeyFlag); ?>",
                     "createTlsPrivateKey": "<?php echo $block->escapeJsQuote($createTlsPrivateKey); ?>",
-                    "getCertificateWithId": "<?php echo $block->escapeJsQuote($getCertificateWithId); ?>"
+                    "getCertificateWithId": "<?php echo $block->escapeJsQuote($getCertificateWithId); ?>",
+                    "deletePrivateKey": "<?php echo $block->escapeJsQuote($deletePrivateKey); ?>"
                 }
             }
         }

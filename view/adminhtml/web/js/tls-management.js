@@ -11,17 +11,6 @@ define([
 ], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, showSuccessMessage, showWarningMessage, confirm) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
-        //todo: kada potvrdi novi private_key, otvara se modal sa "sada dodaj novi certifikat" i succes porukom za private_key
-        //todo: kada klijent stisne na "dodaj novu konfiguraciju, dolje se očitavaju prijašnji privatni keys koji nemaju certifikat i svaki omogučuje edit button za dodavanje certifikacije
-        //todo: optimizirat i očistit kod
-        //todo. pretvorit button u browse for certificate file
-        //todo: delete certificate (ask are you sure), delete private key, replace certificate
-        //todo: modal pa reset messages
-
-        let configurations;
-        let numberOfCertificates;
-        let lastInsertedPrivateKey = false;
-
         /** Domains messages */
         let domainErrorButtonMsg = $('#fastly-error-tls-domains-button');
         let domainSuccessButtonMsg = $('#fastly-success-tls-domains-button');
@@ -50,59 +39,22 @@ define([
             }
         };
 
-        let privateKeyModalSettings = {
-            title: $.mage.__('Upload your key file securely.'),
-            content: function () {
-                return document.getElementById('fastly-tls-private-key-template').textContent
-            }
-        };
-
         //catch all secured domains when https and networking is selected
-        getTlsSubscriptions(true).done(function (response) {
+        getTlsDomains(true).done(function (response) {
             if (response.status !== true || response.flag !== true) {
                 $('#secure-another-domain').attr('disabled', true);
-                $('#secure-another-certificate').attr('disabled', true);
+                $('#secure-certificate').attr('disabled', true);
                 return notAuthorisedMsg.text($.mage.__(response.msg)).show();
             }
 
-            if (response.isPrivateKeyCreatedWithoutCertificate) {
-                lastInsertedPrivateKey = response.privateKey;
-            }
+            let tlsDomains = response.domains;
 
-            $('.loading-tls-domains').hide();
-            if (response.data.length !== 0) {
-                $.each(response.data, function (index, subscription) {
-                    let domain = subscription.relationships.tls_domains.data[0].id;
-                    let tlsStatus = subscription.attributes.state;
-                    let html = generateSecuredDomainsTableFields(domain, tlsStatus);
-                    $('#tls-domains-item-container').append(html);
-                });
-                return;
-            }
-
-            return $('.no-tls-domains').text($.mage.__('There are no TLS domains configured yet.')).show();
-        });
-
-        //catch all tls certificates
-        getTlsCertificates(true).done(function (response) {
-            if (response.status !== true || response.flag !== true) {
-                return certErrorButtonMsg.text($.mage.__(response.msg)).show();
-            }
-
-            $('.loading-tls-certificates').hide();
-            numberOfCertificates = response.data.length;
-            if (numberOfCertificates !== 0) {
-                $.each(response.data, function (index, certificate) {
-                    let name = certificate.attributes.name;
-                    let issuer = certificate.attributes.issuer;
-                    let issuedTo = certificate.attributes.issued_to;
-                    let html = generateCertificateTableBody(name, issuer, issuedTo, certificate.id);
-                    $('#tls-certificates-item-container').append(html);
-                });
-                return;
-            }
-
-            $('.no-tls-certificates').text($.mage.__('There are no TLS certificates configured yet.')).show();
+            getTlsCertificates(true).done(function (response) {
+                tlsDomains = combineDomainsWithCertificates(tlsDomains, response.data);
+                let html = generateDomainsTable(tlsDomains);
+                $('.loading-tls-domains').hide();
+                $('#tls-domains-item-container').append(html);
+            });
         });
 
         /** When client wants to secure new domain with Fastly certificate */
@@ -112,25 +64,14 @@ define([
                     return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
                 }
 
-                configurations = response.configurations.length !== 0 ? response.configurations : [];
+                let configurations = response.configurations.length !== 0 ? response.configurations : [];
                 overlay(anotherDomainModalSettings);
                 $('.upload-button').remove();
-                let html = generateDomainsTableFields();
+                let html = generateDomainsTableFields(configurations);
                 $('.new-domain-item-container').append(html);
                 handleDomainModal(); //open modal for adding new domain
             });
         });
-
-        function onChange(event)
-        {
-            var file = event.target.files[0];
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                return e.target.result;
-            };
-
-            reader.readAsText(file);
-        }
 
         /** When client wants to add new certificate */
         $('body').on('click', '#secure-certificate', function () {
@@ -138,6 +79,7 @@ define([
             let certificate = '';
             resetAllMessages();
             let html = generateCertificateFormFields();
+            $('.upload-button').remove();
             overlay(certificateModalSettings);
             $('.new-tls-certificate-item-container').append(html);
 
@@ -179,7 +121,7 @@ define([
                         resetAllMessages();
                         if (response.status !== true || response.flag !== true) {
                             certErrorButtonMsg.text($.mage.__(response.msg)).show();
-                            return deletePrivateKey(privateKey, false); //todo: implement this
+                            return deletePrivateKey(privateKey, false);
                         }
 
                         let attributes = response.data.attributes;
@@ -221,14 +163,29 @@ define([
             });
         });
 
-        /** ----- Modal window handle -----*/
+        function combineDomainsWithCertificates(domains, certificates)
+        {
+            $.each(domains, function (i, domain) {
+                let domainCertificateIds = [];
+                $.each(domain.relationships.tls_certificates.data, function (j, domainCertificate) {
+                    domainCertificateIds.push(domainCertificate.id);
+                });
+
+                $.each(certificates, function (j, certificate) {
+                    if ($.inArray(certificate.id, domainCertificateIds) !== -1) {
+                        domains[i].attributes = certificate.attributes;
+                    }
+                });
+            });
+
+            return domains;
+        }
 
         /**
-         * adding new domain
+         * Modal for securing domain with fastly certificate
          */
         function handleDomainModal()
         {
-            //when client wants to save domain
             $('#save_item').on('click', function () {
 
                 let name = $('.domain-name').val();
@@ -252,6 +209,26 @@ define([
         }
 
         /** ----- Generate html ----- */
+        function generateDomainsTable(domains)
+        {
+            let html = '';
+            $.each(domains, function (index, domain) {
+                html += '<tr>';
+                let certificate = 'Fastly managed certificate';
+                let expires = '3 months';
+                if (domain.attributes !== undefined) {
+                    certificate = domain.attributes.name;
+                    expires = new Date(domain.attributes.not_after);
+                }
+
+                html += '<td>' + domain.id + '</td>';
+                html += '<td>' + certificate + '</td>';
+                html += '<td>' + expires.toLocaleString() + '</td>';
+                html += '</tr>';
+            });
+            return html;
+        }
+
         function generateCertificateTableBody(name, issuer, issuedTo, id)
         {
             let html = '';
@@ -262,27 +239,6 @@ define([
             html += '<td>' +
                 '<button class="fastly-view-vcl-action show-certificate" data-certificate-number="'+id+'"  style="margin-left:0.5rem;"  title="Show Certificate" type="button"></button>' +
                 '</td>';
-            html += '</tr>';
-            return html;
-        }
-
-        function generateTableBodyForNewlyCreatedPrivateKey(key, id)
-        {
-            let html = '';
-            html += '<tr>';
-            html += '<td>' + key + '</td>';
-            html += '<td>' + id + '</td>';
-            html += '</tr>';
-            return html;
-        }
-
-        function generatePrivateKeyFormFields()
-        {
-            let html = '';
-            html += '<tr>';
-            html += '<td><input class="admin__control-text" type="text" id="private-key-name" name="private-key-name"></td>';
-            html += '<td><input class="admin__control-text" type="file" id="private-key-file" name="private-key-file"></td>';
-            html += '<td><span class="action-delete fastly-save-action save_private_key" title="Save Private Key" type="button"></span></td>';
             html += '</tr>';
             return html;
         }
@@ -311,7 +267,7 @@ define([
             return html;
         }
 
-        function generateDomainsTableFields()
+        function generateDomainsTableFields(configurations)
         {
             let html = '';
             html += '<tr>';
@@ -343,6 +299,15 @@ define([
 
 
         /** Ajax calls */
+
+        function getTlsDomains(loader)
+        {
+            return $.ajax({
+                type: 'get',
+                url: config.getTlsDomains,
+                showLoader: loader
+            });
+        }
 
         /**
          * https://docs.fastly.com/api/tls#tls_configurations_309cdce31802712ca4b043e9b2ef674a
@@ -440,20 +405,6 @@ define([
         }
 
         /**
-         * return "Is private key created without certificate" flag from core_config
-         * @param loader
-         * @returns {jQuery}
-         */
-        function getPrivateKeyFlag(loader)
-        {
-            return $.ajax({
-                type: 'get',
-                url: config.getPrivateKeyFlag,
-                showLoader: loader
-            });
-        }
-
-        /**
          * https://docs.fastly.com/api/tls#tls_certificates_2eb9c3d908a20261e17e4b42955a69a1
          * @param id
          * @param formKey
@@ -469,6 +420,12 @@ define([
             });
         }
 
+        /**
+         * https://docs.fastly.com/api/tls#tls_private_keys_a6b56e5e17abd12831a716b4fec33277
+         * @param privateKey
+         * @param loader
+         * @returns {jQuery}
+         */
         function deletePrivateKey(privateKey, loader)
         {
             return $.ajax({

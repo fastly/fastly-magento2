@@ -6,6 +6,7 @@ namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\TlsManagement;
 
 use Fastly\Cdn\Model\Api;
 use Magento\Backend\App\Action;
+use Magento\Framework\App\Request\Http;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
@@ -13,35 +14,43 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 
 /**
- * Class GetTlsCertificates
+ * Class DeletePrivateKey
  * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\TlsManagement
  */
-class GetTlsCertificates extends Action
+class DeletePrivateKey extends Action
 {
-    /**
-     * @var JsonFactory
-     */
-    private $jsonFactory;
-
     /**
      * @var Api
      */
     private $api;
 
     /**
-     * GetTlsCertificates constructor.
+     * @var Http
+     */
+    private $request;
+
+    /**
+     * @var JsonFactory
+     */
+    private $jsonFactory;
+
+    /**
+     * DeletePrivateKey constructor.
      * @param Action\Context $context
-     * @param JsonFactory $jsonFactory
      * @param Api $api
+     * @param Http $request
+     * @param JsonFactory $jsonFactory
      */
     public function __construct(
         Action\Context $context,
-        JsonFactory $jsonFactory,
-        Api $api
+        Api $api,
+        Http $request,
+        JsonFactory $jsonFactory
     ) {
         parent::__construct($context);
-        $this->jsonFactory = $jsonFactory;
         $this->api = $api;
+        $this->request = $request;
+        $this->jsonFactory = $jsonFactory;
     }
 
     /**
@@ -50,8 +59,9 @@ class GetTlsCertificates extends Action
     public function execute(): Json
     {
         $result = $this->jsonFactory->create();
+        $privateKeyId = $this->request->getParam('privateKey');
         try {
-            $response = $this->api->getTlsCertificates();
+            $response = $this->api->deletePrivateKey($privateKeyId);
         } catch (LocalizedException $e) {
             return $result->setData([
                 'status'    => false,
@@ -63,14 +73,13 @@ class GetTlsCertificates extends Action
             return $result->setData([
                 'status'    => true,
                 'flag'  => false,
-                'msg'   => 'test' //todo: change this
+                'msg'   => 'Private key with following id not found.'
             ]);
         }
 
         return $result->setData([
             'status'    => true,
-            'flag'    => true,
-            'data'  => $response->data ?: []
+            'flag'  => true
         ]);
     }
 }

@@ -1581,6 +1581,25 @@ class Api
     }
 
     /**
+     * @param $id
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function deletePrivateKey($id)
+    {
+        $url = $this->config->getApiEndpoint() . 'tls/private_keys/' . $id;
+        return $this->_fetch(
+            $url,
+            \Zend_Http_Client::DELETE,
+            '',
+            false,
+            null,
+            true,
+            'application/vnd.api+json'
+        );
+    }
+
+    /**
      * Wrapper for API calls towards Fastly service
      *
      * @param string $uri API Endpoint

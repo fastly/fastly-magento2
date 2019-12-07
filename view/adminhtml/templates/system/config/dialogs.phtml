@@ -2366,41 +2366,6 @@
     </form>
 </script>
 
-<script type="text/x-magento-template" id="fastly-tls-private-key-template">
-    <div class="messages">
-        <div class="message message-success fastly-message-success" style="display: none">
-        </div>
-        <div class="message message-warning fastly-message-warning" style="display: none">
-        </div>
-        <div class="message message-error fastly-message-error" style="display: none">
-        </div>
-    </div>
-    <form action="<?= /* @noEscape */ $block->getUrl('adminhtml/fastlyCdn_TlsManagement/createTlsPrivateKey'); ?>"
-          method="POST"
-          id="fastly-tls-private-key"
-          class="form-inline"
-          enctype="multipart/form-data">
-        <fieldset class="admin__fieldset form-list">
-            <table class="admin__control-table" id="fastly-tls-certificate-table">
-                <thead>
-                    <tr>
-                        <th><?php /* @noEscape */ echo __('Name') ?></th>
-                        <th><?php /* @noEscape */ echo __('Private-key File') ?></th>
-                        <th><?php /* @noEscape */ echo __('Action') ?></th>
-                    </tr>
-                </thead>
-                <tbody class="new-tls-private-key-item-container">
-                </tbody>
-                <tfoot>
-                <tr>
-                    <td colspan="4" class="col-actions-add"></td>
-                </tr>
-                </tfoot>
-            </table>
-        </fieldset>
-    </form>
-</script>
-
 <script type="text/x-magento-template" id="fastly-tls-certificate-template">
     <div class="messages">
         <div class="message message-success fastly-message-success" style="display: none">
@@ -2436,23 +2401,6 @@
             </table>
         </fieldset>
     </form>
-    <fieldset class="admin__fieldset form-list" id="keys-with-no-certificate" style="margin-top: 3rem; display:none;">
-        <table class="admin__control-table">
-            <thead>
-            <tr>
-                <th><?php /* @noEscape */ echo __('Private Key') ?></th>
-                <th><?php /* @noEscape */ echo __('Fastly Key Id') ?></th>
-            </tr>
-            </thead>
-            <tbody class="no-certificate-container">
-            </tbody>
-            <tfoot>
-            <tr>
-                <td colspan="4" class="col-actions-add"></td>
-            </tr>
-            </tfoot>
-        </table>
-    </fieldset>
 </script>
 
 <script type="text/x-magento-template" id="fastly-show-tls-certificate-template">

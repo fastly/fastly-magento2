@@ -50,8 +50,14 @@ define([
             let tlsDomains = response.domains;
 
             getTlsCertificates(true).done(function (response) {
+                let html = '';
+                $.each(response.data, function (index, certificate) {
+                    html += generateCertificateTableBody(certificate.attributes.name, certificate.attributes.issuer, certificate.attributes.issued_to, certificate.id)
+                });
+                $('.loading-tls-certificates').hide();
+                $('#tls-certificates-item-container').append(html);
                 tlsDomains = combineDomainsWithCertificates(tlsDomains, response.data);
-                let html = generateDomainsTable(tlsDomains);
+                html = generateDomainsTable(tlsDomains);
                 $('.loading-tls-domains').hide();
                 $('#tls-domains-item-container').append(html);
             });

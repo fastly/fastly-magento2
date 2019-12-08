@@ -2340,9 +2340,7 @@
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php echo /* @noEscape */ $block->getUrl(
-            'adminhtml/fastlyCdn_TlsManagement/secureAnotherDomain'
-    );?>"
+    <form action="<?php echo /* @noEscape */ $block->getUrl('adminhtml/fastlyCdn_TlsManagement/secureAnotherDomain');?>"
           method="POST" id="fastly-secure-another-domain"
           class="form-inline"
           enctype="multipart/form-data">
@@ -2416,9 +2414,7 @@
         <div class="message message-error fastly-message-error" style="display: none">
         </div>
     </div>
-    <form action="<?php echo /* @noEscape */$block->getUrl(
-            'adminhtml/fastlyCdn_TlsManagement/getCertificateWithId'
-    );?>"
+    <form action="<?php echo /* @noEscape */$block->getUrl('adminhtml/fastlyCdn_TlsManagement/getCertificateWithId');?>"
           method="POST"
           id="fastly-tls-certificate"
           class="form-inline"

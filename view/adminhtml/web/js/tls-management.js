@@ -143,9 +143,12 @@ define([
                         }
 
                         let attributes = response.data.attributes;
-                        let html = generateCertificateTableBody(attributes.name, attributes.issuer, attributes.issued_to, response.data.id);
                         $('.no-tls-certificates').hide();
+                        let html = generateCertificateTableBody(attributes.name, attributes.issuer, attributes.issued_to, response.data.id);
                         $('#tls-certificates-item-container').append(html);
+                        html = generateSecuredDomainsTableFields(response.data.attributes.name);
+                        $('no-tls-domains').hide();
+                        $('#tls-domains-item-container').append(html);
                         return certSuccessButtonMsg.text($.mage.__(response.msg)).show();
                     });
                 });
@@ -241,7 +244,7 @@ define([
             return html;
         }
 
-        function generateSecuredDomainsTableFields(domain, tlsStatus, certificAuthority)
+        function generateSecuredDomainsTableFields(domain)
         {
             let html = '';
             html += '<tr>';

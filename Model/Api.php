@@ -1494,7 +1494,8 @@ class Api
      */
     public function getTlsSubscriptions()
     {
-        $url = $this->config->getApiEndpoint() . 'tls/subscriptions?include=tls_authorizations';
+        $url = $this->config->getApiEndpoint() .
+            'tls/subscriptions?include=tls_authorizations';
         return $this->_fetch(
             $url,
             \Zend_Http_Client::GET,

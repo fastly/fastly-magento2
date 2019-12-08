@@ -173,11 +173,12 @@ define([
 
                 let attributes = response.data.attributes;
                 let html = generateShowCertificateFields(response.data.id,
-                                                         new Date(attributes.created_at),
-                                                         attributes.issued_to,
-                                                         attributes.issuer,
-                                                         new Date(attributes.not_after),
-                                                         attributes.signature_algorithm);
+                    new Date(attributes.created_at),
+                    attributes.issued_to,
+                    attributes.issuer,
+                    new Date(attributes.not_after),
+                    attributes.signature_algorith
+                );
                 overlay(specificCertificateModalSettings);
                 $('.upload-button').remove();
                 $('.specific-certificate-container').append(html);

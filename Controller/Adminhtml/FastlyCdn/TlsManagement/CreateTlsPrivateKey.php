@@ -110,7 +110,7 @@ class CreateTlsPrivateKey extends Action
             return $result->setData([
                 'status'    => true,
                 'flag'  => false,
-                'msg'   => "dawdawd" //todo: change this
+                'msg'   => 'Unsuccessful key creation.'
             ]);
         }
 

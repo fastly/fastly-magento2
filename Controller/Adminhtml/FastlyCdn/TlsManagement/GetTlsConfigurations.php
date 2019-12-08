@@ -64,7 +64,8 @@ class GetTlsConfigurations extends Action
                 'status' => true,
                 'flag'   => false,
                 'msg'    => 'Adding a domain to a shared certificate requires a valid payment method on your account. '
-                            . 'Please upgrade to a paid account in order to use this service or reach out to support@fastly.com.'
+                            . 'Please upgrade to a paid account '
+                             . 'in order to use this service or reach out to support@fastly.com.'
             ]);
         }
 

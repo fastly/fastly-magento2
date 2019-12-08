@@ -1586,6 +1586,24 @@ class Api
     }
 
     /**
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function getTlsDomains()
+    {
+        $url = $this->config->getApiEndpoint() . 'tls/domains';
+        return $this->_fetch(
+            $url,
+            \Zend_Http_Client::GET,
+            '',
+            false,
+            null,
+            true,
+            'application/vnd.api+json'
+        );
+    }
+
+    /**
      * Wrapper for API calls towards Fastly service
      *
      * @param string $uri API Endpoint

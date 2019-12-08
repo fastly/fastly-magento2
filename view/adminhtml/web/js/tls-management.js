@@ -40,21 +40,19 @@ define([
         };
 
         //catch all secured domains when https and networking is selected
-        getTlsSubscriptions(true).done(function (response) {
+        getTlsDomains(true).done(function (response) {
             if (response.status !== true || response.flag !== true) {
                 $('#secure-another-domain').attr('disabled', true);
                 $('#secure-certificate').attr('disabled', true);
                 return notAuthorisedMsg.text($.mage.__(response.msg)).show();
             }
 
-            let tlsDomains = response.data;
+            let tlsDomains = response.domains;
             let html = '';
             $('.loading-tls-domains').hide();
-            if (tlsDomains.length !== 0) {
+            if (tlsDomains !== false && tlsDomains.length !== 0) {
                 $.each(tlsDomains, function (index, domain) {
-                    let attributes = domain.attributes;
-                    let relationships = domain.relationships;
-                    html += generateSecuredDomainsTableFields(relationships.tls_domains.data[0].id, attributes.state, attributes.certificate_authority);
+                    html += generateSecuredDomainsTableFields(domain.id);
                 });
                 $('#tls-domains-item-container').append(html);
             } else {
@@ -205,7 +203,7 @@ define([
                     }
 
                     //append newly created domain on the list
-                    let html = generateSecuredDomainsTableFields(response.domain, response.state, response.authority);
+                    let html = generateSecuredDomainsTableFields(response.domain);
                     $('#tls-domains-item-container').append(html);
 
                     return domainSuccessButtonMsg.text($.mage.__(response.msg)).show();
@@ -248,8 +246,6 @@ define([
             let html = '';
             html += '<tr>';
             html += '<td>' + domain + '</td>';
-            html += '<td>' + tlsStatus + '</td>';
-            html += '<td>' + certificAuthority + '</td>';
             html += '</tr id="' + domain + '">';
             return html;
         }
@@ -327,6 +323,20 @@ define([
             return $.ajax({
                 type: 'get',
                 url: config.getTlsSubscriptions,
+                showLoader: loader
+            });
+        }
+
+        /**
+         *
+         * @param loader
+         * @returns {jQuery}
+         */
+        function getTlsDomains(loader)
+        {
+            return $.ajax({
+                type: 'get',
+                url: config.getTlsDomains,
                 showLoader: loader
             });
         }

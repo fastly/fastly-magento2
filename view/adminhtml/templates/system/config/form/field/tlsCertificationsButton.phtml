@@ -17,7 +17,7 @@
             </tr>
             </thead>
             <tbody id="tls-certificates-item-container">
-                <input type="hidden" value="<?php echo $block->getFormKey(); ?>" id="form-key">
+                <input type="hidden" value="<?php  /* @noEscape */ echo $block->getFormKey(); ?>" id="form-key">
             </tbody>
         </table>
     </div>

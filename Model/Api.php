@@ -929,7 +929,8 @@ class Api
         $storeName = $this->helper->getStoreName();
         $storeUrl = $this->helper->getStoreUrl();
 
-        $text =  $messagePrefix . ' user=' . $currentUsername . ' ' . $message . ' on <' . $storeUrl . '|Store> | ' . $storeName;
+        $text =  $messagePrefix . ' user=' . $currentUsername
+            . ' ' . $message . ' on <' . $storeUrl . '|Store> | ' . $storeName;
 
         $headers = [
             'Content-type: application/json'

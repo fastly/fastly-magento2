@@ -1623,7 +1623,6 @@ class Api
         $acceptHeader = 'application/json'
     ) {
         $apiKey = ($test == true) ? $testApiKey : $this->config->getApiKey();
-
         // Correctly format $body string
         if (is_array($body) == true) {
             $body = http_build_query($body);

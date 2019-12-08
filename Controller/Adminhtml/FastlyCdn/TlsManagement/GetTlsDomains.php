@@ -56,7 +56,7 @@ class GetTlsDomains extends Action
             return $json->setData([
                 'status' => true,
                 'flag'   => false,
-                'msg'    => 'You are not authorized to perform this action. Visit https://docs.fastly.com/en/guides/configuring-user-roles-and-permissions#changing-user-roles-and-access-permissions-for-existing-users'
+                'msg'    => 'You are not authorized to perform this action. '
             ]);
         }
 

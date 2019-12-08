@@ -40,31 +40,45 @@ define([
         };
 
         //catch all secured domains when https and networking is selected
-        getTlsDomains(true).done(function (response) {
+        getTlsSubscriptions(true).done(function (response) {
             if (response.status !== true || response.flag !== true) {
                 $('#secure-another-domain').attr('disabled', true);
                 $('#secure-certificate').attr('disabled', true);
                 return notAuthorisedMsg.text($.mage.__(response.msg)).show();
             }
 
-            let tlsDomains = response.domains;
+            let tlsDomains = response.data;
+            let html = '';
+            $('.loading-tls-domains').hide();
+            if (tlsDomains.length !== 0) {
+                $.each(tlsDomains, function (index, domain) {
+                    let attributes = domain.attributes;
+                    let relationships = domain.relationships;
+                    html += generateSecuredDomainsTableFields(relationships.tls_domains.data[0].id, attributes.state, attributes.certificate_authority);
+                });
+                $('#tls-domains-item-container').append(html);
+            } else {
+                $('.no-tls-domains').text($.mage.__('No TLS domains')).show();
+            }
 
             getTlsCertificates(true).done(function (response) {
                 let html = '';
-                $.each(response.data, function (index, certificate) {
-                    html += generateCertificateTableBody(certificate.attributes.name, certificate.attributes.issuer, certificate.attributes.issued_to, certificate.id)
-                });
                 $('.loading-tls-certificates').hide();
-                $('#tls-certificates-item-container').append(html);
-                tlsDomains = combineDomainsWithCertificates(tlsDomains, response.data);
-                html = generateDomainsTable(tlsDomains);
-                $('.loading-tls-domains').hide();
-                $('#tls-domains-item-container').append(html);
+                if (response.data.length !== 0) {
+                    $.each(response.data, function (index, certificate) {
+                        html += generateCertificateTableBody(certificate.attributes.name, certificate.attributes.issuer, certificate.attributes.issued_to, certificate.id)
+                    });
+                    $('#tls-certificates-item-container').append(html);
+                    return;
+                }
+
+                $('.no-tls-certificates').text($.mage.__('No TLS certificates.')).show();
             });
         });
 
         /** When client wants to secure new domain with Fastly certificate */
         $('body').on('click', '#secure-another-domain', function () {
+            resetAllMessages();
             getTlsConfigurations(true).done(function (response) {
                 if (response.status !== true || response.flag !== true) {
                     return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
@@ -85,8 +99,8 @@ define([
             let certificate = '';
             resetAllMessages();
             let html = generateCertificateFormFields();
-            $('.upload-button').remove();
             overlay(certificateModalSettings);
+            $('.upload-button').remove();
             $('.new-tls-certificate-item-container').append(html);
 
             $('#private-key-file').change(function () {
@@ -165,27 +179,10 @@ define([
                                                          new Date(attributes.not_after),
                                                          attributes.signature_algorithm);
                 overlay(specificCertificateModalSettings);
+                $('.upload-button').remove();
                 $('.specific-certificate-container').append(html);
             });
         });
-
-        function combineDomainsWithCertificates(domains, certificates)
-        {
-            $.each(domains, function (i, domain) {
-                let domainCertificateIds = [];
-                $.each(domain.relationships.tls_certificates.data, function (j, domainCertificate) {
-                    domainCertificateIds.push(domainCertificate.id);
-                });
-
-                $.each(certificates, function (j, certificate) {
-                    if ($.inArray(certificate.id, domainCertificateIds) !== -1) {
-                        domains[i].attributes = certificate.attributes;
-                    }
-                });
-            });
-
-            return domains;
-        }
 
         /**
          * Modal for securing domain with fastly certificate
@@ -206,7 +203,7 @@ define([
                     }
 
                     //append newly created domain on the list
-                    let html = generateSecuredDomainsTableFields(response.domain, response.state);
+                    let html = generateSecuredDomainsTableFields(response.domain, response.state, response.authority);
                     $('#tls-domains-item-container').append(html);
 
                     return domainSuccessButtonMsg.text($.mage.__(response.msg)).show();
@@ -215,25 +212,6 @@ define([
         }
 
         /** ----- Generate html ----- */
-        function generateDomainsTable(domains)
-        {
-            let html = '';
-            $.each(domains, function (index, domain) {
-                html += '<tr>';
-                let certificate = 'Fastly managed certificate';
-                let expires = '3 months';
-                if (domain.attributes !== undefined) {
-                    certificate = domain.attributes.name;
-                    expires = new Date(domain.attributes.not_after);
-                }
-
-                html += '<td>' + domain.id + '</td>';
-                html += '<td>' + certificate + '</td>';
-                html += '<td>' + expires.toLocaleString() + '</td>';
-                html += '</tr>';
-            });
-            return html;
-        }
 
         function generateCertificateTableBody(name, issuer, issuedTo, id)
         {
@@ -263,12 +241,13 @@ define([
             return html;
         }
 
-        function generateSecuredDomainsTableFields(domain, tlsStatus)
+        function generateSecuredDomainsTableFields(domain, tlsStatus, certificAuthority)
         {
             let html = '';
             html += '<tr>';
             html += '<td>' + domain + '</td>';
             html += '<td>' + tlsStatus + '</td>';
+            html += '<td>' + certificAuthority + '</td>';
             html += '</tr id="' + domain + '">';
             return html;
         }

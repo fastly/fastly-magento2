@@ -115,6 +115,7 @@ class SecureAnotherDomain extends Action
         return $result->setData([
             'status'    => true,
             'flag'  => true,
+            'authority' => $response->data->attributes->certificate_authority,
             'domain' => $response->data->relationships->tls_domains->data[0]->id,
             'state' => __('Fastly is verifying domain ownership.'),
             'msg' => __("Successfully! What's next? Fastly is verifying domain ownership"

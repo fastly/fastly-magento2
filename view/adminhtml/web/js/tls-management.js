@@ -172,7 +172,8 @@ define([
                 };
 
                 let attributes = response.data.attributes;
-                let html = generateShowCertificateFields(response.data.id,
+                let html = generateShowCertificateFields(
+                    response.data.id,
                     new Date(attributes.created_at),
                     attributes.issued_to,
                     attributes.issuer,
@@ -283,17 +284,7 @@ define([
             return html;
         }
 
-
         /** Ajax calls */
-
-        function getTlsDomains(loader)
-        {
-            return $.ajax({
-                type: 'get',
-                url: config.getTlsDomains,
-                showLoader: loader
-            });
-        }
 
         /**
          * https://docs.fastly.com/api/tls#tls_configurations_309cdce31802712ca4b043e9b2ef674a

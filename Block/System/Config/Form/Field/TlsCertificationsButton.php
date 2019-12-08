@@ -19,12 +19,4 @@ class TlsCertificationsButton extends AbstractFieldArray
         $this->_template = 'Fastly_Cdn::system/config/form/field/tlsCertificationsButton.phtml';
         parent::_construct();
     }
-
-    /**
-     * @return string
-     */
-    public function getFormKey(): string
-    {
-        return parent::getFormKey();
-    }
 }

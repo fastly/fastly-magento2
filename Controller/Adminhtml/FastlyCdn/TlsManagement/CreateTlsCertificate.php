@@ -107,7 +107,7 @@ class CreateTlsCertificate extends Action
             return $result->setData([
                 'status'    => true,
                 'flag'  => false,
-                'msg'   => "Could not upload certificate file."
+                'msg'   => 'Could not upload certificate file.'
             ]);
         }
 

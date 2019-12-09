@@ -84,10 +84,15 @@ define([
 
                 let configurations = response.configurations.length !== 0 ? response.configurations : [];
                 overlay(anotherDomainModalSettings);
-                $('.upload-button').remove();
-                let html = generateDomainsTableFields(configurations);
-                $('.new-domain-item-container').append(html);
-                handleDomainModal(); //open modal for adding new domain
+                if (configurations.length !== 0) {
+                    $('.upload-button').remove();
+                    let html = generateDomainsTableFields(configurations);
+                    $('.new-domain-item-container').append(html);
+                    handleDomainModal(); //open modal for adding new domain
+                    return;
+                }
+
+                showWarningMessage('In order to add a domain to a managed certificate please upgrade your account.');
             });
         });
 
@@ -123,6 +128,10 @@ define([
 
             //when clients wants to save certificate
             $('.save_certificate').on('click', function () {
+                let certificateId;
+                let msg;
+                let domainName;
+                let attributes;
                 let formKey = $('#form-key').val();
                 let privateKeyName = $('#private-key-name').val();
                 let certificateName = $('#certificate-key-name').val();
@@ -136,20 +145,31 @@ define([
                     showSuccessMessage(response.msg);
                     createTlsCertificate(true, certificate, certificateName, formKey).done(function (response) {
                         modal.modal('closeModal');
+                        $('.loading-tls-certificates').show();
                         resetAllMessages();
                         if (response.status !== true || response.flag !== true) {
                             certErrorButtonMsg.text($.mage.__(response.msg)).show();
                             return deletePrivateKey(privateKey, false);
                         }
 
-                        let attributes = response.data.attributes;
-                        $('.no-tls-certificates').hide();
-                        let html = generateCertificateTableBody(attributes.name, attributes.issuer, attributes.issued_to, response.data.id);
-                        $('#tls-certificates-item-container').append(html);
-                        html = generateSecuredDomainsTableFields(response.data.attributes.name);
-                        $('no-tls-domains').hide();
-                        $('#tls-domains-item-container').append(html);
-                        return certSuccessButtonMsg.text($.mage.__(response.msg)).show();
+                        certificateId = response.data.id;
+                        msg = response.msg;
+                        attributes = response.data.attributes;
+                        getSpecificCertificate(certificateId, formKey, false).done(function (response) {
+                            if (response.status !== true || response.flag !== true) {
+                                domainName = '';
+                                return;
+                            }
+
+                            domainName = response.data.relationships.tls_domains.data[0].id;
+                            $('.loading-tls-certificates').hide();
+                            let html = generateCertificateTableBody(attributes.name, attributes.issuer, attributes.issued_to, response.data.id);
+                            $('#tls-certificates-item-container').append(html);
+                            html = generateSecuredDomainsTableFields(domainName);
+                            $('no-tls-domains').hide();
+                            $('#tls-domains-item-container').append(html);
+                            return certSuccessButtonMsg.text($.mage.__(msg)).show();
+                        });
                     });
                 });
             });
@@ -179,7 +199,7 @@ define([
                     attributes.issued_to,
                     attributes.issuer,
                     new Date(attributes.not_after),
-                    attributes.signature_algorith
+                    attributes.signature_algorithm
                 );
                 overlay(specificCertificateModalSettings);
                 $('.upload-button').remove();

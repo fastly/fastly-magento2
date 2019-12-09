@@ -146,6 +146,7 @@ define([
                     createTlsCertificate(true, certificate, certificateName, formKey).done(function (response) {
                         modal.modal('closeModal');
                         $('.no-tls-certificates').hide();
+                        $('.no-tls-domains').hide();
                         $('.loading-tls-certificates').show();
                         resetAllMessages();
                         if (response.status !== true || response.flag !== true) {

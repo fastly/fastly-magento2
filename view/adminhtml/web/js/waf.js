@@ -53,12 +53,16 @@ define([
                             let wafSettings = wafResponse.waf_settings;
                             let wafData = wafSettings.data;
                             let wafAttributes = wafData.attributes;
-                            if (wafAttributes.rule_statuses_block_count > 0) {
-                                wafStateBlocking.show();
-                            } else if (wafAttributes.rule_statuses_log_count > 0) {
-                                wafStateLogging.show();
+                            if (wafAttributes.disabled) {
+                                wafStateDisabled.show();
                             } else {
-                                wafStateEnabled.show();
+                                if (wafAttributes.rule_statuses_block_count > 0) {
+                                    wafStateBlocking.show();
+                                } else if (wafAttributes.rule_statuses_log_count > 0) {
+                                    wafStateLogging.show();
+                                } else {
+                                    wafStateEnabled.show();
+                                }
                             }
                         });
                         getOwaspSettings(info.id).done(function (owaspResponse) {

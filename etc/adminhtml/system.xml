@@ -474,7 +474,7 @@
                         <field id="image_optimization_force_lossy" translate="label comment" type="select" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Force Lossy conversion</label>
                             <comment>Certain image types are lossless e.g. PNG and BMP and will not compress well. By default Fastly IO will retain
-                            original format. This option forces those images to be converted to lossy JPG or WEBP. Applies only to product/catalog images.</comment>
+                                original format. This option forces those images to be converted to lossy JPG or WEBP. Applies only to product/catalog images.</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <!-- ===============================================
@@ -547,6 +547,17 @@
                             </depends>
                             <source_model>Fastly\Cdn\Model\Config\Backend\PixelRatios</source_model>
                             <validate>required_entry</validate>
+                        </field>
+                        <!-- =========================================
+                             Image Verify select field
+                        ========================================== -->
+                        <field id="image_verify" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Verify Image On Disk</label>
+                            <comment>Verify image actually exists on the disk. May cause performance issues especially on systems with shared filesystems.</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="image_optimizations">1</field>
+                            </depends>
                         </field>
                     </group>
                     <!-- ============================
@@ -743,6 +754,36 @@
                                 <field id="enable_rate_limiting_master">1</field>
                             </depends>
                         </group>
+                    </group>
+                    <!-- ===========================
+                            HTTPS and network
+                        ============================ -->
+                    <group id="fastly_https_and_network" sortOrder="415" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0">
+                        <label>HTTPS and Network</label>
+                        <comment>
+                            <![CDATA[Fastly offers an API for uploading and managing your keys and certificates used to enable TLS for your domains on Fastly.
+                            To start, you must generate a new key and certificate with your preferred certification authority.
+                            You may then use our endpoints to upload a key and then upload the matching certificate.
+                            To terminate TLS for a specific domain, you'll need to enable that domain for a given certificate by creating a protocol policy.
+                            Finally, for Fastly to begin to terminate TLS you will need to update the DNS records for the domain with the provided DNS Names returned to you.]]>
+                        </comment>
+                        <!-- =======================
+                             TLS domains button
+                        ======================== -->
+                        <field id="tls_domains" translate="label comment tooltip" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>TLS domains</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\TlsDomainsButton</frontend_model>
+                            <comment>
+                                <![CDATA[TLS domains are all the domains (including wildcard domains) included in any TLS certificate's Subject Alternative Names (SAN) list.]]>
+                            </comment>
+                        </field>
+                        <field id="tls_certificates" translate="label comment tooltip" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>TLS certificates</label>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\TlsCertificationsButton</frontend_model>
+                            <comment>
+                                <![CDATA[A TLS certificate is used to terminate TLS traffic for one or more of your TLS domains.]]>
+                            </comment>
+                        </field>
                     </group>
                     <!-- ========================
                              Tools

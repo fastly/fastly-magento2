@@ -1,0 +1,40 @@
+<button type="button"
+        style="margin-bottom: 10px;"
+        class="primary"
+        id="secure-another-domain">
+    <?php /* @noEscape */ echo __('Secure Another Domain') ?>
+</button>
+<div class="design_theme_ua_regexp">
+    <div class="admin__control-table-wrapper">
+        <table class="admin__control-table">
+            <thead>
+                <tr>
+                    <th><?php /* @noEscape */ echo __('Domains') ?></th>
+                </tr>
+            </thead>
+            <tbody id="tls-domains-item-container"></tbody>
+        </table>
+    </div>
+    <p class="loading-tls-domains list-loading">
+        <img class="processing"
+             alt="Collecting"
+             style="margin:0 5px;"
+             src="<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/fastly16.gif') ?>" />
+        <?php /* @noEscape */ echo __('Loading TLS domains...'); ?>
+    </p>
+    <p class="no-tls-domains" style="display: none;">
+    </p>
+</div>
+
+<!-- tls-domains-button -->
+<div class="message message-error fastly-button-messages"
+     id="fastly-error-tls-domains-button"
+     style="display: none"></div>
+
+<div class="message message-success fastly-button-messages"
+     id="fastly-success-tls-domains-button"
+     style="display: none"></div>
+
+<div class="message message-warning fastly-button-messages"
+     id="fastly-warning-tls-domains-button"
+     style="display: none"></div>

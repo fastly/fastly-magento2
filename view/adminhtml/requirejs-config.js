@@ -28,6 +28,7 @@ let config = {
             maintenance: 'Fastly_Cdn/js/maintenance',
             fastlyImport: 'Fastly_Cdn/js/import',
             fastlyExport: 'Fastly_Cdn/js/export',
+            tlsManagement: 'Fastly_Cdn/js/tls-management',
             versionHistory: 'Fastly_Cdn/js/version-history'
         }
     }

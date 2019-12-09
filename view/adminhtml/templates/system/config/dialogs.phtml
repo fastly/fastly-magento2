@@ -2330,6 +2330,117 @@
             </div>
         </fieldset>
 </script>
+
+<script type="text/x-magento-template" id="fastly-tls-new-domains-template">
+    <div class="messages">
+        <div class="message message-success fastly-message-success" style="display: none">
+        </div>
+        <div class="message message-warning fastly-message-warning" style="display: none">
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_TlsManagement/secureAnotherDomain');?>"
+          method="POST" id="fastly-secure-another-domain"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list question">
+            <table class="admin__control-table" id="fastly-tls-domains">
+                <thead>
+                <tr>
+                    <th><?php /* @noEscape */ echo __('Domain') ?></th>
+                    <th><?php /* @noEscape */ echo __('Configuration') ?></th>
+                    <th class="col-actions" colspan="1"><?php /* @noEscape */ echo __('Action') ?></th>
+                </tr>
+                </thead>
+                <tbody class="new-domain-item-container">
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="4" class="col-actions-add">
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </fieldset>
+    </form>
+</script>
+
+<script type="text/x-magento-template" id="fastly-tls-certificate-template">
+    <div class="messages">
+        <div class="message message-success fastly-message-success" style="display: none">
+        </div>
+        <div class="message message-warning fastly-message-warning" style="display: none">
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php/* @noEscape */echo $block->getUrl('adminhtml/fastlyCdn_TlsManagement/createTlsCertificate');?>"
+          method="POST"
+          id="fastly-tls-certificate"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list">
+            <table class="admin__control-table" id="fastly-tls-certificate-table">
+                <thead>
+                <tr>
+                    <th><?php /* @noEscape */ echo __('Private Key Name') ?></th>
+                    <th><?php /* @noEscape */ echo __('Private Key File') ?></th>
+                    <th><?php /* @noEscape */ echo __('Certificate Name') ?></th>
+                    <th><?php /* @noEscape */ echo __('Certificate File') ?></th>
+                    <th><?php /* @noEscape */ echo __('Action') ?></th>
+                </tr>
+                </thead>
+                <tbody class="new-tls-certificate-item-container">
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="5" class="col-actions-add"></td>
+                </tr>
+                </tfoot>
+            </table>
+        </fieldset>
+    </form>
+</script>
+
+<script type="text/x-magento-template" id="fastly-show-tls-certificate-template">
+    <div class="messages">
+        <div class="message message-success fastly-message-success" style="display: none">
+        </div>
+        <div class="message message-warning fastly-message-warning" style="display: none">
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php/* @noEscape */echo $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getCertificateWithId');?>"
+          method="POST"
+          id="fastly-tls-certificate"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list">
+            <table class="admin__control-table" id="fastly-tls-specific-certificate">
+                <thead>
+                <tr>
+                    <th><?php /* @noEscape */ echo __('Id') ?></th>
+                    <th><?php /* @noEscape */ echo __('Created At') ?></th>
+                    <th><?php /* @noEscape */ echo __('Issued To') ?></th>
+                    <th><?php /* @noEscape */ echo __('Issuer') ?></th>
+                    <th><?php /* @noEscape */ echo __('Expires') ?></th>
+                    <th><?php /* @noEscape */ echo __('Signature algorithm') ?></th>
+                </tr>
+                </thead>
+                <tbody class="specific-certificate-container">
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="6" class="col-actions-add"></td>
+                </tr>
+                </tfoot>
+            </table>
+        </fieldset>
+    </form>
+</script>
+
 <?php
 
 /**
@@ -2440,6 +2551,17 @@ $getOwaspSettingsUrl =          $block->getUrl('adminhtml/fastlyCdn_Waf/getOwasp
 $toggleWafBypassSettingUrl =    $block->getUrl('adminhtml/fastlyCdn_Waf/wafAllowlist');
 $checkWafBypassSettingUrl =     $block->getUrl('adminhtml/fastlyCdn_Waf/checkWafBypassSetting');
 $updateWafBypassUrl =           $block->getUrl('adminhtml/fastlyCdn_Waf/updateWafAllowlist');
+//TLS Management
+$getTlsConfigurations =         $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getTlsConfigurations');
+$getTlsDomains =                $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getTlsDomains');
+$secureAnotherDomain =          $block->getUrl('adminhtml/fastlyCdn_TlsManagement/secureAnotherDomain');
+$getTlsSubscriptions =          $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getTlsSubscriptions');
+$getTlsCertificates =           $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getTlsCertificates');
+$createTlsCertificate =         $block->getUrl('adminhtml/fastlyCdn_TlsManagement/createTlsCertificate');
+$createTlsPrivateKey =          $block->getUrl('adminhtml/fastlyCdn_TlsManagement/createTlsPrivateKey');
+$getPrivateKeyFlag =            $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getPrivateKeyFlag');
+$getCertificateWithId =         $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getCertificateWithId');
+$deletePrivateKey =             $block->getUrl('adminhtml/fastlyCdn_TlsManagement/deletePrivateKey');
 
 // This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application
 $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
@@ -2534,7 +2656,17 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "dismissWarning": "<?php echo $block->escapeJsQuote($dismissWarning); ?>",
                     "isWarningDismissed": "<?php echo $block->escapeJsQuote($isWarningDismissed); ?>",
                     "getUpdateFlag": "<?php echo $block->escapeJsQuote($getUpdateFlag); ?>",
-                    "changeUpdateFlag": "<?php echo $block->escapeJsQuote($changeUpdateFlag); ?>"
+                    "changeUpdateFlag": "<?php echo $block->escapeJsQuote($changeUpdateFlag); ?>",
+                    "getTlsConfigurations": "<?php echo $block->escapeJsQuote($getTlsConfigurations); ?>",
+                    "getTlsDomains": "<?php echo $block->escapeJsQuote($getTlsDomains); ?>",
+                    "secureAnotherDomain": "<?php echo $block->escapeJsQuote($secureAnotherDomain); ?>",
+                    "getTlsSubscriptions": "<?php echo $block->escapeJsQuote($getTlsSubscriptions); ?>",
+                    "getTlsCertificates": "<?php echo $block->escapeJsQuote($getTlsCertificates); ?>",
+                    "createTlsCertificate": "<?php echo $block->escapeJsQuote($createTlsCertificate); ?>",
+                    "getPrivateKeyFlag": "<?php echo $block->escapeJsQuote($getPrivateKeyFlag); ?>",
+                    "createTlsPrivateKey": "<?php echo $block->escapeJsQuote($createTlsPrivateKey); ?>",
+                    "getCertificateWithId": "<?php echo $block->escapeJsQuote($getCertificateWithId); ?>",
+                    "deletePrivateKey": "<?php echo $block->escapeJsQuote($deletePrivateKey); ?>"
                 }
             }
         }

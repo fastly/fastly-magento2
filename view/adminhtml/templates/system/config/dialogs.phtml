@@ -2600,6 +2600,7 @@ $createTlsPrivateKey =          $block->getUrl('adminhtml/fastlyCdn_TlsManagemen
 $getPrivateKeyFlag =            $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getPrivateKeyFlag');
 $getCertificateWithId =         $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getCertificateWithId');
 $deletePrivateKey =             $block->getUrl('adminhtml/fastlyCdn_TlsManagement/deletePrivateKey');
+$getConfigurationWithId =             $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getConfigurationWithId');
 
 // This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application
 $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
@@ -2704,7 +2705,8 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "getPrivateKeyFlag": "<?php echo $block->escapeJsQuote($getPrivateKeyFlag); ?>",
                     "createTlsPrivateKey": "<?php echo $block->escapeJsQuote($createTlsPrivateKey); ?>",
                     "getCertificateWithId": "<?php echo $block->escapeJsQuote($getCertificateWithId); ?>",
-                    "deletePrivateKey": "<?php echo $block->escapeJsQuote($deletePrivateKey); ?>"
+                    "deletePrivateKey": "<?php echo $block->escapeJsQuote($deletePrivateKey); ?>",
+                    "getConfigurationWithId": "<?php echo $block->escapeJsQuote($getConfigurationWithId); ?>"
                 }
             }
         }

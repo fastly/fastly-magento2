@@ -22,6 +22,7 @@ class DomainParametersResolver
                 $domain->tls_activations['id'] = $domain->relationships->tls_activations->data[0]->id;
             } else {
                 $domain->tls_activations = false;
+                $domain->tls_configurations = false;
             }
             if (!empty($domain->relationships->tls_certificates->data)) {
                 $domain->tls_certificates['id'] = $domain->relationships->tls_certificates->data[0]->id;
@@ -45,6 +46,7 @@ class DomainParametersResolver
                     }
 
                     $domain->tls_activations['created_at'] = $include->attributes->created_at;
+                    $domain->tls_configurations['id'] = $include->relationships->tls_configuration->data->id;
                     continue;
                 }
 

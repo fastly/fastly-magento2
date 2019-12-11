@@ -1418,6 +1418,24 @@ class Api
     }
 
     /**
+     * @param $id
+     * @return bool|mixed
+     * @throws LocalizedException - If status code is not 200.
+     */
+    public function getSpecificTlsConfigurations($id)
+    {
+        $url = $this->config->getApiEndpoint() . 'tls/configurations/' . $id . '?include=dns_records';
+        return $this->_fetch(
+            $url,
+            \Zend_Http_Client::GET,
+            '',
+            null,
+            true,
+            'application/vnd.api+json'
+        );
+    }
+
+    /**
      * @param string $id
      * @return bool|mixed
      * @throws LocalizedException

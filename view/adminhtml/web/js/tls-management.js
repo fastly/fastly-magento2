@@ -82,8 +82,10 @@ define([
                 showWarningMessage(proveDomainOwnershipMsg(domains[id]));
             } else if (domains[id].tls_subscriptions.state === 'issued') {
                 $('.tls-subscription-notice').append();
+                getSpecificConfiguration(domains[id].tls_configurations.id, true).done(function (response) {
+                    console.log(response.configuration);
+                });
             }
-
         });
 
         /** When client wants to secure new domain with Fastly certificate */
@@ -524,6 +526,22 @@ define([
                 type: 'post',
                 url: config.getCertificateWithId,
                 data: {'form_key':formKey, 'id':id},
+                showLoader: loader
+            });
+        }
+
+        /**
+         *
+         * @param id
+         * @param loader
+         * @returns {jQuery}
+         */
+        function getSpecificConfiguration(id, loader)
+        {
+            return $.ajax({
+                type: 'get',
+                url: config.getConfigurationWithId,
+                data: {'id':id},
                 showLoader: loader
             });
         }

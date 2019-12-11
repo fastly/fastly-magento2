@@ -8,13 +8,13 @@ namespace Fastly\Cdn\Model;
  * Class ExtractDomainParameters
  * @package Fastly\Cdn\Model
  */
-class DomainParametersResolver
+class ApiParametersResolver
 {
     /**
      * @param \stdClass $params
      * @return \stdClass
      */
-    public function combineDataAndIncluded(\stdClass $params): \stdClass
+    public function combineDataAndIncludedDomains(\stdClass $params): \stdClass
     {
         foreach ($params->data as $domain) {
             $domain->tls_subscriptions['id'] = $domain->relationships->tls_subscriptions->data[0]->id;
@@ -37,16 +37,19 @@ class DomainParametersResolver
                             if ($domain->tls_authorization && $domain->tls_authorization['id'] === $include->id) {
                                 $domain->tls_authorization['state'] = $include->attributes->state;
                                 $domain->tls_authorization['challenges'] = $include->attributes->challenges;
+                                unset($params->included[$key]);
                             }
                             continue;
                         }
 
                         $domain->tls_certificates['certificate_name'] = $include->attributes->name;
+                        unset($params->included[$key]);
                         continue;
                     }
 
                     $domain->tls_activations['created_at'] = $include->attributes->created_at;
                     $domain->tls_configurations['id'] = $include->relationships->tls_configuration->data->id;
+                    unset($params->included[$key]);
                     continue;
                 }
 
@@ -60,5 +63,14 @@ class DomainParametersResolver
         }
 
         return $params;
+    }
+
+    /**
+     * @param \stdClass $params
+     * @return \stdClass
+     */
+    public function combineDataAndIncludedConfigurations(\stdClass $params): \stdClass
+    {
+
     }
 }

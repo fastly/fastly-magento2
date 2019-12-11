@@ -11,6 +11,8 @@ define([
 ], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, showSuccessMessage, showWarningMessage, confirm) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
+        let domains;
+
         /** Domains messages */
         let domainErrorButtonMsg = $('#fastly-error-tls-domains-button');
         let domainSuccessButtonMsg = $('#fastly-success-tls-domains-button');
@@ -39,39 +41,49 @@ define([
             }
         };
 
-        //catch all secured domains when https and networking is selected
         getTlsDomains(true).done(function (response) {
+            let html = '';
             if (response.status !== true || response.flag !== true) {
                 $('#secure-another-domain').attr('disabled', true);
                 $('#secure-certificate').attr('disabled', true);
-                return notAuthorisedMsg.text($.mage.__(response.msg)).show();
+                return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
             }
 
-            let tlsDomains = response.domains;
-            let html = '';
+            domains = response.domains;
             $('.loading-tls-domains').hide();
-            if (tlsDomains !== false && tlsDomains.length !== 0) {
-                $.each(tlsDomains, function (index, domain) {
-                    html += generateSecuredDomainsTableFields(domain.id);
+            if (domains.length !== 0) {
+                $.each(domains, function (i, domain) {
+                    html += generateSecuredDomainsTableFields(domain);
+                    domains[domain.id] = domain;
                 });
                 $('#tls-domains-item-container').append(html);
-            } else {
-                $('.no-tls-domains').text($.mage.__('No TLS domains')).show();
+                return;
             }
 
-            getTlsCertificates(true).done(function (response) {
-                let html = '';
-                $('.loading-tls-certificates').hide();
-                if (response.data.length !== 0) {
-                    $.each(response.data, function (index, certificate) {
-                        html += generateCertificateTableBody(certificate.attributes.name, certificate.attributes.issuer, certificate.attributes.issued_to, certificate.id)
-                    });
-                    $('#tls-certificates-item-container').append(html);
-                    return;
-                }
+            $('.no-tls-domains').show();
+        });
 
-                $('.no-tls-certificates').text($.mage.__('No TLS certificates.')).show();
-            });
+        $('body').on('click', '.show-domain-info', function (event) {
+            let id = $(event.target).attr('id');
+            let domainModalSettings = {
+                title: $.mage.__(id),
+                content: function () {
+                    return document.getElementById('fastly-tls-show-domain-info-template').textContent
+                }
+            };
+
+            let html = generateShowDomainInfoFields(domains[id]);
+            overlay(domainModalSettings);
+            resetAllMessages();
+            $('.show-domain-info-item-container').append(html);
+            $('.upload-button').remove();
+
+            if (domains[id].tls_subscriptions.state === 'pending') {
+                showWarningMessage(proveDomainOwnershipMsg(domains[id]));
+            } else if (domains[id].tls_subscriptions.state === 'issued') {
+                $('.tls-subscription-notice').append();
+            }
+
         });
 
         /** When client wants to secure new domain with Fastly certificate */
@@ -237,7 +249,6 @@ define([
         }
 
         /** ----- Generate html ----- */
-
         function generateCertificateTableBody(name, issuer, issuedTo, id)
         {
             let html = '';
@@ -251,6 +262,89 @@ define([
             html += '</tr>';
             return html;
         }
+
+        /**
+         * @param domain
+         * @returns {string}
+         */
+        function generateTlsCertificateMessage(domain)
+        {
+            if (!domain.tls_certificates) {
+                return '<span class="tls-certificate-message">Domain validation in progress…</span>';
+            }
+
+            return '<span class="tls-certificate-message">' + domain.tls_certificates.certificate_name + '</span>';
+        }
+
+        function proveDomainOwnershipMsg(domain)
+        {
+            return 'Create a ' + domain.tls_authorization.challenges[0].record_type
+                    + ' for ' + domain.tls_authorization.challenges[0].record_name
+                    + ' and point it to ' + domain.tls_authorization.challenges[0].values[0];
+        }
+
+        function generateTableWithDnsRecords(domain)
+        {
+
+        }
+
+        /**
+         *
+         * @param domain
+         * @returns {string}
+         */
+        function generateTlsStatusMessage(domain)
+        {
+            if (!domain.tls_activations) {
+                if (domain.tls_subscriptions.state !== 'pending') {
+                    if (domain.tls_subscriptions.state !== 'processing') {
+                        if (domain.tls_subscriptions.state !== 'issued') {
+                            return '<span class="tls-status-message"></span>';
+                        }
+
+                        return '<span class="tls-status-message">Ready to enable</span>';
+                    }
+
+                    return '<span class="tls-status-message">The certificate has been requested. Fastly is waiting for the Certificate Authority’s response.</span><br><span class="tls-status-step">Step 2 of 3</span>';
+                }
+
+                return '<span class="tls-status-message">Fastly is verifying domain ownership.</span><br><span class="tls-status-step">Step 1 of 3</span>';
+            }
+            return '<span class="tls-status-message">Enabled - Certificate issued. Deploying across Fastly’s global network.</span>';
+        }
+
+        /**
+         *
+         * @param domain
+         * @returns {string}
+         */        
+        function generateTlsActionField(domain)
+        {
+            if (!domain.tls_activations) {
+                if (domain.tls_subscriptions.state !== 'issued') {
+                    return '<span class="action-delete fastly-delete-subscription"  id="'+domain.tls_subscriptions.id+'" title="Delete '+domain.tls_subscriptions.id+'" type="button">';
+                }
+
+                return '<span class="action-delete fastly-delete-subscription"  id="'+domain.tls_subscriptions.id+'" title="Delete '+domain.tls_subscriptions.id+'" type="button"></span>'
+                        + '<span class="change-tls-state disable-tls-subscription">Enable TLS</span>'
+            }
+
+            return '<span class="action-delete fastly-delete-subscription"  id="'+domain.tls_subscriptions.id+'" title="Delete '+domain.tls_subscriptions.id+'" type="button"></span>'
+                     + '<span class="change-tls-state enable-tls-subscription">Disable TLS</span>'
+        }
+
+        function generateShowDomainInfoFields(domain)
+        {
+            let html = '';
+            html += '<tr>';
+            html += '<td>'+domain.id+'</td>';
+            html += '<td>' + generateTlsStatusMessage(domain) + '</td>';
+            html += '<td>' + generateTlsCertificateMessage(domain) + '</td>';
+            html += '<td>' + generateTlsActionField(domain) + '</td>';
+            html += '</tr>';
+            return html;
+        }
+
 
         function generateCertificateFormFields()
         {
@@ -270,8 +364,10 @@ define([
         {
             let html = '';
             html += '<tr>';
-            html += '<td>' + domain + '</td>';
-            html += '</tr id="' + domain + '">';
+            html += '<td>' + domain.id + '</td>';
+            html += '<td>' + domain.tls_subscriptions.state + '</td>';
+            html += '<td><button class="fastly-view-vcl-action show-domain-info" id="' + domain.id + '" style="margin-left:0.5rem;"  title="Show Domain '+domain.id+'" type="button"></button></td>';
+            html += '</tr>';
             return html;
         }
 

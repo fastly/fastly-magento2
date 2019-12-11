@@ -2366,6 +2366,44 @@
     </form>
 </script>
 
+<script type="text/x-magento-template" id="fastly-tls-show-domain-info-template">
+    <div class="messages">
+        <div class="message message-success fastly-message-success" style="display: none">
+        </div>
+        <div class="message message-warning fastly-message-warning" style="display: none">
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_TlsManagement/showDomainInfo');?>"
+          method="POST"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list question">
+            <table class="admin__control-table" id="fastly-tls-show-domain-info">
+                <thead>
+                <tr>
+                    <th><?php /* @noEscape */ echo __('Domain') ?></th>
+                    <th><?php /* @noEscape */ echo __('TLS Status') ?></th>
+                    <th><?php /* @noEscape */ echo __('Certificate') ?></th>
+                    <th><?php /* @noEscape */ echo __('Action') ?></th>
+                </tr>
+                </thead>
+                <tbody class="show-domain-info-item-container">
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="4" class="col-actions-add">
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </fieldset>
+    </form>
+
+    <div class="tls-subscription-notice" style="margin-top: 2rem"></div>
+</script>
+
 <script type="text/x-magento-template" id="fastly-tls-certificate-template">
     <div class="messages">
         <div class="message message-success fastly-message-success" style="display: none">
@@ -2753,6 +2791,15 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
         background-color: #FFF9D5;
         padding-top: 10px;
         margin-bottom: 30px;
+    }
+
+    .change-tls-state {
+       margin-left: 2rem;
+       cursor: pointer;
+    }
+
+    .action-delete {
+        cursor: pointer;
     }
 
 </style>

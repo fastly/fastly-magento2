@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\TlsManagement;
 
 use Fastly\Cdn\Model\Api;
+use Fastly\Cdn\Model\DomainParametersResolver;
 use Magento\Backend\App\Action;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Exception\LocalizedException;
@@ -26,25 +27,34 @@ class GetTlsDomains extends Action
     private $api;
 
     /**
+     * @var DomainParametersResolver
+     */
+    private $domainParametersResolver;
+
+    /**
      * GetTlsDomains constructor.
      * @param Action\Context $context
      * @param JsonFactory $jsonFactory
+     * @param DomainParametersResolver $domainParametersResolver
      * @param Api $api
      */
     public function __construct(
         Action\Context $context,
         JsonFactory $jsonFactory,
+        DomainParametersResolver $domainParametersResolver,
         Api $api
     ) {
         parent::__construct($context);
         $this->jsonFactory = $jsonFactory;
         $this->api = $api;
+        $this->domainParametersResolver = $domainParametersResolver;
     }
     public function execute()
     {
         $json = $this->jsonFactory->create();
         try {
             $result = $this->api->getTlsDomains();
+            $this->domainParametersResolver->combineDataAndIncluded($result);
         } catch (LocalizedException $e) {
             return $json->setData([
                 'status' => false,

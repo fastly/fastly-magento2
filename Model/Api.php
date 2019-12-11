@@ -1591,7 +1591,9 @@ class Api
      */
     public function getTlsDomains()
     {
-        $url = $this->config->getApiEndpoint() . 'tls/domains';
+        $url = $this->config->getApiEndpoint() .
+            'tls/domains?include=tls_activations,tls_certificates,'
+            . 'tls_subscriptions,tls_subscriptions.tls_authorizations';
         return $this->_fetch(
             $url,
             \Zend_Http_Client::GET,

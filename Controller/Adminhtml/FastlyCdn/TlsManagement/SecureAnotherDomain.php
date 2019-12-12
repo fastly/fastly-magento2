@@ -116,7 +116,10 @@ class SecureAnotherDomain extends Action
             'status'    => true,
             'flag'  => true,
             'authority' => $response->data->attributes->certificate_authority,
-            'domain' => $response->data->relationships->tls_domains->data[0]->id,
+            'domain' => [
+                'id' => $response->data->relationships->tls_domains->data[0]->id,
+                'tls_subscriptions' => ['state' => 'pending', 'id' => $response->data->id],
+                'tls_authorization' => ['challenges' => $response->included[0]->attributes->challenges]],
             'state' => __('Fastly is verifying domain ownership.'),
             'msg' => __("Successfully! What's next? Fastly is verifying domain ownership"
                         . 'and Fastly is waiting for the Certificate Authority’s response.')

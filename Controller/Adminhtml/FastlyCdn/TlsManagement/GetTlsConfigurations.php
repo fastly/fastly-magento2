@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\TlsManagement;
 
 use Fastly\Cdn\Model\Api;
+use Fastly\Cdn\Model\DomainParametersResolver;
 use Magento\Backend\App\Action;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\Json;

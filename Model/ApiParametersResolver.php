@@ -71,6 +71,10 @@ class ApiParametersResolver
      */
     public function combineDataAndIncludedConfigurations(\stdClass $params): \stdClass
     {
+        foreach ($params->included as $key => $record) {
+            $params->data->{$record->attributes->record_type}[] = $record->id;
+        }
 
+        return $params;
     }
 }

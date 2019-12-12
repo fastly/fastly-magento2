@@ -41,51 +41,70 @@ define([
             }
         };
 
-        getTlsDomains(true).done(function (response) {
-            let html = '';
-            if (response.status !== true || response.flag !== true) {
-                $('#secure-another-domain').attr('disabled', true);
-                $('#secure-certificate').attr('disabled', true);
-                return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
-            }
+        window.setInterval(function () {
+            getTlsDomains(false).done(function (response) {
+                let html = '';
+                if (response.status !== true || response.flag !== true) {
+                    $('#secure-another-domain').attr('disabled', true);
+                    $('#secure-certificate').attr('disabled', true);
+                    return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
+                }
+                domains = response.domains;
+                $('.loading-tls-domains').hide();
+                if (domains.length !== 0) {
+                    $.each(domains, function (i, domain) {
+                        html += generateSecuredDomainsTableFields(domain);
+                        domains[domain.id] = domain;
+                    });
+                    $('#tls-domains-item-container').empty();
+                    $('#tls-domains-item-container').append(html);
+                    return;
+                }
 
-            domains = response.domains;
-            $('.loading-tls-domains').hide();
-            if (domains.length !== 0) {
-                $.each(domains, function (i, domain) {
-                    html += generateSecuredDomainsTableFields(domain);
-                    domains[domain.id] = domain;
-                });
-                $('#tls-domains-item-container').append(html);
-                return;
-            }
-
-            $('.no-tls-domains').show();
-        });
+                $('.no-tls-domains').show();
+            });
+        }, 5000);
 
         $('body').on('click', '.show-domain-info', function (event) {
-            let id = $(event.target).attr('id');
+            let tableRow = $(event.target).parent().parent();
+            let domainName = $(event.target).attr('id');
             let domainModalSettings = {
-                title: $.mage.__(id),
+                title: $.mage.__(domainName),
                 content: function () {
                     return document.getElementById('fastly-tls-show-domain-info-template').textContent
                 }
             };
 
-            let html = generateShowDomainInfoFields(domains[id]);
+            let html = generateShowDomainInfoFields(domains[domainName]);
             overlay(domainModalSettings);
             resetAllMessages();
             $('.show-domain-info-item-container').append(html);
             $('.upload-button').remove();
 
-            if (domains[id].tls_subscriptions.state === 'pending') {
-                showWarningMessage(proveDomainOwnershipMsg(domains[id]));
-            } else if (domains[id].tls_subscriptions.state === 'issued') {
+            if (domains[domainName].tls_subscriptions.state === 'pending') {
+                showWarningMessage(proveDomainOwnershipMsg(domains[domainName]));
+            } else if (domains[domainName].tls_subscriptions.state === 'issued') {
                 $('.tls-subscription-notice').append();
-                getSpecificConfiguration(domains[id].tls_configurations.id, true).done(function (response) {
-                    console.log(response.configuration);
+                getSpecificConfiguration(domains[domainName].tls_configurations.id, true).done(function (response) {
+                    let html = generateDetailsTable(response.configuration, domains[domainName].tls_certificates.certificate_name);
+                    $('.tls-subscription-notice').append(html).show();
                 });
             }
+
+            $('.fastly-delete-subscription').on('click', function (event) {
+                let subscriptionId = $(event.target).attr('id');
+                deleteSubscription(subscriptionId, true).done(function (response) {
+                    if (response.status !== true || response.flag !== true) {
+                        return showErrorMessage(response.msg);
+                    }
+
+                    console.log($(tableRow));
+                    $(tableRow).remove();
+                    domains.splice(domainName, 1);
+                    modal.modal('closeModal');
+                    domainSuccessButtonMsg.text($.mage.__(response.msg)).show();
+                });
+            });
         });
 
         /** When client wants to secure new domain with Fastly certificate */
@@ -102,7 +121,25 @@ define([
                     $('.upload-button').remove();
                     let html = generateDomainsTableFields(configurations);
                     $('.new-domain-item-container').append(html);
-                    handleDomainModal(); //open modal for adding new domain
+                    $('#save_item').on('click', function () {
+
+                        let name = $('.domain-name').val();
+                        let config = $('.tls-configurations').val();
+
+                        saveDomain(name, config, true).done(function (response) {
+                            resetAllMessages();
+                            modal.modal('closeModal');
+                            if (response.status !== true || response.flag !== true) {
+                                return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
+                            }
+
+                            domains[response.domain.id] = response.domain;
+                            let html = generateSecuredDomainsTableFields(response.domain);
+                            $('#tls-domains-item-container').append(html);
+
+                            return domainSuccessButtonMsg.text($.mage.__(response.msg)).show();
+                        });
+                    }); //open modal for adding new domain
                     return;
                 }
 
@@ -223,33 +260,6 @@ define([
             });
         });
 
-        /**
-         * Modal for securing domain with fastly certificate
-         */
-        function handleDomainModal()
-        {
-            $('#save_item').on('click', function () {
-
-                let name = $('.domain-name').val();
-                let config = $('.tls-configurations').val();
-
-                saveDomain(name, config, true).done(function (response) {
-
-                    resetAllMessages();
-                    modal.modal('closeModal');
-                    if (response.status !== true || response.flag !== true) {
-                        return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
-                    }
-
-                    //append newly created domain on the list
-                    let html = generateSecuredDomainsTableFields(response.domain);
-                    $('#tls-domains-item-container').append(html);
-
-                    return domainSuccessButtonMsg.text($.mage.__(response.msg)).show();
-                });
-            });
-        }
-
         /** ----- Generate html ----- */
         function generateCertificateTableBody(name, issuer, issuedTo, id)
         {
@@ -285,9 +295,60 @@ define([
                     + ' and point it to ' + domain.tls_authorization.challenges[0].values[0];
         }
 
-        function generateTableWithDnsRecords(domain)
+        function generateDnsDetailsTableBody(configuration)
         {
+            let html = '';
+            html += '<tr>';
+            html += '<td>'+configuration.data.CNAME.toString()+'</td>';
+            html += '<td>'+configuration.data.AAAA.toString()+'</td>';
+            html += '<td>'+configuration.data.A.toString()+'</td>';
+            html += '</tr>';
+            return html;
+        }
 
+        function generateDetailsTable(configuration, certificate)
+        {
+            let html = '';
+            html += '<div class="dns-detals-div">';
+            html += '<div class="dns-details-message">';
+            html += '<b>In order to complete the setup and to start serving TLS traffic, you must:</b>';
+            html += '<ul style="list-style-type: none">';
+            html += '<li><b>1</b> Ensure that the domain has been added to a properly configured Fastly service.</li>';
+            html += '<li><b>2</b> Make sure you have one of the following records set up with your DNS provider:</li>';
+            html += '</div>';
+            html += '<table class="admin__control-table" style="margin-bottom: 3rem;">';
+            html += '<thead>';
+            html += '<tr><th>TLS Configuration</th><th>TLS Version</th><th>HTTP Protocols</th><th>Certificate Being Used</th>';
+            html += '</thead>';
+            html += '<tbody>';
+            html += '<tr>';
+            html += '<td>'+configuration.data.attributes.name+'</td>';
+            html += '<td>'+configuration.data.attributes.tls_protocols[0]+'</td>';
+            html += '<td>' + configuration.data.attributes.http_protocols[0] +' and ' + configuration.data.attributes.http_protocols[1] + '</td>';
+            html += '<td>'+certificate+'</td>';
+            html += '</tr>';
+            html += '</tbody>';
+            html += '<tfoot>';
+            html += '<td colspan="4" class="col-actions-add"></td>';
+            html += '</tfoot>';
+            html += '</table>';
+            html += '<h2>DNS details</h2>';
+            html += '<ul style="list-style-type: none">';
+            html += '</li>Global DNS lands traffic across Fastly’s worldwide network. This has the best international performance with regional pricing applied to all traffic.</li>';
+            html += '</li>';
+            html += '<table class="admin__control-table" style="margin-top: 1rem;">';
+            html += '<thead>';
+            html += '<tr><th>CNAME Records</th><th>A Records</th><th>AAAA Records (IPV6)</th>';
+            html += '</thead>';
+            html += '<tbody>';
+            html += generateDnsDetailsTableBody(configuration);
+            html += '</tbody>';
+            html += '<tfoot>';
+            html += '<td colspan="3" class="col-actions-add"></td>';
+            html += '</tfoot>';
+            html += '</table>';
+            html += '</div>';
+            return html;
         }
 
         /**
@@ -319,7 +380,7 @@ define([
          *
          * @param domain
          * @returns {string}
-         */        
+         */
         function generateTlsActionField(domain)
         {
             if (!domain.tls_activations) {
@@ -365,7 +426,7 @@ define([
         function generateSecuredDomainsTableFields(domain)
         {
             let html = '';
-            html += '<tr>';
+            html += '<tr id="'+domain.id+'">';
             html += '<td>' + domain.id + '</td>';
             html += '<td>' + domain.tls_subscriptions.state + '</td>';
             html += '<td><button class="fastly-view-vcl-action show-domain-info" id="' + domain.id + '" style="margin-left:0.5rem;"  title="Show Domain '+domain.id+'" type="button"></button></td>';
@@ -560,6 +621,21 @@ define([
                 data: {formKey, 'privateKey':privateKey},
                 showLoader: loader
             });
+        }
+
+        /**
+         * https://docs.fastly.com/api/tls-subscriptions#tls_subscriptions_6b2bf54a3a416f8105050532361bcc0b
+         * @param id
+         * @param loader
+         */
+        function deleteSubscription(id, loader)
+        {
+            return $.ajax({
+                type: 'get',
+                url: config.deleteSubscription,
+                data: {'id':id},
+                showLoader: loader
+            })
         }
     }
 });

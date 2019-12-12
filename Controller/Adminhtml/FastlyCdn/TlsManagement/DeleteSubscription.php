@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\TlsManagement;
 
 use Fastly\Cdn\Model\Api;
-use Fastly\Cdn\Model\ApiParametersResolver;
 use Magento\Backend\App\Action;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\App\ResponseInterface;
@@ -13,48 +14,43 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 
 /**
- * Class GetConfigurationWithId
+ * Class DeleteSubscription
  * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\TlsManagement
  */
-class GetConfigurationWithId extends Action
+class DeleteSubscription extends Action
 {
-    /**
-     * @var Api
-     */
-    private $api;
-    /**
-     * @var Http
-     */
-    private $request;
     /**
      * @var JsonFactory
      */
     private $jsonFactory;
-    /**
-     * @var ApiParametersResolver
-     */
-    private $apiParametersResolver;
 
     /**
-     * GetConfigurationWithId constructor.
+     * @var Http
+     */
+    private $request;
+
+    /**
+     * @var Api
+     */
+    private $api;
+
+    /**
+     * DeleteSubscription constructor.
      * @param Action\Context $context
      * @param Api $api
      * @param Http $request
-     * @param ApiParametersResolver $apiParametersResolver
      * @param JsonFactory $jsonFactory
      */
     public function __construct(
         Action\Context $context,
         Api $api,
         Http $request,
-        ApiParametersResolver $apiParametersResolver,
         JsonFactory $jsonFactory
     ) {
         parent::__construct($context);
-        $this->api = $api;
-        $this->request = $request;
         $this->jsonFactory = $jsonFactory;
-        $this->apiParametersResolver = $apiParametersResolver;
+        $this->request = $request;
+        $this->api = $api;
     }
 
     /**
@@ -65,8 +61,7 @@ class GetConfigurationWithId extends Action
         $result = $this->jsonFactory->create();
         $id = $this->request->getParam('id');
         try {
-            $response = $this->api->getSpecificTlsConfigurations($id);
-            $response = $this->apiParametersResolver->combineDataAndIncludedConfigurations($response);
+            $response = $this->api->deleteSubscription($id);
         } catch (LocalizedException $e) {
             return $result->setData([
                 'status'    => false,
@@ -74,18 +69,18 @@ class GetConfigurationWithId extends Action
             ]);
         }
 
-        if (!$response) {
+        if ($response !== null) {
             return $result->setData([
                 'status'    => true,
-                'flag'  => false,
-                'msg'   => "change this shiat"
+                'flag'    => false,
+                'msg'   => 'Subscription has active domains'
             ]);
         }
 
         return $result->setData([
             'status'    => true,
-            'flag'  => true,
-            'configuration' => $response
+            'flag'    => true,
+            'msg'   => 'Successfully deleted subscription'
         ]);
     }
 }

@@ -51,7 +51,7 @@ class ApiParametersResolver
     private function handleIncluded(\stdClass $domain, &$included = []): \stdClass
     {
         foreach ($included as $key => $record) {
-            if (!$domain->tls_subscriptions || $domain->tls_subscriptions['id'] !== $record->id) {
+            if ($domain->tls_subscriptions && $domain->tls_subscriptions['id'] !== $record->id) {
                 $domain->tls_subscriptions['state'] = $record->attributes->state;
                 $domain->tls_subscriptions['created_at'] = $record->attributes->created_at;
                 $domain->tls_subscriptions['certificate_authority'] = $record->attributes->certificate_authority;

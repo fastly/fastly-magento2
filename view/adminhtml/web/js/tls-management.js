@@ -106,6 +106,7 @@ define([
         }, 5000);
 
         $('body').on('click', '.show-domain-info', function (event) {
+            tableRow = $(event.target).parent().parent();
             let domainName = $(event.target).attr('id');
             let domainModalSettings = {
                 title: $.mage.__(domainName),
@@ -368,6 +369,11 @@ define([
             return '<span class="tls-certificate-message">' + domain.tls_certificates.name + '</span>';
         }
 
+        /**
+         *
+         * @param domain
+         * @returns {string}
+         */
         function proveDomainOwnershipMsg(domain)
         {
             return 'Create a ' + domain.tls_authorizations.challenges[0].record_type
@@ -375,6 +381,11 @@ define([
                     + ' and point it to ' + domain.tls_authorizations.challenges[0].values[0];
         }
 
+        /**
+         *
+         * @param configuration
+         * @returns {string}
+         */
         function generateDnsDetailsTableBody(configuration)
         {
             let html = '';
@@ -386,6 +397,12 @@ define([
             return html;
         }
 
+        /**
+         *
+         * @param configuration
+         * @param certificate
+         * @returns {string}
+         */
         function generateDetailsTable(configuration, certificate)
         {
             let html = '';
@@ -476,12 +493,17 @@ define([
             }
 
             if (!domain.tls_activations) {
-                return '<span class="change-tls-state enable-tls-activation" id="'+domain.id+'" data-certificate="'+domain.tls_certificates.id+'">Enable TLS</span>';
+                return '<span class="change-tls-state enable-tls-activation tls-button" id="'+domain.id+'" data-certificate="'+domain.tls_certificates.id+'">Enable TLS</span>';
             }
 
-            return '<span class="change-tls-state disable-tls-activation"  data-activation="'+domain.tls_activations.id+'" id="'+domain.id+'">Disable TLS</span>';
+            return '<span class="change-tls-state disable-tls-activation tls-button"  data-activation="'+domain.tls_activations.id+'" id="'+domain.id+'">Disable TLS</span>';
         }
 
+        /**
+         *
+         * @param domain
+         * @returns {string}
+         */
         function generateShowDomainInfoFields(domain)
         {
             let html = '';
@@ -494,7 +516,10 @@ define([
             return html;
         }
 
-
+        /**
+         *
+         * @returns {string}
+         */
         function generateCertificateFormFields()
         {
             let html = '';
@@ -509,6 +534,11 @@ define([
             return html;
         }
 
+        /**
+         *
+         * @param domain
+         * @returns {string}
+         */
         function generateSecuredDomainsTableFields(domain)
         {
             let html = '';
@@ -528,6 +558,11 @@ define([
             return html;
         }
 
+        /**
+         *
+         * @param configurations
+         * @returns {string}
+         */
         function generateDomainsTableFields(configurations)
         {
             let html = '';
@@ -544,6 +579,16 @@ define([
             return html;
         }
 
+        /**
+         *
+         * @param id
+         * @param createdAt
+         * @param issuedTo
+         * @param issuer
+         * @param expired
+         * @param algorithm
+         * @returns {string}
+         */
         function generateShowCertificateFields(id, createdAt, issuedTo, issuer, expired, algorithm)
         {
             let html = '';
@@ -763,7 +808,7 @@ define([
                 url: config.deleteSubscription,
                 data: {'id':id},
                 showLoader: loader
-            })
+            });
         }
     }
 });

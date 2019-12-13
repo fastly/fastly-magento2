@@ -124,7 +124,7 @@ define([
                 showWarningMessage(proveDomainOwnershipMsg(domains[domainName]));
             } else if (domains[domainName].tls_subscriptions.state === 'issued' || domains[domainName].tls_activations !== false) {
                 getSpecificConfiguration(domains[domainName].tls_configurations.id, true).done(function (response) {
-                    let html = generateDetailsTable(response.configuration, domains[domainName].tls_certificates.certificate_name);
+                    let html = generateDetailsTable(response.configuration, domains[domainName].tls_certificates.name);
                     $('.tls-subscription-notice').append(html).show();
                 });
             }

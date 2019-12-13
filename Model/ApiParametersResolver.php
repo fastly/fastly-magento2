@@ -51,19 +51,30 @@ class ApiParametersResolver
     private function handleIncluded(\stdClass $domain, &$included = []): \stdClass
     {
         foreach ($included as $key => $record) {
-            if ($domain->tls_subscriptions && $domain->tls_subscriptions['id'] !== $record->id) {
-                $domain->tls_subscriptions['state'] = $record->attributes->state;
-                $domain->tls_subscriptions['created_at'] = $record->attributes->created_at;
-                $domain->tls_subscriptions['certificate_authority'] = $record->attributes->certificate_authority;
-                if (!empty($record->relationships->tls_authorizations->data)) {
-                    $domain->tls_authorizations['id'] = $record->relationships->tls_authorizations->data[0]->id;
+            if (!$domain->tls_subscriptions || $domain->tls_subscriptions['id'] !== $record->id) {
+                if (!$domain->tls_activations || $domain->tls_activations['id'] !== $record->id) {
+                    if (!$domain->tls_authorizations || $domain->tls_authorizations['id'] !== $record->id) {
+                        if (!$domain->tls_certificates || $domain->tls_certificates['id'] !== $record->id) {
+                            continue;
+                        }
+
+                        $domain->tls_certificates['created_at'] = $record->attributes->created_at;
+                        $domain->tls_certificates['issued_to'] = $record->attributes->issued_to;
+                        $domain->tls_certificates['issuer'] = $record->attributes->issuer;
+                        $domain->tls_certificates['name'] = $record->attributes->name;
+                        $domain->tls_certificates['not_after'] = $record->attributes->not_after;
+                        $domain->tls_certificates['signature_algorithm'] = $record->attributes->signature_algorithm;
+                        unset($included[$key]);
+                        continue;
+                    }
+
+                    $domain->tls_authorizations['state'] = $record->attributes->state;
+                    $domain->tls_authorizations['created_at'] = $record->attributes->created_at;
+                    $domain->tls_authorizations['challenges'] = $record->attributes->challenges;
+                    unset($included[$key]);
+                    continue;
                 }
 
-                unset($included[$key]);
-                continue;
-            }
-
-            if ($domain->tls_activations && $domain->tls_activations['id'] === $record->id) {
                 $domain->tls_activations['created_at'] = $record->attributes->created_at;
                 if (!empty($record->relationships->tls_configuration->data)) {
                     $domain->tls_configurations['id'] = $record->relationships->tls_configuration->data->id;
@@ -73,24 +84,15 @@ class ApiParametersResolver
                 continue;
             }
 
-            if ($domain->tls_authorizations && $domain->tls_authorizations['id'] === $record->id) {
-                $domain->tls_authorizations['state'] = $record->attributes->state;
-                $domain->tls_authorizations['created_at'] = $record->attributes->created_at;
-                $domain->tls_authorizations['challenges'] = $record->attributes->challenges;
-                unset($included[$key]);
-                continue;
+            $domain->tls_subscriptions['state'] = $record->attributes->state;
+            $domain->tls_subscriptions['created_at'] = $record->attributes->created_at;
+            $domain->tls_subscriptions['certificate_authority'] = $record->attributes->certificate_authority;
+            if (!empty($record->relationships->tls_authorizations->data)) {
+                $domain->tls_authorizations['id'] = $record->relationships->tls_authorizations->data[0]->id;
             }
 
-            if ($domain->tls_certificates && $domain->tls_certificates['id'] === $record->id) {
-                $domain->tls_certificates['created_at'] = $record->attributes->created_at;
-                $domain->tls_certificates['issued_to'] = $record->attributes->issued_to;
-                $domain->tls_certificates['issuer'] = $record->attributes->issuer;
-                $domain->tls_certificates['name'] = $record->attributes->name;
-                $domain->tls_certificates['not_after'] = $record->attributes->not_after;
-                $domain->tls_certificates['signature_algorithm'] = $record->attributes->signature_algorithm;
-                unset($included[$key]);
-                continue;
-            }
+            unset($included[$key]);
+            continue;
         }
         return $domain;
     }

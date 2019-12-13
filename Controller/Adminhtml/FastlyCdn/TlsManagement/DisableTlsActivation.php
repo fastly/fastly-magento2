@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\TlsManagement;
 
 use Fastly\Cdn\Model\Api;
-use Fastly\Cdn\Model\DomainParametersResolver;
 use Magento\Backend\App\Action;
+use Magento\Framework\App\Request\Http;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
@@ -14,10 +14,10 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 
 /**
- * Class GetTlsConfigurations
+ * Class DisableTlsActivation
  * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\TlsManagement
  */
-class GetTlsConfigurations extends Action
+class DisableTlsActivation extends Action
 {
     /**
      * @var JsonFactory
@@ -25,56 +25,62 @@ class GetTlsConfigurations extends Action
     private $jsonFactory;
 
     /**
+     * @var Http
+     */
+    private $request;
+
+    /**
      * @var Api
      */
     private $api;
 
     /**
-     * CheckTlsPermission constructor.
+     * DisableTlsActivation constructor.
      * @param Action\Context $context
-     * @param JsonFactory $jsonFactory
      * @param Api $api
+     * @param Http $request
+     * @param JsonFactory $jsonFactory
      */
     public function __construct(
         Action\Context $context,
-        JsonFactory $jsonFactory,
-        Api $api
+        Api $api,
+        Http $request,
+        JsonFactory $jsonFactory
     ) {
         parent::__construct($context);
         $this->jsonFactory = $jsonFactory;
+        $this->request = $request;
         $this->api = $api;
     }
 
     /**
      * @return ResponseInterface|Json|ResultInterface
      */
-    public function execute()
+    public function execute(): Json
     {
-        $json = $this->jsonFactory->create();
+        $result = $this->jsonFactory->create();
+        $activation = $this->request->getParam('activation');
         try {
-            $result = $this->api->getTlsConfigurations();
+            $response = $this->api->disableTlsActivation($activation);
         } catch (LocalizedException $e) {
-            return $json->setData([
-               'status' => false,
-               'msg'    => $e->getMessage()
+            return $result->setData([
+                'status'    => false,
+                'msg'   => $e->getMessage()
             ]);
         }
 
-        if (!$result) {
-            return $json->setData([
-                'status' => true,
-                'flag'   => false,
-                'msg'    => 'Adding a domain to a shared certificate requires a valid payment method on your account. '
-                            . 'Please upgrade to a paid account '
-                             . 'in order to use this service or reach out to support@fastly.com.'
+        if ($response !== null) {
+            return $result->setData([
+                'status'    => false,
+                'flag'  => true,
+                'msg'   => 'Something went wrong, please try again.'
             ]);
         }
 
-        return $json->setData([
-            'status' => true,
+        return $result->setData([
+            'status'    => true,
             'flag'  => true,
-            'configurations'    => $result->data,
-            'meta'  => $result->meta
+            'msg'   => 'Successfully disabled TLS.'
         ]);
     }
 }

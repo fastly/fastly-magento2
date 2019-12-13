@@ -2366,6 +2366,44 @@
     </form>
 </script>
 
+<script type="text/x-magento-template" id="fastly-tls-show-domain-info-template">
+    <div class="messages">
+        <div class="message message-success fastly-message-success" style="display: none">
+        </div>
+        <div class="message message-warning fastly-message-warning" style="display: none">
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_TlsManagement/showDomainInfo');?>"
+          method="POST"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list question">
+            <table class="admin__control-table" id="fastly-tls-show-domain-info">
+                <thead>
+                <tr>
+                    <th><?php /* @noEscape */ echo __('Domain') ?></th>
+                    <th><?php /* @noEscape */ echo __('TLS Status') ?></th>
+                    <th><?php /* @noEscape */ echo __('Certificate') ?></th>
+                    <th><?php /* @noEscape */ echo __('Action') ?></th>
+                </tr>
+                </thead>
+                <tbody class="show-domain-info-item-container">
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="4" class="col-actions-add">
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </fieldset>
+    </form>
+
+    <div class="tls-subscription-notice" style="margin-top: 2rem; display:none;"></div>
+</script>
+
 <script type="text/x-magento-template" id="fastly-tls-certificate-template">
     <div class="messages">
         <div class="message message-success fastly-message-success" style="display: none">
@@ -2562,6 +2600,10 @@ $createTlsPrivateKey =          $block->getUrl('adminhtml/fastlyCdn_TlsManagemen
 $getPrivateKeyFlag =            $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getPrivateKeyFlag');
 $getCertificateWithId =         $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getCertificateWithId');
 $deletePrivateKey =             $block->getUrl('adminhtml/fastlyCdn_TlsManagement/deletePrivateKey');
+$deleteSubscription =           $block->getUrl('adminhtml/fastlyCdn_TlsManagement/deleteSubscription');
+$getConfigurationWithId =       $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getConfigurationWithId');
+$enableTlsActivation =          $block->getUrl('adminhtml/fastlyCdn_TlsManagement/enableTlsActivation');
+$disableTlsActivation =          $block->getUrl('adminhtml/fastlyCdn_TlsManagement/disableTlsActivation');
 
 // This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application
 $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
@@ -2666,7 +2708,11 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "getPrivateKeyFlag": "<?php echo $block->escapeJsQuote($getPrivateKeyFlag); ?>",
                     "createTlsPrivateKey": "<?php echo $block->escapeJsQuote($createTlsPrivateKey); ?>",
                     "getCertificateWithId": "<?php echo $block->escapeJsQuote($getCertificateWithId); ?>",
-                    "deletePrivateKey": "<?php echo $block->escapeJsQuote($deletePrivateKey); ?>"
+                    "deletePrivateKey": "<?php echo $block->escapeJsQuote($deletePrivateKey); ?>",
+                    "getConfigurationWithId": "<?php echo $block->escapeJsQuote($getConfigurationWithId); ?>",
+                    "deleteSubscription": "<?php echo $block->escapeJsQuote($deleteSubscription); ?>",
+                    "enableTlsActivation": "<?php echo $block->escapeJsQuote($enableTlsActivation); ?>",
+                    "disableTlsActivation": "<?php echo $block->escapeJsQuote($disableTlsActivation); ?>"
                 }
             }
         }
@@ -2753,6 +2799,43 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
         background-color: #FFF9D5;
         padding-top: 10px;
         margin-bottom: 30px;
+    }
+
+    .change-tls-state {
+       margin-left: 2rem;
+       cursor: pointer;
+    }
+
+    .action-delete {
+        cursor: pointer;
+    }
+
+    .dns-details-message {
+        padding: 1rem;
+        margin:1rem;
+        border-color: #d8d8d8;
+        border-radius: 1rem;
+        border-style: solid;
+        border-width: 1px;
+    }
+
+    .dns-detals-div {
+        padding: 1rem;
+        margin:3rem;
+        border-color: #d8d8d8;
+        border-radius: 1rem;
+        border-style: solid;
+        border-width: 1px;
+    }
+
+    .tls-button {
+        background-color: transparent;
+        border: 1px solid #147fbd;
+        border-radius: 3px;
+        color: #147fbd;
+        cursor: pointer;
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
     }
 
 </style>

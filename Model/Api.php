@@ -1405,7 +1405,26 @@ class Api
      */
     public function getTlsConfigurations()
     {
-        $url = $this->config->getApiEndpoint() . 'tls/configurations';
+        $url = $this->config->getApiEndpoint() . 'tls/configurations?include=dns_records';
+        return $this->_fetch(
+            $url,
+            \Zend_Http_Client::GET,
+            '',
+            false,
+            null,
+            true,
+            'application/vnd.api+json'
+        );
+    }
+
+    /**
+     * @param $id
+     * @return bool|mixed
+     * @throws LocalizedException - If status code is not 200.
+     */
+    public function getSpecificTlsConfigurations($id)
+    {
+        $url = $this->config->getApiEndpoint() . 'tls/configurations/' . $id . '?include=dns_records';
         return $this->_fetch(
             $url,
             \Zend_Http_Client::GET,
@@ -1591,10 +1610,31 @@ class Api
      */
     public function getTlsDomains()
     {
-        $url = $this->config->getApiEndpoint() . 'tls/domains';
+        $url = $this->config->getApiEndpoint() .
+            'tls/domains?include=tls_activations,tls_certificates,'
+            . 'tls_subscriptions,tls_subscriptions.tls_authorizations';
         return $this->_fetch(
             $url,
             \Zend_Http_Client::GET,
+            '',
+            false,
+            null,
+            true,
+            'application/vnd.api+json'
+        );
+    }
+
+    /**
+     * @param $id
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function deleteSubscription($id)
+    {
+        $url = $this->config->getApiEndpoint() . 'tls/subscriptions/' . $id;
+        return $this->_fetch(
+            $url,
+            \Zend_Http_Client::DELETE,
             '',
             false,
             null,
@@ -1681,7 +1721,7 @@ class Api
         $responseMessage = \Zend_Http_Response::extractMessage($response);
 
         // Return error based on response code
-        if ($responseCode == '429' || $responseCode == '400') {
+        if ($responseCode == '429' || $responseCode == '400' || $responseCode == '404') {
             throw new LocalizedException(__($responseMessage), null, $responseCode);
         } elseif ($responseCode != '200' && $responseCode != '201' && $responseCode != '204') {
             if ($logError == true) {

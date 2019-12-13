@@ -2602,6 +2602,8 @@ $getCertificateWithId =         $block->getUrl('adminhtml/fastlyCdn_TlsManagemen
 $deletePrivateKey =             $block->getUrl('adminhtml/fastlyCdn_TlsManagement/deletePrivateKey');
 $deleteSubscription =           $block->getUrl('adminhtml/fastlyCdn_TlsManagement/deleteSubscription');
 $getConfigurationWithId =       $block->getUrl('adminhtml/fastlyCdn_TlsManagement/getConfigurationWithId');
+$enableTlsActivation =          $block->getUrl('adminhtml/fastlyCdn_TlsManagement/enableTlsActivation');
+$disableTlsActivation =          $block->getUrl('adminhtml/fastlyCdn_TlsManagement/disableTlsActivation');
 
 // This flag is used to prevent calling ajax requests if fastly extension is not selected as caching application
 $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
@@ -2708,7 +2710,9 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "getCertificateWithId": "<?php echo $block->escapeJsQuote($getCertificateWithId); ?>",
                     "deletePrivateKey": "<?php echo $block->escapeJsQuote($deletePrivateKey); ?>",
                     "getConfigurationWithId": "<?php echo $block->escapeJsQuote($getConfigurationWithId); ?>",
-                    "deleteSubscription": "<?php echo $block->escapeJsQuote($deleteSubscription); ?>"
+                    "deleteSubscription": "<?php echo $block->escapeJsQuote($deleteSubscription); ?>",
+                    "enableTlsActivation": "<?php echo $block->escapeJsQuote($enableTlsActivation); ?>",
+                    "disableTlsActivation": "<?php echo $block->escapeJsQuote($disableTlsActivation); ?>"
                 }
             }
         }

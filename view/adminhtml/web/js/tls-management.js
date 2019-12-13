@@ -12,6 +12,10 @@ define([
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         let domains;
+        let certificates;
+        let fastlyDomainsTimer;
+        let fastlyCertificatesTimer;
+        let tableRow;
 
         /** Domains messages */
         let domainErrorButtonMsg = $('#fastly-error-tls-domains-button');
@@ -41,14 +45,16 @@ define([
             }
         };
 
-        window.setInterval(function () {
-            getTlsDomains(false).done(function (response) {
+        let domainLoader = true;
+        let fastlyGetMeDomains = function () {
+           return getTlsDomains(domainLoader).done(function (response) {
+               domainLoader = false;
                 let html = '';
                 if (response.status !== true || response.flag !== true) {
                     $('#secure-another-domain').attr('disabled', true);
-                    $('#secure-certificate').attr('disabled', true);
                     return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
                 }
+
                 domains = response.domains;
                 $('.loading-tls-domains').hide();
                 if (domains.length !== 0) {
@@ -63,10 +69,43 @@ define([
 
                 $('.no-tls-domains').show();
             });
+        };
+
+        let certificatesLoader = true;
+        let fastlyGetMeCertificates = function () {
+            return getTlsCertificates(certificatesLoader).done(function (response) {
+                certificatesLoader = false;
+                let html = '';
+                if (response.status !== true || response.flag !== true) {
+                    $('#secure-certificate').attr('disabled', true);
+                    return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
+                }
+
+                $('.loading-tls-certificates').hide();
+                certificates = response.certificates;
+                if (certificates.length !== 0) {
+                    $.each(certificates, function (i, certificate) {
+                        html += generateCertificateTableBody(certificate.attributes.name, certificate.attributes.issuer, certificate.attributes.issued_to, certificate.id);
+                    });
+
+                    $('#tls-certificates-item-container').empty();
+                    $('#tls-certificates-item-container').append(html);
+                    return;
+                }
+
+                $('.no-tls-certificates').show();
+            });
+        };
+
+        fastlyDomainsTimer = setInterval(function () {
+            return fastlyGetMeDomains();
+        }, 5000);
+
+        fastlyCertificatesTimer = setInterval(function () {
+            return fastlyGetMeCertificates();
         }, 5000);
 
         $('body').on('click', '.show-domain-info', function (event) {
-            let tableRow = $(event.target).parent().parent();
             let domainName = $(event.target).attr('id');
             let domainModalSettings = {
                 title: $.mage.__(domainName),
@@ -83,25 +122,66 @@ define([
 
             if (domains[domainName].tls_subscriptions.state === 'pending') {
                 showWarningMessage(proveDomainOwnershipMsg(domains[domainName]));
-            } else if (domains[domainName].tls_subscriptions.state === 'issued') {
-                $('.tls-subscription-notice').append();
+            } else if (domains[domainName].tls_subscriptions.state === 'issued' || domains[domainName].tls_activations !== false) {
                 getSpecificConfiguration(domains[domainName].tls_configurations.id, true).done(function (response) {
                     let html = generateDetailsTable(response.configuration, domains[domainName].tls_certificates.certificate_name);
                     $('.tls-subscription-notice').append(html).show();
                 });
             }
+        });
 
-            $('.fastly-delete-subscription').on('click', function (event) {
-                let subscriptionId = $(event.target).attr('id');
-                deleteSubscription(subscriptionId, true).done(function (response) {
+        //remove subscription
+        $('body').on('click', '.delete-tls-subscription', function (event) {
+            let subscriptionId = $(event.target).attr('id');
+            deleteSubscription(subscriptionId, true).done(function (response) {
+                if (response.status !== true || response.flag !== true) {
+                    return showErrorMessage(response.msg);
+                }
+
+                clearInterval(fastlyDomainsTimer);
+                let domainName = $(event.target).attr('data-domain');
+                modal.modal('closeModal');
+                domains.splice(domainName, 1);
+                $(tableRow).remove();
+                domainSuccessButtonMsg.text($.mage.__(response.msg)).show();
+                fastlyDomainsTimer = setInterval(function () {
+                     return fastlyGetMeDomains();
+                 }, 5000);
+            });
+        });
+
+        //disable activation
+        $('body').on('click', '.disable-tls-activation', function (event) {
+            let activation = $(event.target).attr('data-activation');
+            resetAllMessages();
+            disableTlsActivation(activation, true).done(function (response) {
+                modal.modal('closeModal');
+                if (response.status !== true || response.flag !== true) {
+                    return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
+                }
+
+                domainSuccessButtonMsg.text($.mage.__(response.msg)).show();
+            });
+        });
+
+        //enable activation
+        $('body').on('click', '.enable-tls-activation', function (event) {
+            resetAllMessages();
+            getTlsConfigurations(false).done(function (response) {
+                if (response.status !== true || response.flag !== true) {
+                    modal.modal('closeModal');
+                    return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
+                }
+
+                let configuration = response.configurations[0].id;
+                let certificate = $(event.target).attr('data-certificate');
+                let domain = $(event.target).attr('id');
+                enableTlsActivation(domain, certificate, configuration, true).done(function (response) {
+                    modal.modal('closeModal');
                     if (response.status !== true || response.flag !== true) {
-                        return showErrorMessage(response.msg);
+                        return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
                     }
 
-                    console.log($(tableRow));
-                    $(tableRow).remove();
-                    domains.splice(domainName, 1);
-                    modal.modal('closeModal');
                     domainSuccessButtonMsg.text($.mage.__(response.msg)).show();
                 });
             });
@@ -139,7 +219,7 @@ define([
 
                             return domainSuccessButtonMsg.text($.mage.__(response.msg)).show();
                         });
-                    }); //open modal for adding new domain
+                    });
                     return;
                 }
 
@@ -285,14 +365,14 @@ define([
                 return '<span class="tls-certificate-message">Domain validation in progress…</span>';
             }
 
-            return '<span class="tls-certificate-message">' + domain.tls_certificates.certificate_name + '</span>';
+            return '<span class="tls-certificate-message">' + domain.tls_certificates.name + '</span>';
         }
 
         function proveDomainOwnershipMsg(domain)
         {
-            return 'Create a ' + domain.tls_authorization.challenges[0].record_type
-                    + ' for ' + domain.tls_authorization.challenges[0].record_name
-                    + ' and point it to ' + domain.tls_authorization.challenges[0].values[0];
+            return 'Create a ' + domain.tls_authorizations.challenges[0].record_type
+                    + ' for ' + domain.tls_authorizations.challenges[0].record_name
+                    + ' and point it to ' + domain.tls_authorizations.challenges[0].values[0];
         }
 
         function generateDnsDetailsTableBody(configuration)
@@ -362,6 +442,9 @@ define([
                 if (domain.tls_subscriptions.state !== 'pending') {
                     if (domain.tls_subscriptions.state !== 'processing') {
                         if (domain.tls_subscriptions.state !== 'issued') {
+                            if (!domain.tls_subscriptions && domain.tls_certificates) {
+                                return '<span class="tls-status-message">Ready to enable</span>';
+                            }
                             return '<span class="tls-status-message"></span>';
                         }
 
@@ -383,17 +466,20 @@ define([
          */
         function generateTlsActionField(domain)
         {
-            if (!domain.tls_activations) {
+            if (!domain.tls_activations && domain.tls_subscriptions) {
                 if (domain.tls_subscriptions.state !== 'issued') {
-                    return '<span class="action-delete fastly-delete-subscription"  id="'+domain.tls_subscriptions.id+'" title="Delete '+domain.tls_subscriptions.id+'" type="button">';
+                    return '<span class="action-delete delete-tls-subscription"  id="'+domain.tls_subscriptions.id+'" title="Delete '+domain.tls_subscriptions.id+'" type="button">';
                 }
 
-                return '<span class="action-delete fastly-delete-subscription"  id="'+domain.tls_subscriptions.id+'" title="Delete '+domain.tls_subscriptions.id+'" type="button"></span>'
+                return '<span class="action-delete delete-tls-subscription" data-domain="'+domain.id+'"  id="'+domain.tls_subscriptions.id+'" title="Delete '+domain.tls_subscriptions.id+'" type="button"></span>'
                         + '<span class="change-tls-state disable-tls-subscription">Enable TLS</span>'
             }
 
-            return '<span class="action-delete fastly-delete-subscription"  id="'+domain.tls_subscriptions.id+'" title="Delete '+domain.tls_subscriptions.id+'" type="button"></span>'
-                     + '<span class="change-tls-state enable-tls-subscription">Disable TLS</span>'
+            if (!domain.tls_activations) {
+                return '<span class="change-tls-state enable-tls-activation" id="'+domain.id+'" data-certificate="'+domain.tls_certificates.id+'">Enable TLS</span>';
+            }
+
+            return '<span class="change-tls-state disable-tls-activation"  data-activation="'+domain.tls_activations.id+'" id="'+domain.id+'">Disable TLS</span>';
         }
 
         function generateShowDomainInfoFields(domain)
@@ -428,7 +514,15 @@ define([
             let html = '';
             html += '<tr id="'+domain.id+'">';
             html += '<td>' + domain.id + '</td>';
-            html += '<td>' + domain.tls_subscriptions.state + '</td>';
+            if (!domain.tls_subscriptions) {
+                if (!domain.tls_activations) {
+                    html += '<td>' + 'Ready to enable' + '</td>';
+                } else {
+                    html += '<td>Enabled</td>';
+                }
+            } else {
+                html += '<td>' + domain.tls_subscriptions.state + '</td>';
+            }
             html += '<td><button class="fastly-view-vcl-action show-domain-info" id="' + domain.id + '" style="margin-left:0.5rem;"  title="Show Domain '+domain.id+'" type="button"></button></td>';
             html += '</tr>';
             return html;
@@ -477,6 +571,40 @@ define([
                 type: 'get',
                 url: config.getTlsConfigurations,
                 showLoader: loader
+            });
+        }
+
+        /**
+         * https://docs.fastly.com/api/tls#tls_activations_a177a86818ad0cbbd592a709e763a032
+         * @param activation
+         * @param loader
+         * @returns {jQuery}
+         */
+        function disableTlsActivation(activation, loader)
+        {
+            return $.ajax({
+                type: 'get',
+                url: config.disableTlsActivation,
+                showLoader: loader,
+                data: {'activation':activation}
+            });
+        }
+
+        /**
+         * https://docs.fastly.com/api/tls#tls_activations_a5aadc3a427d3b19fbf0bcedfac39f04
+         * @param domain
+         * @param certificate
+         * @param configuration
+         * @param loader
+         * @returns {jQuery}
+         */
+        function enableTlsActivation(domain, certificate, configuration, loader)
+        {
+            return $.ajax({
+                type: 'get',
+                url: config.enableTlsActivation,
+                showLoader: loader,
+                data: {'domain':domain, 'certificate':certificate, 'configuration':configuration}
             });
         }
 

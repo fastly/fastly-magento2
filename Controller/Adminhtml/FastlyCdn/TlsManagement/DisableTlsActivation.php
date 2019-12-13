@@ -6,6 +6,7 @@ namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\TlsManagement;
 
 use Fastly\Cdn\Model\Api;
 use Magento\Backend\App\Action;
+use Magento\Framework\App\Request\Http;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
@@ -13,10 +14,10 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 
 /**
- * Class GetTlsCertificates
+ * Class DisableTlsActivation
  * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\TlsManagement
  */
-class GetTlsCertificates extends Action
+class DisableTlsActivation extends Action
 {
     /**
      * @var JsonFactory
@@ -24,23 +25,31 @@ class GetTlsCertificates extends Action
     private $jsonFactory;
 
     /**
+     * @var Http
+     */
+    private $request;
+
+    /**
      * @var Api
      */
     private $api;
 
     /**
-     * GetTlsCertificates constructor.
+     * DisableTlsActivation constructor.
      * @param Action\Context $context
-     * @param JsonFactory $jsonFactory
      * @param Api $api
+     * @param Http $request
+     * @param JsonFactory $jsonFactory
      */
     public function __construct(
         Action\Context $context,
-        JsonFactory $jsonFactory,
-        Api $api
+        Api $api,
+        Http $request,
+        JsonFactory $jsonFactory
     ) {
         parent::__construct($context);
         $this->jsonFactory = $jsonFactory;
+        $this->request = $request;
         $this->api = $api;
     }
 
@@ -50,8 +59,9 @@ class GetTlsCertificates extends Action
     public function execute(): Json
     {
         $result = $this->jsonFactory->create();
+        $activation = $this->request->getParam('activation');
         try {
-            $response = $this->api->getTlsCertificates();
+            $response = $this->api->disableTlsActivation($activation);
         } catch (LocalizedException $e) {
             return $result->setData([
                 'status'    => false,
@@ -59,18 +69,18 @@ class GetTlsCertificates extends Action
             ]);
         }
 
-        if (!$response) {
+        if ($response !== null) {
             return $result->setData([
-                'status'    => true,
-                'flag'  => false,
-                'msg'   => 'You are not authorized to perform this action'
+                'status'    => false,
+                'flag'  => true,
+                'msg'   => 'Something went wrong, please try again.'
             ]);
         }
 
         return $result->setData([
             'status'    => true,
-            'flag'    => true,
-            'certificates'  => $response->data ?: []
+            'flag'  => true,
+            'msg'   => 'Successfully disabled TLS.'
         ]);
     }
 }

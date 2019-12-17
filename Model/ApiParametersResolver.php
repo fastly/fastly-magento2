@@ -17,10 +17,10 @@ class ApiParametersResolver
     public function combineDataAndIncludedDomains(\stdClass $params): \stdClass
     {
         foreach ($params->data as $key => $domain) {
+            $domain->tls_authorizations = false;
             if (!empty($domain->relationships->tls_subscriptions->data)) {
                 $domain->tls_subscriptions['id'] = $domain->relationships->tls_subscriptions->data[0]->id;
             } else {
-                $domain->tls_authorizations = false;
                 $domain->tls_subscriptions = false;
             }
 

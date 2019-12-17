@@ -54,7 +54,6 @@ class GetTlsDomains extends Action
         $json = $this->jsonFactory->create();
         try {
             $result = $this->api->getTlsDomains();
-            $this->domainParametersResolver->combineDataAndIncludedDomains($result);
         } catch (LocalizedException $e) {
             return $json->setData([
                 'status' => false,
@@ -66,14 +65,20 @@ class GetTlsDomains extends Action
             return $json->setData([
                 'status' => true,
                 'flag'   => false,
-                'msg'    => 'You are not authorized to perform this action'
+                'msg'    => '<p>You are not authorized.' .
+                            '<a target="_blank"' .
+                            'href="https://docs.fastly.com/en/guides/configuring-user-roles-and-permissions' .
+                            '#changing-user-roles-and-access-permissions-for-existing-users">' .
+                            'Follow the link for more information about permissions.</a></p>'
             ]);
         }
+
+        $this->domainParametersResolver->combineDataAndIncludedDomains($result);
 
         return $json->setData([
             'status' => true,
             'flag'  => true,
-            'domains'    => $result->data ?: false,
+            'domains'    => $result->data ?: [],
             'meta'  => $result->meta
         ]);
     }

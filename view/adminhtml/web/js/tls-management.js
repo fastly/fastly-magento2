@@ -49,60 +49,63 @@ define([
         let fastlyGetMeDomains = function () {
            return getTlsDomains(domainLoader).done(function (response) {
                domainLoader = false;
-                let html = '';
+                let html;
+               $(domainWarningButtonMsg).empty();
                 if (response.status !== true || response.flag !== true) {
                     $('#secure-another-domain').attr('disabled', true);
-                    return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
+                    $('#secure-certificate').attr('disabled', true);
+                    return $(domainWarningButtonMsg).append(response.msg).show();
                 }
+
+               $('#secure-another-domain').attr('disabled', false);
+               $('#secure-certificate').attr('disabled', false);
+
+               getTlsCertificates(false).done(function (certResponse) {
+                   html = '';
+                   certWarningButtonMsg.empty();
+                   if (certResponse.status !== true || certResponse.flag !== true) {
+                       $('#secure-certificate').attr('disabled', true);
+                       return certWarningButtonMsg.text($.mage.__(certResponse.msg)).show();
+                   }
+
+                   $('.loading-tls-certificates').hide();
+                   $('.no-tls-certificates').hide();
+                   $('#tls-certificates-item-container').empty();
+                   certificates = certResponse.certificates;
+                   if (certificates.length !== 0) {
+                       $.each(certificates, function (i, certificate) {
+                           html += generateCertificateTableBody(certificate.attributes.name, certificate.attributes.issuer, certificate.attributes.issued_to, certificate.id);
+                       });
+
+                       $('#tls-certificates-item-container').append(html);
+                       return;
+                   }
+
+                   $('.no-tls-certificates').text($.mage.__('No tls certificates')).show();
+               });
 
                 domains = response.domains;
                 $('.loading-tls-domains').hide();
+                $('.no-tls-domains').hide();
+               $('#tls-domains-item-container').empty();
                 if (domains.length !== 0) {
+                    html = '';
                     $.each(domains, function (i, domain) {
                         html += generateSecuredDomainsTableFields(domain);
                         domains[domain.id] = domain;
                     });
-                    $('#tls-domains-item-container').empty();
                     $('#tls-domains-item-container').append(html);
                     return;
                 }
 
-                $('.no-tls-domains').show();
+                $('.no-tls-domains').text($.mage.__('No tls domains')).show();
             });
         };
 
-        let certificatesLoader = true;
-        let fastlyGetMeCertificates = function () {
-            return getTlsCertificates(certificatesLoader).done(function (response) {
-                certificatesLoader = false;
-                let html = '';
-                if (response.status !== true || response.flag !== true) {
-                    $('#secure-certificate').attr('disabled', true);
-                    return domainErrorButtonMsg.text($.mage.__(response.msg)).show();
-                }
 
-                $('.loading-tls-certificates').hide();
-                certificates = response.certificates;
-                if (certificates.length !== 0) {
-                    $.each(certificates, function (i, certificate) {
-                        html += generateCertificateTableBody(certificate.attributes.name, certificate.attributes.issuer, certificate.attributes.issued_to, certificate.id);
-                    });
-
-                    $('#tls-certificates-item-container').empty();
-                    $('#tls-certificates-item-container').append(html);
-                    return;
-                }
-
-                $('.no-tls-certificates').show();
-            });
-        };
 
         fastlyDomainsTimer = setInterval(function () {
             return fastlyGetMeDomains();
-        }, 5000);
-
-        fastlyCertificatesTimer = setInterval(function () {
-            return fastlyGetMeCertificates();
         }, 5000);
 
         $('body').on('click', '.show-domain-info', function (event) {

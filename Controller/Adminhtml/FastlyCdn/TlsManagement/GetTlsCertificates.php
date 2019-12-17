@@ -63,7 +63,7 @@ class GetTlsCertificates extends Action
             return $result->setData([
                 'status'    => true,
                 'flag'  => false,
-                'msg'   => 'You are not authorized to perform this action'
+                'msg'   => 'Something went wrong, please try again.'
             ]);
         }
 

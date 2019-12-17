@@ -51,6 +51,7 @@ define([
                domainLoader = false;
                 let html;
                $(domainWarningButtonMsg).empty();
+               $(domainWarningButtonMsg).hide();
                 if (response.status !== true || response.flag !== true) {
                     $('#secure-another-domain').attr('disabled', true);
                     $('#secure-certificate').attr('disabled', true);
@@ -63,8 +64,8 @@ define([
                getTlsCertificates(false).done(function (certResponse) {
                    html = '';
                    certWarningButtonMsg.empty();
+                   certWarningButtonMsg.hide();
                    if (certResponse.status !== true || certResponse.flag !== true) {
-                       $('#secure-certificate').attr('disabled', true);
                        return certWarningButtonMsg.text($.mage.__(certResponse.msg)).show();
                    }
 

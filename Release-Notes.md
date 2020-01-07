@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.125
+
+- Fix for WAF dashboard showing that WAF was enabled if there were blocking rules however WAF wasn't enabled overall.
+- VCL change to cache images that are served directly from S3 and lack Cache-Control headers
+
 ## 1.2.124
 
 - Fix for setup:di:compile issue https://github.com/fastly/fastly-magento2/pull/334

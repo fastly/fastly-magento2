@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.126
+
+- Add stripping of dm_i query arguments used by Dotdigital campaigns in order to increase cache hit ratios
+- ESIs may be affected by a change in Fastly architecture where we compress ESIs on both shield and edge https://github.com/fastly/fastly-magento2/pull/338
+
 ## 1.2.125
 
 - Fix for WAF dashboard showing that WAF was enabled if there were blocking rules however WAF wasn't enabled overall.

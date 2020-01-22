@@ -23,7 +23,7 @@
         remove resp.http.fastly-page-cacheable;
     }
 
-    # debug info
+    # X-Magento-Debug header is exposed when developer mode is activated in Magento
     if (!resp.http.X-Magento-Debug) {
         # remove Varnish/proxy header
         remove resp.http.X-Magento-Debug;

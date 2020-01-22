@@ -40,19 +40,12 @@
     if (beresp.http.x-esi) {
         # enable ESI feature for Magento response by default
         esi;
-        # Since varnish doesn't compress ESIs we need to hint to the HTTP/2 terminators to
-        # compress it
-        set beresp.http.x-compress-hint = "on";
     } else {
         # enable gzip for all static content except
         if ( http_status_matches(beresp.status, "200,404") && (beresp.http.content-type ~ "^(application\/x\-javascript|text\/css|text\/html|application\/javascript|text\/javascript|application\/json|application\/vnd\.ms\-fontobject|application\/x\-font\-opentype|application\/x\-font\-truetype|application\/x\-font\-ttf|application\/xml|font\/eot|font\/opentype|font\/otf|image\/svg\+xml|image\/vnd\.microsoft\.icon|text\/plain)\s*($|;)" || req.url.ext ~ "(?i)(css|js|html|eot|ico|otf|ttf|json)" ) ) {
             # always set vary to make sure uncompressed versions dont always win
             if (!beresp.http.Vary ~ "Accept-Encoding") {
-                if (beresp.http.Vary) {
-                    set beresp.http.Vary = beresp.http.Vary ", Accept-Encoding";
-                } else {
-                    set beresp.http.Vary = "Accept-Encoding";
-                }
+                set beresp.http.Vary:Accept-Encoding = "";
             }
             if (req.http.Accept-Encoding == "gzip") {
                 set beresp.gzip = true;

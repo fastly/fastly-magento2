@@ -79,7 +79,7 @@
     }
 
     if (beresp.http.x-amz-request-id) {
-        # media retrieved from Amazon S3 should be cacheable even with Shielding enabled
+        # If assets are coming from Amazon they may have no Cache-Control headers which may make them uncacheable
     } else if (!beresp.http.Expires && !beresp.http.Surrogate-Control ~ "max-age" && !beresp.http.Cache-Control ~ "(s-maxage|max-age)") {
         # Varnish sets default TTL if none of the headers above are present. If not set we want to make sure we don't cache it
         set beresp.ttl = 0s;

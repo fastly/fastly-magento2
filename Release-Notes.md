@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.127
+
+- Add Datadome integration Edge Module
+
 ## 1.2.126
 
 - Add stripping of dm_i query arguments used by Dotdigital campaigns in order to increase cache hit ratios

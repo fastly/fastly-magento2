@@ -53,4 +53,21 @@
                 <argument name="authSession" xsi:type="object">Magento\Backend\Model\Auth\Session\Proxy</argument>
         </arguments>
     </type>
+    <virtualType name="Fastly\Cdn\Model\RateLimit\Logger\Info" type="Magento\Framework\Logger\Handler\Base">
+        <arguments>
+            <argument name="fileName" xsi:type="string">/var/log/fastly-rate-limit.log</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Fastly\Cdn\Model\RateLimit\Logger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="info" xsi:type="object">Fastly\Cdn\Model\RateLimit\Logger\Info</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="Fastly\Cdn\Model\FrontControllerPlugin">
+        <arguments>
+            <argument name="logger" xsi:type="object">Fastly\Cdn\Model\RateLimit\Logger</argument>
+        </arguments>
+    </type>
 </config>

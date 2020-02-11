@@ -28,6 +28,7 @@ use Magento\Framework\App\ResponseInterface as Response;
 use Magento\Framework\HTTP\Header;
 use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class FrontControllerPlugin
@@ -77,6 +78,11 @@ class FrontControllerPlugin
     private $filesystem;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * FrontControllerPlugin constructor.
      * @param Request $request
      * @param Config $config
@@ -85,6 +91,7 @@ class FrontControllerPlugin
      * @param Response $response
      * @param Header $httpHeader
      * @param Filesystem $filesystem
+     * @param LoggerInterface $logger
      */
     public function __construct(
         Request $request,
@@ -93,7 +100,8 @@ class FrontControllerPlugin
         DateTime $coreDate,
         Response $response,
         Header $httpHeader,
-        Filesystem $filesystem
+        Filesystem $filesystem,
+        LoggerInterface $logger
     ) {
         $this->request = $request;
         $this->response = $response;
@@ -102,6 +110,7 @@ class FrontControllerPlugin
         $this->cache = $cache;
         $this->coreDate = $coreDate;
         $this->filesystem = $filesystem;
+        $this->logger = $logger;
     }
 
     /**
@@ -148,6 +157,7 @@ class FrontControllerPlugin
         foreach ($limitedPaths as $key => $value) {
             if (preg_match('{' . $value->path . '}i', $path) == 1) {
                 $limit = true;
+                $this->log('Current path "' . $path . '" matches with protected path: "' . $value->path . '"');
             }
         }
 
@@ -174,17 +184,20 @@ class FrontControllerPlugin
 
         if ($this->config->isExemptGoodBotsEnabled()) {
             if ($this->verifyBots($ip)) {
+                $this->log('Identified as good bot: "' . $ip . '" -> "' . gethostbyaddr($ip) . '"');
                 return false;
             }
         }
 
         if ($this->readMaintenanceIp($ip)) {
+            $this->log('Identified as maintenace IP: "' . $ip . '"');
             return false;
         }
 
         $pattern = '{^/(pub|var)/(static|view_preprocessed)/}';
 
         if (preg_match($pattern, $path) == 1) {
+            $this->log('Target path is static asset, we allow.');
             return false;
         }
 
@@ -213,6 +226,7 @@ class FrontControllerPlugin
                 'date'  => $date
             ]);
             $this->cache->save($data, $tag, [], $ttl);
+            $this->log('First time tag hit: "' . $tag . '" at ' . $date);
         } else {
             $usage = $data['usage'] ?? 0;
             $date = $data['date'] ?? null;
@@ -225,6 +239,7 @@ class FrontControllerPlugin
                     'date'  => $newDate
                 ]);
                 $this->cache->save($data, $tag, [], $ttl);
+                $this->log('Reset count. Hit outside TTL: "' . $tag . '" at ' . $newDate);
                 return false;
             }
 
@@ -238,11 +253,13 @@ class FrontControllerPlugin
                 }
                 $this->response->setBody('<h1>Request limit exceeded</h1>');
                 $this->response->setNoCacheHeaders();
+                $this->log('Rate limit exceeded: "' . $tag . '" at ' . $newDate);
                 return true;
             } else {
                 $usage++;
                 $data['usage'] = $usage;
                 $this->cache->save(json_encode($data), $tag, []);
+                $this->log('Hit inside TTL: "' . $tag . '" at ' . $newDate . ' count: "' . $usage);
             }
         }
         return false;
@@ -320,5 +337,12 @@ class FrontControllerPlugin
             }
         }
         return false;
+    }
+
+    private function log($message)
+    {
+        if($this->config->isRateLimitingLoggingEnabled()) {
+            $this->logger->info($message);
+        }
     }
 }

@@ -159,6 +159,13 @@ class DisableRateLimiting extends Action
             );
 
             $this->configWriter->save(
+                Config::XML_FASTLY_RATE_LIMITING_LOGGING_ENABLE,
+                0,
+                'default',
+                '0'
+            );
+
+            $this->configWriter->save(
                 Config::XML_FASTLY_RATE_LIMITING_ENABLE,
                 0,
                 'default',

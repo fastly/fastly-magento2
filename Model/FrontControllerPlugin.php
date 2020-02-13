@@ -38,9 +38,9 @@ use Psr\Log\LoggerInterface;
 class FrontControllerPlugin
 {
     /** @var string Cache tag for storing rate limit data */
-    const FASTLY_CACHE_TAG = 'fastly_rate_limit_';
+    const FASTLY_CACHE_TAG = 'fastly_rl_sensitive_path__';
     /** @var string Cache tag for storing crawler rate limit data */
-    const FASTLY_CRAWLER_TAG = 'fastly_crawler_protection_';
+    const FASTLY_CRAWLER_TAG = 'fastly_rl_crawler_protection_';
 
     /**
      * @var CacheInterface
@@ -157,7 +157,6 @@ class FrontControllerPlugin
         foreach ($limitedPaths as $key => $value) {
             if (preg_match('{' . $value->path . '}i', $path) == 1) {
                 $limit = true;
-                $this->log('Current path "' . $path . '" matches protected paths: "' . $value->path . '"');
             }
         }
 
@@ -223,7 +222,7 @@ class FrontControllerPlugin
                 'date'  => $date
             ]);
             $this->cache->save($data, $tag, [], $ttl);
-            $this->log('First time tag hit: "' . $tag . '" at ' . $date);
+            $this->log('First tag hit during a window. Starting the counter for: "' . $tag);
         } else {
             $usage = $data['usage'] ?? 0;
             $date = $data['date'] ?? null;
@@ -236,7 +235,7 @@ class FrontControllerPlugin
                     'date'  => $newDate
                 ]);
                 $this->cache->save($data, $tag, [], $ttl);
-                $this->log('Reset count. Hit outside TTL: "' . $tag . '" at ' . $newDate);
+                $this->log('Reset count. Hit outside the enforcement window for: "' . $tag);
                 return false;
             }
 
@@ -250,13 +249,13 @@ class FrontControllerPlugin
                 }
                 $this->response->setBody('<h1>Request limit exceeded</h1>');
                 $this->response->setNoCacheHeaders();
-                $this->log('Rate limit exceeded: "' . $tag . '" at ' . $newDate);
+                $this->log('Rate limit exceeded: "' . $tag . '" Count: ' . $usage . '/' . $limit . " Window length: " . $dateDiff . " secs/" . $ttl . " Block issued");
                 return true;
             } else {
                 $usage++;
                 $data['usage'] = $usage;
                 $this->cache->save(json_encode($data), $tag, []);
-                $this->log('Hit inside TTL: "' . $tag . '" at ' . $newDate . ' count: "' . $usage);
+                $this->log('Hit inside enforcement window: "' . $tag . '" Count: ' . $usage . '/' . $limit . " Window length: " . $dateDiff . " secs/" . $ttl);
             }
         }
         return false;

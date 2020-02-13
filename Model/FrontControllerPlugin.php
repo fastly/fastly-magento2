@@ -157,7 +157,7 @@ class FrontControllerPlugin
         foreach ($limitedPaths as $key => $value) {
             if (preg_match('{' . $value->path . '}i', $path) == 1) {
                 $limit = true;
-                $this->log('Current path "' . $path . '" matches with protected path: "' . $value->path . '"');
+                $this->log('Current path "' . $path . '" matches protected paths: "' . $value->path . '"');
             }
         }
 
@@ -184,20 +184,17 @@ class FrontControllerPlugin
 
         if ($this->config->isExemptGoodBotsEnabled()) {
             if ($this->verifyBots($ip)) {
-                $this->log('Identified as good bot: "' . $ip . '" -> "' . gethostbyaddr($ip) . '"');
                 return false;
             }
         }
 
         if ($this->readMaintenanceIp($ip)) {
-            $this->log('Identified as maintenace IP: "' . $ip . '"');
             return false;
         }
 
         $pattern = '{^/(pub|var)/(static|view_preprocessed)/}';
 
         if (preg_match($pattern, $path) == 1) {
-            $this->log('Target path is static asset, we allow.');
             return false;
         }
 

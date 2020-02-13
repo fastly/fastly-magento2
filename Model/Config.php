@@ -481,6 +481,12 @@ class Config extends \Magento\PageCache\Model\Config
         = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/enable_rate_limiting_master';
 
     /**
+     * XML path to enable Rate Limiting
+     */
+    const XML_FASTLY_RATE_LIMITING_LOGGING_ENABLE
+        = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/enable_rate_limiting_logging';
+
+    /**
      * XML path to enable Crawler Protection
      */
     const XML_FASTLY_CRAWLER_PROTECTION_ENABLE
@@ -980,6 +986,16 @@ class Config extends \Magento\PageCache\Model\Config
     public function isRateLimitingMasterEnabled()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_RATE_LIMITING_MASTER_ENABLE);
+    }
+
+    /**
+     * return Rate Limiting logging status
+     *
+     * @return mixed
+     */
+    public function isRateLimitingLoggingEnabled()
+    {
+        return $this->_scopeConfig->getValue(self::XML_FASTLY_RATE_LIMITING_LOGGING_ENABLE);
     }
 
     /**

@@ -657,6 +657,13 @@
                             <label>Enable Rate Limiting</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
+                        <field id="enable_rate_limiting_logging" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInStore="0" showInWebsite="0">
+                            <label>Enable Rate Limit Logging</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="enable_rate_limiting_master">1</field>
+                            </depends>
+                        </field>
                         <group id="path_protection" sortOrder="15" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label>Path Protection</label>
                             <!-- =================================

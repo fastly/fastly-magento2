@@ -242,20 +242,22 @@ class FrontControllerPlugin
             if ($usage >= $limit) {
                 $this->response->setStatusHeader(429, null, 'API limit exceeded');
                 if ($limitingType == "path") {
-                    $this->response->setHeader('Surrogate-Control', 'max-age=' . $ttl);
+                    # Only cache blocking decision for the remainder of the enforcement window
+                    $block_time = $ttl - $dateDiff;
+                    $this->response->setHeader('Surrogate-Control', 'max-age=' . $block_time);
                 }
                 if ($limitingType == "crawler") {
                     $this->response->setHeader('Fastly-Vary', 'Fastly-Client-IP');
                 }
                 $this->response->setBody('<h1>Request limit exceeded</h1>');
                 $this->response->setNoCacheHeaders();
-                $this->log('Rate limit exceeded: "' . $tag . '" Count: ' . $usage . '/' . $limit . " Window length: " . $dateDiff . " secs/" . $ttl . " Block issued");
+                $this->log('Rate limit exceeded: "' . $tag . '" Count: ' . $usage . '/' . $limit . ' Window length: ' . $dateDiff . ' secs/' . $ttl . ' Block issued lasting ' . $block_time . ' secs.');
                 return true;
             } else {
                 $usage++;
                 $data['usage'] = $usage;
                 $this->cache->save(json_encode($data), $tag, []);
-                $this->log('Hit inside enforcement window: "' . $tag . '" Count: ' . $usage . '/' . $limit . " Window length: " . $dateDiff . " secs/" . $ttl);
+                $this->log('Hit inside enforcement window: "' . $tag . '" Count: ' . $usage . '/' . $limit . ' Window length: ' . $dateDiff . ' secs/' . $ttl);
             }
         }
         return false;

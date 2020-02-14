@@ -38,9 +38,9 @@ use Psr\Log\LoggerInterface;
 class FrontControllerPlugin
 {
     /** @var string Cache tag for storing rate limit data */
-    const FASTLY_CACHE_TAG = 'fastly_rate_limit_';
+    const FASTLY_CACHE_TAG = 'fastly_rl_sensitive_path__';
     /** @var string Cache tag for storing crawler rate limit data */
-    const FASTLY_CRAWLER_TAG = 'fastly_crawler_protection_';
+    const FASTLY_CRAWLER_TAG = 'fastly_rl_crawler_protection_';
 
     /**
      * @var CacheInterface
@@ -157,7 +157,6 @@ class FrontControllerPlugin
         foreach ($limitedPaths as $key => $value) {
             if (preg_match('{' . $value->path . '}i', $path) == 1) {
                 $limit = true;
-                $this->log('Current path "' . $path . '" matches with protected path: "' . $value->path . '"');
             }
         }
 
@@ -184,20 +183,17 @@ class FrontControllerPlugin
 
         if ($this->config->isExemptGoodBotsEnabled()) {
             if ($this->verifyBots($ip)) {
-                $this->log('Identified as good bot: "' . $ip . '" -> "' . gethostbyaddr($ip) . '"');
                 return false;
             }
         }
 
         if ($this->readMaintenanceIp($ip)) {
-            $this->log('Identified as maintenace IP: "' . $ip . '"');
             return false;
         }
 
         $pattern = '{^/(pub|var)/(static|view_preprocessed)/}';
 
         if (preg_match($pattern, $path) == 1) {
-            $this->log('Target path is static asset, we allow.');
             return false;
         }
 
@@ -226,7 +222,7 @@ class FrontControllerPlugin
                 'date'  => $date
             ]);
             $this->cache->save($data, $tag, [], $ttl);
-            $this->log('First time tag hit: "' . $tag . '" at ' . $date);
+            $this->log('First tag hit during a window. Starting the counter for: "' . $tag);
         } else {
             $usage = $data['usage'] ?? 0;
             $date = $data['date'] ?? null;
@@ -239,27 +235,29 @@ class FrontControllerPlugin
                     'date'  => $newDate
                 ]);
                 $this->cache->save($data, $tag, [], $ttl);
-                $this->log('Reset count. Hit outside TTL: "' . $tag . '" at ' . $newDate);
+                $this->log('Reset count. Hit outside the enforcement window for: "' . $tag);
                 return false;
             }
 
             if ($usage >= $limit) {
                 $this->response->setStatusHeader(429, null, 'API limit exceeded');
                 if ($limitingType == "path") {
-                    $this->response->setHeader('Surrogate-Control', 'max-age=' . $ttl);
+                    # Only cache blocking decision for the remainder of the enforcement window
+                    $block_time = $ttl - $dateDiff;
+                    $this->response->setHeader('Surrogate-Control', 'max-age=' . $block_time);
                 }
                 if ($limitingType == "crawler") {
                     $this->response->setHeader('Fastly-Vary', 'Fastly-Client-IP');
                 }
                 $this->response->setBody('<h1>Request limit exceeded</h1>');
                 $this->response->setNoCacheHeaders();
-                $this->log('Rate limit exceeded: "' . $tag . '" at ' . $newDate);
+                $this->log('Rate limit exceeded: "' . $tag . '" Count: ' . $usage . '/' . $limit . ' Window length: ' . $dateDiff . ' secs/' . $ttl . ' Block issued lasting ' . $block_time . ' secs.');
                 return true;
             } else {
                 $usage++;
                 $data['usage'] = $usage;
                 $this->cache->save(json_encode($data), $tag, []);
-                $this->log('Hit inside TTL: "' . $tag . '" at ' . $newDate . ' count: "' . $usage);
+                $this->log('Hit inside enforcement window: "' . $tag . '" Count: ' . $usage . '/' . $limit . ' Window length: ' . $dateDiff . ' secs/' . $ttl);
             }
         }
         return false;

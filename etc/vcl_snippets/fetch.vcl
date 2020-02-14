@@ -5,10 +5,6 @@
         if (stale.exists) {
             return(deliver_stale);
         }
-
-        if (req.restarts < 1 && (req.request == "GET" || req.request == "HEAD")) {
-            restart;
-        }
     }
 
     # Remove Set-Cookies from responses for static content to match the cookie removal in recv.

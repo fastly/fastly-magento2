@@ -89,7 +89,7 @@
                 set req.url = querystring.set(req.url, "country_code", if ( req.http.geo_override, req.http.geo_override, client.geo.country_code));
             }
         }
-    } else {
+    } else if ( req.url.path !~ "/graphql" ) {
         # Per suggestions in https://github.com/sdinteractive/SomethingDigital_PageCacheParams
         # we'll strip out query parameters used in Google AdWords, Mailchimp tracking by default
         # and allow custom parameters to be set. List of parameters is configurable in admin

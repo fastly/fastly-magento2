@@ -96,6 +96,33 @@ define([
             });
         }
 
+        function renderAllConditions(active_version, loaderVisibility)
+        {
+            $('#condition_name').val('');
+            $('#apply_if').val('');
+            $('#condition_priority').val('');
+            return getAllConditions(active_version, loaderVisibility)
+                .done(function (response) {
+                    let html = '';
+                    $('#attach_span').hide();
+                    if (response !== false) {
+                        conditions = response.conditions;
+                        html += '<option value="">no condition</option>';
+                        $.each(conditions, function (index, condition) {
+                            if (condition.type === "REQUEST") {
+                                html += '<option value="'+condition.name+'">'+condition.name+' ('+condition.type+') '+condition.statement+'</option>';
+                            }
+                        });
+                    }
+                    $('#conditions').show();
+                    $('#conditions').prop('disabled', false);
+                    $('#detach').show();
+                    $('#create-condition').show();
+                    $('#sep').show();
+                    $('#conditions').html(html);
+                })
+        }
+
         /**
          * Process and display the list of Backends
          *
@@ -283,9 +310,9 @@ define([
 
         function createCondition()
         {
-            conditionName = $('#condition_name').val();
-            applyIf = $('#apply_if').val();
-            conditionPriority = $('#condition_priority').val();
+            let conditionName = $('#condition_name_modal').val();
+            let applyIf = $('#apply_if_modal').val();
+            let conditionPriority = $('#condition_priority_modal').val();
             if (applyIf.length > 512) {
                 showErrorMessage('The expression cannot contain more than 512 characters.');
                 return;
@@ -296,15 +323,15 @@ define([
                 showErrorMessage('Priority value must be an integer.');
                 return;
             }
-            let html = '';
-            html += '<option value="">no condition</option>';
-            $.each(conditions, function (index, condition) {
-                if (condition.type === "REQUEST") {
-                    html += '<option value="'+condition.name+'">'+condition.name+' ('+condition.type+') '+condition.statement+'</option>';
-                }
-            });
-            $('#conditions').html(html);
-            $('#conditions').append('<option value="'+conditionName+'" selected="selected">'+conditionName+' (REQUEST) '+applyIf+'</option>');
+
+            $('#conditions').prop('disabled', true);
+            $('#conditions').html('<option value="'+conditionName+'" selected="selected">'+conditionName+' (REQUEST) '+applyIf+'</option>');
+            $('#condition_name').val(conditionName);
+            $('#apply_if').val(applyIf);
+            $('#condition_priority').val(conditionPriority);
+            $('#detach').hide();
+            $('#create-condition').show();
+            $('#sep').hide();
             conditionModal.modal('closeModal');
             $('.fastly-message-error').hide();
         }
@@ -440,8 +467,20 @@ define([
             let loadBalance = backend.auto_loadbalance === true ? 1 : 0;
             $('#auto_loadbalance option[value=\'' + loadBalance +'\']').attr('selected', 'selected');
             $('#weight').val(backend.weight);
+
             if (!loadBalance) {
                 $('#weight').parent().parent().hide();
+            }
+
+            if (backend.request_condition) {
+                renderAllConditions(active_version, true).done(function () {
+                    $('#conditions').val(backend.request_condition);
+                })
+            } else {
+                $('#conditions').hide();
+                $('#detach').hide();
+                $('#create-condition').hide();
+                $('#sep').hide();
             }
 
             if (backend.ssl_check_cert !== false) {
@@ -546,10 +585,6 @@ define([
                         overlay(backendOptions);
                         backendModal = modal;
                         setServiceLabel(active_version, next_version, service_name);
-                        $('#conditions').hide();
-                        $('#detach').hide();
-                        $('#create-condition').hide();
-                        $('#sep').hide();
                         initValues(backends[backend_id]);
                         verifyCertificateNotification();
                         oldName = $('#backend_name').val();
@@ -562,24 +597,7 @@ define([
         });
 
         $('body').on('click', '#attach', function () {
-            getAllConditions(active_version, true).done(function (response) {
-                let html = '';
-                $('#attach_span').hide();
-                if (response !== false) {
-                    conditions = response.conditions;
-                    html += '<option value="">no condition</option>';
-                    $.each(conditions, function (index, condition) {
-                        if (condition.type === "REQUEST") {
-                            html += '<option value="'+condition.name+'">'+condition.name+' ('+condition.type+') '+condition.statement+'</option>';
-                        }
-                    });
-                }
-                $('#conditions').show();
-                $('#detach').show();
-                $('#create-condition').show();
-                $('#sep').show();
-                $('#conditions').html(html);
-            })
+            renderAllConditions(active_version, true)
         });
 
         $('body').on('click', '#detach', function () {

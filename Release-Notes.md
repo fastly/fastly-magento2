@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.128
+
+- Provide logging to rate limiting
+- Hide API token https://github.com/fastly/fastly-magento2/pull/342
+
 ## 1.2.127
 
 - Add Datadome integration Edge Module

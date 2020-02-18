@@ -468,6 +468,9 @@
                     <div class="admin__field-note"><a id="detach" href="#">Detach condition</a> <span id="sep">|</span>
                         <a id="create-condition" href="#">Create a new request condition</a>
                     </div>
+                    <input type="hidden" name="condition_name" id="condition_name"/>
+                    <input type="hidden" name="apply_if" id="apply_if"/>
+                    <input type="hidden" name="condition_priority" id="condition_priority"/>
                 </div>
             </div>
             <div class="admin__field field _required">
@@ -957,23 +960,23 @@
           enctype="multipart/form-data">
         <fieldset class="admin__fieldset form-list question">
             <div class="admin__field field _required">
-                <label for="condition_name" class="admin__field-label">
+                <label for="condition_name_modal" class="admin__field-label">
                     <span><?php /* @noEscape */ echo __("Name") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="condition_name" id="condition_name" class="admin__control-text">
+                    <input name="condition_name_modal" id="condition_name_modal" class="admin__control-text">
                 </div>
             </div>
 
             <div class="admin__field field __required">
-                <label for="apply_if" class="admin__field-label">
+                <label for="apply_if_modal" class="admin__field-label">
                     <span><?php /* @noEscape */ echo __("Apply if...") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <textarea rows="6"
-                              name="apply_if"
+                              name="apply_if_modal"
                               required="required"
-                              id="apply_if"
+                              id="apply_if_modal"
                               class="admin__control-text"></textarea>
                     <div class="admin__field-note">The expression to decide whether this is run.
                         Maximum length is 512 characters.
@@ -982,14 +985,14 @@
             </div>
 
             <div class="admin__field field">
-                <label for="condition_priority" class="admin__field-label">
+                <label for="condition_priority_modal" class="admin__field-label">
                     <span><?php /* @noEscape */  echo __("Priority") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="condition_priority"
+                    <input name="condition_priority_modal"
                            type="number"
                            required="required"
-                           id="condition_priority"
+                           id="condition_priority_modal"
                            class="admin__control-text"
                            value="10">
                     <div class="admin__field-note">For most configurations, the default (10) is best.

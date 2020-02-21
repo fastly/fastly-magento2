@@ -102,6 +102,7 @@
     if (req.restarts == 0) {
         unset req.http.x-pass;
         unset req.http.Rate-Limit;
+        unset req.http.magento-admin-path;
     }
     
     # Pass on checkout URLs. Because it's a snippet we want to execute this after backend selection so we handle it
@@ -112,6 +113,7 @@
     # ####ADMIN_PATH#### is replaced with value of frontName from app/etc/env.php
     } else if ( req.url ~ "^/(index\.php/)?####ADMIN_PATH####/" ) {
         set req.http.x-pass = "1";
+        set req.http.magento-admin-path = "1";
     } else {
         # Sort the query arguments to increase cache hit ratio with query arguments that
         # may be out od order. In case you want to restore the unsorted URL add a snippet

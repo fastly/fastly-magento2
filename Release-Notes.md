@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.129
+
+- Fix errors when adding conditions to existing backends https://github.com/fastly/fastly-magento2/pull/343
+
 ## 1.2.128
 
 - Provide logging to rate limiting

@@ -59,6 +59,7 @@ define([
                 let edgeAclHead = $('#system_full_page_cache_fastly_fastly_edge_acl-head');
                 let customSyntheticPagesHead = $('#system_full_page_cache_fastly_fastly_error_maintenance_page-head');
                 let backendsHead = $('#system_full_page_cache_fastly_fastly_backend_settings-head');
+                let logEndpointsHead = $('#system_full_page_cache_fastly_fastly_tools_logging-head');
                 let customSnippetsHead = $('#system_full_page_cache_fastly_fastly_custom_snippets-head');
                 let webApplicationFirewallHead = $('#system_full_page_cache_fastly_fastly_web_application_firewall-head');
                 let maintenanceSupportHead = $('#system_full_page_cache_fastly_fastly_maintenance_support-head');
@@ -137,6 +138,12 @@ define([
                         backendsHead.one('click', function () {
                             requirejs(['backends'], function (backends) {
                                 backends(config, serviceStatus, isAlreadyConfigured);
+                            })
+                        });
+
+                        logEndpointsHead.one('click', function () {
+                            requirejs(['logEndpoints'], function (logEndpoints) {
+                                logEndpoints(config, serviceStatus, isAlreadyConfigured);
                             })
                         });
 

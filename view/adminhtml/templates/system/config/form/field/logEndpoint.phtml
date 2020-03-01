@@ -1,0 +1,67 @@
+<?php
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/**
+ * Copied from Mage_Config::view/adminhtml/templates/system/config/form/field/array.phtml.
+ * Currently necessary for work around a missing feature in the M2 core.
+ *
+ * @see https://github.com/magento/magento2/pull/3469
+ */
+?>
+
+<?php
+$_htmlId = $block->getHtmlId() ? $block->getHtmlId() : '_' . uniqid();
+$_colspan = $block->isAddAfter() ? 2 : 1;
+?>
+
+<div class="design_theme_ua_regexp" id="grid<?php /* @noEscape */ echo $_htmlId; ?>">
+    <div class="admin__control-table-wrapper">
+        <table class="admin__control-table" id="<?php /* @noEscape */ echo $block->getElement()->getId(); ?>">
+            <thead>
+            <tr>
+                <?php foreach ($block->getColumns() as $columnName => $column) : ?>
+                    <th><?php /* @noEscape */ echo $column['label']; ?></th>
+                <?php endforeach;?>
+                <th class="col-actions" colspan="<?php /* @noEscape */ echo $_colspan; ?>">Action</th>
+            </tr>
+            </thead>
+            <tbody id="fastly-log-endpoints-list"></tbody>
+        </table>
+    </div>
+    <p class="loading-log-endpoints list-loading">
+        <img class="processing"
+             alt="Collecting"
+             style="margin:0 5px;"
+             src="<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/fastly16.gif') ?>" />
+        <?php /* @noEscape */ echo __('Loading endpoints...'); ?>
+    </p>
+    <p class="no-log-endpoints" style="display: none;">
+        <?php /* @noEscape */ echo __('There are no endpoints configured yet.'); ?>
+    </p>
+</div>
+
+<div class="message message-error fastly-button-messages"
+     id="fastly-error-log-endpoint-button-msg"
+     style="display: none"></div>
+
+<div class="message message-success fastly-button-messages"
+     id="fastly-success-log-endpoint-button-msg"
+     style="display: none"></div>
+
+<div class="message message-warning fastly-button-messages"
+     id="fastly-warning-log-endpoint-button-msg"
+     style="display: none"></div>
+
+<style type="text/css">
+    .admin__control-table .fastly-edit-log-endpoint::before {
+        content: '\e610';
+        font-size: 2rem;
+    }
+
+    .no-log-endpoints, .loading-log-endpoints {
+        text-align: center;
+    }
+</style>

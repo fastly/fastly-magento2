@@ -907,6 +907,91 @@ class Api
     }
 
     /**
+     * @param $version
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function getAllLogEndpoints($version)
+    {
+        $providers = $this->helper->getAvailableLogEndpointProviders();
+        $results = [];
+        foreach ($providers as $type => $providerName) {
+            $url = $this->_getApiServiceUri(). 'version/' . $version . '/logging/' . $type;
+            $endpoints = $this->_fetch($url, \Zend_Http_Client::GET);
+            foreach ($endpoints as $endpoint) {
+                $results[] = [
+                    'label' => "{$endpoint->name} [{$providerName}]",
+                    'name' => $endpoint->name,
+                    'type' => $type,
+                ];
+            }
+        }
+        return $results;
+    }
+
+    /**
+     * @param $version
+     * @param $type
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function getLogEndpoints($version, $type)
+    {
+        $results = [];
+        $providers = $this->helper->getAvailableLogEndpointProviders();
+        $url = $this->_getApiServiceUri(). 'version/' . $version . '/logging/' . $type;
+        $endpoints = $this->_fetch($url, \Zend_Http_Client::GET);
+        foreach ($endpoints as $endpoint) {
+            $results[] = [
+                'label' => "{$endpoint->name} [{$providers[$type]}]",
+                'name' => $endpoint->name,
+                'type' => $type,
+            ];
+        }
+        return $results;
+    }
+
+    /**
+     * @param $version
+     * @param $type
+     * @param $name
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function getLogEndpoint($version, $type, $name)
+    {
+        $url = $this->_getApiServiceUri(). 'version/' . $version . '/logging/' . $type . '/' . $name;
+        return $this->_fetch($url, \Zend_Http_Client::GET);
+    }
+
+    /**
+     * @param $version
+     * @param $type
+     * @param $params
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function createLogEndpoint($version, $type, $params)
+    {
+        $url = $this->_getApiServiceUri() . 'version/' . $version . '/logging/' . $type;
+        return $this->_fetch($url, \Zend_Http_Client::POST, $params);
+    }
+
+    /**
+     * @param $version
+     * @param $type
+     * @param $params
+     * @param $oldName
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function updateLogEndpoint($version, $type, $params, $oldName)
+    {
+        $url = $this->_getApiServiceUri() . 'version/' . $version . '/logging/' . $type . '/' . rawurlencode($oldName);
+        return $this->_fetch($url, \Zend_Http_Client::PUT, $params);
+    }
+
+    /**
      * Send message to Slack channel
      *
      * @param $message

@@ -788,6 +788,30 @@
                                 <![CDATA[Export Edge ACLs, Edge Dictionaries, Active Edge Modules and Custom Snippets]]>
                             </comment>
                         </field>
+                        <!-- ========================
+                             Real-Time Log Streaming
+                        ========================= -->
+                        <group id="logging" sortOrder="20" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Real-Time Log Streaming</label>
+                            <!-- =========================
+                             Create Endpoint
+                            ========================== -->
+                            <field id="create_backend" translate="label comment" sortOrder="5" showInDefault="1" showInStore="0" showInWebsite="0">
+                                <label><![CDATA[Create Endpoint]]></label>
+                                <comment><![CDATA[]]></comment>
+                                <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\CreateLogEndpointBtn</frontend_model>
+                            </field>
+                            <!-- ==================
+                                 Backends field
+                            =================== -->
+                            <field id="backends" translate="label comment tooltip" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                                <label>Endpoints</label>
+                                <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\LogEndpoint</frontend_model>
+                                <comment>
+                                    <![CDATA[]]>
+                                </comment>
+                            </field>
+                        </group>
                     </group>
                     <!-- ===============================
                          Webhook Notifications group

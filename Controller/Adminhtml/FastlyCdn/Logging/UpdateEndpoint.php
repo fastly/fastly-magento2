@@ -117,6 +117,7 @@ class UpdateEndpoint extends Action
                 $this->getRequest()->getParam('log_endpoint'),
                 ['response_condition' => $condition]
             );
+            $params['format'] = json_encode($params['format']);
 
             $endpoint = $this->api->updateLogEndpoint($clone->number, $endpointType, $params, $oldName);
 

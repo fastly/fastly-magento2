@@ -293,63 +293,189 @@
                 </label>
                 <div class="admin__field-control">
                     <select name="shield" id="backend_shield" class="admin__control-text">
-                        <option value="">(none)</option>
-                        <option value="fjr-ae">AE, Fujairah Al Mahta - Dubai</option>
-                        <option value="brisbane-au">AU, Brisbane</option>
-                        <option value="melbourne-au">AU, Melbourne</option>
-                        <option value="perth-au">AU, Perth</option>
-                        <option value="sydney-au">
-                            AU, Sydney - Recommended for AWS ap-southeast-2, GCP australia-southeast1 origins
-                        </option>
-                        <option value="gru-br-sa">
-                            BR, Sao Paulo - Recommended for AWS sa-east-1, GCP southamerica-east1
-                        </option>
-                        <option value="yyz-on-ca">CA, Toronto</option>
-                        <option value="yul-montreal-ca">
-                            CA, Montreal - Recommended for AWS ca-central-1, GCP northamerica-northeast1 origins
-                        </option>
-                        <option value="mad-madrid-es">ES, Madrid</option>
-                        <option value="hel-helsinki-fi">FI, Helsinki - Recommended for GCP europe-north1</option>
-                        <option value="cdg-par-fr">FR, Paris- Recommended for AWS eu-west3</option>
-                        <option value="hongkong-hk">HK, Hong Kong</option>
-                        <option value="hhn-frankfurt-de">
-                            DE, Frankfurt - Interxion - Recommended for GCP europe-west3 origins
-                        </option>
-                        <option value="frankfurt-de">DE, Frankfurt - Recommended for AWS eu-central1 origins</option>
-                        <option value="tyo-tokyo-jp">JP, Tokyo - Recommended for AWS ap-northeast-1 origins</option>
-                        <option value="osaka-jp">JP, Osaka - Recommened for AWS ap-northeast-3 origins</option>
-                        <option value="amsterdam-nl">NL, Amsterdam - Recommended for GCP eu-west1/4 origins</option>
-                        <option value="auckland-akl">NZ, Auckland</option>
-                        <option value="wellington-wlg">NZ, Wellington</option>
-                        <option value="stockholm-bma">SE, Stockholm</option>
-                        <option value="singapore-sg">
-                            SG, Singapore - Recommended for AWS ap-southeast-1, GCP asia-southeast1 origins
-                        </option>
-                        <option value="london_city-uk">
-                            UK, London - LCY - Recommended for AWS eu-west1/2 origins
-                        </option>
-                        <option value="london-uk">UK, London - LHR - Recommended for GCP eu-west2 origins</option>
-                        <option value="atl-ga-us">US, Atlanta, GA</option>
-                        <option value="bos-ma-us">US, Boston, MA</option>
-                        <option value="mdw-il-us">US, Chicago, IL - Recommended for GCP us-central1 origins</option>
-                        <option value="den-co-us">US, Denver, CO</option>
-                        <option value="dallas-tx-us">US, Dallas, TX</option>
-                        <option value="iah-tx-us">US, Houston, TX</option>
-                        <option value="iad-va-us">
-                            US, Washington, DC - deprecated
-                        </option>
-                        <option value="bwi-va-us">
-                            US, Washington, DC - Recommended for AWS us-east1, GCP us-east1/4 origins
-                        </option>
-                        <option value="lax-ca-us">US, Los Angeles, CA - Recommended for GCP us-west2</option>
-                        <option value="miami-fl-us">US, Miami, FL</option>
-                        <option value="jfk-ny-us">US, New York City, NY</option>
-                        <option value="sjc-ca-us">US, San Jose, CA</option>
-                        <option value="sea-wa-us">
-                            US, Seattle, WA - Recommended for AWS us-west2, GCP us-west1 origins
-                        </option>
-                        <option value="cpt-capetown-za">ZA, Capetown</option>
-                        <option value="jnb-johannesburg-za">ZA, Johannesburg</option>
+                        <optgroup label="No Region">
+                            <option value="">
+                            (none)
+                            </option>
+                        </optgroup>
+                        <optgroup label="Europe">
+                            <option value="amsterdam-nl">
+                            Amsterdam - Recommended for GCP europe-west1/4 origins
+                            </option>
+                            <option value="cph-copenhagen-dk">
+                            Copenhagen
+                            </option>
+                            <option value="dub-dublin-ie">
+                            Dublin
+                            </option>
+                            <option value="frankfurt-de">
+                            Frankfurt - Recommended for AWS eu-central-1, GCP europe-west3/6 origins
+                            </option>
+                            <option value="hhn-frankfurt-de">
+                            Frankfurt - Interxion
+                            </option>
+                            <option value="hel-helsinki-fi">
+                            Helsinki - Recommended for GCP europe-north1
+                            </option>
+                            <option value="london_city-uk">
+                            London - LCY
+                            </option>
+                            <option value="lon-london-uk">
+                            London - LON
+                            </option>
+                            <option value="london-uk">
+                            London - Slough - Recommended for AWS eu-west-1/2, GCP europe-west2 origins
+                            </option>
+                            <option value="mad-madrid-es">
+                            Madrid
+                            </option>
+                            <option value="man-manchester-uk">
+                            Manchester
+                            </option>
+                            <option value="mxp-milan-it">
+                            Milan
+                            </option>
+                            <option value="osl-oslo-no">
+                            Oslo
+                            </option>
+                            <option value="cdg-par-fr">
+                            Paris - Recommended for AWS eu-west-3
+                            </option>
+                            <option value="stockholm-bma">
+                            Stockholm
+                            </option>
+                            <option value="vie-vienna-at">
+                            Vienna
+                            </option>
+                        </optgroup>
+                        <optgroup label="United States">
+                            <option value="bwi-va-us">
+                            Ashburn - BWI
+                            </option>
+                            <option value="dca-dc-us">
+                            Ashburn - DCA - Recommended for AWS us-east-1, GCP us-east4 origins
+                            </option>
+                            <option value="fty-ga-us">
+                            Atlanta - FTY - Recommended for GCP us-east1 origins
+                            </option>
+                            <option value="pdk-ga-us">
+                            Atlanta - PDK
+                            </option>
+                            <option value="bos-ma-us">
+                            Boston
+                            </option>
+                            <option value="chi-il-us">
+                            Chicago - CHI
+                            </option>
+                            <option value="mdw-il-us">
+                            Chicago - MDW - Recommended for GCP us-central1 origins
+                            </option>
+                            <option value="pwk-il-us">
+                            Chicago - PWK
+                            </option>
+                            <option value="dallas-tx-us">
+                            Dallas
+                            </option>
+                            <option value="dal-tx-us">
+                            Dallas - DAL
+                            </option>
+                            <option value="den-co-us">
+                            Denver
+                            </option>
+                            <option value="iah-tx-us">
+                            Houston
+                            </option>
+                            <option value="jax-fl-us">
+                            Jacksonville
+                            </option>
+                            <option value="bur-ca-us">
+                            Los Angeles - BUR - Recommended for GCP us-west2
+                            </option>
+                            <option value="lax-ca-us">
+                            Los Angeles - LAX
+                            </option>
+                            <option value="miami-fl-us">
+                            Miami
+                            </option>
+                            <option value="msp-mn-us">
+                            Minneapolis
+                            </option>
+                            <option value="yul-montreal-ca">
+                            Montreal
+                            </option>
+                            <option value="lga-ny-us">
+                            New York City - LGA
+                            </option>
+                            <option value="ewr-nj-us">
+                            Newark
+                            </option>
+                            <option value="pao-ca-us">
+                            Palo Alto
+                            </option>
+                            <option value="sjc-ca-us">
+                            San Jose
+                            </option>
+                            <option value="sea-wa-us">
+                            Seattle - Recommended for AWS us-west-2, GCP us-west1 origins
+                            </option>
+                            <option value="yyz-on-ca">
+                            Toronto - Recommended for AWS ca-central-1, GCP northamerica-northeast1 origins
+                            </option>
+                        </optgroup>
+                        <optgroup label="Asia/Pacific">
+                            <option value="auckland-akl">
+                            Auckland
+                            </option>
+                            <option value="brisbane-au">
+                            Brisbane
+                            </option>
+                            <option value="fjr-ae">
+                            Fujairah Al Mahta
+                            </option>
+                            <option value="hongkong-hk">
+                            Hong Kong
+                            </option>
+                            <option value="melbourne-au">
+                            Melbourne
+                            </option>
+                            <option value="osaka-jp">
+                            Osaka - Recommended for AWS ap-northeast-3, GCP asia-northeast2 origins
+                            </option>
+                            <option value="perth-au">
+                            Perth
+                            </option>
+                            <option value="singapore-sg">
+                            Singapore - Recommended for AWS ap-south-1/ap-southeast-1, GCP asia-south1/asia-southeast1 origins
+                            </option>
+                            <option value="sydney-au">
+                            Sydney - Recommended for AWS ap-southeast-2, GCP australia-southeast1 origins
+                            </option>
+                            <option value="tyo-tokyo-jp">
+                            Tokyo - Recommended for AWS ap-northeast-1/2, GCP asia-northeast1 origins
+                            </option>
+                            <option value="hnd-tokyo-jp">
+                            Tokyo - HND
+                            </option>
+                            <option value="wellington-wlg">
+                            Wellington
+                            </option>
+                        </optgroup>
+                        <optgroup label="South America">
+                            <option value="bog-bogota-co">
+                            Bogota
+                            </option>
+                            <option value="gru-br-sa">
+                            Sao Paulo - Recommended for AWS sa-east-1, GCP southamerica-east1
+                            </option>
+                        </optgroup>
+                        <optgroup label="South Africa">
+                            <option value="cpt-capetown-za">
+                            Cape Town
+                            </option>
+                            <option value="jnb-johannesburg-za">
+                            Johannesburg
+                            </option>
+                        </optgroup>
                     </select>
                     <div class="admin__field-note">
                         The shield POP designated to reduce inbound load on this origin by serving the cached data to
@@ -502,64 +628,189 @@
                 </label>
                 <div class="admin__field-control">
                     <select name="shield" id="backend_shield" class="admin__control-select">
-                        <option value="">(none)</option>
-                        <option value="fjr-ae">AE, Fujairah Al Mahta - Dubai</option>
-                        <option value="brisbane-au">AU, Brisbane</option>
-                        <option value="melbourne-au">AU, Melbourne</option>
-                        <option value="perth-au">AU, Perth</option>
-                        <option value="sydney-au">
-                            AU, Sydney - Recommended for AWS ap-southeast-2, GCP australia-southeast1 origins
-                        </option>
-                        <option value="gru-br-sa">
-                            BR, Sao Paulo - Recommended for AWS sa-east-1, GCP southamerica-east1
-                        </option>
-                        <option value="yyz-on-ca">CA, Toronto</option>
-                        <option value="yul-montreal-ca">
-                            CA, Montreal - Recommended for AWS ca-central-1, GCP northamerica-northeast1 origins
-                        </option>
-                        <option value="mad-madrid-es">ES, Madrid</option>
-                        <option value="hel-helsinki-fi">FI, Helsinki - Recommended for GCP europe-north1</option>
-                        <option value="cdg-par-fr">FR, Paris- Recommended for AWS eu-west3</option>
-                        <option value="hongkong-hk">HK, Hong Kong</option>
-                        <option value="hhn-frankfurt-de">
-                            DE, Frankfurt - Interxion - Recommended for GCP europe-west3 origins
-                        </option>
-                        <option value="frankfurt-de">DE, Frankfurt - Recommended for AWS eu-central1 origins</option>
-                        <option value="tokyo-jp2">JP, Tokyo - deprecated</option>
-                        <option value="tyo-tokyo-jp">JP, Tokyo - Recommended for AWS ap-northeast-1 origins</option>
-                        <option value="osaka-jp">JP, Osaka - Recommened for AWS ap-northeast-3 origins</option>
-                        <option value="amsterdam-nl">NL, Amsterdam - Recommended for GCP eu-west1/4 origins</option>
-                        <option value="auckland-akl">NZ, Auckland</option>
-                        <option value="wellington-wlg">NZ, Wellington</option>
-                        <option value="stockholm-bma">SE, Stockholm</option>
-                        <option value="singapore-sg">
-                            SG, Singapore - Recommended for AWS ap-southeast-1, GCP asia-southeast1 origins
-                        </option>
-                        <option value="london_city-uk">
-                            UK, London - LCY - Recommended for AWS eu-west1/2 origins
-                        </option>
-                        <option value="london-uk">UK, London - LHR - Recommended for GCP eu-west2 origins</option>
-                        <option value="atl-ga-us">US, Atlanta, GA</option>
-                        <option value="bos-ma-us">US, Boston, MA</option>
-                        <option value="mdw-il-us">US, Chicago, IL - Recommended for GCP us-central1 origins</option>
-                        <option value="den-co-us">US, Denver, CO</option>
-                        <option value="dallas-tx-us">US, Dallas, TX</option>
-                        <option value="iah-tx-us">US, Houston, TX</option>
-                        <option value="iad-va-us">
-                            US, Washington, DC - deprecated
-                        </option>
-                        <option value="bwi-va-us">
-                            US, Washington, DC - Recommended for AWS us-east1, GCP us-east1/4 origins
-                        </option>
-                        <option value="lax-ca-us">US, Los Angeles, CA - Recommended for GCP us-west2</option>
-                        <option value="miami-fl-us">US, Miami, FL</option>
-                        <option value="jfk-ny-us">US, New York City, NY</option>
-                        <option value="sjc-ca-us">US, San Jose, CA</option>
-                        <option value="sea-wa-us">
-                            US, Seattle, WA - Recommended for AWS us-west2, GCP us-west1 origins
-                        </option>
-                        <option value="cpt-capetown-za">ZA, Capetown</option>
-                        <option value="jnb-johannesburg-za">ZA, Johannesburg</option>
+                        <optgroup label="No Region">
+                            <option value="">
+                            (none)
+                            </option>
+                        </optgroup>
+                        <optgroup label="Europe">
+                            <option value="amsterdam-nl">
+                            Amsterdam - Recommended for GCP europe-west1/4 origins
+                            </option>
+                            <option value="cph-copenhagen-dk">
+                            Copenhagen
+                            </option>
+                            <option value="dub-dublin-ie">
+                            Dublin
+                            </option>
+                            <option value="frankfurt-de">
+                            Frankfurt - Recommended for AWS eu-central-1, GCP europe-west3/6 origins
+                            </option>
+                            <option value="hhn-frankfurt-de">
+                            Frankfurt - Interxion
+                            </option>
+                            <option value="hel-helsinki-fi">
+                            Helsinki - Recommended for GCP europe-north1
+                            </option>
+                            <option value="london_city-uk">
+                            London - LCY
+                            </option>
+                            <option value="lon-london-uk">
+                            London - LON
+                            </option>
+                            <option value="london-uk">
+                            London - Slough - Recommended for AWS eu-west-1/2, GCP europe-west2 origins
+                            </option>
+                            <option value="mad-madrid-es">
+                            Madrid
+                            </option>
+                            <option value="man-manchester-uk">
+                            Manchester
+                            </option>
+                            <option value="mxp-milan-it">
+                            Milan
+                            </option>
+                            <option value="osl-oslo-no">
+                            Oslo
+                            </option>
+                            <option value="cdg-par-fr">
+                            Paris - Recommended for AWS eu-west-3
+                            </option>
+                            <option value="stockholm-bma">
+                            Stockholm
+                            </option>
+                            <option value="vie-vienna-at">
+                            Vienna
+                            </option>
+                        </optgroup>
+                        <optgroup label="United States">
+                            <option value="bwi-va-us">
+                            Ashburn - BWI
+                            </option>
+                            <option value="dca-dc-us">
+                            Ashburn - DCA - Recommended for AWS us-east-1, GCP us-east4 origins
+                            </option>
+                            <option value="fty-ga-us">
+                            Atlanta - FTY - Recommended for GCP us-east1 origins
+                            </option>
+                            <option value="pdk-ga-us">
+                            Atlanta - PDK
+                            </option>
+                            <option value="bos-ma-us">
+                            Boston
+                            </option>
+                            <option value="chi-il-us">
+                            Chicago - CHI
+                            </option>
+                            <option value="mdw-il-us">
+                            Chicago - MDW - Recommended for GCP us-central1 origins
+                            </option>
+                            <option value="pwk-il-us">
+                            Chicago - PWK
+                            </option>
+                            <option value="dallas-tx-us">
+                            Dallas
+                            </option>
+                            <option value="dal-tx-us">
+                            Dallas - DAL
+                            </option>
+                            <option value="den-co-us">
+                            Denver
+                            </option>
+                            <option value="iah-tx-us">
+                            Houston
+                            </option>
+                            <option value="jax-fl-us">
+                            Jacksonville
+                            </option>
+                            <option value="bur-ca-us">
+                            Los Angeles - BUR - Recommended for GCP us-west2
+                            </option>
+                            <option value="lax-ca-us">
+                            Los Angeles - LAX
+                            </option>
+                            <option value="miami-fl-us">
+                            Miami
+                            </option>
+                            <option value="msp-mn-us">
+                            Minneapolis
+                            </option>
+                            <option value="yul-montreal-ca">
+                            Montreal
+                            </option>
+                            <option value="lga-ny-us">
+                            New York City - LGA
+                            </option>
+                            <option value="ewr-nj-us">
+                            Newark
+                            </option>
+                            <option value="pao-ca-us">
+                            Palo Alto
+                            </option>
+                            <option value="sjc-ca-us">
+                            San Jose
+                            </option>
+                            <option value="sea-wa-us">
+                            Seattle - Recommended for AWS us-west-2, GCP us-west1 origins
+                            </option>
+                            <option value="yyz-on-ca">
+                            Toronto - Recommended for AWS ca-central-1, GCP northamerica-northeast1 origins
+                            </option>
+                        </optgroup>
+                        <optgroup label="Asia/Pacific">
+                            <option value="auckland-akl">
+                            Auckland
+                            </option>
+                            <option value="brisbane-au">
+                            Brisbane
+                            </option>
+                            <option value="fjr-ae">
+                            Fujairah Al Mahta
+                            </option>
+                            <option value="hongkong-hk">
+                            Hong Kong
+                            </option>
+                            <option value="melbourne-au">
+                            Melbourne
+                            </option>
+                            <option value="osaka-jp">
+                            Osaka - Recommened for AWS ap-northeast-3, GCP asia-northeast2 origins
+                            </option>
+                            <option value="perth-au">
+                            Perth
+                            </option>
+                            <option value="singapore-sg">
+                            Singapore - Recommended for AWS ap-south-1/ap-southeast-1, GCP asia-south1/asia-southeast1 origins
+                            </option>
+                            <option value="sydney-au">
+                            Sydney - Recommended for AWS ap-southeast-2, GCP australia-southeast1 origins
+                            </option>
+                            <option value="tyo-tokyo-jp">
+                            Tokyo - Recommended for AWS ap-northeast-1/2, GCP asia-northeast1 origins
+                            </option>
+                            <option value="hnd-tokyo-jp">
+                            Tokyo - HND
+                            </option>
+                            <option value="wellington-wlg">
+                            Wellington
+                            </option>
+                        </optgroup>
+                        <optgroup label="South America">
+                            <option value="bog-bogota-co">
+                            Bogota
+                            </option>
+                            <option value="gru-br-sa">
+                            Sao Paulo - Recommended for AWS sa-east-1, GCP southamerica-east1
+                            </option>
+                        </optgroup>
+                        <optgroup label="South Africa">
+                            <option value="cpt-capetown-za">
+                            Cape Town
+                            </option>
+                            <option value="jnb-johannesburg-za">
+                            Johannesburg
+                            </option>
+                        </optgroup>
                     </select>
                     <div class="admin__field-note">
                         The shield POP designated to reduce inbound load on this origin by serving the cached data to

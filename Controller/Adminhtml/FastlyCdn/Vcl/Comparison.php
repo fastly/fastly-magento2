@@ -93,7 +93,7 @@ class Comparison extends Action
                     'status' => false,
                     'local'  => $localVersion,
                     'header' => $headerVersion,
-                    'msg'   => 'Plugin VCL version is outdated! Please re-Upload.'
+                    'msg'   => 'Plugin VCL is outdated or VCL was not uploaded! Please click Upload above to correct.'
                 ]
             );
         }

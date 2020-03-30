@@ -1,13 +1,12 @@
 define([
     "jquery",
-    "handlebars",
     "setServiceLabel",
     "overlay",
     "resetAllMessages",
     "showErrorMessage",
     'mage/translate',
     'importExportRenderer'
-], function ($, Handlebars, setServiceLabel, overlay, resetAllMessages, showErrorMessage, translate, importExportRenderer) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, translate, importExportRenderer) {
     return function (config, serviceStatus, isAlreadyConfigured) {
         let successButtonMsg = $("#fastly-success-import-button-msg");
         let errorButtonMsg = $("#fastly-error-import-button-msg");
@@ -92,7 +91,6 @@ define([
                     html += importExportRenderer.renderCustomSnippets(response.custom_snippets);
 
                     let edgeModules = [];
-                    let edgeModulesSnippets = [];
                     for (const name in response.active_modules) {
                         if (response.active_modules.hasOwnProperty(name)) {
                             let values = response.active_modules[name].manifest_values;
@@ -102,14 +100,9 @@ define([
                                 manifest_description: response.active_modules[name].manifest_content.description,
                                 values: (Array.isArray(values)) ? values.pop() : {},
                             });
-                            edgeModulesSnippets.push({
-                                module_id: name,
-                                snippet: JSON.stringify(generateSnippetFromVcl(name, response.active_modules[name]))
-                            })
                         }
                     }
                     html += importExportRenderer.renderActiveEdgeModules(edgeModules);
-                    html += importExportRenderer.renderActiveEdgeModulesSnippets(edgeModulesSnippets);
 
                     $('.question').html(html);
                 });
@@ -158,52 +151,6 @@ define([
                     showErrorMessage(response.msg);
                 }
             });
-        }
-
-        function generateSnippetFromVcl(name, data)
-        {
-            let moduleVcl = data.manifest_content.vcl;
-            let templates = [];
-            let result = '';
-
-            let groupName = '';
-            $.each(data.manifest_content.properties, function (key, property) {
-                if (property.type === 'group') {
-                    groupName = property.name;
-                }
-            });
-
-            Handlebars.registerHelper('replace', (inp, re, repl) => inp.replace(new RegExp(re, 'g'), repl));
-            Handlebars.registerHelper('ifEq', function (a, b, options) {
-                if (a === b) {
-                    return options.fn(this);
-                } else {
-                    return options.inverse(this);
-                }
-            });
-            Handlebars.registerHelper('ifMatch', (a, pat, opts) => opts[a.match(new RegExp(pat)) ? 'fn':'inverse'](this));
-            Handlebars.registerHelper('extract', (a, pat) => (a.match(new RegExp(pat)) || [])[1]);
-
-            $.each(data.manifest_values, function (key, fields) {
-                $.each(moduleVcl, function (index, value) {
-                    let vclTemplate = Handlebars.compile(value.template);
-                    if (groupName !== '') {
-                        result = vclTemplate(data.manifest_values);
-                    } else {
-                        result = vclTemplate(fields);
-                    }
-                    let priority = 45;
-                    if (value.priority) {
-                        priority = value.priority;
-                    }
-                    templates.push({
-                        "type": value.type,
-                        "priority": priority,
-                        "snippet": result
-                    });
-                });
-            });
-            return templates;
         }
     }
 });

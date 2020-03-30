@@ -87,14 +87,6 @@ define(
                 return html;
             },
 
-            renderActiveEdgeModulesSnippets: function (data) {
-                let html = '';
-                $.each(data, function (index, moduleSnippet) {
-                    html += `<input type="hidden" name="active_modules_snippets[${moduleSnippet.module_id}]" value="${escape(moduleSnippet.snippet)}" />`;
-                });
-                return html;
-            },
-
             renderAdminPathTimeout: function (data) {
                 let html = this._renderTitle('Admin Path Timeout');
                 html += `<div class="admin__field field">

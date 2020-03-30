@@ -22,8 +22,8 @@ namespace Fastly\Cdn\Model;
 
 use Fastly\Cdn\Model\Modly\Manifest as Modly;
 use Fastly\Cdn\Model\ResourceModel\Manifest as ManifestResource;
+use LightnCandy\LightnCandy;
 use Magento\Framework\Exception\LocalizedException;
-use Mustache_Engine;
 
 /**
  * Class Importer
@@ -106,14 +106,69 @@ class Importer
         }
     }
 
-    public function importActiveEdgeModules($version, $data, $snippets)
+    public function importActiveEdgeModules($version, $data)
     {
+        $snippets = $this->buildSnippets($data);
         foreach ($data as $moduleId => $datum) {
             $fieldData = (array) $datum->manifest_values;
             $groupName = key((array) $fieldData);
             $this->saveActiveEdgeModule($moduleId, $fieldData, $groupName);
             $this->uploadActiveEdgeModule($version, $moduleId, $snippets[$moduleId]);
         }
+    }
+
+    protected function buildSnippets($data)
+    {
+        $snippets = [];
+        foreach ($data as $moduleName => $moduleData) {
+            $moduleVcls = $moduleData->manifest_content->vcl;
+            $groupName = '';
+            if (isset($moduleData->manifest_content->properties)) {
+                foreach ($moduleData->manifest_content->properties as $property) {
+                    if ($property->type === 'group') {
+                        $groupName = $property->name;
+                    }
+                }
+            }
+
+            $templates = [];
+            foreach ($moduleData->manifest_values as $fields) {
+                foreach ($moduleVcls as $vcl) {
+                    $context = ($groupName) ? $moduleData->manifest_values : $fields;
+                    $php = LightnCandy::compile($vcl->template, $this->getLightncandyOptions());
+                    $render = LightnCandy::prepare($php);
+                    $templates[] = [
+                        'type' => $vcl->type,
+                        'priority' => (isset($vcl->priority)) ? $vcl->priority : 45,
+                        'snippet' => $render($context),
+                    ];
+                }
+            }
+
+            $snippets[$moduleName] = $templates;
+        }
+        return $snippets;
+    }
+
+    protected function getLightncandyOptions()
+    {
+        return [
+            'flags' => LightnCandy::FLAG_HANDLEBARSJS_FULL,
+            'helpers' => [
+                'ifEq' => function ($a, $b, $o) {
+                    return ($a === $b) ? $o['fn']() : $o['inverse']();
+                },
+                'replace' => function ($subject, $pattern, $replacement) {
+                    return preg_replace($pattern, $replacement, $subject);
+                },
+                'ifMatch' => function ($subject, $pattern, $o) {
+                    return (preg_match($pattern, $subject)) ? $o['fn']() : $o['inverse']();
+                },
+                'extract' => function ($subject, $pattern, $o) {
+                    return $o['fn']();
+                },
+            ],
+        ];
     }
 
     protected function saveActiveEdgeModule($moduleId, $fieldData, $groupName)
@@ -207,13 +262,13 @@ class Importer
 
     protected function uploadActiveEdgeModule($version, $moduleId, $snippets)
     {
-        foreach (json_decode(urldecode($snippets)) as $key => $value) {
+        foreach ($snippets as $key => $value) {
             $this->api->uploadSnippet($version, [
-                'name'      => Config::FASTLY_MODLY_MODULE . '_' . $moduleId . '_' . $value->type,
-                'type'      => $value->type,
+                'name'      => Config::FASTLY_MODLY_MODULE . '_' . $moduleId . '_' . $value['type'],
+                'type'      => $value['type'],
                 'dynamic'   => "0",
-                'priority'  => $value->priority,
-                'content'   => $value->snippet
+                'priority'  => $value['priority'],
+                'content'   => $value['snippet']
             ]);
         }
     }

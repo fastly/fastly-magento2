@@ -101,7 +101,7 @@ class SaveImportData extends Action
 
             $this->importer->importEdgeAcls($clone->number, $data->edge_acls);
             $this->importer->importEdgeDictionaries($clone->number, $data->edge_dictionaries);
-            $this->importer->importActiveEdgeModules($clone->number, $data->active_modules, $this->getRequest()->getParam('active_modules_snippets'));
+            $this->importer->importActiveEdgeModules($clone->number, $data->active_modules);
 
 
             if ($this->getRequest()->getParam('activate_flag')) {

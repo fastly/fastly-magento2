@@ -28,7 +28,8 @@ let config = {
             maintenance: 'Fastly_Cdn/js/maintenance',
             fastlyImport: 'Fastly_Cdn/js/import',
             fastlyExport: 'Fastly_Cdn/js/export',
-            versionHistory: 'Fastly_Cdn/js/version-history'
+            versionHistory: 'Fastly_Cdn/js/version-history',
+            importExportRenderer: 'Fastly_Cdn/js/import-export-renderer'
         }
     }
 };

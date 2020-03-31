@@ -4,10 +4,10 @@ define([
     "overlay",
     "resetAllMessages",
     "showErrorMessage",
-    'mage/translate'
-], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage) {
+    'mage/translate',
+    'importExportRenderer'
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, translate, importExportRenderer) {
     return function (config, serviceStatus, isAlreadyConfigured) {
-        /* Export button messages */
         let successExportBtnMsg = $('#fastly-success-export-button-msg');
         let errorExportBtnMsg = $('#fastly-error-export-button-msg');
 
@@ -59,75 +59,21 @@ define([
                     acls = response.acls;
                     activeModules = response.active_modules;
 
-                    html += '<div class="admin__field field"><div class="admin__field-control export-field">';
-                    html += '<label class="admin__field-label"><b>Edge ACLs</b></label></div></div>';
-                    $.each(acls, function (index, acl) {
-                        html += '<div class="admin__field field"><div class="admin__field-control export-field">';
-                        html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-acl" type="checkbox" name="' + acl.name + '" id="' + acl.id + '" checked/>';
-                        html += '<label class="admin__field-label"></label><label for="' + acl.id + '">' + acl.name + '</label>';
-                        html += '<button class="action-delete export-list-icon acl-items-btn" title="Show Items" type="button"></div></div></div>';
-                    });
-                    if (acls === undefined || acls.length == 0) {
-                        html += '<div class="admin__field field"><div class="admin__field-control export-field">';
-                        html += '<div class="admin__field-option admin__control-table">';
-                        html += '<label class="admin__field-label"></label><label>There are no Edge ACLs</label></div></div></div>';
-                    }
+                    html += importExportRenderer.renderEdgeAcls(acls);
 
-                    html += '<div class="admin__field field"><div class="admin__field-control export-field">';
-                    html += '<label class="admin__field-label"><b>Edge Dictionaries</b></label></div></div>';
-                    $.each(dictionaries, function (index, dictionary) {
-                        html += '<div class="admin__field field"><div class="admin__field-control export-field">';
-                        if (dictionary.name.split('_', 1)[0] === 'magentomodule') {
-                            html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-dictionary" type="checkbox" name="' + dictionary.name + '" id="' + dictionary.id + '"/>';
-                        } else {
-                            html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-dictionary" type="checkbox" name="' + dictionary.name + '" id="' + dictionary.id + '" checked/>';
-                        }
-                        html += '<label class="admin__field-label"></label><label for="' + dictionary.id + '">' + dictionary.name + '</label>';
-                        html += '<button class="action-delete export-list-icon dictionary-items-btn" title="Show Items" type="button"></div></div></div>';
-                    });
-                    if (dictionaries === undefined || dictionaries.length == 0) {
-                        html += '<div class="admin__field field"><div class="admin__field-control export-field">';
-                        html += '<div class="admin__field-option admin__control-table">';
-                        html += '<label class="admin__field-label"></label><label>There are no Edge Dictionaries</label></div></div></div>';
-                    }
+                    html += importExportRenderer.renderEdgeDisctionaries(dictionaries);
 
-                    html += '<div class="admin__field field"><div class="admin__field-control export-field">';
-                    html += '<label class="admin__field-label"><b>Custom Snippets</b></label></div></div>';
-                    $.each(customSnippets, function (index, content) {
-                        html += '<div class="admin__field field"><div class="admin__field-control export-field">';
-                        html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-custom-snippet" type="checkbox" name="' + index + '" checked/>';
-                        html += '<label class="admin__field-label"></label><label for="' + index + '">' + index + '</label></div></div></div>';
-                        html += '<div class="admin__field field"><div class="admin__field-note export-note" id="' + index + '">' + content;
-                        html += '</div></div>';
-                    });
-                    if (customSnippets === undefined || customSnippets.length == 0) {
-                        html += '<div class="admin__field field"><div class="admin__field-control export-field">';
-                        html += '<div class="admin__field-option admin__control-table">';
-                        html += '<label class="admin__field-label"></label><label>There are no Custom Snippets</label></div></div></div>';
-                    }
+                    html += importExportRenderer.renderCustomSnippets(customSnippets);
 
-                    html += '<div class="admin__field field"><div class="admin__field-control export-field">';
-                    html += '<label class="admin__field-label"><b>Active Edge Modules</b></label></div></div>';
-                    $.each(activeModules, function (index, edgeModule) {
-                        html += '<div class="admin__field field"><div class="admin__field-control export-field">';
-                        html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-active-modules" type="checkbox" name="' + edgeModule.manifest_name + '" id="' + edgeModule.manifest_id + '" checked/>';
-                        html += '<label class="admin__field-label"></label><label for="' + edgeModule.id + '">' + edgeModule.manifest_name + '</label></div></div></div>';
-                        html += '<div class="admin__field field"><div class="admin__field-note export-note" id="' + index + '">' + edgeModule.manifest_description;
-                        html += '</div></div>';
-                    });
-                    if (activeModules === undefined || activeModules.length == 0) {
-                        html += '<div class="admin__field field"><div class="admin__field-control export-field">';
-                        html += '<div class="admin__field-option admin__control-table">';
-                        html += '<label class="admin__field-label"></label><label>There are no Active Modules</label></div></div></div>';
-                    }
+                    html += importExportRenderer.renderActiveEdgeModules(activeModules);
 
-                    html += '<div class="admin__field field"><div class="admin__field-control export-field">';
-                    html += '<label class="admin__field-label"><b>Advanced Configuration</b></label></div></div>';
-                    html += '<div class="admin__field field"><div class="admin__field-control export-field">';
-                    html += '<div class="admin__field-option admin__control-table"><input class="admin__control-checkbox export-checkbox export-admin-timeout" type="checkbox" name="admin-timeout" id="admin-timeout" checked/>';
-                    html += '<label class="admin__field-label"></label><label for="admin-timeout">Admin Path Timeout</label></div></div></div>';
-                    html += '<div class="admin__field field"><div class="admin__field-note export-note">' + adminTimeout + 's';
-                    html += '</div></div>';
+                    html += `<div class="admin__field field">
+                        <div class="admin__field-control export-field">
+                            <label class="admin__field-label"><b>Advanced Configuration</b></label>
+                        </div>
+                    </div>`;
+
+                    html += importExportRenderer.renderAdminPathTimeout(adminTimeout);
 
                     $('.question').html(html);
                 });
@@ -167,7 +113,7 @@ define([
 
             let checkedCustomSnippets = {};
             $('.export-custom-snippet:checked').each(function () {
-                let snippetName = $(this).attr('name');
+                let snippetName = $(this).attr('id');
                 $.each(customSnippets, function (index, content) {
                     if (snippetName === index) {
                         checkedCustomSnippets[index] = content;
@@ -230,35 +176,14 @@ define([
                 data: {'acl_id': acl_id}
             }).done(function (response) {
                 if (response.status !== false) {
-                    let itemsHtml = '';
-                    if (response.aclItems.length > 0) {
-                        $.each(response.aclItems, function (index, item) {
-                            let ip_output;
-                            if (item.subnet) {
-                                ip_output = item.ip + '/' + item.subnet;
-                            } else {
-                                ip_output = item.ip;
-                            }
-                            if (item.negated === '1') {
-                                ip_output = '!' + ip_output;
-                            }
-                            let created_at = new Date(item.created_at);
-                            itemsHtml += '<div class="admin__field field '+acl_id+'"><div class="admin__field-note export-note">' + ip_output;
-                            if (item.comment !== "") {
-                                itemsHtml += ' (' + item.comment + ')';
-                            }
-                            itemsHtml += ' ' + created_at.toUTCString();
-                            itemsHtml += '</div></div>';
-                        });
-                        $('.'+acl_id).remove();
-                        acl_field.after(itemsHtml);
-                        return;
-                    } else {
-                        itemsHtml += '<div class="admin__field field export-acl-note '+acl_id+'"><div class="admin__field-note export-note">no items</div></div>';
-                        $('.'+acl_id).remove();
-                        acl_field.after(itemsHtml);
-                        return;
-                    }
+                    let acls = [];
+                    $.each(response.aclItems, function (index, item) {
+                        acls.push(importExportRenderer.stringifyAclDetail(index, item));
+                    });
+                    $('.'+acl_id).remove();
+                    let itemsHtml = importExportRenderer.renderDetails(acl_id, acls)
+                    acl_field.after(itemsHtml);
+                    return;
                 }
 
                 modal.modal('closeModal');
@@ -276,22 +201,14 @@ define([
                 data: {'dictionary_id': dictionary_id}
             }).done(function (response) {
                 if (response.status !== false) {
-                    let itemsHtml = '<div class="admin__field field export-dictionary-items '+dictionary_id+'">';
-                    if (response.dictionaryItems.length > 0) {
-                        $.each(response.dictionaryItems, function (index, item) {
-                            itemsHtml += '<div class="admin__field field"><div class="admin__field-note export-note">' + item.item_key;
-                            itemsHtml += ' (' + item.item_value + ')';
-                            itemsHtml += '</div></div>';
-                        });
-                        $('.'+dictionary_id).remove();
-                        dictionary_field.after(itemsHtml);
-                        return;
-                    } else {
-                        itemsHtml += '<div class="admin__field field export-dictionary-note"><div class="admin__field-note export-note">no items</div></div>';
-                        $('.'+dictionary_id).remove();
-                        dictionary_field.after(itemsHtml);
-                        return;
-                    }
+                    let dictionaries = [];
+                    $.each(response.dictionaryItems, function (index, item) {
+                        dictionaries.push(importExportRenderer.stringifyDictionaryDetail(index, item));
+                    });
+                    $('.'+dictionary_id).remove();
+                    let itemsHtml = importExportRenderer.renderDetails(dictionary_id, dictionaries)
+                    dictionary_field.after(itemsHtml);
+                    return;
                 }
 
                 modal.modal('closeModal');

@@ -2490,6 +2490,40 @@
     </form>
 </script>
 
+<!-- Import template -->
+<script type="text/x-magento-template" id="fastly-import-template">
+    <div class="messages">
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_ImportExport/downloadExportData'); ?>"
+          method="POST"
+          id="fastly-import-form"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <input name="form_key" type="hidden" value="<?php /* @noEscape */ echo $block->getFormKey() ?>" />
+        <fieldset class="admin__fieldset form-list">
+            <div class="admin__field field maintenance-checkbox-container">
+                <label for="fastly_activate_import" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after import')?></span>
+                </label>
+                <div class="admin__field-control">
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="activate_flag"
+                               id="fastly_activate_import"
+                               checked/>
+                        <label class="admin__field-label" for="fastly_activate_log_endpoint"></label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="admin__fieldset form-list question">
+        </fieldset>
+    </form>
+</script>
+
 <!-- Export template -->
 <script type="text/x-magento-template" id="fastly-export-template">
     <div class="messages">
@@ -2656,6 +2690,8 @@ $isIoEnabled =                  $block->getConfig()->isImageOptimizationEnabled(
 // Import Export
 $getExportDataUrl =             $block->getUrl('adminhtml/fastlyCdn_ImportExport/getExportData');
 $exportDataUrl =                $block->getUrl('adminhtml/fastlyCdn_ImportExport/saveExportData');
+$getImportDataUrl =             $block->getUrl('adminhtml/fastlyCdn_ImportExport/getImportData');
+$importDataUrl =                $block->getUrl('adminhtml/fastlyCdn_ImportExport/saveImportData');
 // Maintenance Support
 $checkSuSettingUrl =            $block->getUrl('adminhtml/fastlyCdn_Maintenance/CheckSuSetting');
 $toggleSuSettingUrl =           $block->getUrl('adminhtml/fastlyCdn_Maintenance/toggleSuSetting');
@@ -2781,6 +2817,8 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "createBackendUrl": "<?php echo $block->escapeJsQuote($createBackendUrl);?>",
                     "getExportDataUrl": "<?php echo $block->escapeJsQuote($getExportDataUrl);?>",
                     "exportDataUrl": "<?php echo $block->escapeJsQuote($exportDataUrl);?>",
+                    "getImportDataUrl": "<?php echo $block->escapeJsQuote($getImportDataUrl);?>",
+                    "importDataUrl": "<?php echo $block->escapeJsQuote($importDataUrl);?>",
                     "versionHistory": "<?php echo $block->escapeJsQuote($allFastlyVersions);?>",
                     "activateVersion": "<?php echo $block->escapeJsQuote($activateVersion); ?>",
                     "versionReference": "<?php echo $block->escapeJsQuote($versionReference); ?>",
@@ -2788,7 +2826,8 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "dismissWarning": "<?php echo $block->escapeJsQuote($dismissWarning); ?>",
                     "isWarningDismissed": "<?php echo $block->escapeJsQuote($isWarningDismissed); ?>",
                     "getUpdateFlag": "<?php echo $block->escapeJsQuote($getUpdateFlag); ?>",
-                    "changeUpdateFlag": "<?php echo $block->escapeJsQuote($changeUpdateFlag); ?>"
+                    "changeUpdateFlag": "<?php echo $block->escapeJsQuote($changeUpdateFlag); ?>",
+                    "importExportRenderer": {}
                 }
             }
         }

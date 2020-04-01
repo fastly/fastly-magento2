@@ -20,7 +20,6 @@
  */
 namespace Fastly\Cdn\Model;
 
-use Fastly\Cdn\Model\Modly\Manifest as Modly;
 use Fastly\Cdn\Model\ResourceModel\Manifest as ManifestResource;
 use LightnCandy\LightnCandy;
 use Magento\Framework\Exception\LocalizedException;
@@ -38,9 +37,9 @@ class Importer
     private $api;
 
     /**
-     * @var Modly
+     * @var \Fastly\Cdn\Model\Config
      */
-    private $modly;
+    private $config;
 
     /**
      * @var ManifestFactory
@@ -54,12 +53,12 @@ class Importer
 
     public function __construct(
         \Fastly\Cdn\Model\Api $api,
-        Modly $modly,
+        \Fastly\Cdn\Model\Config $config,
         \Fastly\Cdn\Model\ManifestFactory $manifestFactory,
         ManifestResource $manifestResource
     ) {
         $this->api = $api;
-        $this->modly = $modly;
+        $this->config = $config;
         $this->manifestFactory = $manifestFactory;
         $this->manifestResource = $manifestResource;
     }
@@ -137,11 +136,13 @@ class Importer
                     $context = ($groupName) ? $moduleData->manifest_values : $fields;
                     $php = LightnCandy::compile($vcl->template, $this->getLightncandyOptions());
                     $render = LightnCandy::prepare($php);
-                    $templates[] = [
-                        'type' => $vcl->type,
-                        'priority' => (isset($vcl->priority)) ? $vcl->priority : 45,
-                        'snippet' => $render($context),
-                    ];
+                    if ($render) {
+                        $templates[] = [
+                            'type' => $vcl->type,
+                            'priority' => (isset($vcl->priority)) ? $vcl->priority : 45,
+                            'snippet' => $render($context),
+                        ];
+                    }
                 }
             }
 
@@ -183,8 +184,7 @@ class Importer
 
     protected function validate($moduleId, $fieldData, $groupName)
     {
-        $moduleData = $this->modly->getModule($moduleId);
-        $moduleProperties = json_decode($moduleData->getManifestProperties());
+        $moduleProperties = $this->getModuleProperties($moduleId);
         if ($fieldData && $groupName === '') {
             $errors = $this->validateSimple($fieldData[0], $moduleProperties);
         } elseif ($fieldData && $groupName != '') {
@@ -193,6 +193,27 @@ class Importer
         if (!empty($errors)) {
             throw new LocalizedException(__(implode(', ', $errors)));
         }
+    }
+
+    protected function getModuleProperties($moduleId)
+    {
+        $modules = $this->config->getFastlyEdgeModules();
+        if ($moduleId === 'io_test_drive') {
+            $moduleId = 'image_optimization_test_drive';
+        }
+        switch ($moduleId) {
+            case 'io_test_drive':
+                $moduleId = 'image_optimization_test_drive';
+                break;
+            case 'magento_cloud_sitemap_rewrite':
+                $moduleId = 'magento_cloud_sitemap';
+                break;
+        }
+        if (!isset($modules[$moduleId])) {
+            throw new LocalizedException(__('Unknown module: ' . $moduleId));
+        }
+        $moduleData = json_decode($modules[$moduleId]);
+        return isset($moduleData->properties) ? $moduleData->properties : [];
     }
 
     protected function validateSimple($fieldData, $moduleProperties)

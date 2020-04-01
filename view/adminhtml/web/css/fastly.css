@@ -1,0 +1,9 @@
+input[type=text].masked {
+    transition: all 0.5s ease;
+    color: transparent !important;
+    text-shadow: 0 0 5px #303030 !important;
+}
+input[type=text].masked:hover, input[type=text].masked:focus {
+    color: #303030 !important;
+    text-shadow: none !important;
+}

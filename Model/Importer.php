@@ -198,17 +198,6 @@ class Importer
     protected function getModuleProperties($moduleId)
     {
         $modules = $this->config->getFastlyEdgeModules();
-        if ($moduleId === 'io_test_drive') {
-            $moduleId = 'image_optimization_test_drive';
-        }
-        switch ($moduleId) {
-            case 'io_test_drive':
-                $moduleId = 'image_optimization_test_drive';
-                break;
-            case 'magento_cloud_sitemap_rewrite':
-                $moduleId = 'magento_cloud_sitemap';
-                break;
-        }
         if (!isset($modules[$moduleId])) {
             throw new LocalizedException(__('Unknown module: ' . $moduleId));
         }

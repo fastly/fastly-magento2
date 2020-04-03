@@ -81,7 +81,7 @@ class DismissWarning extends Action
         if (!in_array($activeVersion, $coreConfigData)) {
             $coreConfigData[] = $activeVersion;
             $coreConfigData = $this->jsonHelper->jsonEncode($coreConfigData);
-            $this->config->saveConfig(FastlyConfig::VERSIONS_WITH_DISMISSED_WARNING, $coreConfigData);
+            $this->config->saveConfig(FastlyConfig::VERSIONS_WITH_DISMISSED_WARNING, $coreConfigData, ScopeConfigInterface::SCOPE_TYPE_DEFAULT, 0);
             $this->typeList->cleanType('config');
             return $result->setData([
                 'status' => true,

@@ -26,6 +26,7 @@ use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Config\Backend\CustomSnippetUpload;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
@@ -215,7 +216,7 @@ class Upload extends Action
 
             $comment = ['comment' => 'Magento Module uploaded VCL'];
             $this->api->addComment($clone->number, $comment);
-            $this->coreConfig->saveConfig(Config::UPDATED_VCL_FLAG, 1);
+            $this->coreConfig->saveConfig(Config::UPDATED_VCL_FLAG, 1, ScopeConfigInterface::SCOPE_TYPE_DEFAULT, 0);
             return $result->setData([
                 'status'            => true,
                 'active_version'    => $clone->number

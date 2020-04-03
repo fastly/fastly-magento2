@@ -57,7 +57,7 @@ class ChangeUpdateFlag extends Action
     public function execute()
     {
         $json = $this->jsonFactory->create();
-        $this->coreConfig->saveConfig(Config::UPDATED_VCL_FLAG, 0);
+        $this->coreConfig->saveConfig(Config::UPDATED_VCL_FLAG, 0, ScopeConfigInterface::SCOPE_TYPE_DEFAULT, 0);
         return $json->setData([
             'msg'       => 'Upload VCL to activate modified custom snippet'
         ]);

@@ -1255,7 +1255,7 @@
                     <span><?php /* @noEscape */ echo __("Name") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[name]" id="log_endpoint[name]" class="admin__control-text">
+                    <input name="log_endpoint[name]" id="log_endpoint[name]" class="admin__control-text required-entry">
                     <div class="admin__field-note">
                         The name of your endpoint, such as <b>My endpoint</b>.
                     </div>
@@ -1266,7 +1266,7 @@
                     <span><?php /* @noEscape */ echo __("Log format") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <textarea rows="6" name="log_endpoint[format]" required="required" id="log_endpoint[format]" class="admin__control-text">
+                    <textarea rows="6" name="log_endpoint[format]" id="log_endpoint[format]" class="admin__control-text required-entry">
  {
  	"time": "%{begin:%Y-%m-%dT%H:%M:%SZ}t",
  	"data": {
@@ -1310,7 +1310,7 @@
                     <span><?php /* @noEscape */ echo __("Write key") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[token]" id="log_endpoint[token]" class="admin__control-text" type="password">
+                    <input name="log_endpoint[token]" id="log_endpoint[token]" class="admin__control-text required-entry" type="password">
                     <div class="admin__field-note">
                         The Write key for your Honeycomb team (available on your <a href="https://ui.honeycomb.io/account" target="_blank" rel="noopener">Account Page</a>).
                     </div>
@@ -1321,7 +1321,7 @@
                     <span><?php /* @noEscape */ echo __("Dataset") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[dataset]" id="log_endpoint[dataset]" class="admin__control-text">
+                    <input name="log_endpoint[dataset]" id="log_endpoint[dataset]" class="admin__control-text required-entry">
                     <div class="admin__field-note">
                         The name of your Honeycomb data set, such as <b>My dataset</b>.
                     </div>
@@ -1408,7 +1408,7 @@
                     <span><?php /* @noEscape */ echo __("Name") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[name]" id="log_endpoint[name]" class="admin__control-text">
+                    <input name="log_endpoint[name]" id="log_endpoint[name]" class="admin__control-text required-entry">
                     <div class="admin__field-note">
                         The name of your endpoint, such as <b>My endpoint</b>.
                     </div>
@@ -1419,7 +1419,7 @@
                     <span><?php /* @noEscape */ echo __("Log format") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <textarea rows="6" name="log_endpoint[format]" required="required" id="log_endpoint[format]" class="admin__control-text">
+                    <textarea rows="6" name="log_endpoint[format]" id="log_endpoint[format]" class="admin__control-text required-entry">
  "%h %l %u %t \"%r\" %>s %b"</textarea>
                     <div class="admin__field-note">
                         An Apache-style string or VCL variables to use for log formatting (the Apache Common Log format string appears by default).
@@ -1434,7 +1434,7 @@
                     <span><?php /* @noEscape */ echo __("Collection URL") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[url]" id="log_endpoint[url]" class="admin__control-text">
+                    <input name="log_endpoint[url]" id="log_endpoint[url]" class="admin__control-text required-entry">
                     <div class="admin__field-note">
                         The address of the HTTP Source Collector in Sumo Logic.
                     </div>
@@ -1537,7 +1537,7 @@
                     <span><?php /* @noEscape */ echo __("Name") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[name]" id="log_endpoint[name]" class="admin__control-text">
+                    <input name="log_endpoint[name]" id="log_endpoint[name]" class="admin__control-text required-entry">
                     <div class="admin__field-note">
                         The name of your endpoint, such as <b>My endpoint</b>.
                     </div>
@@ -1548,7 +1548,7 @@
                     <span><?php /* @noEscape */ echo __("Log format") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <textarea rows="6" name="log_endpoint[format]" required="required" id="log_endpoint[format]" class="admin__control-text">
+                    <textarea rows="6" name="log_endpoint[format]" id="log_endpoint[format]" class="admin__control-text required-entry">
  {
  	"timestamp": "%{begin:%Y-%m-%dT%H:%M:%S}t",
  	"time_elapsed": "%{time.elapsed.usec}V",
@@ -1578,7 +1578,7 @@
                     <span><?php /* @noEscape */ echo __("Email") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[user]" id="log_endpoint[user]" class="admin__control-text">
+                    <input name="log_endpoint[user]" id="log_endpoint[user]" class="admin__control-text required-entry">
                     <div class="admin__field-note">
                         The Email address associated with the target BigQuery account.
                     </div>
@@ -1589,7 +1589,7 @@
                     <span><?php /* @noEscape */ echo __("Secret key") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[secret_key]" id="log_endpoint[secret_key]" class="admin__control-text" type="password">
+                    <input name="log_endpoint[secret_key]" id="log_endpoint[secret_key]" class="admin__control-text required-entry" type="password">
                     <div class="admin__field-note">
                         The Secret key associated with the target BigQuery bucket on your account.
                     </div>
@@ -1600,7 +1600,7 @@
                     <span><?php /* @noEscape */ echo __("Project ID") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[project_id]" id="log_endpoint[project_id]" class="admin__control-text">
+                    <input name="log_endpoint[project_id]" id="log_endpoint[project_id]" class="admin__control-text required-entry">
                     <div class="admin__field-note">
                         The ID of your Google Cloud Platform project.
                     </div>
@@ -1611,7 +1611,7 @@
                     <span><?php /* @noEscape */ echo __("Dataset") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[dataset]" id="log_endpoint[dataset]" class="admin__control-text">
+                    <input name="log_endpoint[dataset]" id="log_endpoint[dataset]" class="admin__control-text required-entry">
                     <div class="admin__field-note">
                         The name of the Dataset under your project
                     </div>
@@ -1622,7 +1622,7 @@
                     <span><?php /* @noEscape */ echo __("Table") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[table]" id="log_endpoint[table]" class="admin__control-text">
+                    <input name="log_endpoint[table]" id="log_endpoint[table]" class="admin__control-text required-entry">
                     <div class="admin__field-note">
                         The name of your BigQuery Table.
                     </div>
@@ -1720,7 +1720,7 @@
                     <span><?php /* @noEscape */ echo __("Name") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[name]" id="log_endpoint[name]" class="admin__control-text">
+                    <input name="log_endpoint[name]" id="log_endpoint[name]" class="admin__control-text required-entry">
                     <div class="admin__field-note">
                         The name of your endpoint, such as <b>My endpoint</b>.
                     </div>
@@ -1731,7 +1731,7 @@
                     <span><?php /* @noEscape */ echo __("Log format") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <textarea rows="6" name="log_endpoint[format]" required="required" id="log_endpoint[format]" class="admin__control-text">
+                    <textarea rows="6" name="log_endpoint[format]" required="required" id="log_endpoint[format]" class="admin__control-text required-entry">
  "%h %l %u %t \"%r\" %>s %b"</textarea>
                     <div class="admin__field-note">
                         An Apache-style string or VCL variables to use for log formatting (the Apache Common Log format string appears by default).
@@ -1746,7 +1746,7 @@
                     <span><?php /* @noEscape */ echo __("Timestamp format") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[timestamp_format]" id="log_endpoint[timestamp_format]" class="admin__control-text">
+                    <input name="log_endpoint[timestamp_format]" id="log_endpoint[timestamp_format]" class="admin__control-text required-entry" value="%Y-%m-%dT%H:%M:%S.000">
                     <div class="admin__field-note">
                         The timestamp format on log files. The default is an strftime compatible string.
                     </div>
@@ -1757,7 +1757,7 @@
                     <span><?php /* @noEscape */ echo __("Bucket name") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[bucket_name]" id="log_endpoint[bucket_name]" class="admin__control-text">
+                    <input name="log_endpoint[bucket_name]" id="log_endpoint[bucket_name]" class="admin__control-text required-entry">
                     <div class="admin__field-note">
                         The name of the bucket in which to store the logs.
                     </div>
@@ -1768,7 +1768,7 @@
                     <span><?php /* @noEscape */ echo __("Access key") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[access_key]" id="log_endpoint[access_key]" class="admin__control-text" type="password">
+                    <input name="log_endpoint[access_key]" id="log_endpoint[access_key]" class="admin__control-text required-entry" type="password">
                     <div class="admin__field-note">
                         The Access key associated with the target Amazon S3 bucket. See <a href="http://docs.aws.amazon.com/AmazonS3/latest/gsg/GetStartedWithS3.html" target="_blank" rel="noopener">Amazon's AWS Getting Started Guide</a> for more info.
                     </div>
@@ -1779,7 +1779,7 @@
                     <span><?php /* @noEscape */ echo __("Secret key") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[secret_key]" id="log_endpoint[secret_key]" class="admin__control-text" type="password">
+                    <input name="log_endpoint[secret_key]" id="log_endpoint[secret_key]" class="admin__control-text required-entry" type="password">
                     <div class="admin__field-note">
                         The <a href="http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSGettingStartedGuide/AWSCredentials.html" target="_blank">Secret key</a> associated with the target Amazon S3 bucket.
                     </div>
@@ -1790,7 +1790,7 @@
                     <span><?php /* @noEscape */ echo __("Period") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[period]" id="log_endpoint[period]" class="admin__control-text">
+                    <input name="log_endpoint[period]" id="log_endpoint[period]" class="admin__control-text required-entry" value="3600">
                     <div class="admin__field-note">
                         This manages how frequently in seconds to rotate your log files. Use numbers only in this field.
                     </div>
@@ -1829,7 +1829,7 @@
                     <span><?php /* @noEscape */ echo __("PGP public key") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <textarea rows="6" name="log_endpoint[public_key]" required="required" id="log_endpoint[public_key]" class="admin__control-text"></textarea>
+                    <textarea rows="6" name="log_endpoint[public_key]" id="log_endpoint[public_key]" class="admin__control-text"></textarea>
                     <div class="admin__field-note">
                         A PGP Public Key that Fastly will use to encrypt your log files before writing them to disk. You will only be able to read the contents by decrypting them with your private key. The PGP key should be in <a target="_blank" href="https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail" rel="noopener noreferrer" class="external-link">PEM (Privacy Enhanced Mail) format</a>.
                     </div>
@@ -1990,7 +1990,7 @@
                     <span><?php /* @noEscape */ echo __("Name") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[name]" id="log_endpoint[name]" class="admin__control-text">
+                    <input name="log_endpoint[name]" id="log_endpoint[name]" class="admin__control-text required-entry">
                     <div class="admin__field-note">
                         The name of your endpoint, such as <b>My endpoint</b>.
                     </div>
@@ -2001,7 +2001,7 @@
                     <span><?php /* @noEscape */ echo __("Log format") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <textarea rows="6" name="log_endpoint[format]" required="required" id="log_endpoint[format]" class="admin__control-text">
+                    <textarea rows="6" name="log_endpoint[format]" id="log_endpoint[format]" class="admin__control-text required-entry">
  "%h %l %u %t \"%r\" %>s %b"</textarea>
                     <div class="admin__field-note">
                         An Apache-style string or VCL variables to use for log formatting (the Apache Common Log format string appears by default).
@@ -2016,7 +2016,7 @@
                     <span><?php /* @noEscape */ echo __("Timestamp format") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[timestamp_format]" id="log_endpoint[timestamp_format]" class="admin__control-text">
+                    <input name="log_endpoint[timestamp_format]" id="log_endpoint[timestamp_format]" class="admin__control-text required-entry" value="%Y-%m-%dT%H:%M:%S.000">
                     <div class="admin__field-note">
                         The timestamp format on log files. The default is an strftime compatible string.
                     </div>
@@ -2027,7 +2027,7 @@
                     <span><?php /* @noEscape */ echo __("Email") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[user]" id="log_endpoint[user]" class="admin__control-text">
+                    <input name="log_endpoint[user]" id="log_endpoint[user]" class="admin__control-text required-entry">
                     <div class="admin__field-note">
                         The <a href="https://cloud.google.com/storage/docs/authentication?hl=en#service_accounts" target="_blank">Email address</a> associated with the target GCS bucket on your account.
                     </div>
@@ -2038,7 +2038,7 @@
                     <span><?php /* @noEscape */ echo __("Bucket name") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[bucket_name]" id="log_endpoint[bucket_name]" class="admin__control-text">
+                    <input name="log_endpoint[bucket_name]" id="log_endpoint[bucket_name]" class="admin__control-text required-entry">
                     <div class="admin__field-note">
                         The name of the bucket in which to store the logs.
                     </div>
@@ -2049,7 +2049,7 @@
                     <span><?php /* @noEscape */ echo __("Secret key") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <textarea rows="6" name="log_endpoint[secret_key]" required="required" id="log_endpoint[secret_key]" class="admin__control-text"></textarea>
+                    <textarea rows="6" name="log_endpoint[secret_key]" id="log_endpoint[secret_key]" class="admin__control-text required-entry"></textarea>
                     <div class="admin__field-note">
                         The <a href="https://cloud.google.com/storage/docs/authentication?hl=en#service_accounts" target="_blank">Secret key</a> associated with the target GCS bucket on your account.
                     </div>
@@ -2060,7 +2060,7 @@
                     <span><?php /* @noEscape */ echo __("Period") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[period]" id="log_endpoint[period]" class="admin__control-text">
+                    <input name="log_endpoint[period]" id="log_endpoint[period]" class="admin__control-text required-entry" value="3600">
                     <div class="admin__field-note">
                         This manages how frequently in seconds to rotate your log files. Use numbers only in this field.
                     </div>
@@ -3862,6 +3862,14 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
         background-color: #FFF9D5;
         padding-top: 10px;
         margin-bottom: 30px;
+    }
+
+    .admin__field-control input.error {
+        border-color: #e22626;
+    }
+
+    .admin__field-control label.error {
+        color: #e22626;
     }
 
 </style>

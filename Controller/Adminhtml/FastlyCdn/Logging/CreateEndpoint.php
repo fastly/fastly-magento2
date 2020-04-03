@@ -118,12 +118,12 @@ class CreateEndpoint extends Action
             );
             $params['format'] = json_encode($params['format']);
 
-            $endpoint = $this->api->createLogEndpoint($clone->number, $endpointType, $params);
+            $endpoint = $this->api->createLogEndpoint($clone->number, $endpointType, array_filter($params));
 
             if (!$endpoint) {
                 return $result->setData([
                     'status'    => false,
-                    'msg'       => 'Failed to create Endpoint.'
+                    'msg'       => 'Failed to create Endpoint: ' . $this->api->getLastErrorMessage()
                 ]);
             }
 

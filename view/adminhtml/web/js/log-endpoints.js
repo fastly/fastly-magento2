@@ -4,7 +4,8 @@ define([
     "overlay",
     "resetAllMessages",
     "showErrorMessage",
-    'mage/translate'
+    'mage/translate',
+    'mage/validation'
 ], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
@@ -131,10 +132,17 @@ define([
 
         function updateLogEndpoint(active_version)
         {
+            let form = $('#create-log-endpoint-form');
+            form.validate({})
+            if (!form.valid()) {
+                return;
+            }
+
             let activateFlag = $('#fastly_activate_log_endpoint').is(':checked');
-            let data = $('#create-log-endpoint-form').serialize();
+            let data = form.serialize();
             data += "&active_version=" + encodeURIComponent(active_version);
             data += "&activate_flag=" + encodeURIComponent(activateFlag);
+
             $.ajax({
                 type: "POST",
                 url: config.updateLogEndpointUrl,
@@ -151,6 +159,7 @@ define([
                                 if (resp.endpoints.length > 0) {
                                     logEndpoints = resp.endpoints;
                                     processLogEndpoints(resp.endpoints);
+                                    $('.no-log-endpoints').hide();
                                 } else {
                                     $('.no-log-endpoints').show();
                                 }
@@ -166,10 +175,17 @@ define([
 
         function createLogEndpoint(active_version)
         {
+            let form = $('#create-log-endpoint-form');
+            form.validate({})
+            if (!form.valid()) {
+                return;
+            }
+
             let activateFlag = $('#fastly_activate_log_endpoint').is(':checked');
-            let data = $('#create-log-endpoint-form').serialize();
+            let data = form.serialize();
             data += "&active_version=" + encodeURIComponent(active_version);
             data += "&activate_flag=" + encodeURIComponent(activateFlag);
+
             $.ajax({
                 type: "POST",
                 url: config.createLogEndpointUrl,
@@ -191,6 +207,7 @@ define([
                                 if (resp.endpoints.length > 0) {
                                     logEndpoints = resp.endpoints;
                                     processLogEndpoints(resp.endpoints);
+                                    $('.no-log-endpoints').hide();
                                 } else {
                                     $('.no-log-endpoints').show();
                                 }

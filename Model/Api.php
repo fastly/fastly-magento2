@@ -1484,6 +1484,11 @@ class Api
         return $result;
     }
 
+    public function getLastErrorMessage()
+    {
+        return $this->errorMessage;
+    }
+
     /**
      * Wrapper for API calls towards Fastly service
      *

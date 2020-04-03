@@ -119,12 +119,12 @@ class UpdateEndpoint extends Action
             );
             $params['format'] = json_encode($params['format']);
 
-            $endpoint = $this->api->updateLogEndpoint($clone->number, $endpointType, $params, $oldName);
+            $endpoint = $this->api->updateLogEndpoint($clone->number, $endpointType, array_filter($params), $oldName);
 
             if (!$endpoint) {
                 return $result->setData([
                     'status'    => false,
-                    'msg'       => 'Failed to update Endpoint.'
+                    'msg'       => 'Failed to update Endpoint: ' . $this->api->getLastErrorMessage()
                 ]);
             }
 

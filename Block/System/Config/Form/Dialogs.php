@@ -20,6 +20,7 @@
  */
 namespace Fastly\Cdn\Block\System\Config\Form;
 
+use Fastly\Cdn\Helper\Data;
 use Magento\Backend\Block\Template;
 use Fastly\Cdn\Model\Config;
 
@@ -34,6 +35,10 @@ class Dialogs extends Template
      * @var Config
      */
     private $config;
+    /**
+     * @var Data
+     */
+    private $helper;
 
     /**
      * Dialogs constructor.
@@ -42,10 +47,14 @@ class Dialogs extends Template
      * @param Template\Context $context
      * @param array $data
      */
-    public function __construct(Config $config, Template\Context $context, array $data)
-    {
+    public function __construct(
+        Config $config,
+        Data $helper,
+        Template\Context $context,
+        array $data
+    ) {
         $this->config = $config;
-
+        $this->helper = $helper;
         parent::__construct($context, $data);
     }
 
@@ -64,6 +73,16 @@ class Dialogs extends Template
     public function getConfig()
     {
         return $this->config;
+    }
+
+    /**
+     * Get Fastly Data helper
+     *
+     * @return Data
+     */
+    public function getHelper()
+    {
+        return $this->helper;
     }
 
     public function getFormKey()

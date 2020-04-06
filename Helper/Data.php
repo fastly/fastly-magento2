@@ -88,4 +88,19 @@ class Data extends AbstractHelper
     {
         return $this->storeManager->getStore()->getBaseUrl();
     }
+
+    /**
+     * @return array
+     */
+    public function getAvailableLogEndpointProviders()
+    {
+        return [
+            's3' => 'Amazon S3',
+//            'elasticsearch' => 'Elasticsearch',
+            'bigquery' => 'Google BigQuery',
+            'gcs' => 'Google Cloud Storage',
+            'honeycomb' => 'Honeycomb',
+            'sumologic' => 'Sumologic',
+        ];
+    }
 }

@@ -907,6 +907,20 @@ class Api
     }
 
     /**
+     * @param $name
+     * @param $version
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function deleteBackend($name, $version)
+    {
+        $url = $this->_getApiServiceUri() . 'version/' . $version . '/backend/' . $name;
+        $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
+
+        return $result;
+    }
+
+    /**
      * Send message to Slack channel
      *
      * @param $message

@@ -1,11 +1,12 @@
 define([
     "jquery",
+    'Magento_Ui/js/modal/confirm',
     "setServiceLabel",
     "overlay",
     "resetAllMessages",
     "showErrorMessage",
     'mage/translate'
-], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage) {
+], function ($, confirmation, setServiceLabel, overlay, resetAllMessages, showErrorMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         let backends;
@@ -132,9 +133,15 @@ define([
         {
             $('#fastly-backends-list').html('');
             $.each(backends, function (index, backend) {
-                let html = "<tr id='fastly_" + index + "'>";
-                html += "<td><input data-backendId='"+ index + "' id='backend_" + index + "' value='"+ backend.name +"' disabled='disabled' class='input-text' type='text'></td>";
-                html += "<td class='col-actions'><button class='action-delete fastly-edit-backend-icon' data-backend-id='" + index + "' id='fastly-edit-backend_"+ index + "' title='Edit backend' type='button'></td></tr>";
+                let html = `<tr id="fastly_${index}">
+                    <td>
+                        <input data-backendId='${index}' id='backend_${index}' value='${backend.name}' disabled='disabled' class='input-text' type='text'/>
+                    </td>
+                    <td class='col-actions'>
+                        <button class='action-delete fastly-edit-backend-icon' data-backend-id='${index}' id='fastly-edit-backend_${index}' title='Edit backend' type='button'/>
+                        <button class='action-delete fastly-remove-backend-icon' data-backend-id='${index}' data-backend-name='${backend.name}' id='fastly-remove-backend_${index}' title='Remove backend' type='button'/>
+                    </td>
+                </tr>`;
                 $('#fastly-backends-list').append(html);
             });
         }
@@ -334,6 +341,40 @@ define([
             $('#sep').hide();
             conditionModal.modal('closeModal');
             $('.fastly-message-error').hide();
+        }
+
+        function deleteBackend(active_version, backend_name)
+        {
+            $.ajax({
+                type: "POST",
+                url: config.deleteBackendUrl,
+                data: {
+                    'active_version': active_version,
+                    'name': backend_name
+                },
+                showLoader: true,
+                success: function (response) {
+                    if (response.status === true) {
+                        $('#fastly-success-backend-button-msg').text($.mage.__('Backend "'+backend_name+'" was successfully deleted.')).show();
+                        active_version = response.active_version;
+                        $('.loading-backends').show();
+                        $('#fastly-backends-list').html('');
+                        getBackends(active_version, false).done(function (resp) {
+                            $('.loading-backends').hide();
+                            if (resp !== false) {
+                                if (resp.backends.length > 0) {
+                                    backends = resp.backends;
+                                    processBackends(resp.backends);
+                                } else {
+                                    $('.no-backends').show();
+                                }
+                            }
+                        });
+                    } else {
+                        $('#fastly-error-backend-button-msg').text(response.msg).show();
+                    }
+                }
+            });
         }
 
         $('body').on('click', '#fastly_create_backend_button', function () {
@@ -593,6 +634,26 @@ define([
                         $('.modal-title').text($.mage.__('Backend "'+backend_name+'" configuration'));
                     }
                 });
+            });
+        });
+
+        $('body').on('click', 'button.fastly-remove-backend-icon', function () {
+            let backend_name = $(this).data('backend-name');
+            confirmation({
+                title: $.mage.__('Warning!'),
+                content: $.mage.__('Confirm that you want to delete: %1').replace('%1', backend_name),
+                actions: {
+                    confirm: function() {
+                        $.ajax({
+                            type: "GET",
+                            url: config.serviceInfoUrl,
+                            showLoader: true
+                        }).done(function (checkService) {
+                            active_version = checkService.active_version;
+                            deleteBackend(active_version, backend_name);
+                        });
+                    },
+                }
             });
         });
 

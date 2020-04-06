@@ -1266,37 +1266,36 @@
                     <span><?php /* @noEscape */ echo __("Log format") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <textarea rows="6" name="log_endpoint[format]" id="log_endpoint[format]" class="admin__control-text required-entry">
- {
- 	"time": "%{begin:%Y-%m-%dT%H:%M:%SZ}t",
- 	"data": {
- 		"service_id": "%{req.service_id}V",
- 		"time_elapsed": "%D",
- 		"request": "%m",
- 		"host": "%{Fastly-Orig-Host}i",
- 		"url": "%{cstr_escape(req.url)}V",
- 		"protocol": "%H",
- 		"is_ipv6": "%{if(req.is_ipv6, 'true', 'false')}V",
- 		"is_tls": "%{if(req.is_ssl, 'true', 'false')}V",
- 		"is_h2": "%{if(fastly_info.is_h2, 'true', 'false')}V",
- 		"client_ip": "%h",
- 		"geo_city": "%{client.geo.city.utf8}V",
- 		"geo_country_code": "%{client.geo.country_code}V",
- 		"server_datacenter": "%{server.datacenter}V",
- 		"request_referer": "%{Referer}i",
- 		"request_user_agent": "%{User-Agent}i",
- 		"request_accept_content": "%{Accept}i",
- 		"request_accept_language": "%{Accept-Language}i",
- 		"request_accept_charset": "%{Accept-Charset}i",
- 		"cache_status": "%{regsub(fastly_info.state, '^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*', '\\2\\3') }V",
- 		"status": "%s",
- 		"content_type": "%{Content-Type}o",
- 		"req_header_size": "%{req.header_bytes_read}V",
- 		"req_body_size": "%{req.body_bytes_read}V",
- 		"resp_header_size": "%{resp.header_bytes_written}V",
- 		"resp_body_size": "%{resp.body_bytes_written}V"
- 	}
- }</textarea>
+                    <textarea rows="6" name="log_endpoint[format]" id="log_endpoint[format]" class="admin__control-text required-entry">{
+  "time":"%{begin:%Y-%m-%dT%H:%M:%SZ}t",
+  "data":  {
+    "service_id":"%{req.service_id}V",
+    "time_elapsed":%D,
+    "request":"%m",
+    "host":"%{Fastly-Orig-Host}i",
+    "url":"%{cstr_escape(req.url)}V",
+    "protocol":"%H",
+    "is_ipv6":%{if(req.is_ipv6, "true", "false")}V,
+    "is_tls":%{if(req.is_ssl, "true", "false")}V,
+    "is_h2":%{if(fastly_info.is_h2, "true", "false")}V,
+    "client_ip":"%h",
+    "geo_city":"%{client.geo.city.utf8}V",
+    "geo_country_code":"%{client.geo.country_code}V",
+    "server_datacenter":"%{server.datacenter}V",
+    "request_referer":"%{Referer}i",
+    "request_user_agent":"%{User-Agent}i",
+    "request_accept_content":"%{Accept}i",
+    "request_accept_language":"%{Accept-Language}i",
+    "request_accept_charset":"%{Accept-Charset}i",
+    "cache_status":"%{regsub(fastly_info.state, "^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*", "\\2\\3") }V",
+    "status":"%s",
+    "content_type":"%{Content-Type}o",
+    "req_header_size":%{req.header_bytes_read}V,
+    "req_body_size":%{req.body_bytes_read}V,
+    "resp_header_size":%{resp.header_bytes_written}V,
+    "resp_body_size":%{resp.body_bytes_written}V
+  }
+}</textarea>
                     <div class="admin__field-note">
                         A suggested format string appears by default.
                         See <a target="_blank" href="https://docs.fastly.com/en/guides/setting-up-remote-log-streaming" rel="noopener noreferrer">Fastly's log files docs</a>,
@@ -1339,9 +1338,9 @@
                 </label>
                 <div class="admin__field-control">
                     <select name="log_endpoint[placement]" id="log_endpoint[placement]" class="admin__control-text">
-                        <option value=""></option>
-                        <option value="none" selected>None</option>
+                        <option value="" selected>Format Version Default</option>
                         <option value="waf_debug">WAF Debug</option>
+                        <option value="none">None</option>
                     </select>
                     <div class="admin__field-note">
                         <a target="_blank" href="https://docs.fastly.com/api/logging" rel="noopener noreferrer">Learn more about changing logging call placement</a>
@@ -1468,9 +1467,9 @@
                 </label>
                 <div class="admin__field-control">
                     <select name="log_endpoint[placement]" id="log_endpoint[placement]" class="admin__control-text">
-                        <option value=""></option>
-                        <option value="none" selected>None</option>
+                        <option value="" selected>Format Version Default</option>
                         <option value="waf_debug">WAF Debug</option>
+                        <option value="none">None</option>
                     </select>
                     <div class="admin__field-note">
                         <a target="_blank" href="https://docs.fastly.com/api/logging" rel="noopener noreferrer">Learn more about changing logging call placement</a>
@@ -1548,23 +1547,22 @@
                     <span><?php /* @noEscape */ echo __("Log format") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <textarea rows="6" name="log_endpoint[format]" id="log_endpoint[format]" class="admin__control-text required-entry">
- {
- 	"timestamp": "%{begin:%Y-%m-%dT%H:%M:%S}t",
- 	"time_elapsed": "%{time.elapsed.usec}V",
- 	"is_tls": "%{if(req.is_ssl, 'true', 'false')}V",
- 	"client_ip": "%{req.http.Fastly-Client-IP}V",
- 	"geo_city": "%{client.geo.city}V",
- 	"geo_country_code": "%{client.geo.country_code}V",
- 	"request": "%{req.request}V",
- 	"host": "%{req.http.Fastly-Orig-Host}V",
- 	"url": "%{json.escape(req.url)}V",
- 	"request_referer": "%{json.escape(req.http.Referer)}V",
- 	"request_user_agent": "%{json.escape(req.http.User-Agent)}V",
- 	"request_accept_language": "%{json.escape(req.http.Accept-Language)}V",
- 	"request_accept_charset": "%{json.escape(req.http.Accept-Charset)}V",
- 	"cache_status": "%{regsub(fastly_info.state, '^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*', '\\2\\3') }V"
- }</textarea>
+                    <textarea rows="6" name="log_endpoint[format]" id="log_endpoint[format]" class="admin__control-text required-entry">{
+  "timestamp":"%{begin:%Y-%m-%dT%H:%M:%S}t",
+  "time_elapsed":%{time.elapsed.usec}V,
+  "is_tls":%{if(req.is_ssl, "true", "false")}V,
+  "client_ip":"%{req.http.Fastly-Client-IP}V",
+  "geo_city":"%{client.geo.city}V",
+  "geo_country_code":"%{client.geo.country_code}V",
+  "request":"%{req.request}V",
+  "host":"%{req.http.Fastly-Orig-Host}V",
+  "url":"%{json.escape(req.url)}V",
+  "request_referer":"%{json.escape(req.http.Referer)}V",
+  "request_user_agent":"%{json.escape(req.http.User-Agent)}V",
+  "request_accept_language":"%{json.escape(req.http.Accept-Language)}V",
+  "request_accept_charset":"%{json.escape(req.http.Accept-Charset)}V",
+  "cache_status":"%{regsub(fastly_info.state, "^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*", "\\2\\3") }V"
+}</textarea>
                     <div class="admin__field-note">
                         A suggested format string appears by default.
                         See <a target="_blank" href="https://docs.fastly.com/en/guides/setting-up-remote-log-streaming" rel="noopener noreferrer" class="external-link">Fastly's log files docs</a>,
@@ -1651,9 +1649,9 @@
                 </label>
                 <div class="admin__field-control">
                     <select name="log_endpoint[placement]" id="log_endpoint[placement]" class="admin__control-text">
-                        <option value=""></option>
-                        <option value="none" selected>None</option>
+                        <option value="" selected>Format Version Default</option>
                         <option value="waf_debug">WAF Debug</option>
+                        <option value="none">None</option>
                     </select>
                     <div class="admin__field-note">
                         <a target="_blank" href="https://docs.fastly.com/api/logging" rel="noopener noreferrer">Learn more about changing logging call placement</a>
@@ -1857,9 +1855,9 @@
                 </label>
                 <div class="admin__field-control">
                     <select name="log_endpoint[placement]" id="log_endpoint[placement]" class="admin__control-text">
-                        <option value=""></option>
-                        <option value="none" selected>None</option>
+                        <option value="" selected>Format Version Default</option>
                         <option value="waf_debug">WAF Debug</option>
+                        <option value="none">None</option>
                     </select>
                     <div class="admin__field-note">
                         <a target="_blank" href="https://docs.fastly.com/api/logging" rel="noopener noreferrer">Learn more about changing logging call placement</a>
@@ -2105,9 +2103,9 @@
                 </label>
                 <div class="admin__field-control">
                     <select name="log_endpoint[placement]" id="log_endpoint[placement]" class="admin__control-text">
-                        <option value=""></option>
-                        <option value="none" selected>None</option>
+                        <option value="" selected>Format Version Default</option>
                         <option value="waf_debug">WAF Debug</option>
+                        <option value="none">None</option>
                     </select>
                     <div class="admin__field-note">
                         <a target="_blank" href="https://docs.fastly.com/api/logging" rel="noopener noreferrer">Learn more about changing logging call placement</a>

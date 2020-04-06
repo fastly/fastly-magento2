@@ -142,6 +142,7 @@ define([
             let data = form.serialize();
             data += "&active_version=" + encodeURIComponent(active_version);
             data += "&activate_flag=" + encodeURIComponent(activateFlag);
+            data = data.replace(/%0D/g, '')
 
             $.ajax({
                 type: "POST",
@@ -185,6 +186,7 @@ define([
             let data = form.serialize();
             data += "&active_version=" + encodeURIComponent(active_version);
             data += "&activate_flag=" + encodeURIComponent(activateFlag);
+            data = data.replace(/%0D/g, '')
 
             $.ajax({
                 type: "POST",

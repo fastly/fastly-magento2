@@ -77,7 +77,6 @@ class GetEndpoint extends Action
                 $this->getRequest()->getParam('type'),
                 $this->getRequest()->getParam('name')
             );
-            $endpoint->format = json_decode($endpoint->format);
 
             if (!$endpoint) {
                 return $result->setData([

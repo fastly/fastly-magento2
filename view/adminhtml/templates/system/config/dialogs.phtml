@@ -3566,6 +3566,7 @@ $toggleTlsSettingUrl =          $block->getUrl('adminhtml/fastlyCdn_Advanced/for
 $configureBackendUrl =          $block->getUrl('adminhtml/fastlyCdn_Backend/configureBackend');
 $fetchBackendsUrl =             $block->getUrl('adminhtml/fastlyCdn_Backend/getBackends');
 $createBackendUrl =             $block->getUrl('adminhtml/fastlyCdn_Backend/createBackend');
+$deleteBackendUrl =             $block->getUrl('adminhtml/fastlyCdn_Backend/deleteBackend');
 // Log Endpoint
 $fetchLogEndpointUrl =          $block->getUrl('adminhtml/fastlyCdn_Logging/getEndpoint');
 $fetchLogEndpointsUrl =         $block->getUrl('adminhtml/fastlyCdn_Logging/getEndpoints');
@@ -3755,6 +3756,7 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "toggleSuSettingUrl": "<?php echo $block->escapeJsQuote($toggleSuSettingUrl);?>",
                     "updateSuIpsUrl": "<?php echo $block->escapeJsQuote($updateSuIpsUrl);?>",
                     "createBackendUrl": "<?php echo $block->escapeJsQuote($createBackendUrl);?>",
+                    "deleteBackendUrl": "<?php echo $block->escapeJsQuote($deleteBackendUrl);?>",
                     "getExportDataUrl": "<?php echo $block->escapeJsQuote($getExportDataUrl);?>",
                     "exportDataUrl": "<?php echo $block->escapeJsQuote($exportDataUrl);?>",
                     "getImportDataUrl": "<?php echo $block->escapeJsQuote($getImportDataUrl);?>",

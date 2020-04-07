@@ -1,5 +1,12 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.130
+
+- Manually add default argument values to Config::saveConfig() to support all Magento 2.2.x versions https://github.com/fastly/fastly-magento2/pull/358
+- Add ability to remove backends https://github.com/fastly/fastly-magento2/pull/359
+- Add logging set up for S3, GCS, Honeycomb, Sumologic and Google Bigquery https://github.com/fastly/fastly-magento2/pull/350
+- Add ability to import configs that were previously exported
+
 ## 1.2.129
 
 - Fix errors when adding conditions to existing backends https://github.com/fastly/fastly-magento2/pull/343

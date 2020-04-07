@@ -1198,6 +1198,937 @@
     </form>
 </script>
 
+<!-- Log endpoints creation overlay templates -->
+<!-- Honeycomb -->
+<script type="text/x-magento-template" id="fastly-create-log-endpoint-template-honeycomb">
+    <div class="messages">
+        <div class="message message-warning fastly-message-warning" style="display: none">
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("Your log endpoint will be created in version #y.")?>
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="create-log-endpoint-form"
+          name="create-log-endpoint-form"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field maintenance-checkbox-container">
+                <label for="fastly_activate_log_endpoint" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+                </label>
+                <div class="admin__field-control">
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_log_endpoint"
+                               id="fastly_activate_log_endpoint"
+                               checked/>
+                        <label class="admin__field-label" for="fastly_activate_log_endpoint"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field">
+                <label for="condition" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Condition") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <span id="attach_span" style>
+                        This will happen all the time unless you <a id="attach" href="#">Attach a condition</a>
+                    </span>
+                    <select name="conditions" id="conditions" class="admin__control-select"></select>
+                    <div class="admin__field-note"><a id="detach" href="#">Detach condition</a> <span id="sep">|</span>
+                        <a id="create-response-condition" href="#">Create a new response condition</a>
+                    </div>
+                    <input type="hidden" name="condition_name" id="condition_name"/>
+                    <input type="hidden" name="apply_if" id="apply_if"/>
+                    <input type="hidden" name="condition_priority" id="condition_priority"/>
+                </div>
+            </div>
+            <input type="hidden" name="endpoint_type">
+            <input type="hidden" name="old_name">
+            <div class="admin__field field _required">
+                <label for="log_endpoint[name]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Name") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[name]" id="log_endpoint[name]" class="admin__control-text required-entry">
+                    <div class="admin__field-note">
+                        The name of your endpoint, such as <b>My endpoint</b>.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field __required">
+                <label for="log_endpoint[format]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Log format") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <textarea rows="6" name="log_endpoint[format]" id="log_endpoint[format]" class="admin__control-text required-entry">{
+  "time":"%{begin:%Y-%m-%dT%H:%M:%SZ}t",
+  "data":  {
+    "service_id":"%{req.service_id}V",
+    "time_elapsed":%D,
+    "request":"%m",
+    "host":"%{Fastly-Orig-Host}i",
+    "url":"%{cstr_escape(req.url)}V",
+    "protocol":"%H",
+    "is_ipv6":%{if(req.is_ipv6, "true", "false")}V,
+    "is_tls":%{if(req.is_ssl, "true", "false")}V,
+    "is_h2":%{if(fastly_info.is_h2, "true", "false")}V,
+    "client_ip":"%h",
+    "geo_city":"%{client.geo.city.utf8}V",
+    "geo_country_code":"%{client.geo.country_code}V",
+    "server_datacenter":"%{server.datacenter}V",
+    "request_referer":"%{Referer}i",
+    "request_user_agent":"%{User-Agent}i",
+    "request_accept_content":"%{Accept}i",
+    "request_accept_language":"%{Accept-Language}i",
+    "request_accept_charset":"%{Accept-Charset}i",
+    "cache_status":"%{regsub(fastly_info.state, "^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*", "\\2\\3") }V",
+    "status":"%s",
+    "content_type":"%{Content-Type}o",
+    "req_header_size":%{req.header_bytes_read}V,
+    "req_body_size":%{req.body_bytes_read}V,
+    "resp_header_size":%{resp.header_bytes_written}V,
+    "resp_body_size":%{resp.body_bytes_written}V
+  }
+}</textarea>
+                    <div class="admin__field-note">
+                        A suggested format string appears by default.
+                        See <a target="_blank" href="https://docs.fastly.com/en/guides/setting-up-remote-log-streaming" rel="noopener noreferrer">Fastly's log files docs</a>,
+                        <a target="_blank" href="https://www.varnish-cache.org/docs/2.1/reference/vcl.html#variables" rel="noopener noreferrer">Varnish's descriptions of VCL variables</a>,
+                        and <a target="_blank" href="https://docs.fastly.com/vcl/variables/" rel="noopener noreferrer">Fastly's available VCL variables</a> for more info.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="log_endpoint[token]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Write key") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[token]" id="log_endpoint[token]" class="admin__control-text required-entry" type="password">
+                    <div class="admin__field-note">
+                        The Write key for your Honeycomb team (available on your <a href="https://ui.honeycomb.io/account" target="_blank" rel="noopener">Account Page</a>).
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="log_endpoint[dataset]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Dataset") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[dataset]" id="log_endpoint[dataset]" class="admin__control-text required-entry">
+                    <div class="admin__field-note">
+                        The name of your Honeycomb data set, such as <b>My dataset</b>.
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label class="admin__field-label">
+                    Advanced options
+                </label>
+            </div>
+            <div class="admin__field field">
+                <label for="log_endpoint[placement]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Placement") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="log_endpoint[placement]" id="log_endpoint[placement]" class="admin__control-text">
+                        <option value="" selected>Format Version Default</option>
+                        <option value="waf_debug">WAF Debug</option>
+                        <option value="none">None</option>
+                    </select>
+                    <div class="admin__field-note">
+                        <a target="_blank" href="https://docs.fastly.com/api/logging" rel="noopener noreferrer">Learn more about changing logging call placement</a>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</script>
+
+<!-- Sumologic -->
+<script type="text/x-magento-template" id="fastly-create-log-endpoint-template-sumologic">
+    <div class="messages">
+        <div class="message message-warning fastly-message-warning" style="display: none">
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("Your log endpoint will be created in version #y.")?>
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="create-log-endpoint-form"
+          name="create-log-endpoint-form"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field maintenance-checkbox-container">
+                <label for="fastly_activate_log_endpoint" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+                </label>
+                <div class="admin__field-control">
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_log_endpoint"
+                               id="fastly_activate_log_endpoint"
+                               checked/>
+                        <label class="admin__field-label" for="fastly_activate_log_endpoint"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field">
+                <label for="condition" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Condition") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <span id="attach_span" style>
+                        This will happen all the time unless you <a id="attach" href="#">Attach a condition</a>
+                    </span>
+                    <select name="conditions" id="conditions" class="admin__control-select"></select>
+                    <div class="admin__field-note"><a id="detach" href="#">Detach condition</a> <span id="sep">|</span>
+                        <a id="create-response-condition" href="#">Create a new response condition</a>
+                    </div>
+                    <input type="hidden" name="condition_name" id="condition_name"/>
+                    <input type="hidden" name="apply_if" id="apply_if"/>
+                    <input type="hidden" name="condition_priority" id="condition_priority"/>
+                </div>
+            </div>
+            <input type="hidden" name="endpoint_type">
+            <input type="hidden" name="old_name">
+            <div class="admin__field field _required">
+                <label for="log_endpoint[name]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Name") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[name]" id="log_endpoint[name]" class="admin__control-text required-entry">
+                    <div class="admin__field-note">
+                        The name of your endpoint, such as <b>My endpoint</b>.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field __required">
+                <label for="log_endpoint[format]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Log format") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <textarea rows="6" name="log_endpoint[format]" id="log_endpoint[format]" class="admin__control-text required-entry">
+ %h %l %u %t "%r" %>s %b</textarea>
+                    <div class="admin__field-note">
+                        An Apache-style string or VCL variables to use for log formatting (the Apache Common Log format string appears by default).
+                        See <a target="_blank" href="https://docs.fastly.com/en/guides/setting-up-remote-log-streaming" rel="noopener noreferrer" class="external-link">Fastly's log files docs</a>,
+                        <a target="_blank" href="https://www.varnish-cache.org/docs/2.1/reference/vcl.html#variables" rel="noopener noreferrer" class="external-link">Varnish's descriptions of VCL variables</a>,
+                        and <a target="_blank" href="https://docs.fastly.com/vcl/variables/" rel="noopener noreferrer" class="external-link">Fastly's available VCL variables</a> for more info.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="log_endpoint[url]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Collection URL") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[url]" id="log_endpoint[url]" class="admin__control-text required-entry">
+                    <div class="admin__field-note">
+                        The address of the HTTP Source Collector in Sumo Logic.
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label class="admin__field-label">
+                    Advanced options
+                </label>
+            </div>
+            <div class="admin__field field">
+                <label for="log_endpoint[message_type]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Select a log line format") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="log_endpoint[message_type]" id="log_endpoint[message_type]" class="admin__control-text">
+                        <option value="classic" selected>Classic</option>
+                        <option value="loggly">Loggly</option>
+                        <option value="logplex">Logplex</option>
+                        <option value="blank">Blank</option>
+                    </select>
+                    <div class="admin__field-note">
+                        <a target="_blank" href="https://docs.fastly.com/en/guides/changing-log-line-formats" rel="noopener noreferrer" class="external-link">Learn more about changing log line formats</a>
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field">
+                <label for="log_endpoint[placement]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Placement") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="log_endpoint[placement]" id="log_endpoint[placement]" class="admin__control-text">
+                        <option value="" selected>Format Version Default</option>
+                        <option value="waf_debug">WAF Debug</option>
+                        <option value="none">None</option>
+                    </select>
+                    <div class="admin__field-note">
+                        <a target="_blank" href="https://docs.fastly.com/api/logging" rel="noopener noreferrer">Learn more about changing logging call placement</a>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</script>
+
+<!-- Google BigQuery -->
+<script type="text/x-magento-template" id="fastly-create-log-endpoint-template-bigquery">
+    <div class="messages">
+        <div class="message message-warning fastly-message-warning" style="display: none">
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("Your log endpoint will be created in version #y.")?>
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="create-log-endpoint-form"
+          name="create-log-endpoint-form"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field maintenance-checkbox-container">
+                <label for="fastly_activate_log_endpoint" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+                </label>
+                <div class="admin__field-control">
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_log_endpoint"
+                               id="fastly_activate_log_endpoint"
+                               checked/>
+                        <label class="admin__field-label" for="fastly_activate_log_endpoint"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field">
+                <label for="condition" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Condition") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <span id="attach_span" style>
+                        This will happen all the time unless you <a id="attach" href="#">Attach a condition</a>
+                    </span>
+                    <select name="conditions" id="conditions" class="admin__control-select"></select>
+                    <div class="admin__field-note"><a id="detach" href="#">Detach condition</a> <span id="sep">|</span>
+                        <a id="create-response-condition" href="#">Create a new response condition</a>
+                    </div>
+                    <input type="hidden" name="condition_name" id="condition_name"/>
+                    <input type="hidden" name="apply_if" id="apply_if"/>
+                    <input type="hidden" name="condition_priority" id="condition_priority"/>
+                </div>
+            </div>
+            <input type="hidden" name="endpoint_type">
+            <input type="hidden" name="old_name">
+            <div class="admin__field field _required">
+                <label for="log_endpoint[name]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Name") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[name]" id="log_endpoint[name]" class="admin__control-text required-entry">
+                    <div class="admin__field-note">
+                        The name of your endpoint, such as <b>My endpoint</b>.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field __required">
+                <label for="log_endpoint[format]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Log format") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <textarea rows="6" name="log_endpoint[format]" id="log_endpoint[format]" class="admin__control-text required-entry">{
+  "timestamp":"%{begin:%Y-%m-%dT%H:%M:%S}t",
+  "time_elapsed":%{time.elapsed.usec}V,
+  "is_tls":%{if(req.is_ssl, "true", "false")}V,
+  "client_ip":"%{req.http.Fastly-Client-IP}V",
+  "geo_city":"%{client.geo.city}V",
+  "geo_country_code":"%{client.geo.country_code}V",
+  "request":"%{req.request}V",
+  "host":"%{req.http.Fastly-Orig-Host}V",
+  "url":"%{json.escape(req.url)}V",
+  "request_referer":"%{json.escape(req.http.Referer)}V",
+  "request_user_agent":"%{json.escape(req.http.User-Agent)}V",
+  "request_accept_language":"%{json.escape(req.http.Accept-Language)}V",
+  "request_accept_charset":"%{json.escape(req.http.Accept-Charset)}V",
+  "cache_status":"%{regsub(fastly_info.state, "^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*", "\\2\\3") }V"
+}</textarea>
+                    <div class="admin__field-note">
+                        A suggested format string appears by default.
+                        See <a target="_blank" href="https://docs.fastly.com/en/guides/setting-up-remote-log-streaming" rel="noopener noreferrer" class="external-link">Fastly's log files docs</a>,
+                        <a target="_blank" href="https://www.varnish-cache.org/docs/2.1/reference/vcl.html#variables" rel="noopener noreferrer" class="external-link">Varnish's descriptions of VCL variables</a>,
+                        and <a target="_blank" href="https://docs.fastly.com/vcl/variables/" rel="noopener noreferrer" class="external-link">Fastly's available VCL variables</a> for more info.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="log_endpoint[user]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Email") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[user]" id="log_endpoint[user]" class="admin__control-text required-entry">
+                    <div class="admin__field-note">
+                        The Email address associated with the target BigQuery account.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="log_endpoint[secret_key]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Secret key") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[secret_key]" id="log_endpoint[secret_key]" class="admin__control-text required-entry" type="password">
+                    <div class="admin__field-note">
+                        The Secret key associated with the target BigQuery bucket on your account.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="log_endpoint[project_id]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Project ID") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[project_id]" id="log_endpoint[project_id]" class="admin__control-text required-entry">
+                    <div class="admin__field-note">
+                        The ID of your Google Cloud Platform project.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="log_endpoint[dataset]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Dataset") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[dataset]" id="log_endpoint[dataset]" class="admin__control-text required-entry">
+                    <div class="admin__field-note">
+                        The name of the Dataset under your project
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="log_endpoint[table]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Table") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[table]" id="log_endpoint[table]" class="admin__control-text required-entry">
+                    <div class="admin__field-note">
+                        The name of your BigQuery Table.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field">
+                <label for="log_endpoint[template_suffix]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Template") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[template_suffix]" id="log_endpoint[template_suffix]" class="admin__control-text">
+                    <div class="admin__field-note">
+                        If set will be interpreted as a <code>strftime</code> compatible string and used as the <a target="_blank" href="https://cloud.google.com/bigquery/streaming-data-into-bigquery#template-tables" rel="noopener noreferrer" class="external-link">Template Suffix for your table</a>.
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label class="admin__field-label">
+                    Advanced options
+                </label>
+            </div>
+            <div class="admin__field field">
+                <label for="log_endpoint[placement]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Placement") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="log_endpoint[placement]" id="log_endpoint[placement]" class="admin__control-text">
+                        <option value="" selected>Format Version Default</option>
+                        <option value="waf_debug">WAF Debug</option>
+                        <option value="none">None</option>
+                    </select>
+                    <div class="admin__field-note">
+                        <a target="_blank" href="https://docs.fastly.com/api/logging" rel="noopener noreferrer">Learn more about changing logging call placement</a>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</script>
+
+<!-- Amazon S3 -->
+<script type="text/x-magento-template" id="fastly-create-log-endpoint-template-s3">
+    <div class="messages">
+        <div class="message message-warning fastly-message-warning" style="display: none">
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("Your log endpoint will be created in version #y.")?>
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="create-log-endpoint-form"
+          name="create-log-endpoint-form"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field maintenance-checkbox-container">
+                <label for="fastly_activate_log_endpoint" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+                </label>
+                <div class="admin__field-control">
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_log_endpoint"
+                               id="fastly_activate_log_endpoint"
+                               checked/>
+                        <label class="admin__field-label" for="fastly_activate_log_endpoint"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field">
+                <label for="condition" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Condition") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <span id="attach_span" style>
+                        This will happen all the time unless you <a id="attach" href="#">Attach a condition</a>
+                    </span>
+                    <select name="conditions" id="conditions" class="admin__control-select"></select>
+                    <div class="admin__field-note"><a id="detach" href="#">Detach condition</a> <span id="sep">|</span>
+                        <a id="create-response-condition" href="#">Create a new response condition</a>
+                    </div>
+                    <input type="hidden" name="condition_name" id="condition_name"/>
+                    <input type="hidden" name="apply_if" id="apply_if"/>
+                    <input type="hidden" name="condition_priority" id="condition_priority"/>
+                </div>
+            </div>
+            <input type="hidden" name="endpoint_type">
+            <input type="hidden" name="old_name">
+            <div class="admin__field field _required">
+                <label for="log_endpoint[name]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Name") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[name]" id="log_endpoint[name]" class="admin__control-text required-entry">
+                    <div class="admin__field-note">
+                        The name of your endpoint, such as <b>My endpoint</b>.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field __required">
+                <label for="log_endpoint[format]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Log format") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <textarea rows="6" name="log_endpoint[format]" required="required" id="log_endpoint[format]" class="admin__control-text required-entry">
+ %h %l %u %t "%r" %>s %b</textarea>
+                    <div class="admin__field-note">
+                        An Apache-style string or VCL variables to use for log formatting (the Apache Common Log format string appears by default).
+                        See <a target="_blank" href="https://docs.fastly.com/en/guides/setting-up-remote-log-streaming" rel="noopener noreferrer" class="external-link">Fastly's log files docs</a>,
+                        <a target="_blank" href="https://www.varnish-cache.org/docs/2.1/reference/vcl.html#variables" rel="noopener noreferrer" class="external-link">Varnish's descriptions of VCL variables</a>,
+                        and <a target="_blank" href="https://docs.fastly.com/vcl/variables/" rel="noopener noreferrer" class="external-link">Fastly's available VCL variables</a> for more info.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="log_endpoint[timestamp_format]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Timestamp format") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[timestamp_format]" id="log_endpoint[timestamp_format]" class="admin__control-text required-entry" value="%Y-%m-%dT%H:%M:%S.000">
+                    <div class="admin__field-note">
+                        The timestamp format on log files. The default is an strftime compatible string.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="log_endpoint[bucket_name]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Bucket name") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[bucket_name]" id="log_endpoint[bucket_name]" class="admin__control-text required-entry">
+                    <div class="admin__field-note">
+                        The name of the bucket in which to store the logs.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="log_endpoint[access_key]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Access key") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[access_key]" id="log_endpoint[access_key]" class="admin__control-text required-entry" type="password">
+                    <div class="admin__field-note">
+                        The Access key associated with the target Amazon S3 bucket. See <a href="http://docs.aws.amazon.com/AmazonS3/latest/gsg/GetStartedWithS3.html" target="_blank" rel="noopener">Amazon's AWS Getting Started Guide</a> for more info.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="log_endpoint[secret_key]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Secret key") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[secret_key]" id="log_endpoint[secret_key]" class="admin__control-text required-entry" type="password">
+                    <div class="admin__field-note">
+                        The <a href="http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSGettingStartedGuide/AWSCredentials.html" target="_blank">Secret key</a> associated with the target Amazon S3 bucket.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="log_endpoint[period]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Period") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[period]" id="log_endpoint[period]" class="admin__control-text required-entry" value="3600">
+                    <div class="admin__field-note">
+                        This manages how frequently in seconds to rotate your log files. Use numbers only in this field.
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label class="admin__field-label">
+                    Advanced options
+                </label>
+            </div>
+            <div class="admin__field field">
+                <label for="log_endpoint[path]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Path") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[path]" id="log_endpoint[path]" class="admin__control-text" value="/">
+                    <div class="admin__field-note">
+                        The path within the bucket for placing files. It defaults to /, which means files will be placed in its root.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field">
+                <label for="log_endpoint[domain]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Domain") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[domain]" id="log_endpoint[domain]" class="admin__control-text">
+                    <div class="admin__field-note">
+                        The region-specific endpoint for your domain. If your Amazon S3 bucket was not created with a US Standard region, set as per <a href="http://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region" target="_blank">Amazon's documentation</a>.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field">
+                <label for="log_endpoint[public_key]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("PGP public key") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <textarea rows="6" name="log_endpoint[public_key]" id="log_endpoint[public_key]" class="admin__control-text"></textarea>
+                    <div class="admin__field-note">
+                        A PGP Public Key that Fastly will use to encrypt your log files before writing them to disk. You will only be able to read the contents by decrypting them with your private key. The PGP key should be in <a target="_blank" href="https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail" rel="noopener noreferrer" class="external-link">PEM (Privacy Enhanced Mail) format</a>.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field">
+                <label for="log_endpoint[message_type]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Select a log line format") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="log_endpoint[message_type]" id="log_endpoint[message_type]" class="admin__control-text">
+                        <option value="classic" selected>Classic</option>
+                        <option value="loggly">Loggly</option>
+                        <option value="logplex">Logplex</option>
+                        <option value="blank">Blank</option>
+                    </select>
+                    <div class="admin__field-note">
+                        <a target="_blank" href="https://docs.fastly.com/en/guides/changing-log-line-formats" rel="noopener noreferrer" class="external-link">Learn more about changing log line formats</a>
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field">
+                <label for="log_endpoint[placement]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Placement") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="log_endpoint[placement]" id="log_endpoint[placement]" class="admin__control-text">
+                        <option value="" selected>Format Version Default</option>
+                        <option value="waf_debug">WAF Debug</option>
+                        <option value="none">None</option>
+                    </select>
+                    <div class="admin__field-note">
+                        <a target="_blank" href="https://docs.fastly.com/api/logging" rel="noopener noreferrer">Learn more about changing logging call placement</a>
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field">
+                <label for="log_endpoint[gzip_level]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Gzip level") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[gzip_level]" id="log_endpoint[gzip_level]" class="admin__control-text">
+                    <div class="admin__field-note">
+                        The level of gzip compression, if any, to apply to log files.<br>
+                        The setting defaults to 0 (no compression). You can specify any whole number from 1 (fastest and least compressed) to 9 (slowest and most compressed).
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field">
+                <label for="log_endpoint[redundancy]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Redundancy level") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="log_endpoint[redundancy]" id="log_endpoint[redundancy]" class="admin__control-text">
+                        <option value="standard" selected>Standard</option>
+                        <option value="standard_ia">Infrequent Access</option>
+                        <option value="onezone_ia">One Zone Infrequent Access</option>
+                        <option value="reduced_redundancy">Reduced</option>
+                    </select>
+                    <div class="admin__field-note">
+                        The Amazon S3 redundancy level to store logs with. Learn more about Amazon's <a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingRRS.html" target="_blank">Reduced Redundancy Storage</a>.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field">
+                <label for="log_endpoint[acl]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("ACL") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="log_endpoint[acl]" id="log_endpoint[acl]" class="admin__control-text">
+                        <option value="" selected>None</option>
+                        <option value="private">private</option>
+                        <option value="public-read">public-read</option>
+                        <option value="public-read-write">public-read-write</option>
+                        <option value="aws-exec-read">aws-exec-read</option>
+                        <option value="authenticated-read">authenticated-read</option>
+                        <option value="bucket-owner-read">bucket-owner-read</option>
+                        <option value="bucket-owner-full-control">bucket-owner-full-control</option>
+                    </select>
+                    <div class="admin__field-note">
+                        The Amazon S3 Access Control List (ACL) Specific Request Headers. Learn more about
+                        <a href="https://docs.aws.amazon.com/AmazonS3/latest/API/mpUploadInitiate.html#initiate-mpu-acl-specific-request-headers" rel="noopener" target="_blank">access control-related headers</a>.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field">
+                <label for="log_endpoint[server_side_encryption]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Server side encryption") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="log_endpoint[server_side_encryption]" id="log_endpoint[server_side_encryption]" class="admin__control-text">
+                        <option value="" selected>None</option>
+                        <option value="AES256">AES-256</option>
+                        <option value="aws:kms">AWS Key Management Service</option>
+                    </select>
+                    <div class="admin__field-note">
+                        Protect your log files with Amazon Server Side Encryption. See <a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingServerSideEncryption.html" target="_blank" rel="noopener">Amazon's Guide</a> for more info.
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</script>
+
+<!-- Google Cloud Storage -->
+<script type="text/x-magento-template" id="fastly-create-log-endpoint-template-gcs">
+    <div class="messages">
+        <div class="message message-warning fastly-message-warning" style="display: none">
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("Your log endpoint will be created in version #y.")?>
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="create-log-endpoint-form"
+          name="create-log-endpoint-form"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field maintenance-checkbox-container">
+                <label for="fastly_activate_log_endpoint" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+                </label>
+                <div class="admin__field-control">
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_log_endpoint"
+                               id="fastly_activate_log_endpoint"
+                               checked/>
+                        <label class="admin__field-label" for="fastly_activate_log_endpoint"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field">
+                <label for="condition" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Condition") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <span id="attach_span" style>
+                        This will happen all the time unless you <a id="attach" href="#">Attach a condition</a>
+                    </span>
+                    <select name="conditions" id="conditions" class="admin__control-select"></select>
+                    <div class="admin__field-note"><a id="detach" href="#">Detach condition</a> <span id="sep">|</span>
+                        <a id="create-response-condition" href="#">Create a new response condition</a>
+                    </div>
+                    <input type="hidden" name="condition_name" id="condition_name"/>
+                    <input type="hidden" name="apply_if" id="apply_if"/>
+                    <input type="hidden" name="condition_priority" id="condition_priority"/>
+                </div>
+            </div>
+            <input type="hidden" name="endpoint_type">
+            <input type="hidden" name="old_name">
+            <div class="admin__field field _required">
+                <label for="log_endpoint[name]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Name") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[name]" id="log_endpoint[name]" class="admin__control-text required-entry">
+                    <div class="admin__field-note">
+                        The name of your endpoint, such as <b>My endpoint</b>.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field __required">
+                <label for="log_endpoint[format]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Log format") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <textarea rows="6" name="log_endpoint[format]" id="log_endpoint[format]" class="admin__control-text required-entry">
+ %h %l %u %t "%r" %>s %b</textarea>
+                    <div class="admin__field-note">
+                        An Apache-style string or VCL variables to use for log formatting (the Apache Common Log format string appears by default).
+                        See <a target="_blank" href="https://docs.fastly.com/en/guides/setting-up-remote-log-streaming" rel="noopener noreferrer" class="external-link">Fastly's log files docs</a>,
+                        <a target="_blank" href="https://www.varnish-cache.org/docs/2.1/reference/vcl.html#variables" rel="noopener noreferrer" class="external-link">Varnish's descriptions of VCL variables</a>,
+                        and <a target="_blank" href="https://docs.fastly.com/vcl/variables/" rel="noopener noreferrer" class="external-link">Fastly's available VCL variables</a> for more info.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="log_endpoint[timestamp_format]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Timestamp format") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[timestamp_format]" id="log_endpoint[timestamp_format]" class="admin__control-text required-entry" value="%Y-%m-%dT%H:%M:%S.000">
+                    <div class="admin__field-note">
+                        The timestamp format on log files. The default is an strftime compatible string.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="log_endpoint[user]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Email") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[user]" id="log_endpoint[user]" class="admin__control-text required-entry">
+                    <div class="admin__field-note">
+                        The <a href="https://cloud.google.com/storage/docs/authentication?hl=en#service_accounts" target="_blank">Email address</a> associated with the target GCS bucket on your account.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="log_endpoint[bucket_name]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Bucket name") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[bucket_name]" id="log_endpoint[bucket_name]" class="admin__control-text required-entry">
+                    <div class="admin__field-note">
+                        The name of the bucket in which to store the logs.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field __required">
+                <label for="log_endpoint[secret_key]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Secret key") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <textarea rows="6" name="log_endpoint[secret_key]" id="log_endpoint[secret_key]" class="admin__control-text required-entry"></textarea>
+                    <div class="admin__field-note">
+                        The <a href="https://cloud.google.com/storage/docs/authentication?hl=en#service_accounts" target="_blank">Secret key</a> associated with the target GCS bucket on your account.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field _required">
+                <label for="log_endpoint[period]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Period") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[period]" id="log_endpoint[period]" class="admin__control-text required-entry" value="3600">
+                    <div class="admin__field-note">
+                        This manages how frequently in seconds to rotate your log files. Use numbers only in this field.
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label class="admin__field-label">
+                    Advanced options
+                </label>
+            </div>
+            <div class="admin__field field">
+                <label for="log_endpoint[path]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Path") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[path]" id="log_endpoint[path]" class="admin__control-text" value="/">
+                    <div class="admin__field-note">
+                        The path within the bucket for placing files. It defaults to /, which means files will be placed in its root.
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field">
+                <label for="log_endpoint[message_type]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Select a log line format") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="log_endpoint[message_type]" id="log_endpoint[message_type]" class="admin__control-text">
+                        <option value="classic" selected>Classic</option>
+                        <option value="loggly">Loggly</option>
+                        <option value="logplex">Logplex</option>
+                        <option value="blank">Blank</option>
+                    </select>
+                    <div class="admin__field-note">
+                        <a target="_blank" href="https://docs.fastly.com/en/guides/changing-log-line-formats" rel="noopener noreferrer" class="external-link">Learn more about changing log line formats</a>
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field">
+                <label for="log_endpoint[placement]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Placement") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="log_endpoint[placement]" id="log_endpoint[placement]" class="admin__control-text">
+                        <option value="" selected>Format Version Default</option>
+                        <option value="waf_debug">WAF Debug</option>
+                        <option value="none">None</option>
+                    </select>
+                    <div class="admin__field-note">
+                        <a target="_blank" href="https://docs.fastly.com/api/logging" rel="noopener noreferrer">Learn more about changing logging call placement</a>
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field field">
+                <label for="log_endpoint[gzip_level]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Gzip level") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[gzip_level]" id="log_endpoint[gzip_level]" class="admin__control-text">
+                    <div class="admin__field-note">
+                        The level of gzip compression, if any, to apply to log files.<br>
+                        The setting defaults to 0 (no compression). You can specify any whole number from 1 (fastest and least compressed) to 9 (slowest and most compressed).
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</script>
+<!-- End Log endpoints creation overlay templates -->
+
 <!-- Create condition template -->
 <script type="text/x-magento-template" id="fastly-create-condition-template">
     <div class="messages">
@@ -2636,6 +3567,13 @@ $configureBackendUrl =          $block->getUrl('adminhtml/fastlyCdn_Backend/conf
 $fetchBackendsUrl =             $block->getUrl('adminhtml/fastlyCdn_Backend/getBackends');
 $createBackendUrl =             $block->getUrl('adminhtml/fastlyCdn_Backend/createBackend');
 $deleteBackendUrl =             $block->getUrl('adminhtml/fastlyCdn_Backend/deleteBackend');
+// Log Endpoint
+$fetchLogEndpointUrl =          $block->getUrl('adminhtml/fastlyCdn_Logging/getEndpoint');
+$fetchLogEndpointsUrl =         $block->getUrl('adminhtml/fastlyCdn_Logging/getEndpoints');
+$fetchAllLogEndpointsUrl =      $block->getUrl('adminhtml/fastlyCdn_Logging/getAllEndpoints');
+$createLogEndpointUrl =         $block->getUrl('adminhtml/fastlyCdn_Logging/createEndpoint');
+$updateLogEndpointUrl =         $block->getUrl('adminhtml/fastlyCdn_Logging/updateEndpoint');
+$availableLogProviders =        $block->getHelper()->getAvailableLogEndpointProviders();
 // Basic Authentication
 $createAuthItem =               $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication_Item/create');
 $deleteAuthItem =               $block->getUrl('adminhtml/fastlyCdn_BasicAuthentication_Item/delete');
@@ -2705,6 +3643,7 @@ $saveModuleConfigUrl =          $block->getUrl('adminhtml/fastlyCdn_Manifest/sav
 $getActiveModulesUrl =          $block->getUrl('adminhtml/fastlyCdn_Manifest/getActiveModules');
 $getModuleDataUrl =             $block->getUrl('adminhtml/fastlyCdn_Manifest/getModuleData');
 $getAllConditionsUrl =          $block->getUrl('adminhtml/fastlyCdn_Manifest/getAllConditions');
+$getResponseConditionsUrl =     $block->getUrl('adminhtml/fastlyCdn_Manifest/getResponseConditions');
 $getAllDomainsUrl =             $block->getUrl('adminhtml/fastlyCdn_Manifest/getAllDomains');
 $getCountriesUrl =              $block->getUrl('adminhtml/fastlyCdn_Manifest/getCountries');
 $uploadModuleSnippetUrl =       $block->getUrl('adminhtml/fastlyCdn_Manifest/upload');
@@ -2795,6 +3734,7 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "getActiveModulesUrl": "<?php echo $block->escapeJsQuote($getActiveModulesUrl);?>",
                     "getModuleDataUrl": "<?php echo $block->escapeJsQuote($getModuleDataUrl);?>",
                     "getAllConditionsUrl": "<?php echo $block->escapeJsQuote($getAllConditionsUrl);?>",
+                    "getResponseConditionsUrl": "<?php echo $block->escapeJsQuote($getResponseConditionsUrl);?>",
                     "getAllDomainsUrl": "<?php echo $block->escapeJsQuote($getAllDomainsUrl);?>",
                     "getCountriesUrl": "<?php echo $block->escapeJsQuote($getCountriesUrl);?>",
                     "uploadModuleSnippetUrl": "<?php echo $block->escapeJsQuote($uploadModuleSnippetUrl);?>",
@@ -2829,7 +3769,13 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "isWarningDismissed": "<?php echo $block->escapeJsQuote($isWarningDismissed); ?>",
                     "getUpdateFlag": "<?php echo $block->escapeJsQuote($getUpdateFlag); ?>",
                     "changeUpdateFlag": "<?php echo $block->escapeJsQuote($changeUpdateFlag); ?>",
-                    "importExportRenderer": {}
+                    "importExportRenderer": {},
+                    "createLogEndpointUrl": "<?php echo $block->escapeJsQuote($createLogEndpointUrl);?>",
+                    "updateLogEndpointUrl": "<?php echo $block->escapeJsQuote($updateLogEndpointUrl);?>",
+                    "fetchLogEndpointUrl": "<?php echo $block->escapeJsQuote($fetchLogEndpointUrl);?>",
+                    "fetchAllLogEndpointsUrl": "<?php echo $block->escapeJsQuote($fetchAllLogEndpointsUrl);?>",
+                    "fetchLogEndpointsUrl": "<?php echo $block->escapeJsQuote($fetchLogEndpointsUrl);?>",
+                    "availableLogProviders": <?php echo json_encode($availableLogProviders);?>
                 }
             }
         }
@@ -2916,6 +3862,14 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
         background-color: #FFF9D5;
         padding-top: 10px;
         margin-bottom: 30px;
+    }
+
+    .admin__field-control input.error {
+        border-color: #e22626;
+    }
+
+    .admin__field-control label.error {
+        color: #e22626;
     }
 
 </style>

@@ -10,6 +10,7 @@ let config = {
             acl: 'Fastly_Cdn/js/edge-acl',
             customSyntheticPages: 'Fastly_Cdn/js/custom-synthetic-pages',
             backends: 'Fastly_Cdn/js/backends',
+            logEndpoints: 'Fastly_Cdn/js/log-endpoints',
             customSnippets: 'Fastly_Cdn/js/custom-snippets',
             setServiceLabel: 'Fastly_Cdn/js/service-label',
             overlay: 'Fastly_Cdn/js/overlay',

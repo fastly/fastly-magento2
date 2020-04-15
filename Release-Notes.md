@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.131
+
+- VCL changes to Datadome integration edge module
+- Add Netacea integration edge module
+
 ## 1.2.130
 
 - Manually add default argument values to Config::saveConfig() to support all Magento 2.2.x versions https://github.com/fastly/fastly-magento2/pull/358

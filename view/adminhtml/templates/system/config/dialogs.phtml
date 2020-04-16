@@ -1309,7 +1309,7 @@
                     <span><?php /* @noEscape */ echo __("Write key") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[token]" id="log_endpoint[token]" class="admin__control-text required-entry" type="password">
+                    <input name="log_endpoint[token]" id="log_endpoint[token]" class="admin__control-text required-entry masked" type="text">
                     <div class="admin__field-note">
                         The Write key for your Honeycomb team (available on your <a href="https://ui.honeycomb.io/account" target="_blank" rel="noopener">Account Page</a>).
                     </div>
@@ -1587,7 +1587,7 @@
                     <span><?php /* @noEscape */ echo __("Secret key") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[secret_key]" id="log_endpoint[secret_key]" class="admin__control-text required-entry" type="password">
+                    <input name="log_endpoint[secret_key]" id="log_endpoint[secret_key]" class="admin__control-text required-entry masked" type="text">
                     <div class="admin__field-note">
                         The Secret key associated with the target BigQuery bucket on your account.
                     </div>
@@ -1766,7 +1766,7 @@
                     <span><?php /* @noEscape */ echo __("Access key") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[access_key]" id="log_endpoint[access_key]" class="admin__control-text required-entry" type="password">
+                    <input name="log_endpoint[access_key]" id="log_endpoint[access_key]" class="admin__control-text required-entry masked" type="text">
                     <div class="admin__field-note">
                         The Access key associated with the target Amazon S3 bucket. See <a href="http://docs.aws.amazon.com/AmazonS3/latest/gsg/GetStartedWithS3.html" target="_blank" rel="noopener">Amazon's AWS Getting Started Guide</a> for more info.
                     </div>
@@ -1777,7 +1777,7 @@
                     <span><?php /* @noEscape */ echo __("Secret key") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <input name="log_endpoint[secret_key]" id="log_endpoint[secret_key]" class="admin__control-text required-entry" type="password">
+                    <input name="log_endpoint[secret_key]" id="log_endpoint[secret_key]" class="admin__control-text required-entry masked" type="text">
                     <div class="admin__field-note">
                         The <a href="http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSGettingStartedGuide/AWSCredentials.html" target="_blank">Secret key</a> associated with the target Amazon S3 bucket.
                     </div>
@@ -2047,7 +2047,7 @@
                     <span><?php /* @noEscape */ echo __("Secret key") ?></span>
                 </label>
                 <div class="admin__field-control">
-                    <textarea rows="6" name="log_endpoint[secret_key]" id="log_endpoint[secret_key]" class="admin__control-text required-entry"></textarea>
+                    <textarea rows="6" name="log_endpoint[secret_key]" id="log_endpoint[secret_key]" class="admin__control-text required-entry masked"></textarea>
                     <div class="admin__field-note">
                         The <a href="https://cloud.google.com/storage/docs/authentication?hl=en#service_accounts" target="_blank">Secret key</a> associated with the target GCS bucket on your account.
                     </div>

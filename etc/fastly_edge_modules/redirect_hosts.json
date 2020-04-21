@@ -23,12 +23,12 @@
           "type": "string"
         },
         {
-          "description": "Strip incoming path and set it to /. Default only rewrites host retaining the path e.g. http://domain.com/category is redirected to https://www.domain.com/category",
-          "name": "ignorePath",
           "default": false,
+          "description": "Strip incoming path and set it to /. Default only rewrites host retaining the path e.g. http://domain.com/category is redirected to https://www.domain.com/category",
+          "label": "Ignore path",
+          "name": "ignorePath",
           "required": true,
-          "type": "boolean",
-          "label": "Ignore path"
+          "type": "boolean"
         }
       ],
       "type": "group"
@@ -42,6 +42,7 @@
   },
   "vcl": [
     {
+      "priority": 4,
       "template": "{{#each rules}}\nif (req.http.host == \"{{incomingHost}}\") {\n  set req.http.host = \"{{destinationHost}}\";\n  {{#if ignorePath }}\n  set req.url = \"/\";\n{{/if}}  error 801;\n}\n{{/each}}",
       "type": "recv"
     }

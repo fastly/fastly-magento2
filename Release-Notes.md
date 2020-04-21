@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.132
+
+- Geolocation redirect now uses plain JS instead of require.js to redirect users https://github.com/fastly/fastly-magento2/pull/360
+- Change all password fields for logging endpoints to be obfuscated to make it easier to troubleshoot https://github.com/fastly/fastly-magento2/pull/361
+- Add ability to remove backends from the UI
+
 ## 1.2.131
 
 - VCL changes to Datadome integration edge module

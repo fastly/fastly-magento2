@@ -21,22 +21,11 @@
 ?>
 <?php
 /**
- * Set cookie and redirect URL.
+ * Set redirect URL.
  *
  * @var $block Magento\Framework\View\Element\Template
  */
 ?>
-<script type="text/x-magento-init">
-   {
-       "*": {
-           "Magento_Ui/js/core/app": {
-               "components": {
-                   "redirect": {
-                       "component": "Fastly_Cdn/js/redirect",
-                       "redirect_url": "<?php /* @noEscape */ echo $block->getRedirectUrl() ?>"
-                   }
-                }
-           }
-       }
-   }
+<script type="text/javascript">
+    document.location.href = "<?php /* @noEscape */ echo $block->getRedirectUrl() ?>;"
 </script>

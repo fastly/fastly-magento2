@@ -228,6 +228,7 @@ class FrontControllerPlugin
             $date = $data['date'] ?? null;
             $newDate = $this->coreDate->timestamp();
             $dateDiff = ($newDate - $date);
+            $block_time = $ttl - $dateDiff;
 
             if ($dateDiff >= $ttl) {
                 $data = json_encode([
@@ -243,7 +244,6 @@ class FrontControllerPlugin
                 $this->response->setStatusHeader(429, null, 'API limit exceeded');
                 if ($limitingType == "path") {
                     # Only cache blocking decision for the remainder of the enforcement window
-                    $block_time = $ttl - $dateDiff;
                     $this->response->setHeader('Surrogate-Control', 'max-age=' . $block_time);
                 }
                 if ($limitingType == "crawler") {

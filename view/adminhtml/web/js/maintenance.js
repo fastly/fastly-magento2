@@ -147,13 +147,15 @@ define([
                     if (response.status === true) {
                         modal.modal('closeModal');
                         let disabledOrEnabled = 'disabled';
+                        let statusStr = $.mage.__('disabled');
 
                         if (superUsers === false) {
                             disabledOrEnabled = 'enabled';
+                            statusStr = $.mage.__('enabled');
                         } else {
                             disabledOrEnabled = 'disabled';
                         }
-                        successSuBtnMsg.text($.mage.__('Maintenance Mode successfully %1.').replace('%1', disabledOrEnabled)).show();
+                        successSuBtnMsg.text($.mage.__('Maintenance Mode successfully %1.').replace('%1', statusStr)).show();
                         $('.su_state_span').hide();
 
                         if (disabledOrEnabled === 'enabled') {

@@ -233,14 +233,16 @@ define([
                     if (response.status === true) {
                         modal.modal('closeModal');
                         let disabledOrEnabled = 'disabled';
+                        let statusStr = $.mage.__('disabled');
 
                         if (authStatus === false) {
                             disabledOrEnabled = 'enabled';
+                            statusStr = $.mage.__('enabled');
                         } else {
                             disabledOrEnabled = 'disabled';
                         }
 
-                        successAuthBtnMsg.text($.mage.__('Basic Authentication is successfully %1.').replace('%1', disabledOrEnabled)).show();
+                        successAuthBtnMsg.text($.mage.__('Basic Authentication is successfully %1.').replace('%1', statusStr)).show();
 
                         if (disabledOrEnabled === 'enabled') {
                             authStateMsgSpan.find('#auth_state_disabled').hide();

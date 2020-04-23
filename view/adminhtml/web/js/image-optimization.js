@@ -224,13 +224,16 @@ define([
             }).done(function (response) {
                 if (response.status === true) {
                     let toggled;
+                    let statusStr;
                     modal.modal('closeModal');
 
                     if (ioSnippetStatus === false) {
                         toggled = 'enabled';
+                        statusStr = $.mage.__('enabled');
                         ioSnippetStatus = true;
                     } else {
                         toggled = 'disabled';
+                        statusStr = $.mage.__('disabled');
                         ioSnippetStatus = false;
                     }
 

@@ -154,13 +154,15 @@ define([
                     if (response.status === true) {
                         modal.modal('closeModal');
                         let disabledOrEnabled = 'disabled';
+                        let statusStr = $.mage.__('disabled');
 
                         if (forceTls === false) {
                             disabledOrEnabled = 'enabled';
+                            statusStr = $.mage.__('enabled');
                         } else {
                             disabledOrEnabled = 'disabled';
                         }
-                        successTlsBtnMsg.text($.mage.__('Force TLS is successfully %1.').replace('%1', disabledOrEnabled)).show();
+                        successTlsBtnMsg.text($.mage.__('Force TLS is successfully %1.').replace('%1', statusStr)).show();
                         $('.request_tls_state_span').hide();
 
                         if (disabledOrEnabled === 'enabled') {

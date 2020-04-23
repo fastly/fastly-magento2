@@ -359,7 +359,7 @@ define([
                     }
 
                     overlay(dictionaryItemOptions);
-                    $('.modal-title').text($.mage.__('"'+ dictionary_name +'" dictionary container items'));
+                    $('.modal-title').text($.mage.__('"%1" dictionary container items').replace('%1', dictionary_name));
                     $('.upload-button').remove();
 
                     $('#dictionary-items-table > tbody').html(itemsHtml);
@@ -468,8 +468,8 @@ define([
                     overlay(dictionaryDeleteContainerOptions);
                     setServiceLabel(active_version, next_version, service_name);
                     let containerWarning = $('#fastly-container-warning');
-                    $('.modal-title').text($.mage.__('Delete "'+ dictionary_id +'" Dictionary container'));
-                    containerWarning.text($.mage.__('You are about to delete the "' + dictionary_id + '" Dictionary container.'));
+                    $('.modal-title').text($.mage.__('Delete "%1" Dictionary container').replace('%1', dictionary_id));
+                    containerWarning.text($.mage.__('You are about to delete the "%1" Dictionary container.').replace('%1', dictionary_id));
                     containerWarning.show();
                     if (dictionaryHtml !== '') {
                         $('#delete-dictionary-container').html(dictionaryHtml);

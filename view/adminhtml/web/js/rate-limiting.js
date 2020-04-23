@@ -268,14 +268,16 @@ define([
                     if (response.status === true) {
                         modal.modal('closeModal');
                         let disabledOrEnabled = 'disabled';
+                        let statusStr = $.mage.__('disabled');
 
                         if (rateLimiting === false) {
                             disabledOrEnabled = 'enabled';
+                            statusStr = $.mage.__('enabled');
                         } else {
                             disabledOrEnabled = 'disabled';
                         }
 
-                        successRateLimitingBtnMsg.text($.mage.__('Path Protection successfully ' + disabledOrEnabled + '.')).show();
+                        successRateLimitingBtnMsg.text($.mage.__('Path Protection successfully %1.').replace('%1', statusStr)).show();
 
                         if (disabledOrEnabled === 'enabled') {
                             rateLimitingStateMsgSpan.find('#rate_limiting_state_disabled').hide();

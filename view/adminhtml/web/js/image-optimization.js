@@ -224,17 +224,20 @@ define([
             }).done(function (response) {
                 if (response.status === true) {
                     let toggled;
+                    let statusStr;
                     modal.modal('closeModal');
 
                     if (ioSnippetStatus === false) {
                         toggled = 'enabled';
+                        statusStr = $.mage.__('enabled');
                         ioSnippetStatus = true;
                     } else {
                         toggled = 'disabled';
+                        statusStr = $.mage.__('disabled');
                         ioSnippetStatus = false;
                     }
 
-                    successIoBtnMsg.text($.mage.__('The Image Optimization snippet has been successfully ' + toggled + '.')).show();
+                    successIoBtnMsg.text($.mage.__('The Image Optimization snippet has been successfully %1.').replace('%1', toggled)).show();
                     $('.request_imgopt_state_span').hide();
 
                     if (ioSnippetStatus === true) {

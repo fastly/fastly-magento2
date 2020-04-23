@@ -181,14 +181,16 @@ define([
                     if (response.status === true) {
                         modal.modal('closeModal');
                         let disabledOrEnabled = 'disabled';
+                        let statusStr = $.mage.__('disabled');
 
                         if (wafBypass === false) {
                             disabledOrEnabled = 'enabled';
+                            statusStr = $.mage.__('enabled');
                         } else {
                             disabledOrEnabled = 'disabled';
                         }
 
-                        successWafBypassBtnMsg.text($.mage.__('WAF Bypass is successfully ' + disabledOrEnabled + '.')).show();
+                        successWafBypassBtnMsg.text($.mage.__('WAF Bypass is successfully %1.').replace('%1', statusStr)).show();
 
                         if (disabledOrEnabled === 'enabled') {
                             wafBypassStateMsgSpan.find('#waf_bypass_state_disabled').hide();

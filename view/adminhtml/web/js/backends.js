@@ -193,7 +193,7 @@ define([
                 showLoader: true,
                 success: function (response) {
                     if (response.status === true) {
-                        $('#fastly-success-backend-button-msg').text($.mage.__('Backend "'+backend_name+'" is successfully updated.')).show();
+                        $('#fastly-success-backend-button-msg').text($.mage.__('Backend "%1" is successfully updated.').replace('%1', backend_name)).show();
                         active_version = response.active_version;
                         backendModal.modal('closeModal');
                         getBackends(active_version, false).done(function (resp) {
@@ -288,7 +288,7 @@ define([
                 showLoader: true,
                 success: function (response) {
                     if (response.status === true) {
-                        $('#fastly-success-backend-button-msg').text($.mage.__('Backend "'+backendName+'" is successfully created.')).show();
+                        $('#fastly-success-backend-button-msg').text($.mage.__('Backend "%1" is successfully created.').replace('%1', backendName)).show();
                         active_version = response.active_version;
                         backendModal.modal('closeModal');
                         $('#fastly_add_backend_button').remove();
@@ -355,7 +355,7 @@ define([
                 showLoader: true,
                 success: function (response) {
                     if (response.status === true) {
-                        $('#fastly-success-backend-button-msg').text($.mage.__('Backend "'+backend_name+'" was successfully deleted.')).show();
+                        $('#fastly-success-backend-button-msg').text($.mage.__('Backend "%1" was successfully deleted.').replace('%1', backend_name)).show();
                         active_version = response.active_version;
                         $('.loading-backends').show();
                         $('#fastly-backends-list').html('');
@@ -631,7 +631,7 @@ define([
                         oldName = $('#backend_name').val();
                         $('.upload-button span').text('Update');
                         backend_name = backends[backend_id].name;
-                        $('.modal-title').text($.mage.__('Backend "'+backend_name+'" configuration'));
+                        $('.modal-title').text($.mage.__('Backend "%1" configuration').replace('%1', backend_name));
                     }
                 });
             });

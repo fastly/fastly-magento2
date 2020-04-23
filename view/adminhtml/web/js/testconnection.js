@@ -27,7 +27,7 @@ define([
                     if (response.status === false) {
                         return testErrorBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
                     } else {
-                        return testSuccessBtnMsg.text($.mage.__('Connection to service name ' + response.service_name + ' has been successfully established. Please, save configuration and clear cache.')).show();
+                        return testSuccessBtnMsg.text($.mage.__('Connection to service name %1 has been successfully established. Please, save configuration and clear cache.').replace('%1', response.service_name)).show();
                     }
                 },
                 error: function () {

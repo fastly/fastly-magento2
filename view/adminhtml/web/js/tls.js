@@ -160,7 +160,7 @@ define([
                         } else {
                             disabledOrEnabled = 'disabled';
                         }
-                        successTlsBtnMsg.text($.mage.__('Force TLS is successfully ' + disabledOrEnabled + '.')).show();
+                        successTlsBtnMsg.text($.mage.__('Force TLS is successfully %1.').replace('%1', disabledOrEnabled)).show();
                         $('.request_tls_state_span').hide();
 
                         if (disabledOrEnabled === 'enabled') {

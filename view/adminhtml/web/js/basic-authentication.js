@@ -240,7 +240,7 @@ define([
                             disabledOrEnabled = 'disabled';
                         }
 
-                        successAuthBtnMsg.text($.mage.__('Basic Authentication is successfully ' + disabledOrEnabled + '.')).show();
+                        successAuthBtnMsg.text($.mage.__('Basic Authentication is successfully %1.').replace('%1', disabledOrEnabled)).show();
 
                         if (disabledOrEnabled === 'enabled') {
                             authStateMsgSpan.find('#auth_state_disabled').hide();

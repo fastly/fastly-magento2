@@ -155,7 +155,7 @@ define([
                             if (response.status === true) {
                                 moduleModal.modal('closeModal');
                                 resetAllMessages();
-                                successAllModulesBtnMsg.text($.mage.__('The '+ moduleId +' module has been successfully uploaded to the Fastly service.')).show();
+                                successAllModulesBtnMsg.text($.mage.__('The %1 module has been successfully uploaded to the Fastly service.').replace('%1', moduleId)).show();
                                 module_field.closest('tr').find('.col-date').text(response.last_uploaded);
                             } else {
                                 resetAllMessages();

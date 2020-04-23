@@ -87,7 +87,7 @@ define([
             }
             let errorHtmlChars = $('#error_page_html').val().length;
             if (errorHtmlChars >= maxChars) {
-                msgWarning.text($.mage.__('The HTML must contain less than ' + maxChars + ' characters. Current number of characters: ' + errorHtmlChars));
+                msgWarning.text($.mage.__('The HTML must contain less than %1 characters. Current number of characters: %2').replace('%1', maxChars).replace('%2',errorHtmlChars));
                 msgWarning.show();
                 return;
             }
@@ -126,7 +126,7 @@ define([
             }
             let wafHtmlChars = $('#waf_page_content').val().length;
             if (wafHtmlChars >= maxChars) {
-                msgWarning.text($.mage.__('The content must contain less than ' + maxChars + ' characters. Current number of characters: ' + wafHtmlChars));
+                msgWarning.text($.mage.__('The content must contain less than %1 characters. Current number of characters: %2').replace('%1', maxChars).replace('%2', wafHtmlChars));
                 msgWarning.show();
                 return;
             }

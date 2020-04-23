@@ -391,7 +391,7 @@ define([
                     }
 
                     overlay(aclItemOptions);
-                    $('.modal-title').text($.mage.__('"'+ acl_name +'" ACL container items'));
+                    $('.modal-title').text($.mage.__('"%1" ACL container items').replace('%1', acl_name));
                     $('.upload-button').remove();
 
                     $('#acl-items-table > tbody').html(itemsHtml);
@@ -545,8 +545,8 @@ define([
                     overlay(aclDeleteContainerOptions);
                     setServiceLabel(active_version, next_version, service_name);
                     let containerWarning = $('#fastly-container-warning');
-                    $('.modal-title').text($.mage.__('Delete "'+ acl_id +'" ACL container'));
-                    containerWarning.text($.mage.__('You are about to delete the "' + acl_id + '" ACL container.'));
+                    $('.modal-title').text($.mage.__('Delete "%1" ACL container').replace('%1', acl_id));
+                    containerWarning.text($.mage.__('You are about to delete the "%1" ACL container.').replace('%1', acl_id));
                     containerWarning.show();
                     if (aclHtml !== '') {
                         $('#delete-acl-container').html(aclHtml);

@@ -188,7 +188,7 @@ define([
                             disabledOrEnabled = 'disabled';
                         }
 
-                        successWafBypassBtnMsg.text($.mage.__('WAF Bypass is successfully ' + disabledOrEnabled + '.')).show();
+                        successWafBypassBtnMsg.text($.mage.__('WAF Bypass is successfully %1.').replace('%1', disabledOrEnabled)).show();
 
                         if (disabledOrEnabled === 'enabled') {
                             wafBypassStateMsgSpan.find('#waf_bypass_state_disabled').hide();

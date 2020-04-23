@@ -227,7 +227,7 @@ define([
                             disabledOrEnabled = 'disabled';
                         }
 
-                        successBlockingBtnMsg.text($.mage.__('Blocking is successfully ' + disabledOrEnabled + '.')).show();
+                        successBlockingBtnMsg.text($.mage.__('Blocking is successfully %1.').replace('%1', disabledOrEnabled)).show();
 
                         if (disabledOrEnabled === 'enabled') {
                             blockingStateMsgSpan.find('#blocking_state_disabled').hide();

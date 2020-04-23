@@ -153,7 +153,7 @@ define([
                         } else {
                             disabledOrEnabled = 'disabled';
                         }
-                        successSuBtnMsg.text($.mage.__('Maintenance Mode successfully ' + disabledOrEnabled + '.')).show();
+                        successSuBtnMsg.text($.mage.__('Maintenance Mode successfully %1.').replace('%1', disabledOrEnabled)).show();
                         $('.su_state_span').hide();
 
                         if (disabledOrEnabled === 'enabled') {

@@ -275,7 +275,7 @@ define([
                             disabledOrEnabled = 'disabled';
                         }
 
-                        successRateLimitingBtnMsg.text($.mage.__('Path Protection successfully ' + disabledOrEnabled + '.')).show();
+                        successRateLimitingBtnMsg.text($.mage.__('Path Protection successfully %1.').replace('%1', disabledOrEnabled)).show();
 
                         if (disabledOrEnabled === 'enabled') {
                             rateLimitingStateMsgSpan.find('#rate_limiting_state_disabled').hide();

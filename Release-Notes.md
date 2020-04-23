@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.133
+
+- Improve message format so that can more easily translated https://github.com/fastly/fastly-magento2/pull/365
+- Fix VCL regexes so that they don't trigger the new VCL linter warnings
+
 ## 1.2.132
 
 - Geolocation redirect now uses plain JS instead of require.js to redirect users https://github.com/fastly/fastly-magento2/pull/360

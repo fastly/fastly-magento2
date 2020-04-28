@@ -941,7 +941,10 @@ define([
                             question.find('.modly-group:first').find('.remove-group-button').closest('.field').hide();
                             $('.group-button').unbind('click').on('click', function () {
                                 question.find('.modly-group:last').clone().appendTo('.question');
-                                question.find('.modly-group:last').find('.modly-field').val('');
+                                question.find('.modly-group:last').find('.modly-field').each(function (i, e) {
+                                    let o = $(e).find('option:first')
+                                    $(e).val($(o).val());
+                                });
                                 question.find('.modly-group:last').find('.remove-group-button').closest('.field').show();
                                 $('.remove-group-button').unbind('click').on('click', function () {
                                     $(this).closest('.modly-group').remove();

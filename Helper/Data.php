@@ -100,6 +100,7 @@ class Data extends AbstractHelper
             'bigquery' => 'Google BigQuery',
             'gcs' => 'Google Cloud Storage',
             'honeycomb' => 'Honeycomb',
+            'newrelic' => 'New Relic Logs',
             'sumologic' => 'Sumologic',
         ];
     }

@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.134
+
+- Fix inability to create new backends with new conditions https://github.com/fastly/fastly-magento2/pull/369
+- Edge module default values in new groups do not carry over https://github.com/fastly/fastly-magento2/pull/367 
+
 ## 1.2.133
 
 - Improve message format so that can more easily translated https://github.com/fastly/fastly-magento2/pull/365

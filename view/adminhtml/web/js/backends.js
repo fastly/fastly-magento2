@@ -248,6 +248,10 @@ define([
             let autoLoadBalance = $('#auto_loadbalance').val();
             let weight = $('#weight').val();
             let overrideHost = $('#override_host').val();
+            let conditionName = $('#condition_name').val();
+            let applyIf = $('#apply_if').val();
+            let conditionPriority = $('#condition_priority').val();
+            let requestCondition = $('#conditions').val();
 
             $.ajax({
                 type: "POST",
@@ -255,7 +259,6 @@ define([
                 data: {
                     'active_version': active_version,
                     'activate_flag': activate_backend,
-                    'request_condition': condition,
                     'name': backendName,
                     'address': backendAddress,
                     'shield': backendShield,
@@ -280,10 +283,11 @@ define([
                     'auto_loadbalance': autoLoadBalance,
                     'weight': weight,
                     'form': true,
+                    'override_host': overrideHost,
                     'condition_name': conditionName,
-                    'condition_priority': conditionPriority,
                     'apply_if': applyIf,
-                    'override_host': overrideHost
+                    'condition_priority': conditionPriority,
+                    'request_condition': requestCondition
                 },
                 showLoader: true,
                 success: function (response) {

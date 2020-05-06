@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.135
+
+- Improve rewrites edge module to support conditioning rewrites on host regular expressions
+
 ## 1.2.134
 
 - Fix inability to create new backends with new conditions https://github.com/fastly/fastly-magento2/pull/369

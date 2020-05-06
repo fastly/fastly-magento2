@@ -1,7 +1,7 @@
 {
-    "description": "URL rewrite /sitemap.xml path to point to the correct URL on the backend",
+    "description": "URL rewrite path to another path on the backend",
     "id": "magento_cloud_sitemap_rewrite",
-    "name": "Magento Cloud Sitemap rewrites",
+    "name": "URL rewrites",
     "properties": [
         {
             "entryTemplate": "{{source}} => {{dest}}",
@@ -23,7 +23,13 @@
                     "name": "dest",
                     "required": true,
                     "type": "string"
-                }
+                },
+        { "description": "Only apply rewrite to a host matching regular expression. If blank it applies to all", "label": "Regex matching hostnames",
+            "name": "hostname_regex",
+            "required": false,
+            "type": "string"
+        }
+
             ],
             "type": "group"
         }
@@ -36,11 +42,11 @@
     },
     "vcl": [
         {
-            "template": "{{#each rules}}\nif (req.backend.is_origin && req.url.path == \"{{source}}\") {\n  set bereq.url = \"{{dest}}\";\n}\n{{/each}}",
+            "template": "{{#each rules}}\nif (req.backend.is_origin && req.url.path == \"{{source}}\" {{#ifEq hostname_regex \"\"}} {{else}}&& req.http.host ~ \"{{hostname_regex}}\"{{/ifEq}}) {\n  set bereq.url = \"{{dest}}\";\n}\n{{/each}}",
             "type": "miss"
         },
         {
-            "template": "{{#each rules}}\nif (req.backend.is_origin && req.url.path == \"{{source}}\") {\n  set bereq.url = \"{{dest}}\";\n}\n{{/each}}",
+            "template": "{{#each rules}}\nif (req.backend.is_origin && req.url.path == \"{{source}}\" {{#ifEq hostname_regex \"\"}} {{else}}&& req.http.host ~ \"{{hostname_regex}}\"{{/ifEq}}) {\n  set bereq.url = \"{{dest}}\";\n}\n{{/each}}",
             "type": "pass"
         }
     ],

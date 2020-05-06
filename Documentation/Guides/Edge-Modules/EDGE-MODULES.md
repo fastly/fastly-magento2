@@ -29,13 +29,15 @@ configure them individually. Make sure you click Upload once you done configurin
 Currently following Edge Modules are bundled in
 
 - [Blackfire integration](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-BLACKFIRE-INTEGRATION.md) - enable Fastly portion required for Blackfire profiling
-- [Increase timeouts for long running jobs](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-INCREASE-TIMEOUTS-LONG-JOBS.md) - Tweak timeouts for jobs/URLs that take longer than 1 minute
 - [CORS headers](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-CORS-HEADERS.md) - Set CORS headers sent to the end user
-- [Magento Cloud Sitemap rewrites](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-CLOUD-SITEMAP-REWRITE.md) - rewrite incoming /sitemap.xml URL to
+- [Datadome bot detection integration](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-DATADOME-INTEGRATION.md) - Datadome Bot Detection integration
 a filesystem URL
-- [Mobile Theme Support](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-MOBILE-THEME-SUPPORT.md) - module required for supporting mobile device themes
-- [Redirect one domain to another](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-REDIRECT-DOMAIN.md) - redirect one domain to another e.g. domain.com 
 to www.domain.com. Useful for redirecting apex/naked domains to www.
 - [Hard Reload Cache Bypass for admins](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-HARD-RELOAD-CACHE-BYPASS.md) - allows admin IPs to force cache bypass on browser hard reload. [More details here](https://github.com/fastly/fastly-magento2/issues/147)
 - [Image Optimization Test Drive](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-IMAGE-OPTIMIZATION-TEST-DRIVE.md) - view your site with a configurable image quality and see what the savings could be in real time. Helps answer the question "What image quality level should I set".
+- [Increase timeouts for long running jobs](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-INCREASE-TIMEOUTS-LONG-JOBS.md) - Tweak timeouts for jobs/URLs that take longer than 1 minute
 - [Integrate other CMS/backend](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-OTHER-CMS-INTEGRATION.md) - configures integration of specific URLs to integrate  other CMSes/backends into your Magento shop
+- [Mobile Theme Support](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-MOBILE-THEME-SUPPORT.md) - module required for supporting mobile device themes
+- [Netacea bot detection integration](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-NETACEA-INTEGRATION.md) - Netacea Bot Detection integration
+- [Redirect one domain to another](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-REDIRECT-DOMAIN.md) - redirect one domain to another e.g. domain.com 
+- [URL rewrites](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-URL-REWRITES.md) - rewrite incoming /sitemap.xml URL to

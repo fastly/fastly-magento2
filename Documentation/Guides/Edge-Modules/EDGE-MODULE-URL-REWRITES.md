@@ -5,7 +5,7 @@ Edge Modules you need to [make sure they are enabled](https://github.com/fastly/
 
 When you click on the configuration you will be prompted with a screen like this
 
-![Fastly Edge Module URL rewrites configuration](../../images/guides/edge-modules/edge-module-cloud-sitemap-rewrites.png "Fastly Edge Module Cloud Sitemap rewrites")
+![Fastly Edge Module URL rewrites configuration](../../images/guides/edge-modules/edge-module-url-rewrites.jpg "Fastly Edge Module URL rewrites")
 
 
 Purpose of this module is to rewrite the location of the sitemap.xml file. It is not a redirect. You can specify multiple rewrites by clicking

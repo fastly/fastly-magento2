@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.136
+
+- Update to Datadome Edge Module https://github.com/fastly/fastly-magento2/pull/371
+
 ## 1.2.135
 
 - Improve rewrites edge module to support conditioning rewrites on host regular expressions

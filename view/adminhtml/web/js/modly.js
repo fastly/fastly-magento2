@@ -233,6 +233,7 @@ define([
                 type: "POST",
                 url: config.toggleModulesUrl,
                 data: {
+                    'toggle': true,
                     'checked_modules': checkedModules
                 },
                 showLoader: true,

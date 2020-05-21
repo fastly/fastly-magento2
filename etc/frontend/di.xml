@@ -33,8 +33,4 @@
     <type name="Magento\Framework\App\FrontController">
         <plugin name="fastly_rate_limiter" type="Fastly\Cdn\Model\FrontControllerPlugin" sortOrder="1"/>
     </type>
-
-    <preference for="\Magento\Catalog\Model\Product\Image" type="Fastly\Cdn\Model\Product\Image" />
-
-    <preference for="\Magento\Catalog\Model\View\Asset\Image" type="Fastly\Cdn\Model\View\Asset\Image" />
 </config>

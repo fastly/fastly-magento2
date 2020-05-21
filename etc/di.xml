@@ -71,4 +71,8 @@
             <argument name="logger" xsi:type="object">Fastly\Cdn\Model\RateLimit\Logger</argument>
         </arguments>
     </type>
+
+    <preference for="\Magento\Catalog\Model\Product\Image" type="Fastly\Cdn\Model\Product\Image" />
+
+    <preference for="\Magento\Catalog\Model\View\Asset\Image" type="Fastly\Cdn\Model\View\Asset\Image" />
 </config>

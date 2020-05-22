@@ -26,4 +26,4 @@ After any change to the settings you need to click *Upload* as that will upload 
 
 ## Full documentation 
 
-You can access the full documentation on [DataDome's website](https://docs.datadome.co/docs/magento-with-fastly-cdn, "Documentation")
+You can access the full documentation on [DataDome's website](https://docs.datadome.co/docs/magento-with-fastly-cdn "Documentation")

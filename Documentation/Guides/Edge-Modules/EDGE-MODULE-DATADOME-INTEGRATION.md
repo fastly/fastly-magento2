@@ -1,12 +1,12 @@
 # Fastly Edge Modules - DataDome integration 
 
-This module will enable [DataDome integration](https://docs.datadome.co/docs/magento-with-fastly-cdn "DataDome Documetation"). Datadome is a real time bot protection. Start you 30 days free trial to enable module [here](https://datadome.co/free-signup/ "Free Trial Link")
+DataDome is a real-time bot protection. To enable the module, start your 30 days free trial at https://datadome.co/free-signup/.
 
-This module provides integration between Fastly Edge module and Datadome. It's available from module version 1.2.127+. 
+This module enables [DataDome integration](https://docs.datadome.co/docs/magento-with-fastly-cdn "DataDome Documetation"), it provides integration between Fastly Edge module and DataDome. It's available from module version 1.2.127+. 
 
 Before you can use Fastly Edge Modules you need to [make sure they are enabled](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULES.md) and that you have selected the Datadome integration module.
 
-After you have enabled the module it's time to configure. You will be prompted with a screen like this
+Once the module is enabled, the following settings screen should be configured:
 
 ![Fastly Edge Module DataDome configuration](../../images/guides/edge-modules/edge-module-datadome.jpg "Fastly Edge Module DataDome configuration")
 

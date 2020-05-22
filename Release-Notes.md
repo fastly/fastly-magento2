@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.137
+
+- Moved the Image preferences from frontend to global area, to allow use on adminhtml and cron areas too. Enable IO on sitemaps https://github.com/fastly/fastly-magento2/pull/373
+- Sometimes when a user removes all the edge modules from the config it results in a server error. Add fallback to avoid getting an empty object https://github.com/fastly/fastly-magento2/pull/372
+
 ## 1.2.136
 
 - Update to Datadome Edge Module https://github.com/fastly/fastly-magento2/pull/371

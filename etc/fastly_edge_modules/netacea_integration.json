@@ -21,7 +21,7 @@
   "vcl": [
     {
       "priority": 45,
-      "template": "  # Change the shielding condition to account for restarts due to bot detection\n  set var.fastly_req_do_shield = (req.restarts <= 1);\n\n  # Invoke Netacea Bot Detection checking\n  call netacea_recv;\n",
+      "template": "  # Change the shielding condition to account for restarts due to bot detection\n  set var.fastly_req_do_shield = (req.restarts <= 1);\n  # Reenable clustering. It gets turned off on restarts\n  set req.http.Fastly-Force-Shield = \"1\";\n\n  # Invoke Netacea Bot Detection checking\n  call netacea_recv;\n",
       "type": "recv"
     },
     {
@@ -35,5 +35,5 @@
       "type": "init"
     }
   ],
-  "version": 1
+  "version": 2
 }

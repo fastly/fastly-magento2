@@ -1,6 +1,6 @@
 # Fastly Edge Modules - Datadome integration 
 
-This module will enable Datadome integration. Datadome is a security provider providing services such 
+This module will enable [Datadome integration](https://docs.datadome.co/docs/magento-with-fastly-cdn "Datadome Documetation"). Datadome is a security provider providing services such 
 as bot detection, etc. You have to have an account with Datadome before proceeding. This module only provides
 integration with Datadome service. It's available in module version 1.2.127+. 
 
@@ -12,9 +12,13 @@ After you have enabled the module it's time to configure. You will be prompted w
 
 ## Configurable options
 
-### Datadome API Key
-
-This is the API key provided to you by Datadome.
+| Setting | Description |
+|---------|-------------|
+| API Key | Your DataDome License key |
+| Exclusion Regex | The regex that will be applied to req.url.ext |
+| Connection Timeout | How long to wait for a timeout in milliseconds. |
+| First byte timeout | How long to wait for the first byte in milliseconds. |
+| Between bytes tiemout | How long to wait between bytes in milliseconds. |
 
 ## Enabling
 

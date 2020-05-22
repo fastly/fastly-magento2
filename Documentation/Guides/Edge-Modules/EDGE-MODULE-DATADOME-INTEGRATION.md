@@ -2,7 +2,7 @@
 
 DataDome is a real-time bot protection. To enable the module, start your 30 days free trial at https://datadome.co/free-signup/.
 
-This module enables [DataDome integration](https://docs.datadome.co/docs/magento-with-fastly-cdn "DataDome Documetation"), it provides integration between Fastly Edge module and DataDome. It's available from module version 1.2.127+. 
+This module enables [DataDome integration](https://docs.datadome.co/docs/magento-with-fastly-cdn "DataDome Documetation"), it provides integration between Fastly Edge module and DataDome. It is available from module version 1.2.127+. 
 
 Before you can use Fastly Edge Modules you need to [make sure they are enabled](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULES.md) and that you have selected the Datadome integration module.
 

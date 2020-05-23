@@ -115,12 +115,12 @@ class FrontControllerPlugin
 
     /**
      * Check if request is limited
-     * @param FrontController $subject
+     * @param mixed $frontController
      * @param callable $proceed
      * @param mixed ...$args
      * @return \Magento\Framework\App\Response\Http|\Magento\Framework\App\ResponseInterface
      */
-    public function aroundDispatch(FrontController $subject, callable $proceed, ...$args) // @codingStandardsIgnoreLine - unused parameter
+    public function aroundDispatch($frontController, callable $proceed, ...$args) // @codingStandardsIgnoreLine - unused parameter
     {
         $isRateLimitingEnabled = $this->config->isRateLimitingEnabled();
         $isCrawlerProtectionEnabled = $this->config->isCrawlerProtectionEnabled();

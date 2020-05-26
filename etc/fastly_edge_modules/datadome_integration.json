@@ -14,28 +14,28 @@
       "name": "datadome_exclusion_ext",
       "type": "string",
       "description": "The regex that will be applied to req.url.ext",
-      "default": "(?i)^(7z|avi|bmp|bz2|css|csv|doc|docx|eot|flac|flv|gif|gz|ico|jpeg|jpg|js|less|mka|mkv|mov|mp3|mp4|mpeg|mpg|odt|otf|ogg|ogm|opus|pdf|png|ppt|pptx|rar|rtf|svg|svgz|swf|tar|tbz|tgz|ttf|txt|txz|wav|webm|webp|woff|woff2|xls|xlsx|xml|xz|zip)$",
+      "default": "(?i)^(avi|flv|mka|mkv|mov|mp4|mpeg|mpg|mp3|flac|ogg|ogm|opus|wav|webm|webp|bmp|gif|ico|jpeg|jpg|png|svg|svgz|swf|eot|otf|ttf|woff|woff2|css|less|js)$",
       "required": true
     }, {
       "label": "Connection timeout",
       "name": "datadome_connect_timeout",
       "type": "integer",
       "description": "How long to wait for a timeout in milliseconds.",
-      "default": "150",
+      "default": "300",
       "required": true
     }, {
       "label": "First byte timeout",
       "name": "datadome_first_byte_timeout",
       "type": "integer",
       "description": "How long to wait for the first byte in milliseconds.",
-      "default": "50",
+      "default": "100",
       "required": true
     }, {
       "label": "Between bytes timeout",
       "name": "datadome_between_bytes_timeout",
       "type": "integer",
       "description": "How long to wait between bytes in milliseconds.",
-      "default": "50",
+      "default": "100",
       "required": true
     }
   ],
@@ -47,7 +47,7 @@
   },
   "vcl": [
     {
-      "template": "sub set_origin_header {\n  if (req.backend.is_origin) {\n    if (req.backend == datadome) {\n        set bereq.http.x-datadome-params:key = \"{{datadome_api_key}}\";\n        set bereq.http.x-datadome-params:requestmodulename = \"FastlyMagento\";\n        set bereq.http.x-datadome-params:moduleversion = \"2.4\";\n        set bereq.http.x-datadome-params:timerequest = time.start.usec;\n        set bereq.http.x-datadome-params:servername = server.identity;\n        set bereq.http.x-datadome-params:serverregion = server.region;\n        set bereq.http.x-datadome-params:ip = req.http.fastly-client-ip;\n        set bereq.http.x-datadome-params:authorizationlen = std.strlen(req.http.authorization);\n        unset bereq.http.authorization;\n        set bereq.http.x-datadome-params:clientid = urlencode(req.http.cookie:datadome);\n        set bereq.http.x-datadome-params:cookieslen = std.strlen(req.http.cookie);\n        unset bereq.http.cookie;\n    } else {\n        # prevent leak of the key\n        unset bereq.http.x-datadome-params;\n    }\n  }\n}\n\nbackend datadome {\n    .host = \"api-fastly.datadome.co\";\n    .port = \"8443\";\n    .connect_timeout = {{datadome_connect_timeout}}ms;\n    .first_byte_timeout = {{datadome_between_bytes_timeout}}ms;\n    .between_bytes_timeout = {{datadome_between_bytes_timeout}}ms;\n    .max_connections = 200;\n    .ssl = true;\n    .dynamic = true;\n    .probe = {\n        .request = \"HEAD /.well-known/healthcheck-datadome HTTP/1.1\" \"Host: api-fastly.datadome.co\" \"Connection: close\" \"User-Agent: Varnish/fastly (healthcheck)\";\n        .expected_response = 200;\n        .initial = 5;\n        .interval = 2s;\n        .threshold = 1;\n        .timeout = 2s;\n        .window = 5;\n      }\n}",
+      "template": "sub set_origin_header {\n  if (req.backend.is_origin) {\n    if (req.backend == datadome) {\n        set bereq.http.x-datadome-params:key = \"{{datadome_api_key}}\";\n        set bereq.http.x-datadome-params:requestmodulename = \"FastlyMagento\";\n        set bereq.http.x-datadome-params:moduleversion = \"2.5\";\n        set bereq.http.x-datadome-params:timerequest = time.start.usec;\n        set bereq.http.x-datadome-params:servername = server.identity;\n        set bereq.http.x-datadome-params:serverregion = server.region;\n        set bereq.http.x-datadome-params:ip = req.http.fastly-client-ip;\n        set bereq.http.x-datadome-params:authorizationlen = std.strlen(req.http.authorization);\n        unset bereq.http.authorization;\n        set bereq.http.x-datadome-params:clientid = urlencode(req.http.cookie:datadome);\n        set bereq.http.x-datadome-params:cookieslen = std.strlen(req.http.cookie);\n        unset bereq.http.cookie;\n    } else {\n        # prevent leak of the key\n        unset bereq.http.x-datadome-params;\n    }\n  }\n}\n\nbackend datadome {\n    .host = \"api-fastly.datadome.co\";\n    .port = \"8443\";\n    .connect_timeout = {{datadome_connect_timeout}}ms;\n    .first_byte_timeout = {{datadome_between_bytes_timeout}}ms;\n    .between_bytes_timeout = {{datadome_between_bytes_timeout}}ms;\n    .max_connections = 200;\n    .ssl = true;\n    .dynamic = true;\n    .probe = {\n        .request = \"HEAD /.well-known/healthcheck-datadome HTTP/1.1\" \"Host: api-fastly.datadome.co\" \"Connection: close\" \"User-Agent: Varnish/fastly (healthcheck)\";\n        .expected_response = 200;\n        .initial = 5;\n        .interval = 2s;\n        .threshold = 1;\n        .timeout = 2s;\n        .window = 5;\n      }\n}",
       "type": "init"
     },
     {
@@ -71,5 +71,5 @@
       "type": "pass"
     }
   ],
-  "version": "2.4"
+  "version": "2.5"
 }

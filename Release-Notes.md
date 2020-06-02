@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.138
+
+- Reenable clustering VCL added to the Netacea Edge module
+- Update to Datadome Edge Module
+- Add rate limiting to WebApi https://github.com/fastly/fastly-magento2/pull/379
+
 ## 1.2.137
 
 - Moved the Image preferences from frontend to global area, to allow use on adminhtml and cron areas too. Enable IO on sitemaps https://github.com/fastly/fastly-magento2/pull/373

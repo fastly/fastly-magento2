@@ -21,7 +21,7 @@
 namespace Fastly\Cdn\Model;
 
 use Magento\Framework\App\CacheInterface;
-use Magento\Framework\App\FrontController;
+use Magento\Framework\App\FrontControllerInterface;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\App\RequestInterface as Request;
 use Magento\Framework\App\ResponseInterface as Response;
@@ -115,12 +115,12 @@ class FrontControllerPlugin
 
     /**
      * Check if request is limited
-     * @param FrontController $subject
+     * @param FrontControllerInterface $subject
      * @param callable $proceed
      * @param mixed ...$args
      * @return \Magento\Framework\App\Response\Http|\Magento\Framework\App\ResponseInterface
      */
-    public function aroundDispatch(FrontController $subject, callable $proceed, ...$args) // @codingStandardsIgnoreLine - unused parameter
+    public function aroundDispatch(FrontControllerInterface $subject, callable $proceed, ...$args) // @codingStandardsIgnoreLine - unused parameter
     {
         $isRateLimitingEnabled = $this->config->isRateLimitingEnabled();
         $isCrawlerProtectionEnabled = $this->config->isCrawlerProtectionEnabled();

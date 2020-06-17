@@ -22,6 +22,7 @@ namespace Fastly\Cdn\Model;
 
 use Magento\Framework\App\Cache\StateInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Filesystem\Directory\ReadFactory;
 use Magento\Framework\Module\Dir;
 use Magento\Framework\Serialize\Serializer\Json;
@@ -553,7 +554,7 @@ class Config extends \Magento\PageCache\Model\Config
         VclGeneratorFactory $vclGeneratorFactory,
         Json $serializer = null
     ) {
-        $this->serializer = $serializer;
+        $this->serializer = $serializer ?: ObjectManager::getInstance()->get(Json::class);
         parent::__construct($readFactory, $scopeConfig, $cacheState, $reader, $vclGeneratorFactory, $serializer);
     }
 

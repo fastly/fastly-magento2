@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.139
+
+- Update to Datadome Edge Module
+- GeoIP controller may throw an unserialize error https://github.com/fastly/fastly-magento2/pull/382
+
 ## 1.2.138
 
 - Reenable clustering VCL added to the Netacea Edge module

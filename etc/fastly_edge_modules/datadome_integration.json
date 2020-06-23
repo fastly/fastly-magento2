@@ -14,7 +14,7 @@
       "name": "datadome_exclusion_ext",
       "type": "string",
       "description": "The regex that will be applied to req.url.path",
-      "default": "(?i)\.(avi|flv|mka|mkv|mov|mp4|mpeg|mpg|mp3|flac|ogg|ogm|opus|wav|webm|webp|bmp|gif|ico|jpeg|jpg|png|svg|svgz|swf|eot|otf|ttf|woff|woff2|css|less|js)$",
+      "default": "(?i)\\.(avi|flv|mka|mkv|mov|mp4|mpeg|mpg|mp3|flac|ogg|ogm|opus|wav|webm|webp|bmp|gif|ico|jpeg|jpg|png|svg|svgz|swf|eot|otf|ttf|woff|woff2|css|less|js)$",
       "required": true
     }, {
       "label": "Connection timeout",

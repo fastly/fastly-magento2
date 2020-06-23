@@ -512,9 +512,13 @@ class Api
             $adminPathTimeout = $this->config->getAdminPathTimeout();
             $ignoredUrlParameters = $this->config->getIgnoredUrlParameters();
 
-            $ignoredUrlParameterPieces = explode(",", $ignoredUrlParameters);
-            $filterIgnoredUrlParameterPieces = array_filter(array_map('trim', $ignoredUrlParameterPieces));
-            $queryParameters = implode('|', $filterIgnoredUrlParameterPieces);
+            if ($ignoredUrlParameters === "") {
+                $queryParameters = '&';
+            } else {
+                $ignoredUrlParameterPieces = explode(",", $ignoredUrlParameters);
+                $filterIgnoredUrlParameterPieces = array_filter(array_map('trim', $ignoredUrlParameterPieces));
+                $queryParameters = implode('|', $filterIgnoredUrlParameterPieces);
+            }
 
             $snippet['content'] = str_replace('####ADMIN_PATH####', $adminUrl, $snippet['content']);
             $snippet['content'] = str_replace('####ADMIN_PATH_TIMEOUT####', $adminPathTimeout, $snippet['content']);

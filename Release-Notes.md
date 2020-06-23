@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.140
+
+- Address case when user decides to remove all entries from querystring filter which may result in whole query string being removed https://github.com/fastly/fastly-magento2/pull/385
+- Fix for Datadome Edge Module escaping
+
 ## 1.2.139
 
 - Update to Datadome Edge Module

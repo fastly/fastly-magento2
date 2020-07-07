@@ -47,7 +47,7 @@
       "label": "Fastly service id",
       "name": "fastly_service_id",
       "type": "string",
-      "description": "Fastly service id to use the logging system"
+      "description": "Fastly service id to use with the logging system"
     }, {
       "label": "Logging endpoint",
       "name": "logging_endpoint",

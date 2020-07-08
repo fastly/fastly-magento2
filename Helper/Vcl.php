@@ -66,6 +66,10 @@ class Vcl extends AbstractHelper
                     return $activeVersion = $version->number;
                 }
             }
+
+            // if no active version, use greater one
+            $version = array_pop($versions);
+            return $version->number;
         }
 
         throw new LocalizedException(__('Error fetching current version.'));

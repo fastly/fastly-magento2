@@ -38,10 +38,11 @@
       "default": "100",
       "required": true
     }, {
-      "label": "Logging endpoint",
+      "label": "Logging Endpoint for Debugging",
       "name": "logging_endpoint",
       "type": "string",
-      "description": "Service to stream the logs"
+      "description": "This is the name of logging endpoint that has been already set up in Fastly where you can log.",
+      "required": false
     }
   ],
   "test": {

@@ -1,5 +1,12 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.141
+
+- Datadome Edge Module updated to 2.9 https://github.com/fastly/fastly-magento2/pull/387
+- GEO Redirect template had an errantly placed semi-colon https://github.com/fastly/fastly-magento2/pull/389
+- When using GraphQL cache tags were not being shortened breaking invalidation https://github.com/fastly/fastly-magento2/pull/386
+- Fix for Upload VCL button is inactive if there are currently no active versions of a service https://github.com/fastly/fastly-magento2/pull/388
+
 ## 1.2.140
 
 - Address case when user decides to remove all entries from querystring filter which may result in whole query string being removed https://github.com/fastly/fastly-magento2/pull/385

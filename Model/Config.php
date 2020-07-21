@@ -1067,7 +1067,7 @@ class Config extends \Magento\PageCache\Model\Config
      */
     public function getGeoIpMappingForCountry($countryCode)
     {
-        if ($mapping = $this->_scopeConfig->getValue(self::XML_FASTLY_GEOIP_COUNTRY_MAPPING)) {
+        if ($mapping = $this->getGeoIpRedirectMapping()) {
             return $this->extractMapping($mapping, $countryCode);
         }
         return null;

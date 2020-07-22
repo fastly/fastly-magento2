@@ -131,7 +131,7 @@ class ToggleRateLimiting extends Action
                 'name'      => Config::FASTLY_MAGENTO_MODULE . '_rate_limiting',
                 'statement' => 'req.http.Rate-Limit',
                 'type'      => 'REQUEST',
-                'priority'  => 5
+                'priority'  => 150
             ];
 
             $createCondition = $this->api->createCondition($clone->number, $condition);

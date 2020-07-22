@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.142
+
+- Datadome Edge Module updated to 2.10 https://github.com/fastly/fastly-magento2/pull/391
+- Rate limiting may do early returns when there are multiple backends. Moving priority to address
+
 ## 1.2.141
 
 - Datadome Edge Module updated to 2.9 https://github.com/fastly/fastly-magento2/pull/387

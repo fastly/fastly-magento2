@@ -179,6 +179,11 @@ class Api
      */
     public function cleanBySurrogateKey($keys)
     {
+        $keys = array_filter($keys);
+        if (empty($keys)) {
+            return true;
+        }
+
         $type = 'clean by key on ';
         $uri = $this->_getApiServiceUri() . 'purge';
         $num = count($keys);

@@ -1,4 +1,4 @@
-    if (obj.status == 971) {
+    if (obj.status == 771) {
         set obj.http.Content-Type = "text/html; charset=utf-8";
         set obj.http.WWW-Authenticate = "Basic realm=Secured";
         set obj.status = 401;

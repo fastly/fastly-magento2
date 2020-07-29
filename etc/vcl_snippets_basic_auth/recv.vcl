@@ -4,5 +4,5 @@
       !req.url ~ "^/(index\.php/)?####ADMIN_PATH####/" &&
       !req.url ~ "^/(index\.php/)?(rest|oauth)/" &&
       !req.url ~ "^/pub/static/" ) {
-      error 971;
+      error 771;
   }

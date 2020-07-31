@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.143
+
+- Make sure surrogate key list is not empty before sending it to the API https://github.com/fastly/fastly-magento2/pull/394
+
 ## 1.2.142
 
 - Datadome Edge Module updated to 2.10 https://github.com/fastly/fastly-magento2/pull/391
@@ -11,6 +15,7 @@
 - GEO Redirect template had an errantly placed semi-colon https://github.com/fastly/fastly-magento2/pull/389
 - When using GraphQL cache tags were not being shortened breaking invalidation https://github.com/fastly/fastly-magento2/pull/386
 - Fix for Upload VCL button is inactive if there are currently no active versions of a service https://github.com/fastly/fastly-magento2/pull/388
+- GeoIP redirect URLs may errantly contain a semi-colon (;) https://github.com/fastly/fastly-magento2/pull/389
 
 ## 1.2.140
 

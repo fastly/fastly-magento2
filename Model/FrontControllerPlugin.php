@@ -148,6 +148,12 @@ class FrontControllerPlugin
      */
     private function sensitivePathProtection($path)
     {
+        $ip = $this->request->getServerValue('HTTP_FASTLY_CLIENT_IP') ?? $this->request->getClientIp();
+
+        if ($this->readMaintenanceIp($ip)) {
+            return false;
+        }
+
         $limitedPaths = json_decode($this->config->getRateLimitPaths());
         if (!$limitedPaths) {
             $limitedPaths = [];
@@ -163,7 +169,6 @@ class FrontControllerPlugin
         if ($limit) {
             $rateLimitingLimit = $this->config->getRateLimitingLimit();
             $rateLimitingTtl = $this->config->getRateLimitingTtl();
-            $ip = $this->request->getServerValue('HTTP_FASTLY_CLIENT_IP') ?? $this->request->getClientIp();
             $tag = self::FASTLY_CACHE_TAG . $ip;
             $data = json_decode($this->cache->load($tag), true);
 
@@ -339,7 +344,7 @@ class FrontControllerPlugin
 
     private function log($message)
     {
-        if($this->config->isRateLimitingLoggingEnabled()) {
+        if ($this->config->isRateLimitingLoggingEnabled()) {
             $this->logger->info($message);
         }
     }

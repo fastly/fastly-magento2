@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.144
+
+- New Relic logging endpoint https://github.com/fastly/fastly-magento2/pull/368
+- Exclude admin IPs from being rate limited on sensitive paths https://github.com/fastly/fastly-magento2/pull/395
+
 ## 1.2.143
 
 - Make sure surrogate key list is not empty before sending it to the API https://github.com/fastly/fastly-magento2/pull/394

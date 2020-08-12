@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.145
+
+- Cache Maintenance IP list https://github.com/fastly/fastly-magento2/pull/400
+- Datadome Edge Module updated to 2.11 https://github.com/fastly/fastly-magento2/pull/396
+
 ## 1.2.144
 
 - New Relic logging endpoint https://github.com/fastly/fastly-magento2/pull/368

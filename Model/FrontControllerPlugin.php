@@ -41,6 +41,8 @@ class FrontControllerPlugin
     const FASTLY_CACHE_TAG = 'fastly_rl_sensitive_path__';
     /** @var string Cache tag for storing crawler rate limit data */
     const FASTLY_CRAWLER_TAG = 'fastly_rl_crawler_protection_';
+    /** @var string Cache tag for storing maintenance ip file data */
+    const FASTLY_CACHE_MAINTENANCE_IP_FILE_TAG = 'fastly_rl_maintenance_ip_file';
 
     /**
      * @var CacheInterface
@@ -328,15 +330,21 @@ class FrontControllerPlugin
 
     private function readMaintenanceIp($ip)
     {
-        $flagDir = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
+        $tag = self::FASTLY_CACHE_MAINTENANCE_IP_FILE_TAG;
+        $data = json_decode($this->cache->load($tag));
+        if (empty($data)) {
+            $flagDir = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
 
-        if ($flagDir->isExist('.maintenance.ip')) {
-            $temp = $flagDir->readFile('.maintenance.ip');
-            $tempList = explode(',', trim($temp));
-            foreach ($tempList as $key => $value) {
-                if (!empty($value) && trim($value) == $ip) {
-                    return true;
-                }
+            if ($flagDir->isExist('.maintenance.ip')) {
+                $temp = $flagDir->readFile('.maintenance.ip');
+                $data = explode(',', trim($temp));
+                $this->cache->save(json_encode($data), $tag, []);
+            }
+        }
+
+        foreach ($data as $key => $value) {
+            if (!empty($value) && trim($value) == $ip) {
+                return true;
             }
         }
         return false;

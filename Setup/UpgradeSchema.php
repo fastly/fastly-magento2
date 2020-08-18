@@ -55,6 +55,10 @@ class UpgradeSchema implements UpgradeSchemaInterface // @codingStandardsIgnoreL
             $this->upgradeModlyManifestTable($installer);
         }
 
+        if (version_compare($context->getVersion(), '1.0.14', '<=')) {
+            $this->upgradeModlyManifestTableManifestColumns($installer);
+        }
+
         $installer->endSetup();
     }
 
@@ -203,6 +207,52 @@ class UpgradeSchema implements UpgradeSchemaInterface // @codingStandardsIgnoreL
                     'type'      => \Magento\Framework\DB\Ddl\Table::TYPE_DATETIME,
                     'nullable'  => true,
                     'comment'   => 'Last uploaded',
+                ]
+            );
+        }
+    }
+
+    /**
+     * @param SchemaSetupInterface $installer
+     */
+    public function upgradeModlyManifestTableManifestColumns(
+        SchemaSetupInterface $installer
+    ) {
+        $tableName = $installer->getTable('fastly_modly_manifests');
+
+        if ($installer->getConnection()->isTableExists($tableName) == true) {
+            $installer->getConnection()
+            ->modifyColumn(
+                $tableName,
+                'manifest_properties',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length' => '2M',
+                    'nullable' => false,
+                ]
+            )->modifyColumn(
+                $tableName,
+                'manifest_content',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length' => '2M',
+                    'nullable' => false,
+                ]
+            )->modifyColumn(
+                $tableName,
+                'manifest_vcl',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length' => '2M',
+                    'nullable' => false,
+                ]
+            )->modifyColumn(
+                $tableName,
+                'manifest_values',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length' => '2M',
+                    'nullable' => false,
                 ]
             );
         }

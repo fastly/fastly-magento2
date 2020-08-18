@@ -165,7 +165,7 @@ class UpgradeSchema implements UpgradeSchemaInterface // @codingStandardsIgnoreL
             )->addColumn(
                 'manifest_vcl',
                 \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                \Magento\Framework\DB\Ddl\Table::DEFAULT_TEXT_SIZE,
+                \Magento\Framework\DB\Ddl\Table::MAX_TEXT_SIZE,
                 ['nullable' => false],
                 'Manifest VCL'
             )->addColumn(

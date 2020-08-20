@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.146
+
+- Change database table type to support snippets longer than 64 kB https://github.com/fastly/fastly-magento2/pull/402
+- Fix for Cache Maintenance IP list throwing execptions if .maintenance.ip is not present https://github.com/fastly/fastly-magento2/pull/403
+
 ## 1.2.145
 
 - Cache Maintenance IP list https://github.com/fastly/fastly-magento2/pull/400

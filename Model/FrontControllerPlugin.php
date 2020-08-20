@@ -333,8 +333,8 @@ class FrontControllerPlugin
         $tag = self::FASTLY_CACHE_MAINTENANCE_IP_FILE_TAG;
         $data = json_decode($this->cache->load($tag));
         if (empty($data)) {
+            $data = [];
             $flagDir = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
-
             if ($flagDir->isExist('.maintenance.ip')) {
                 $temp = $flagDir->readFile('.maintenance.ip');
                 $data = explode(',', trim($temp));

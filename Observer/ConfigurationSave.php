@@ -20,8 +20,11 @@
  */
 namespace Fastly\Cdn\Observer;
 
+use Fastly\Cdn\Helper\AutomaticCompression;
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
+use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Module\Manager;
 use Fastly\Cdn\Model\StatisticRepository;
 use Fastly\Cdn\Model\Statistic;
@@ -50,6 +53,18 @@ class ConfigurationSave implements ObserverInterface
      * @var StatisticFactory
      */
     private $statisticFactory;
+    /**
+     * @var RequestInterface
+     */
+    private $request;
+    /**
+     * @var AutomaticCompression
+     */
+    private $automaticCompressionHelper;
+    /**
+     * @var ManagerInterface
+     */
+    private $messageManager;
 
     /**
      * ConfigurationSave constructor.
@@ -62,12 +77,18 @@ class ConfigurationSave implements ObserverInterface
         Manager $manager,
         StatisticRepository $statisticRepository,
         Statistic $statistic,
-        StatisticFactory $statisticFactory
+        StatisticFactory $statisticFactory,
+        RequestInterface $request,
+        AutomaticCompression $automaticCompressionHelper,
+        ManagerInterface $messageManager
     ) {
         $this->moduleManager = $manager;
         $this->statisticRepo = $statisticRepository;
         $this->statistic = $statistic;
         $this->statisticFactory = $statisticFactory;
+        $this->request = $request;
+        $this->automaticCompressionHelper = $automaticCompressionHelper;
+        $this->messageManager = $messageManager;
     }
 
     /**
@@ -92,5 +113,15 @@ class ConfigurationSave implements ObserverInterface
             $newConfigured->setSent($GAreq);
             $this->statisticRepo->save($newConfigured);
         }
+
+        //if (in_array('system/full_page_cache/fastly/fastly_image_optimization_configuration/automatic_compression', $observer->getData('changed_paths'))) {
+            try {
+                $configurationGroups = $this->request->getParam('groups');
+                $automaticCompression = $configurationGroups['full_page_cache']['groups']['fastly']['groups']['fastly_image_optimization_configuration']['fields']['automatic_compression']['value'];
+                $this->automaticCompressionHelper->updateVclSnippet($automaticCompression);
+            } catch (\Exception $e) {
+                $this->messageManager->addErrorMessage($e->getMessage());
+            }
+        //}
     }
 }

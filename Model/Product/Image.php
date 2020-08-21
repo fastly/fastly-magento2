@@ -261,10 +261,14 @@ class Image extends ImageModel
         $url = $this->getBaseFileUrl($baseFile);
 
         $imageQuality = $this->_scopeConfig->getValue(Config::XML_FASTLY_IMAGE_OPTIMIZATION_IMAGE_QUALITY);
-
         $this->setQuality($imageQuality);
-
         $this->fastlyParameters['quality'] = $this->_quality;
+
+        $automaticCompression = $this->scopeConfig->getValue(Config::XML_FASTLY_IMAGE_OPTIMIZATION_AUTOMATIC_COMPRESSION);
+        if ($automaticCompression && $automaticCompression !== 'off') {
+            unset($this->fastlyParameters['quality']);
+            $this->fastlyParameters['optimize'] = $automaticCompression;
+        }
 
         if ($this->_scopeConfig->isSetFlag(Config::XML_FASTLY_IMAGE_OPTIMIZATION_BG_COLOR) == true) {
             $this->fastlyParameters['bg-color'] = implode(',', $this->_backgroundColor);

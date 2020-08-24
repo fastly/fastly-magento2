@@ -38,22 +38,29 @@ class AutomaticCompression extends AbstractHelper
      */
     private $api;
     /**
-     * @var \Fastly\Cdn\Helper\Vcl
+     * @var Vcl
      */
     private $vcl;
+    /**
+     * @var Config
+     */
+    private $config;
 
     /**
      * @param Context $context
      * @param Api $api
-     * @param \Fastly\Cdn\Helper\Vcl $vcl
+     * @param Config $config
+     * @param Vcl $vcl
      */
     public function __construct(
         Context $context,
         Api $api,
+        Config $config,
         Vcl $vcl
     ) {
         parent::__construct($context);
         $this->api = $api;
+        $this->config = $config;
         $this->vcl = $vcl;
     }
 
@@ -76,20 +83,17 @@ class AutomaticCompression extends AbstractHelper
 
     protected function buildSnippetData($snippet, $value)
     {
-        $pattern = '/set req\.url = querystring\.set\(req\.url, "optimize", "(.*?)"\);/';
-        preg_match($pattern, $snippet->content, $match);
-        $replacement = str_replace('{value}', $value, 'set req.url = querystring.set(req.url, "optimize", "{value}");');
+        $defaultContent = $this->config->getVclSnippets(Config::IO_VCL_SNIPPET_PATH, 'recv.vcl');
+        $defaultContent = array_shift($defaultContent);
 
-        if (isset($match[1])) {
-            if ($value === 'off') {
-                $replacement = '';
-            }
-            $content = preg_replace($pattern, $replacement, $snippet->content);
-        } else {
-            if ($value !== 'off') {
-                $content = $snippet->content . $replacement;
-            }
-        }
+        $pattern = '#set req.url = querystring.set(req.url, "optimize", "(low|medium|high)");';
+        $replacement = implode('', [
+            ($value === 'off') ? '#' : '',
+            'set req.url = querystring.set(req.url, "optimize", "',
+            $value,
+            '");'
+        ]);
+        $content = str_replace($pattern, $replacement, $defaultContent);
 
         return [
             'name' => $snippet->name,

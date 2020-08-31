@@ -264,8 +264,9 @@ class Image extends ImageModel
         $this->setQuality($imageQuality);
         $this->fastlyParameters['quality'] = $this->_quality;
 
-        $automaticCompression = $this->scopeConfig->getValue(Config::XML_FASTLY_IMAGE_OPTIMIZATION_AUTOMATIC_COMPRESSION);
+        $automaticCompression = $this->_scopeConfig->getValue(Config::XML_FASTLY_IMAGE_OPTIMIZATION_AUTOMATIC_COMPRESSION);
         if ($automaticCompression && $automaticCompression !== 'off') {
+            $this->setQuality(null);
             unset($this->fastlyParameters['quality']);
             $this->fastlyParameters['optimize'] = $automaticCompression;
         }

@@ -184,7 +184,7 @@ class UpgradeData implements UpgradeDataInterface
         if (version_compare($version, '1.0.15', '<=')) {
             $this->notifier->addNotice(
                 'Fastly Better Image Optimization',
-                'New Automatic Compression attempts to produce an output image with as much visual quality as possible while minimizing the file size.',
+                'We have introduced automatic compression that attempts to produce an output image with as much visual quality as possible while minimizing the file size. This supersedes fixed image quality settings. To take advantage of it please check Image Optimization settings under Fastly Full Page Cache Config',
                 'https://docs.fastly.com/en/image-optimization-api/optimize'
             );
         }

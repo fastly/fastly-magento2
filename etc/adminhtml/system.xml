@@ -455,7 +455,7 @@
                         <field id="fastly_push_image_config" translate="label comment" sortOrder="5" showInDefault="1" showInStore="0" showInWebsite="0">
                             <label><![CDATA[Fastly IO Snippet]]></label>
                             <comment>
-                                <![CDATA[VCL snippet upload is required in order to funnel image requests to Fastly optimizers.]]>
+                                <![CDATA[VCL snippet upload is required in order to direct image requests to Fastly Image optimizers.]]>
                             </comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\ImageBtn</frontend_model>
                         </field>
@@ -464,7 +464,7 @@
                         ============================= -->
                         <field id="automatic_compression" translate="label comment" type="select" sortOrder="7" showInDefault="1" showInWebsite="0" showInStore="0">
                             <label><![CDATA[Automatic Compression]]></label>
-                            <comment><![CDATA[Automatically apply optimal quality compression to produce an output image with as much visual fidelity as possible, while minimizing the file size. <a href="https://docs.fastly.com/en/image-optimization-api/optimize" target="_blank" rel="noopener">Details can be found here</a>. If you choose off Fastly will apply the fixed quality level as defined in default settings.]]></comment>
+                            <comment><![CDATA[Automatically apply optimal quality compression to produce an output image with as much visual fidelity as possible, while minimizing the file size. <a href="https://docs.fastly.com/en/image-optimization-api/optimize" target="_blank" rel="noopener">Details can be found here</a>. If you choose Off Fastly will apply the fixed quality level as defined in default settings.]]></comment>
                             <source_model>Fastly\Cdn\Model\Config\Backend\AutomaticCompression</source_model>
                         </field>
                         <!-- ====================================

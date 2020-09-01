@@ -31,6 +31,7 @@ use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\Serialize\SerializerInterface;
+use Magento\Framework\Notification\NotifierInterface;
 use Fastly\Cdn\Model\Statistic;
 
 /**
@@ -73,6 +74,10 @@ class UpgradeData implements UpgradeDataInterface
      * @var SerializerInterface
      */
     private $serializeInterface;
+    /**
+     * @var NotifierInterface
+     */
+    private $notifier;
 
     /**
      * UpgradeData constructor.
@@ -93,7 +98,8 @@ class UpgradeData implements UpgradeDataInterface
         Manager $cacheManager,
         Data $helper,
         ProductMetadataInterface $productMetadata,
-        SerializerInterface $serializeInterface
+        SerializerInterface $serializeInterface,
+        NotifierInterface $notifier
     ) {
         $this->date = $date;
         $this->scopeConfig = $scopeConfig;
@@ -103,6 +109,7 @@ class UpgradeData implements UpgradeDataInterface
         $this->productMetadata = $productMetadata;
         $this->cacheManager = $cacheManager;
         $this->serializeInterface = $serializeInterface;
+        $this->notifier = $notifier;
     }
 
     /**
@@ -172,6 +179,14 @@ class UpgradeData implements UpgradeDataInterface
             $setup->endSetup();
         } elseif (version_compare($magVer, '2.2', '<')) {
             $setup->endSetup();
+        }
+
+        if (version_compare($version, '1.0.15', '<=')) {
+            $this->notifier->addNotice(
+                'Fastly Better Image Optimization',
+                'New Automatic Compression attempts to produce an output image with as much visual quality as possible while minimizing the file size.',
+                'https://docs.fastly.com/en/image-optimization-api/optimize'
+            );
         }
     }
 

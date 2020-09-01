@@ -329,6 +329,12 @@ class Config extends \Magento\PageCache\Model\Config
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimizations';
 
     /**
+     * XML path to automatic compression flag
+     */
+    const XML_FASTLY_IMAGE_OPTIMIZATION_AUTOMATIC_COMPRESSION
+        = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/automatic_compression';
+
+    /**
      * XML path to image verify flag
      */
     const XML_FASTLY_IMAGE_VERIFY

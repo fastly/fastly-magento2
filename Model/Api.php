@@ -540,7 +540,7 @@ class Api
             $verb = \Zend_Http_Client::PUT;
             if (!isset($snippet['dynamic']) || $snippet['dynamic'] != 1) {
                 $url .= '/'.$snippetName;
-                unset($snippet['name'], $snippet['type'], $snippet['dynamic'], $snippet['priority']);
+                unset($snippet['name'], $snippet['type'], $snippet['dynamic']);
             } else {
                 $snippet['name'] = $this->getSnippet($version, $snippetName)->id;
                 $url = $this->_getApiServiceUri(). 'snippet' . '/'.$snippet['name'];

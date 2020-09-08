@@ -36,4 +36,11 @@
     <!--<type name="Magento\Config\Model\Config\Structure">-->
         <!--<plugin name="fastly_cdn_system_configuration" type="Fastly\Cdn\Plugin\Config\StructurePlugin"/>-->
     <!--</type>-->
+    <type name="Magento\Framework\Notification\MessageList">
+        <arguments>
+            <argument name="messages" xsi:type="array">
+                <item name="fastly_cdn_betterimageoptimization" xsi:type="string">Fastly\Cdn\Model\System\Message\BetterImageOptimization</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

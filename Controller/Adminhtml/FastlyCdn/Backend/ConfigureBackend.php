@@ -128,10 +128,10 @@ class ConfigureBackend extends Action
             $sslVerifyCert = $this->getRequest()->getParam('ssl_check_cert') === '1' ? true : false;
             $sslCertHostname = $this->processRequest('ssl_cert_hostname');
 
-            if ($sslVerifyCert && !$sslCertHostname) {
+            if ($useSsl && $sslVerifyCert && !$sslCertHostname) {
                 return $result->setData([
                     'status'    => false,
-                    'msg'       => 'Certified hostname must be entered if certificate verification is chosen'
+                    'msg'       => 'Certificate hostname must be entered if certificate verification is chosen'
                 ]);
             }
 

@@ -132,10 +132,10 @@ class CreateBackend extends Action
             $sslCaCert = $this->processRequest('ssl_ca_cert');
             $sslVerifyCert = $this->getRequest()->getParam('ssl_check_cert') === '1' ? true : false;
 
-            if ($sslVerifyCert && !$sslCertHostname) {
+            if ($useSsl && $sslVerifyCert && !$sslCertHostname) {
                 return $result->setData([
                     'status'    => false,
-                    'msg'       => 'Certified hostname must be entered if certificate verification is chosen'
+                    'msg'       => 'Certificate hostname must be entered if certificate verification is chosen'
                 ]);
             }
 

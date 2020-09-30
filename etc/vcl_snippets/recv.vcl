@@ -1,3 +1,23 @@
+    # When using Magento tester to test whether your site is configured properly
+    # this uses a bypass secret. By default we will use service ID as the bypass secret
+    # however user can override this by defining a bypass_secret key in the 
+    # magentomodule_config edge dictionary
+    if ( req.http.bypass-secret ) {
+        declare local var.bypass-secret STRING;
+        set var.bypass-secret = table.lookup(magentomodule_config, "bypass_secret", "NONE");
+        if ( var.bypass-secret == req.http.bypass-secret ) {
+            set req.http.x-pass = "1";
+            set var.fastly_req_do_shield = false;
+            set req.hash_always_miss = true;
+        } else if ( var.bypass-secret == "NONE" && req.http.bypass-secret == req.service_id ) {
+            set req.http.x-pass = "1";
+            set var.fastly_req_do_shield = false;
+            set req.hash_always_miss = true;
+        } else {
+            error 403 "Bypass Secret incorrect";
+        }
+    }
+
     # VCL required to support maintenance mode. Don't maintenance mode admin pages and supporting assets
     if (table.lookup(magentomodule_config, "allow_super_users_during_maint", "0") == "1" &&
         !req.http.Fastly-Client-Ip ~ maint_allowlist &&

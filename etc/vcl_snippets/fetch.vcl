@@ -1,3 +1,9 @@
+    # If we are doing a bypass for Magento Tester return early as not to affect any headers
+    if ( req.http.bypass-secret ) {
+        set beresp.ttl = 0s;
+        return(pass);
+    }
+
     /* handle 5XX (or any other unwanted status code) */
     if (beresp.status >= 500 && beresp.status < 600) {
 

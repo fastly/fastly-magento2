@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.148
+
+- Add support for bypass secret to enable Magento Tester tool
+- Make all Fastly API endpoint calls URL encoded https://github.com/fastly/fastly-magento2/pull/410
+
+
 ## 1.2.147
 
 - Add support for Automatic Image compression (optimize) https://github.com/fastly/fastly-magento2/pull/404

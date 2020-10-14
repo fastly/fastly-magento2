@@ -1,7 +1,5 @@
 # Rate Limiting (limited)
 
-*THIS FUNCTIONALITY IS EXPERIMENTAL. IT MAY BE REMOVED IN FUTURE RELEASES*
-
 Rate Limiting is available from version 1.2.94 of the module. If you do not see it in your
 module you will need to update your module.
 

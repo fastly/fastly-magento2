@@ -165,6 +165,7 @@ class FrontControllerPlugin
         foreach ($limitedPaths as $key => $value) {
             if (preg_match('{' . $value->path . '}i', $path) == 1) {
                 $limit = true;
+                break;
             }
         }
 

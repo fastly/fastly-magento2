@@ -127,7 +127,7 @@
     
     # Pass on checkout URLs. Because it's a snippet we want to execute this after backend selection so we handle it
     # in the request condition
-    if (!req.http.x-long-cache && req.url ~ "/(catalogsearch|checkout|customer/section/load)") {
+    if (!req.http.x-long-cache && req.url ~ "/(checkout|customer/section/load)") {
         set req.http.x-pass = "1";
     # Pass all admin actions
     # ####ADMIN_PATH#### is replaced with value of frontName from app/etc/env.php

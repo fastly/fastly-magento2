@@ -28,7 +28,7 @@ You will need to signup for a free account with [fastly.com](https://www.fastly.
 The tasks involved in this are:
 
 - Add the Fastly_Cdn module to the Magento server. [(Instructions)](#magento-module)
-- Configure the Fastly_Cdn module on the Magento server. [(Instructions)](#configure-the-module)
+- Configure the Fastly_Cdn module on the Magento server. [(Instructions)](CONFIGURATION.md)
 
 ### Magento module
 

@@ -114,7 +114,7 @@ you can set this option to no.
 
 ## Set canvas parameter on images
 
-This feature is on by default when you enable deep image optimization. It adds canvas argument to the image optimization with the aspect ratio of the image. You can read more about this feature in Fastly [image optimization docs](https://docs.fastly.com/api/imageopto/canvas). Set to no to exclude.
+This feature is on by default when you enable deep image optimization. It adds canvas argument to the image optimization with the aspect ratio of the image. You can read more about this feature in Fastly [image optimization docs](https://docs.fastly.com/en/image-optimization-api/canvas). Set to no to exclude.
 
 ## Adaptive pixel ratios
 

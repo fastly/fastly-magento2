@@ -1,7 +1,7 @@
 # Force TLS guide
 
 This guide will show how to setup Secure base URL in Magento and turn on Force TLS option. 
-For this, you will need to have a TLS certificate. You can read [here](https://docs.fastly.com/guides/securing-communications/)
+For this, you will need to have a TLS certificate. You can read [here](https://docs.fastly.com/en/guides/security#_tls)
 on how to order a TLS certificate through Fastly and then set it up.
  
 Once your certificate has been deployed on Fastly go to:

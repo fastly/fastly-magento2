@@ -51,7 +51,7 @@ adding a backend proceed to configuration.
 
 *Please note* you should specify a shield location for your backend and it should be close to your origin e.g.
 if your origin is in Netherlands pick our Amsterdam shield etc. Shield will greatly decrease the number of
-requests hitting your origin and is required for Image Optimization. [Read more about origin shielding](https://docs.fastly.com/guides/performance-tuning/shielding). 
+requests hitting your origin and is required for Image Optimization. [Read more about origin shielding](https://docs.fastly.com/en/guides/shielding). 
 
 ## Edge Module Configuration
 

@@ -1,7 +1,7 @@
 # ACL (Access Control Lists)
 
 This guide will show how to add a Fastly ACL to your Fastly configuration. You can find more
-details on what ACLs are [here https://docs.fastly.com/guides/access-control-lists/about-edge-acls]
+details on what ACLs are [here](https://docs.fastly.com/en/guides/about-acls)
 
 To add an ACL, go to:
 ```

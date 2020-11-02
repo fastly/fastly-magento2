@@ -55,7 +55,7 @@ content and upload VCL.
 # Automated custom VCL snippets deployment
 
 Please add any
-[VCL snippets](https://docs.fastly.com/guides/vcl-snippets/using-regular-vcl-snippets) 
+[VCL snippets](https://docs.fastly.com/en/guides/using-regular-vcl-snippets) 
 to `$MAGENTO_HOME/var/vcl_snippets_custom`
 that should be uploaded any time you click upload custom VCL in the Magento admin.
 

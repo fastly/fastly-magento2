@@ -15,14 +15,14 @@ to Fastly's CDN services.
 To proceed with configuration you will need to have
 [signed up for Fastly's service](https://www.fastly.com/signup). You will need
 the API token (https://manage.fastly.com/account/personal/tokens). Details of how to find these
-are kept in [Fastly's documentation](https://docs.fastly.com/guides/account-management-and-security/finding-and-managing-your-account-info).
+are kept in [Fastly's documentation](https://docs.fastly.com/en/guides/finding-and-managing-your-account-info).
 
 ## Configure the Fastly Service
 
 To start configuring the Fastly service for use with Magento ensure that you
 have [signed up](https://www.fastly.com/signup) for the service. Once you have
 confirmed the account and logged in the Fastly application will take you to a
-wizard to configure your first service. This is further documented on [Fastly's documentation](https://docs.fastly.com/guides/basic-setup/sign-up-and-create-your-first-service).
+wizard to configure your first service. This is further documented on [Fastly's documentation](https://docs.fastly.com/en/guides/sign-up-and-create-your-first-service).
 
 ## Configure the Module
 

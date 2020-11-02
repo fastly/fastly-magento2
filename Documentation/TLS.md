@@ -1,7 +1,7 @@
 # TLS Deployment
 
 This document describes the options for implementing TLS. Fastly's TLS options
-are detailed in their [documentation](https://docs.fastly.com/guides/securing-communications/ordering-a-paid-tls-option)
+are detailed in their [documentation](https://docs.fastly.com/products/tls-service-options).
 
 ## Contents
 
@@ -40,7 +40,7 @@ the way as traffic from the CDN to the Magento server is not encrypted.
 
 To terminate TLS at Fastly you will need to choose one of the TLS options that
 Fastly provides. For testing it is possible to use
-[Fastly's Free Shared Domain](https://docs.fastly.com/guides/securing-communications/setting-up-free-tls)
+[Fastly's Free Shared Domain](https://docs.fastly.com/en/guides/setting-up-free-tls)
 option. If doing so, make sure to set the base-urls in Magento to the same name.
 
 In Fastly's Configure page set the origin port to 80 (or the listening port of
@@ -78,7 +78,7 @@ Once the Magento server is properly configured, log in to the Fastly
 application and configure a second origin with the same address. Make sure to
 choose port 443, or set the TLS option to use TLS for this connection. Further
 details of how to configure the options are in
-[Fastly's documentation](https://docs.fastly.com/guides/securing-communications/connecting-to-origins-over-tls).
+[Fastly's documentation](https://docs.fastly.com/en/guides/connecting-to-origins).
 
 Add a condition to the server with the following details:
 
@@ -115,4 +115,4 @@ setting the environment variable 'Https' to 'On' as described above.
 
 As a failsafe for any URLs which may not have the correct protocol prefixed to
 them add a rule to 'Force TLS' in Fastly. The rule is described in
-[Fastly's Documentation](https://docs.fastly.com/guides/securing-communications/allowing-only-tls-connections-to-your-site).
+[Fastly's Documentation](https://docs.fastly.com/en/guides/forcing-a-tls-redirect).

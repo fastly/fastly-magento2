@@ -69,6 +69,8 @@ class AdaptivePixelRationPlugin
             $srcSet[] = $imageUrl . $glue . $ratio;
         }
 
-        $subject->setData('custom_attributes', 'srcset="' . implode(',', $srcSet) . '"');
+        $customAttributes = $subject->getCustomAttributes() ?: [];
+        $customAttributes['srcset'] = implode(',', $srcSet);
+        $subject->setData('custom_attributes', $customAttributes);
     }
 }

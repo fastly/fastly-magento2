@@ -64,10 +64,9 @@ class LayoutPlugin
      * Set Fastly stale headers if configured
      *
      * @param \Magento\Framework\View\Layout $subject
-     * @param mixed $result
-     * @return mixed
+     * @return void
      */
-    public function afterGenerateXml(\Magento\Framework\View\Layout $subject, $result)
+    public function afterGenerateElements(\Magento\Framework\View\Layout $subject)
     {
         // if subject is cacheable, FPC cache is enabled, Fastly module is chosen and general TTL is > 0
         if ($subject->isCacheable() && $this->config->isEnabled()
@@ -96,8 +95,6 @@ class LayoutPlugin
         } else {
             $this->response->setHeader("fastly-page-cacheable", "NO");
         }
-
-        return $result;
     }
 
     /**

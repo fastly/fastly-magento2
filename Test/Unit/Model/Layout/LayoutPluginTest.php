@@ -75,13 +75,12 @@ class LayoutPluginTest extends \PHPUnit_Framework_TestCase
      * @param $staleTtl
      * @param $staleErrorTtl
      * @param $cacheControl
-     * @dataProvider afterGenerateXmlDataProvider
+     * @dataProvider afterGenerateElementsDataProvider
      */
-    public function testAfterGenerateXml($cacheState, $layoutIsCacheable, $cacheType, $ttl, $staleTtl = 0,
+    public function testAfterGenerateElements($cacheState, $layoutIsCacheable, $cacheType, $ttl, $staleTtl = 0,
         $staleErrorTtl = 0, $cacheControl = 'max-age=86400, public, s-maxage=86400')
     {
         $headerName = 'cache-control';
-        $result = 'test';
 
         $this->layoutMock->expects($this->once())->method('isCacheable')->will($this->returnValue($layoutIsCacheable));
         $this->configMock->expects($this->any())->method('isEnabled')->will($this->returnValue($cacheState));
@@ -118,11 +117,10 @@ class LayoutPluginTest extends \PHPUnit_Framework_TestCase
         } else {
             $this->responseMock->expects($this->never())->method('setHeader');
         }
-        $output = $this->model->afterGenerateXml($this->layoutMock, $result);
-        $this->assertSame($result, $output);
+        $this->model->afterGenerateElements($this->layoutMock);
     }
 
-    public function afterGenerateXmlDataProvider()
+    public function afterGenerateElementsDataProvider()
     {
         return [
             'Full_cache state is true, Layout is cache-able, Fastly, TTL > 0, StaleTTL > 0, StaleErrorTTL > 0' =>

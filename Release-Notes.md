@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.149
+
+- Allow to cache search results https://github.com/fastly/fastly-magento2/pull/414
+- Due to changes in Magento 2.3.5 stale-while-revalidate headers were not set for cache control https://github.com/fastly/fastly-magento2/pull/421
+- Upgrade to version of 2.12 of Datadome module https://github.com/fastly/fastly-magento2/pull/420
+
 ## 1.2.148
 
 - Add support for bypass secret to enable Magento Tester tool

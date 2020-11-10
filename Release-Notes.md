@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.150
+
+- Products not showing on category page when Adaptive Device Pixel Ratios is enabled in versions 2.4+ https://github.com/fastly/fastly-magento2/issues/418
+
 ## 1.2.149
 
 - Allow to cache search results https://github.com/fastly/fastly-magento2/pull/414

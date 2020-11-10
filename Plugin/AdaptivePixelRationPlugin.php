@@ -22,6 +22,7 @@ namespace Fastly\Cdn\Plugin;
 
 use Fastly\Cdn\Model\Config;
 use Magento\Catalog\Block\Product\Image;
+use Magento\Framework\App\ProductMetadataInterface;
 
 /**
  * Class AdaptivePixelRationPlugin
@@ -36,13 +37,22 @@ class AdaptivePixelRationPlugin
     public $config;
 
     /**
+     * @var ProductMetadataInterface
+     */
+    private $productMetadata;
+
+    /**
      * AdaptivePixelRationPlugin constructor.
      *
      * @param Config $config
+     * @param ProductMetadataInterface $productMetadata
      */
-    public function __construct(Config $config)
-    {
+    public function __construct(
+        Config $config,
+        ProductMetadataInterface $productMetadata
+    ) {
         $this->config = $config;
+        $this->productMetadata = $productMetadata;
     }
 
     /**
@@ -69,6 +79,12 @@ class AdaptivePixelRationPlugin
             $srcSet[] = $imageUrl . $glue . $ratio;
         }
 
-        $subject->setData('custom_attributes', 'srcset="' . implode(',', $srcSet) . '"');
+        if (version_compare($this->productMetadata->getVersion(), '2.4', '<')) {
+            $subject->setData('custom_attributes', 'srcset="' . implode(',', $srcSet) . '"');
+        } else {
+            $customAttributes = $subject->getCustomAttributes() ?: [];
+            $customAttributes['srcset'] = implode(',', $srcSet);
+            $subject->setData('custom_attributes', $customAttributes);
+        }
     }
 }

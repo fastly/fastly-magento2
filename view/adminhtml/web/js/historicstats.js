@@ -2,7 +2,8 @@ define([
     'jquery',
     'mage/translate',
     'https://www.gstatic.com/charts/loader.js',
-    'moment'
+    'moment',
+    'mage/calendar'
 ], function ($, t, g, moment) {
     "use strict";
     return function (config) {

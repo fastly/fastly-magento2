@@ -114,14 +114,14 @@ class ConfigurationSave implements ObserverInterface
             $this->statisticRepo->save($newConfigured);
         }
 
-        //if (in_array('system/full_page_cache/fastly/fastly_image_optimization_configuration/automatic_compression', $observer->getData('changed_paths'))) {
-            try {
-                $configurationGroups = $this->request->getParam('groups');
+        try {
+            $configurationGroups = $this->request->getParam('groups');
+            if (isset($configurationGroups['full_page_cache']['groups']['fastly']['groups']['fastly_image_optimization_configuration'])) {
                 $automaticCompression = $configurationGroups['full_page_cache']['groups']['fastly']['groups']['fastly_image_optimization_configuration']['fields']['automatic_compression']['value'];
                 $this->automaticCompressionHelper->updateVclSnippet($automaticCompression);
-            } catch (\Exception $e) {
-                $this->messageManager->addErrorMessage($e->getMessage());
             }
-        //}
+        } catch (\Exception $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
+        }
     }
 }

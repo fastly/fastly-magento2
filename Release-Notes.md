@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.151
+
+- Fix for "error saving in system config" https://github.com/fastly/fastly-magento2/pull/426
+
 ## 1.2.150
 
 - Products not showing on category page when Adaptive Device Pixel Ratios is enabled in versions 2.4+ https://github.com/fastly/fastly-magento2/issues/418

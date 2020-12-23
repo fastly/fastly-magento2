@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.152
+
+- Update shield list https://github.com/fastly/fastly-magento2/pull/427
+
 ## 1.2.151
 
 - Fix for "error saving in system config" https://github.com/fastly/fastly-magento2/pull/426

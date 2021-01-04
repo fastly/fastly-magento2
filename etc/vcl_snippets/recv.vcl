@@ -1,6 +1,6 @@
     # When using Magento tester to test whether your site is configured properly
     # this uses a bypass secret. By default we will use service ID as the bypass secret
-    # however user can override this by defining a bypass_secret key in the 
+    # however user can override this by defining a bypass_secret key in the
     # magentomodule_config edge dictionary
     if ( req.http.bypass-secret ) {
         declare local var.bypass-secret STRING;
@@ -45,7 +45,7 @@
     if (req.url.path ~ "^/static/version\d*/") {
        set req.http.x-long-cache = "1";
     }
-    
+
     # User's Cookie may contain some Magento Vary items we should vary on
     if (req.http.cookie:X-Magento-Vary) {
         set req.http.X-Magento-Vary = req.http.cookie:X-Magento-Vary;
@@ -115,7 +115,7 @@
         # and allow custom parameters to be set. List of parameters is configurable in admin
         set req.http.Magento-Original-URL = req.url;
         # Change the list of ignored parameters by configuring them in the Advanced section
-        set req.url = querystring.regfilter(req.url, "^(####QUERY_PARAMETERS####)");
+        set req.url = querystring.regfilter(req.url, "^(####QUERY_PARAMETERS####)(=|&|$)");
     }
 
     # Don't allow clients to force a pass
@@ -124,7 +124,7 @@
         unset req.http.Rate-Limit;
         unset req.http.magento-admin-path;
     }
-    
+
     # Pass on checkout URLs. Because it's a snippet we want to execute this after backend selection so we handle it
     # in the request condition
     if (!req.http.x-long-cache && req.url ~ "/(checkout|customer/section/load)") {

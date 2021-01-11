@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.153
+
+- Addition of PerimeterX edge module https://github.com/fastly/fastly-magento2/pull/429
+
 ## 1.2.152
 
 - Update shield list https://github.com/fastly/fastly-magento2/pull/427

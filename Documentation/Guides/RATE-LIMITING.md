@@ -79,5 +79,5 @@ Magento backend. By default we set the threshold to 100. After 100 requests in a
 
 Following users are exempt from blocking
 
-- IPs defined in var/maintenance.ip
+- IPs defined in var/.maintenance.ip
 - Known good Bots such as Googlebot or Bingbot. This can be changed by setting "Exempt Known Good Bots" to "No".

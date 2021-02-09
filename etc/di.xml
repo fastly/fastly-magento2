@@ -75,4 +75,12 @@
     <preference for="\Magento\Catalog\Model\Product\Image" type="Fastly\Cdn\Model\Product\Image" />
 
     <preference for="\Magento\Catalog\Model\View\Asset\Image" type="Fastly\Cdn\Model\View\Asset\Image" />
+
+    <type name="Magento\Framework\HTTP\PhpEnvironment\RemoteAddress">
+        <arguments>
+            <argument name="alternativeHeaders" xsi:type="array">
+                <item name="fastly-client-ip" xsi:type="string">HTTP_FASTLY_CLIENT_IP</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

@@ -1069,12 +1069,13 @@ class Config extends \Magento\PageCache\Model\Config
      * Get store ID for country.
      *
      * @param $countryCode 2-digit country code
+     * @param array $availableStoreViews
      * @return int|null
      */
-    public function getGeoIpMappingForCountry($countryCode)
+    public function getGeoIpMappingForCountry($countryCode, $availableStoreViews = [])
     {
         if ($mapping = $this->getGeoIpRedirectMapping()) {
-            return $this->extractMapping($mapping, $countryCode);
+            return $this->extractMapping($mapping, $countryCode, $availableStoreViews);
         }
         return null;
     }
@@ -1084,9 +1085,10 @@ class Config extends \Magento\PageCache\Model\Config
      *
      * @param $mapping
      * @param $countryCode
+     * @param array $availableStoreViews
      * @return int|null
      */
-    private function extractMapping($mapping, $countryCode)
+    private function extractMapping($mapping, $countryCode, $availableStoreViews = [])
     {
         $final = null;
         $extractMapping = json_decode($mapping, true);
@@ -1106,12 +1108,13 @@ class Config extends \Magento\PageCache\Model\Config
                 if (is_array($map) &&
                     isset($map[$countryId]) &&
                     strtolower(str_replace(' ', '', $map[$countryId])) == strtolower($countryCode)) {
-                    if (isset($map[$key])) {
+                    if (isset($map[$key]) && in_array($map[$key], $availableStoreViews)) {
                         return (int)$map[$key];
                     }
                 } elseif (is_array($map) &&
                     isset($map[$countryId]) &&
                     $map[$countryId] == '*' &&
+                    in_array($map[$key], $availableStoreViews) &&
                     isset($map[$key]) &&
                     $final === null) {
                     // check for wildcard

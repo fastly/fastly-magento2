@@ -112,7 +112,6 @@ class GetAction extends Action
         $this->storeMessage         = $storeMessage;
         $this->urlEncoder           = $urlEncoder;
         $this->urlDecoder           = $urlDecoder;
-
         $this->url  = $context->getUrl();
     }
 
@@ -131,7 +130,8 @@ class GetAction extends Action
 
             // get target store from country code
             $countryCode = $this->getRequest()->getParam(self::REQUEST_PARAM_COUNTRY);
-            $storeId = $this->config->getGeoIpMappingForCountry($countryCode);
+            $availableStoreViews = $this->storeManager->getStoreByWebsiteId($this->storeManager->getWebsite()->getId());
+            $storeId = $this->config->getGeoIpMappingForCountry($countryCode, $availableStoreViews);
             $targetUrl = $this->getRequest()->getParam('uenc');
 
             if ($storeId !== null) {

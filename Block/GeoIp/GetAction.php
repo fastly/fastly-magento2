@@ -92,7 +92,7 @@ class GetAction extends AbstractBlock
         $currentUrl = $this->url->getCurrentUrl();
         $baseUrl = $this->url->getBaseUrl();
         $webTypeUrl = $this->url->getBaseUrl(['_type' => Url::URL_TYPE_WEB]);
-        
+
         if (strpos($currentUrl, $baseUrl) !== false) {
             $targetUrl = $currentUrl;
         } else {
@@ -108,6 +108,7 @@ class GetAction extends AbstractBlock
         if (empty($header)) {
             $this->response->setHeader("x-esi", "1");
         }
+
         // HTTPS ESIs are not supported so we need to turn them into HTTP
         return sprintf(
             '<esi:include src=\'%s\' />',

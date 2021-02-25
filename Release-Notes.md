@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.154
+
+- Fix for PHP 7.4 and error that shows up when enabling Rate limiting https://github.com/fastly/fastly-magento2/issues/431
+- Fix for rate limiting methods such as POST, DELETE where Varnish rewrites them to GETs https://github.com/fastly/fastly-magento2/pull/434
+
 ## 1.2.153
 
 - Addition of PerimeterX edge module https://github.com/fastly/fastly-magento2/pull/429

@@ -110,7 +110,7 @@ class GetAction extends AbstractBlock
         }
 
         // HTTPS ESIs are not supported so we need to turn them into HTTP
-        $x =  sprintf(
+        return sprintf(
             '<esi:include src=\'%s\' />',
             preg_replace(
                 "/^https/",
@@ -118,8 +118,5 @@ class GetAction extends AbstractBlock
                 $actionUrl
             )
         );
-
-        var_dump($x);
-        return $x;
     }
 }

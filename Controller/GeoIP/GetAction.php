@@ -130,8 +130,6 @@ class GetAction extends Action
 
             // get target store from country code
             $countryCode = $this->getRequest()->getParam(self::REQUEST_PARAM_COUNTRY);
-            $this->logger->alert('website:');
-            $this->logger->alert($this->storeManager->getWebsite()->getName());
             $availableStoreViews = $this->storeManager->getStoreByWebsiteId($this->storeManager->getWebsite()->getId());
             $storeId = $this->config->getGeoIpMappingForCountry($countryCode, $availableStoreViews);
             $targetUrl = $this->getRequest()->getParam('uenc');

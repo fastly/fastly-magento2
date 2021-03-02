@@ -38,14 +38,17 @@ class GetAction extends AbstractBlock
      * @var Config
      */
     private $config;
+    
     /**
      * @var Response
      */
     private $response;
+
     /**
      * @var Url
      */
     private $url;
+
     /**
      * @var EncoderInterface
      */
@@ -58,6 +61,7 @@ class GetAction extends AbstractBlock
      * @param Response $response
      * @param Url $url
      * @param EncoderInterface $urlEncoder
+     * @param array $data
      */
     public function __construct(
         Config $config,
@@ -71,7 +75,6 @@ class GetAction extends AbstractBlock
         $this->response = $response;
         $this->url = $url;
         $this->urlEncoder = $urlEncoder;
-
         parent::__construct($context, $data);
     }
 

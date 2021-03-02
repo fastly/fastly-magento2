@@ -88,6 +88,9 @@ class GetAction extends AbstractBlock
 
         /** @var string $actionUrl */
         $actionUrl = $this->getUrl('fastlyCdn/geoip/getaction');
+        $this->_logger->alert($actionUrl);
+        $this->_logger->alert($actionUrl);
+        $this->_logger->alert($actionUrl);
         $vclUploaded = $this->_request->getServer('HTTP_FASTLY_MAGENTO_VCL_UPLOADED');
         $currentUrl = $this->url->getCurrentUrl();
         $baseUrl = $this->url->getBaseUrl();

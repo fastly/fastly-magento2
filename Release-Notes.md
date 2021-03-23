@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.155
+
+- Due to the way Varnish handles POST bodies and cache lookups we need to rewrite all requests that have bodies into POSTs https://github.com/fastly/fastly-magento2/pull/440
+
 ## 1.2.154
 
 - Fix for PHP 7.4 and error that shows up when enabling Rate limiting https://github.com/fastly/fastly-magento2/issues/431

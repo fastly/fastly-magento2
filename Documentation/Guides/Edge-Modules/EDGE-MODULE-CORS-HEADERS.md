@@ -65,6 +65,7 @@ Snippet Type: vcl_deliver
 if (req.http.Origin && !resp.http.Access-Control-Allow-Origin && !resp.http.Access-Control-Allow-Methods) {
     set resp.http.Access-Control-Allow-Origin = "*";
     set resp.http.Access-Control-Allow-Methods = "GET,HEAD,POST";
+    set resp.http.Vary:Origin = "";
   }
 ```
 
@@ -76,5 +77,6 @@ if (req.http.Origin && !resp.http.Access-Control-Allow-Origin && !resp.http.Acce
       set resp.http.Access-Control-Allow-Origin = req.http.origin;
     }
     set resp.http.Access-Control-Allow-Methods = "GET,HEAD,POST";
+    set resp.http.Vary:Origin = "";
   }
 ```

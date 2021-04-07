@@ -39,7 +39,7 @@
     },
     "vcl": [
         {
-            "template": "  if (req.http.Origin && !resp.http.Access-Control-Allow-Origin && !resp.http.Access-Control-Allow-Methods) {\n{{#ifEq origin \"anyone\"}}\n    set resp.http.Access-Control-Allow-Origin = \"*\";\n{{/ifEq}}\n{{#ifEq origin \"regex-match\"}}\n    if ( req.http.Origin ~ \"^https?://{{cors_allowed_origins_regex}}\" ) {\n      set resp.http.Access-Control-Allow-Origin = req.http.origin;\n    }\n{{/ifEq}}\n    set resp.http.Access-Control-Allow-Methods = \"{{cors_allowed_methods}}\";\n  \n  }\n",
+            "template": "  if (req.http.Origin && !resp.http.Access-Control-Allow-Origin && !resp.http.Access-Control-Allow-Methods) {\n{{#ifEq origin \"anyone\"}}\n    set resp.http.Access-Control-Allow-Origin = \"*\";\n{{/ifEq}}\n{{#ifEq origin \"regex-match\"}}\n    if ( req.http.Origin ~ \"^https?://{{cors_allowed_origins_regex}}\" ) {\n      set resp.http.Access-Control-Allow-Origin = req.http.origin;\n    }\n{{/ifEq}}\n    set resp.http.Access-Control-Allow-Methods = \"{{cors_allowed_methods}}\";\n    set resp.http.Vary:Origin = \"\";\n  \n  }\n",
             "type": "deliver"
         }
     ],

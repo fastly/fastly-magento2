@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.156
+
+- Use Fastly-Client-IP header for remote IP address https://github.com/fastly/fastly-magento2/pull/430
+- CORS module should return "Vary: Origin" response header https://github.com/fastly/fastly-magento2/pull/442
+- Update shield nodes locations https://github.com/fastly/fastly-magento2/pull/441
+
 ## 1.2.155
 
 - Due to the way Varnish handles POST bodies and cache lookups we need to rewrite all requests that have bodies into POSTs https://github.com/fastly/fastly-magento2/pull/440

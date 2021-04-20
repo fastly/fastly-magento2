@@ -212,7 +212,7 @@ class PushDomains extends Action
             $newName = $new['name'];
             $newComment = $new['comment'];
             $newDomainData[$newName] = $newComment;
-            if (!preg_match('/^(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/', $newName)) {
+            if (!preg_match('/^(?:\*\.)?(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/', $newName)) {
                 throw new LocalizedException(__('Invalid domain name "'.$newName.'"'));
             }
         }

@@ -140,7 +140,7 @@ class ToggleRateLimiting extends Action
                 $request = [
                     'name'              => $reqName,
                     'service_id'        => $service->id,
-                    'version'           => $currActiveVersion['active_version'],
+                    'version'           => $currActiveVersion,
                     'request_condition' => $createCondition->name,
                     'action'            => 'lookup',
                 ];

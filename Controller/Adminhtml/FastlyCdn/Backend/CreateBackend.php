@@ -20,13 +20,18 @@
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Backend;
 
+use Exception;
 use Fastly\Cdn\Helper\Vcl;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Model\Config;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\Http;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Controller\ResultInterface;
+use stdClass;
 
 /**
  * Class CreateBackend
@@ -84,7 +89,7 @@ class CreateBackend extends Action
     }
 
     /**
-     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Json|\Magento\Framework\Controller\ResultInterface
+     * @return ResponseInterface|Json|ResultInterface
      */
     public function execute()
     {
@@ -95,7 +100,10 @@ class CreateBackend extends Action
             $this->validateAddress($address);
 
             if ($form == 'false') {
-                return $result->setData(['status' => true]);
+                return $result->setData([
+                    'status' => true,
+                    'data_centers' => $this->groupDataCenters($this->api->getDataCenters())
+                ]);
             }
 
             $override = $this->validateOverride($this->getRequest()->getParam('override_host'));
@@ -216,11 +224,35 @@ class CreateBackend extends Action
                 'status'            => true,
                 'active_version'    => $clone->number
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $result->setData([
                 'status'    => false,
                 'msg'       => $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * @param $dataCenters
+     * @return array|false
+     */
+    public function groupDataCenters($dataCenters)
+    {
+        if (!$dataCenters)
+            return false;
+
+        $data = [];
+        foreach ($dataCenters as $dataCenter) {
+            if (!isset($dataCenter->group) || !isset($dataCenter->name)
+                || !isset($dataCenter->code) || !isset($dataCenter->shield))
+                continue;
+
+            $data[$dataCenter->group][] = [
+                'value'    => $dataCenter->shield,
+                'label'     => $dataCenter->name . ' (' . $dataCenter->code . ')'
+            ];
+        }
+
+        return $data;
     }
 }

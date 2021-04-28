@@ -20,6 +20,7 @@
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Backend;
 
+use Exception;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\Http;
@@ -27,6 +28,7 @@ use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Api;
 use Magento\Framework\Controller\ResultInterface;
+use stdClass;
 
 /**
  * Class GetBackends
@@ -88,13 +90,38 @@ class GetBackends extends Action
 
             return $result->setData([
                 'status'    => true,
+                'data_centers' => $this->groupDataCenters($this->api->getDataCenters()),
                 'backends'  => $backends
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $result->setData([
                 'status'    => false,
                 'msg'       => $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * @param $dataCenters
+     * @return array|false
+     */
+    public function groupDataCenters($dataCenters)
+    {
+        if (!$dataCenters)
+            return false;
+
+        $data = [];
+        foreach ($dataCenters as $dataCenter) {
+            if (!isset($dataCenter->group) || !isset($dataCenter->name)
+                || !isset($dataCenter->code) || !isset($dataCenter->shield))
+                continue;
+
+            $data[$dataCenter->group][] = [
+                'value'    => $dataCenter->shield,
+                'label'     => $dataCenter->name . ' (' . $dataCenter->code . ')'
+            ];
+        }
+
+        return $data;
     }
 }

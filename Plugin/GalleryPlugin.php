@@ -51,8 +51,8 @@ class GalleryPlugin
      */
    public function afterGetGalleryImagesJson(Gallery $subject, $result)
    {
-//       if (!$this->config->isImageOptimizationPixelRatioEnabled() || !$result)
-//           return $result;
+       if (!$this->config->isImageOptimizationPixelRatioEnabled() || !$result)
+           return $result;
 
        if (!$images = $this->serializer->unserialize($result))
            return $result;

@@ -31,7 +31,6 @@ use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultInterface;
-use stdClass;
 
 /**
  * Class CreateBackend
@@ -252,6 +251,9 @@ class CreateBackend extends Action
                 'label'     => $dataCenter->name . ' (' . $dataCenter->code . ')'
             ];
         }
+
+        if (!$data)
+            return false;
 
         return $data;
     }

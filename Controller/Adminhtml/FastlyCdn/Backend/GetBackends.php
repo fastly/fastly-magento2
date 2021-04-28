@@ -28,7 +28,6 @@ use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Api;
 use Magento\Framework\Controller\ResultInterface;
-use stdClass;
 
 /**
  * Class GetBackends
@@ -121,6 +120,9 @@ class GetBackends extends Action
                 'label'     => $dataCenter->name . ' (' . $dataCenter->code . ')'
             ];
         }
+
+        if (!$data)
+            return false;
 
         return $data;
     }

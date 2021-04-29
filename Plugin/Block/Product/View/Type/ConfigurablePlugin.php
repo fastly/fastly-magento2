@@ -51,8 +51,8 @@ class ConfigurablePlugin
      */
     public function afterGetJsonConfig(Configurable $subject, string $result)
     {
-//        if (!$this->config->isImageOptimizationPixelRatioEnabled() || !$result)
-//            return $result;
+        if (!$this->config->isImageOptimizationPixelRatioEnabled() || !$result)
+            return $result;
 
         if (!$config = $this->serializer->unserialize($result))
             return $result;

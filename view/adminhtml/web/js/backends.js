@@ -5,7 +5,6 @@ define([
     "overlay",
     "resetAllMessages",
     "showErrorMessage",
-    'underscore',
     'mage/translate',
 ], function ($, confirmation, setServiceLabel, overlay, resetAllMessages, showErrorMessage, _) {
     return function (config, serviceStatus, isAlreadyConfigured) {

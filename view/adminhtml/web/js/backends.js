@@ -6,7 +6,7 @@ define([
     "resetAllMessages",
     "showErrorMessage",
     'mage/translate',
-], function ($, confirmation, setServiceLabel, overlay, resetAllMessages, showErrorMessage, _) {
+], function ($, confirmation, setServiceLabel, overlay, resetAllMessages, showErrorMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         let backends;

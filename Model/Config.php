@@ -541,7 +541,7 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * shielding directory in /etc
      */
-    const SHIELDING_PATH = 'shielding/';
+    const SHIELDING_PATH = '/shielding/';
 
     const DATACENTER_FILE = 'datacenters.json';
 
@@ -787,6 +787,7 @@ class Config extends \Magento\PageCache\Model\Config
      */
     public function isImageOptimizationEnabled()
     {
+        return true;
         if ($this->isFastlyEnabled() !== true) {
             return false;
         }

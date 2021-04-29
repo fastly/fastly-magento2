@@ -663,6 +663,9 @@ define([
                         backend_name = backends[backend_id].name;
                         $('.modal-title').text($.mage.__('Backend "%1" configuration').replace('%1', backend_name));
 
+                        if (typeof response.data_centers === "undefined")
+                            return;
+
                         generateDataCenterOptions(response.data_centers);
                     }
                 });

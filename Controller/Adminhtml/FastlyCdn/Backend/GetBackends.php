@@ -89,7 +89,7 @@ class GetBackends extends Action
 
             return $result->setData([
                 'status'    => true,
-                'data_centers' => $this->groupDataCenters($this->api->getDataCenters()),
+                'data_centers' => $this->api->getDataCenters(),
                 'backends'  => $backends
             ]);
         } catch (Exception $e) {
@@ -98,32 +98,5 @@ class GetBackends extends Action
                 'msg'       => $e->getMessage()
             ]);
         }
-    }
-
-    /**
-     * @param $dataCenters
-     * @return array|false
-     */
-    public function groupDataCenters($dataCenters)
-    {
-        if (!$dataCenters)
-            return false;
-
-        $data = [];
-        foreach ($dataCenters as $dataCenter) {
-            if (!isset($dataCenter->group) || !isset($dataCenter->name)
-                || !isset($dataCenter->code) || !isset($dataCenter->shield))
-                continue;
-
-            $data[$dataCenter->group][] = [
-                'value'    => $dataCenter->shield,
-                'label'     => $dataCenter->name . ' (' . $dataCenter->code . ')'
-            ];
-        }
-
-        if (!$data)
-            return false;
-
-        return $data;
     }
 }

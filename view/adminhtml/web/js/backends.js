@@ -125,6 +125,25 @@ define([
                 })
         }
 
+        function generateDataCenterOptions(dataCenters)
+        {
+            $.each(response.data_centers, function (i, group) {
+                let optGroup = $(document.createElement('optgroup'));
+                $(optGroup).attr('label', i);
+
+                $.each(group, function (j, dataCenter) {
+                    let option = $(document.createElement('option'));
+                    let text = $(document.createTextNode(dataCenter.label))
+
+                    $(option).append(text);
+                    $(option).val(dataCenter.value);
+                    $(optGroup).append(option);
+                });
+
+                $('#backend_shield').append(optGroup)
+            });
+        }
+
         /**
          * Process and display the list of Backends
          *
@@ -440,24 +459,7 @@ define([
                             }
                             $('#tls-no-port').attr('disabled', true);
 
-                            if (!_.isObject(response.data_centers))
-                                return;
-
-                            $.each(response.data_centers, function (i, group) {
-                               let optGroup = $(document.createElement('optgroup'));
-                               $(optGroup).attr('label', i);
-
-                               $.each(group, function (j, dataCenter) {
-                                   let option = $(document.createElement('option'));
-                                   let text = $(document.createTextNode(dataCenter.label))
-
-                                   $(option).append(text);
-                                   $(option).val(dataCenter.value);
-                                   $(optGroup).append(option);
-                               });
-
-                                $('#backend_shield').append(optGroup)
-                            });
+                            generateDataCenterOptions(response.data_centers);
 
                         } else {
                             $('#fastly-error-create-backend-button-msg').text($.mage.__(response.msg)).show();
@@ -658,24 +660,7 @@ define([
                         backend_name = backends[backend_id].name;
                         $('.modal-title').text($.mage.__('Backend "%1" configuration').replace('%1', backend_name));
 
-                        if (!_.isObject(response.data_centers))
-                            return;
-
-                        $.each(response.data_centers, function (i, group) {
-                            let optGroup = $(document.createElement('optgroup'));
-                            $(optGroup).attr('label', i);
-
-                            $.each(group, function (j, dataCenter) {
-                                let option = $(document.createElement('option'));
-                                let text = $(document.createTextNode(dataCenter.label))
-
-                                $(option).append(text);
-                                $(option).val(dataCenter.value);
-                                $(optGroup).append(option);
-                            });
-
-                            $('#backend_shield').append(optGroup)
-                        });
+                        generateDataCenterOptions(response.data_centers);
                     }
                 });
             });

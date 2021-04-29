@@ -2,30 +2,30 @@
 
 namespace Fastly\Cdn\Model;
 
-use Magento\Framework\App\ProductMetadataInterface;
-
 /**
  * Class AdaptivePixelRation
  * @package Fastly\Cdn\Model
  */
 class AdaptivePixelRation
 {
-
     /**
      * @param $imageUrl
      * @param array $pixelRatios
-     * @return string
+     * @return array
      */
-    public function generateSrcSet($imageUrl, array $pixelRatios): string
+    public function generateSrcSet($imageUrl, array $pixelRatios): array
     {
-        $srcSet = [];
+        $srcSets = [];
         $glue = !strpos($imageUrl, '?') ? '&' : '?';
 
         foreach ($pixelRatios as $pr) {
+            if (!$pr)
+                continue;
+
             $ratio = 'dpr=' . $pr . ' ' . $pr . 'x';
-            $srcSet[] = $imageUrl . $glue . $ratio;
+            $srcSets[$pr] = $imageUrl . $glue . $ratio;
         }
 
-        return implode(',', $srcSet);
+        return $srcSets;
     }
 }

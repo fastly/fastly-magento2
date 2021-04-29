@@ -64,7 +64,7 @@ class GalleryPlugin
            if (!isset($image['img']))
                continue;
 
-           $image['srcset'] = $this->adaptivePixelRation->generateSrcSet($image['img'], $pixelRatios);
+           $image['fastly_srcset'] = $this->adaptivePixelRation->generateSrcSet($image['img'], $pixelRatios);
        }
 
        return $this->serializer->serialize($images);

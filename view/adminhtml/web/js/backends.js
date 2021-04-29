@@ -124,9 +124,13 @@ define([
                 })
         }
 
+        /**
+         *
+         * @param {array} dataCenters
+         */
         function generateDataCenterOptions(dataCenters)
         {
-            $.each(response.data_centers, function (i, group) {
+            $.each(dataCenters, function (i, group) {
                 let optGroup = $(document.createElement('optgroup'));
                 $(optGroup).attr('label', i);
 

@@ -787,7 +787,6 @@ class Config extends \Magento\PageCache\Model\Config
      */
     public function isImageOptimizationEnabled()
     {
-        return true;
         if ($this->isFastlyEnabled() !== true) {
             return false;
         }

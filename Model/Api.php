@@ -486,33 +486,6 @@ class Api
     }
 
     /**
-     * @return array
-     * @throws LocalizedException
-     */
-    public function getDataCenters()
-    {
-        $url = $this->config->getApiEndpoint() . 'datacenters';
-        $result = $this->_fetch($url, 'GET');
-
-        if (!$result)
-            return [];
-
-        $data = [];
-        foreach ($result as $dataCenter) {
-            if (!isset($dataCenter->group) || !isset($dataCenter->name)
-                || !isset($dataCenter->code) || !isset($dataCenter->shield))
-                continue;
-
-            $data[$dataCenter->group][] = [
-                'value'    => $dataCenter->shield,
-                'label'     => $dataCenter->name . ' (' . $dataCenter->code . ')'
-            ];
-        }
-
-        return $data;
-    }
-
-    /**
      * Activate the current version.
      *
      * @param $version

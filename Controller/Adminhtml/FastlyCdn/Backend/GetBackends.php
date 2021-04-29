@@ -21,6 +21,7 @@
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Backend;
 
 use Exception;
+use Fastly\Cdn\Model\System\Config\Shielding\DataCenters;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\Http;
@@ -50,22 +51,30 @@ class GetBackends extends Action
     private $api;
 
     /**
+     * @var DataCenters
+     */
+    private $dataCenters;
+
+    /**
      * GetBackends constructor.
      * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
+     * @param DataCenters $dataCenters
      * @param Api $api
      */
     public function __construct(
         Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
+        DataCenters $dataCenters,
         Api $api
     ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
         $this->api = $api;
         parent::__construct($context);
+        $this->dataCenters = $dataCenters;
     }
 
     /**
@@ -89,7 +98,7 @@ class GetBackends extends Action
 
             return $result->setData([
                 'status'    => true,
-                'data_centers' => $this->api->getDataCenters(),
+                'data_centers' => $this->dataCenters->getShieldingPoints(),
                 'backends'  => $backends
             ]);
         } catch (Exception $e) {

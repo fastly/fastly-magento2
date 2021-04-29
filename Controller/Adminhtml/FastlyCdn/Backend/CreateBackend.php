@@ -24,6 +24,7 @@ use Exception;
 use Fastly\Cdn\Helper\Vcl;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Model\Config;
+use Fastly\Cdn\Model\System\Config\Shielding\DataCenters;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\Http;
@@ -62,11 +63,17 @@ class CreateBackend extends Action
     private $config;
 
     /**
+     * @var DataCenters
+     */
+    private $dataCenters;
+
+    /**
      * ConfigureBackend constructor
      *
      * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
+     * @param DataCenters $dataCenters
      * @param Api $api
      * @param Vcl $vcl
      * @param Config $config
@@ -75,6 +82,7 @@ class CreateBackend extends Action
         Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
+        DataCenters $dataCenters,
         Api $api,
         Vcl $vcl,
         Config $config
@@ -85,6 +93,7 @@ class CreateBackend extends Action
         $this->vcl = $vcl;
         $this->config = $config;
         parent::__construct($context);
+        $this->dataCenters = $dataCenters;
     }
 
     /**
@@ -101,7 +110,7 @@ class CreateBackend extends Action
             if ($form == 'false') {
                 return $result->setData([
                     'status' => true,
-                    'data_centers' => $this->api->getDataCenters()
+                    'data_centers' => $this->dataCenters->getShieldingPoints()
                 ]);
             }
 

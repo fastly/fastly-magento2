@@ -539,6 +539,13 @@ class Config extends \Magento\PageCache\Model\Config
     const UPDATED_VCL_FLAG = 'Fastly/Cdn/updated_VCL_to_Fastly_flag';
 
     /**
+     * shielding directory in /etc
+     */
+    const SHIELDING_PATH = 'shielding/';
+
+    const DATACENTER_FILE = 'datacenters.json';
+
+    /**
      * @var Json|null
      */
     private $serializer;

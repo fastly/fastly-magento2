@@ -16,8 +16,7 @@ class AdaptivePixelRation
     public function generateSrcSet($imageUrl, array $pixelRatios): array
     {
         $srcSets = [];
-        $glue = !strpos($imageUrl, '?') ? '&' : '?';
-
+        $glue = strpos($imageUrl, '?') !== false ? '&' : '?';
         foreach ($pixelRatios as $pr) {
             if (!$pr)
                 continue;

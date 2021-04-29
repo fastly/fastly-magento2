@@ -5,7 +5,7 @@ define([
     'use strict';
 
     return function (gallery) {
-        
+
         return wrapper.wrap(gallery, function (initialize, config, element) {
 
             if (_.isUndefined(config.data))

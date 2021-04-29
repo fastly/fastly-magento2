@@ -4,7 +4,6 @@ namespace Fastly\Cdn\Model\System\Config\Shielding;
 
 use Fastly\Cdn\Model\Config;
 use InvalidArgumentException;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\Module\Dir;
@@ -62,9 +61,9 @@ class DataCenters
      */
     public function getShieldingPoints(): array
     {
-
        $etcPath = $this->reader->getModuleDir(Dir::MODULE_ETC_DIR, Config::FASTLY_MODULE_NAME);
        $shieldingPath = $etcPath . Config::SHIELDING_PATH . Config::DATACENTER_FILE;
+
        try {
            if (!$this->driverFile->isExists($shieldingPath))
                return [];
@@ -94,12 +93,12 @@ class DataCenters
 
         $data = [];
         foreach ($dataCenters as $dataCenter) {
-            if (!isset($dataCenter->group, $dataCenter->name, $dataCenter->code, $dataCenter->shield))
+            if (!isset($dataCenter['group'], $dataCenter['name'], $dataCenter['code'], $dataCenter['shield']))
                 continue;
 
-            $data[$dataCenter->group][] = [
-                'value'    => $dataCenter->shield,
-                'label'     => $dataCenter->name . ' (' . $dataCenter->code . ')'
+            $data[$dataCenter['group']][] = [
+                'value'    => $dataCenter['shield'],
+                'label'     => $dataCenter['name'] . ' (' . $dataCenter['code'] . ')'
             ];
         }
 

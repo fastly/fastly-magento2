@@ -3,10 +3,10 @@
 namespace Fastly\Cdn\Model;
 
 /**
- * Class AdaptivePixelRation
+ * Class AdaptivePixelRatio
  * @package Fastly\Cdn\Model
  */
-class AdaptivePixelRation
+class AdaptivePixelRatio
 {
     /**
      * @param $imageUrl

@@ -2,7 +2,7 @@
 
 namespace Fastly\Cdn\Plugin\Block\Product\View\Type;
 
-use Fastly\Cdn\Model\AdaptivePixelRation;
+use Fastly\Cdn\Model\AdaptivePixelRatio;
 use Fastly\Cdn\Model\Config;
 use Magento\ConfigurableProduct\Block\Product\View\Type\Configurable;
 use Magento\Framework\Serialize\SerializerInterface;
@@ -24,24 +24,24 @@ class ConfigurablePlugin
     private $config;
 
     /**
-     * @var AdaptivePixelRation
+     * @var AdaptivePixelRatio
      */
-    private $adaptivePixelRation;
+    private $adaptivePixelRatio;
 
     /**
      * ConfigurablePlugin constructor.
      * @param SerializerInterface $serializer
-     * @param AdaptivePixelRation $adaptivePixelRation
+     * @param AdaptivePixelRatio $adaptivePixelRatio
      * @param Config $config
      */
     public function __construct(
         SerializerInterface $serializer,
-        AdaptivePixelRation $adaptivePixelRation,
+        AdaptivePixelRatio $adaptivePixelRatio,
         Config $config
     ) {
         $this->serializer = $serializer;
         $this->config = $config;
-        $this->adaptivePixelRation = $adaptivePixelRation;
+        $this->adaptivePixelRatio = $adaptivePixelRatio;
     }
 
     /**
@@ -68,7 +68,7 @@ class ConfigurablePlugin
                 if (!isset($image['img']))
                     continue;
 
-                $image['fastly_srcset'] = $this->adaptivePixelRation->generateSrcSet($image['img'], $pixelRatios);
+                $image['fastly_srcset'] = $this->adaptivePixelRatio->generateSrcSet($image['img'], $pixelRatios);
             }
         }
 

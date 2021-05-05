@@ -25,11 +25,11 @@ use Magento\Catalog\Block\Product\Image;
 use Magento\Framework\App\ProductMetadataInterface;
 
 /**
- * Class AdaptivePixelRatioPlugin
+ * Class AdaptivePixelRationPlugin
  *
  * @package Fastly\Cdn\Plugin
  */
-class AdaptivePixelRatioPlugin
+class AdaptivePixelRationPlugin
 {
     /**
      * @var Config

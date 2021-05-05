@@ -31,7 +31,7 @@
         <plugin name="fastly_disable_varnish_calls" type="Fastly\Cdn\Model\PageCache\PurgeCachePlugin" />
     </type>
     <type name="Magento\Catalog\Block\Product\Image">
-        <plugin name="fastly_adaptive_pixel_ratio" type="Fastly\Cdn\Plugin\AdaptivePixelRatioPlugin" />
+        <plugin name="fastly_adaptive_pixel_ratio" type="Fastly\Cdn\Plugin\AdaptivePixelRationPlugin" />
     </type>
     <type name="Magento\Catalog\Block\Product\View\Gallery">
         <plugin name="fastly_adaptive_pixel_ratio_on_pgp" type="Fastly\Cdn\Plugin\GalleryPlugin" />

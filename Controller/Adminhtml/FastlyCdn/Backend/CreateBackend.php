@@ -20,13 +20,18 @@
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Backend;
 
+use Exception;
 use Fastly\Cdn\Helper\Vcl;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Model\Config;
+use Fastly\Cdn\Model\System\Config\Shielding\DataCenters;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\Http;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Controller\ResultInterface;
 
 /**
  * Class CreateBackend
@@ -58,11 +63,17 @@ class CreateBackend extends Action
     private $config;
 
     /**
+     * @var DataCenters
+     */
+    private $dataCenters;
+
+    /**
      * ConfigureBackend constructor
      *
      * @param Context $context
      * @param Http $request
      * @param JsonFactory $resultJsonFactory
+     * @param DataCenters $dataCenters
      * @param Api $api
      * @param Vcl $vcl
      * @param Config $config
@@ -71,6 +82,7 @@ class CreateBackend extends Action
         Context $context,
         Http $request,
         JsonFactory $resultJsonFactory,
+        DataCenters $dataCenters,
         Api $api,
         Vcl $vcl,
         Config $config
@@ -81,10 +93,11 @@ class CreateBackend extends Action
         $this->vcl = $vcl;
         $this->config = $config;
         parent::__construct($context);
+        $this->dataCenters = $dataCenters;
     }
 
     /**
-     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Json|\Magento\Framework\Controller\ResultInterface
+     * @return ResponseInterface|Json|ResultInterface
      */
     public function execute()
     {
@@ -95,7 +108,10 @@ class CreateBackend extends Action
             $this->validateAddress($address);
 
             if ($form == 'false') {
-                return $result->setData(['status' => true]);
+                return $result->setData([
+                    'status' => true,
+                    'data_centers' => $this->dataCenters->getShieldingPoints()
+                ]);
             }
 
             $override = $this->validateOverride($this->getRequest()->getParam('override_host'));
@@ -216,7 +232,7 @@ class CreateBackend extends Action
                 'status'            => true,
                 'active_version'    => $clone->number
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $result->setData([
                 'status'    => false,
                 'msg'       => $e->getMessage()

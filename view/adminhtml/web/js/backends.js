@@ -5,7 +5,7 @@ define([
     "overlay",
     "resetAllMessages",
     "showErrorMessage",
-    'mage/translate'
+    'mage/translate',
 ], function ($, confirmation, setServiceLabel, overlay, resetAllMessages, showErrorMessage) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
@@ -122,6 +122,29 @@ define([
                     $('#sep').show();
                     $('#conditions').html(html);
                 })
+        }
+
+        /**
+         *
+         * @param {array} dataCenters
+         */
+        function generateDataCenterOptions(dataCenters)
+        {
+            $.each(dataCenters, function (i, group) {
+                let optGroup = $(document.createElement('optgroup'));
+                $(optGroup).attr('label', i);
+
+                $.each(group, function (j, dataCenter) {
+                    let option = $(document.createElement('option'));
+                    let text = $(document.createTextNode(dataCenter.label))
+
+                    $(option).append(text);
+                    $(option).val(dataCenter.value);
+                    $(optGroup).append(option);
+                });
+
+                $('#backend_shield').append(optGroup)
+            });
         }
 
         /**
@@ -438,6 +461,9 @@ define([
                                 $('.weight').show();
                             }
                             $('#tls-no-port').attr('disabled', true);
+
+                            generateDataCenterOptions(response.data_centers);
+
                         } else {
                             $('#fastly-error-create-backend-button-msg').text($.mage.__(response.msg)).show();
                         }
@@ -636,6 +662,11 @@ define([
                         $('.upload-button span').text('Update');
                         backend_name = backends[backend_id].name;
                         $('.modal-title').text($.mage.__('Backend "%1" configuration').replace('%1', backend_name));
+
+                        if (typeof response.data_centers === "undefined")
+                            return;
+
+                        generateDataCenterOptions(response.data_centers);
                     }
                 });
             });

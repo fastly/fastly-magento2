@@ -1,5 +1,12 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.157
+
+- Move shield generation to use Fastly API https://github.com/fastly/fastly-magento2/pull/449
+- Datadome module 2.14 update https://github.com/fastly/fastly-magento2/pull/454
+- Add klaviyo and emersys to tracking query arguments that need to be stripped by default https://github.com/fastly/fastly-magento2/pull/453
+- Add Adaptive Pixel Ratios for PGP https://github.com/fastly/fastly-magento2/pull/452
+
 ## 1.2.156
 
 - Use Fastly-Client-IP header for remote IP address https://github.com/fastly/fastly-magento2/pull/430

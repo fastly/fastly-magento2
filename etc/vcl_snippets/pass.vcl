@@ -12,4 +12,4 @@
     }
 
     # Send VCL version uploaded to the backend
-    set bereq.http.Fastly-Magento-VCL-Uploaded = "1.2.156";
+    set bereq.http.Fastly-Magento-VCL-Uploaded = "1.2.157";

@@ -7,10 +7,10 @@ define([
     return function (gallery) {
 
         return wrapper.wrap(gallery, function (initialize, config, element) {
-            if (_.isUndefined(config))
+            if (_.isUndefined(config) || _.isEmpty(config))
                 return initialize(config, element);
 
-            if (_.isUndefined(config.data))
+            if (_.isUndefined(config.data) || _.isEmpty(config.data))
                 return initialize(config, element);
 
             let wdpr = window.devicePixelRatio;

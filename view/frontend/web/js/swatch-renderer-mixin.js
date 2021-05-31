@@ -7,13 +7,14 @@ define([
     return function (swatchRenderer) {
 
         return wrapper.wrap(swatchRenderer, function (create, config, element) {
-            if (_.isUndefined(config))
+
+            if (_.isUndefined(config) || _.isEmpty(config))
                 return create(config, element);
 
-            if (_.isUndefined(config.jsonConfig))
+            if (_.isUndefined(config.jsonConfig) || _.isEmpty(config.jsonConfig))
                 return create(config, element);
 
-            if (_.isUndefined(config.jsonConfig.images))
+            if (_.isUndefined(config.jsonConfig.images) || _.isEmpty(config.jsonConfig.images))
                 return create(config, element);
 
             let wdpr = window.devicePixelRatio;

@@ -7,6 +7,8 @@ define([
     return function (swatchRenderer) {
 
         return wrapper.wrap(swatchRenderer, function (create, config, element) {
+            if (_.isUndefined(config))
+                return create(config, element);
 
             if (_.isUndefined(config.jsonConfig))
                 return create(config, element);

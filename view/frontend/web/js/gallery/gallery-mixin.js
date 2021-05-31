@@ -7,6 +7,8 @@ define([
     return function (gallery) {
 
         return wrapper.wrap(gallery, function (initialize, config, element) {
+            if (_.isUndefined(config))
+                return initialize(config, element);
 
             if (_.isUndefined(config.data))
                 return initialize(config, element);

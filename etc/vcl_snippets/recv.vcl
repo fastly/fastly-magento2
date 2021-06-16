@@ -152,10 +152,12 @@
     unset req.http.graphql;
     # GraphQL special headers handling because this area doesn't rely on X-Magento-Vary cookie
     if (req.request == "GET" && req.url.path ~ "/graphql" && req.url.qs ~ "query=") {
-        if ( req.http.Authorization ~ "^Bearer" ) {
+        set req.http.graphql = "1";
+        if ( req.http.X-Magento-Cache-Id ) {
+            unset req.http.X-Magento-Vary;
+        } else if ( req.http.Authorization ~ "^Bearer" ) {
             set req.http.x-pass = "1";
         } else {
-            set req.http.graphql = "1";
             if (req.http.Store) {
                 set req.http.X-Magento-Vary = req.http.Store;
             }

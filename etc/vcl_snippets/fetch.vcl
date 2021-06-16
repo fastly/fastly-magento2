@@ -55,10 +55,13 @@
         }
     }
 
-    # Add Varying on X-Magento-Vary
+    # Add Varying on X-Magento-Vary and X-Magento-Cache-Id
     if (beresp.http.Content-Type ~ "text/(html|xml)" || req.http.graphql) {
         set beresp.http.Vary:X-Magento-Vary = "";
         set beresp.http.Vary:Https = "";
+        if (req.http.graphql) {
+            set beresp.http.Vary:X-Magento-Cache-Id = "";
+        }
     }
 
     # Just in case the Request Setting for x-pass is missing

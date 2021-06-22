@@ -109,7 +109,7 @@
                 set req.url = querystring.set(req.url, "country_code", if ( req.http.geo_override, req.http.geo_override, client.geo.country_code));
             }
         }
-    } else if ( req.url.path !~ "/graphql" ) {
+    } else if ( !req.http.graphql ) {
         # Per suggestions in https://github.com/sdinteractive/SomethingDigital_PageCacheParams
         # we'll strip out query parameters used in Google AdWords, Mailchimp tracking by default
         # and allow custom parameters to be set. List of parameters is configurable in admin
@@ -149,24 +149,7 @@
         unset req.http.Cookie;
     }
 
-    unset req.http.graphql;
     # GraphQL special headers handling because this area doesn't rely on X-Magento-Vary cookie
-    if (req.request == "GET" && req.url.path ~ "/graphql" && req.url.qs ~ "query=") {
-        set req.http.graphql = "1";
-        if ( req.http.X-Magento-Cache-Id ) {
-            unset req.http.X-Magento-Vary;
-        } else if ( req.http.Authorization ~ "^Bearer" ) {
-            set req.http.x-pass = "1";
-        } else {
-            if (req.http.Store) {
-                set req.http.X-Magento-Vary = req.http.Store;
-            }
-            if (req.http.Content-Currency) {
-                if (req.http.X-Magento-Vary) {
-                    set req.http.X-Magento-Vary = req.http.X-Magento-Vary req.http.Content-Currency;
-                } else {
-                    set req.http.X-Magento-Vary = req.http.Content-Currency;
-                }
-            }
-        }
+    if (req.http.graphql && !req.http.X-Magento-Cache-Id && req.http.Authorization ~ "^Bearer" ) {
+        set req.http.x-pass = "1";
     }

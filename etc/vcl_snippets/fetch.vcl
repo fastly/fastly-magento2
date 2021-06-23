@@ -59,7 +59,6 @@
     if (req.http.graphql) {
         set beresp.http.Vary:Store = "";
         set beresp.http.Vary:Content-Currency = "";
-        set beresp.http.Vary:Https = "";
     } else if (beresp.http.Content-Type ~ "text/(html|xml)") {
         set beresp.http.Vary:X-Magento-Vary = "";
         set beresp.http.Vary:Https = "";

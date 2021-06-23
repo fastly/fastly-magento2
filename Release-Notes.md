@@ -1,11 +1,16 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.158
+
+- Fixed for Adaptive Pixel Ratios for PDP https://github.com/fastly/fastly-magento2/pull/457
+- Don't use Basic Authentication for /graphql endpoints https://github.com/fastly/fastly-magento2/pull/460
+
 ## 1.2.157
 
 - Move shield generation to use Fastly API https://github.com/fastly/fastly-magento2/pull/449
 - Datadome module 2.14 update https://github.com/fastly/fastly-magento2/pull/454
 - Add klaviyo and emersys to tracking query arguments that need to be stripped by default https://github.com/fastly/fastly-magento2/pull/453
-- Add Adaptive Pixel Ratios for PGP https://github.com/fastly/fastly-magento2/pull/452
+- Add Adaptive Pixel Ratios for PDP https://github.com/fastly/fastly-magento2/pull/452
 
 ## 1.2.156
 

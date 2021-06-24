@@ -38,14 +38,17 @@ class GetAction extends AbstractBlock
      * @var Config
      */
     private $config;
+    
     /**
      * @var Response
      */
     private $response;
+
     /**
      * @var Url
      */
     private $url;
+
     /**
      * @var EncoderInterface
      */
@@ -58,6 +61,7 @@ class GetAction extends AbstractBlock
      * @param Response $response
      * @param Url $url
      * @param EncoderInterface $urlEncoder
+     * @param array $data
      */
     public function __construct(
         Config $config,
@@ -71,7 +75,6 @@ class GetAction extends AbstractBlock
         $this->response = $response;
         $this->url = $url;
         $this->urlEncoder = $urlEncoder;
-
         parent::__construct($context, $data);
     }
 
@@ -92,7 +95,7 @@ class GetAction extends AbstractBlock
         $currentUrl = $this->url->getCurrentUrl();
         $baseUrl = $this->url->getBaseUrl();
         $webTypeUrl = $this->url->getBaseUrl(['_type' => Url::URL_TYPE_WEB]);
-        
+
         if (strpos($currentUrl, $baseUrl) !== false) {
             $targetUrl = $currentUrl;
         } else {
@@ -108,6 +111,7 @@ class GetAction extends AbstractBlock
         if (empty($header)) {
             $this->response->setHeader("x-esi", "1");
         }
+
         // HTTPS ESIs are not supported so we need to turn them into HTTP
         return sprintf(
             '<esi:include src=\'%s\' />',

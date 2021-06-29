@@ -110,7 +110,7 @@
     }
 
     # If the cache key in the Magento response doesn't match the one that was sent in the request, don't cache under the request's key
-    if (req.http.graphql && req.http.X-Magento-Cache-Id != beresp.http.X-Magento-Cache-Id) {
+    if (req.http.graphql && req.http.X-Magento-Cache-Id && req.http.X-Magento-Cache-Id != beresp.http.X-Magento-Cache-Id) {
         set beresp.ttl = 0s;
         set beresp.cacheable = false;
         return (deliver);

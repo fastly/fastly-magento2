@@ -11,9 +11,9 @@
     # Make sure GraphQl requests are covered by store and currency
     if (req.http.graphql && resp.http.Vary !~ "(?i)Store, *Content-Currency") {
         if (resp.http.Vary) {
-            set resp.http.Vary = resp.http.Vary + ",Store,Content-Currency"
+            set resp.http.Vary = resp.http.Vary + ",Store,Content-Currency";
         } else {
-            set resp.http.Vary = "Store,Content-Currency"
+            set resp.http.Vary = "Store,Content-Currency";
         }
     }
 

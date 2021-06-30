@@ -9,4 +9,3 @@
             set req.hash += "Authorized";
         }
     }
-    return(hash);

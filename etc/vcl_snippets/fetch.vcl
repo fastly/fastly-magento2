@@ -113,5 +113,4 @@
     if (req.http.graphql && req.http.X-Magento-Cache-Id && req.http.X-Magento-Cache-Id != beresp.http.X-Magento-Cache-Id) {
         set beresp.ttl = 0s;
         set beresp.cacheable = false;
-        return (deliver);
     }

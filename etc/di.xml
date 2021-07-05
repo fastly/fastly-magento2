@@ -90,4 +90,5 @@
             </argument>
         </arguments>
     </type>
+    <preference for="Fastly\Cdn\Model\Resolver\GeoIP\CountryCodeProviderInterface" type="Fastly\Cdn\Model\Resolver\GeoIP\HttpCountryProvider" />
 </config>

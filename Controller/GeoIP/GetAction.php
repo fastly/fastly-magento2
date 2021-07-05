@@ -34,6 +34,7 @@ use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
 use Magento\Framework\App\Action\Action;
 use Fastly\Cdn\Helper\StoreMessage;
+use Fastly\Cdn\Model\Resolver\GeoIP\CountryCodeProviderInterface;
 
 /**
  * Class GetAction
@@ -42,7 +43,6 @@ use Fastly\Cdn\Helper\StoreMessage;
  */
 class GetAction extends Action
 {
-    const REQUEST_PARAM_COUNTRY = 'country_code';
     /**
      * @var Config
      */
@@ -81,6 +81,11 @@ class GetAction extends Action
     private $urlDecoder;
 
     /**
+     * @var CountryCodeProviderInterface
+     */
+    protected $countryCodeProvider;
+
+    /**
      * GetAction constructor.
      * @param Context $context
      * @param Config $config
@@ -91,6 +96,7 @@ class GetAction extends Action
      * @param StoreMessage $storeMessage
      * @param EncoderInterface $urlEncoder
      * @param DecoderInterface $urlDecoder
+     * @param CountryCodeProviderInterface $countryCodeProvider
      */
     public function __construct(
         Context $context,
@@ -101,7 +107,8 @@ class GetAction extends Action
         LoggerInterface $logger,
         StoreMessage $storeMessage,
         EncoderInterface $urlEncoder,
-        DecoderInterface $urlDecoder
+        DecoderInterface $urlDecoder,
+        CountryCodeProviderInterface $countryCodeProvider
     ) {
         parent::__construct($context);
         $this->config               = $config;
@@ -114,6 +121,8 @@ class GetAction extends Action
         $this->urlDecoder           = $urlDecoder;
 
         $this->url  = $context->getUrl();
+
+        $this->countryCodeProvider = $countryCodeProvider;
     }
 
     /**
@@ -130,7 +139,7 @@ class GetAction extends Action
             $resultLayout->addDefaultHandle();
 
             // get target store from country code
-            $countryCode = $this->getRequest()->getParam(self::REQUEST_PARAM_COUNTRY);
+            $countryCode = $this->countryCodeProvider->getCountryCode();
             $storeId = $this->config->getGeoIpMappingForCountry($countryCode);
             $targetUrl = $this->getRequest()->getParam('uenc');
 

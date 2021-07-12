@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.159
+
+- PWA-1832: Adding graphql caching by X-Magento-Cache-Id https://github.com/fastly/fastly-magento2/pull/459
+- Added country_code provider for controller fastlyCdn/geoip/getaction https://github.com/fastly/fastly-magento2/pull/463
+
 ## 1.2.158
 
 - Fixed for Adaptive Pixel Ratios for PDP https://github.com/fastly/fastly-magento2/pull/457

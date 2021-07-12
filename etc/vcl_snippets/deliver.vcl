@@ -8,10 +8,27 @@
         set resp.http.Cache-Control = "no-store, no-cache, must-revalidate, max-age=0";
     }
 
+    # Make sure GraphQl requests are covered by store and currency
+    if (req.http.graphql && resp.http.Vary !~ "(?i)Store,\s*Content-Currency") {
+        if (resp.http.Vary) {
+            set resp.http.Vary = resp.http.Vary ",Store,Content-Currency";
+        } else {
+            set resp.http.Vary = "Store,Content-Currency";
+        }
+    }
+
     # Execute only on the edge nodes
     if ( fastly.ff.visits_this_service == 0 ) {
-        # Remove X-Magento-Vary and HTTPs Vary served to the user
-        set resp.http.Vary = regsub(resp.http.Vary, "(?i)X-Magento-Vary,Https", "Cookie");
+        if ( req.http.graphql ) {
+            set resp.http.Vary = resp.http.Vary ",Authorization";
+            if ( resp.http.X-Magento-Cache-Id ) {
+                # GraphQl queries should be cached by the browser under X-Magento-Cache-Id if available
+                set resp.http.Vary = resp.http.Vary ",X-Magento-Cache-Id";
+            }
+        } else {
+            # Remove X-Magento-Vary and HTTPs Vary served to the user
+            set resp.http.Vary = regsub(resp.http.Vary, "(?i)X-Magento-Vary,Https", "Cookie");
+        }
         # Since varnish doesn't compress ESIs we need to hint to the HTTP/2 terminators to
         # compress it and we only want to do this on the edge nodes
         if (resp.http.x-esi) {

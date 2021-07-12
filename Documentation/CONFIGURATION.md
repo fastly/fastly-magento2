@@ -131,6 +131,10 @@ or was automatically redirected to the matching store. If the form_key cookies
 is present the visitor has been browsing around so he shouldn't be disturbed by
 dialogs or redirects.
 
+If the query is sent to the `/graphql` endpoint and the `X-Magento-Cache-Id`
+header is present then the cookie headers will be ignored in favor of the value
+in `X-Magento-Cache-Id`.
+
 ##### GeoIP Action
 
 Choose "Dialog" to show a modal dialog to the visitor. This gives him the

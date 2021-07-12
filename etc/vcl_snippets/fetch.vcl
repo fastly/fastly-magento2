@@ -55,8 +55,11 @@
         }
     }
 
-    # Add Varying on X-Magento-Vary
-    if (beresp.http.Content-Type ~ "text/(html|xml)" || req.http.graphql) {
+    # Add Varying on Store and Content-Currency for GraphQl, X-Magento-Vary otherwise
+    if (req.http.graphql) {
+        set beresp.http.Vary:Store = "";
+        set beresp.http.Vary:Content-Currency = "";
+    } else if (beresp.http.Content-Type ~ "text/(html|xml)") {
         set beresp.http.Vary:X-Magento-Vary = "";
         set beresp.http.Vary:Https = "";
     }
@@ -104,4 +107,10 @@
         if (beresp.http.Content-Type ~ "(image|script|css)") {
             set beresp.http.Surrogate-Key = re.group.1;
         }
+    }
+
+    # If the cache key in the Magento response doesn't match the one that was sent in the request, don't cache under the request's key
+    if (req.http.graphql && req.http.X-Magento-Cache-Id && req.http.X-Magento-Cache-Id != beresp.http.X-Magento-Cache-Id) {
+        set beresp.ttl = 0s;
+        set beresp.cacheable = false;
     }

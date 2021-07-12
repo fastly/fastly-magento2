@@ -98,6 +98,12 @@
     # Make sure we lookup end user geo not shielding. More at https://docs.fastly.com/vcl/geolocation/#using-geographic-variables-with-shielding
     set client.geo.ip_override = req.http.Fastly-Client-IP;
 
+    if (req.request == "GET" && req.url.path ~ "/graphql" && req.url.qs ~ "query=") {
+        set req.http.graphql = "1";
+    } else {
+        unset req.http.graphql;
+    }
+
     # geoip lookup
     if (req.url.path ~ "fastlyCdn/geoip/getaction/") {
         # check if GeoIP has been already processed by client. this normally happens before essential cookies are set.
@@ -149,22 +155,8 @@
         unset req.http.Cookie;
     }
 
-    unset req.http.graphql;
     # GraphQL special headers handling because this area doesn't rely on X-Magento-Vary cookie
-    if (req.request == "GET" && req.url.path ~ "/graphql" && req.url.qs ~ "query=") {
-        if ( req.http.Authorization ~ "^Bearer" ) {
-            set req.http.x-pass = "1";
-        } else {
-            set req.http.graphql = "1";
-            if (req.http.Store) {
-                set req.http.X-Magento-Vary = req.http.Store;
-            }
-            if (req.http.Content-Currency) {
-                if (req.http.X-Magento-Vary) {
-                    set req.http.X-Magento-Vary = req.http.X-Magento-Vary req.http.Content-Currency;
-                } else {
-                    set req.http.X-Magento-Vary = req.http.Content-Currency;
-                }
-            }
-        }
+    if (req.http.graphql && !req.http.X-Magento-Cache-Id && req.http.Authorization ~ "^Bearer" ) {
+        unset req.http.graphql;
+        set req.http.x-pass = "1";
     }

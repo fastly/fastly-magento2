@@ -1,5 +1,8 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.160
+- Fix typo in variable name https://github.com/fastly/fastly-magento2/pull/464
+
 ## 1.2.159
 
 - PWA-1832: Adding graphql caching by X-Magento-Cache-Id https://github.com/fastly/fastly-magento2/pull/459

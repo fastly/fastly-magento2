@@ -588,7 +588,7 @@ define([
             textAreaInput.attr('name', property.name);
             textAreaInput.attr('id', property.name);
             textAreaInput.attr('required', 'required');
-            textAreaInput.append(fieldValue);
+            textAreaInput[0].innerHTML = fieldValue;
 
             selectInput.attr('name', property.name);
             selectInput.attr('id', property.name);

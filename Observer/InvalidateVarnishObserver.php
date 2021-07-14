@@ -106,6 +106,17 @@ class InvalidateVarnishObserver implements ObserverInterface
         if ($object instanceof \Magento\Catalog\Model\Product && !$this->config->canPurgeCatalogProduct()) {
             return false;
         }
+        
+        if ($object instanceof \Magento\Catalog\Model\Product &&
+            (
+                (!$object->getOrigData('status') || ($object->getOrigData('status') == \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED))
+                &&
+                $object->getStatus() == \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED
+            )
+        ) {
+            return false;
+        }
+        
         if ($object instanceof \Magento\Cms\Model\Page && !$this->config->canPurgeCmsPage()) {
             return false;
         }

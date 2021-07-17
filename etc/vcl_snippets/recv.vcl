@@ -16,6 +16,13 @@
         } else {
             error 403 "Bypass Secret incorrect";
         }
+
+        if (req.url == "/fastly-io-tester") {
+            # IO won't work for PASS requests
+            unset req.http.x-pass;
+            set req.hash_always_miss = true;
+            set req.http.X-Fastly-Imageopto-Api = "fastly";
+        }
     }
 
     # VCL required to support maintenance mode. Don't maintenance mode admin pages and supporting assets

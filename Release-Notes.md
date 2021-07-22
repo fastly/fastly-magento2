@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.161
+- Update regex for basic auth block https://github.com/fastly/fastly-magento2/pull/461
+- Prevent PURGE requests from being blocked by custom modules https://github.com/fastly/fastly-magento2/pull/467
+
 ## 1.2.160
 - Fix typo in variable name https://github.com/fastly/fastly-magento2/pull/464
 

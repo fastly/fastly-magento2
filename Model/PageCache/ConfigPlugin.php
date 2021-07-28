@@ -18,6 +18,7 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
+
 namespace Fastly\Cdn\Model\PageCache;
 
 use \Magento\PageCache\Model\Config;
@@ -36,6 +37,18 @@ use \Magento\PageCache\Model\Config;
  */
 class ConfigPlugin
 {
+    protected $_scopeConfig;
+
+    /**
+     * ConfigPlugin constructor.
+     *
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     */
+    public function __construct(\Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig)
+    {
+        $this->_scopeConfig = $scopeConfig;
+    }
+
     /**
      * Return cache type "Varnish" if Fastly is configured.
      *
@@ -50,6 +63,23 @@ class ConfigPlugin
             if ($result == \Fastly\Cdn\Model\Config::FASTLY) {
                 return Config::VARNISH;
             }
+        }
+        return $result;
+    }
+
+    /**
+     * Change return value from string to int, 'fastly' is old value
+     *
+     * @param Config $config
+     * @param callable $proceed
+     * @return string
+     */
+    public function aroundGetType(Config $config, callable $proceed)
+    {
+        if ($this->_scopeConfig->getValue(Config::XML_PAGECACHE_TYPE) === 'fastly') {
+            $result = \Fastly\Cdn\Model\Config::FASTLY;
+        } else {
+            $result = $proceed();
         }
         return $result;
     }

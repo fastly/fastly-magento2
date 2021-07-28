@@ -72,7 +72,7 @@ class ConfigPlugin
      *
      * @param Config $config
      * @param callable $proceed
-     * @return string
+     * @return string|int
      */
     public function aroundGetType(Config $config, callable $proceed)
     {

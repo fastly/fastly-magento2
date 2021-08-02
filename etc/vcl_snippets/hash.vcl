@@ -8,4 +8,10 @@
         if ( req.http.Authorization ~ "^Bearer" ) {
             set req.hash += "Authorized";
         }
+
+        set req.hash += req.url;
+        set req.hash += req.http.Host;
+        set req.hash += req.http.Fastly-SSL;
+        set req.hash += req.vcl.generation;
+        return (hash);
     }

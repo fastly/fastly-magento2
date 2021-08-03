@@ -935,7 +935,7 @@
                         </field>
                     </group>
                     <depends>
-                        <field id="caching_application">fastly</field>
+                        <field id="caching_application">42</field>
                     </depends>
                 </group>
                 <!-- =============================
@@ -945,7 +945,7 @@
                     <label>Fastly Edge Modules</label>
                     <comment><![CDATA[Fastly Edge module allow you to enable specific functionality like CORS headers, etc. For more details <a href="https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULES.md" target="_blank">click here.</a>]]></comment>
                     <depends>
-                        <field id="caching_application">fastly</field>
+                        <field id="caching_application">42</field>
                         <field id="system/full_page_cache/fastly/fastly_advanced_configuration/enable_fastly_edge_modules">1</field>
                     </depends>
                     <!-- =========================

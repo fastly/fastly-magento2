@@ -18,6 +18,7 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
+
 namespace Fastly\Cdn\Setup;
 
 use Fastly\Cdn\Helper\Data;
@@ -94,7 +95,8 @@ class UpgradeData implements UpgradeDataInterface
         Data $helper,
         ProductMetadataInterface $productMetadata,
         SerializerInterface $serializeInterface
-    ) {
+    )
+    {
         $this->date = $date;
         $this->scopeConfig = $scopeConfig;
         $this->configWriter = $configWriter;
@@ -111,7 +113,7 @@ class UpgradeData implements UpgradeDataInterface
      *
      *
      * @param ModuleDataSetupInterface $setup
-     * @param ModuleContextInterface $context*
+     * @param ModuleContextInterface $context *
      */
     public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
@@ -122,36 +124,36 @@ class UpgradeData implements UpgradeDataInterface
         }
 
         $oldConfigPaths = [
-            'stale_ttl'                 => 'system/full_page_cache/fastly/stale_ttl',
-            'stale_error_ttl'           => 'system/full_page_cache/fastly/stale_error_ttl',
-            'purge_catalog_category'    => 'system/full_page_cache/fastly/purge_catalog_category',
-            'purge_catalog_product'     => 'system/full_page_cache/fastly/purge_catalog_product',
-            'purge_cms_page'            => 'system/full_page_cache/fastly/purge_cms_page',
-            'soft_purge'                => 'system/full_page_cache/fastly/soft_purge',
-            'enable_geoip'              => 'system/full_page_cache/fastly/enable_geoip',
-            'geoip_action'              => 'system/full_page_cache/fastly/geoip_action',
-            'geoip_country_mapping'     => 'system/full_page_cache/fastly/geoip_country_mapping',
+            'stale_ttl' => 'system/full_page_cache/fastly/stale_ttl',
+            'stale_error_ttl' => 'system/full_page_cache/fastly/stale_error_ttl',
+            'purge_catalog_category' => 'system/full_page_cache/fastly/purge_catalog_category',
+            'purge_catalog_product' => 'system/full_page_cache/fastly/purge_catalog_product',
+            'purge_cms_page' => 'system/full_page_cache/fastly/purge_cms_page',
+            'soft_purge' => 'system/full_page_cache/fastly/soft_purge',
+            'enable_geoip' => 'system/full_page_cache/fastly/enable_geoip',
+            'geoip_action' => 'system/full_page_cache/fastly/geoip_action',
+            'geoip_country_mapping' => 'system/full_page_cache/fastly/geoip_country_mapping',
         ];
 
         $newConfigPaths = [
             'stale_ttl'
-                => 'system/full_page_cache/fastly/fastly_advanced_configuration/stale_ttl',
+            => 'system/full_page_cache/fastly/fastly_advanced_configuration/stale_ttl',
             'stale_error_ttl'
-                => 'system/full_page_cache/fastly/fastly_advanced_configuration/stale_error_ttl',
+            => 'system/full_page_cache/fastly/fastly_advanced_configuration/stale_error_ttl',
             'purge_catalog_category'
-                => 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_catalog_category',
+            => 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_catalog_category',
             'purge_catalog_product'
-                => 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_catalog_product',
+            => 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_catalog_product',
             'purge_cms_page'
-                => 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_cms_page',
+            => 'system/full_page_cache/fastly/fastly_advanced_configuration/purge_cms_page',
             'soft_purge'
-                => 'system/full_page_cache/fastly/fastly_advanced_configuration/soft_purge',
+            => 'system/full_page_cache/fastly/fastly_advanced_configuration/soft_purge',
             'enable_geoip'
-                => 'system/full_page_cache/fastly/fastly_advanced_configuration/enable_geoip',
+            => 'system/full_page_cache/fastly/fastly_advanced_configuration/enable_geoip',
             'geoip_action'
-                => 'system/full_page_cache/fastly/fastly_advanced_configuration/geoip_action',
+            => 'system/full_page_cache/fastly/fastly_advanced_configuration/geoip_action',
             'geoip_country_mapping'
-                => 'system/full_page_cache/fastly/fastly_advanced_configuration/geoip_country_mapping'
+            => 'system/full_page_cache/fastly/fastly_advanced_configuration/geoip_country_mapping'
         ];
 
         $setup->startSetup();
@@ -172,6 +174,10 @@ class UpgradeData implements UpgradeDataInterface
             $setup->endSetup();
         } elseif (version_compare($magVer, '2.2', '<')) {
             $setup->endSetup();
+        }
+
+        if (version_compare($version, '1.0.15', '<=')) {
+            $this->changeConstValueInDb($setup);
         }
     }
 
@@ -240,5 +246,32 @@ class UpgradeData implements UpgradeDataInterface
         }
         $this->configWriter->save($newConfigPaths['geoip_country_mapping'], $newData);
         $this->cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
+    }
+
+    /**
+     * Chanhe old const value from 'fastly' to '42'
+     *
+     * @param ModuleDataSetupInterface $setup
+     */
+    private function changeConstValueInDb(ModuleDataSetupInterface $setup): void
+    {
+        $select = $setup->getConnection()->select()->from(
+            $setup->getTable('core_config_data'),
+            ['value']
+        )->where(
+            'path = ?',
+            \Magento\PageCache\Model\Config::XML_PAGECACHE_TYPE
+        );
+        $value = $setup->getConnection()->fetchOne($select);
+        if ($value == 'fastly') {
+            $row = [
+                'value' => \Fastly\Cdn\Model\Config::FASTLY
+            ];
+            $setup->getConnection()->update(
+                $setup->getTable('core_config_data'),
+                $row,
+                ['path = ?' => \Magento\PageCache\Model\Config::XML_PAGECACHE_TYPE]
+            );
+        }
     }
 }

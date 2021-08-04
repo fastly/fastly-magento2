@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.163
+
+- Vendor tooling was adding Authorization header to cache key hampering GraphQL caching. https://github.com/fastly/fastly-magento2/pull/470
+
 ## 1.2.162
 
 - Fix for https://github.com/magento/magento2/pull/33468 https://github.com/fastly/fastly-magento2/pull/469

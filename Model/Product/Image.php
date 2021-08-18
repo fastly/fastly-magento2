@@ -74,7 +74,7 @@ class Image extends ImageModel
             $this->isFastlyEnabled = false;
         }
 
-        if ($this->_scopeConfig->getValue(PageCacheConfig::XML_PAGECACHE_TYPE) !== Config::FASTLY) {
+        if ($this->_scopeConfig->getType() !== Config::FASTLY) {
             $this->isFastlyEnabled = false;
         }
 
@@ -96,7 +96,7 @@ class Image extends ImageModel
             $this->isForceLossyEnabled = false;
         }
 
-        if ($this->_scopeConfig->getValue(PageCacheConfig::XML_PAGECACHE_TYPE) !== Config::FASTLY) {
+        if ($this->_scopeConfig->getType() !== Config::FASTLY) {
             $this->isForceLossyEnabled = false;
         }
 

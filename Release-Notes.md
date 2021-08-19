@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.164
+
+- Fix type check in Image class https://github.com/fastly/fastly-magento2/pull/472
+
 ## 1.2.163
 
 - Vendor tooling was adding Authorization header to cache key hampering GraphQL caching. https://github.com/fastly/fastly-magento2/pull/470

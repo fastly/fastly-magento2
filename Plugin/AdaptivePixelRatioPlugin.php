@@ -79,12 +79,15 @@ class AdaptivePixelRatioPlugin
             $srcSet[] = $imageUrl . $glue . $ratio;
         }
 
+        $srcSet = implode(',', $srcSet);
+        $customAttributes = $subject->getCustomAttributes();
         if (version_compare($this->productMetadata->getVersion(), '2.4', '<')) {
-            $subject->setData('custom_attributes',
-                'srcset="' . implode(',', $srcSet) . '" ' . $subject->getData('custom_attributes'));
+            $customAttributes = !empty($customAttributes) ? [$customAttributes] : [];
+            $customAttributes[] = 'srcset="' . $srcSet . '"';
+            $subject->setData('custom_attributes', implode(' ', $customAttributes));
         } else {
-            $customAttributes = $subject->getCustomAttributes() ?: [];
-            $customAttributes['srcset'] = implode(',', $srcSet);
+            $customAttributes = $customAttributes ?: [];
+            $customAttributes['srcset'] = $srcSet;
             $subject->setData('custom_attributes', $customAttributes);
         }
     }

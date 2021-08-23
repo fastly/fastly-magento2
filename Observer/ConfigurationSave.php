@@ -18,6 +18,7 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
+
 namespace Fastly\Cdn\Observer;
 
 use Fastly\Cdn\Helper\AutomaticCompression;
@@ -81,7 +82,8 @@ class ConfigurationSave implements ObserverInterface
         RequestInterface $request,
         AutomaticCompression $automaticCompressionHelper,
         ManagerInterface $messageManager
-    ) {
+    )
+    {
         $this->moduleManager = $manager;
         $this->statisticRepo = $statisticRepository;
         $this->statistic = $statistic;
@@ -101,7 +103,7 @@ class ConfigurationSave implements ObserverInterface
         if ($this->moduleManager->isEnabled(Statistic::FASTLY_MODULE_NAME) == false) {
             return;
         }
-
+        $changedPaths = $observer->getChangedPaths();
         $isServiceValid = $this->statistic->isApiKeyValid();
         $stat = $this->statisticRepo->getStatByAction(Statistic::FASTLY_CONFIGURATION_FLAG);
 
@@ -116,7 +118,9 @@ class ConfigurationSave implements ObserverInterface
 
         try {
             $configurationGroups = $this->request->getParam('groups');
-            if (isset($configurationGroups['full_page_cache']['groups']['fastly']['groups']['fastly_image_optimization_configuration'])) {
+            if (isset($configurationGroups['full_page_cache']['groups']['fastly']['groups']['fastly_image_optimization_configuration'])
+                && in_array('system/full_page_cache/fastly/fastly_image_optimization_configuration/automatic_compression', $changedPaths)
+            ) {
                 $automaticCompression = $configurationGroups['full_page_cache']['groups']['fastly']['groups']['fastly_image_optimization_configuration']['fields']['automatic_compression']['value'];
                 $this->automaticCompressionHelper->updateVclSnippet($automaticCompression);
             }

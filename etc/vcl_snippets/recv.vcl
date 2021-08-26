@@ -40,12 +40,6 @@
         }
     }
 
-    # Fixup for Varnish ESI not dealing with https:// absolute URLs well
-    if (req.is_esi_subreq && req.url ~ "/https://([^/]+)(/.*)$") {
-        set req.http.Host = re.group.1;
-        set req.url = re.group.2;
-    }
-
     unset req.http.x-long-cache;
 
     # We want to force long cache times on any of the versioned assets

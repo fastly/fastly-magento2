@@ -177,7 +177,7 @@ define([
                     title: 'Blocking Type: Allowlist',
                     content: 'Turning on this feature will block ALL access except for users from designated countries/ACLs. ' +
                         'Please make sure you as the admin user are in one of the lists since you WILL lose access to the admin pages. ' +
-                        'Only way to fix it is via Fastly management UI. Please type I ACKNOWLEDGE' +
+                        'Only way to fix it is via Fastly management UI. Please type "I ACKNOWLEDGE"' +
                         ' in the box below if you are sure you want to do this.',
                     actions: {
                         confirm: function (input) {
@@ -213,7 +213,10 @@ define([
                 url: config.toggleBlockingSettingUrl,
                 data: {
                     'activate_flag': activate_blocking_flag,
-                    'active_version': active_version
+                    'active_version': active_version,
+                    'acls': $('#system_full_page_cache_fastly_fastly_blocking_block_by_acl').serializeArray(),
+                    'countries': $('#system_full_page_cache_fastly_fastly_blocking_block_by_country').serializeArray(),
+                    'blocking_type': $('#system_full_page_cache_fastly_fastly_blocking_blocking_type').val()
                 },
                 showLoader: true,
                 success: function (response) {

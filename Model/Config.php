@@ -1365,7 +1365,7 @@ class Config extends \Magento\PageCache\Model\Config
      */
     public function processBlockedItems($strippedBlockedItems, $blockingType = null)
     {
-        if (empty($blockingType)) {
+        if (is_null($blockingType)) {
             $blockingType = $this->_scopeConfig->getValue(self::XML_FASTLY_BLOCKING_TYPE);
         }
         if ($blockingType == '1') {

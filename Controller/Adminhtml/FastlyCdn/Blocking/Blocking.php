@@ -27,6 +27,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
+use Magento\Framework\App\Config\Storage\WriterInterface as ConfigWriter;
 use Magento\Framework\Exception\LocalizedException;
 
 /**
@@ -56,6 +57,10 @@ class Blocking extends Action
      * @var Vcl
      */
     private $vcl;
+    /**
+     * @var ConfigWriter
+     */
+    private $configWriter;
 
     /**
      * Blocking constructor.
@@ -66,6 +71,7 @@ class Blocking extends Action
      * @param Config $config
      * @param Api $api
      * @param Vcl $vcl
+     * @param ConfigWriter $configWriter
      */
     public function __construct(
         Context $context,
@@ -73,13 +79,15 @@ class Blocking extends Action
         JsonFactory $resultJsonFactory,
         Config $config,
         Api $api,
-        Vcl $vcl
+        Vcl $vcl,
+        ConfigWriter $configWriter
     ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
         $this->config = $config;
         $this->api = $api;
         $this->vcl = $vcl;
+        $this->configWriter = $configWriter;
         parent::__construct($context);
     }
 
@@ -94,6 +102,7 @@ class Blocking extends Action
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
             $activateVcl = $this->getRequest()->getParam('activate_flag');
+            $blockingType = $this->getRequest()->getParam('blocking_type');
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
@@ -105,11 +114,18 @@ class Blocking extends Action
                 Config::VCL_BLOCKING_SNIPPET
             );
 
-            $country_codes = $this->prepareCountryCodes($this->config->getBlockByCountry());
-            $acls = $this->prepareAcls($this->config->getBlockByAcl());
+            $country_codes = $this->prepareCountryCodes($this->getRequest()->getParam('countries'));
+            $acls = $this->prepareAcls($this->getRequest()->getParam('acls'));
 
             $blockedItems = $country_codes . $acls;
             $strippedBlockedItems = substr($blockedItems, 0, strrpos($blockedItems, '||', -1));
+
+            $this->configWriter->save(
+                Config::XML_FASTLY_BLOCKING_TYPE,
+                $blockingType,
+                'default',
+                '0'
+            );
 
             if (!$checkIfSettingExists) {
                 foreach ($snippet as $key => $value) {
@@ -123,7 +139,7 @@ class Blocking extends Action
                     if ($strippedBlockedItems === '') {
                         $value = '';
                     } else {
-                        $strippedBlockedItems = $this->config->processBlockedItems($strippedBlockedItems);
+                        $strippedBlockedItems = $this->config->processBlockedItems($strippedBlockedItems, $blockingType);
                         $value = str_replace('####BLOCKED_ITEMS####', $strippedBlockedItems, $value);
                     }
 
@@ -181,9 +197,25 @@ class Blocking extends Action
     private function prepareAcls($blockedAcls)
     {
         $result = '';
+        $aclsArray = [];
+        $acls = '';
 
         if ($blockedAcls != null) {
-            $blockedAclsPieces = explode(",", $blockedAcls);
+            foreach ($blockedAcls as $key => $value) {
+                $aclsArray[] = $value['value'];
+            }
+            $acls = implode(',', $aclsArray);
+        }
+
+        $this->configWriter->save(
+            Config::XML_FASTLY_BLOCK_BY_ACL,
+            $acls,
+            'default',
+            '0'
+        );
+
+        if ($acls != '') {
+            $blockedAclsPieces = explode(",", $acls);
             foreach ($blockedAclsPieces as $acl) {
                 $result .= ' req.http.Fastly-Client-Ip ~ ' . $acl . ' ||';
             }
@@ -201,9 +233,25 @@ class Blocking extends Action
     private function prepareCountryCodes($blockedCountries)
     {
         $result = '';
+        $countriesArray = [];
+        $countries = '';
 
         if ($blockedCountries != null) {
-            $blockedCountriesPieces = explode(",", $blockedCountries);
+            foreach ($blockedCountries as $key => $value) {
+                $countriesArray[] = $value['value'];
+            }
+            $countries = implode(',', $countriesArray);
+        }
+
+        $this->configWriter->save(
+            Config::XML_FASTLY_BLOCK_BY_COUNTRY,
+            $countries,
+            'default',
+            '0'
+        );
+
+        if ($countries != '') {
+            $blockedCountriesPieces = explode(",", $countries);
             foreach ($blockedCountriesPieces as $code) {
                 $result .= ' client.geo.country_code == "' . $code . '" ||';
             }

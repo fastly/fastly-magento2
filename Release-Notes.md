@@ -2,6 +2,10 @@
 
 ## 1.2.165
 
+- Fix ambiguous behavior in Blocking toggle https://github.com/fastly/fastly-magento2/pull/479
+
+## 1.2.165
+
 - ESI workaround snippet no longer required https://github.com/fastly/fastly-magento2/pull/478
 - Fix to avoid VCL being uploaded every time on save due to Image Optimization multi-select https://github.com/fastly/fastly-magento2/pull/477
 - Allow extending custom image attributes in versions < 2.4 https://github.com/fastly/fastly-magento2/pull/474

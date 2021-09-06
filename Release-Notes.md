@@ -1,6 +1,11 @@
 # Fastly_Cdn Release Notes
 
-## 1.2.165
+## 1.2.167
+
+- Fix bug in the purging functionality. https://github.com/fastly/fastly-magento2/pull/483
+  Due to the changes we made in 1.2.162, cache tags were not getting processed by our ResponsePlugin, causing users unable to purge contents properly.
+
+## 1.2.166
 
 - Fix ambiguous behavior in Blocking toggle https://github.com/fastly/fastly-magento2/pull/479
 

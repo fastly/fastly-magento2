@@ -2,8 +2,8 @@
 
 ## 1.2.167
 
-- Fix bug in the purging functionality. https://github.com/fastly/fastly-magento2/pull/483
-  Due to the changes we made in 1.2.162, cache tags were not getting processed by our ResponsePlugin, causing users unable to purge contents properly.
+- Fix bug in the purging functionality. https://github.com/fastly/fastly-magento2/pull/483  
+  Due to the changes we made in 1.2.162, cache tags were not getting processed by our ResponsePlugin, causing users unable to purge contents properly using surrogate-key.
 
 ## 1.2.166
 

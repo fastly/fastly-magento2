@@ -79,7 +79,7 @@ class ConfigPlugin
         if ($this->_scopeConfig->getValue(Config::XML_PAGECACHE_TYPE) === 'fastly') {
             $result = \Fastly\Cdn\Model\Config::FASTLY;
         } else {
-            $result = $proceed();
+            $result = (int)$proceed();
         }
         return $result;
     }

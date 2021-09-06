@@ -68,7 +68,7 @@ class ContentType extends Action
     public function execute()
     {
         try {
-            if ($this->config->getType() == Config::FASTLY && $this->config->isEnabled()) {
+            if ($this->config->getType() === Config::FASTLY && $this->config->isEnabled()) {
                 // check if content type is given
                 $contentType = $this->getRequest()->getParam('content_types', false);
                 if (!$contentType) {

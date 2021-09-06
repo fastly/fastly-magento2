@@ -70,7 +70,7 @@ class LayoutPlugin
     {
         // if subject is cacheable, FPC cache is enabled, Fastly module is chosen and general TTL is > 0
         if ($subject->isCacheable() && $this->config->isEnabled()
-            && $this->config->getType() == Config::FASTLY && $this->config->getTtl()) {
+            && $this->config->getType() === Config::FASTLY && $this->config->getTtl()) {
             // get cache control header
             $header = $this->response->getHeader('cache-control');
             if (($header instanceof \Zend\Http\Header\HeaderInterface) && ($value = $header->getFieldValue())) {
@@ -107,7 +107,7 @@ class LayoutPlugin
      */
     public function afterGetOutput(\Magento\Framework\View\Layout $subject, $result) // @codingStandardsIgnoreLine - unused parameter
     {
-        if ($this->config->getType() == Config::FASTLY) {
+        if ($this->config->getType() === Config::FASTLY) {
             $this->response->setHeader("Fastly-Module-Enabled", "1.2.166", true);
         }
 

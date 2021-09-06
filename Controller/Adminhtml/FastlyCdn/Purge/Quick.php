@@ -78,7 +78,7 @@ class Quick extends Action
     public function execute()
     {
         try {
-            if ($this->config->getType() == Config::FASTLY && $this->config->isEnabled()) {
+            if ($this->config->getType() === Config::FASTLY && $this->config->isEnabled()) {
                 // check if url is given
                 $url = $this->getRequest()->getParam('quick_purge_url', false);
 

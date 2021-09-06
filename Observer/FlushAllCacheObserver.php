@@ -58,7 +58,7 @@ class FlushAllCacheObserver implements ObserverInterface
      */
     public function execute(\Magento\Framework\Event\Observer $observer) // @codingStandardsIgnoreLine - unused parameter
     {
-        if ($this->config->getType() == Config::FASTLY && $this->config->isEnabled()) {
+        if ($this->config->getType() === Config::FASTLY && $this->config->isEnabled()) {
             $this->purgeCache->sendPurgeRequest();
         }
     }

@@ -578,7 +578,7 @@ class Config extends \Magento\PageCache\Model\Config
      */
     public function isFastlyEnabled()
     {
-        if ($this->getType() == Config::FASTLY) {
+        if ($this->getType() === Config::FASTLY) {
             return true;
         }
 

@@ -77,7 +77,7 @@ class Store extends Action
     public function execute()
     {
         try {
-            if ($this->config->getType() == Config::FASTLY && $this->config->isEnabled()) {
+            if ($this->config->getType() === Config::FASTLY && $this->config->isEnabled()) {
                 // check if store exists
                 $storeId = $this->getRequest()->getParam('stores', false);
                 /** @var \Magento\Store\Model\Store $store */

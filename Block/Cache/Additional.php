@@ -65,7 +65,7 @@ class Additional extends Template
      */
     public function canShowBlock()
     {
-        if ($this->config->getType() == Config::FASTLY && $this->config->isEnabled()) {
+        if ($this->config->getType() === Config::FASTLY && $this->config->isEnabled()) {
             return true;
         }
         return false;

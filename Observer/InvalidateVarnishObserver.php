@@ -72,7 +72,7 @@ class InvalidateVarnishObserver implements ObserverInterface
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        if ($this->config->getType() == Config::FASTLY && $this->config->isEnabled()) {
+        if ($this->config->getType() === Config::FASTLY && $this->config->isEnabled()) {
             $object = $observer->getEvent()->getObject();
 
             if ($object instanceof \Magento\Framework\DataObject\IdentityInterface && $this->canPurgeObject($object)) {

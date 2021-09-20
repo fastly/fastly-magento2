@@ -1,0 +1,65 @@
+{
+  "description": "Enables Sitespect to be used with Fastly",
+  "id": "sitespect_integration",
+  "name": "SiteSpect Integration",
+  "properties": [
+    {
+      "label": "SiteSpect Hostname",
+      "name": "sitespect_origin_hostname",
+      "type": "string",
+      "description": "Hostname of your SiteSpect endpoint e.g. mydomain.com.ssopt.net",
+      "required": true
+    },
+    {
+      "label": "Exclusion regex",
+      "name": "sitespect_exclusion_ext",
+      "type": "string",
+      "description": "URL extensions that will not be sent to SiteSpect",
+      "default": "(?i)\\.(aif|aiff|au|avi|bin|bmp|cab|carb|cct|cdf|class|css|dcr|doc|dtd|exe|flv|gcf|gff|gif|grv|hdml|hqx|ico|ini|jpeg|jpg|js|mov|mp3|mp4|nc|pct|pdf|png|ppc|pws|svg|swa|swf|txt|vbs|w32|wav|wbmp|wml|wmlc|wmls|wmlsc|xsd|zip|webp)$",
+      "required": true
+    },
+    {
+      "label": "Healthcheck string",
+      "name": "sitespect_sharekey",
+      "type": "string",
+      "description": "REQUIRED: Enter a random alphanumeric string to use for healthchecks approx 10-15 characters e.g. ABCE23751fdwrert",
+      "required": true
+    },    
+    {
+      "default": "all",
+      "description": "Apply SiteSpect to all hostnames on your Fastly service or specify regex to match specific e.g. (www.domain.com|www.domain2.com)",
+      "label": "Apply sitespect to all hostnames",
+      "name": "apply-hosts",
+      "options": {
+        "all": "Apply to all hostname on this service",
+        "regex-match": "Limit to a set of hosts defined by a regular expression"
+      },
+      "required": true,
+      "type": "select"
+    },
+    {
+      "description": "Regex matching hosts that are sent to SiteSpect",
+      "label": "Regex matching origins",
+      "name": "hosts_under_SS",
+      "required": false,
+      "type": "string"
+    }
+  ],
+  "test": {
+    "origins": [
+      "https://httpbin.org"
+    ],
+    "reqUrl": "/html"
+  },
+  "vcl": [
+    {
+      "template": "if((req.url.path ~ \"/__ssobj/\"\n    || std.strlen(querystring.get(req.url, \"SS_PREVIEW_EXP\")) > 0\n    || req.url.ext !~ \"{{sitespect_exclusion_ext}}\")\n  && !req.http.SSVISIT\n  {{#ifEq apply-hosts \"regex-match\"}}&& req.http.host ~ \"{{hosts_under_SS}}\"  {{/ifEq}})\n{\n\n  set req.backend = F_Site_Spect;\n  # Only proceed with SiteSpect backend is healthy\n  if (req.backend.healthy) {\n    set req.http.SSVISIT = \"1\";\n    unset req.http.X-Fastly-Imageopto-Api;\n    return(pass);\n  }\n}",
+      "type": "recv"
+    },
+    {
+      "template": "backend F_Site_Spect {\n    .between_bytes_timeout = 10s;\n    .connect_timeout = 2s;\n    .dynamic = true;\n    .first_byte_timeout = 15s;\n    .host = \"{{sitespect_origin_hostname}}\";\n    .max_connections = 200;\n    .port = \"443\";\n    .share_key = \"{{sitespect_sharekey}}\";\n    .ssl = true;\n    .ssl_cert_hostname = \"{{sitespect_origin_hostname}}\";\n    .ssl_check_cert = always;\n    .ssl_sni_hostname = \"{{sitespect_origin_hostname}}\";\n    .probe = {\n        .expected_response = 200;\n        .initial = 4;\n        .interval = 15s;\n        .request = \"GET /__ssobj/static/healthcheckobject.html HTTP/1.1\" \"Host: {{sitespect_origin_hostname}}\" \"Connection: close\" \"User-Agent: Varnish/fastly (healthcheck)\";\n        .threshold = 3;\n        .timeout = 5s;\n        .window = 5;\n      }\n}",
+      "type": "init"
+    }
+  ],
+  "version": 1
+}

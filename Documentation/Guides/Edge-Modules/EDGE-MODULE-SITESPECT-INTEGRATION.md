@@ -7,7 +7,7 @@ Before you can use Fastly Edge Modules you need to [make sure they are enabled](
 
 After you have enabled the module it's time to configure. You will be prompted with a screen like this
 
-![Fastly Edge Module SiteSpect configuration](../../images/guides/edge-modules/edge-module-sitespect.png "Fastly Edge Module SiteSpect configuration")
+![Fastly Edge Module SiteSpect configuration](../../images/guides/edge-modules/edge-module-sitespect.jpg "Fastly Edge Module SiteSpect configuration")
 
 ## Configurable options
 

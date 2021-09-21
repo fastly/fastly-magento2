@@ -39,7 +39,7 @@
     },
     {
       "description": "Regex matching hosts that are sent to SiteSpect",
-      "label": "Regex matching origins",
+      "label": "Regex matching hosts",
       "name": "hosts_under_SS",
       "required": false,
       "type": "string"

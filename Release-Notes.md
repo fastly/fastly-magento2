@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.168
+
+- Add SiteSpect integration edge module
+
 ## 1.2.167
 
 - Fix bug in the purging functionality. https://github.com/fastly/fastly-magento2/pull/483  

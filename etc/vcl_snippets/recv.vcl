@@ -20,6 +20,8 @@
         if (req.url == "/fastly-io-tester") {
             # IO won't work for PASS requests
             unset req.http.x-pass;
+            # IO requires shielding
+            set var.fastly_req_do_shield = true;
             set req.hash_always_miss = true;
             set req.http.X-Fastly-Imageopto-Api = "fastly";
         }

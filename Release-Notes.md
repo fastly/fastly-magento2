@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.169
+
+- Enable shielding on tester requests
+
 ## 1.2.168
 
 - Add SiteSpect integration edge module

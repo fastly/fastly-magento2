@@ -124,6 +124,10 @@ class FrontControllerPlugin
      */
     public function aroundDispatch(FrontControllerInterface $subject, callable $proceed, ...$args) // @codingStandardsIgnoreLine - unused parameter
     {
+        if (!$this->config->isFastlyEnabled()) {
+            return $proceed(...$args);
+        }
+
         $isRateLimitingEnabled = $this->config->isRateLimitingEnabled();
         $isCrawlerProtectionEnabled = $this->config->isCrawlerProtectionEnabled();
 

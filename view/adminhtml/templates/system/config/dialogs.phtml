@@ -289,7 +289,7 @@
             <input hidden="hidden" name="backend_name" id="backend_name" class="admin__control-text">
             <div class="admin__field field">
                 <label for="shield" class="admin__field-label">
-                    <span><?php /* @noEscape */ echo __("Shield") ?></span>
+                    <span><?php /* @noEscape */ echo __("Shielding") ?></span>
                 </label>
                 <div class="admin__field-control">
                     <select name="shield" id="backend_shield" class="admin__control-text">
@@ -466,7 +466,7 @@
             </div>
 
             <div class="admin__field field">
-                <label for="shield" class="admin__field-label">
+                <label for="auto_loadbalance" class="admin__field-label">
                     <span><?php /* @noEscape */ echo __("Auto load balance") ?></span>
                 </label>
                 <div class="admin__field-control">
@@ -649,6 +649,7 @@
                             <option value="1.0">1.0</option>
                             <option value="1.1">1.1</option>
                             <option value="1.2">1.2</option>
+                            <option value="1.3">1.3</option>
                         </select>
                         <div class="admin__field-note">The minimum TLS protocol version that Fastly will use to
                             connect to your origin server.</div>
@@ -665,6 +666,7 @@
                             <option value="1.0">1.0</option>
                             <option value="1.1">1.1</option>
                             <option value="1.2">1.2</option>
+                            <option value="1.3">1.3</option>
                         </select>
                         <div class="admin__field-note">The maximum TLS protocol version that Fastly will use to
                             connect to your origin server. (Must be higher than the minimum TLS version.)</div>
@@ -724,6 +726,23 @@
                 <label class="admin__field-label">
                     Advanced options
                 </label>
+            </div>
+
+            <div class="admin__field field">
+                <label for="override_host" class="admin__field-label">
+                    <span><?php /* @noEscape */
+                        echo __("Override host") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="override_host"
+                           type="text"
+                           id="override_host"
+                           class="admin__control-text"
+                           value="">
+                    <div class="admin__field-note">Override the host header being sent to your origin regardless of the
+                        host used in the initial request. Only necessary if the domain your origin is expecting is
+                        different than what Fastly hosts. </div>
+                </div>
             </div>
 
             <div class="admin__field field _required">
@@ -819,23 +838,6 @@
                            class="admin__control-text"
                            value="10000">
                     <div class="admin__field-note">How long to wait between bytes in milliseconds.</div>
-                </div>
-            </div>
-
-            <div class="admin__field field">
-                <label for="override_host" class="admin__field-label">
-                    <span><?php /* @noEscape */
-                        echo __("Override host") ?></span>
-                </label>
-                <div class="admin__field-control">
-                    <input name="override_host"
-                           type="text"
-                           id="override_host"
-                           class="admin__control-text"
-                           value="">
-                    <div class="admin__field-note">Override the host header being sent to your origin regardless of the
-                        host used in the initial request. Only necessary if the domain your origin is expecting is
-                        different than what Fastly hosts. </div>
                 </div>
             </div>
         </fieldset>

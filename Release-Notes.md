@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.170
+
+- Apply request processing only when Fastly is enabled https://github.com/fastly/fastly-magento2/pull/486
+- Fix bugs in upadte backend dialog https://github.com/fastly/fastly-magento2/pull/487
+
 ## 1.2.169
 
 - Enable shielding on tester requests

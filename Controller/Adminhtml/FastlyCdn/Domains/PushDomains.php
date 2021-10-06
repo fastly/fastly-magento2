@@ -212,10 +212,10 @@ class PushDomains extends Action
             $newName = $new['name'];
             $newComment = $new['comment'];
             $newDomainData[$newName] = $newComment;
-            if (!preg_match('/^(?:\*\.)?(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,}$/', $newName)) {
-                throw new LocalizedException(__('Invalid domain name "'.$newName.'"'));
-            } elseif (strlen($newName) > 253) {
+            if (strlen($newName) > 253) {
                 throw new LocalizedException(__('Domain name too long (must be 253 characters or less) "'.$newName.'"'));
+            } elseif (!filter_var($newName, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
+                throw new LocalizedException(__('Invalid domain name "'.$newName.'"'));
             }
         }
         return $newDomainData;

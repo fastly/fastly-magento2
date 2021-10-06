@@ -93,7 +93,7 @@ class Comparison extends Action
                     'status' => false,
                     'local'  => $localVersion,
                     'header' => $headerVersion,
-                    'msg'   => 'Plugin VCL is outdated or VCL was not uploaded! Please click Upload above to correct.'
+                    'msg'   => 'Plugin VCL is outdated or VCL was not uploaded. Please click Upload above to correct. You can ignore this warning message if you have not yet routed your store domains to Fastly due to testing, etc.'
                 ]
             );
         }

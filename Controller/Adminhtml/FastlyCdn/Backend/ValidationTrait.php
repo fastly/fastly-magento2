@@ -63,11 +63,7 @@ trait ValidationTrait
      */
     private function validateOverride($override)
     {
-        if ($override === '') {
-            return null;
-        }
-
-        if (!filter_var($override, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
+        if ($override !== '' && !filter_var($override, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
             throw new LocalizedException(__('Override host ' . $override . ' is not a valid hostname.'));
         }
 

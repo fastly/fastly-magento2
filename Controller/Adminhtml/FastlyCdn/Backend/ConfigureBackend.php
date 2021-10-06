@@ -102,8 +102,8 @@ class ConfigureBackend extends Action
             $name = $this->getRequest()->getParam('name');
             $this->validateName($name);
 
-            $maxTls = $this->processRequest('max_tls_version');
-            $minTls = $this->processRequest('min_tls_version');
+            $maxTls = $this->getRequest()->getParam('max_tls_version');
+            $minTls = $this->getRequest()->getParam('min_tls_version');
             $this->validateVersion((float)$maxTls, (float)$minTls);
 
             $activate_flag = $this->getRequest()->getParam('activate_flag') === 'true' ? true : false;
@@ -126,7 +126,7 @@ class ConfigureBackend extends Action
             }
 
             $sslVerifyCert = $this->getRequest()->getParam('ssl_check_cert') === '1' ? true : false;
-            $sslCertHostname = $this->processRequest('ssl_cert_hostname');
+            $sslCertHostname = $this->getRequest()->getParam('ssl_cert_hostname');
 
             if ($useSsl && $sslVerifyCert && !$sslCertHostname) {
                 return $result->setData([
@@ -135,8 +135,8 @@ class ConfigureBackend extends Action
                 ]);
             }
 
-            $sslSniHostname = $this->processRequest('ssl_sni_hostname');
-            $sslCaCert = $this->processRequest('ssl_ca_cert');
+            $sslSniHostname = $this->getRequest()->getParam('ssl_sni_hostname');
+            $sslCaCert = $this->getRequest()->getParam('ssl_ca_cert');
 
             $conditionName = $this->getRequest()->getParam('condition_name');
             $applyIf = $this->getRequest()->getParam('apply_if');
@@ -167,9 +167,9 @@ class ConfigureBackend extends Action
                     'ssl_ca_cert'           => $sslCaCert,
                     'ssl_check_cert'        => $sslVerifyCert,
                     'ssl_cert_hostname'     => $sslCertHostname,
-                    'ssl_ciphers'           => $this->processRequest('ssl_ciphers'),
-                    'ssl_client_cert'       => $this->processRequest('ssl_client_cert'),
-                    'ssl_client_key'        => $this->processRequest('ssl_client_key'),
+                    'ssl_ciphers'           => $this->getRequest()->getParam('ssl_ciphers'),
+                    'ssl_client_cert'       => $this->getRequest()->getParam('ssl_client_cert'),
+                    'ssl_client_key'        => $this->getRequest()->getParam('ssl_client_key'),
                     'ssl_sni_hostname'      => $sslSniHostname,
                     'max_tls_version'       => $maxTls,
                     'min_tls_version'       => $minTls,

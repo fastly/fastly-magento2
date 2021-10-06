@@ -12,17 +12,6 @@
     "shield": "amsterdam-nl"
   },
   {
-    "code": "IAD",
-    "name": "Ashburn",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 38.944533,
-      "longitude": -77.455811
-    }
-  },
-  {
     "code": "WDC",
     "name": "Ashburn",
     "group": "United States",
@@ -31,6 +20,17 @@
       "y": 0,
       "latitude": 39.022,
       "longitude": -77.451
+    }
+  },
+  {
+    "code": "IAD",
+    "name": "Ashburn (Metro)",
+    "group": "United States",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 38.944533,
+      "longitude": -77.455811
     }
   },
   {
@@ -56,6 +56,18 @@
       "longitude": -77.040232
     },
     "shield": "dca-dc-us"
+  },
+  {
+    "code": "ATL",
+    "name": "Atlanta",
+    "group": "United States",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 33.636719,
+      "longitude": -84.428067
+    },
+    "shield": "atl-ga-us"
   },
   {
     "code": "FTY",
@@ -142,7 +154,7 @@
   {
     "code": "CPT",
     "name": "Cape Town",
-    "group": "South Africa",
+    "group": "Africa",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -247,7 +259,7 @@
   {
     "code": "CWB",
     "name": "Curitiba",
-    "group": "Brazil",
+    "group": "South America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -304,6 +316,17 @@
     "shield": "den-co-us"
   },
   {
+    "code": "DTW",
+    "name": "Detroit - DET",
+    "group": "United States",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 42.448,
+      "longitude": -83.263
+    }
+  },
+  {
     "code": "DUB",
     "name": "Dublin",
     "group": "Europe",
@@ -314,6 +337,17 @@
       "longitude": -6.26
     },
     "shield": "dub-dublin-ie"
+  },
+  {
+    "code": "FOR",
+    "name": "Fortaleza",
+    "group": "South America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": -3.735,
+      "longitude": -38.458
+    }
   },
   {
     "code": "FRA",
@@ -352,6 +386,17 @@
     "shield": "fjr-ae"
   },
   {
+    "code": "ACC",
+    "name": "Ghana",
+    "group": "Africa",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 5.573,
+      "longitude": -0.203
+    }
+  },
+  {
     "code": "HEL",
     "name": "Helsinki",
     "group": "Europe",
@@ -388,6 +433,18 @@
     "shield": "iah-tx-us"
   },
   {
+    "code": "HYD",
+    "name": "Hyderabad",
+    "group": "Asia/Pacific",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 17.442,
+      "longitude": 78.378
+    },
+    "shield": "hyd-hyderabad-in"
+  },
+  {
     "code": "JAX",
     "name": "Jacksonville",
     "group": "United States",
@@ -402,7 +459,7 @@
   {
     "code": "JNB",
     "name": "Johannesburg",
-    "group": "South Africa",
+    "group": "Africa",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -420,6 +477,29 @@
       "y": 0,
       "latitude": 39.101,
       "longitude": -94.581
+    }
+  },
+  {
+    "code": "CCU",
+    "name": "Kolkata",
+    "group": "Asia/Pacific",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 22.588,
+      "longitude": 88.393
+    },
+    "shield": "ccu-kolkata-in"
+  },
+  {
+    "code": "KUL",
+    "name": "Kuala Lumpur",
+    "group": "Asia/Pacific",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 3.149,
+      "longitude": 101.706
     }
   },
   {
@@ -518,6 +598,17 @@
     "shield": "man-manchester-uk"
   },
   {
+    "code": "MNL",
+    "name": "Manila",
+    "group": "Asia/Pacific",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 14.566,
+      "longitude": 121.022
+    }
+  },
+  {
     "code": "MRS",
     "name": "Marseille",
     "group": "Europe",
@@ -613,6 +704,17 @@
     "shield": "bom-mumbai-in"
   },
   {
+    "code": "MUC",
+    "name": "Munich",
+    "group": "Europe",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 48.143,
+      "longitude": 11.555
+    }
+  },
+  {
     "code": "LGA",
     "name": "New York City - LGA",
     "group": "United States",
@@ -633,7 +735,8 @@
       "y": 0,
       "latitude": 40.736844,
       "longitude": -74.173402
-    }
+    },
+    "shield": "ewr-nj-us"
   },
   {
     "code": "ITM",
@@ -721,7 +824,7 @@
   {
     "code": "GIG",
     "name": "Rio de Janeiro",
-    "group": "Brazil",
+    "group": "South America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -729,6 +832,17 @@
       "longitude": -43.249423
     },
     "shield": "gig-riodejaneiro-br"
+  },
+  {
+    "code": "FCO",
+    "name": "Rome",
+    "group": "Europe",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 41.89891,
+      "longitude": 12.51206
+    }
   },
   {
     "code": "SJC",
@@ -756,7 +870,7 @@
   {
     "code": "CGH",
     "name": "Sao Paulo",
-    "group": "Brazil",
+    "group": "South America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -768,7 +882,7 @@
   {
     "code": "GRU",
     "name": "Sao Paulo",
-    "group": "Brazil",
+    "group": "South America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -790,6 +904,18 @@
     "shield": "sea-wa-us"
   },
   {
+    "code": "ICN",
+    "name": "Seoul",
+    "group": "Asia/Pacific",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 36.38,
+      "longitude": 128.124
+    },
+    "shield": "icn-seoul-kr"
+  },
+  {
     "code": "QPG",
     "name": "Singapore",
     "group": "Asia/Pacific",
@@ -800,17 +926,6 @@
       "longitude": 103.994433
     },
     "shield": "qpg-singapore-sg"
-  },
-  {
-    "code": "SIN",
-    "name": "Singapore",
-    "group": "Asia/Pacific",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 1.350189,
-      "longitude": 103.994433
-    }
   },
   {
     "code": "STL",
@@ -870,6 +985,18 @@
       "longitude": 139.748426
     },
     "shield": "hnd-tokyo-jp"
+  },
+  {
+    "code": "NRT",
+    "name": "Tokyo - NRT",
+    "group": "Asia/Pacific",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 35.617,
+      "longitude": 139.748
+    },
+    "shield": "nrt-tokyo-jp"
   },
   {
     "code": "YYZ",

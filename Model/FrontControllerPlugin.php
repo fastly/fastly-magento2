@@ -55,7 +55,7 @@ class FrontControllerPlugin
     private $coreDate;
 
     /**
-     * @var \Magento\PageCache\Model\Config
+     * @var Config
      */
     private $config;
 

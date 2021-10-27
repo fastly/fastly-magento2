@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.171
+
+- Fix/gallery mixin and removed support for Magento 2.2.x https://github.com/fastly/fastly-magento2/pull/481
+
 ## 1.2.170
 
 - Apply request processing only when Fastly is enabled https://github.com/fastly/fastly-magento2/pull/486

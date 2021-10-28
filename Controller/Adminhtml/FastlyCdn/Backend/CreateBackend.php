@@ -115,6 +115,7 @@ class CreateBackend extends Action
             }
 
             $override = $this->validateOverride($this->getRequest()->getParam('override_host'));
+            $override = $override === '' ? null : $override;
 
             $name = $this->getRequest()->getParam('name');
             $this->validateName($name);

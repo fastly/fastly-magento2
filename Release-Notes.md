@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.172
+
+- Do not send `override_host` if empty upon backend creation https://github.com/fastly/fastly-magento2/pull/491
+
 ## 1.2.171
 
 - Fix/gallery mixin and removed support for Magento 2.2.x https://github.com/fastly/fastly-magento2/pull/481

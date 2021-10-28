@@ -12,15 +12,20 @@ Currently we support following rate limiting
 - Path protection - protects certain sensitive or computationally expensive paths
 - Abusive Crawler protection 
 
-General limitations
+### General limitations
 
 - Only requests that hit your Magento origin/backend are counted
 
-General principals
+###  General principals
 
 Rate limiting is applied by issuing a 429 Limit exceeded HTTP error code to the end user. Rate limit is applied if number of
 requests by certain IP/client exceeds a threshold over a specified time window. In addition Fastly will tarpit all these 
 requests for 5 seconds (this is adjustable by setting/adjusting `tarpit_interval` key in magentomodule_config edge dictionary).
+
+Following users are exempt from blocking:
+
+- IPs defined in `var/.maintenance.ip` (See [Maintenance Mode guide](MAINTENANCE-MODE.md) for more details)
+- Known good Bots such as Googlebot or Bingbot (Abusive Crawler Protection). This can be changed by setting `Exempt Known Good Bots` to `No`.
 
 ## Path Protection
 
@@ -76,8 +81,3 @@ Block any URLs starting with `/index.php/rest/V1/` or `/rest/V1/`.
 
 Unlike path protection Abusive Crawler protection guards against a single user making excessive number of requests that hit your
 Magento backend. By default we set the threshold to 100. After 100 requests in an hour we'll start returning a block to the user.
-
-Following users are exempt from blocking
-
-- IPs defined in var/.maintenance.ip
-- Known good Bots such as Googlebot or Bingbot. This can be changed by setting "Exempt Known Good Bots" to "No".

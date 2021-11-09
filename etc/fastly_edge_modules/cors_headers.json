@@ -24,6 +24,13 @@
             "type": "string"
         },
         {
+          "description": "Allowed HTTP Headers that requestor can use",
+          "label": "Allowed HTTP Headers",
+          "name": "cors_allowed_headers",
+          "required": false,
+          "type": "string"
+        },
+        {
             "description": "Regex matching origins that are allowed to access this service",
             "label": "Regex matching origins",
             "name": "cors_allowed_origins_regex",
@@ -39,7 +46,7 @@
     },
     "vcl": [
         {
-            "template": "  if (req.http.Origin && !resp.http.Access-Control-Allow-Origin && !resp.http.Access-Control-Allow-Methods) {\n{{#ifEq origin \"anyone\"}}\n    set resp.http.Access-Control-Allow-Origin = \"*\";\n{{/ifEq}}\n{{#ifEq origin \"regex-match\"}}\n    if ( req.http.Origin ~ \"^https?://{{cors_allowed_origins_regex}}\" ) {\n      set resp.http.Access-Control-Allow-Origin = req.http.origin;\n    }\n{{/ifEq}}\n    set resp.http.Access-Control-Allow-Methods = \"{{cors_allowed_methods}}\";\n    set resp.http.Vary:Origin = \"\";\n  \n  }\n",
+            "template": "  if (req.http.Origin && !resp.http.Access-Control-Allow-Origin && !resp.http.Access-Control-Allow-Methods && !resp.http.Access-Control-Allow-Headers) {\n{{#ifEq origin \"anyone\"}}\n    set resp.http.Access-Control-Allow-Origin = \"*\";\n{{/ifEq}}\n{{#ifEq origin \"regex-match\"}}\n    if ( req.http.Origin ~ \"^https?://{{cors_allowed_origins_regex}}\" ) {\n      set resp.http.Access-Control-Allow-Origin = req.http.origin;\n    }\n{{/ifEq}}\n    set resp.http.Access-Control-Allow-Methods = \"{{cors_allowed_methods}}\";\n{{#if cors_allowed_headers}}\n    set resp.http.Access-Control-Allow-Headers = \"{{cors_allowed_headers}}\";\n{{/if}}\n    set resp.http.Vary:Origin = \"\";\n  \n  }\n",
             "type": "deliver"
         }
     ],

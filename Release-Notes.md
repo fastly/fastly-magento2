@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.173
+
+- Added support for `Access-Control-Allow-Headers` (CORS headers Edge Module) https://github.com/fastly/fastly-magento2/pull/493
+- Fix IO canvas parameter https://github.com/fastly/fastly-magento2/pull/490
+
 ## 1.2.172
 
 - Do not send `override_host` if empty upon backend creation https://github.com/fastly/fastly-magento2/pull/491

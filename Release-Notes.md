@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.174
+
+- Add support for PHP 8.0 https://github.com/fastly/fastly-magento2/pull/495
+
 ## 1.2.173
 
 - Added support for `Access-Control-Allow-Headers` (CORS headers Edge Module) https://github.com/fastly/fastly-magento2/pull/493

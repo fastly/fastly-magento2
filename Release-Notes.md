@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.175
+
+- Update to Netacea edge module https://github.com/fastly/fastly-magento2/pull/496
+
 ## 1.2.174
 
 - Add support for PHP 8.0 https://github.com/fastly/fastly-magento2/pull/495

@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.176
+
+- Update available Fastly Shielding POP list
+
 ## 1.2.175
 
 - Update to Netacea edge module https://github.com/fastly/fastly-magento2/pull/496

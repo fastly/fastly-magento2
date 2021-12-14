@@ -31,7 +31,8 @@
       "y": 0,
       "latitude": 38.944533,
       "longitude": -77.455811
-    }
+    },
+    "shield": "iad-va-us"
   },
   {
     "code": "BWI",
@@ -42,8 +43,7 @@
       "y": 0,
       "latitude": 38.944533,
       "longitude": -77.455811
-    },
-    "shield": "bwi-va-us"
+    }
   },
   {
     "code": "DCA",
@@ -54,8 +54,7 @@
       "y": 0,
       "latitude": 38.851242,
       "longitude": -77.040232
-    },
-    "shield": "dca-dc-us"
+    }
   },
   {
     "code": "ATL",
@@ -324,6 +323,17 @@
       "y": 0,
       "latitude": 42.448,
       "longitude": -83.263
+    }
+  },
+  {
+    "code": "DXB",
+    "name": "Dubai",
+    "group": "Asia/Pacific",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 25.032,
+      "longitude": 55.19
     }
   },
   {
@@ -904,6 +914,17 @@
     "shield": "sea-wa-us"
   },
   {
+    "code": "BFI",
+    "name": "Seattle (Metro)",
+    "group": "United States",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 47.449,
+      "longitude": -122.309306
+    }
+  },
+  {
     "code": "ICN",
     "name": "Seoul",
     "group": "Asia/Pacific",
@@ -926,6 +947,18 @@
       "longitude": 103.994433
     },
     "shield": "qpg-singapore-sg"
+  },
+  {
+    "code": "SOF",
+    "name": "Sofia",
+    "group": "Europe",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 42.703,
+      "longitude": 23.306
+    },
+    "shield": "sof-sofia-bg"
   },
   {
     "code": "STL",

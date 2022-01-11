@@ -396,6 +396,18 @@
     "shield": "fjr-ae"
   },
   {
+    "code": "GNV",
+    "name": "Gainesville",
+    "group": "United States",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 29.6516,
+      "longitude": -82.3248
+    },
+    "shield": "gnv-fl-us"
+  },
+  {
     "code": "ACC",
     "name": "Ghana",
     "group": "Africa",
@@ -665,6 +677,17 @@
       "longitude": 9.19
     },
     "shield": "mxp-milan-it"
+  },
+  {
+    "code": "LIN",
+    "name": "Milan POP",
+    "group": "Europe",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 45.47,
+      "longitude": 9.036
+    }
   },
   {
     "code": "MSP",

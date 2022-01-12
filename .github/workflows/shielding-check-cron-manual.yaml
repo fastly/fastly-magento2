@@ -1,0 +1,44 @@
+name: Datacenters check cron job (manual kick)
+on: [ workflow_dispatch ]
+jobs:
+  check-diff-and-create-pr:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Fetch latest JSON via Fastly API
+      run: |
+        curl -s https://api.fastly.com/datacenters -H "fastly-key: ${FASTLY_API_KEY}" --fail -o ./temp.json
+      env:
+        FASTLY_API_KEY: ${{ secrets.FASTLY_API_KEY }}
+    - name: Update JSON
+      id: update-json
+      if: success()
+      run: |
+        cat ./temp.json | jq . > etc/shielding/datacenters.json
+        rm -f ./temp.json
+        echo "::set-output name=diff-count::$(git diff --name-only | wc -l)"
+        SHA1=`sha1sum etc/shielding/datacenters.json | awk '{print $1}'`
+        echo "::set-output name=sha1::$SHA1"
+        echo "::set-output name=pr-count::$(gh pr list --search "${SHA1} in:title is:open" --json title -q '.[] | .title' | wc -l)"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Check diff and create PR
+      if: |
+        steps.update-json.outputs.pr-count == 0 &&
+        steps.update-json.outputs.diff-count > 0
+      run: |
+        DATE=`date +"%Y%m%d"`
+        BRANCH_NAME="datacenters-json-auto-update-${DATE}"
+        git config user.name "github-actions"
+        git config user.email "${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>"
+        git checkout -b "${BRANCH_NAME}"
+        git add .
+        git commit -m "Update datacenters.json"
+        git push origin "${BRANCH_NAME}"
+        gh pr create --title "Update datacenters.json - ${{ steps.update-json.outputs.sha1 }}" --base master --head "${BRANCH_NAME}" \
+        --body "Submitted by GitHub Actions automation.
+
+        You may want to close old bot PRs if they haven't merged yet."
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

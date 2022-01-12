@@ -5,7 +5,7 @@ on:
 
 jobs:
   delete-bot-branch:
-    if: startsWith(${{ github.head_ref }}, "datacenters-json-auto-update-")
+    if: ${{ startsWith(github.head_ref, 'datacenters-json-auto-update-') }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code

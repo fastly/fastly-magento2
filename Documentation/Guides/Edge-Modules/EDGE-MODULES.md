@@ -41,3 +41,12 @@ to www.domain.com. Useful for redirecting apex/naked domains to www.
 - [Netacea bot detection integration](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-NETACEA-INTEGRATION.md) - Netacea Bot Detection integration
 - [Redirect one domain to another](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-REDIRECT-DOMAIN.md) - redirect one domain to another e.g. domain.com 
 - [URL rewrites](https://github.com/fastly/fastly-magento2/blob/master/Documentation/Guides/Edge-Modules/EDGE-MODULE-URL-REWRITES.md) - rewrite incoming /sitemap.xml URL to
+
+## Updating Edge Modules
+
+You may update the enabled Edge Modules when they got updated in a new Fastly Magento module release. To do so, please follow the below steps:
+
+1. Ensure your installed Fastly Magento module is the most up-to-date version
+2. Click the `Manage` button in the `Fastly Edge Modules` section
+3. Click `Refresh` and `Save` buttons on right-top
+4. Click the gear button of each edge module and re-update them one by one

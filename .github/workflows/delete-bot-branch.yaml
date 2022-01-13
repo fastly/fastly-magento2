@@ -1,0 +1,19 @@
+name: Delete bot branch on PR close/merge
+on:
+  pull_request:
+    types: [ closed ]
+
+jobs:
+  delete-bot-branch:
+    if: ${{ startsWith(github.head_ref, 'datacenters-json-auto-update-') }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Delete branch
+      run: |
+        git config user.name "github-actions"
+        git config user.email "${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>"
+        git push origin --delete "${{ github.head_ref }}"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

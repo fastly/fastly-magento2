@@ -22,6 +22,10 @@ Once you expand the menu you will be greeted with a menu like this
 
 In this menu you can either create new snippets or edit/remove existing ones.
 
+### Limitation
+
+**IMPORTANT!** The Custom VCL snippets UI shows only the snippets added through the Magento Admin UI. You must use the Fastly UI/API to manage custom snippets added from outside of the Magento Admin UI.
+
 ## Creating snippets in the UI
 
 To create a snippet click Create. A dialog like this will show up
@@ -40,17 +44,12 @@ After snippet has been created you will see a screen like this
 
 <img alt="Snippets main screen with snippet created confirmation message" title="Snippets main screen with snippet created confirmation message" src="../images/guides/vcl-snippets/after_snippet_create.png" width="800px"/>
 
-*Please note*: After creating snippets or editing them you need to click Upload VCL at the top of Fastly configuration to upload
+*Please note*: After creating snippets or editing them you need to click the `Upload VCL` button at the top of Fastly configuration to upload
 VCL snippets to Fastly. They will be uploaded together with the latest version of the stock Magento snippets
 
 ## Editing/deleting snippets in the UI
 
-You can edit existing snippets in the UI. After any change you need to click Upload VCL to upload them to Fastly.
-
-*Please note*: deleting snippets from the Magento UI only removes it from the Magento UI. If you really need a snippet
-gone you will need to delete it in the Fastly UI. Alternative to deleting a snippet is to set the VCL contents to empty
-content and upload VCL.
-
+You can edit existing snippets in the UI. After any change you need to click the `Upload VCL` button to upload them to Fastly.
 
 # Automated custom VCL snippets deployment
 

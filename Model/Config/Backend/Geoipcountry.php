@@ -82,7 +82,7 @@ class Geoipcountry extends ArraySerialized
     {
         $value = $this->getValue();
 
-        $oldData = json_decode($value, true);
+        $oldData = json_decode((string)$value, true);
         if (!$oldData) {
             try {
                 $oldData = $this->serializerInterface->unserialize($value);

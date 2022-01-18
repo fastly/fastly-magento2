@@ -117,7 +117,7 @@ class UpgradeData implements UpgradeDataInterface
      */
     public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
-        $version = $context->getVersion();
+        $version = (string)$context->getVersion();
 
         if (!$version) {
             return;

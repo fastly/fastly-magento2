@@ -81,7 +81,7 @@ class AdaptivePixelRatioPlugin
 
         $srcSet = implode(',', $srcSet);
         $customAttributes = $subject->getCustomAttributes();
-        if (version_compare($this->productMetadata->getVersion(), '2.4', '<')) {
+        if (version_compare((string)$this->productMetadata->getVersion(), '2.4', '<')) {
             $customAttributes = !empty($customAttributes) ? [$customAttributes] : [];
             $customAttributes[] = 'srcset="' . $srcSet . '"';
             $subject->setData('custom_attributes', implode(' ', $customAttributes));

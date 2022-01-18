@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.177
+
+- Update to support PHP 8.1 https://github.com/fastly/fastly-magento2/pull/500
+
 ## 1.2.176
 
 - Update available Fastly Shielding POP list

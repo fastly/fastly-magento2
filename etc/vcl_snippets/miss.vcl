@@ -3,4 +3,4 @@
     unset bereq.http.Accept-Encoding;
 
     # Send VCL version uploaded to the backend
-    set bereq.http.Fastly-Magento-VCL-Uploaded = "1.2.176";
+    set bereq.http.Fastly-Magento-VCL-Uploaded = "1.2.177";

@@ -23,34 +23,26 @@ class GetUpdateFlag extends Action
      * @var JsonFactory
      */
     private $jsonFactory;
-    /**
-     * @var TypeList
-     */
-    private $typeList;
 
     /**
      * GetUpdatedFlag constructor.
      * @param Action\Context $context
      * @param JsonFactory $jsonFactory
      * @param ScopeConfigInterface $scopeConfig
-     * @param TypeList $typeList
      */
     public function __construct(
         Action\Context $context,
         JsonFactory $jsonFactory,
-        ScopeConfigInterface $scopeConfig,
-        TypeList $typeList
+        ScopeConfigInterface $scopeConfig
     ) {
         parent::__construct($context);
         $this->scopeConfig = $scopeConfig;
         $this->jsonFactory = $jsonFactory;
-        $this->typeList = $typeList;
     }
 
     public function execute()
     {
         $json = $this->jsonFactory->create();
-        $this->typeList->cleanType('config');
         $flag = $this->scopeConfig->getValue(Config::UPDATED_VCL_FLAG);
         if (!$flag && $flag !== null) {
             return $json->setData([

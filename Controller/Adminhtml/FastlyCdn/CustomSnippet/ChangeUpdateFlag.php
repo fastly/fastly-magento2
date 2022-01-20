@@ -4,6 +4,7 @@ namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\CustomSnippet;
 
 use Fastly\Cdn\Model\Config;
 use Magento\Backend\App\Action;
+use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
@@ -31,6 +32,10 @@ class ChangeUpdateFlag extends Action
      * @var CoreConfig
      */
     private $coreConfig;
+    /**
+     * @var CacheTypeList
+     */
+    private $typeList;
 
     /**
      * ChangeUpdateFlag constructor.
@@ -45,19 +50,22 @@ class ChangeUpdateFlag extends Action
         ScopeConfigInterface $scopeConfig,
         Http $request,
         JsonFactory $jsonFactory,
-        CoreConfig $coreConfig
+        CoreConfig $coreConfig,
+        TypeListInterface $typeList
     ) {
         parent::__construct($context);
         $this->jsonFactory = $jsonFactory;
         $this->request = $request;
         $this->scopeConfig = $scopeConfig;
         $this->coreConfig = $coreConfig;
+        $this->typeList = $typeList;
     }
 
     public function execute()
     {
         $json = $this->jsonFactory->create();
         $this->coreConfig->saveConfig(Config::UPDATED_VCL_FLAG, 0, ScopeConfigInterface::SCOPE_TYPE_DEFAULT, 0);
+        $this->typeList->cleanType('config');
         return $json->setData([
             'msg'       => 'Upload VCL to activate modified custom snippet'
         ]);

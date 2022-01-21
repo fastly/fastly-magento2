@@ -101,7 +101,7 @@ class SerializeToJson extends Command
         ];
 
         foreach ($configPaths as $path) {
-            $magVer = $this->productMetadata->getVersion();
+            $magVer = (string)$this->productMetadata->getVersion();
             if (version_compare($magVer, '2.2', '<')) {
                 $output->writeln(
                     'Warning : This function is used for converting serialized data to JSON'

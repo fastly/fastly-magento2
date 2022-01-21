@@ -121,14 +121,14 @@ class Notification extends Feed
      */
     public function checkUpdate($currentVersion = null)
     {
-        $lastVersion = $this->getLastVersion();
+        $lastVersion = (string)$this->getLastVersion();
 
         if (!$lastVersion || version_compare($lastVersion, $currentVersion, '<=')) {
             return;
         }
 
         $versionPath = Config::XML_FASTLY_LAST_CHECKED_ISSUED_VERSION;
-        $oldValue = $this->scopeConfig->getValue($versionPath);
+        $oldValue = (string)$this->scopeConfig->getValue($versionPath);
 
         if (version_compare($oldValue, $lastVersion, '<')) {
             $this->configWriter->save($versionPath, $lastVersion);

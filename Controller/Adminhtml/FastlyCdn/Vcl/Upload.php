@@ -35,6 +35,7 @@ use Magento\Framework\Filesystem;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Config\Model\ResourceModel\Config as CoreConfig;
+use Magento\Framework\App\Cache\TypeListInterface;
 
 /**
  * Class Upload
@@ -85,6 +86,11 @@ class Upload extends Action
     private $coreConfig;
 
     /**
+     * @var \Magento\Framework\App\Cache\TypeListInterface
+     */
+    private $typeList;
+
+    /**
      * Upload constructor.
      *
      * @param Context $context
@@ -98,6 +104,7 @@ class Upload extends Action
      * @param TimezoneInterface $timezone
      * @param Filesystem $filesystem
      * @param CoreConfig $coreConfig
+     * @param TypeListInterface $typeList
      */
     public function __construct(
         Context $context,
@@ -110,7 +117,8 @@ class Upload extends Action
         DateTime $time,
         TimezoneInterface $timezone,
         Filesystem $filesystem,
-        CoreConfig $coreConfig
+        CoreConfig $coreConfig,
+        TypeListInterface $typeList
     ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
@@ -123,6 +131,8 @@ class Upload extends Action
         $this->filesystem = $filesystem;
         parent::__construct($context);
         $this->coreConfig = $coreConfig;
+        $this->typeList = $typeList;
+
     }
 
     /**
@@ -217,6 +227,8 @@ class Upload extends Action
             $comment = ['comment' => 'Magento Module uploaded VCL'];
             $this->api->addComment($clone->number, $comment);
             $this->coreConfig->saveConfig(Config::UPDATED_VCL_FLAG, 1, ScopeConfigInterface::SCOPE_TYPE_DEFAULT, 0);
+            $this->typeList->cleanType('config');
+
             return $result->setData([
                 'status'            => true,
                 'active_version'    => $clone->number
@@ -243,7 +255,7 @@ class Upload extends Action
         $snippetNameData = explode('_', $snippetName, 3);
         $containsEmpty = in_array("", $snippetNameData, true);
         $types = ['init', 'recv', 'hit', 'miss', 'pass', 'fetch', 'error', 'log', 'deliver', 'hash', 'none'];
-        $exception = 'Failed to upload VCL snippets. Please make sure the custom VCL snippets 
+        $exception = 'Failed to upload VCL snippets. Please make sure the custom VCL snippets
             follow this naming convention: [vcl_snippet_type]_[priority]_[short_name_description].vcl';
 
         if (count($snippetNameData) < 3) {

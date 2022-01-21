@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.178
+
+- Fix version compare for PHP 8.1 https://github.com/fastly/fastly-magento2/pull/502
+- Fix for "GetUpdateFlag call flushes all configuration" https://github.com/fastly/fastly-magento2/pull/501
+
 ## 1.2.177
 
 - Update to support PHP 8.1 https://github.com/fastly/fastly-magento2/pull/500

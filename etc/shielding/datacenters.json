@@ -186,6 +186,17 @@
     }
   },
   {
+    "code": "LOT",
+    "name": "Chicago - (Metro)",
+    "group": "United States",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 34.058,
+      "longitude": -118.237
+    }
+  },
+  {
     "code": "CHI",
     "name": "Chicago - CHI",
     "group": "United States",

@@ -595,6 +595,18 @@
     "shield": "lgb-ca-us"
   },
   {
+    "code": "SMO",
+    "name": "Los Angeles - (Metro)",
+    "group": "United States",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 34.058,
+      "longitude": -118.237
+    },
+    "shield": "smo-ca-us"
+  },
+  {
     "code": "BUR",
     "name": "Los Angeles - BUR",
     "group": "United States",

@@ -454,6 +454,17 @@
     "shield": "hongkong-hk"
   },
   {
+    "code": "HNL",
+    "name": "Honolulu POP",
+    "group": "United States",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 21.364,
+      "longitude": -157.869
+    }
+  },
+  {
     "code": "IAH",
     "name": "Houston",
     "group": "United States",

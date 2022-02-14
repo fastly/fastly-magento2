@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+
+## 1.2.179
+
+- Update available Fastly Shielding POP list
+- Fix for Fastly Rate Limiting - Graphql https://github.com/fastly/fastly-magento2/pull/507
+
 ## 1.2.178
 
 - Fix version compare for PHP 8.1 https://github.com/fastly/fastly-magento2/pull/502

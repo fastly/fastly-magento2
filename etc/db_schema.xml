@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="fastly_statistics" resource="default" engine="innodb" comment="Fastly Statistics">
+        <column xsi:type="int" name="stat_id" unsigned="true" nullable="false" identity="true"
+                comment="Stat id"/>
+        <column xsi:type="varchar" name="action" nullable="false" length="30" comment="Fastly action"/>
+        <column xsi:type="boolean" name="sent" nullable="false" default="0"
+                comment="1 = Curl req. sent | 0 = Curl req. not sent"/>
+        <column xsi:type="boolean" name="state" nullable="false" default="0"
+                comment="1 = configured | 0 = not_configured"/>
+        <column xsi:type="datetime" name="created_at" nullable="true" default="NULL" comment="Action date"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="stat_id"/>
+        </constraint>
+    </table>
+
+    <table name="fastly_modly_manifests" resource="default" engine="innodb" comment="Fastly Statistics">
+        <column xsi:type="varchar" name="manifest_id" nullable="false" length="255"
+                comment="Manifest id"/>
+        <column xsi:type="varchar" name="manifest_name" nullable="false" length="64"
+                comment="Manifest name"/>
+        <column xsi:type="text" name="manifest_description" nullable="false" comment="Manifest description"/>
+        <column xsi:type="varchar" name="manifest_version" nullable="false" length="12" comment="Manifest version"/>
+        <column xsi:type="mediumtext" name="manifest_properties" nullable="false" comment="Manifest properties"/>
+        <column xsi:type="mediumtext" name="manifest_content" nullable="false" comment="Manifest content"/>
+        <column xsi:type="mediumtext" name="manifest_vcl" nullable="false" comment="Manifest VCL"/>
+        <column xsi:type="mediumtext" name="manifest_values" nullable="false" comment="Manifest configuration values"/>
+        <column xsi:type="smallint" name="manifest_status" nullable="false" comment="Manifest status"/>
+        <column xsi:type="datetime" name="last_uploaded" nullable="true" default="NULL" comment="Action date"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="manifest_id"/>
+        </constraint>
+    </table>
+</schema>

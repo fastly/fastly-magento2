@@ -103,7 +103,7 @@ class Config implements DataPatchInterface
             'purge_cms_page' => 'system/full_page_cache/fastly/purge_cms_page',
             'soft_purge' => 'system/full_page_cache/fastly/soft_purge',
             'enable_geoip' => 'system/full_page_cache/fastly/enable_geoip',
-            'geoip_action' => 'system/full_page_cache/fast``ly/geoip_action',
+            'geoip_action' => 'system/full_page_cache/fastly/geoip_action',
             'geoip_country_mapping' => 'system/full_page_cache/fastly/geoip_country_mapping',
         ];
 

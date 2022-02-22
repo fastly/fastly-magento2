@@ -1,0 +1,31 @@
+{
+    "fastly_statistics": {
+        "column": {
+            "stat_id": true,
+            "action": true,
+            "sent": true,
+            "state": true,
+            "created_at": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "fastly_modly_manifests": {
+        "column": {
+            "manifest_id": true,
+            "manifest_name": true,
+            "manifest_description": true,
+            "manifest_version": true,
+            "manifest_properties": true,
+            "manifest_content": true,
+            "manifest_vcl": true,
+            "manifest_values": true,
+            "manifest_status": true,
+            "last_uploaded": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}

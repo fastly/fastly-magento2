@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.180
+
+- Fix setup scripts per Magento Marketplace guidelines https://github.com/fastly/fastly-magento2/pull/509
+
 
 ## 1.2.179
 

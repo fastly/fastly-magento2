@@ -6,11 +6,11 @@ namespace Fastly\Cdn\Setup\Patch\Data;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
-use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Fastly\Cdn\Helper\Data;
 use Fastly\Cdn\Model\Statistic;
+use Magento\Framework\Serialize\Serializer\Serialize;
 
 class Config implements DataPatchInterface
 {
@@ -40,6 +40,11 @@ class Config implements DataPatchInterface
     private $scopeConfig;
 
     /**
+     * @var Serialize
+     */
+    private $serialize;
+
+    /**
      * Config constructor.
      *
      * @param ModuleDataSetupInterface $moduleDataSetup
@@ -47,19 +52,23 @@ class Config implements DataPatchInterface
      * @param Data $helper
      * @param Statistic $statistic
      * @param ScopeConfigInterface $scopeConfig
+     * @param Serialize $serialize
      */
     public function __construct(
         ModuleDataSetupInterface $moduleDataSetup,
         WriterInterface $configWriter,
         Data $helper,
         Statistic $statistic,
-        ScopeConfigInterface $scopeConfig
-    ) {
+        ScopeConfigInterface $scopeConfig,
+        Serialize $serialize
+    )
+    {
         $this->moduleDataSetup = $moduleDataSetup;
         $this->configWriter = $configWriter;
         $this->helper = $helper;
         $this->statistic = $statistic;
         $this->scopeConfig = $scopeConfig;
+        $this->serialize = $serialize;
     }
 
     /**
@@ -146,9 +155,7 @@ class Config implements DataPatchInterface
         }
 
         try {
-            // phpcs:disable
-            $oldData = \unserialize($oldData);
-            // phpcs:enable
+            $oldData = $this->serialize->unserialize($oldData);
         } catch (\Exception $e) {
             return;
         }
@@ -189,7 +196,8 @@ class Config implements DataPatchInterface
         string $configPath,
         string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
         int $scopeId = 0
-    ): bool {
+    ): bool
+    {
         $tableName = $this->moduleDataSetup->getTable('core_config_data');
         $select = $this->moduleDataSetup->getConnection()->select()->from(
             $tableName,

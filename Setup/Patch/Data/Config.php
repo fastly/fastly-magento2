@@ -61,8 +61,7 @@ class Config implements DataPatchInterface
         Statistic $statistic,
         ScopeConfigInterface $scopeConfig,
         Serialize $serialize
-    )
-    {
+    ) {
         $this->moduleDataSetup = $moduleDataSetup;
         $this->configWriter = $configWriter;
         $this->helper = $helper;
@@ -196,8 +195,7 @@ class Config implements DataPatchInterface
         string $configPath,
         string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
         int $scopeId = 0
-    ): bool
-    {
+    ): bool {
         $tableName = $this->moduleDataSetup->getTable('core_config_data');
         $select = $this->moduleDataSetup->getConnection()->select()->from(
             $tableName,

@@ -110,8 +110,6 @@ Once the upload process is done, the modal window will automatically close and t
 
 That’s it, you have successfully configured your Magento store with the Fastly CDN.
 
-That’s it, you have successfully configured your Magento store with the Fastly CDN.
-
 ### Advanced configuration
 
 You can configure Advanced options by clicking the Advanced Configuration tab under the Fastly configuration. You have a detailed description under every option – read it and configure it according to your needs.

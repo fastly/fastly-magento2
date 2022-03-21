@@ -24,14 +24,14 @@ use Magento\Framework\App\Cache\Manager;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\ProductMetadataInterface;
+use Magento\Framework\Serialize\Serializer\Serialize;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class SerializeToJson
+ * Converts Module Serialized data to Json valid format
  *
- * @package Fastly\Cdn\Console\Command
  */
 class SerializeToJson extends Command
 {
@@ -56,6 +56,11 @@ class SerializeToJson extends Command
     private $cacheManager;
 
     /**
+     * @var Serialize
+     */
+    private $serialize;
+
+    /**
      * @inheritdoc
      */
     protected function configure() // @codingStandardsIgnoreLine - required by parent class
@@ -71,17 +76,20 @@ class SerializeToJson extends Command
      * @param WriterInterface $configWriter
      * @param ProductMetadataInterface $productMetadata
      * @param Manager $cacheManager
+     * @param Serialize $serialize
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         WriterInterface $configWriter,
         ProductMetadataInterface $productMetadata,
-        Manager $cacheManager
+        Manager $cacheManager,
+        Serialize $serialize
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->configWriter = $configWriter;
         $this->productMetadata = $productMetadata;
         $this->cacheManager = $cacheManager;
+        $this->serialize = $serialize;
 
         parent::__construct();
     }
@@ -112,7 +120,7 @@ class SerializeToJson extends Command
             $oldData = $this->scopeConfig->getValue($path);
 
             try {
-                $oldData = $this->productMetadata->unserialize($oldData);
+                $oldData = $this->serialize->unserialize($oldData);
             } catch (\Exception $e) {
                 $oldData = false;
             }

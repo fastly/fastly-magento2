@@ -140,6 +140,17 @@
     "shield": "brisbane-au"
   },
   {
+    "code": "BRU",
+    "name": "Brussels",
+    "group": "Europe",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 50.871,
+      "longitude": 4.476
+    }
+  },
+  {
     "code": "EZE",
     "name": "Buenos Aires",
     "group": "South America",
@@ -186,25 +197,14 @@
     }
   },
   {
-    "code": "LOT",
+    "code": "CHI",
     "name": "Chicago - (Metro)",
     "group": "United States",
     "coordinates": {
       "x": 0,
       "y": 0,
-      "latitude": 34.058,
-      "longitude": -118.237
-    }
-  },
-  {
-    "code": "CHI",
-    "name": "Chicago - CHI",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 41.9742,
-      "longitude": -87.9073
+      "latitude": 41.863,
+      "longitude": -87.641
     },
     "shield": "chi-il-us"
   },
@@ -231,6 +231,18 @@
       "longitude": -87.9011
     },
     "shield": "pwk-il-us"
+  },
+  {
+    "code": "CHC",
+    "name": "Christchurch",
+    "group": "Asia/Pacific",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": -43.532,
+      "longitude": 172.636
+    },
+    "shield": "chc-christchurch-nz"
   },
   {
     "code": "CMH",
@@ -404,7 +416,7 @@
       "latitude": 25.112225,
       "longitude": 56.323964
     },
-    "shield": "fjr-ae"
+    "shield": "fjr-fujairah-uae"
   },
   {
     "code": "GNV",
@@ -497,8 +509,7 @@
       "y": 0,
       "latitude": 30.3322,
       "longitude": -81.6557
-    },
-    "shield": "jax-fl-us"
+    }
   },
   {
     "code": "JNB",
@@ -594,6 +605,18 @@
     "shield": "lon-london-uk"
   },
   {
+    "code": "BUR",
+    "name": "Los Angeles (Metro)",
+    "group": "United States",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 34.198312,
+      "longitude": -118.357404
+    },
+    "shield": "bur-ca-us"
+  },
+  {
     "code": "LGB",
     "name": "Los Angeles (Metro)",
     "group": "United States",
@@ -604,29 +627,6 @@
       "longitude": -118.408075
     },
     "shield": "lgb-ca-us"
-  },
-  {
-    "code": "SMO",
-    "name": "Los Angeles - (Metro)",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 34.058,
-      "longitude": -118.237
-    }
-  },
-  {
-    "code": "BUR",
-    "name": "Los Angeles - BUR",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 34.198312,
-      "longitude": -118.357404
-    },
-    "shield": "bur-ca-us"
   },
   {
     "code": "MAD",

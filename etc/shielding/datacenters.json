@@ -415,8 +415,7 @@
       "y": 0,
       "latitude": 25.112225,
       "longitude": 56.323964
-    },
-    "shield": "fjr-fujairah-uae"
+    }
   },
   {
     "code": "GNV",
@@ -567,6 +566,18 @@
       "latitude": -12.088902,
       "longitude": -76.973405
     }
+  },
+  {
+    "code": "LIS",
+    "name": "Lisbon",
+    "group": "Europe",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 38.788,
+      "longitude": -9.123
+    },
+    "shield": "lis-lisbon-pt"
   },
   {
     "code": "LCY",

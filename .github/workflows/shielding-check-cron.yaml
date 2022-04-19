@@ -1,8 +1,8 @@
 name: Datacenters check cron job
 on:
   schedule:
-    # UTC, at midnight every day
-    - cron: "0 0 * * *"
+    # UTC, at midnight every Monday
+    - cron: "0 0 * * 1"
 jobs:
   check-diff-and-create-pr:
     runs-on: ubuntu-latest

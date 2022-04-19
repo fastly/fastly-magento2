@@ -46,17 +46,6 @@
     }
   },
   {
-    "code": "DCA",
-    "name": "Ashburn - DCA",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 38.851242,
-      "longitude": -77.040232
-    }
-  },
-  {
     "code": "ATL",
     "name": "Atlanta",
     "group": "United States",

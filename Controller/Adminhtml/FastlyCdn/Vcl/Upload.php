@@ -38,9 +38,8 @@ use Magento\Config\Model\ResourceModel\Config as CoreConfig;
 use Magento\Framework\App\Cache\TypeListInterface;
 
 /**
- * Class Upload
+ * Class for VCL Upload
  *
- * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Vcl
  */
 class Upload extends Action
 {
@@ -132,7 +131,6 @@ class Upload extends Action
         parent::__construct($context);
         $this->coreConfig = $coreConfig;
         $this->typeList = $typeList;
-
     }
 
     /**
@@ -154,7 +152,9 @@ class Upload extends Action
             $read = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR);
             $customSnippetPath = $read->getAbsolutePath(Config::CUSTOM_SNIPPET_PATH);
             $customSnippets = $this->config->getCustomSnippets($customSnippetPath);
+            //$customSnippets['recv_200_Proba'] = 'set req.http.proba = "1";';
 
+            $allowedSnippets = [];
             foreach ($snippets as $key => $value) {
                 $priority = 50;
                 if ($key == 'hash') {
@@ -167,6 +167,7 @@ class Upload extends Action
                     'priority'  => $priority,
                     'content'   => $value
                 ];
+                $allowedSnippets[] = $snippetData['name'];
                 $this->api->uploadSnippet($clone->number, $snippetData);
             }
 
@@ -183,8 +184,11 @@ class Upload extends Action
                     'content'   => $value,
                     'dynamic'   => '0'
                 ];
+                $allowedSnippets[] = $customSnippetData['name'];
                 $this->api->uploadSnippet($clone->number, $customSnippetData);
             }
+
+            $this->syncSnippets($allowedSnippets, $clone->number);
 
             $this->createGzipHeader($clone);
 
@@ -273,6 +277,8 @@ class Upload extends Action
     }
 
     /**
+     * Setup Dictionary
+     *
      * @param $cloneNumber
      * @param $currActiveVersion
      * @return bool|mixed
@@ -291,6 +297,8 @@ class Upload extends Action
     }
 
     /**
+     * Setup Acl
+     *
      * @param $cloneNumber
      * @param $currActiveVersion
      * @return bool|mixed
@@ -309,10 +317,12 @@ class Upload extends Action
     }
 
     /**
+     * Create Gzip Header
+     *
      * @param $clone
      * @throws LocalizedException
      */
-    private function createGzipHeader($clone)
+    private function createGzipHeader($clone): void
     {
         $condition = [
             'name'      => Config::FASTLY_MAGENTO_MODULE . '_gzip_safety',
@@ -333,5 +343,27 @@ class Upload extends Action
         ];
 
         $this->api->createHeader($clone->number, $headerData);
+    }
+
+    /**
+     * Remove disabled snippets from current vcl file
+     *
+     * @param array $allowedSnippets
+     * @param int $version
+     * @throws LocalizedException
+     */
+    private function syncSnippets(array $allowedSnippets, int $version): void
+    {
+        $snippets = $this->api->getSnippets($version);
+
+        $currentActiveSnippets = [];
+        foreach ($snippets as $item) {
+            $currentActiveSnippets[] = $item->name;
+        }
+        $snippetsForDelete = array_diff($currentActiveSnippets, $allowedSnippets);
+
+        foreach ($snippetsForDelete as $snippetName) {
+            $this->api->removeSnippet($version, $snippetName);
+        }
     }
 }

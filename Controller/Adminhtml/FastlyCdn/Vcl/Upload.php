@@ -153,6 +153,7 @@ class Upload extends Action
             $customSnippetPath = $read->getAbsolutePath(Config::CUSTOM_SNIPPET_PATH);
             $customSnippets = $this->config->getCustomSnippets($customSnippetPath);
             //$customSnippets['recv_200_Proba'] = 'set req.http.proba = "1";';
+            //$customSnippets['recv_200_Proba2'] = 'set req.http.proba2 = "1";';
 
             $allowedSnippets = [];
             foreach ($snippets as $key => $value) {
@@ -363,7 +364,10 @@ class Upload extends Action
         $snippetsForDelete = array_diff($currentActiveSnippets, $allowedSnippets);
 
         foreach ($snippetsForDelete as $snippetName) {
-            $this->api->removeSnippet($version, $snippetName);
+            //remove only snippet name which starts with magento prefix
+            if (strpos($snippetName, Config::FASTLY_MAGENTO_MODULE . '_') === 0) {
+                $this->api->removeSnippet($version, $snippetName);
+            }
         }
     }
 }

@@ -152,8 +152,6 @@ class Upload extends Action
             $read = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR);
             $customSnippetPath = $read->getAbsolutePath(Config::CUSTOM_SNIPPET_PATH);
             $customSnippets = $this->config->getCustomSnippets($customSnippetPath);
-            //$customSnippets['recv_200_Proba'] = 'set req.http.proba = "1";';
-            //$customSnippets['recv_200_Proba2'] = 'set req.http.proba2 = "1";';
 
             $allowedSnippets = [];
             foreach ($snippets as $key => $value) {

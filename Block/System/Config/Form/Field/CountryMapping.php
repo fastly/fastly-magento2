@@ -96,10 +96,10 @@ class CountryMapping extends AbstractFieldArray
     /**
      * Get list of store views.
      *
-     * @param bool|false $label
+     * @param string $label
      * @return array
      */
-    protected function getOptions(bool $label = false): array
+    protected function getOptions(string $label = ''): array
     {
         $options = [];
         foreach ($this->_storeManager->getWebsites() as $website) {

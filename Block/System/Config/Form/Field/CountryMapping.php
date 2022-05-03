@@ -18,6 +18,7 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
+
 namespace Fastly\Cdn\Block\System\Config\Form\Field;
 
 use Magento\Backend\Block\Template\Context;
@@ -25,9 +26,8 @@ use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
 use Magento\Framework\Data\Form\Element\Factory;
 
 /**
- * Class CountryMapping
+ * Class for CountryMapping
  *
- * @package Fastly\Cdn\Block\System\Config\Form\Field
  */
 class CountryMapping extends AbstractFieldArray
 {
@@ -99,23 +99,29 @@ class CountryMapping extends AbstractFieldArray
      * @param bool|false $label
      * @return array
      */
-    protected function getOptions($label = false) // @codingStandardsIgnoreLine - required by parent class
+    protected function getOptions(bool $label = false): array
     {
         $options = [];
-        foreach ($this->_storeManager->getStores() as $store) {
-            $options[] = [
-                'value' => $store->getId(),
-                'label' => $store->getName() . " [" . $store->getCode() . "]"
+        foreach ($this->_storeManager->getWebsites() as $website) {
+            $websiteOptions = [
+                'label' => $website->getName() . " [" . $website->getCode() . "]",
+                'value' => [],
             ];
-        }
+            foreach ($website->getStores() as $store) {
+                $websiteOptions['value'][] = [
+                    'value' => $store->getId(),
+                    'label' => $store->getName() . " [" . $store->getCode() . "]"
+                ];
 
+            }
+            $options[] = $websiteOptions;
+        }
         if ($label) {
             array_unshift($options, [
                 'value' => '',
                 'label' => $label
             ]);
         }
-
         return $options;
     }
 }

@@ -35,17 +35,6 @@
     "shield": "iad-va-us"
   },
   {
-    "code": "BWI",
-    "name": "Ashburn - BWI",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 38.944533,
-      "longitude": -77.455811
-    }
-  },
-  {
     "code": "ATL",
     "name": "Atlanta",
     "group": "United States",
@@ -59,7 +48,7 @@
   },
   {
     "code": "FTY",
-    "name": "Atlanta - FTY",
+    "name": "Atlanta",
     "group": "United States",
     "coordinates": {
       "x": 0,
@@ -71,7 +60,7 @@
   },
   {
     "code": "PDK",
-    "name": "Atlanta - PDK",
+    "name": "Atlanta",
     "group": "United States",
     "coordinates": {
       "x": 0,
@@ -175,6 +164,18 @@
     "shield": "maa-chennai-in"
   },
   {
+    "code": "MDW",
+    "name": "Chicago",
+    "group": "United States",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 41.7867799,
+      "longitude": -87.7543771
+    },
+    "shield": "mdw-il-us"
+  },
+  {
     "code": "ORD",
     "name": "Chicago",
     "group": "United States",
@@ -184,6 +185,18 @@
       "latitude": 41.978603,
       "longitude": -87.904842
     }
+  },
+  {
+    "code": "PWK",
+    "name": "Chicago",
+    "group": "United States",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 42.1171,
+      "longitude": -87.9011
+    },
+    "shield": "pwk-il-us"
   },
   {
     "code": "CHI",
@@ -196,30 +209,6 @@
       "longitude": -87.641
     },
     "shield": "chi-il-us"
-  },
-  {
-    "code": "MDW",
-    "name": "Chicago - MDW",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 41.7867799,
-      "longitude": -87.7543771
-    },
-    "shield": "mdw-il-us"
-  },
-  {
-    "code": "PWK",
-    "name": "Chicago - PWK",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 42.1171,
-      "longitude": -87.9011
-    },
-    "shield": "pwk-il-us"
   },
   {
     "code": "CHC",
@@ -279,6 +268,18 @@
     }
   },
   {
+    "code": "DAL",
+    "name": "Dallas",
+    "group": "United States",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 32.787,
+      "longitude": -96.794
+    },
+    "shield": "dal-tx-us"
+  },
+  {
     "code": "DFW",
     "name": "Dallas",
     "group": "United States",
@@ -289,18 +290,6 @@
       "longitude": -97.037997
     },
     "shield": "dallas-tx-us"
-  },
-  {
-    "code": "DAL",
-    "name": "Dallas - DAL",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 32.787,
-      "longitude": -96.794
-    },
-    "shield": "dal-tx-us"
   },
   {
     "code": "DEL",
@@ -328,7 +317,7 @@
   },
   {
     "code": "DTW",
-    "name": "Detroit - DET",
+    "name": "Detroit",
     "group": "United States",
     "coordinates": {
       "x": 0,
@@ -456,7 +445,7 @@
   },
   {
     "code": "HNL",
-    "name": "Honolulu POP",
+    "name": "Honolulu",
     "group": "United States",
     "coordinates": {
       "x": 0,
@@ -571,7 +560,7 @@
   },
   {
     "code": "LCY",
-    "name": "London - LCY",
+    "name": "London",
     "group": "Europe",
     "coordinates": {
       "x": 0,
@@ -583,7 +572,7 @@
   },
   {
     "code": "LHR",
-    "name": "London - LHR",
+    "name": "London",
     "group": "Europe",
     "coordinates": {
       "x": 0,
@@ -595,7 +584,7 @@
   },
   {
     "code": "LON",
-    "name": "London - LON",
+    "name": "London",
     "group": "Europe",
     "coordinates": {
       "x": 0,
@@ -701,6 +690,17 @@
     "shield": "miami-fl-us"
   },
   {
+    "code": "LIN",
+    "name": "Milan",
+    "group": "Europe",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 45.47,
+      "longitude": 9.036
+    }
+  },
+  {
     "code": "MXP",
     "name": "Milan",
     "group": "Europe",
@@ -711,17 +711,6 @@
       "longitude": 9.19
     },
     "shield": "mxp-milan-it"
-  },
-  {
-    "code": "LIN",
-    "name": "Milan POP",
-    "group": "Europe",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 45.47,
-      "longitude": 9.036
-    }
   },
   {
     "code": "MSP",
@@ -783,7 +772,7 @@
   },
   {
     "code": "LGA",
-    "name": "New York City - LGA",
+    "name": "New York City",
     "group": "United States",
     "coordinates": {
       "x": 0,
@@ -828,6 +817,17 @@
       "longitude": 10.809
     },
     "shield": "osl-oslo-no"
+  },
+  {
+    "code": "PMO",
+    "name": "Palermo",
+    "group": "Europe",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 38.1607109,
+      "longitude": 13.3157489
+    }
   },
   {
     "code": "PAO",
@@ -1053,20 +1053,8 @@
     "shield": "sydney-au"
   },
   {
-    "code": "TYO",
-    "name": "Tokyo",
-    "group": "Asia/Pacific",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 35.617,
-      "longitude": 139.748
-    },
-    "shield": "tyo-tokyo-jp"
-  },
-  {
     "code": "HND",
-    "name": "Tokyo - HND",
+    "name": "Tokyo",
     "group": "Asia/Pacific",
     "coordinates": {
       "x": 0,
@@ -1078,7 +1066,7 @@
   },
   {
     "code": "NRT",
-    "name": "Tokyo - NRT",
+    "name": "Tokyo",
     "group": "Asia/Pacific",
     "coordinates": {
       "x": 0,
@@ -1087,6 +1075,18 @@
       "longitude": 139.748
     },
     "shield": "nrt-tokyo-jp"
+  },
+  {
+    "code": "TYO",
+    "name": "Tokyo",
+    "group": "Asia/Pacific",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 35.617,
+      "longitude": 139.748
+    },
+    "shield": "tyo-tokyo-jp"
   },
   {
     "code": "YYZ",

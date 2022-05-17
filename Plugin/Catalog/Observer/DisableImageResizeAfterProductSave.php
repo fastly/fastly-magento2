@@ -19,11 +19,23 @@ class DisableImageResizeAfterProductSave
      */
     private $config;
 
+    /**
+     * DisableImageResizeAfterProductSave constructor.
+     *
+     * @param Config $config
+     */
     public function __construct(Config $config)
     {
         $this->config = $config;
     }
 
+    /**
+     * Disable image resize if deep image optimization is enabled
+     *
+     * @param ImageResizeAfterProductSave $subject
+     * @param callable $proceed
+     * @param Observer $observer
+     */
     public function aroundExecute(ImageResizeAfterProductSave $subject, callable $proceed, Observer $observer)
     {
         if ($this->config->isImageOptimizationEnabled()) {

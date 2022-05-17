@@ -88,4 +88,7 @@
         </arguments>
     </type>
     <preference for="Fastly\Cdn\Model\Resolver\GeoIP\CountryCodeProviderInterface" type="Fastly\Cdn\Model\Resolver\GeoIP\HttpCountryProvider" />
+    <type name="Magento\Catalog\Observer\ImageResizeAfterProductSave">
+        <plugin name="fastly_disable_image_resize" type="Fastly\Cdn\Plugin\Catalog\Observer\DisableImageResizeAfterProductSave" />
+    </type>
 </config>

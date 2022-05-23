@@ -479,17 +479,6 @@
     "shield": "hyd-hyderabad-in"
   },
   {
-    "code": "JAX",
-    "name": "Jacksonville",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 30.3322,
-      "longitude": -81.6557
-    }
-  },
-  {
     "code": "JNB",
     "name": "Johannesburg",
     "group": "Africa",

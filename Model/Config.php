@@ -18,6 +18,7 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
+
 namespace Fastly\Cdn\Model;
 
 use Magento\Framework\App\Cache\StateInterface;
@@ -27,6 +28,7 @@ use Magento\Framework\Filesystem\Directory\ReadFactory;
 use Magento\Framework\Module\Dir;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\PageCache\Model\Varnish\VclGeneratorFactory;
+use \Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Model is responsible for replacing default vcl template
@@ -551,13 +553,20 @@ class Config extends \Magento\PageCache\Model\Config
     private $serializer;
 
     /**
+     * @var StoreManagerInterface
+     */
+    private $storeManager;
+
+    /**
      * Config constructor.
+     *
      * @param ReadFactory $readFactory
      * @param ScopeConfigInterface $scopeConfig
      * @param StateInterface $cacheState
      * @param Dir\Reader $reader
      * @param VclGeneratorFactory $vclGeneratorFactory
      * @param Json|null $serializer
+     * @param StoreManagerInterface $storeManager
      */
     public function __construct(
         ReadFactory $readFactory,
@@ -565,9 +574,11 @@ class Config extends \Magento\PageCache\Model\Config
         StateInterface $cacheState,
         Dir\Reader $reader,
         VclGeneratorFactory $vclGeneratorFactory,
-        Json $serializer = null
+        Json $serializer = null,
+        StoreManagerInterface $storeManager
     ) {
         $this->serializer = $serializer ?: ObjectManager::getInstance()->get(Json::class);
+        $this->storeManager = $storeManager;
         parent::__construct($readFactory, $scopeConfig, $cacheState, $reader, $vclGeneratorFactory, $serializer);
     }
 
@@ -1075,10 +1086,10 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Get store ID for country.
      *
-     * @param $countryCode 2-digit country code
+     * @param string $countryCode
      * @return int|null
      */
-    public function getGeoIpMappingForCountry($countryCode)
+    public function getGeoIpMappingForCountry(string $countryCode): ?int
     {
         if ($mapping = $this->getGeoIpRedirectMapping()) {
             return $this->extractMapping($mapping, $countryCode);
@@ -1089,13 +1100,12 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Filter country code mapping by priority
      *
-     * @param $mapping
-     * @param $countryCode
+     * @param string $mapping
+     * @param string $countryCode
      * @return int|null
      */
-    private function extractMapping($mapping, $countryCode)
+    private function extractMapping(string $mapping, string $countryCode): ?int
     {
-        $final = null;
         $extractMapping = json_decode($mapping, true);
         if (!$extractMapping) {
             try {
@@ -1105,28 +1115,47 @@ class Config extends \Magento\PageCache\Model\Config
             }
         }
 
-        if (is_array($extractMapping)) {
-            $countryId = 'country_id';
-            $key = 'store_id';
-            // check for direct match
+        if (!is_array($extractMapping)) {
+            return null;
+        }
+
+        try {
             foreach ($extractMapping as $map) {
-                if (is_array($map) &&
-                    isset($map[$countryId]) &&
-                    strtolower(str_replace(' ', '', $map[$countryId])) == strtolower($countryCode)) {
-                    if (isset($map[$key])) {
-                        return (int)$map[$key];
-                    }
-                } elseif (is_array($map) &&
-                    isset($map[$countryId]) &&
-                    $map[$countryId] == '*' &&
-                    isset($map[$key]) &&
-                    $final === null) {
-                    // check for wildcard
-                    $final = (int)$map[$key];
+                if (!is_array($map) || !isset($map['country_id']) || !isset($map['store_id'])) {
+                    continue;
+                }
+                if ($storeId = $this->extractStoreForCurrentWebsite($map, $countryCode)) {
+                    return $storeId;
+                }
+
+                if ($storeId = $this->extractStoreForCurrentWebsite($map, '*')) {
+                    return $storeId;
                 }
             }
+            return null;
+        } catch (\Exception $e) {
+            return null;
         }
-        return $final;
+    }
+
+    /**
+     * Extract store for currentWebsite
+     *
+     * @param array $map
+     * @param string $countryCode
+     * @return int
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    private function extractStoreForCurrentWebsite(array $map, string $countryCode): int
+    {
+        $store = $this->storeManager->getStore($map['store_id']);
+        $website = $this->storeManager->getWebsite();
+        if ($store->getWebsiteId() === $website->getId()
+            && strtolower(str_replace(' ', '', $map['country_id'])) === strtolower($countryCode)) {
+            return $store->getId();
+        }
+        return 0;
     }
 
     /**

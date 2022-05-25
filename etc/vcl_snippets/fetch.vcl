@@ -98,14 +98,14 @@
 
         # init surrogate keys
         if (beresp.http.X-Magento-Tags) {
-            set beresp.http.Surrogate-Key = beresp.http.X-Magento-Tags " text";
+            set beresp.http.Surrogate-Key = beresp.http.X-Magento-Tags + " text text-" + table.lookup(magentomodule_config, "current_version", "DEFAULT") ;
         } else {
-            set beresp.http.Surrogate-Key = "text";
+            set beresp.http.Surrogate-Key = "text text-" + table.lookup(magentomodule_config, "current_version", "DEFAULT");
         }
 
         # set surrogate keys by content type if they are image/script or CSS
         if (beresp.http.Content-Type ~ "(image|script|css)") {
-            set beresp.http.Surrogate-Key = re.group.1;
+            set beresp.http.Surrogate-Key = re.group + " " + re.group.1 + "-" + table.lookup(magentomodule_config, "current_version", "DEFAULT");
         }
     }
 

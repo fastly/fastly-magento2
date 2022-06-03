@@ -1,5 +1,5 @@
     # Add support for versions of the cache depending on the blue/green model. If not specified default to DEFAULT
-    set req.hash += table.lookup(magentomodule_config, "current_version", "DEFAULT");
+    set req.hash += req.http.request_version;
 
     if (req.http.graphql) {
         # GraphQL should cache on X-Magento-Cache-Id if available, which has a bunch of variations so it should be part of the key and not a Vary factor

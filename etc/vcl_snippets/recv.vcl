@@ -1,3 +1,13 @@
+    if ( table.lookup(magentomodule_config, "current_version", "DEFAULT") != table.lookup(magentomodule_config, "next_version", "DEFAULT") ) {
+      # Check if user has the deploy version
+      if ( req.http.Cookie:deploy_version !=  table.lookup(magentomodule_config, "current_version", "DEFAULT")
+          && req.http.Cookie:deploy_version != table.lookup(magentomodule_config, "next_version", "DEFAULT") ) {
+        # Next Version differs from Current Version. Let's roll out a percentage of traffic
+        if (randombool(std.atoi(table.lookup(magentomodule_config, "rollout_percentage", "0")), 100)) {
+          set req.http.request_version = table.lookup(magentomodule_config, "next_version");
+        }
+    }  
+    
     # When using Magento tester to test whether your site is configured properly
     # this uses a bypass secret. By default we will use service ID as the bypass secret
     # however user can override this by defining a bypass_secret key in the

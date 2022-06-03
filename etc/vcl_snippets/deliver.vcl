@@ -3,6 +3,16 @@
         return(deliver);
     }
 
+    if ( fastly.ff.visits_this_service == 0 ) {
+      if ( req.http.Cookie:deploy_version != req.http.request_version && req.http.request_version != table.lookup(magentomodule_config, "current_version", "DEFAULT") ) {
+        set beresp.http.Set-Cookie:deploy_version = req.http.request_version;
+      }
+      # Tell the browser to delete the deploy_version cookie if the requested_version is current version
+      if ( req.http.Cookie:deploy_version != "" &&  req.http.request_version == table.lookup(magentomodule_config, "current_version", DEFAULT ) ) {
+        add beresp.http.Set-Cookie = "deploy_version=DEFAULT; Expires=Wed Jun 01 2022 00:00:00 GMT"; 
+      }
+    }
+
     # Send no cache headers to end users for non-static content created by Magento
     if (resp.http.X-Magento-Tags && fastly.ff.visits_this_service == 0 ) {
         set resp.http.Cache-Control = "no-store, no-cache, must-revalidate, max-age=0";

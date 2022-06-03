@@ -6,7 +6,12 @@
         if (randombool(std.atoi(table.lookup(magentomodule_config, "rollout_percentage", "0")), 100)) {
           set req.http.request_version = table.lookup(magentomodule_config, "next_version");
         }
-    }  
+    }
+    
+    # If request version has not been set by rollout percentage set to current version
+    if ( !req.http.request_version ) {
+      set req.http.request_version = table.lookup(magentomodule_config, "current_version", "DEFAULT");
+    }
     
     # When using Magento tester to test whether your site is configured properly
     # this uses a bypass secret. By default we will use service ID as the bypass secret

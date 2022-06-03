@@ -566,7 +566,7 @@ class Config extends \Magento\PageCache\Model\Config
      * @param Dir\Reader $reader
      * @param VclGeneratorFactory $vclGeneratorFactory
      * @param Json|null $serializer
-     * @param StoreManagerInterface $storeManager
+     * @param StoreManagerInterface|null $storeManager
      */
     public function __construct(
         ReadFactory $readFactory,

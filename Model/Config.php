@@ -28,7 +28,7 @@ use Magento\Framework\Filesystem\Directory\ReadFactory;
 use Magento\Framework\Module\Dir;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\PageCache\Model\Varnish\VclGeneratorFactory;
-use \Magento\Store\Model\StoreManagerInterface;
+use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Model is responsible for replacing default vcl template
@@ -38,9 +38,8 @@ use \Magento\Store\Model\StoreManagerInterface;
  */
 
 /**
- * Class Config
+ * Fastly Class Config
  *
- * @package Fastly\Cdn\Model
  */
 class Config extends \Magento\PageCache\Model\Config
 {
@@ -566,7 +565,7 @@ class Config extends \Magento\PageCache\Model\Config
      * @param Dir\Reader $reader
      * @param VclGeneratorFactory $vclGeneratorFactory
      * @param Json|null $serializer
-     * @param StoreManagerInterface $storeManager
+     * @param StoreManagerInterface|null $storeManager
      */
     public function __construct(
         ReadFactory $readFactory,
@@ -575,10 +574,12 @@ class Config extends \Magento\PageCache\Model\Config
         Dir\Reader $reader,
         VclGeneratorFactory $vclGeneratorFactory,
         Json $serializer = null,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager = null
     ) {
         $this->serializer = $serializer ?: ObjectManager::getInstance()->get(Json::class);
-        $this->storeManager = $storeManager;
+
+        $this->storeManager = $storeManager
+            ?: ObjectManager::getInstance()->get(StoreManagerInterface::class);
         parent::__construct($readFactory, $scopeConfig, $cacheState, $reader, $vclGeneratorFactory, $serializer);
     }
 
@@ -1089,7 +1090,7 @@ class Config extends \Magento\PageCache\Model\Config
      * @param string $countryCode
      * @return int|null
      */
-    public function getGeoIpMappingForCountry(string $countryCode): ?int
+    public function getGeoIpMappingForCountry(string $countryCode)
     {
         if ($mapping = $this->getGeoIpRedirectMapping()) {
             return $this->extractMapping($mapping, $countryCode);

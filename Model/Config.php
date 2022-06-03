@@ -1091,7 +1091,7 @@ class Config extends \Magento\PageCache\Model\Config
      * @param string $countryCode
      * @return int|null
      */
-    public function getGeoIpMappingForCountry(string $countryCode): ?int
+    public function getGeoIpMappingForCountry(string $countryCode)
     {
         if ($mapping = $this->getGeoIpRedirectMapping()) {
             return $this->extractMapping($mapping, $countryCode);

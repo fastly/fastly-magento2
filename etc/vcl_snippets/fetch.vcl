@@ -26,6 +26,9 @@
             set beresp.ttl = 31536000s;
             # Add immutable as it avoids IMS and INM revalidations
             set beresp.http.Cache-Control = "max-age=31536000, immutable";
+            # Remove HTTP/1.0 caching headers as they may mess with browser memory caches
+            unset beresp.http.Pragma;
+            unset beresp.http.Expires;
         }
     }
 

@@ -1,5 +1,12 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.182
+
+- Remove Pragma and Expires headers for all static/immutable objects. Helps Chrome not revalidate cached resources
+- Fix deep image optimization - prevent default magento image resize https://github.com/fastly/fastly-magento2/pull/534
+- Improvements to custom VCL snippets upload logic https://github.com/fastly/fastly-magento2/pull/530
+- GeoIP Mapping Does Not Support Multi-site Instance https://github.com/fastly/fastly-magento2/pull/531
+
 ## 1.2.181
 
 - Update available Fastly Shielding POP list

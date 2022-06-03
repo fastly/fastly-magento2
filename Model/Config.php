@@ -38,9 +38,8 @@ use Magento\Store\Model\StoreManagerInterface;
  */
 
 /**
- * Class Config
+ * Fastly Class Config
  *
- * @package Fastly\Cdn\Model
  */
 class Config extends \Magento\PageCache\Model\Config
 {

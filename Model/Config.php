@@ -28,7 +28,7 @@ use Magento\Framework\Filesystem\Directory\ReadFactory;
 use Magento\Framework\Module\Dir;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\PageCache\Model\Varnish\VclGeneratorFactory;
-use \Magento\Store\Model\StoreManagerInterface;
+use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Model is responsible for replacing default vcl template
@@ -575,10 +575,12 @@ class Config extends \Magento\PageCache\Model\Config
         Dir\Reader $reader,
         VclGeneratorFactory $vclGeneratorFactory,
         Json $serializer = null,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager = null
     ) {
         $this->serializer = $serializer ?: ObjectManager::getInstance()->get(Json::class);
-        $this->storeManager = $storeManager;
+
+        $this->storeManager = $storeManager
+            ?: ObjectManager::getInstance()->get(StoreManagerInterface::class);
         parent::__construct($readFactory, $scopeConfig, $cacheState, $reader, $vclGeneratorFactory, $serializer);
     }
 

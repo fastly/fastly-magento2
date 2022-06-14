@@ -1,5 +1,16 @@
 [
   {
+    "code": "ADL",
+    "name": "Adelaide",
+    "group": "Asia/Pacific",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": -34.9285,
+      "longitude": 138.6007
+    }
+  },
+  {
     "code": "AMS",
     "name": "Amsterdam",
     "group": "Europe",

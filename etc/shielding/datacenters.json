@@ -140,6 +140,17 @@
     }
   },
   {
+    "code": "YYC",
+    "name": "Calgary",
+    "group": "United States",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 51.047,
+      "longitude": -114.08
+    }
+  },
+  {
     "code": "CPT",
     "name": "Cape Town",
     "group": "Africa",
@@ -968,7 +979,8 @@
       "y": 0,
       "latitude": 47.449,
       "longitude": -122.309306
-    }
+    },
+    "shield": "bfi-wa-us"
   },
   {
     "code": "ICN",
@@ -1054,18 +1066,6 @@
     "shield": "hnd-tokyo-jp"
   },
   {
-    "code": "NRT",
-    "name": "Tokyo",
-    "group": "Asia/Pacific",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 35.617,
-      "longitude": 139.748
-    },
-    "shield": "nrt-tokyo-jp"
-  },
-  {
     "code": "TYO",
     "name": "Tokyo",
     "group": "Asia/Pacific",
@@ -1076,6 +1076,18 @@
       "longitude": 139.748
     },
     "shield": "tyo-tokyo-jp"
+  },
+  {
+    "code": "NRT",
+    "name": "Tokyo (Metro)",
+    "group": "Asia/Pacific",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 35.617,
+      "longitude": 139.748
+    },
+    "shield": "nrt-tokyo-jp"
   },
   {
     "code": "YYZ",

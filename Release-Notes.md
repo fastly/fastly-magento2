@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.183
+
+- Revert "Improvements to custom VCL snippets upload logic" https://github.com/fastly/fastly-magento2/pull/541
+
 ## 1.2.182
 
 - Remove Pragma and Expires headers for all static/immutable objects. Helps Chrome not revalidate cached resources

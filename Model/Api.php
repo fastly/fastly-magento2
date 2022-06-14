@@ -501,21 +501,6 @@ class Api
     }
 
     /**
-     * Get all VCL snippets
-     *
-     * @param $version
-     * @return bool|mixed
-     * @throws LocalizedException
-     */
-    public function getSnippets($version)
-    {
-        $url = $this->_getApiServiceUri() . 'version/' .rawurlencode($version). '/snippet';
-        $result = $this->_fetch($url, 'GET');
-
-        return $result;
-    }
-
-    /**
      * Creating and updating regular VCL snippets
      *
      * @param $version

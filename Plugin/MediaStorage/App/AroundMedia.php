@@ -40,7 +40,7 @@ class AroundMedia
      * @param callable $proceed
      * @return Response
      */
-    public function aroundLaunch(Media $subject, callable $proceed): Response
+    public function aroundLaunch(Media $subject, callable $proceed)
     {
         if (!$this->config->isImageOptimizationEnabled()) {
             return $proceed();

@@ -1623,4 +1623,19 @@ class Api
         }
         return $responseMessage;
     }
+
+    /**
+     * Get all VCL snippets
+     *
+     * @param int $version
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function getSnippets(int $version)
+    {
+        $url = $this->_getApiServiceUri() . 'version/' .rawurlencode($version). '/snippet';
+        $result = $this->_fetch($url, 'GET');
+
+        return $result;
+    }
 }

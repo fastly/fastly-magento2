@@ -32,7 +32,7 @@ class CheckIsAllowedForSync
      * @param string $snippetName
      * @return bool
      */
-    public function checkIsAllowed(string $snippetName): bool
+    public function checkIsAllowedForRemoving(string $snippetName): bool
     {
         if (\strpos($snippetName, Config::FASTLY_MAGENTO_MODULE . '_') !== 0) {
             return false;

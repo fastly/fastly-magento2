@@ -365,7 +365,7 @@ class Upload extends Action
         $snippetsForDelete = \array_diff($currentActiveSnippets, $allowedSnippets);
 
         foreach ($snippetsForDelete as $snippetName) {
-            if ($this->checkIsAllowedForSync->checkIsAllowed($snippetName)) {
+            if ($this->checkIsAllowedForSync->checkIsAllowedForRemoving($snippetName)) {
                 $this->api->removeSnippet($version, $snippetName);
             }
         }

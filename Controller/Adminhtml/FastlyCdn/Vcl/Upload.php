@@ -362,7 +362,7 @@ class Upload extends Action
         foreach ($snippets as $item) {
             $currentActiveSnippets[] = $item->name;
         }
-        $snippetsForDelete = array_diff($currentActiveSnippets, $allowedSnippets);
+        $snippetsForDelete = \array_diff($currentActiveSnippets, $allowedSnippets);
 
         foreach ($snippetsForDelete as $snippetName) {
             if ($this->checkIsAllowedForSync->checkIsAllowed($snippetName)) {

@@ -34,12 +34,12 @@ class CheckIsAllowedForSync
      */
     public function checkIsAllowed(string $snippetName): bool
     {
-        if (strpos($snippetName, Config::FASTLY_MAGENTO_MODULE . '_') !== 0) {
+        if (\strpos($snippetName, Config::FASTLY_MAGENTO_MODULE . '_') !== 0) {
             return false;
         }
 
         foreach ($this->predefinedList as $disableName) {
-            if (strpos($snippetName, $disableName) === 0) {
+            if (\strpos($snippetName, $disableName) === 0) {
                 return false;
             }
         }

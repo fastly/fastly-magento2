@@ -92,15 +92,15 @@
         <plugin name="fastly_disable_image_resize" type="Fastly\Cdn\Plugin\Catalog\Observer\DisableImageResizeAfterProductSave" />
     </type>
 
-    <type name="Fastly\Cdn\Model\Snippet\CheckIsAllowedForSync">
+    <type name="Fastly\Cdn\Model\Snippet\BuiltInSnippetList">
         <arguments>
             <argument name="predefinedList" xsi:type="array">
-                <item name="0" xsi:type="string">magentomodule_force_tls</item>
-                <item name="1" xsi:type="string">magentomodule_gzip_safety</item>
-                <item name="2" xsi:type="string">magentomodule_image_optimization</item>
-                <item name="3" xsi:type="string">magentomodule_rate_limiting</item>
-                <item name="4" xsi:type="string">magentomodule_error_page</item>
-                <item name="5" xsi:type="string">magentomodule_waf</item>
+                <item name="force_tls" xsi:type="string">magentomodule_force_tls</item>
+                <item name="gzip_safety" xsi:type="string">magentomodule_gzip_safety</item>
+                <item name="image_optimization" xsi:type="string">magentomodule_image_optimization</item>
+                <item name="rate_limiting" xsi:type="string">magentomodule_rate_limiting</item>
+                <item name="error_page" xsi:type="string">magentomodule_error_page</item>
+                <item name="waf" xsi:type="string">magentomodule_waf</item>
             </argument>
         </arguments>
     </type>

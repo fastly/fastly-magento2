@@ -6,9 +6,9 @@ namespace Fastly\Cdn\Model\Snippet;
 use Fastly\Cdn\Model\Config;
 
 /**
- * Class to check can snippet be deleted, predefined snippets can't be deleted
+ * Class to check is snippet builtin
  */
-class CheckIsAllowedForSync
+class BuiltInSnippetList
 {
 
     /**
@@ -17,7 +17,7 @@ class CheckIsAllowedForSync
     private $predefinedList;
 
     /**
-     * CheckIsAllowedForSync constructor.
+     * BuiltInSnippetList constructor.
      *
      * @param array $predefinedList
      */
@@ -27,22 +27,22 @@ class CheckIsAllowedForSync
     }
 
     /**
-     * Check is snippet name allowed for sync / removing
+     * Check is builtin snippet
      *
      * @param string $snippetName
      * @return bool
      */
-    public function checkIsAllowedForRemoving(string $snippetName): bool
+    public function checkIsBuiltInSnippet(string $snippetName): bool
     {
         if (\strpos($snippetName, Config::FASTLY_MAGENTO_MODULE . '_') !== 0) {
-            return false;
+            return true;
         }
 
         foreach ($this->predefinedList as $disableName) {
             if (\strpos($snippetName, $disableName) === 0) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 }

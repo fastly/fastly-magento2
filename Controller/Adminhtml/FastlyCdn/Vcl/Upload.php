@@ -36,7 +36,7 @@ use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Config\Model\ResourceModel\Config as CoreConfig;
 use Magento\Framework\App\Cache\TypeListInterface;
-use Fastly\Cdn\Model\Snippet\CheckIsAllowedForSync;
+use Fastly\Cdn\Model\Snippet\BuiltInSnippetList;
 
 /**
  * Class Upload
@@ -92,9 +92,9 @@ class Upload extends Action
     private $typeList;
 
     /**
-     * @var CheckIsAllowedForSync
+     * @var BuiltInSnippetList
      */
-    private $checkIsAllowedForSync;
+    private $builtInSnippetList;
 
     /**
      * Upload constructor.
@@ -111,7 +111,7 @@ class Upload extends Action
      * @param Filesystem $filesystem
      * @param CoreConfig $coreConfig
      * @param TypeListInterface $typeList
-     * @param CheckIsAllowedForSync $checkIsAllowedForSync
+     * @param BuiltInSnippetList $builtInSnippetList
      */
     public function __construct(
         Context $context,
@@ -126,7 +126,7 @@ class Upload extends Action
         Filesystem $filesystem,
         CoreConfig $coreConfig,
         TypeListInterface $typeList,
-        CheckIsAllowedForSync $checkIsAllowedForSync
+        BuiltInSnippetList $builtInSnippetList
     ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
@@ -140,7 +140,7 @@ class Upload extends Action
         parent::__construct($context);
         $this->coreConfig = $coreConfig;
         $this->typeList = $typeList;
-        $this->checkIsAllowedForSync = $checkIsAllowedForSync;
+        $this->builtInSnippetList = $builtInSnippetList;
     }
 
     /**
@@ -365,7 +365,7 @@ class Upload extends Action
         $snippetsForDelete = \array_diff($currentActiveSnippets, $allowedSnippets);
 
         foreach ($snippetsForDelete as $snippetName) {
-            if ($this->checkIsAllowedForSync->checkIsAllowedForRemoving($snippetName)) {
+            if (!$this->builtInSnippetList->checkIsBuiltInSnippet($snippetName)) {
                 $this->api->removeSnippet($version, $snippetName);
             }
         }

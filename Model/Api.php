@@ -104,8 +104,7 @@ class Api
         Vcl $vcl,
         Session $authSession,
         State $state
-    )
-    {
+    ) {
         $this->config = $config;
         $this->curlFactory = $curlFactory;
         $this->logger = $logger;
@@ -1524,8 +1523,7 @@ class Api
         $test = false,
         $testApiKey = null,
         $logError = true
-    )
-    {
+    ) {
         $apiKey = ($test == true) ? $testApiKey : $this->config->getApiKey();
 
         // Correctly format $body string

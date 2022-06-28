@@ -34,12 +34,8 @@ class BuiltInSnippetList
      */
     public function checkIsBuiltInSnippet(string $snippetName): bool
     {
-        if (\strpos($snippetName, Config::FASTLY_MAGENTO_MODULE . '_') !== 0) {
-            return true;
-        }
-
-        foreach ($this->predefinedList as $disableName) {
-            if (\strpos($snippetName, $disableName) === 0) {
+        foreach ($this->predefinedList as $builtinSnippet) {
+            if (\strpos($snippetName, $builtinSnippet) === 0) {
                 return true;
             }
         }

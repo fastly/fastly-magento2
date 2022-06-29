@@ -6,8 +6,9 @@ define([
     "showErrorMessage",
     "showSuccessMessage",
     "Magento_Ui/js/modal/confirm",
+    'underscore',
     'mage/translate'
-], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, showSuccessMessage, confirm) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, showSuccessMessage, confirm, _) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         /* Dictionary button messages */
@@ -341,8 +342,8 @@ define([
                         if (response.dictionaryItems.length > 0) {
                             $.each(response.dictionaryItems, function (index, item) {
                                 itemsHtml += '<tr><td>' +
-                                    '<input name="key" value="'+ item.item_key +'" class="input-text admin__control-text dictionary-items-field" type="text" disabled></td>' +
-                                    '<td><input name="value" data-type="dictionary" value="'+ item.item_value +'" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
+                                    '<input name="key" value="'+ _.escape(item.item_key) +'" class="input-text admin__control-text dictionary-items-field" type="text" disabled></td>' +
+                                    '<td><input name="value" data-type="dictionary" value="'+ _.escape(item.item_value) +'" class="input-text admin__control-text dictionary-items-field" type="text"></td>' +
                                     '<td class="col-actions">' +
                                     '<button class="action-delete fastly-save-action save_dictionary_item" title="Save" type="button"><span>Save</span></button>' +
                                     '<button class="action-delete remove_dictionary_item"  title="Delete" type="button"><span>Delete</span></button>' +

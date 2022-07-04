@@ -93,6 +93,17 @@
     "shield": "auckland-akl"
   },
   {
+    "code": "BKK",
+    "name": "Bangkok",
+    "group": "Asia/Pacific",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 13.756,
+      "longitude": 100.501
+    }
+  },
+  {
     "code": "BOG",
     "name": "Bogota",
     "group": "South America",

@@ -6,8 +6,9 @@ define([
     "showErrorMessage",
     "showSuccessMessage",
     "Magento_Ui/js/modal/confirm",
+    'underscore',
     'mage/translate'
-], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, showSuccessMessage, confirm) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, showSuccessMessage, confirm, _) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         /* ACL button messages */
@@ -371,8 +372,8 @@ define([
                                 }
                                 let created_at = new Date(item.created_at);
                                 itemsHtml += '<tr><td>' +
-                                    '<input name="value" data-type="acl" data-id="'+ item.id +'" value="'+ ip_output +'" class="input-text admin__control-text acl-items-field" type="text" disabled></td>' +
-                                    '<td><input name="comment" data-type="acl" value="'+ item.comment +'" class="input-text admin__control-text acl-comment" type="text" disabled></td>' +
+                                    '<input name="value" data-type="acl" data-id="'+ _.escape(item.id) +'" value="'+ _.escape(ip_output) +'" class="input-text admin__control-text acl-items-field" type="text" disabled></td>' +
+                                    '<td><input name="comment" data-type="acl" value="'+ _.escape(item.comment) +'" class="input-text admin__control-text acl-comment" type="text" disabled></td>' +
                                     '<td><div class="admin__control-text dialog-item acl-date">' + created_at.toUTCString() + '</div></td>' +
                                     '<td class="col-actions">' +
                                     '<button class="action-delete fastly-edit-action edit_acl_item"  title="Edit" type="button"><span>Edit</span></button>' +

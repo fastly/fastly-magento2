@@ -36,6 +36,7 @@ use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Config\Model\ResourceModel\Config as CoreConfig;
 use Magento\Framework\App\Cache\TypeListInterface;
+use Fastly\Cdn\Model\Snippet\BuiltInSnippetList;
 
 /**
  * Class Upload
@@ -91,6 +92,11 @@ class Upload extends Action
     private $typeList;
 
     /**
+     * @var BuiltInSnippetList
+     */
+    private $builtInSnippetList;
+
+    /**
      * Upload constructor.
      *
      * @param Context $context
@@ -105,6 +111,7 @@ class Upload extends Action
      * @param Filesystem $filesystem
      * @param CoreConfig $coreConfig
      * @param TypeListInterface $typeList
+     * @param BuiltInSnippetList $builtInSnippetList
      */
     public function __construct(
         Context $context,
@@ -118,7 +125,8 @@ class Upload extends Action
         TimezoneInterface $timezone,
         Filesystem $filesystem,
         CoreConfig $coreConfig,
-        TypeListInterface $typeList
+        TypeListInterface $typeList,
+        BuiltInSnippetList $builtInSnippetList
     ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
@@ -132,7 +140,7 @@ class Upload extends Action
         parent::__construct($context);
         $this->coreConfig = $coreConfig;
         $this->typeList = $typeList;
-
+        $this->builtInSnippetList = $builtInSnippetList;
     }
 
     /**
@@ -155,6 +163,7 @@ class Upload extends Action
             $customSnippetPath = $read->getAbsolutePath(Config::CUSTOM_SNIPPET_PATH);
             $customSnippets = $this->config->getCustomSnippets($customSnippetPath);
 
+            $allowedSnippets = [];
             foreach ($snippets as $key => $value) {
                 $priority = 50;
                 if ($key == 'hash') {
@@ -167,6 +176,7 @@ class Upload extends Action
                     'priority'  => $priority,
                     'content'   => $value
                 ];
+                $allowedSnippets[] = $snippetData['name'];
                 $this->api->uploadSnippet($clone->number, $snippetData);
             }
 
@@ -183,9 +193,11 @@ class Upload extends Action
                     'content'   => $value,
                     'dynamic'   => '0'
                 ];
+                $allowedSnippets[] = $customSnippetData['name'];
                 $this->api->uploadSnippet($clone->number, $customSnippetData);
             }
 
+            $this->syncSnippets($allowedSnippets, $clone->number);
             $this->createGzipHeader($clone);
 
             $condition = [
@@ -333,5 +345,29 @@ class Upload extends Action
         ];
 
         $this->api->createHeader($clone->number, $headerData);
+    }
+
+    /**
+     * Remove disabled snippets from current vcl file
+     *
+     * @param array $allowedSnippets
+     * @param int $version
+     * @throws LocalizedException
+     */
+    private function syncSnippets(array $allowedSnippets, int $version): void
+    {
+        $snippets = $this->api->getSnippets($version);
+
+        $currentActiveSnippets = [];
+        foreach ($snippets as $item) {
+            $currentActiveSnippets[] = $item->name;
+        }
+        $snippetsForDelete = \array_diff($currentActiveSnippets, $allowedSnippets);
+
+        foreach ($snippetsForDelete as $snippetName) {
+            if (!$this->builtInSnippetList->checkIsBuiltInSnippet($snippetName)) {
+                $this->api->removeSnippet($version, $snippetName);
+            }
+        }
     }
 }

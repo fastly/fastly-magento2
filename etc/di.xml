@@ -91,4 +91,7 @@
     <type name="Magento\Catalog\Observer\ImageResizeAfterProductSave">
         <plugin name="fastly_disable_image_resize" type="Fastly\Cdn\Plugin\Catalog\Observer\DisableImageResizeAfterProductSave" />
     </type>
+    <type name="Magento\MediaStorage\App\Media">
+        <plugin name="fastly_disable_image_generation" type="Fastly\Cdn\Plugin\MediaStorage\App\AroundMedia" />
+    </type>
 </config>

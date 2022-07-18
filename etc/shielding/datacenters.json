@@ -205,8 +205,7 @@
       "y": 0,
       "latitude": 41.7867799,
       "longitude": -87.7543771
-    },
-    "shield": "mdw-il-us"
+    }
   },
   {
     "code": "ORD",
@@ -228,8 +227,7 @@
       "y": 0,
       "latitude": 42.1171,
       "longitude": -87.9011
-    },
-    "shield": "pwk-il-us"
+    }
   },
   {
     "code": "CHI",
@@ -977,8 +975,7 @@
       "y": 0,
       "latitude": -23.432075,
       "longitude": -46.469511
-    },
-    "shield": "gru-br-sa"
+    }
   },
   {
     "code": "SEA",

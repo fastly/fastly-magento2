@@ -80,7 +80,7 @@ class Save extends Action
             $moduleId = $this->getRequest()->getParam('module_id');
             $groupName = $this->getRequest()->getParam('group_name');
             $moduleData = $this->modly->getModule($moduleId);
-            $moduleProperties = json_decode($moduleData->getManifestProperties());
+            $moduleProperties = \json_decode((string)$moduleData->getManifestProperties());
 
             if ($fieldData && $groupName == '') {
                 $isValid = $this->processSimple($fieldData[0], $moduleProperties);

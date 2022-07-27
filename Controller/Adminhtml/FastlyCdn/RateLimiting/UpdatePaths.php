@@ -134,7 +134,7 @@ class UpdatePaths extends Action
                     ]);
                 }
 
-                $pregMatch = preg_match('{' . $value['path'] . '}', null);
+                $pregMatch = \preg_match('{' . $value['path'] . '}', '');
 
                 if ($pregMatch === false) {
                     return $result->setData([

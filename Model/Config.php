@@ -1160,11 +1160,13 @@ class Config extends \Magento\PageCache\Model\Config
     }
 
     /**
-     * @return array|mixed|null
+     * Get Rate Limit Paths from config
+     *
+     * @return string
      */
     public function getRateLimitPaths()
     {
-        return $this->_scopeConfig->getValue(self::XML_FASTLY_RATE_LIMITING_PATHS);
+        return (string)$this->_scopeConfig->getValue(self::XML_FASTLY_RATE_LIMITING_PATHS);
     }
 
     /**

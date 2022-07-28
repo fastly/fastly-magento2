@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.185
+
+- Fixes for PHP 8.1 issue in Rate Limiting https://github.com/fastly/fastly-magento2/pull/552
+
 ## 1.2.184
 
 - Turn of generating images that crawlers may request from cache after turning on Deep Image Optimization https://github.com/fastly/fastly-magento2/pull/542

@@ -267,7 +267,7 @@ class ToggleRateLimiting extends Action
      */
     private function processPaths()
     {
-        $paths = json_decode($this->config->getRateLimitPaths());
+        $paths = \json_decode($this->config->getRateLimitPaths());
         if (!$paths) {
             $paths = [];
         }

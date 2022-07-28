@@ -150,7 +150,7 @@ class ToggleModules extends Action
             $existingSnippets = [];
 
             foreach ($enabledModules as $key => $value) {
-                $moduleVcl = json_decode($value);
+                $moduleVcl = \json_decode((string)$value);
                 foreach ($moduleVcl as $vcl) {
                     $type = $vcl->type;
                     $reqName = Config::FASTLY_MODLY_MODULE . '_' . $key . '_' . $type;

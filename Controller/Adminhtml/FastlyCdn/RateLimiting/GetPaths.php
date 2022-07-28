@@ -57,7 +57,7 @@ class GetPaths extends Action
     {
         $result = $this->resultJson->create();
         try {
-            $paths = json_decode($this->config->getRateLimitPaths());
+            $paths = \json_decode($this->config->getRateLimitPaths());
 
             if (!$paths) {
                 return $result->setData([

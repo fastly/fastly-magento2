@@ -106,9 +106,9 @@ class SaveExportData extends Action
             $exportActiveModules = [];
             if (isset($activeModules)) {
                 foreach ($activeModules as $index => $module) {
-                    $content = json_decode($module['manifest_content'], true);
+                    $content = \json_decode((string)$module['manifest_content'], true);
                     $exportActiveModules[$module['manifest_id']]['manifest_content'] = $content;
-                    $values = json_decode($module['manifest_values'], true);
+                    $values = \json_decode((string)$module['manifest_values'], true);
                     $exportActiveModules[$module['manifest_id']]['manifest_values'] = $values;
                 }
             }

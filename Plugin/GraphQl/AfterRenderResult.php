@@ -6,41 +6,27 @@ namespace Fastly\Cdn\Plugin\GraphQl;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\GraphQlCache\Model\CacheableQuery;
-use Magento\PageCache\Model\Config;
-use \Fastly\Cdn\Model\Config as FastlyConfig;
+use Fastly\Cdn\Model\Config;
 
 class AfterRenderResult
 {
-    /**
-     * @var Config
-     */
-    private $config;
-
     /**
      * @var CacheableQuery
      */
     private $cacheableQuery;
 
     /**
-     * @var FastlyConfig
-     */
-    private $fastlyConfig;
-
-    /**
      * AfterRenderResult constructor.
      *
      * @param Config $config
      * @param CacheableQuery $cacheableQuery
-     * @param FastlyConfig $fastlyConfig
      */
     public function __construct(
         Config $config,
-        CacheableQuery $cacheableQuery,
-        FastlyConfig $fastlyConfig
+        CacheableQuery $cacheableQuery
     ) {
         $this->config = $config;
         $this->cacheableQuery = $cacheableQuery;
-        $this->fastlyConfig = $fastlyConfig;
     }
 
     /**
@@ -56,9 +42,11 @@ class AfterRenderResult
         ResultInterface $result,
         ResponseInterface $response
     ): ResultInterface {
-        if ($this->config->isEnabled() && $this->cacheableQuery->isCacheable()) {
+        if ($this->config->isEnabled()
+            && $this->config->getType() === Config::FASTLY
+            && $this->cacheableQuery->isCacheable()) {
             $header = $response->getHeader('cache-control');
-            if ($header && $ttl = $this->fastlyConfig->getStaleTtl()) {
+            if ($header && $ttl = $this->config->getStaleTtl()) {
                 $header->addDirective('stale-while-revalidate', $ttl);
             }
         }

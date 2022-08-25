@@ -11,6 +11,11 @@ use Fastly\Cdn\Model\Config;
 class AfterRenderResult
 {
     /**
+     * @var Config
+     */
+    private $config;
+
+    /**
      * @var CacheableQuery
      */
     private $cacheableQuery;

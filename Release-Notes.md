@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.186
+
+- Fix for ratelimiting not exempting maintenance IPs from rate limiting https://github.com/fastly/fastly-magento2/pull/555
+- Add stale-while-revalidate to GraphQL responses https://github.com/fastly/fastly-magento2/pull/561
+
 ## 1.2.185
 
 - Fixes for PHP 8.1 issue in Rate Limiting https://github.com/fastly/fastly-magento2/pull/552

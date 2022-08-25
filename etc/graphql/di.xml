@@ -6,4 +6,7 @@
     <type name="Magento\GraphQl\Controller\GraphQl">
         <plugin name="fastly_graphql_rate_limiter" type="Fastly\Cdn\Model\FrontControllerPlugin" sortOrder="1"/>
     </type>
+    <type name="Magento\Framework\Controller\ResultInterface">
+        <plugin name="fastly-graphql-stale-header" type="Fastly\Cdn\Plugin\GraphQl\AfterRenderResult"/>
+    </type>
 </config>

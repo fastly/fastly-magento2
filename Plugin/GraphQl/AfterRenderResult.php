@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Fastly\Cdn\Plugin\GraphQl;
 
+use Fastly\Cdn\Model\Config;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\GraphQlCache\Model\CacheableQuery;
-use Fastly\Cdn\Model\Config;
 
 class AfterRenderResult
 {
@@ -51,8 +51,15 @@ class AfterRenderResult
             && $this->config->getType() === Config::FASTLY
             && $this->cacheableQuery->isCacheable()) {
             $header = $response->getHeader('cache-control');
-            if ($header && $ttl = $this->config->getStaleTtl()) {
-                $header->addDirective('stale-while-revalidate', $ttl);
+
+            if ($header) {
+                if ($ttl = $this->config->getStaleTtl()) {
+                    $header->addDirective('stale-while-revalidate', $ttl);
+                }
+
+                if ($ttl = $this->config->getStaleErrorTtl()) {
+                    $header->addDirective('stale-if-error', $ttl);
+                }
             }
         }
         return $result;

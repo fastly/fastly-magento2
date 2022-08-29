@@ -198,17 +198,6 @@
     "shield": "maa-chennai-in"
   },
   {
-    "code": "ORD",
-    "name": "Chicago",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 41.978603,
-      "longitude": -87.904842
-    }
-  },
-  {
     "code": "CHI",
     "name": "Chicago - (Metro)",
     "group": "United States",

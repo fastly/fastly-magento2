@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.187
+
+- Add stale-while-error to GraphQL responses https://github.com/fastly/fastly-magento2/pull/563
+
 ## 1.2.186
 
 - Fix for ratelimiting not exempting maintenance IPs from rate limiting https://github.com/fastly/fastly-magento2/pull/555

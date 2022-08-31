@@ -200,6 +200,14 @@ class GetAction extends Action
     private function getTargetUrl($targetUrl, $targetStoreCode, $currentStoreCode): string
     {
         $decodedTargetUrl = $this->urlDecoder->decode($targetUrl);
+
+        /* Fix geoip redirection issue to the same page */
+        $currentStore = $this->storeManager->getStore();
+        $currentBaseUrl = $currentStore->getBaseUrl();
+        $targetStore = $this->storeRepository->getActiveStoreByCode($targetStoreCode);
+        $targetBaseUrl = $targetStore->getBaseUrl();
+        $decodedTargetUrl = str_ireplace($currentBaseUrl, $targetBaseUrl, $decodedTargetUrl);
+
         $search = '/' . $currentStoreCode . '/';
         $replace = '/' . $targetStoreCode . '/';
 
@@ -208,6 +216,7 @@ class GetAction extends Action
             $targetUrl = $this->urlEncoder->encode(preg_replace($searchPattern, $replace, $decodedTargetUrl, 1));
             return explode('%', $targetUrl)[0];
         }
+        $targetUrl = $this->urlEncoder->encode($decodedTargetUrl);
         return $targetUrl;
     }
 }

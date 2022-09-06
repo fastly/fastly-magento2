@@ -206,7 +206,7 @@ class GetAction extends Action
         $currentBaseUrl = $currentStore->getBaseUrl();
         $targetStore = $this->storeRepository->getActiveStoreByCode($targetStoreCode);
         $targetBaseUrl = $targetStore->getBaseUrl();
-        $decodedTargetUrl = str_ireplace($currentBaseUrl, $targetBaseUrl, $decodedTargetUrl);
+        $decodedTargetUrl = \str_ireplace($currentBaseUrl, $targetBaseUrl, $decodedTargetUrl);
 
         $search = '/' . $currentStoreCode . '/';
         $replace = '/' . $targetStoreCode . '/';

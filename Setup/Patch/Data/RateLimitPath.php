@@ -6,6 +6,7 @@ namespace Fastly\Cdn\Setup\Patch\Data;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Fastly\Cdn\Model\Config as FastlyConfig;
+use Magento\Setup\Exception;
 
 /**
  * Class RateLimitPath for adding rate limit placeholder
@@ -66,15 +67,19 @@ class RateLimitPath implements DataPatchInterface
             '0'
         );
         $value = (string)$this->moduleDataSetup->getConnection()->fetchOne($select);
-        $paths = (array)\json_decode($value);
-        if (empty($paths)) {
-            $data = [
-                'path' => FastlyConfig::XML_FASTLY_RATE_LIMITING_PATHS,
-                'scope' => 'default',
-                'scope_id' => '0',
-                'value' => self::CONFIG_PLACE_HOLDER
-            ];
-            $this->moduleDataSetup->getConnection()->insertOnDuplicate($tableName, $data, ['value']);
+        try {
+            $paths = (array)\json_decode($value);
+            if (empty($paths)) {
+                $data = [
+                    'path' => FastlyConfig::XML_FASTLY_RATE_LIMITING_PATHS,
+                    'scope' => 'default',
+                    'scope_id' => '0',
+                    'value' => self::CONFIG_PLACE_HOLDER
+                ];
+                $this->moduleDataSetup->getConnection()->insertOnDuplicate($tableName, $data, ['value']);
+            }
+
+        } catch (\Exception $e) {//phpcs:ignore Magento2.CodeAnalysis.EmptyBlock.DetectedCatch
         }
         return $this;
     }

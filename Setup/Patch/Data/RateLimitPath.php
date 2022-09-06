@@ -14,7 +14,7 @@ use Magento\Setup\Exception;
 class RateLimitPath implements DataPatchInterface
 {
 
-    private const CONFIG_PLACE_HOLDER = '[{"path":"\/fastly-io-enabled","comment":"Default Fastly Placeholder"}]';
+    private const CONFIG_PLACE_HOLDER = '[{"path":"\^/fastly-io-tester$","comment":"Default Fastly Placeholder"}]';
 
     /**
      * @var ModuleDataSetupInterface

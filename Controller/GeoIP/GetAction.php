@@ -200,8 +200,8 @@ class GetAction extends Action
     private function getTargetUrl($targetUrl, $targetStoreCode, $currentStoreCode): string
     {
         $decodedTargetUrl = $this->urlDecoder->decode($targetUrl);
-        $searchPattern = '/\/' . $currentStoreCode . '(?:\/|$)/';
-        $replace = '/' . $targetStoreCode . '/';
+        $searchPattern = '/(.*)\/(?:' . $currentStoreCode . ')((?:\/|\?|$).*)/';
+        $replace = '$1/' . $targetStoreCode . '$2';
 
         if (preg_match($searchPattern, $decodedTargetUrl) !== false) {
             $targetUrl = $this->urlEncoder->encode(preg_replace($searchPattern, $replace, $decodedTargetUrl, 1));

@@ -20,21 +20,21 @@
  */
 namespace Fastly\Cdn\Controller\GeoIP;
 
+use Fastly\Cdn\Helper\StoreMessage;
 use Fastly\Cdn\Model\Config;
+use Fastly\Cdn\Model\Resolver\GeoIP\CountryCodeProviderInterface;
+use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Url\EncoderInterface;
 use Magento\Framework\Url\DecoderInterface;
+use Magento\Framework\Url\EncoderInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Result\Layout;
 use Magento\Framework\View\Result\LayoutFactory;
 use Magento\Store\Api\StoreRepositoryInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
-use Magento\Framework\App\Action\Action;
-use Fastly\Cdn\Helper\StoreMessage;
-use Fastly\Cdn\Model\Resolver\GeoIP\CountryCodeProviderInterface;
 
 /**
  * Class GetAction
@@ -200,13 +200,15 @@ class GetAction extends Action
     private function getTargetUrl($targetUrl, $targetStoreCode, $currentStoreCode): string
     {
         $decodedTargetUrl = $this->urlDecoder->decode($targetUrl);
-        $searchPattern = '/(.*)\/(?:' . $currentStoreCode . ')((?:\/|\?|$).*)/';
-        $replace = '$1/' . $targetStoreCode . '$2';
+        $path = parse_url($decodedTargetUrl, PHP_URL_PATH);
 
-        if (preg_match($searchPattern, $decodedTargetUrl) !== false) {
-            $targetUrl = $this->urlEncoder->encode(preg_replace($searchPattern, $replace, $decodedTargetUrl, 1));
-            return explode('%', $targetUrl)[0];
+        if (preg_match("#^/$currentStoreCode(?:/|\?|$)#", $path)) {
+            $encodedUrl = $this->urlEncoder->encode(
+                preg_replace("#/$currentStoreCode#", "/$targetStoreCode", $decodedTargetUrl, 1)
+            );
+            $targetUrl = explode('%', $encodedUrl)[0];
         }
+
         return $targetUrl;
     }
 }

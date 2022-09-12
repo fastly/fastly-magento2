@@ -847,7 +847,7 @@ class Config extends \Magento\PageCache\Model\Config
      */
     public function getImageOptimizationRatios()
     {
-        return (string)$this->_scopeConfig->getvalue(self::XML_FASTLY_IMAGE_OPTIMIZATIONS_RATIOS);
+        return (string)$this->_scopeConfig->getValue(self::XML_FASTLY_IMAGE_OPTIMIZATIONS_RATIOS);
     }
 
     /**

@@ -1,5 +1,12 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.188
+
+- When IO is enabled and image is not on the disk we will show a 404 page. This was changed in 1.2.184. Changes the behavior to display the image placeholder https://github.com/fastly/fastly-magento2/pull/572
+- Fix getImageOptimization for PHP 8.1 https://github.com/fastly/fastly-magento2/pull/570
+- Enabling rate limiting with no defined paths causes a 503. This fix adds a placeholder path to avoid that condition https://github.com/fastly/fastly-magento2/pull/566 
+- GeoIP worked only with stores of the same website. This fix allows cross website. https://github.com/fastly/fastly-magento2/pull/564
+
 ## 1.2.187
 
 - Add stale-while-error to GraphQL responses https://github.com/fastly/fastly-magento2/pull/563

@@ -843,11 +843,16 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Return image optimization pixel ratios
      *
-     * @return mixed
+     * @return array
      */
     public function getImageOptimizationRatios()
     {
-        return $this->_scopeConfig->getvalue(self::XML_FASTLY_IMAGE_OPTIMIZATIONS_RATIOS);
+        $result = [];
+        $data = (string)$this->_scopeConfig->getValue(self::XML_FASTLY_IMAGE_OPTIMIZATIONS_RATIOS);
+        if ($data) {
+            $result = \explode(',', $data);
+        }
+        return $result;
     }
 
     /**
@@ -1392,12 +1397,12 @@ class Config extends \Magento\PageCache\Model\Config
      * Process blocked items depending on blocking type
      *
      * @param $strippedBlockedItems
-     * @param null $blockingType
-     * @return string
+     * @param null|string $blockingType
+     * @return mixed|string
      */
     public function processBlockedItems($strippedBlockedItems, $blockingType = null)
     {
-        if (is_null($blockingType)) {
+        if ($blockingType === null) {
             $blockingType = $this->_scopeConfig->getValue(self::XML_FASTLY_BLOCKING_TYPE);
         }
         if ($blockingType == '1') {

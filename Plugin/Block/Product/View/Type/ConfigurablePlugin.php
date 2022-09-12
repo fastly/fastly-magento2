@@ -8,8 +8,7 @@ use Magento\ConfigurableProduct\Block\Product\View\Type\Configurable;
 use Magento\Framework\Serialize\SerializerInterface;
 
 /**
- * Class ConfigurablePlugin
- * @package Fastly\Cdn\Plugin\Block\Product\View\Type
+ * Class ConfigurablePlugin After Get JsonConfig
  */
 class ConfigurablePlugin
 {
@@ -45,28 +44,36 @@ class ConfigurablePlugin
     }
 
     /**
+     * After Get JsonConfig
+     *
      * @param Configurable $subject
      * @param string $result
      * @return bool|string
      */
     public function afterGetJsonConfig(Configurable $subject, string $result)
     {
-        if (!$this->config->isImageOptimizationPixelRatioEnabled() || !$result)
+        if (!$this->config->isImageOptimizationPixelRatioEnabled() || !$result) {
             return $result;
+        }
 
-        if (!$config = $this->serializer->unserialize($result))
+        if (!$config = $this->serializer->unserialize($result)) {
             return $result;
+        }
 
-        if (!isset($config['images']))
+        if (!isset($config['images'])) {
             return $result;
+        }
 
-        if (!$pixelRatios = explode(',', $this->config->getImageOptimizationRatios()))
+        $pixelRatios = $this->config->getImageOptimizationRatios();
+        if (empty($pixelRatios)) {
             return $result;
+        }
 
         foreach ($config['images'] as &$images) {
             foreach ($images as &$image) {
-                if (!isset($image['img']))
+                if (!isset($image['img'])) {
                     continue;
+                }
 
                 $image['fastly_srcset'] = $this->adaptivePixelRatio->generateSrcSet($image['img'], $pixelRatios);
             }

@@ -18,6 +18,7 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
+
 namespace Fastly\Cdn\Controller\GeoIP;
 
 use Fastly\Cdn\Helper\StoreMessage;
@@ -109,18 +110,19 @@ class GetAction extends Action
         EncoderInterface $urlEncoder,
         DecoderInterface $urlDecoder,
         CountryCodeProviderInterface $countryCodeProvider
-    ) {
+    )
+    {
         parent::__construct($context);
-        $this->config               = $config;
-        $this->storeRepository      = $storeRepository;
-        $this->storeManager         = $storeManager;
-        $this->resultLayoutFactory  = $resultLayoutFactory;
-        $this->logger               = $logger;
-        $this->storeMessage         = $storeMessage;
-        $this->urlEncoder           = $urlEncoder;
-        $this->urlDecoder           = $urlDecoder;
+        $this->config = $config;
+        $this->storeRepository = $storeRepository;
+        $this->storeManager = $storeManager;
+        $this->resultLayoutFactory = $resultLayoutFactory;
+        $this->logger = $logger;
+        $this->storeMessage = $storeMessage;
+        $this->urlEncoder = $urlEncoder;
+        $this->urlDecoder = $urlDecoder;
 
-        $this->url  = $context->getUrl();
+        $this->url = $context->getUrl();
 
         $this->countryCodeProvider = $countryCodeProvider;
     }
@@ -155,7 +157,7 @@ class GetAction extends Action
                     $currentStoreCode = $currentStore->getCode();
 
                     $queryParams = [
-                        '___store'      => $targetStoreCode,
+                        '___store' => $targetStoreCode,
                         '___from_store' => $currentStoreCode
                     ];
                     if ($targetUrl) {
@@ -202,13 +204,23 @@ class GetAction extends Action
         $decodedTargetUrl = $this->urlDecoder->decode($targetUrl);
         $path = parse_url($decodedTargetUrl, PHP_URL_PATH);
 
-        if (preg_match("#^/$currentStoreCode(?:/|\?|$)#", $path)) {
-            $encodedUrl = $this->urlEncoder->encode(
-                preg_replace("#/$currentStoreCode#", "/$targetStoreCode", $decodedTargetUrl, 1)
-            );
-            $targetUrl = explode('%', $encodedUrl)[0];
-        }
+        /* Fix geoip redirection issue to the same page */
+        $currentStore = $this->storeManager->getStore();
+        $currentBaseUrl = $currentStore->getBaseUrl();
+        $targetStore = $this->storeRepository->getActiveStoreByCode($targetStoreCode);
+        $targetBaseUrl = $targetStore->getBaseUrl();
+        $decodedTargetUrl = \str_ireplace($currentBaseUrl, $targetBaseUrl, $decodedTargetUrl);
 
-        return $targetUrl;
+        if (\preg_match("#^/$currentStoreCode(?:/|\?|$)#", $path)) {
+
+            $decodedTargetUrl = \preg_replace(
+                "#/$currentStoreCode#",
+                "/$targetStoreCode",
+                $decodedTargetUrl,
+                1
+            );
+        }
+        $encodedUrl = $this->urlEncoder->encode($decodedTargetUrl);
+        return \explode('%', $encodedUrl)[0];
     }
 }

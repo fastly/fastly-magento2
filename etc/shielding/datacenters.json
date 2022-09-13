@@ -148,7 +148,8 @@
       "y": 0,
       "latitude": 50.871,
       "longitude": 4.476
-    }
+    },
+    "shield": "bru-brussels-be"
   },
   {
     "code": "EZE",
@@ -195,17 +196,6 @@
       "longitude": 80.1709
     },
     "shield": "maa-chennai-in"
-  },
-  {
-    "code": "ORD",
-    "name": "Chicago",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 41.978603,
-      "longitude": -87.904842
-    }
   },
   {
     "code": "CHI",

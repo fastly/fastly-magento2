@@ -8,8 +8,7 @@ use Magento\Catalog\Block\Product\View\Gallery;
 use Magento\Framework\Serialize\SerializerInterface;
 
 /**
- * Class GalleryPlugin
- * @package Fastly\Cdn\Plugin
+ * Class GalleryPlugin for applying image optimization
  */
 class GalleryPlugin
 {
@@ -30,6 +29,7 @@ class GalleryPlugin
 
     /**
      * GalleryPlugin constructor.
+     *
      * @param SerializerInterface $serializer
      * @param AdaptivePixelRatio $adaptivePixelRatio
      * @param Config $config
@@ -45,28 +45,35 @@ class GalleryPlugin
     }
 
     /**
+     * After Get Gallery Images Json
+     *
      * @param Gallery $subject
      * @param string|false $result
      * @return false|string
      */
-   public function afterGetGalleryImagesJson(Gallery $subject, $result)
-   {
-       if (!$this->config->isImageOptimizationPixelRatioEnabled() || !$result)
-           return $result;
+    public function afterGetGalleryImagesJson(Gallery $subject, $result)
+    {
+        if (!$this->config->isImageOptimizationPixelRatioEnabled() || !$result) {
+            return $result;
+        }
 
-       if (!$images = $this->serializer->unserialize($result))
-           return $result;
+        if (!$images = $this->serializer->unserialize($result)) {
+            return $result;
+        }
 
-       if (!$pixelRatios = explode(',', $this->config->getImageOptimizationRatios()))
-           return $result;
+        $pixelRatios = $this->config->getImageOptimizationRatios();
+        if (empty($pixelRatios)) {
+            return $result;
+        }
 
-       foreach ($images as &$image) {
-           if (!isset($image['img']))
-               continue;
+        foreach ($images as &$image) {
+            if (!isset($image['img'])) {
+                continue;
+            }
 
-           $image['fastly_srcset'] = $this->adaptivePixelRatio->generateSrcSet($image['img'], $pixelRatios);
-       }
+            $image['fastly_srcset'] = $this->adaptivePixelRatio->generateSrcSet($image['img'], $pixelRatios);
+        }
 
-       return $this->serializer->serialize($images);
-   }
+        return $this->serializer->serialize($images);
+    }
 }

@@ -25,9 +25,8 @@ use Magento\Catalog\Block\Product\Image;
 use Magento\Framework\App\ProductMetadataInterface;
 
 /**
- * Class AdaptivePixelRatioPlugin
+ * Class AdaptivePixelRatioPlugin for image ration
  *
- * @package Fastly\Cdn\Plugin
  */
 class AdaptivePixelRatioPlugin
 {
@@ -68,8 +67,7 @@ class AdaptivePixelRatioPlugin
 
         $srcSet = [];
         $imageUrl = $subject->getData('image_url');
-        $pixelRatios = $this->config->getImageOptimizationRatios();
-        $pixelRatiosArray = explode(',', $pixelRatios);
+        $pixelRatiosArray = $this->config->getImageOptimizationRatios();
         $glue = (strpos($imageUrl, '?') !== false) ? '&' : '?';
 
         # Pixel ratios defaults are based on the table from https://mydevice.io/devices/

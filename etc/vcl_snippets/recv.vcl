@@ -31,7 +31,7 @@
     if (table.lookup(magentomodule_config, "allow_super_users_during_maint", "0") == "1" &&
         !req.http.Fastly-Client-Ip ~ maint_allowlist &&
         !req.url ~ "^/(index\.php/)?####ADMIN_PATH####/" &&
-        !req.url ~ "^/pub/static/") {
+        !req.url ~ "^/pub/(static|error)/") {
 
         # If we end up here after a restart and there is a ResponseObject it means we got here after error
         # page VCL restart. We shouldn't touch it. Otherwise return a plain 503 error page

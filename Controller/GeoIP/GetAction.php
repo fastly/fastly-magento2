@@ -38,9 +38,8 @@ use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class GetAction
+ * Class GetAction for esi hole
  *
- * @package Fastly\Cdn\Controller\GeoIP
  */
 class GetAction extends Action
 {
@@ -110,8 +109,7 @@ class GetAction extends Action
         EncoderInterface $urlEncoder,
         DecoderInterface $urlDecoder,
         CountryCodeProviderInterface $countryCodeProvider
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->config = $config;
         $this->storeRepository = $storeRepository;
@@ -194,9 +192,11 @@ class GetAction extends Action
     }
 
     /**
-     * @param $targetUrl
-     * @param $targetStoreCode
-     * @param $currentStoreCode
+     * GetTargetUrl uenc params modificiations
+     *
+     * @param string $targetUrl
+     * @param string $targetStoreCode
+     * @param string $currentStoreCode
      * @return string
      */
     private function getTargetUrl($targetUrl, $targetStoreCode, $currentStoreCode): string

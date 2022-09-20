@@ -271,14 +271,14 @@ class ToggleRateLimiting extends Action
         if (!$paths) {
             $paths = [];
         }
-        $validPaths = '';
 
-        foreach ($paths as $key => $value) {
-            $validPaths .= 'req.url.path ~ "' . $value->path . '" || ';
+        $validPaths = [];
+
+        foreach ($paths as $value) {
+            $validPaths[] = 'req.url.path ~ "' . $value->path . '"';
         }
-        $result = substr($validPaths, 0, strrpos($validPaths, '||', -1));
 
-        return $result;
+        return implode(' || ', $validPaths);
     }
 
     /**

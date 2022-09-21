@@ -278,7 +278,9 @@ class ToggleRateLimiting extends Action
             $validPaths[] = 'req.url.path ~ "' . $value->path . '"';
         }
 
-        return implode(' || ', $validPaths);
+        return !empty($validPaths)
+            ? implode(' || ', $validPaths)
+            : 'req.url.path ~ "\^/fastly-io-tester$"';
     }
 
     /**

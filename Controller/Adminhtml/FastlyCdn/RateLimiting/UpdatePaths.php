@@ -114,7 +114,7 @@ class UpdatePaths extends Action
             if (!$paths) {
                 $paths = [];
             }
-            $validPaths = '';
+            $validPaths = [];
 
             $snippet = $this->config->getVclSnippets(
                 Config::VCL_RATE_LIMITING_PATH,
@@ -142,10 +142,12 @@ class UpdatePaths extends Action
                         'msg'       => $value['path'] . ' is not a valid regular expression'
                     ]);
                 }
-                $validPaths .= 'req.url.path ~ "' . $value['path'] . '" || ';
+                $validPaths[] = 'req.url.path ~ "' . $value['path'] . '"';
             }
 
-            $strippedValidPaths = substr($validPaths, 0, strrpos($validPaths, '||', -1));
+            $strippedValidPaths = !empty($validPaths)
+                ? implode(' || ', $validPaths)
+                : 'req.url.path ~ "\^/fastly-io-tester$"';
 
             foreach ($snippet as $key => $value) {
                 if ($validPaths == '') {

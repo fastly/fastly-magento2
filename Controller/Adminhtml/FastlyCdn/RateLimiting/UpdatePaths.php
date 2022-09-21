@@ -147,7 +147,7 @@ class UpdatePaths extends Action
 
             $strippedValidPaths = !empty($validPaths)
                 ? implode(' || ', $validPaths)
-                : 'req.url.path ~ "\^/fastly-io-tester$"';
+                : 'req.url.path ~ "^/fastly-io-tester$"';
 
             foreach ($snippet as $key => $value) {
                 if ($validPaths == '') {

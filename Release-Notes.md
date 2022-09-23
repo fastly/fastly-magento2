@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.189
+
+- Additional fix for rate limiting enablement errors https://github.com/fastly/fastly-magento2/pull/575
+- Update DeleteCustomSnippet.php (fix to accept VCL name with underscore) https://github.com/fastly/fastly-magento2/pull/574
+- GeoIP fix for case when request comes for store without a trailing slash https://github.com/fastly/fastly-magento2/pull/569
+
 ## 1.2.188
 
 - When IO is enabled and image is not on the disk we will show a 404 page. This was changed in 1.2.184. Changes the behavior to display the image placeholder https://github.com/fastly/fastly-magento2/pull/572

@@ -9,10 +9,12 @@
             set req.http.x-pass = "1";
             set var.fastly_req_do_shield = false;
             set req.hash_always_miss = true;
+            set req.esi = false;
         } else if ( var.bypass-secret == "NONE" && req.http.bypass-secret == req.service_id ) {
             set req.http.x-pass = "1";
             set var.fastly_req_do_shield = false;
             set req.hash_always_miss = true;
+            set req.esi = false;
         } else {
             error 403 "Bypass Secret incorrect";
         }
@@ -129,7 +131,9 @@
 
     # Don't allow clients to force a pass
     if (req.restarts == 0) {
-        unset req.http.x-pass;
+        if ( !req.http.bypass-secret ) {
+            unset req.http.x-pass;
+        }
         unset req.http.Rate-Limit;
         unset req.http.magento-admin-path;
     }

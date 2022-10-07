@@ -63,7 +63,7 @@ class ResponsePlugin
      * @param bool $replace
      * @return mixed
      */
-    public function aroundSetHeader(Http $subject, callable $proceed, string $name, string $value, bool $replace = false) // @codingStandardsIgnoreLine - unused parameter
+    public function aroundSetHeader(Http $subject, callable $proceed, $name, $value, $replace = false) // @codingStandardsIgnoreLine - unused parameter
     {
         // Is Fastly cache enabled?
         if ($this->config->getType() !== Config::FASTLY) {
@@ -74,6 +74,7 @@ class ResponsePlugin
         if ($name !== 'X-Magento-Tags') {
             return $proceed($name, $value, $replace);
         }
+        $value = (string)$value;
 
         // Make the necessary adjustment
         $value = $this->cacheTags->convertCacheTags(str_replace(',', ' ', $value));

@@ -18,16 +18,15 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
+
 namespace Fastly\Cdn\Model;
 
 use Fastly\Cdn\Helper\CacheTags;
 use Magento\Framework\App\Response\Http;
-use Fastly\Cdn\Model\Config;
 
 /**
- * Class ResponsePlugin
+ * Class ResponsePlugin for replacing X-Magento-Tags
  *
- * @package Fastly\Cdn\Model
  */
 class ResponsePlugin
 {
@@ -50,8 +49,8 @@ class ResponsePlugin
         Config $config,
         CacheTags $cacheTags
     ) {
-        $this->config       = $config;
-        $this->cacheTags    = $cacheTags;
+        $this->config = $config;
+        $this->cacheTags = $cacheTags;
     }
 
     /**
@@ -59,30 +58,31 @@ class ResponsePlugin
      *
      * @param Http $subject
      * @param callable $proceed
-     * @param array ...$args
+     * @param string $name
+     * @param string $value
+     * @param bool $replace
      * @return mixed
      */
-    public function aroundSetHeader(Http $subject, callable $proceed, ...$args) // @codingStandardsIgnoreLine - unused parameter
+    public function aroundSetHeader(Http $subject, callable $proceed, string $name, string $value, bool $replace) // @codingStandardsIgnoreLine - unused parameter
     {
         // Is Fastly cache enabled?
         if ($this->config->getType() !== Config::FASTLY) {
-            return $proceed(...$args);
+            return $proceed($name, $value, $replace);
         }
 
         // Is current header X-Magento-Tags
-        if (isset($args[0]) == true && $args[0] !== 'X-Magento-Tags') {
-            return $proceed(...$args);
+        if ($name !== 'X-Magento-Tags') {
+            return $proceed($name, $value, $replace);
         }
 
         // Make the necessary adjustment
-        $args[1] = $this->cacheTags->convertCacheTags(str_replace(',', ' ', $args[1]));
+        $value = $this->cacheTags->convertCacheTags(str_replace(',', ' ', $value));
         $tagsSize = $this->config->getXMagentoTagsSize();
-        if (strlen($args[1]) > $tagsSize) {
-            $trimmedArgs = substr($args[1], 0, $tagsSize);
-            $args[1] = substr($trimmedArgs, 0, strrpos($trimmedArgs, ' ', -1));
+        if (strlen($value) > $tagsSize) {
+            $trimmedArgs = substr($value, 0, $tagsSize);
+            $value = substr($trimmedArgs, 0, strrpos($trimmedArgs, ' ', -1));
         }
 
-        // Proceed
-        return $proceed(...$args);
+        return $proceed($name, $value, $replace);
     }
 }

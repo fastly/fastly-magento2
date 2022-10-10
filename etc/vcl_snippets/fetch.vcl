@@ -72,6 +72,7 @@
         return (pass);
     }
 
+    # We are extending the default Fastly behavior to include no-cache/no-store in addition to private
     if (beresp.http.Cache-Control ~ "private|no-cache|no-store") {
         set req.http.Fastly-Cachetype = "PRIVATE";
         return (pass);
@@ -88,6 +89,9 @@
 
     if (beresp.http.x-amz-request-id) {
         # If assets are coming from Amazon they may have no Cache-Control headers which may make them uncacheable
+
+        # If the object is coming with no Expires, Surrogate-Control or Cache-Control headers we assume it's a misconfiguration
+        # and we will not cache it. This is to prevent inadventently caching private data
     } else if (!beresp.http.Expires && !beresp.http.Surrogate-Control ~ "max-age" && !beresp.http.Cache-Control ~ "(s-maxage|max-age)") {
         # Varnish sets default TTL if none of the headers above are present. If not set we want to make sure we don't cache it
         set beresp.ttl = 0s;

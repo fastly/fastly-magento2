@@ -1477,24 +1477,19 @@ class Api
     /**
      * Retrieve Web Application Firewall settings
      *
-     * @param $id
+     * @param string $id
+     * @param bool $includeWafFirewallVersions
      * @return bool|mixed
      * @throws LocalizedException
      */
-    public function getWafSettings($id)
+    public function getWafSettings(string $id, bool $includeWafFirewallVersions = false)
     {
         $url = $this->_getWafEndpoint() . rawurlencode($id);
-        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+        if ($includeWafFirewallVersions) {
+            $url .= '?include=waf_firewall_versions';
+        }
 
-        return $result;
-    }
-
-    public function getOwaspSettings($id)
-    {
-        $url = $this->_getApiServiceUri() . 'wafs/' . rawurlencode($id) . '/owasp';
-        $result = $this->_fetch($url, \Zend_Http_Client::GET);
-
-        return $result;
+        return $this->_fetch($url, \Zend_Http_Client::GET);
     }
 
     public function getLastErrorMessage()

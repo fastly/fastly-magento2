@@ -48,7 +48,7 @@ define([
                         wafBypass(config, serviceStatus, isAlreadyConfigured);
                     });
                     $.each(wafs, function (waf, info) {
-                        getWafSettings(info.id).done(function (wafResponse) {
+                        getWafSettings(info.id, true).done(function (wafResponse) {
                             wafStateSpan.find('.processing').hide();
                             let wafSettings = wafResponse.waf_settings;
                             let wafData = wafSettings.data;
@@ -64,21 +64,28 @@ define([
                                     wafStateEnabled.show();
                                 }
                             }
-                        });
-                        getOwaspSettings(info.id).done(function (owaspResponse) {
-                            if (owaspResponse.status !== false) {
-                                let owaspSettings = owaspResponse.owasp_settings;
-                                let owaspSettingsData = owaspSettings.data;
-                                let owaspDataAttributes = owaspSettingsData.attributes;
-                                let owaspAllowedMethods = owaspDataAttributes.allowed_methods;
-                                let owaspRestricedExtensions = owaspDataAttributes.restricted_extensions;
 
-                                owaspAllowedMethodsRow.show();
-                                owaspAllowedMethodsField.val(owaspAllowedMethods);
-                                owaspRestrictedExtensionsRow.show();
-                                owaspRestrictedExtensionsField.val(owaspRestricedExtensions);
+                            const includedData = wafResponse.waf_settings.included;
+                            if (!includedData) {
+                                return;
                             }
 
+                            const latestFirewallVersionIncluded = includedData.find(function (included) {
+                                return included.type === "waf_firewall_version" && included.attributes.active;
+                            });
+
+                            if (!latestFirewallVersionIncluded) {
+                                return;
+                            }
+
+                            let firewallRulesData = latestFirewallVersionIncluded.attributes;
+                            let firewallAllowedMethods = firewallRulesData.allowed_methods;
+                            let firewallRestrictedExtensions = firewallRulesData.restricted_extensions;
+
+                            owaspAllowedMethodsRow.show();
+                            owaspAllowedMethodsField.val(firewallAllowedMethods);
+                            owaspRestrictedExtensionsRow.show();
+                            owaspRestrictedExtensionsField.val(firewallRestrictedExtensions);
                         });
                     });
                 } else {
@@ -112,34 +119,24 @@ define([
          * Retrieve WAF settings
          *
          * @param id
+         * @param includeWafFirewallVersion
          * @returns {*}
          */
-        function getWafSettings(id)
+        function getWafSettings(id, includeWafFirewallVersion = false)
         {
+            let queryParams = {
+                "id": id
+            };
+
+            if (includeWafFirewallVersion) {
+                queryParams.include_waf_firewall_versions = true;
+            }
+
             return $.ajax({
                 type: "POST",
                 url: config.getWafSettingsUrl,
-                data: {
-                    'id': id
-                }
+                data: queryParams
             });
-        }
-
-        /**
-         * Retrieve OWASP settings
-         *
-         * @param id
-         * @returns {*}
-         */
-        function getOwaspSettings(id)
-        {
-            return $.ajax({
-                type: "POST",
-                url: config.getOwaspSettingsUrl,
-                data: {
-                    'id': id
-                }
-            })
         }
     }
 });

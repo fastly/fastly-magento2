@@ -88,7 +88,7 @@ class GetImportData extends Action
         $result = $this->resultJson->create();
         try {
             $file = $this->getRequest()->getFiles()->get('file');
-            $data = json_decode(file_get_contents($file['tmp_name']));
+            $data = \json_decode((string)file_get_contents($file['tmp_name']));
             if (!$data) {
                 throw new LocalizedException(__('Invalid file structure'));
             }

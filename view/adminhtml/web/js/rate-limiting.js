@@ -5,8 +5,9 @@ define([
     "resetAllMessages",
     "showErrorMessage",
     "showSuccessMessage",
+    'underscore',
     'mage/translate'
-], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, showSuccessMessage) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, showSuccessMessage, _) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         let active_version = serviceStatus.active_version;
@@ -129,8 +130,8 @@ define([
                             if (paths.length > 0) {
                                 $.each(paths, function (index, data) {
                                     pathsHtml += '<tr><td>' +
-                                        '<input name="path[]" data-type="path" value="' + data.path + '" class="input-text admin__control-text path-field" type="text"></td>' +
-                                        '<td><input name="comment[]" data-type="path" value="' + data.comment + '" class="input-text admin__control-text path-comment" type="text"></td>' +
+                                        '<input name="path[]" data-type="path" value="' + _.escape(data.path) + '" class="input-text admin__control-text path-field" type="text"></td>' +
+                                        '<td><input name="comment[]" data-type="path" value="' + _.escape(data.comment) + '" class="input-text admin__control-text path-comment" type="text"></td>' +
                                         '<td class="col-actions">' +
                                         '<button class="action-delete remove_path"  title="Delete" type="button"><span>Delete</span></button>' +
                                         '</td></tr>';

@@ -105,7 +105,7 @@ class Upload extends Action
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
             $moduleId = $this->getRequest()->getParam('module_id');
-            $snippets = json_decode($this->getRequest()->getParam('snippets'));
+            $snippets = \json_decode($this->getRequest()->getParam('snippets', ''));
 
             $service = $this->api->checkServiceDetails();
             $this->vcl->checkCurrentVersionActive($service->versions, $activeVersion);

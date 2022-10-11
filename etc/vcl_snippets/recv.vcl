@@ -1,3 +1,11 @@
+    # Don't allow clients to force a pass, mess with rate limiting or admin path
+    if (req.restarts == 0) {
+        unset req.http.x-pass;
+        unset req.http.Rate-Limit;
+        unset req.http.magento-admin-path;
+    }
+    unset req.http.x-long-cache;
+
     if ( table.lookup(magentomodule_config, "current_version", "DEFAULT") != table.lookup(magentomodule_config, "next_version", "DEFAULT") ) {
       # Check if user has the deploy version
       if ( req.http.Cookie:deploy_version !=  table.lookup(magentomodule_config, "current_version", "DEFAULT")
@@ -12,7 +20,7 @@
     if ( !req.http.request_version ) {
       set req.http.request_version = table.lookup(magentomodule_config, "current_version", "DEFAULT");
     }
-    
+
     # When using Magento tester to test whether your site is configured properly
     # this uses a bypass secret. By default we will use service ID as the bypass secret
     # however user can override this by defining a bypass_secret key in the
@@ -24,10 +32,12 @@
             set req.http.x-pass = "1";
             set var.fastly_req_do_shield = false;
             set req.hash_always_miss = true;
+            set req.esi = false;
         } else if ( var.bypass-secret == "NONE" && req.http.bypass-secret == req.service_id ) {
             set req.http.x-pass = "1";
             set var.fastly_req_do_shield = false;
             set req.hash_always_miss = true;
+            set req.esi = false;
         } else {
             error 403 "Bypass Secret incorrect";
         }
@@ -46,7 +56,7 @@
     if (table.lookup(magentomodule_config, "allow_super_users_during_maint", "0") == "1" &&
         !req.http.Fastly-Client-Ip ~ maint_allowlist &&
         !req.url ~ "^/(index\.php/)?####ADMIN_PATH####/" &&
-        !req.url ~ "^/pub/static/") {
+        !req.url ~ "^/pub/(static|error)/") {
 
         # If we end up here after a restart and there is a ResponseObject it means we got here after error
         # page VCL restart. We shouldn't touch it. Otherwise return a plain 503 error page
@@ -56,8 +66,6 @@
             error 503 "Maintenance mode";
         }
     }
-
-    unset req.http.x-long-cache;
 
     # We want to force long cache times on any of the versioned assets
     if (req.url.path ~ "^/static/version\d*/") {
@@ -140,13 +148,6 @@
         set req.http.Magento-Original-URL = req.url;
         # Change the list of ignored parameters by configuring them in the Advanced section
         set req.url = querystring.regfilter(req.url, "^(####QUERY_PARAMETERS####)$");
-    }
-
-    # Don't allow clients to force a pass
-    if (req.restarts == 0) {
-        unset req.http.x-pass;
-        unset req.http.Rate-Limit;
-        unset req.http.magento-admin-path;
     }
 
     # Pass on checkout URLs. Because it's a snippet we want to execute this after backend selection so we handle it

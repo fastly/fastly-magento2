@@ -75,8 +75,10 @@ class GetWafSettings extends Action
     {
         $result = $this->resultJsonFactory->create();
         try {
-            $id = $this->getRequest()->getParam('id');
-            $wafSettings = $this->api->getWafSettings($id);
+            $id = (string)$this->getRequest()->getParam('id');
+            $includeWafFirewallVersion = (bool)$this->getRequest()
+                ->getParam('include_waf_firewall_versions', false);
+            $wafSettings = $this->api->getWafSettings($id, $includeWafFirewallVersion);
 
             return $result->setData([
                 'status'        => true,

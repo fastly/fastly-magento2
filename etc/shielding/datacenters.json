@@ -1,5 +1,16 @@
 [
   {
+    "code": "ADL",
+    "name": "Adelaide",
+    "group": "Asia/Pacific",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": -34.9285,
+      "longitude": 138.6007
+    }
+  },
+  {
     "code": "AMS",
     "name": "Amsterdam",
     "group": "Europe",
@@ -82,6 +93,17 @@
     "shield": "auckland-akl"
   },
   {
+    "code": "BKK",
+    "name": "Bangkok",
+    "group": "Asia/Pacific",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 13.756,
+      "longitude": 100.501
+    }
+  },
+  {
     "code": "BOG",
     "name": "Bogota",
     "group": "South America",
@@ -126,7 +148,8 @@
       "y": 0,
       "latitude": 50.871,
       "longitude": 4.476
-    }
+    },
+    "shield": "bru-brussels-be"
   },
   {
     "code": "EZE",
@@ -137,6 +160,17 @@
       "y": 0,
       "latitude": -34.815,
       "longitude": -58.5348
+    }
+  },
+  {
+    "code": "YYC",
+    "name": "Calgary",
+    "group": "United States",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 51.047,
+      "longitude": -114.08
     }
   },
   {
@@ -162,41 +196,6 @@
       "longitude": 80.1709
     },
     "shield": "maa-chennai-in"
-  },
-  {
-    "code": "MDW",
-    "name": "Chicago",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 41.7867799,
-      "longitude": -87.7543771
-    },
-    "shield": "mdw-il-us"
-  },
-  {
-    "code": "ORD",
-    "name": "Chicago",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 41.978603,
-      "longitude": -87.904842
-    }
-  },
-  {
-    "code": "PWK",
-    "name": "Chicago",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 42.1171,
-      "longitude": -87.9011
-    },
-    "shield": "pwk-il-us"
   },
   {
     "code": "CHI",
@@ -477,17 +476,6 @@
       "longitude": 78.378
     },
     "shield": "hyd-hyderabad-in"
-  },
-  {
-    "code": "JAX",
-    "name": "Jacksonville",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 30.3322,
-      "longitude": -81.6557
-    }
   },
   {
     "code": "JNB",
@@ -947,18 +935,6 @@
     "shield": "cgh-saopaulo-br"
   },
   {
-    "code": "GRU",
-    "name": "Sao Paulo",
-    "group": "South America",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": -23.432075,
-      "longitude": -46.469511
-    },
-    "shield": "gru-br-sa"
-  },
-  {
     "code": "SEA",
     "name": "Seattle",
     "group": "United States",
@@ -979,7 +955,8 @@
       "y": 0,
       "latitude": 47.449,
       "longitude": -122.309306
-    }
+    },
+    "shield": "bfi-wa-us"
   },
   {
     "code": "ICN",
@@ -1065,18 +1042,6 @@
     "shield": "hnd-tokyo-jp"
   },
   {
-    "code": "NRT",
-    "name": "Tokyo",
-    "group": "Asia/Pacific",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 35.617,
-      "longitude": 139.748
-    },
-    "shield": "nrt-tokyo-jp"
-  },
-  {
     "code": "TYO",
     "name": "Tokyo",
     "group": "Asia/Pacific",
@@ -1087,6 +1052,18 @@
       "longitude": 139.748
     },
     "shield": "tyo-tokyo-jp"
+  },
+  {
+    "code": "NRT",
+    "name": "Tokyo (Metro)",
+    "group": "Asia/Pacific",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 35.617,
+      "longitude": 139.748
+    },
+    "shield": "nrt-tokyo-jp"
   },
   {
     "code": "YYZ",

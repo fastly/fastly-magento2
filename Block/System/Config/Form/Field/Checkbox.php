@@ -96,16 +96,12 @@ class Checkbox extends Field
     /**
      * Get checked values
      *
-     * @return array|null
+     * @return array
      */
     public function getCheckedValues()
     {
         if ($this->values === null) {
-            $data = $this->config->getImageOptimizationRatios();
-            if (!isset($data)) {
-                $data = '';
-            }
-            $this->values = explode(',', $data);
+            $this->values = $this->config->getImageOptimizationRatios();
         }
         return $this->values;
     }

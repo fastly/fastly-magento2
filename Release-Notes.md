@@ -1,5 +1,53 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.190
+
+- Update WAF to WAF2020 https://github.com/fastly/fastly-magento2/pull/578
+- Response Plugin fixes https://github.com/fastly/fastly-magento2/pull/577
+
+## 1.2.189
+
+- Additional fix for rate limiting enablement errors https://github.com/fastly/fastly-magento2/pull/575
+- Update DeleteCustomSnippet.php (fix to accept VCL name with underscore) https://github.com/fastly/fastly-magento2/pull/574
+- GeoIP fix for case when request comes for store without a trailing slash https://github.com/fastly/fastly-magento2/pull/569
+
+## 1.2.188
+
+- When IO is enabled and image is not on the disk we will show a 404 page. This was changed in 1.2.184. Changes the behavior to display the image placeholder https://github.com/fastly/fastly-magento2/pull/572
+- Fix getImageOptimization for PHP 8.1 https://github.com/fastly/fastly-magento2/pull/570
+- Enabling rate limiting with no defined paths causes a 503. This fix adds a placeholder path to avoid that condition https://github.com/fastly/fastly-magento2/pull/566 
+- GeoIP worked only with stores of the same website. This fix allows cross website. https://github.com/fastly/fastly-magento2/pull/564
+
+## 1.2.187
+
+- Add stale-while-error to GraphQL responses https://github.com/fastly/fastly-magento2/pull/563
+
+## 1.2.186
+
+- Fix for ratelimiting not exempting maintenance IPs from rate limiting https://github.com/fastly/fastly-magento2/pull/555
+- Add stale-while-revalidate to GraphQL responses https://github.com/fastly/fastly-magento2/pull/561
+
+## 1.2.185
+
+- Fixes for PHP 8.1 issue in Rate Limiting https://github.com/fastly/fastly-magento2/pull/552
+
+## 1.2.184
+
+- Turn of generating images that crawlers may request from cache after turning on Deep Image Optimization https://github.com/fastly/fastly-magento2/pull/542
+- Update Handlebars to 4.7.7 https://github.com/fastly/fastly-magento2/pull/547
+- Update Javascript to avoid a XSS issue https://github.com/fastly/fastly-magento2/pull/545
+
+## 1.2.183
+
+- Revert "Improvements to custom VCL snippets upload logic" https://github.com/fastly/fastly-magento2/pull/541
+
+## 1.2.182
+
+- Remove Pragma and Expires headers for all static/immutable objects. Helps Chrome not revalidate cached resources
+- Fix deep image optimization - prevent default magento image resize https://github.com/fastly/fastly-magento2/pull/534
+- Improvements to custom VCL snippets upload logic https://github.com/fastly/fastly-magento2/pull/530
+- GeoIP Mapping Does Not Support Multi-site Instance https://github.com/fastly/fastly-magento2/pull/531
+
 ## 1.2.181
 
 - Update available Fastly Shielding POP list

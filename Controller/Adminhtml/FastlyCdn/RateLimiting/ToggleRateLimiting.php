@@ -267,18 +267,20 @@ class ToggleRateLimiting extends Action
      */
     private function processPaths()
     {
-        $paths = json_decode($this->config->getRateLimitPaths());
+        $paths = \json_decode($this->config->getRateLimitPaths());
         if (!$paths) {
             $paths = [];
         }
-        $validPaths = '';
 
-        foreach ($paths as $key => $value) {
-            $validPaths .= 'req.url.path ~ "' . $value->path . '" || ';
+        $validPaths = [];
+
+        foreach ($paths as $value) {
+            $validPaths[] = 'req.url.path ~ "' . $value->path . '"';
         }
-        $result = substr($validPaths, 0, strrpos($validPaths, '||', -1));
 
-        return $result;
+        return !empty($validPaths)
+            ? implode(' || ', $validPaths)
+            : 'req.url.path ~ "^/fastly-io-tester$"';
     }
 
     /**

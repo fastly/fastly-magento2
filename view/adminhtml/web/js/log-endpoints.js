@@ -4,9 +4,10 @@ define([
     "overlay",
     "resetAllMessages",
     "showErrorMessage",
+    'underscore',
     'mage/translate',
     'mage/validation'
-], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage) {
+], function ($, setServiceLabel, overlay, resetAllMessages, showErrorMessage, _) {
     return function (config, serviceStatus, isAlreadyConfigured) {
 
         let active_version = serviceStatus.active_version;
@@ -102,7 +103,7 @@ define([
                         html += '<option value="">no condition</option>';
                         $.each(conditions, function (index, condition) {
                             if (condition.type === "REQUEST") {
-                                html += '<option value="'+condition.name+'">'+condition.name+' ('+condition.type+') '+condition.statement+'</option>';
+                                html += '<option value="'+_.escape(condition.name)+'">'+_.escape(condition.name)+' ('+condition.type+') '+_.escape(condition.statement)+'</option>';
                             }
                         });
                     }
@@ -121,10 +122,10 @@ define([
             $.each(endpoints, function (index, endpoint) {
                 let html = '<tr>' +
                     '<td>' +
-                        '<input value="' + endpoint.label + '" disabled="disabled" class="input-text" type="text"/>' +
+                        '<input value="' + _.escape(endpoint.label) + '" disabled="disabled" class="input-text" type="text"/>' +
                     '</td>' +
                     '<td class="col-actions">' +
-                        '<button class="action-delete fastly-edit-log-endpoint" type="button" title="Edit Log Endpoint" data-endpoint-type="' + endpoint.type + '" data-endpoint-name="' + endpoint.name + '"></button>' +
+                        '<button class="action-delete fastly-edit-log-endpoint" type="button" title="Edit Log Endpoint" data-endpoint-type="' + _.escape(endpoint.type) + '" data-endpoint-name="' + _.escape(endpoint.name) + '"></button>' +
                     '</td>';
                 $('#fastly-log-endpoints-list').append(html);
             });

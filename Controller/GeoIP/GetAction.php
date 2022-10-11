@@ -18,28 +18,28 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
+
 namespace Fastly\Cdn\Controller\GeoIP;
 
+use Fastly\Cdn\Helper\StoreMessage;
 use Fastly\Cdn\Model\Config;
+use Fastly\Cdn\Model\Resolver\GeoIP\CountryCodeProviderInterface;
+use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Url\EncoderInterface;
 use Magento\Framework\Url\DecoderInterface;
+use Magento\Framework\Url\EncoderInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Result\Layout;
 use Magento\Framework\View\Result\LayoutFactory;
 use Magento\Store\Api\StoreRepositoryInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
-use Magento\Framework\App\Action\Action;
-use Fastly\Cdn\Helper\StoreMessage;
-use Fastly\Cdn\Model\Resolver\GeoIP\CountryCodeProviderInterface;
 
 /**
- * Class GetAction
+ * Class GetAction for esi hole
  *
- * @package Fastly\Cdn\Controller\GeoIP
  */
 class GetAction extends Action
 {
@@ -111,16 +111,16 @@ class GetAction extends Action
         CountryCodeProviderInterface $countryCodeProvider
     ) {
         parent::__construct($context);
-        $this->config               = $config;
-        $this->storeRepository      = $storeRepository;
-        $this->storeManager         = $storeManager;
-        $this->resultLayoutFactory  = $resultLayoutFactory;
-        $this->logger               = $logger;
-        $this->storeMessage         = $storeMessage;
-        $this->urlEncoder           = $urlEncoder;
-        $this->urlDecoder           = $urlDecoder;
+        $this->config = $config;
+        $this->storeRepository = $storeRepository;
+        $this->storeManager = $storeManager;
+        $this->resultLayoutFactory = $resultLayoutFactory;
+        $this->logger = $logger;
+        $this->storeMessage = $storeMessage;
+        $this->urlEncoder = $urlEncoder;
+        $this->urlDecoder = $urlDecoder;
 
-        $this->url  = $context->getUrl();
+        $this->url = $context->getUrl();
 
         $this->countryCodeProvider = $countryCodeProvider;
     }
@@ -155,7 +155,7 @@ class GetAction extends Action
                     $currentStoreCode = $currentStore->getCode();
 
                     $queryParams = [
-                        '___store'      => $targetStoreCode,
+                        '___store' => $targetStoreCode,
                         '___from_store' => $currentStoreCode
                     ];
                     if ($targetUrl) {
@@ -192,22 +192,35 @@ class GetAction extends Action
     }
 
     /**
-     * @param $targetUrl
-     * @param $targetStoreCode
-     * @param $currentStoreCode
+     * GetTargetUrl uenc params modificiations
+     *
+     * @param string $targetUrl
+     * @param string $targetStoreCode
+     * @param string $currentStoreCode
      * @return string
      */
     private function getTargetUrl($targetUrl, $targetStoreCode, $currentStoreCode): string
     {
         $decodedTargetUrl = $this->urlDecoder->decode($targetUrl);
-        $search = '/' . $currentStoreCode . '/';
-        $replace = '/' . $targetStoreCode . '/';
+        $path = parse_url($decodedTargetUrl, PHP_URL_PATH);
 
-        if (strpos($decodedTargetUrl, $search) !== false) {
-            $searchPattern = '/\/' . $currentStoreCode . '\//';
-            $targetUrl = $this->urlEncoder->encode(preg_replace($searchPattern, $replace, $decodedTargetUrl, 1));
-            return explode('%', $targetUrl)[0];
+        /* Fix geoip redirection issue to the same page */
+        $currentStore = $this->storeManager->getStore();
+        $currentBaseUrl = $currentStore->getBaseUrl();
+        $targetStore = $this->storeRepository->getActiveStoreByCode($targetStoreCode);
+        $targetBaseUrl = $targetStore->getBaseUrl();
+        $decodedTargetUrl = \str_ireplace($currentBaseUrl, $targetBaseUrl, $decodedTargetUrl);
+
+        if (\preg_match("#^/$currentStoreCode(?:/|\?|$)#", $path)) {
+
+            $decodedTargetUrl = \preg_replace(
+                "#/$currentStoreCode#",
+                "/$targetStoreCode",
+                $decodedTargetUrl,
+                1
+            );
         }
-        return $targetUrl;
+        $encodedUrl = $this->urlEncoder->encode($decodedTargetUrl);
+        return \explode('%', $encodedUrl)[0];
     }
 }

@@ -119,7 +119,7 @@ class DeleteCustomSnippet extends Action
             $write = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
             $snippetPath = $write->getRelativePath(Config::CUSTOM_SNIPPET_PATH . $snippet);
 
-            $snippetName = explode('_', $snippet);
+            $snippetName = explode('_', $snippet,3);
             $snippetName = explode('.', $snippetName[2]);
 
             $reqName = Config::FASTLY_MAGENTO_MODULE . '_' . $snippetName[0];

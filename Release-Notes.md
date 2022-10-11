@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.190
+
+- Update WAF to WAF2020 https://github.com/fastly/fastly-magento2/pull/578
+- Response Plugin fixes https://github.com/fastly/fastly-magento2/pull/577
+
 ## 1.2.189
 
 - Additional fix for rate limiting enablement errors https://github.com/fastly/fastly-magento2/pull/575

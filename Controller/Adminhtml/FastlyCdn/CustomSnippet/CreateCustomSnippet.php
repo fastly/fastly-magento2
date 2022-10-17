@@ -80,6 +80,19 @@ class CreateCustomSnippet extends Action
      */
     private $vcl;
 
+    protected const CUSTOM_VCL_TYPES = [
+        'init',
+        'recv',
+        'hash',
+        'hit',
+        'miss',
+        'pass',
+        'fetch',
+        'error',
+        'deliver',
+        'log'
+    ];
+
     /**
      * CreateCustomSnippet constructor.
      *
@@ -133,6 +146,7 @@ class CreateCustomSnippet extends Action
             $priority = $this->getRequest()->getParam('priority');
             $vcl = $this->getRequest()->getParam('vcl');
             $edit = $this->getRequest()->getParam('edit');
+            $original = $this->getRequest()->getParam('original');
             $validation = $this->config->validateCustomSnippet($name, $type, $priority);
             $error = $validation['error'];
             if ($error != null) {
@@ -145,12 +159,14 @@ class CreateCustomSnippet extends Action
             $write = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
             $snippetPath = $write->getRelativePath(Config::CUSTOM_SNIPPET_PATH . $fileName);
 
-            if ($this->snippetExists($snippetName, $write)) {
-                throw new LocalizedException(__('Snippet with the name of \'%1\' already exists', $snippetName));
+            // Allow if editing existing snippet and the name is unchanged, otherwise check if snippet already exists.
+            if (!($edit === 'true' && $this->nameUnchanged($snippetName, $original))
+                && $this->snippetExists($snippetName, $write)
+            ) {
+                throw new LocalizedException(__('Custom snippet \'%1\' already exists', $snippetName));
             }
 
-            if ($edit == "true") {
-                $original = $this->getRequest()->getParam('original');
+            if ($edit === 'true') {
                 $originalPath = $write->getRelativePath(Config::CUSTOM_SNIPPET_PATH . $original);
                 $write->renameFile($originalPath, $snippetPath);
             }
@@ -176,30 +192,41 @@ class CreateCustomSnippet extends Action
      */
     private function snippetExists(string $snippetName, ReadInterface $directoryRead): bool
     {
-        $searchPrefix = Config::FASTLY_MAGENTO_MODULE;
-
-        $searchPattern = "${searchPrefix}_(init|recv|hash|hit|miss|pass|fetch|error|deliver|log)_${snippetName}\.vcl";
+        $searchPattern = sprintf(
+            '{%s}_*_%s.vcl',
+            implode(',', self::CUSTOM_VCL_TYPES),
+            $snippetName
+        );
         $snippetOnDisk = $directoryRead->search(
             $searchPattern,
             Config::CUSTOM_SNIPPET_PATH
         );
 
-        if ($snippetOnDisk) {
+        if (count($snippetOnDisk)) {
             return true;
         }
 
         $service = $this->api->checkServiceDetails();
         $versions = $this->vcl->determineVersions($service->versions);
 
-        $snippetUploaded = $this->api->hasSnippet(
+        return $this->api->hasSnippet(
             $versions['active_version'],
             Config::FASTLY_MAGENTO_MODULE . '_' . $snippetName
         );
+    }
 
-        if ($snippetUploaded) {
-            return true;
-        }
-
-        return false;
+    /**
+     * @param string $name
+     * @param string $original
+     * @return bool
+     */
+    private function nameUnchanged(string $name, string $original): bool
+    {
+        $searchPattern = sprintf(
+            '/(%s)_[0-9]+_%s.vcl/',
+            implode('|', self::CUSTOM_VCL_TYPES),
+            $name
+        );
+        return preg_match($searchPattern, $original) === 1;
     }
 }

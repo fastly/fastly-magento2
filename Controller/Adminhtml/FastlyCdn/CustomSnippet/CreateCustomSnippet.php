@@ -20,16 +20,19 @@
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\CustomSnippet;
 
+use Fastly\Cdn\Helper\Vcl;
+use Fastly\Cdn\Model\Api;
+use Fastly\Cdn\Model\Config;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\Controller\Result\RawFactory;
-use Magento\Framework\App\Response\Http\FileFactory;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Filesystem\Directory\WriteFactory;
+use Magento\Framework\App\Response\Http\FileFactory;
 use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Controller\Result\RawFactory;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Filesystem;
-use Fastly\Cdn\Model\Config;
+use Magento\Framework\Filesystem\Directory\ReadInterface;
+use Magento\Framework\Filesystem\Directory\WriteFactory;
 
 /**
  * Class CreateCustomSnippet
@@ -68,6 +71,29 @@ class CreateCustomSnippet extends Action
     private $config;
 
     /**
+     * @var Api
+     */
+    private $api;
+
+    /**
+     * @var Vcl
+     */
+    private $vcl;
+
+    protected const CUSTOM_VCL_TYPES = [
+        'init',
+        'recv',
+        'hash',
+        'hit',
+        'miss',
+        'pass',
+        'fetch',
+        'error',
+        'deliver',
+        'log'
+    ];
+
+    /**
      * CreateCustomSnippet constructor.
      *
      * @param Context $context
@@ -78,6 +104,8 @@ class CreateCustomSnippet extends Action
      * @param JsonFactory $resultJsonFactory
      * @param Filesystem $filesystem
      * @param Config $config
+     * @param Vcl $vcl
+     * @param Api $api
      */
     public function __construct(
         Context $context,
@@ -87,7 +115,9 @@ class CreateCustomSnippet extends Action
         WriteFactory $writeFactory,
         JsonFactory $resultJsonFactory,
         Filesystem $filesystem,
-        Config $config
+        Config $config,
+        Vcl $vcl,
+        Api $api
     ) {
         $this->resultRawFactory = $resultRawFactory;
         $this->fileFactory = $fileFactory;
@@ -96,6 +126,8 @@ class CreateCustomSnippet extends Action
         $this->resultJson = $resultJsonFactory;
         $this->filesystem = $filesystem;
         $this->config = $config;
+        $this->vcl = $vcl;
+        $this->api = $api;
 
         parent::__construct($context);
     }
@@ -114,6 +146,7 @@ class CreateCustomSnippet extends Action
             $priority = $this->getRequest()->getParam('priority');
             $vcl = $this->getRequest()->getParam('vcl');
             $edit = $this->getRequest()->getParam('edit');
+            $original = $this->getRequest()->getParam('original');
             $validation = $this->config->validateCustomSnippet($name, $type, $priority);
             $error = $validation['error'];
             if ($error != null) {
@@ -126,8 +159,14 @@ class CreateCustomSnippet extends Action
             $write = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
             $snippetPath = $write->getRelativePath(Config::CUSTOM_SNIPPET_PATH . $fileName);
 
-            if ($edit == "true") {
-                $original = $this->getRequest()->getParam('original');
+            // Allow if editing existing snippet and the name is unchanged, otherwise check if snippet already exists.
+            if (!($edit === 'true' && $this->nameUnchanged($snippetName, $original))
+                && $this->snippetExists($snippetName, $write)
+            ) {
+                throw new LocalizedException(__('Custom snippet \'%1\' already exists', $snippetName));
+            }
+
+            if ($edit === 'true') {
                 $originalPath = $write->getRelativePath(Config::CUSTOM_SNIPPET_PATH . $original);
                 $write->renameFile($originalPath, $snippetPath);
             }
@@ -143,5 +182,51 @@ class CreateCustomSnippet extends Action
                 'msg'       => $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * @param string $snippetName
+     * @param ReadInterface $directoryRead
+     * @return bool
+     * @throws LocalizedException
+     */
+    private function snippetExists(string $snippetName, ReadInterface $directoryRead): bool
+    {
+        $searchPattern = sprintf(
+            '{%s}_*_%s.vcl',
+            implode(',', self::CUSTOM_VCL_TYPES),
+            $snippetName
+        );
+        $snippetOnDisk = $directoryRead->search(
+            $searchPattern,
+            Config::CUSTOM_SNIPPET_PATH
+        );
+
+        if (count($snippetOnDisk)) {
+            return true;
+        }
+
+        $service = $this->api->checkServiceDetails();
+        $versions = $this->vcl->determineVersions($service->versions);
+
+        return $this->api->hasSnippet(
+            $versions['active_version'],
+            Config::FASTLY_MAGENTO_MODULE . '_' . $snippetName
+        );
+    }
+
+    /**
+     * @param string $name
+     * @param string $original
+     * @return bool
+     */
+    private function nameUnchanged(string $name, string $original): bool
+    {
+        $searchPattern = sprintf(
+            '/(%s)_[0-9]+_%s.vcl/',
+            implode('|', self::CUSTOM_VCL_TYPES),
+            $name
+        );
+        return preg_match($searchPattern, $original) === 1;
     }
 }

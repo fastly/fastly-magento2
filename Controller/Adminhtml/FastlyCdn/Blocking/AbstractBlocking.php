@@ -21,74 +21,51 @@ abstract class AbstractBlocking extends Action
     }
 
     /**
-     * Prepares ACL VCL snippets
-     *
-     * @param $blockedAcls
+     * @param string[] $countryCodes
+     * @param string[] $acls
+     * @param int $blockingType
      * @return string
      */
-    protected function prepareAcls($blockedAcls)
+    protected function prepareBlockedItems(array $countryCodes, array $acls, int $blockingType): string
     {
-        $result = '';
-        $aclsArray = [];
-        $acls = '';
-
-        if ($blockedAcls != null) {
-            foreach ($blockedAcls as $key => $value) {
-                $aclsArray[] = $value['value'];
-            }
-            $acls = implode(',', $aclsArray);
+        $list = [];
+        foreach ($countryCodes as $countryCode) {
+            $list[] = sprintf('client.geo.country_code == "%s"', $countryCode);
         }
 
-        $this->configWriter->save(
-            Config::XML_FASTLY_BLOCK_BY_ACL,
-            $acls,
-            'default',
-            '0'
-        );
+        foreach ($acls as $acl) {
+            $list[] = sprintf('req.http.Fastly-Client-Ip ~ %s', $acl);
+        }
 
-        if ($acls != '') {
-            $blockedAclsPieces = explode(",", $acls);
-            foreach ($blockedAclsPieces as $acl) {
-                $result .= ' req.http.Fastly-Client-Ip ~ ' . $acl . ' ||';
-            }
+        $result = implode(' || ', $list);
+        if ($blockingType === 1 && !empty($result)) {
+            $result = sprintf('!(%s)', $result);
         }
 
         return $result;
     }
 
-    /**
-     * Prepares blocked countries VCL snippet
-     *
-     * @param $blockedCountries
-     * @return string
-     */
-    protected function prepareCountryCodes($blockedCountries)
+    protected function storeConfigArray(string $path, array $data): void
     {
-        $result = '';
-        $countriesArray = [];
-        $countries = '';
-
-        if ($blockedCountries != null) {
-            foreach ($blockedCountries as $key => $value) {
-                $countriesArray[] = $value['value'];
-            }
-            $countries = implode(',', $countriesArray);
-        }
-
         $this->configWriter->save(
-            Config::XML_FASTLY_BLOCK_BY_COUNTRY,
-            $countries,
+            $path,
+            implode(',', $data),
             'default',
             '0'
         );
+    }
 
-        if ($countries != '') {
-            $blockedCountriesPieces = explode(",", $countries);
-            foreach ($blockedCountriesPieces as $code) {
-                $result .= ' client.geo.country_code == "' . $code . '" ||';
-            }
+    protected function getParamArray(string $param): array
+    {
+        $request = $this->getRequest();
+
+        $data = $request->getParam($param);
+        if (empty($data)) {
+            return [];
         }
 
-        return $result;
+        return array_map(static function ($row) {
+            return $row['value'];
+        }, $data);
     }
 }

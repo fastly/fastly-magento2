@@ -109,11 +109,13 @@ class Blocking extends AbstractBlocking
                 Config::VCL_BLOCKING_SNIPPET
             );
 
-            $country_codes = $this->prepareCountryCodes($this->getRequest()->getParam('countries'));
-            $acls = $this->prepareAcls($this->getRequest()->getParam('acls'));
+            $countryCodes = $this->getParamArray('countries');
+            $this->storeConfigArray(Config::XML_FASTLY_BLOCK_BY_COUNTRY, $countryCodes);
 
-            $blockedItems = $country_codes . $acls;
-            $strippedBlockedItems = substr($blockedItems, 0, strrpos($blockedItems, '||', -1));
+            $acls = $this->getParamArray('acls');
+            $this->storeConfigArray(Config::XML_FASTLY_BLOCK_BY_ACL, $acls);
+
+            $blockedItems = $this->prepareBlockedItems($countryCodes, $acls, (int) $blockingType);
 
             $this->configWriter->save(
                 Config::XML_FASTLY_BLOCKING_TYPE,
@@ -131,12 +133,9 @@ class Blocking extends AbstractBlocking
                         continue;
                     }
 
-                    if ($strippedBlockedItems === '') {
-                        $value = '';
-                    } else {
-                        $strippedBlockedItems = $this->config->processBlockedItems($strippedBlockedItems, $blockingType);
-                        $value = str_replace('####BLOCKED_ITEMS####', $strippedBlockedItems, $value);
-                    }
+                    $value = $blockedItems !== '' ?
+                        str_replace('####BLOCKED_ITEMS####', $blockedItems, $value) :
+                        '';
 
                     $snippetData = [
                         'name'      => $name,

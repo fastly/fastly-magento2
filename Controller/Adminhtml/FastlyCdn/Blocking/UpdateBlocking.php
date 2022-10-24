@@ -20,16 +20,15 @@
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Blocking;
 
-use Magento\Backend\App\Action;
+use Fastly\Cdn\Helper\Vcl;
+use Fastly\Cdn\Model\Api;
+use Fastly\Cdn\Model\Config;
 use Magento\Backend\App\Action\Context;
+use Magento\Config\App\Config\Type\System as SystemConfig;
+use Magento\Framework\App\Cache\TypeListInterface as CacheTypeList;
+use Magento\Framework\App\Config\Storage\WriterInterface as ConfigWriter;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Fastly\Cdn\Model\Config;
-use Fastly\Cdn\Model\Api;
-use Fastly\Cdn\Helper\Vcl;
-use Magento\Framework\App\Config\Storage\WriterInterface as ConfigWriter;
-use Magento\Framework\App\Cache\TypeListInterface as CacheTypeList;
-use Magento\Config\App\Config\Type\System as SystemConfig;
 use Magento\Framework\Exception\LocalizedException;
 
 /**
@@ -120,13 +119,7 @@ class UpdateBlocking extends AbstractBlocking
                 Config::VCL_BLOCKING_SNIPPET
             );
 
-            $country_codes = $this->prepareCountryCodes($this->request->getParam('countries'));
-            $acls = $this->prepareAcls($this->request->getParam('acls'));
-
-            $blockedItems = $country_codes . $acls;
-            $strippedBlockedItems = substr($blockedItems, 0, strrpos($blockedItems, '||', -1));
             $blockingType = $this->request->getParam('blocking_type');
-
             $this->configWriter->save(
                 Config::XML_FASTLY_BLOCKING_TYPE,
                 $blockingType,
@@ -134,14 +127,19 @@ class UpdateBlocking extends AbstractBlocking
                 '0'
             );
 
+            $countryCodes = $this->getParamArray('countries');
+            $this->storeConfigArray(Config::XML_FASTLY_BLOCK_BY_COUNTRY, $countryCodes);
+
+            $acls = $this->getParamArray('acls');
+            $this->storeConfigArray(Config::XML_FASTLY_BLOCK_BY_ACL, $acls);
+
+            $blockedItems = $this->prepareBlockedItems($countryCodes, $acls, (int) $blockingType);
+
             // Add blocking snippet
             foreach ($snippet as $key => $value) {
-                if ($strippedBlockedItems === '') {
-                    $value = '';
-                } else {
-                    $strippedBlockedItems = $this->config->processBlockedItems($strippedBlockedItems, $blockingType);
-                    $value = str_replace('####BLOCKED_ITEMS####', $strippedBlockedItems, $value);
-                }
+                $value = $blockedItems !== '' ?
+                    str_replace('####BLOCKED_ITEMS####', $blockedItems, $value) :
+                    '';
 
                 $snippetName = Config::FASTLY_MAGENTO_MODULE . '_blocking_' . $key;
                 $snippetId = $this->api->getSnippet($currActiveVersion['active_version'], $snippetName);

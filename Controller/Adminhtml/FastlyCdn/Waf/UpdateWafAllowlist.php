@@ -36,7 +36,7 @@ use Magento\Config\App\Config\Type\System as SystemConfig;
  *
  * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Waf
  */
-class UpdateWafAllowlist extends Action
+class UpdateWafAllowlist extends AbstractWafUpdate
 {
     /**
      * @var Http
@@ -123,18 +123,21 @@ class UpdateWafAllowlist extends Action
                 Config::VCL_WAF_ALLOWLIST_SNIPPET
             );
 
-            $acls = $this->prepareAcls($this->request->getParam('acls'));
+            $acls = $this->getParamArray('acls');
+            $this->configWriter->save(
+                Config::XML_FASTLY_WAF_ALLOW_BY_ACL,
+                implode(',', $acls),
+                'default',
+                '0'
+            );
 
-            $allowedItems = $acls;
-            $strippedAllowedItems = substr($allowedItems, 0, strrpos($allowedItems, '||', -1));
+            $wafAllowlist = $this->prepareWafAllowlist($acls);
 
             // Add WAF bypass snippet
             foreach ($snippet as $key => $value) {
-                if ($strippedAllowedItems === '') {
-                    $value = '';
-                } else {
-                    $value = str_replace('####WAF_ALLOWLIST####', $strippedAllowedItems, $value);
-                }
+                $value = $wafAllowlist !== '' ?
+                    str_replace('####WAF_ALLOWLIST####', $wafAllowlist, $value) :
+                    '';
 
                 $snippetName = Config::FASTLY_MAGENTO_MODULE . '_waf_' . $key;
                 $snippetId = $this->api->getSnippet($currActiveVersion['active_version'], $snippetName)->id;
@@ -160,39 +163,17 @@ class UpdateWafAllowlist extends Action
         }
     }
 
-    /**
-     * Prepares ACL VCL snippets
-     *
-     * @param $allowedAcls
-     * @return string
-     */
-    private function prepareAcls($allowedAcls)
+    protected function getParamArray(string $param): array
     {
-        $result = '';
-        $aclsArray = [];
-        $acls = '';
+        $request = $this->getRequest();
 
-        if ($allowedAcls != null) {
-            foreach ($allowedAcls as $key => $value) {
-                $aclsArray[] = $value['value'];
-            }
-            $acls = implode(',', $aclsArray);
+        $data = $request->getParam($param);
+        if (empty($data)) {
+            return [];
         }
 
-        $this->configWriter->save(
-            Config::XML_FASTLY_WAF_ALLOW_BY_ACL,
-            $acls,
-            'default',
-            '0'
-        );
-
-        if ($acls != '') {
-            $allowedAclsPieces = explode(",", $acls);
-            foreach ($allowedAclsPieces as $acl) {
-                $result .= ' req.http.Fastly-Client-Ip ~ ' . $acl . ' ||';
-            }
-        }
-
-        return $result;
+        return array_map(static function ($row) {
+            return $row['value'];
+        }, $data);
     }
 }

@@ -1,3 +1,26 @@
+    # Don't allow clients to force a pass, mess with rate limiting or admin path
+    if (req.restarts == 0) {
+        unset req.http.x-pass;
+        unset req.http.Rate-Limit;
+        unset req.http.magento-admin-path;
+    }
+    unset req.http.x-long-cache;
+
+    if ( table.lookup(magentomodule_config, "current_version", "DEFAULT") != table.lookup(magentomodule_config, "next_version", "DEFAULT") ) {
+      # Check if user has the deploy version
+      if ( req.http.Cookie:deploy_version !=  table.lookup(magentomodule_config, "current_version", "DEFAULT")
+          && req.http.Cookie:deploy_version != table.lookup(magentomodule_config, "next_version", "DEFAULT") ) {
+        # Next Version differs from Current Version. Let's roll out a percentage of traffic
+        if (randombool(std.atoi(table.lookup(magentomodule_config, "rollout_percentage", "0")), 100)) {
+          set req.http.request_version = table.lookup(magentomodule_config, "next_version");
+        }
+    }
+    
+    # If request version has not been set by rollout percentage set to current version
+    if ( !req.http.request_version ) {
+      set req.http.request_version = table.lookup(magentomodule_config, "current_version", "DEFAULT");
+    }
+
     # When using Magento tester to test whether your site is configured properly
     # this uses a bypass secret. By default we will use service ID as the bypass secret
     # however user can override this by defining a bypass_secret key in the
@@ -43,8 +66,6 @@
             error 503 "Maintenance mode";
         }
     }
-
-    unset req.http.x-long-cache;
 
     # We want to force long cache times on any of the versioned assets
     if (req.url.path ~ "^/static/version\d*/") {
@@ -127,15 +148,6 @@
         set req.http.Magento-Original-URL = req.url;
         # Change the list of ignored parameters by configuring them in the Advanced section
         set req.url = querystring.regfilter(req.url, "^(####QUERY_PARAMETERS####)$");
-    }
-
-    # Don't allow clients to force a pass
-    if (req.restarts == 0) {
-        if ( !req.http.bypass-secret ) {
-            unset req.http.x-pass;
-        }
-        unset req.http.Rate-Limit;
-        unset req.http.magento-admin-path;
     }
 
     # Pass on checkout URLs. Because it's a snippet we want to execute this after backend selection so we handle it

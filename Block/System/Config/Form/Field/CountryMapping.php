@@ -44,8 +44,9 @@ class CountryMapping extends AbstractFieldArray
     public function __construct(
         Context $context,
         Factory $elementFactory,
-        array $data = []
-    ) {
+        array   $data = []
+    )
+    {
         $this->elementFactory = $elementFactory;
         parent::__construct($context, $data);
     }
@@ -58,6 +59,7 @@ class CountryMapping extends AbstractFieldArray
     protected function _construct() // @codingStandardsIgnoreLine - required by parent class
     {
         $this->addColumn('country_id', ['label' => __('Country Code')]);
+        $this->addColumn('origin_website_id', ['label' => __('Origin Website')]);
         $this->addColumn('store_id', ['label' => __('Store')]);
         $this->_addAfter = false;
         $this->_addButtonLabel = __('Add');
@@ -75,19 +77,35 @@ class CountryMapping extends AbstractFieldArray
      */
     public function renderCellTemplate($columnName)
     {
-        if ($columnName == 'store_id' && isset($this->_columns[$columnName])) {
-            $options = $this->getOptions(__('-- Select Store --'));
-            $element = $this->elementFactory->create('select');
-            $element->setForm(
-                $this->getForm()
-            )->setName(
-                $this->_getCellInputElementName($columnName)
-            )->setHtmlId(
-                $this->_getCellInputElementId('<%- _id %>', $columnName)
-            )->setValues(
-                $options
-            );
-            return str_replace("\n", '', $element->getElementHtml());
+        if (isset($this->_columns[$columnName])) {
+            switch ($columnName) {
+                case 'store_id':
+                    $options = $this->getOptions(__('-- Select Store --'));
+                    $element = $this->elementFactory->create('select');
+                    $element->setForm(
+                        $this->getForm()
+                    )->setName(
+                        $this->_getCellInputElementName($columnName)
+                    )->setHtmlId(
+                        $this->_getCellInputElementId('<%- _id %>', $columnName)
+                    )->setValues(
+                        $options
+                    );
+                    return str_replace("\n", '', $element->getElementHtml());
+                case 'origin_website_id':
+                    $options = $this->getOriginWebsiteOptions();
+                    $element = $this->elementFactory->create('select');
+                    $element->setForm(
+                        $this->getForm()
+                    )->setName(
+                        $this->_getCellInputElementName($columnName)
+                    )->setHtmlId(
+                        $this->_getCellInputElementId('<%- _id %>', $columnName)
+                    )->setValues(
+                        $options
+                    );
+                    return str_replace("\n", '', $element->getElementHtml());
+            }
         }
 
         return parent::renderCellTemplate($columnName);
@@ -122,6 +140,25 @@ class CountryMapping extends AbstractFieldArray
                 'label' => $label
             ]);
         }
+        return $options;
+    }
+
+    protected function getOriginWebsiteOptions(): array
+    {
+        $options = [
+            [
+                'label' => __('Any'),
+                'value' => '',
+            ],
+        ];
+
+        foreach ($this->_storeManager->getWebsites() as $website) {
+            $options[] = [
+                'label' => sprintf('%s [%s]', $website->getName(), $website->getCode()),
+                'value' => $website->getId(),
+            ];
+        }
+
         return $options;
     }
 }

@@ -785,7 +785,7 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Return GeoIP redirect mapping
      *
-     * @return array
+     * @return string
      */
     public function getGeoIpRedirectMapping()
     {
@@ -1093,12 +1093,13 @@ class Config extends \Magento\PageCache\Model\Config
      * Get store ID for country.
      *
      * @param string $countryCode
+     * @param int $websiteId
      * @return int|null
      */
-    public function getGeoIpMappingForCountry(string $countryCode)
+    public function getGeoIpMappingForCountryAndWebsite(string $countryCode, int $websiteId): ?int
     {
         if ($mapping = $this->getGeoIpRedirectMapping()) {
-            return $this->extractMapping($mapping, $countryCode);
+            return $this->extractMapping($mapping, $countryCode, $websiteId);
         }
         return null;
     }
@@ -1108,9 +1109,10 @@ class Config extends \Magento\PageCache\Model\Config
      *
      * @param string $mapping
      * @param string $countryCode
+     * @param int $websiteId
      * @return int|null
      */
-    private function extractMapping(string $mapping, string $countryCode): ?int
+    private function extractMapping(string $mapping, string $countryCode, int $websiteId): ?int
     {
         $extractMapping = json_decode($mapping, true);
         if (!$extractMapping) {
@@ -1126,42 +1128,44 @@ class Config extends \Magento\PageCache\Model\Config
         }
 
         try {
-            foreach ($extractMapping as $map) {
-                if (!is_array($map) || !isset($map['country_id']) || !isset($map['store_id'])) {
-                    continue;
-                }
-                if ($storeId = $this->extractStoreForCurrentWebsite($map, $countryCode)) {
-                    return $storeId;
-                }
-
-                if ($storeId = $this->extractStoreForCurrentWebsite($map, '*')) {
-                    return $storeId;
-                }
-            }
-            return null;
+            return $this->findMatchingStoreId($extractMapping, $countryCode, $websiteId);
         } catch (\Exception $e) {
             return null;
         }
     }
 
     /**
-     * Extract store for currentWebsite
+     * Find a matching destination store ID.
      *
      * @param array $map
      * @param string $countryCode
-     * @return int
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @param int $websiteId
+     * @return int|null
      */
-    private function extractStoreForCurrentWebsite(array $map, string $countryCode): int
+    private function findMatchingStoreId(array $map, string $countryCode, int $websiteId): ?int
     {
-        $store = $this->storeManager->getStore($map['store_id']);
-        $website = $this->storeManager->getWebsite();
-        if ($store->getWebsiteId() === $website->getId()
-            && strtolower(str_replace(' ', '', $map['country_id'])) === strtolower($countryCode)) {
-            return $store->getId();
+        foreach ($map as $mapEntry) {
+            if (!is_array($mapEntry) || !isset($mapEntry['country_id'], $mapEntry['store_id'])) {
+                continue;
+            }
+
+            // Request country does not match country filter.
+            if (strtolower(str_replace(' ', '', $mapEntry['country_id'])) !== strtolower($countryCode)) {
+                continue;
+            }
+
+            // Origin website filter is set, and current website ID does not satisfy it.
+            if (isset($mapEntry['origin_website_id'])
+                && is_numeric($mapEntry['origin_website_id'])
+                && ((int)$mapEntry['origin_website_id'] !== $websiteId)
+            ) {
+                continue;
+            }
+
+            return (int)$mapEntry['store_id'];
         }
-        return 0;
+
+        return null;
     }
 
     /**

@@ -4,6 +4,7 @@
 
 - Update WAF to WAF2020 https://github.com/fastly/fastly-magento2/pull/578
 - Response Plugin fixes https://github.com/fastly/fastly-magento2/pull/577
+- Custom snippet duplicate warning https://github.com/fastly/fastly-magento2/pull/579
 
 ## 1.2.189
 

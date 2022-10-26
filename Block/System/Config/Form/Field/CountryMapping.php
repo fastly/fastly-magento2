@@ -45,8 +45,7 @@ class CountryMapping extends AbstractFieldArray
         Context $context,
         Factory $elementFactory,
         array   $data = []
-    )
-    {
+    ) {
         $this->elementFactory = $elementFactory;
         parent::__construct($context, $data);
     }

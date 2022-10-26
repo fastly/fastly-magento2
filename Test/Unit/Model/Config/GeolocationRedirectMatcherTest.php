@@ -21,9 +21,15 @@ class GeolocationRedirectMatcherTest extends TestCase
                 'country_id' => 'HR',
                 'store_id' => '5'
             ],
+            [
+                'country_id' => 'IE',
+                'origin_website_id' => '',
+                'store_id' => '6'
+            ],
         ];
 
         $this->assertEquals(5, $this->matcher->execute($map, 'HR', 42));
+        $this->assertEquals(6, $this->matcher->execute($map, 'IE', 24));
     }
 
     public function testWithWildcardCountry(): void
@@ -99,5 +105,55 @@ class GeolocationRedirectMatcherTest extends TestCase
 
         $this->assertEquals(1, $this->matcher->execute($map, 'DE', 1));
         $this->assertEquals(2, $this->matcher->execute($map, 'US', 1));
+    }
+
+    public function testDifferentWebsitesForSameCountry(): void
+    {
+        $map = [
+            [
+                'country_id' => 'JP',
+                'origin_website_id' => '42',
+                'store_id' => '1'
+            ],
+            [
+                'country_id' => 'JP',
+                'origin_website_id' => '1',
+                'store_id' => '2'
+            ],
+            [
+                'country_id' => 'JP',
+                'origin_website_id' => '5',
+                'store_id' => '3'
+            ],
+        ];
+
+        $this->assertEquals(1, $this->matcher->execute($map, 'JP', 42));
+        $this->assertEquals(2, $this->matcher->execute($map, 'JP', 1));
+        $this->assertEquals(3, $this->matcher->execute($map, 'JP', 5));
+    }
+
+    public function testMultistoreConfiguration(): void
+    {
+        $map = [
+            [
+                'country_id' => 'US',
+                'origin_website_id' => '1',
+                'store_id' => '1'
+            ],
+            [
+                'country_id' => 'DE',
+                'origin_website_id' => '',
+                'store_id' => '2'
+            ],
+            [
+                'country_id' => 'DE',
+                'origin_website_id' => '1',
+                'store_id' => '3'
+            ],
+        ];
+
+        $this->assertEquals(1, $this->matcher->execute($map, 'US', 1));
+        $this->assertEquals(2, $this->matcher->execute($map, 'DE', 2));
+        $this->assertEquals(3, $this->matcher->execute($map, 'DE', 1));
     }
 }

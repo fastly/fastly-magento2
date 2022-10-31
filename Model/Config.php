@@ -571,9 +571,9 @@ class Config extends \Magento\PageCache\Model\Config
      * @param StateInterface $cacheState
      * @param Reader $reader
      * @param VclGeneratorFactory $vclGeneratorFactory
-     * @param GeolocationRedirectMatcher $geolocationRedirectMatcher
      * @param Json|null $serializer
      * @param StoreManagerInterface|null $storeManager
+     * @param GeolocationRedirectMatcher|null $geolocationRedirectMatcher
      */
     public function __construct(
         ReadFactory $readFactory,

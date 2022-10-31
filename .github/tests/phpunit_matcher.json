@@ -1,0 +1,16 @@
+{
+    "problemMatcher": [
+        {
+            "owner": "phpunit-failure",
+            "severity": "error",
+            "pattern": [
+                {
+                    "regexp": "##teamcity\\[testFailed.+message='(.+)' details='\\s+\\/.*\\/app\\/code\\/Fastly\\/Cdn\\/(.*\\.php):(\\d+)|n\\s+'.*\\]",
+                    "message": 1,
+                    "file": 2,
+                    "line": 3
+                }
+            ]
+        }
+    ]
+}

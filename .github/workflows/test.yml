@@ -24,3 +24,58 @@ jobs:
 
       - name: Run phpcs
         run: phpcs -q --report=checkstyle --standard=Magento2 . | cs2pr
+
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - magento: "2.4.0"
+            php: "7.3"
+          - magento: "2.4.0"
+            php: "7.4"
+          - magento: "2.4.1"
+            php: "7.4"
+          - magento: "2.4.2"
+            php: "7.4"
+          - magento: "2.4.3"
+            php: "7.4"
+          - magento: "2.4.4"
+            php: "8.1"
+          - magento: "2.4.5"
+            php: "8.1"
+
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: phpunit, composer:v2
+
+      - name: Create Magento 2 project
+        run: |
+          composer create-project --repository-url="https://mirror.mage-os.org/" \
+          "magento/project-community-edition=${{ matrix.magento }}" . --no-install
+
+      - run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+        id: composer-cache
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Magento 2
+        run: composer install && mkdir -p app/code/Fastly/Cdn/
+
+      - name: Setup Fastly CDN module
+        uses: actions/checkout@v3
+        with:
+          path: "app/code/Fastly/Cdn/"
+
+      - name: Setup Problem Matcher for PHPUnit
+        run: echo "::add-matcher::${{ github.workspace }}/app/code/Fastly/Cdn/.github/tests/phpunit_matcher.json" >> $GITHUB_OUTPUT
+
+      - name: Run tests
+        run: phpunit -c dev/tests/unit/phpunit.xml.dist --teamcity app/code/Fastly/Cdn/

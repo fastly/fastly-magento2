@@ -935,18 +935,6 @@
     "shield": "cgh-saopaulo-br"
   },
   {
-    "code": "SEA",
-    "name": "Seattle",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 47.449,
-      "longitude": -122.309306
-    },
-    "shield": "sea-wa-us"
-  },
-  {
     "code": "BFI",
     "name": "Seattle (Metro)",
     "group": "United States",

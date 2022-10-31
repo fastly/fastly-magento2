@@ -116,8 +116,6 @@ In your Magento2 backend go to Stores -> Configuration -> System in the
 "Advanced" section and open "Full Page Cache" tab and choose "Yes" with "Enable
 GeoIP". Make sure to be on store configuration scope.
 
-![GeoIP Country Mapping](./images/guides/geoip/geoip-settings.png "GeoIP Country Mapping")
-
 #### General behavior
 
 The Fastly module supports two options to serve the store view based on GeoIP
@@ -149,10 +147,12 @@ option to switch to the suggested store based in the GeoIP lookup and the
 For every country you want to map to a specific store you have to enter a
 country code and select a target store. All country codes use ISO
 3166-1-alpha-2 codes. You can use "*" as wildcard to match all country codes.
-You may also specify which website that rule applies from. You can leave the
-"Origin Website" option on "Any" to redirect users visiting from any website
-or choose a specific website from the dropdown to apply the rule only from that
-specific website.
+You may also scope a given rule to only apply for users visiting a specific
+website. You can leave the "Origin Website" option on "Any" to redirect users
+visiting any website or choose a specific website from the dropdown to apply
+the rule for users only visting that specific website.
+
+![GeoIP Country Mapping](./images/guides/geoip/geoip-settings.png "GeoIP Country Mapping")
 
 ##### Examples
 

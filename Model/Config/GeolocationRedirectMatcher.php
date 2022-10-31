@@ -39,10 +39,7 @@ class GeolocationRedirectMatcher
                 continue;
             }
 
-            $countryMatchScore = 1 + (int)($mapCountry !== '*');
-            $originWebsiteMatchScore = 1 + (int)($mapOriginWebsite !== 'any');
-
-            $matchScore = $countryMatchScore + $originWebsiteMatchScore;
+            $matchScore = 1 + (int)($mapCountry !== '*') + (int)($mapOriginWebsite !== 'any');
             if ($matchScore > $bestMatchScore) {
                 $match = (int)$mapEntry['store_id'];
                 $bestMatchScore = $matchScore;

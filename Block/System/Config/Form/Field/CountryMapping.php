@@ -59,7 +59,7 @@ class CountryMapping extends AbstractFieldArray
     {
         $this->addColumn('country_id', ['label' => __('Country Code')]);
         $this->addColumn('origin_website_id', ['label' => __('Origin Website')]);
-        $this->addColumn('store_id', ['label' => __('Store View')]);
+        $this->addColumn('store_id', ['label' => __('Target Store View')]);
         $this->_addAfter = false;
         $this->_addButtonLabel = __('Add');
         $this->_template = 'Fastly_Cdn::system/config/form/field/array.phtml';
@@ -142,6 +142,11 @@ class CountryMapping extends AbstractFieldArray
         return $options;
     }
 
+    /**
+     * Get Origin website options
+     *
+     * @return array[]
+     */
     protected function getOriginWebsiteOptions(): array
     {
         $options = [

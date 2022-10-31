@@ -40,7 +40,7 @@ class GeolocationRedirectMatcher
 
             $match = (int)$mapEntry['store_id'];
 
-            if ($mapOriginWebsite !== 'any' && $mapCountry !== '*') {
+            if ($mapOriginWebsite !== 'any' || $mapCountry !== '*') {
                 // Found a very specific entry, use that.
                 break;
             }

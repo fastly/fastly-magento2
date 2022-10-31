@@ -156,4 +156,31 @@ class GeolocationRedirectMatcherTest extends TestCase
         $this->assertEquals(2, $this->matcher->execute($map, 'DE', 2));
         $this->assertEquals(3, $this->matcher->execute($map, 'DE', 1));
     }
+
+    public function testBackwardCompatibility()
+    {
+        $map = [
+            [
+                'country_id' => 'FR',
+                'store_id' => '3'
+            ],
+            [
+                'country_id' => 'US',
+                'store_id' => '1'
+            ],
+            [
+                'country_id' => 'GB',
+                'store_id' => '2'
+            ],
+            [
+                'country_id' => '*',
+                'store_id' => '2'
+            ],
+        ];
+
+        $this->assertEquals(1, $this->matcher->execute($map, 'US', 1));
+        $this->assertEquals(2, $this->matcher->execute($map, 'NZ', 1));
+        $this->assertEquals(3, $this->matcher->execute($map, 'FR', 1));
+        $this->assertEquals(2, $this->matcher->execute($map, 'GB', 1));
+    }
 }

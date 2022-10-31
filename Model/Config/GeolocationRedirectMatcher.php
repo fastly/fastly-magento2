@@ -15,6 +15,7 @@ class GeolocationRedirectMatcher
     public function execute(array $map, string $countryCode, int $websiteId): ?int
     {
         $match = null;
+        $bestMatchScore = 0;
 
         foreach ($map as $mapEntry) {
             if (!is_array($mapEntry) || !isset($mapEntry['country_id'], $mapEntry['store_id'])) {
@@ -38,11 +39,13 @@ class GeolocationRedirectMatcher
                 continue;
             }
 
-            $match = (int)$mapEntry['store_id'];
+            $countryMatchScore = 1 + (int)($mapCountry !== '*');
+            $originWebsiteMatchScore = 1 + (int)($mapOriginWebsite !== 'any');
 
-            if ($mapOriginWebsite !== 'any' || $mapCountry !== '*') {
-                // Found a very specific entry, use that.
-                break;
+            $matchScore = $countryMatchScore + $originWebsiteMatchScore;
+            if ($matchScore > $bestMatchScore) {
+                $match = (int)$mapEntry['store_id'];
+                $bestMatchScore = $matchScore;
             }
         }
 

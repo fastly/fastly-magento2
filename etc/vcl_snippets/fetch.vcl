@@ -94,8 +94,8 @@
         # and we will not cache it. This is to prevent inadventently caching private data
     } else if (!beresp.http.Expires && !beresp.http.Surrogate-Control ~ "max-age" && !beresp.http.Cache-Control ~ "(s-maxage|max-age)") {
         # Varnish sets default TTL if none of the headers above are present. If not set we want to make sure we don't cache it
-        set beresp.ttl = 0s;
-        set beresp.cacheable = false;
+        set beresp.ttl = 3600s;
+        return(pass);
     }
 
     # validate if we need to cache it and prevent from setting cookie
@@ -118,6 +118,6 @@
 
     # If the cache key in the Magento response doesn't match the one that was sent in the request, don't cache under the request's key
     if (req.http.graphql && req.http.X-Magento-Cache-Id && req.http.X-Magento-Cache-Id != beresp.http.X-Magento-Cache-Id) {
-        set beresp.ttl = 0s;
-        set beresp.cacheable = false;
+        set beresp.ttl = 3600s;
+        return(pass);
     }

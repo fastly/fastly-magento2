@@ -30,24 +30,24 @@ jobs:
     strategy:
       matrix:
         include:
-          - magento: "2.4.0"
-            php: "7.3"
-            composer: "v1"
-          - magento: "2.4.0"
-            php: "7.4"
-            composer: "v1"
-          - magento: "2.4.1"
-            php: "7.4"
-            composer: "v1"
-          - magento: "2.4.2"
-            php: "7.4"
-            composer: "v1"
-          - magento: "2.4.3"
-            php: "7.4"
-            composer: "v1"
-          - magento: "2.4.4"
-            php: "8.1"
-            composer: "v2"
+          # - magento: "2.4.0"
+          #   php: "7.3"
+          #   composer: "v1"
+          # - magento: "2.4.0"
+          #   php: "7.4"
+          #   composer: "v1"
+          # - magento: "2.4.1"
+          #   php: "7.4"
+          #   composer: "v1"
+          # - magento: "2.4.2"
+          #   php: "7.4"
+          #   composer: "v1"
+          # - magento: "2.4.3"
+          #   php: "7.4"
+          #   composer: "v1"
+          # - magento: "2.4.4"
+          #   php: "8.1"
+          #   composer: "v2"
           - magento: "2.4.5"
             php: "8.1"
             composer: "v2"
@@ -82,7 +82,7 @@ jobs:
           path: "app/code/Fastly/Cdn/"
 
       - name: Setup Problem Matcher for PHPUnit
-        run: echo "::add-matcher::${{ github.workspace }}/app/code/Fastly/Cdn/.github/tests/phpunit_matcher.json" >> $GITHUB_OUTPUT
+        run: echo "::add-matcher::${{ github.workspace }}/app/code/Fastly/Cdn/.github/tests/phpunit_matcher.json"
 
       - name: Run tests
         run: phpunit -c dev/tests/unit/phpunit.xml.dist --teamcity app/code/Fastly/Cdn/

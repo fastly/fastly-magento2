@@ -147,6 +147,31 @@ option to switch to the suggested store based in the GeoIP lookup and the
 For every country you want to map to a specific store you have to enter a
 country code and select a target store. All country codes use ISO
 3166-1-alpha-2 codes. You can use "*" as wildcard to match all country codes.
+You may also scope a given rule to only apply for users visiting a specific
+website. You can leave the "Origin Website" option on "Any" to redirect users
+visiting any website or choose a specific website from the dropdown to apply
+the rule for users only visting that specific website.
+
+![GeoIP Country Mapping](./images/guides/geoip/geoip-settings.png "GeoIP Country Mapping")
+
+##### Examples
+
+| Country Code | Origin Website         | Target Store View                |
+|--------------|------------------------|----------------------------------|
+| US           | Any                    | Brand A US (_branda.com/us_)     |
+| US           | Brand B (_brandb.com_) | Brand B US (_brandb.com/us_)     |
+| UK           | Any                    | Brand A UK (_branda.com/uk_)     |
+| UK           | Brand B (_brandb.com_) | Brand B UK (_brandb.com/us_)     |
+| *            | Brand A (_branda.com_) | Brand A Intl (_branda.com/intl_) |
+| *            | Brand B (_brandb.com_) | Brand B Intl (_brandb.com/intl_) |
+
+The above example will yield following results:
+
+| User country | Visiting URL    | Result URL      |
+|--------------|-----------------|-----------------|
+| US           | brandb.com/uk   | brandb.com/us   |
+| JP           | brandb.com/us   | brandb.com/intl |
+| UK           | branda.com/intl | branda.com/uk   |
 
 ##### Prevent redirect or static blocks to be shown
 

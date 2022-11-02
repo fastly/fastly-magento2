@@ -21,11 +21,13 @@
 
 namespace Fastly\Cdn\Model;
 
+use Fastly\Cdn\Model\Config\GeolocationRedirectMatcher;
 use Magento\Framework\App\Cache\StateInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Filesystem\Directory\ReadFactory;
 use Magento\Framework\Module\Dir;
+use Magento\Framework\Module\Dir\Reader;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\PageCache\Model\Varnish\VclGeneratorFactory;
 use Magento\Store\Model\StoreManagerInterface;
@@ -557,15 +559,21 @@ class Config extends \Magento\PageCache\Model\Config
     private $storeManager;
 
     /**
+     * @var GeolocationRedirectMatcher
+     */
+    private $geolocationRedirectMatcher;
+
+    /**
      * Config constructor.
      *
      * @param ReadFactory $readFactory
      * @param ScopeConfigInterface $scopeConfig
      * @param StateInterface $cacheState
-     * @param Dir\Reader $reader
+     * @param Reader $reader
      * @param VclGeneratorFactory $vclGeneratorFactory
      * @param Json|null $serializer
      * @param StoreManagerInterface|null $storeManager
+     * @param GeolocationRedirectMatcher|null $geolocationRedirectMatcher
      */
     public function __construct(
         ReadFactory $readFactory,
@@ -574,9 +582,12 @@ class Config extends \Magento\PageCache\Model\Config
         Dir\Reader $reader,
         VclGeneratorFactory $vclGeneratorFactory,
         Json $serializer = null,
-        StoreManagerInterface $storeManager = null
+        StoreManagerInterface $storeManager = null,
+        GeolocationRedirectMatcher $geolocationRedirectMatcher = null
     ) {
         $this->serializer = $serializer ?: ObjectManager::getInstance()->get(Json::class);
+        $this->geolocationRedirectMatcher = $geolocationRedirectMatcher ?:
+            ObjectManager::getInstance()->get(GeolocationRedirectMatcher::class);
 
         $this->storeManager = $storeManager
             ?: ObjectManager::getInstance()->get(StoreManagerInterface::class);
@@ -785,7 +796,7 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Return GeoIP redirect mapping
      *
-     * @return array
+     * @return string
      */
     public function getGeoIpRedirectMapping()
     {
@@ -1093,12 +1104,13 @@ class Config extends \Magento\PageCache\Model\Config
      * Get store ID for country.
      *
      * @param string $countryCode
+     * @param int $websiteId
      * @return int|null
      */
-    public function getGeoIpMappingForCountry(string $countryCode)
+    public function getGeoIpMappingForCountryAndWebsite(string $countryCode, int $websiteId): ?int
     {
         if ($mapping = $this->getGeoIpRedirectMapping()) {
-            return $this->extractMapping($mapping, $countryCode);
+            return $this->extractMapping($mapping, $countryCode, $websiteId);
         }
         return null;
     }
@@ -1108,17 +1120,15 @@ class Config extends \Magento\PageCache\Model\Config
      *
      * @param string $mapping
      * @param string $countryCode
+     * @param int $websiteId
      * @return int|null
      */
-    private function extractMapping(string $mapping, string $countryCode): ?int
+    private function extractMapping(string $mapping, string $countryCode, int $websiteId): ?int
     {
-        $extractMapping = json_decode($mapping, true);
-        if (!$extractMapping) {
-            try {
-                $extractMapping = $this->serializer->unserialize($mapping);
-            } catch (\Exception $e) {
-                $extractMapping = [];
-            }
+        try {
+            $extractMapping = $this->serializer->unserialize($mapping);
+        } catch (\Exception $e) {
+            $extractMapping = [];
         }
 
         if (!is_array($extractMapping)) {
@@ -1126,42 +1136,10 @@ class Config extends \Magento\PageCache\Model\Config
         }
 
         try {
-            foreach ($extractMapping as $map) {
-                if (!is_array($map) || !isset($map['country_id']) || !isset($map['store_id'])) {
-                    continue;
-                }
-                if ($storeId = $this->extractStoreForCurrentWebsite($map, $countryCode)) {
-                    return $storeId;
-                }
-
-                if ($storeId = $this->extractStoreForCurrentWebsite($map, '*')) {
-                    return $storeId;
-                }
-            }
-            return null;
+            return $this->geolocationRedirectMatcher->execute($extractMapping, $countryCode, $websiteId);
         } catch (\Exception $e) {
             return null;
         }
-    }
-
-    /**
-     * Extract store for currentWebsite
-     *
-     * @param array $map
-     * @param string $countryCode
-     * @return int
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     */
-    private function extractStoreForCurrentWebsite(array $map, string $countryCode): int
-    {
-        $store = $this->storeManager->getStore($map['store_id']);
-        $website = $this->storeManager->getWebsite();
-        if ($store->getWebsiteId() === $website->getId()
-            && strtolower(str_replace(' ', '', $map['country_id'])) === strtolower($countryCode)) {
-            return $store->getId();
-        }
-        return 0;
     }
 
     /**

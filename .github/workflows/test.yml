@@ -32,25 +32,32 @@ jobs:
         include:
           - magento: "2.4.0"
             php: "7.3"
+            composer: "v1"
           - magento: "2.4.0"
             php: "7.4"
+            composer: "v1"
           - magento: "2.4.1"
             php: "7.4"
+            composer: "v1"
           - magento: "2.4.2"
             php: "7.4"
+            composer: "v1"
           - magento: "2.4.3"
             php: "7.4"
+            composer: "v1"
           - magento: "2.4.4"
             php: "8.1"
+            composer: "v2"
           - magento: "2.4.5"
             php: "8.1"
+            composer: "v2"
 
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          tools: phpunit, composer:v2
+          tools: phpunit, composer:${{ matrix.composer }}
 
       - name: Create Magento 2 project
         run: |

@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.191
+
+- Add geolocation origin website matching https://github.com/fastly/fastly-magento2/pull/581
+
 ## 1.2.190
 
 - Update WAF to WAF2020 https://github.com/fastly/fastly-magento2/pull/578

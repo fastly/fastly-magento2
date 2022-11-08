@@ -199,7 +199,7 @@
   },
   {
     "code": "CHI",
-    "name": "Chicago - (Metro)",
+    "name": "Chicago (Metro)",
     "group": "United States",
     "coordinates": {
       "x": 0,
@@ -361,7 +361,7 @@
   },
   {
     "code": "FRA",
-    "name": "Frankfurt",
+    "name": "Frankfurt (Metro)",
     "group": "Europe",
     "coordinates": {
       "x": 0,

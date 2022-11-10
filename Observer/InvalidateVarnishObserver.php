@@ -78,6 +78,9 @@ class InvalidateVarnishObserver implements ObserverInterface
             if ($object instanceof \Magento\Framework\DataObject\IdentityInterface && $this->canPurgeObject($object)) {
                 $tags = [];
                 foreach ($object->getIdentities() as $tag) {
+                    if (!is_string($tag)) {
+                        continue;
+                    }
                     $tag = $this->cacheTags->convertCacheTags($tag);
                     if (!in_array($tag, $this->alreadyPurged)) {
                         $tags[] = $tag;

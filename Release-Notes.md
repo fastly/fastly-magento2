@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.192
+
+- Add check for identities type https://github.com/fastly/fastly-magento2/pull/587
+
 ## 1.2.191
 
 - Add geolocation origin website matching https://github.com/fastly/fastly-magento2/pull/581

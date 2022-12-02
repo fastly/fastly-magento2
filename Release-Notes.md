@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.193
+
+- Update to the Netacea integration module https://github.com/fastly/fastly-magento2/pull/593
+- Add ability to remove the custom 5xx page https://github.com/fastly/fastly-magento2/pull/592
+
 ## 1.2.192
 
 - Add check for identities type https://github.com/fastly/fastly-magento2/pull/587

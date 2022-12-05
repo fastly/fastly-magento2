@@ -12,13 +12,13 @@
           && req.http.Cookie:deploy_version != table.lookup(magentomodule_config, "next_version", "DEFAULT") ) {
         # Next Version differs from Current Version. Let's roll out a percentage of traffic
         if (randombool(std.atoi(table.lookup(magentomodule_config, "rollout_percentage", "0")), 100)) {
-          set req.http.request_version = table.lookup(magentomodule_config, "next_version");
+          set req.http.Platformsh-Version = table.lookup(magentomodule_config, "next_version");
         }
     }
     
     # If request version has not been set by rollout percentage set to current version
-    if ( !req.http.request_version ) {
-      set req.http.request_version = table.lookup(magentomodule_config, "current_version", "DEFAULT");
+    if ( !req.http.Platformsh-Version ) {
+      set req.http.Platformsh-Version = table.lookup(magentomodule_config, "current_version", "DEFAULT");
     }
 
     # When using Magento tester to test whether your site is configured properly

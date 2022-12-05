@@ -4,11 +4,11 @@
     }
 
     if ( fastly.ff.visits_this_service == 0 ) {
-      if ( req.http.Cookie:deploy_version != req.http.request_version && req.http.request_version != table.lookup(magentomodule_config, "current_version", "DEFAULT") ) {
-        set beresp.http.Set-Cookie:deploy_version = req.http.request_version;
+      if ( req.http.Cookie:deploy_version != req.http.Platformsh-Version && req.http.Platformsh-Version != table.lookup(magentomodule_config, "current_version", "DEFAULT") ) {
+        set beresp.http.Set-Cookie:deploy_version = req.http.Platformsh-Version;
       }
       # Tell the browser to delete the deploy_version cookie if the requested_version is current version
-      if ( req.http.Cookie:deploy_version != "" &&  req.http.request_version == table.lookup(magentomodule_config, "current_version", DEFAULT ) ) {
+      if ( req.http.Cookie:deploy_version != "" &&  req.http.Platformsh-Version == table.lookup(magentomodule_config, "current_version", DEFAULT ) ) {
         add beresp.http.Set-Cookie = "deploy_version=DEFAULT; Expires=Wed Jun 01 2022 00:00:00 GMT"; 
       }
     }

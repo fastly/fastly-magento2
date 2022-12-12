@@ -132,7 +132,7 @@
         # and allow custom parameters to be set. List of parameters is configurable in admin
         set req.http.Magento-Original-URL = req.url;
         # Change the list of ignored parameters by configuring them in the Advanced section
-        set req.url = querystring.regfilter(req.url, "^(####QUERY_PARAMETERS####)$");
+        set req.url = querystring.regfilter(req.url, {"^(####QUERY_PARAMETERS####)$"});
     }
 
     # Pass on checkout URLs. Because it's a snippet we want to execute this after backend selection so we handle it

@@ -209,8 +209,14 @@ class CreateCustomSnippet extends Action
         $service = $this->api->checkServiceDetails();
         $versions = $this->vcl->determineVersions($service->versions);
 
+        $activeVersion = $versions['active_version'];
+
+        if (!$activeVersion) {
+            return false;
+        }
+
         return $this->api->hasSnippet(
-            $versions['active_version'],
+            $activeVersion,
             Config::FASTLY_MAGENTO_MODULE . '_' . $snippetName
         );
     }

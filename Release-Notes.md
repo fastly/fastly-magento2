@@ -1,5 +1,24 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.193
+
+- Update to the Netacea integration module https://github.com/fastly/fastly-magento2/pull/593
+- Add ability to remove the custom 5xx page https://github.com/fastly/fastly-magento2/pull/592
+
+## 1.2.192
+
+- Add check for identities type https://github.com/fastly/fastly-magento2/pull/587
+
+## 1.2.191
+
+- Add geolocation origin website matching https://github.com/fastly/fastly-magento2/pull/581
+
+## 1.2.190
+
+- Update WAF to WAF2020 https://github.com/fastly/fastly-magento2/pull/578
+- Response Plugin fixes https://github.com/fastly/fastly-magento2/pull/577
+- Custom snippet duplicate warning https://github.com/fastly/fastly-magento2/pull/579
+
 ## 1.2.189
 
 - Additional fix for rate limiting enablement errors https://github.com/fastly/fastly-magento2/pull/575

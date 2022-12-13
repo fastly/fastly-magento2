@@ -140,14 +140,15 @@ class GetAction extends Action
 
             // get target store from country code
             $countryCode = $this->countryCodeProvider->getCountryCode();
-            $storeId = $this->config->getGeoIpMappingForCountry($countryCode);
+            $currentStore = $this->storeManager->getStore();
+            $currentWebsiteId = $currentStore->getWebsiteId();
+            $storeId = $this->config->getGeoIpMappingForCountryAndWebsite($countryCode, $currentWebsiteId);
             $targetUrl = $this->getRequest()->getParam('uenc');
 
             if ($storeId !== null) {
                 // get redirect URL
                 $redirectUrl = null;
                 $targetStore = $this->storeRepository->getActiveStoreById($storeId);
-                $currentStore = $this->storeManager->getStore();
                 // only generate a redirect URL if current and new store are different
                 if ($currentStore->getId() !== $targetStore->getId()) {
                     $this->url->setScope($targetStore->getId());

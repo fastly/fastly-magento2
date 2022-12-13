@@ -39,6 +39,16 @@ define([
             }
         };
 
+        let removeErrorPageOptions = {
+            title: jQuery.mage.__('Remove Error Page Content'),
+            content: function () {
+                return document.getElementById('fastly-remove-error-page-template').textContent;
+            },
+            actionOk: function () {
+                removeErrorHtml(active_version);
+            }
+        };
+
         let wafPageOptions = {
             title: jQuery.mage.__('Update WAF Page Content'),
                 content: function () {
@@ -103,6 +113,38 @@ define([
                 success: function (response) {
                     if (response.status === true) {
                         successHtmlBtnMsg.text($.mage.__('Error page HTML is successfully updated.')).show();
+                        active_version = response.active_version;
+                        modal.modal('closeModal');
+                    } else {
+                        resetAllMessages();
+                        showErrorMessage(response.msg);
+                    }
+                },
+                error: function () {
+                    return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+                }
+            });
+        }
+
+        // Remove custom synthetic error page
+        function removeErrorHtml()
+        {
+            let activate_vcl = false;
+
+            if ($('#fastly_activate_vcl').is(':checked')) {
+                activate_vcl = true;
+            }
+            $.ajax({
+                type: "POST",
+                url: config.removeErrorPageHtmlUrl,
+                data: {
+                    'active_version': active_version,
+                    'activate_flag': activate_vcl,
+                },
+                showLoader: true,
+                success: function (response) {
+                    if (response.status === true) {
+                        successHtmlBtnMsg.text($.mage.__('Error page HTML is successfully removed.')).show();
                         active_version = response.active_version;
                         modal.modal('closeModal');
                     } else {
@@ -199,6 +241,38 @@ define([
                 return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
             });
         });
+
+        $('#fastly_error_page_remove_button').on('click', function () {
+            if (isAlreadyConfigured !== true) {
+                $(this).attr('disabled', true);
+                return alert($.mage.__('Please save config prior to continuing.'));
+            }
+
+            resetAllMessages();
+
+            $.when(
+                $.ajax({
+                    type: "GET",
+                    url: config.serviceInfoUrl,
+                    showLoader: true
+                })
+            ).done(function (service) {
+                if (service.status === false) {
+                    return errorHtmlBtnMsg.text($.mage.__('Please check your Service ID and API token and try again.')).show();
+                }
+
+                active_version = service.active_version;
+                let next_version = service.next_version;
+                let service_name = service.service.name;
+
+                overlay(removeErrorPageOptions);
+                setServiceLabel(active_version, next_version, service_name);
+                $('.upload-button span').text('Remove');
+            }).fail(function () {
+                return errorHtmlBtnMsg.text($.mage.__('An error occurred while processing your request. Please try again.')).show();
+            });
+        });
+
 
         /**
          * Set WAF Page HTML button

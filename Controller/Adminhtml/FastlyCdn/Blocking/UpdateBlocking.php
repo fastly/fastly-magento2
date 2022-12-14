@@ -113,6 +113,9 @@ class UpdateBlocking extends AbstractBlocking
         try {
             $service = $this->api->checkServiceDetails();
             $currActiveVersion = $this->vcl->determineVersions($service->versions);
+            if (!isset($currActiveVersion['active_version'])) {
+                throw new LocalizedException(__('No version is currently active.'));
+            }
 
             $snippet = $this->config->getVclSnippets(
                 Config::VCL_BLOCKING_PATH,

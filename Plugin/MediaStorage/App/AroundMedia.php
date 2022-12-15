@@ -77,6 +77,11 @@ class AroundMedia
         return $this->response;
     }
 
+    /**
+     * Prepare not found 404 response
+     *
+     * @return void
+     */
     private function prepareNotFoundResponse()
     {
         $this->response->setStatusHeader(404, '1.1', 'Not Found');
@@ -84,6 +89,12 @@ class AroundMedia
         $this->response->setNoCacheHeaders();
     }
 
+    /**
+     * Prepare placeholder image
+     *
+     * @return void
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
     private function preparePlaceholderResponse()
     {
         $this->appState->setAreaCode(Area::AREA_GLOBAL);

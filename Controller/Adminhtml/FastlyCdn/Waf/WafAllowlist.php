@@ -20,21 +20,19 @@
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Waf;
 
-use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
-use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Class WafAllowlist
  *
  * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Waf
  */
-class WafAllowlist extends Action
+class WafAllowlist extends AbstractWafUpdate
 {
     /**
      * @var Http
@@ -80,7 +78,7 @@ class WafAllowlist extends Action
         $this->config = $config;
         $this->api = $api;
         $this->vcl = $vcl;
-        parent::__construct($context);
+        parent::__construct($context, );
     }
 
     /**
@@ -104,19 +102,20 @@ class WafAllowlist extends Action
                 Config::VCL_WAF_PATH,
                 Config::VCL_WAF_ALLOWLIST_SNIPPET
             );
-            $acls = $this->prepareAcls($this->config->getWafAllowByAcl());
 
-            $allowedItems = $acls;
-            $strippedAllowedItems = substr($allowedItems, 0, strrpos($allowedItems, '||', -1));
+            $acls = $this->config->getWafAllowByAcl();
+            $acls = !empty($acls) ?
+                explode(',', $acls) :
+                [];
+
+            $wafAllowlist = $this->prepareWafAllowlist($acls);
 
             if (!$checkIfSettingExists) {
                 // Add WAF allowlist snippet
                 foreach ($snippet as $key => $value) {
-                    if ($strippedAllowedItems === '') {
-                        $value = '';
-                    } else {
-                        $value = str_replace('####WAF_ALLOWLIST####', $strippedAllowedItems, $value);
-                    }
+                    $value = $wafAllowlist !== '' ?
+                        str_replace('####WAF_ALLOWLIST####', $wafAllowlist, $value) :
+                        '';
 
                     $snippetData = [
                         'name'      => Config::FASTLY_MAGENTO_MODULE . '_waf_' . $key,
@@ -161,26 +160,6 @@ class WafAllowlist extends Action
                 'msg'       => $e->getMessage()
             ]);
         }
-    }
-
-    /**
-     * Prepares ACL VCL snippets
-     *
-     * @param $allowedAcls
-     * @return string
-     */
-    private function prepareAcls($allowedAcls)
-    {
-        $result = '';
-
-        if ($allowedAcls != null) {
-            $allowedAclsPieces = explode(",", $allowedAcls);
-            foreach ($allowedAclsPieces as $acl) {
-                $result .= ' req.http.Fastly-Client-Ip ~ ' . $acl . ' ||';
-            }
-        }
-
-        return $result;
     }
 
     private function sendWebhook($checkIfSettingExists, $clone)

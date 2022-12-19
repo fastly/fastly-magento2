@@ -911,6 +911,17 @@
     "shield": "sjc-ca-us"
   },
   {
+    "code": "WVI",
+    "name": "San Jose",
+    "group": "United States",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 37.242,
+      "longitude": -121.782
+    }
+  },
+  {
     "code": "SCL",
     "name": "Santiago",
     "group": "South America",

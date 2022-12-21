@@ -87,4 +87,4 @@ jobs:
         run: echo "::add-matcher::${{ github.workspace }}/app/code/Fastly/Cdn/.github/tests/phpunit_matcher.json"
 
       - name: Run tests
-        run: phpunit -c dev/tests/unit/phpunit.xml.dist --teamcity app/code/Fastly/Cdn/
+        run: vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist --teamcity app/code/Fastly/Cdn/

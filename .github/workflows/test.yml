@@ -24,7 +24,7 @@ jobs:
           phpcs --config-set installed_paths "$vendor_path/magento/magento-coding-standard/,$vendor_path/phpcompatibility/php-compatibility/"
 
       - name: Run phpcs
-        run: phpcs -q --report=checkstyle --standard=Magento2 . | cs2pr
+        run: phpcs -n -q --report=checkstyle --standard=Magento2 . | cs2pr
 
   tests:
     name: "Tests"

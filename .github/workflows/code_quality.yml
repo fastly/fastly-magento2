@@ -1,8 +1,11 @@
-name: "Tests"
+name: "Code quality"
 
 on:
   pull_request:
     branches: [master]
+
+env:
+  MAGENTO_CODING_STANDARD: "v25"
 
 jobs:
   static_code_check:
@@ -20,7 +23,7 @@ jobs:
       - name: Install and setup Magento 2 coding standard
         run: |
           vendor_path=$(composer global config vendor-dir --absolute) && \
-          composer global require magento/magento-coding-standard && \
+          composer global require magento/magento-coding-standard:${{ env.MAGENTO_CODING_STANDARD }} && \
           phpcs --config-set installed_paths "$vendor_path/magento/magento-coding-standard/,$vendor_path/phpcompatibility/php-compatibility/"
 
       - name: Run phpcs

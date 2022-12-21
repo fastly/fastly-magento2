@@ -67,9 +67,38 @@ class AroundMedia
         if (!$this->config->isImageOptimizationEnabled()) {
             return $proceed();
         }
+
+        if ($this->config->isImageOptimizationServePlaceholdersEnabled()) {
+            $this->preparePlaceholderResponse();
+        } else {
+            $this->prepareNotFoundResponse();
+        }
+
+        return $this->response;
+    }
+
+    /**
+     * Prepare not found 404 response
+     *
+     * @return void
+     */
+    private function prepareNotFoundResponse()
+    {
+        $this->response->setStatusHeader(404, '1.1', 'Not Found');
+        $this->response->setHeader('Status', '404 File not found');
+        $this->response->setNoCacheHeaders();
+    }
+
+    /**
+     * Prepare placeholder image
+     *
+     * @return void
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    private function preparePlaceholderResponse()
+    {
         $this->appState->setAreaCode(Area::AREA_GLOBAL);
         $placeholder = $this->placeholderFactory->create(['type' => 'image']);
         $this->response->setFilePath($placeholder->getPath());
-        return $this->response;
     }
 }

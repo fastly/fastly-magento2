@@ -557,6 +557,17 @@
                             <source_model>Fastly\Cdn\Model\Config\Backend\PixelRatios</source_model>
                             <validate>required_entry</validate>
                         </field>
+                        <!-- ====================================================
+                             Image Serve Placeholder select field
+                        ===================================================== -->
+                        <field id="image_serve_placeholder" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Serve Placeholder Image</label>
+                            <comment>Serve placeholder image instead of responding with a 404 for images that do not exist.</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <depends>
+                                <field id="image_optimizations">1</field>
+                            </depends>
+                        </field>
                         <!-- =========================================
                              Image Verify select field
                         ========================================== -->

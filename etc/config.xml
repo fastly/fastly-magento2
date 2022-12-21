@@ -50,6 +50,7 @@
                         <image_optimization_bg_color>1</image_optimization_bg_color>
                         <image_optimization_canvas>1</image_optimization_canvas>
                         <image_optimizations_ratios>2,3</image_optimizations_ratios>
+                        <image_serve_placeholder>1</image_serve_placeholder>
                         <image_verify>0</image_verify>
                     </fastly_image_optimization_configuration>
                     <fastly_web_hooks>

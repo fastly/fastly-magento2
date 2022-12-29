@@ -143,7 +143,7 @@ class Api
 
     private function _getWafEndpoint()
     {
-        $uri = $this->config->getApiEndpoint() . 'wafs/';
+        $uri = $this->config->getApiEndpoint() . 'waf/firewalls/';
 
         return $uri;
     }

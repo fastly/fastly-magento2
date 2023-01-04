@@ -12,7 +12,7 @@ define([
          *
          * @type {*|jQuery}
          */
-        this.modal = $('<div/>').attr({id: divId}).html(options.content()).modal({
+        this.modal = $('<div>').attr({id: divId}).html(options.content()).modal({
             modalClass: 'magento',
             title: options.title,
             type: 'slide',

@@ -7,7 +7,7 @@ define([
     return function (swatchRenderer) {
 
         $.widget('mage.SwatchRenderer', swatchRenderer, {
-            
+
             _init: function () {
                 if (_.isUndefined(this.options) || _.isEmpty(this.options))
                         return this._super();
@@ -33,6 +33,11 @@ define([
                 });
 
                 return this._super();
+            },
+            updateBaseImage: function (images, context, isInProductView){
+                this._super(images, context, isInProductView);
+                //add logic for srcset
+                //context.find('.product-image-photo').attr('srcset', justAnImage.img);
             }
         });
 

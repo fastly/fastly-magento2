@@ -84,7 +84,7 @@ define([
                         continue;
                     }
 
-                    srcset = this.findFromImageList(src, gallery[i]);
+                    srcset = this.findSrcsetInImageResponse(src, gallery[i]);
                     if (srcset) {
                         return srcset;
                     }

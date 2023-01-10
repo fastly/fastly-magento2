@@ -98,12 +98,14 @@ define([
                     return null;
                 }
 
-                this.imageSizes.forEach(function (size) {
+                for (var i = 0; i < this.imageSizes.length; i++) {
+                    var size = this.imageSizes[i];
                     if (list[size] && list[size] === src) {
                         return list.fastly_srcset[size];
                     }
-                });
+                }
 
+                return null;
             }
         });
 

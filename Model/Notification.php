@@ -20,6 +20,8 @@
  */
 namespace Fastly\Cdn\Model;
 
+use Laminas\Http\Request;
+use Laminas\Http\Response;
 use Magento\AdminNotification\Model\Feed;
 use Magento\AdminNotification\Model\InboxFactory;
 use Magento\Backend\App\ConfigInterface;
@@ -46,7 +48,7 @@ class Notification extends Feed
     /**
      * Github latest composer data url
      */
-    const CHECK_VERSION_URL = 'https://raw.githubusercontent.com/fastly/fastly-magento2/master/composer.json';
+    public const CHECK_VERSION_URL = 'https://raw.githubusercontent.com/fastly/fastly-magento2/master/composer.json';
     /**
      * @var ScopeConfigInterface
      */
@@ -156,15 +158,15 @@ class Notification extends Feed
             $url = self::CHECK_VERSION_URL;
             $client = $this->curlFactory->create();
 
-            $client->write(\Zend_Http_Client::GET, $url, '1.1');
+            $client->write(Request::METHOD_GET, $url, '1.1');
             $responseBody = $client->read();
             $client->close();
 
-            $responseCode = \Zend_Http_Response::extractCode($responseBody);
+            $responseCode = $this->extractCodeFromResponse($responseBody);
             if ($responseCode !== 200) {
                 return false;
             }
-            $body = \Zend_Http_Response::extractBody($responseBody);
+            $body = Response::getBody($responseBody);
             $json = json_decode($body);
             $version = !empty($json->version) ? $json->version : false;
 
@@ -173,5 +175,23 @@ class Notification extends Feed
             $this->_logger->log(100, $e->getMessage().$url);
             return false;
         }
+    }
+
+    /**
+     * Extract the response code from a response string
+     *
+     * @param string $responseString
+     *
+     * @return false|int
+     */
+    private function extractCodeFromResponse(string $responseString)
+    {
+        try {
+            $responseCode = Response::fromString($responseString)->getStatusCode();
+        } catch (Throwable $e) {
+            $responseCode = false;
+        }
+
+        return $responseCode;
     }
 }

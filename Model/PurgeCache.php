@@ -20,6 +20,8 @@
  */
 namespace Fastly\Cdn\Model;
 
+use Laminas\Uri\Exception\ExceptionInterface as UriException;
+
 /**
  * Class PurgeCache
  *
@@ -53,7 +55,7 @@ class PurgeCache
      *
      * @param string $pattern
      * @return bool
-     * @throws \Zend_Uri_Exception
+     * @throws UriException
      */
     public function sendPurgeRequest($pattern = '')
     {

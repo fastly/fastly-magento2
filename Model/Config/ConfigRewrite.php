@@ -21,6 +21,7 @@
 namespace Fastly\Cdn\Model\Config;
 
 use Fastly\Cdn\Model\Api;
+use Laminas\Uri\Exception\ExceptionInterface as UriException;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 
 /**
@@ -58,7 +59,7 @@ class ConfigRewrite
      * Trigger purge if set
      *
      * @param \Magento\Config\Model\Config $subject
-     * @throws \Zend_Uri_Exception
+     * @throws UriException
      */
     public function afterSave(\Magento\Config\Model\Config $subject) // @codingStandardsIgnoreLine - unused parameter
     {

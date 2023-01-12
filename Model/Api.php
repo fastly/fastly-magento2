@@ -20,6 +20,11 @@
  */
 namespace Fastly\Cdn\Model;
 
+use Laminas\Http\Request;
+use Laminas\Http\Response;
+use Laminas\Uri\Exception\ExceptionInterface as UriException;
+use Laminas\Uri\UriFactory;
+use Laminas\Uri\Uri;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\Adapter\CurlFactory;
 use Magento\Framework\Cache\InvalidateLogger;
@@ -36,12 +41,12 @@ use Magento\Framework\App\State;
  */
 class Api
 {
-    const FASTLY_HEADER_AUTH   = 'Fastly-Key';
-    const FASTLY_HEADER_TOKEN  = 'X-Purge-Token';
-    const FASTLY_HEADER_SOFT_PURGE = 'Fastly-Soft-Purge';
-    const PURGE_TIMEOUT        = 10;
-    const PURGE_TOKEN_LIFETIME = 30;
-    const FASTLY_MAX_HEADER_KEY_SIZE = 256;
+    public const FASTLY_HEADER_AUTH   = 'Fastly-Key';
+    public const FASTLY_HEADER_TOKEN  = 'X-Purge-Token';
+    public const FASTLY_HEADER_SOFT_PURGE = 'Fastly-Soft-Purge';
+    public const PURGE_TIMEOUT        = 10;
+    public const PURGE_TOKEN_LIFETIME = 30;
+    public const FASTLY_MAX_HEADER_KEY_SIZE = 256;
 
     /**
      * @var Config
@@ -153,7 +158,7 @@ class Api
      *
      * @param $url
      * @return \Magento\Framework\Controller\Result\Json
-     * @throws \Zend_Uri_Exception
+     * @throws UriException
      */
     public function cleanUrl($url)
     {
@@ -175,7 +180,7 @@ class Api
      *
      * @param $keys
      * @return bool|\Magento\Framework\Controller\Result\Json
-     * @throws \Zend_Uri_Exception
+     * @throws UriException
      */
     public function cleanBySurrogateKey($keys)
     {
@@ -200,7 +205,7 @@ class Api
 
         foreach ($collection as $keys) {
             $payload = json_encode(['surrogate_keys' => $keys]);
-            $result = $this->_purge($uri, null, \Zend_Http_Client::POST, $payload);
+            $result = $this->_purge($uri, null, Request::METHOD_POST, $payload);
             if ($result['status']) {
                 foreach ($keys as $key) {
                     $this->logger->execute('surrogate key: ' . $key);
@@ -232,7 +237,7 @@ class Api
      * Purge all of Fastly's CDN content. Can be called only once per request
      *
      * @return bool|\Magento\Framework\Controller\Result\Json
-     * @throws \Zend_Uri_Exception
+     * @throws UriException
      */
     public function cleanAll()
     {
@@ -276,17 +281,17 @@ class Api
      * @param string $method
      * @param null $payload
      * @return \Magento\Framework\Controller\Result\Json
-     * @throws \Zend_Uri_Exception
+     * @throws UriException
      */
-    private function _purge($uri, $type, $method = \Zend_Http_Client::POST, $payload = null)
+    private function _purge($uri, $type, $method = Request::METHOD_POST, $payload = null)
     {
 
         if ($method == 'PURGE') {
             // create purge token
             $expiration   = time() + self::PURGE_TOKEN_LIFETIME;
 
-            $zendUri = \Zend_Uri::factory($uri);
-            $path = $zendUri->getPath();
+            $laminasUri = UriFactory::factory($uri);
+            $path = $laminasUri->getPath();
             $stringToSign = $path . $expiration;
             $signature    = hash_hmac('sha1', $stringToSign, $this->config->getServiceId());
             $token        = $expiration . '_' . urlencode($signature);
@@ -316,8 +321,8 @@ class Api
             }
             $client->write($method, $uri, '1.1', $headers, $payload);
             $responseBody = $client->read();
-            $responseCode = \Zend_Http_Response::extractCode($responseBody);
-            $responseMessage = \Zend_Http_Response::extractMessage($responseBody);
+            $responseCode = $this->extractCodeFromResponse($responseBody);
+            $responseMessage = $this->extractMessageFromResponse($responseBody);
             $client->close();
 
             // check response
@@ -379,7 +384,7 @@ class Api
             $result = $this->_fetch($uri);
         } else {
             $uri = $this->config->getApiEndpoint() . 'service/' . rawurlencode($serviceId);
-            $result = $this->_fetch($uri, \Zend_Http_Client::GET, null, true, $apiKey);
+            $result = $this->_fetch($uri, Request::METHOD_GET, null, true, $apiKey);
         }
 
         if (!$result) {
@@ -399,7 +404,7 @@ class Api
     public function cloneVersion($curVersion)
     {
         $url = $this->_getApiServiceUri() . 'version/'.rawurlencode($curVersion).'/clone';
-        $result = $this->_fetch($url, \Zend_Http_Client::PUT);
+        $result = $this->_fetch($url, Request::METHOD_PUT);
 
         if (!$result) {
             throw new LocalizedException(__('Failed to clone active version.'));
@@ -419,7 +424,7 @@ class Api
     public function addComment($version, $comment)
     {
         $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version);
-        $result = $this->_fetch($url, \Zend_Http_Client::PUT, $comment);
+        $result = $this->_fetch($url, Request::METHOD_PUT, $comment);
 
         return $result;
     }
@@ -535,9 +540,9 @@ class Api
         $url = $this->_getApiServiceUri(). 'version/' .rawurlencode($version). '/snippet';
 
         if (!$checkIfExists) {
-            $verb = \Zend_Http_Client::POST;
+            $verb = Request::METHOD_POST;
         } else {
-            $verb = \Zend_Http_Client::PUT;
+            $verb = Request::METHOD_PUT;
             if (!isset($snippet['dynamic']) || $snippet['dynamic'] != 1) {
                 $url .= '/'.rawurlencode($snippetName);
                 unset($snippet['name'], $snippet['type'], $snippet['dynamic']);
@@ -565,7 +570,7 @@ class Api
     public function getSnippet($version, $name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version). '/snippet/' . rawurlencode($name);
-        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+        $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
     }
@@ -580,7 +585,7 @@ class Api
     public function updateSnippet(array $snippet)
     {
         $url = $this->_getApiServiceUri(). 'snippet' . '/'.rawurlencode($snippet['name']);
-        $result = $this->_fetch($url, \Zend_Http_Client::PUT, $snippet);
+        $result = $this->_fetch($url, Request::METHOD_PUT, $snippet);
 
         if (!$result) {
             throw new LocalizedException(__($this->errorMessage));
@@ -601,7 +606,7 @@ class Api
     public function hasSnippet($version, $name)
     {
         $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/snippet/' . rawurlencode($name);
-        $result = $this->_fetch($url, \Zend_Http_Client::GET, '', false, null, false);
+        $result = $this->_fetch($url, Request::METHOD_GET, '', false, null, false);
 
         if ($result == false) {
             return false;
@@ -620,7 +625,7 @@ class Api
     public function removeSnippet($version, $name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version). '/snippet/' . rawurlencode($name);
-        $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
+        $result = $this->_fetch($url, Request::METHOD_DELETE);
 
         return $result;
     }
@@ -637,9 +642,9 @@ class Api
         $checkIfExists = $this->getCondition($version, $condition['name']);
         $url = $this->_getApiServiceUri(). 'version/' .rawurlencode($version). '/condition';
         if (!$checkIfExists) {
-            $verb = \Zend_Http_Client::POST;
+            $verb = Request::METHOD_POST;
         } else {
-            $verb = \Zend_Http_Client::PUT;
+            $verb = Request::METHOD_PUT;
             $url .= '/'.rawurlencode($condition['name']);
         }
 
@@ -663,7 +668,7 @@ class Api
     {
         $url = $this->_getApiServiceUri(). 'version/' .rawurlencode($version). '/condition/' . $conditionName;
 
-        return $this->_fetch($url, \Zend_Http_Client::DELETE);
+        return $this->_fetch($url, Request::METHOD_DELETE);
     }
 
     /**
@@ -677,7 +682,7 @@ class Api
     public function getCondition($version, $name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version). '/condition/' . rawurlencode($name);
-        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+        $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
     }
@@ -696,9 +701,9 @@ class Api
         $url = $this->_getApiServiceUri(). 'version/' .rawurlencode($version). '/header';
 
         if ($checkIfExists === false) {
-            $verb = \Zend_Http_Client::POST;
+            $verb = Request::METHOD_POST;
         } else {
-            $verb = \Zend_Http_Client::PUT;
+            $verb = Request::METHOD_PUT;
             $url .= '/'.rawurlencode($condition['name']);
         }
 
@@ -718,7 +723,7 @@ class Api
     public function getHeader($version, $name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version). '/header/' . rawurlencode($name);
-        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+        $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
     }
@@ -736,9 +741,9 @@ class Api
         $checkIfExists = $this->getResponse($version, $response['name']);
         $url = $this->_getApiServiceUri(). 'version/' .rawurlencode($version). '/response_object';
         if (!$checkIfExists) {
-            $verb = \Zend_Http_Client::POST;
+            $verb = Request::METHOD_POST;
         } else {
-            $verb = \Zend_Http_Client::PUT;
+            $verb = Request::METHOD_PUT;
             $url .= '/'.rawurlencode($response['name']);
         }
 
@@ -759,7 +764,7 @@ class Api
     {
         $url = $this->_getApiServiceUri(). 'version/' .rawurlencode($version). '/response_object/' . $responseName;
 
-        return $this->_fetch($url, \Zend_Http_Client::DELETE);
+        return $this->_fetch($url, Request::METHOD_DELETE);
     }
 
     /**
@@ -773,7 +778,7 @@ class Api
     public function getResponse($version, $name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version). '/response_object/' . rawurlencode($name);
-        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+        $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
     }
@@ -789,9 +794,9 @@ class Api
         $checkIfExists = $this->getRequest($version, $request['name']);
         $url = $this->_getApiServiceUri(). 'version/' .rawurlencode($version). '/request_settings';
         if (!$checkIfExists) {
-            $verb = \Zend_Http_Client::POST;
+            $verb = Request::METHOD_POST;
         } else {
-            $verb = \Zend_Http_Client::PUT;
+            $verb = Request::METHOD_PUT;
             $url .= '/'.rawurlencode($request['name']);
         }
 
@@ -814,7 +819,7 @@ class Api
     public function getRequest($version, $name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version). '/request_settings/' . rawurlencode($name);
-        $result = $this->_fetch($url, \Zend_Http_Client::GET, '', false, null, false);
+        $result = $this->_fetch($url, Request::METHOD_GET, '', false, null, false);
 
         return $result;
     }
@@ -827,7 +832,7 @@ class Api
     public function getAllConditions($version)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version) . '/condition';
-        $result = $this->_fetch($url, \Zend_Http_Client::GET, '', false, null, false);
+        $result = $this->_fetch($url, Request::METHOD_GET, '', false, null, false);
 
         return $result;
     }
@@ -840,7 +845,7 @@ class Api
     public function getAllDomains($version)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version) . '/domain';
-        $result = $this->_fetch($url, \Zend_Http_Client::GET, '', false, null, false);
+        $result = $this->_fetch($url, Request::METHOD_GET, '', false, null, false);
 
         return $result;
     }
@@ -854,7 +859,7 @@ class Api
     public function deleteDomain($version, $name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version) . '/domain/' . rawurlencode($name);
-        $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
+        $result = $this->_fetch($url, Request::METHOD_DELETE);
 
         return $result;
     }
@@ -868,7 +873,7 @@ class Api
     public function createDomain($version, $data)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version) . '/domain';
-        $result = $this->_fetch($url, \Zend_Http_Client::POST, $data);
+        $result = $this->_fetch($url, Request::METHOD_POST, $data);
 
         return $result;
     }
@@ -882,7 +887,7 @@ class Api
     public function deleteRequest($version, $name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version). '/request_settings/' . rawurlencode($name);
-        $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
+        $result = $this->_fetch($url, Request::METHOD_DELETE);
 
         if (!$result) {
             throw new LocalizedException(__('Failed to delete the REQUEST object.'));
@@ -899,7 +904,7 @@ class Api
     public function getBackends($version)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version). '/backend';
-        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+        $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
     }
@@ -916,7 +921,7 @@ class Api
     public function configureBackend($params, $version, $old_name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version). '/backend/' . rawurlencode($old_name);
-        $result = $this->_fetch($url, \Zend_Http_Client::PUT, $params);
+        $result = $this->_fetch($url, Request::METHOD_PUT, $params);
 
         return $result;
     }
@@ -930,7 +935,7 @@ class Api
     public function createBackend($params, $version)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version). '/backend';
-        $result = $this->_fetch($url, \Zend_Http_Client::POST, $params);
+        $result = $this->_fetch($url, Request::METHOD_POST, $params);
 
         return $result;
     }
@@ -944,7 +949,7 @@ class Api
     public function deleteBackend($name, $version)
     {
         $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/backend/' . rawurlencode($name);
-        $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
+        $result = $this->_fetch($url, Request::METHOD_DELETE);
 
         return $result;
     }
@@ -960,7 +965,7 @@ class Api
         $results = [];
         foreach ($providers as $type => $providerName) {
             $url = $this->_getApiServiceUri(). 'version/' . rawurlencode($version) . '/logging/' . rawurlencode($type);
-            $endpoints = $this->_fetch($url, \Zend_Http_Client::GET);
+            $endpoints = $this->_fetch($url, Request::METHOD_GET);
             foreach ($endpoints as $endpoint) {
                 $results[] = [
                     'label' => "{$endpoint->name} [{$providerName}]",
@@ -983,7 +988,7 @@ class Api
         $results = [];
         $providers = $this->helper->getAvailableLogEndpointProviders();
         $url = $this->_getApiServiceUri(). 'version/' . rawurlencode($version) . '/logging/' . rawurlencode($type);
-        $endpoints = $this->_fetch($url, \Zend_Http_Client::GET);
+        $endpoints = $this->_fetch($url, Request::METHOD_GET);
         foreach ($endpoints as $endpoint) {
             $results[] = [
                 'label' => "{$endpoint->name} [{$providers[$type]}]",
@@ -1004,7 +1009,7 @@ class Api
     public function getLogEndpoint($version, $type, $name)
     {
         $url = $this->_getApiServiceUri(). 'version/' . rawurlencode($version) . '/logging/' . rawurlencode($type) . '/' . rawurlencode($name);
-        return $this->_fetch($url, \Zend_Http_Client::GET);
+        return $this->_fetch($url, Request::METHOD_GET);
     }
 
     /**
@@ -1017,7 +1022,7 @@ class Api
     public function createLogEndpoint($version, $type, $params)
     {
         $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/logging/' . rawurlencode($type);
-        return $this->_fetch($url, \Zend_Http_Client::POST, $params);
+        return $this->_fetch($url, Request::METHOD_POST, $params);
     }
 
     /**
@@ -1031,7 +1036,7 @@ class Api
     public function updateLogEndpoint($version, $type, $params, $oldName)
     {
         $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/logging/' . rawurlencode($type) . '/' . rawurlencode($oldName);
-        return $this->_fetch($url, \Zend_Http_Client::PUT, $params);
+        return $this->_fetch($url, Request::METHOD_PUT, $params);
     }
 
     /**
@@ -1073,9 +1078,9 @@ class Api
         $client = $this->curlFactory->create();
         $client->addOption(CURLOPT_CONNECTTIMEOUT, 2);
         $client->addOption(CURLOPT_TIMEOUT, 3);
-        $client->write(\Zend_Http_Client::POST, $url, '1.1', $headers, $body);
+        $client->write(Request::METHOD_POST, $url, '1.1', $headers, $body);
         $response = $client->read();
-        $responseCode = \Zend_Http_Response::extractCode($response);
+        $responseCode = $this->extractCodeFromResponse($response);
 
         if ($responseCode != 200) {
             $this->log->log(100, 'Failed to send message to the following Webhook: '.$url);
@@ -1095,7 +1100,7 @@ class Api
     public function createDictionary($version, $params)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version) . '/dictionary';
-        $result = $this->_fetch($url, \Zend_Http_Client::POST, $params);
+        $result = $this->_fetch($url, Request::METHOD_POST, $params);
 
         return $result;
     }
@@ -1111,7 +1116,7 @@ class Api
     public function deleteDictionary($version, $name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version) . '/dictionary/' . rawurlencode($name);
-        $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
+        $result = $this->_fetch($url, Request::METHOD_DELETE);
 
         return $result;
     }
@@ -1126,7 +1131,7 @@ class Api
     public function dictionaryItemsList($dictionaryId)
     {
         $url = $this->_getApiServiceUri(). 'dictionary/'.rawurlencode($dictionaryId).'/items';
-        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+        $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
     }
@@ -1142,7 +1147,7 @@ class Api
     public function getSingleDictionary($version, $dictionaryName)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version) . '/dictionary/' . rawurlencode($dictionaryName);
-        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+        $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
     }
@@ -1194,7 +1199,7 @@ class Api
     public function createDictionaryItems($dictionaryId, $params)
     {
         $url = $this->_getApiServiceUri().'dictionary/'.rawurlencode($dictionaryId).'/items';
-        $result = $this->_fetch($url, \Zend_Http_Client::PATCH, $params);
+        $result = $this->_fetch($url, Request::METHOD_PATCH, $params);
 
         return $result;
     }
@@ -1209,7 +1214,7 @@ class Api
     public function getDictionaries($version)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version) . '/dictionary';
-        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+        $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
     }
@@ -1225,7 +1230,7 @@ class Api
     public function deleteDictionaryItem($dictionaryId, $itemKey)
     {
         $url = $this->_getApiServiceUri(). 'dictionary/'. rawurlencode($dictionaryId) . '/item/' . rawurlencode($itemKey);
-        $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
+        $result = $this->_fetch($url, Request::METHOD_DELETE);
 
         return $result;
     }
@@ -1242,7 +1247,7 @@ class Api
     {
         $body = ['item_value' => $itemValue];
         $url = $this->_getApiServiceUri(). 'dictionary/'. rawurlencode($dictionaryId) . '/item/' . rawurlencode($itemKey);
-        $result = $this->_fetch($url, \Zend_Http_Client::PUT, $body);
+        $result = $this->_fetch($url, Request::METHOD_PUT, $body);
 
         if (!$result) {
             throw new LocalizedException(__('Failed to create Dictionary item.'));
@@ -1259,7 +1264,7 @@ class Api
     public function getSingleAcl($version, $acl)
     {
         $url = $this->_getApiServiceUri(). 'version/'. $version . '/acl/' . $acl;
-        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+        $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
     }
@@ -1275,7 +1280,7 @@ class Api
     public function createAcl($version, $params)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version) . '/acl';
-        $result = $this->_fetch($url, \Zend_Http_Client::POST, $params);
+        $result = $this->_fetch($url, Request::METHOD_POST, $params);
 
         return $result;
     }
@@ -1290,7 +1295,7 @@ class Api
     public function getAcls($version)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version) . '/acl';
-        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+        $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
     }
@@ -1306,7 +1311,7 @@ class Api
     public function deleteAcl($version, $name)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version) . '/acl/' . rawurlencode($name);
-        $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
+        $result = $this->_fetch($url, Request::METHOD_DELETE);
 
         return $result;
     }
@@ -1321,7 +1326,7 @@ class Api
     public function aclItemsList($aclId)
     {
         $url = $this->_getApiServiceUri() . 'acl/'. rawurlencode($aclId) . '/entries';
-        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+        $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
     }
@@ -1350,7 +1355,7 @@ class Api
         }
 
         $url = $this->_getApiServiceUri(). 'acl/'. rawurlencode($aclId) . '/entry';
-        $result = $this->_fetch($url, \Zend_Http_Client::POST, $body);
+        $result = $this->_fetch($url, Request::METHOD_POST, $body);
 
         return $result;
     }
@@ -1366,7 +1371,7 @@ class Api
     public function deleteAclItem($aclId, $aclItemId)
     {
         $url = $this->_getApiServiceUri(). 'acl/'. rawurlencode($aclId) . '/entry/' . rawurlencode($aclItemId);
-        $result = $this->_fetch($url, \Zend_Http_Client::DELETE);
+        $result = $this->_fetch($url, Request::METHOD_DELETE);
 
         return $result;
     }
@@ -1396,7 +1401,7 @@ class Api
         }
 
         $url = $this->_getApiServiceUri(). 'acl/'. rawurlencode($aclId) . '/entry/' . rawurlencode($aclItemId);
-        $result = $this->_fetch($url, \Zend_Http_Client::PATCH, json_encode($body));
+        $result = $this->_fetch($url, Request::METHOD_PATCH, json_encode($body));
 
         return $result;
     }
@@ -1431,7 +1436,7 @@ class Api
     public function getGeneratedVcl($version)
     {
         $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/generated_vcl';
-        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+        $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
     }
@@ -1439,7 +1444,7 @@ class Api
     public function getParticularVersion($version)
     {
         $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version);
-        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+        $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
     }
@@ -1453,7 +1458,7 @@ class Api
     public function checkImageOptimizationStatus()
     {
         $url = $this->_getApiServiceUri(). 'dynamic_io_settings';
-        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+        $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
     }
@@ -1468,7 +1473,7 @@ class Api
     public function getImageOptimizationDefaultConfigOptions($version)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version) . '/io_settings';
-        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+        $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
     }
@@ -1484,7 +1489,7 @@ class Api
     public function configureImageOptimizationDefaultConfigOptions($params, $version)
     {
         $url = $this->_getApiServiceUri(). 'version/'. rawurlencode($version) . '/io_settings';
-        $result = $this->_fetch($url, \Zend_Http_Client::PATCH, $params);
+        $result = $this->_fetch($url, Request::METHOD_PATCH, $params);
 
         return $result;
     }
@@ -1498,7 +1503,7 @@ class Api
     public function getServiceDetails()
     {
         $url = $this->_getApiServiceUri() . 'details';
-        $result = $this->_fetch($url, \Zend_Http_Client::GET);
+        $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
     }
@@ -1518,7 +1523,7 @@ class Api
             $url .= '?include=waf_firewall_versions';
         }
 
-        return $this->_fetch($url, \Zend_Http_Client::GET);
+        return $this->_fetch($url, Request::METHOD_GET);
     }
 
     public function getLastErrorMessage()
@@ -1541,7 +1546,7 @@ class Api
      */
     private function _fetch(
         $uri,
-        $method = \Zend_Http_Client::GET,
+        $method = Request::METHOD_GET,
         $body = '',
         $test = false,
         $testApiKey = null,
@@ -1565,20 +1570,20 @@ class Api
 
         // Request method specific header & option changes
         switch ($method) {
-            case \Zend_Http_Client::DELETE:
-                $options[CURLOPT_CUSTOMREQUEST] = \Zend_Http_Client::DELETE;
+            case Request::METHOD_DELETE:
+                $options[CURLOPT_CUSTOMREQUEST] = Request::METHOD_DELETE;
                 break;
-            case \Zend_Http_Client::PUT:
+            case Request::METHOD_PUT:
                 $headers[] = 'Content-Type: application/x-www-form-urlencoded';
-                $options[CURLOPT_CUSTOMREQUEST] = \Zend_Http_Client::PUT;
+                $options[CURLOPT_CUSTOMREQUEST] = Request::METHOD_PUT;
 
                 if ($body != '') {
                     $options[CURLOPT_POSTFIELDS] = $body;
                 }
 
                 break;
-            case \Zend_Http_Client::PATCH:
-                $options[CURLOPT_CUSTOMREQUEST] = \Zend_Http_Client::PATCH;
+            case Request::METHOD_PATCH:
+                $options[CURLOPT_CUSTOMREQUEST] = Request::METHOD_PATCH;
                 $headers[] = 'Content-Type: text/json';
 
                 if ($body != '') {
@@ -1598,9 +1603,9 @@ class Api
         $client->close();
 
         // Parse response
-        $responseBody = \Zend_Http_Response::extractBody($response);
-        $responseCode = \Zend_Http_Response::extractCode($response);
-        $responseMessage = \Zend_Http_Response::extractMessage($response);
+        $responseBody = Response::getBody($response);
+        $responseCode = $this->extractCodeFromResponse($response);
+        $responseMessage = $this->extractMessageFromResponse($response);
 
         // Return error based on response code
         if ($responseCode == '429') {
@@ -1646,5 +1651,40 @@ class Api
             }
         }
         return $responseMessage;
+    }
+
+    /**
+     * Extract the response code from a response string
+     *
+     * @param string $responseString
+     *
+     * @return false|int
+     */
+    private function extractCodeFromResponse(string $responseString)
+    {
+        try {
+            $responseCode = Response::fromString($responseString)->getStatusCode();
+        } catch (Throwable $e) {
+            $responseCode = false;
+        }
+
+        return $responseCode;
+    }
+
+    /**
+     * Extract the response message from a response string
+     *
+     * @param string $responseString
+     *
+     * @return false|int
+     */
+    private function extractMessageFromResponse(string $responseString)
+    {
+        preg_match("|^HTTP/[\d\.x]+ \d+ ([^\r\n]+)|", $responseString, $matches);
+        if (isset($matches[1])) {
+            return $matches[1];
+        }
+
+        return false;
     }
 }

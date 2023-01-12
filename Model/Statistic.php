@@ -21,6 +21,8 @@
 namespace Fastly\Cdn\Model;
 
 use Fastly\Cdn\Helper\Data;
+use Laminas\Http\Request;
+use Laminas\Http\Response;
 use Magento\Directory\Api\CountryInformationAcquirerInterface;
 use Magento\Directory\Model\CountryFactory;
 use Magento\Directory\Model\RegionFactory;
@@ -48,35 +50,35 @@ class Statistic extends AbstractModel implements IdentityInterface
     /**
      * Fastly INSTALLED Flag
      */
-    const FASTLY_INSTALLED_FLAG = 'installed';
+    public const FASTLY_INSTALLED_FLAG = 'installed';
     /**
      * Fastly CONFIGURED Flag
      */
-    const FASTLY_CONFIGURED_FLAG = 'configured';
+    public const FASTLY_CONFIGURED_FLAG = 'configured';
     /**
      * Fastly NOT_CONFIGURED Flag
      */
-    const FASTLY_NOT_CONFIGURED_FLAG = 'not_configured';
-    const FASTLY_VALIDATED_FLAG = 'validated';
-    const FASTLY_NON_VALIDATED_FLAG = 'non_validated';
+    public const FASTLY_NOT_CONFIGURED_FLAG = 'not_configured';
+    public const FASTLY_VALIDATED_FLAG = 'validated';
+    public const FASTLY_NON_VALIDATED_FLAG = 'non_validated';
 
-    const FASTLY_CONFIGURATION_FLAG = 'configuration';
-    const FASTLY_VALIDATION_FLAG = 'validation';
+    public const FASTLY_CONFIGURATION_FLAG = 'configuration';
+    public const FASTLY_VALIDATION_FLAG = 'validation';
 
     /**
      * Fastly upgrade flag
      */
-    const FASTLY_UPGRADE_FLAG = 'upgrade';
-    const FASTLY_UPGRADED_FLAG = 'upgraded';
+    public const FASTLY_UPGRADE_FLAG = 'upgrade';
+    public const FASTLY_UPGRADED_FLAG = 'upgraded';
 
-    const FASTLY_MODULE_NAME = 'Fastly_Cdn';
-    const CACHE_TAG = 'fastly_cdn_statistic';
-    const FASTLY_GA_TRACKING_ID = 'UA-89025888-1';
-    const GA_API_ENDPOINT = 'https://www.google-analytics.com/collect';
-    const GA_HITTYPE_PAGEVIEW = 'pageview';
-    const GA_HITTYPE_EVENT = 'event';
-    const GA_PAGEVIEW_URL = 'http://fastly.com/';
-    const GA_FASTLY_SETUP = 'Fastly Setup';
+    public const FASTLY_MODULE_NAME = 'Fastly_Cdn';
+    public const CACHE_TAG = 'fastly_cdn_statistic';
+    public const FASTLY_GA_TRACKING_ID = 'UA-89025888-1';
+    public const GA_API_ENDPOINT = 'https://www.google-analytics.com/collect';
+    public const GA_HITTYPE_PAGEVIEW = 'pageview';
+    public const GA_HITTYPE_EVENT = 'event';
+    public const GA_PAGEVIEW_URL = 'http://fastly.com/';
+    public const GA_FASTLY_SETUP = 'Fastly Setup';
     /**
      * @var array
      */
@@ -580,7 +582,7 @@ class Statistic extends AbstractModel implements IdentityInterface
      * @param string $uri
      * @return bool
      */
-    private function sendReqToGA($body = '', $method = \Zend_Http_Client::POST, $uri = self::GA_API_ENDPOINT)
+    private function sendReqToGA($body = '', $method = Request::METHOD_POST, $uri = self::GA_API_ENDPOINT)
     {
         $reqGAData = (array)$this->getGAReqData();
 
@@ -593,7 +595,7 @@ class Statistic extends AbstractModel implements IdentityInterface
             $client->addOption(CURLOPT_TIMEOUT, 10);
             $client->write($method, $uri, '1.1', null, http_build_query($body));
             $response = $client->read();
-            $responseCode = \Zend_Http_Response::extractCode($response);
+            $responseCode = $this->extractCodeFromResponse($response);
             $client->close();
 
             if ($responseCode != '200') {
@@ -604,5 +606,23 @@ class Statistic extends AbstractModel implements IdentityInterface
         } catch (\Exception $e) {
             return false;
         }
+    }
+
+    /**
+     * Extract the response code from a response string
+     *
+     * @param string $responseString
+     *
+     * @return false|int
+     */
+    private function extractCodeFromResponse(string $responseString)
+    {
+        try {
+            $responseCode = Response::fromString($responseString)->getStatusCode();
+        } catch (Throwable $e) {
+            $responseCode = false;
+        }
+
+        return $responseCode;
     }
 }

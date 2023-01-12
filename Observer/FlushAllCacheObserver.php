@@ -22,6 +22,7 @@ namespace Fastly\Cdn\Observer;
 
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\PurgeCache;
+use Laminas\Uri\Exception\ExceptionInterface as UriException;
 use Magento\Framework\Event\ObserverInterface;
 
 /**
@@ -54,7 +55,7 @@ class FlushAllCacheObserver implements ObserverInterface
      * Flush Fastly CDN cache
      *
      * @param \Magento\Framework\Event\Observer $observer
-     * @throws \Zend_Uri_Exception
+     * @throws UriException
      */
     public function execute(\Magento\Framework\Event\Observer $observer) // @codingStandardsIgnoreLine - unused parameter
     {

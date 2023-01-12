@@ -22,6 +22,9 @@ namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Purge;
 
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\PurgeCache;
+use Laminas\Uri\Exception\ExceptionInterface as UriException;
+use Laminas\Uri\UriFactory;
+use Laminas\Uri\Uri;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Exception\LocalizedException;
@@ -82,10 +85,10 @@ class Quick extends Action
                 // check if url is given
                 $url = $this->getRequest()->getParam('quick_purge_url', false);
 
-                $zendUri = \Zend_Uri::factory($url);
-                $host = $zendUri->getHost();
-                $scheme = $zendUri->getScheme();
-                $path = $zendUri->getPath();
+                $laminasUri = UriFactory::factory($url);
+                $host = $laminasUri->getHost();
+                $scheme = $laminasUri->getScheme();
+                $path = $laminasUri->getPath();
 
                 // check if host is one of magento's
                 if (!$this->isHostInDomainList($host)) {
@@ -122,7 +125,7 @@ class Quick extends Action
      *
      * @param $host
      * @return bool
-     * @throws \Zend_Uri_Exception
+     * @throws UriException
      */
     private function isHostInDomainList($host)
     {
@@ -139,7 +142,7 @@ class Quick extends Action
             /** @var \Magento\Store\Model\Store $store */
             foreach ($urlTypes as $urlType) {
                 foreach ($secureScheme as $scheme) {
-                    $shopHost = \Zend_Uri::factory($store->getBaseUrl($urlType, $scheme))->getHost();
+                    $shopHost = UriFactory::factory($store->getBaseUrl($urlType, $scheme))->getHost();
                     if ($host === $shopHost) {
                         return true;
                     }

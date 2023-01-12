@@ -21,6 +21,7 @@
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Purge;
 
 use Fastly\Cdn\Model\Api;
+use Laminas\Uri\Exception\ExceptionInterface as UriException;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Cache\Manager;
@@ -64,7 +65,7 @@ class All extends Action
      * Should be used when "Preserve static assets on purge" is enabled.
      *
      * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
-     * @throws \Zend_Uri_Exception
+     * @throws UriException
      */
     public function execute()
     {

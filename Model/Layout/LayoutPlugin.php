@@ -73,7 +73,7 @@ class LayoutPlugin
             && $this->config->getType() === Config::FASTLY && $this->config->getTtl()) {
             // get cache control header
             $header = $this->response->getHeader('cache-control');
-            if (($header instanceof \Zend\Http\Header\HeaderInterface) && ($value = $header->getFieldValue())) {
+            if (($header instanceof \Laminas\Http\Header\HeaderInterface) && ($value = $header->getFieldValue())) {
                 // append stale values
                 if ($ttl = $this->config->getStaleTtl()) {
                     $value .= ', stale-while-revalidate=' . $ttl;

@@ -166,7 +166,7 @@ class Notification extends Feed
             if ($responseCode !== 200) {
                 return false;
             }
-            $body = Response::getBody($responseBody);
+            $body = $this->extractBodyFromResponse($responseBody);
             $json = json_decode($body);
             $version = !empty($json->version) ? $json->version : false;
 
@@ -193,5 +193,20 @@ class Notification extends Feed
         }
 
         return $responseCode;
+    }
+
+    /**
+     * Extract the body from a response string
+     *
+     * @param string $response_str
+     * @return string
+     */
+    private function extractBodyFromResponse($response_str)
+    {
+        $parts = preg_split('|(?:\r\n){2}|m', $response_str, 2);
+        if (isset($parts[1])) {
+            return $parts[1];
+        }
+        return '';
     }
 }

@@ -22,7 +22,6 @@ namespace Fastly\Cdn\Model;
 
 use Laminas\Http\ClientFactory;
 use Laminas\Http\Request;
-use Laminas\Http\Response;
 use Laminas\Http\HeadersFactory;
 use Laminas\Http\RequestFactory;
 use Laminas\Uri\Exception\ExceptionInterface as UriException;
@@ -1590,9 +1589,6 @@ class Api
         $headers->addHeaderLine(self::FASTLY_HEADER_AUTH  . ': ' . $apiKey);
         $headers->addHeaderLine('Accept: application/json');
 
-        // Client options
-        //$options = [];
-
         // Request method specific header & option changes
         switch ($method) {
             case Request::METHOD_PUT:
@@ -1600,13 +1596,13 @@ class Api
                 $headers->addHeaderLine('Content-Type: application/x-www-form-urlencoded');
                 if ($body != '') {
                     //$options[CURLOPT_POSTFIELDS] = $body;
-                    $request->getPost()->fromString($body);
+                    $request->setContent($body);
                 }
                 break;
             case Request::METHOD_PATCH:
                 $headers->addHeaderLine('Content-Type: text/json');
                 if ($body != '') {
-                    $request->getPost()->fromString($body);
+                    $request->setContent($body);
                 }
                 break;
         }

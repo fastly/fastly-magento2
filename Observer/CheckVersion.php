@@ -93,7 +93,7 @@ class CheckVersion implements ObserverInterface
         $modulePath = $this->moduleRegistry->getPath(ComponentRegistrar::MODULE, 'Fastly_Cdn');
         $filePath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, "$modulePath/composer.json");
         $composerData = json_decode(file_get_contents($filePath)); // @codingStandardsIgnoreLine - not user controlled
-        $currentVersion = !empty($composerData->version) ? $composerData->version : false;
+        $currentVersion = !empty($composerData->version) ? $composerData->version : '';
 
         if ($currentVersion) {
             $this->feedFactory->checkUpdate($currentVersion);

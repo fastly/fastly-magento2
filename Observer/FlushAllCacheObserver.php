@@ -23,11 +23,11 @@ namespace Fastly\Cdn\Observer;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\PurgeCache;
 use Magento\Framework\Event\ObserverInterface;
+use Magento\Framework\Event\Observer;
 
 /**
- * Class FlushAllCacheObserver
+ * Class FlushAllCacheObserver - send purge request
  *
- * @package Fastly\Cdn\Observer
  */
 class FlushAllCacheObserver implements ObserverInterface
 {
@@ -53,10 +53,10 @@ class FlushAllCacheObserver implements ObserverInterface
     /**
      * Flush Fastly CDN cache
      *
-     * @param \Magento\Framework\Event\Observer $observer
-     * @throws \Zend_Uri_Exception
+     * @param Observer $observer
+     * @return void
      */
-    public function execute(\Magento\Framework\Event\Observer $observer) // @codingStandardsIgnoreLine - unused parameter
+    public function execute(Observer $observer): void // @codingStandardsIgnoreLine - unused parameter
     {
         if ($this->config->getType() === Config::FASTLY && $this->config->isEnabled()) {
             $this->purgeCache->sendPurgeRequest();

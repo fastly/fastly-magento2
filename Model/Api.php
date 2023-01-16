@@ -20,11 +20,13 @@
  */
 namespace Fastly\Cdn\Model;
 
+use Laminas\Http\ClientFactory;
 use Laminas\Http\Request;
 use Laminas\Http\Response;
+use Laminas\Http\HeadersFactory;
+use Laminas\Http\RequestFactory;
 use Laminas\Uri\Exception\ExceptionInterface as UriException;
 use Laminas\Uri\UriFactory;
-use Laminas\Uri\Uri;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\Adapter\CurlFactory;
 use Magento\Framework\Cache\InvalidateLogger;
@@ -84,12 +86,24 @@ class Api
      * @var State
      */
     private $state;
-
+    /**
+     * @var
+     */
     private $errorMessage;
+    /**
+     * @var ClientFactory
+     */
+    private $clientFactory;
+    /**
+     * @var RequestFactory
+     */
+    private $requestFactory;
+    /**
+     * @var HeadersFactory
+     */
+    private $headersFactory;
 
     /**
-     * Api constructor.
-     *
      * @param Config $config
      * @param CurlFactory $curlFactory
      * @param InvalidateLogger $logger
@@ -98,6 +112,9 @@ class Api
      * @param Vcl $vcl
      * @param Session $authSession
      * @param State $state
+     * @param ClientFactory $clientFactory
+     * @param RequestFactory $requestFactory
+     * @param HeadersFactory $headersFactory
      */
     public function __construct(
         Config $config,
@@ -107,7 +124,10 @@ class Api
         LoggerInterface $log,
         Vcl $vcl,
         Session $authSession,
-        State $state
+        State $state,
+        ClientFactory        $clientFactory,
+        RequestFactory       $requestFactory,
+        HeadersFactory $headersFactory
     ) {
         $this->config = $config;
         $this->curlFactory = $curlFactory;
@@ -117,6 +137,9 @@ class Api
         $this->vcl = $vcl;
         $this->authSession = $authSession;
         $this->state = $state;
+        $this->clientFactory = $clientFactory;
+        $this->requestFactory = $requestFactory;
+        $this->headersFactory = $headersFactory;
     }
 
     /**
@@ -285,7 +308,8 @@ class Api
      */
     private function _purge($uri, $type, $method = Request::METHOD_POST, $payload = null)
     {
-
+        $request = $this->requestFactory->create();
+        $headers = $this->headersFactory->create();
         if ($method == 'PURGE') {
             // create purge token
             $expiration   = time() + self::PURGE_TOKEN_LIFETIME;
@@ -295,35 +319,30 @@ class Api
             $stringToSign = $path . $expiration;
             $signature    = hash_hmac('sha1', $stringToSign, $this->config->getServiceId());
             $token        = $expiration . '_' . urlencode($signature);
-            $headers = [
-                self::FASTLY_HEADER_TOKEN . ': ' . $token
-            ];
+            $headers->addHeaderLine(self::FASTLY_HEADER_TOKEN . ': ' . $token);
         } else {
             // set headers
-            $headers = [
-                self::FASTLY_HEADER_AUTH  . ': ' . $this->config->getApiKey()
-            ];
+            $headers->addHeaderLine(self::FASTLY_HEADER_AUTH  . ': ' . $this->config->getApiKey());
         }
 
         // soft purge if needed
         if ($this->config->canUseSoftPurge()) {
-            array_push(
-                $headers,
-                self::FASTLY_HEADER_SOFT_PURGE . ': 1'
-            );
+            $headers->addHeaderLine(self::FASTLY_HEADER_SOFT_PURGE . ': 1');
         }
         $result['status'] = true;
         try {
-            $client = $this->curlFactory->create();
-            $client->setConfig(['timeout' => self::PURGE_TIMEOUT]);
-            if ($method == 'PURGE') {
-                $client->addOption(CURLOPT_CUSTOMREQUEST, 'PURGE');
-            }
-            $client->write($method, $uri, '1.1', $headers, $payload);
-            $responseBody = $client->read();
-            $responseCode = $this->extractCodeFromResponse($responseBody);
-            $responseMessage = $this->extractMessageFromResponse($responseBody);
-            $client->close();
+            $client = $this->clientFactory->create();
+
+            $client->setOptions([
+                'timeout'      => self::PURGE_TIMEOUT,
+            ]);
+
+            $request->setUri($uri);
+            $request->setMethod($method);
+            $request->setHeaders($headers);
+            $response = $client->send($request);
+            $responseCode = $response->getStatusCode();
+            $responseMessage = $response->getReasonPhrase();
 
             // check response
             if ($responseCode == '429') {
@@ -1554,58 +1573,49 @@ class Api
     ) {
         $apiKey = ($test == true) ? $testApiKey : $this->config->getApiKey();
 
+        $headers = $this->headersFactory->create();
+        $request = $this->requestFactory->create();
+
         // Correctly format $body string
         if (is_array($body) == true) {
             $body = http_build_query($body);
         }
 
         // Client headers
-        $headers = [
-            self::FASTLY_HEADER_AUTH  . ': ' . $apiKey,
-            'Accept: application/json'
-        ];
+        $headers->addHeaderLine(self::FASTLY_HEADER_AUTH  . ': ' . $apiKey);
+        $headers->addHeaderLine('Accept: application/json');
 
         // Client options
-        $options = [];
+        //$options = [];
 
         // Request method specific header & option changes
         switch ($method) {
-            case Request::METHOD_DELETE:
-                $options[CURLOPT_CUSTOMREQUEST] = Request::METHOD_DELETE;
-                break;
             case Request::METHOD_PUT:
-                $headers[] = 'Content-Type: application/x-www-form-urlencoded';
-                $options[CURLOPT_CUSTOMREQUEST] = Request::METHOD_PUT;
 
+                $headers->addHeaderLine('Content-Type: application/x-www-form-urlencoded');
                 if ($body != '') {
-                    $options[CURLOPT_POSTFIELDS] = $body;
+                    //$options[CURLOPT_POSTFIELDS] = $body;
+                    $request->getPost()->fromString($body);
                 }
-
                 break;
             case Request::METHOD_PATCH:
-                $options[CURLOPT_CUSTOMREQUEST] = Request::METHOD_PATCH;
-                $headers[] = 'Content-Type: text/json';
-
+                $headers->addHeaderLine('Content-Type: text/json');
                 if ($body != '') {
-                    $options[CURLOPT_POSTFIELDS] = $body;
+                    $request->getPost()->fromString($body);
                 }
-
                 break;
         }
 
-        /** @var \Magento\Framework\HTTP\Adapter\Curl $client */
-        $client = $this->curlFactory->create();
-
-        // Execute request
-        $client->setOptions($options);
-        $client->write($method, $uri, '1.1', $headers, $body);
-        $response = $client->read();
-        $client->close();
-
+        /** @var \Laminas\Http\Client $client */
+        $client = $this->clientFactory->create();
+        $request->setMethod($method);
+        $request->setUri($uri);
+        $request->setHeaders($headers);
+        $response = $client->send($request);
         // Parse response
-        $responseBody = Response::getBody($response);
-        $responseCode = $this->extractCodeFromResponse($response);
-        $responseMessage = $this->extractMessageFromResponse($response);
+        $responseBody = $response->getBody();
+        $responseCode = $response->getStatusCode();
+        $responseMessage = $response->getReasonPhrase();
 
         // Return error based on response code
         if ($responseCode == '429') {

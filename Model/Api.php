@@ -1097,8 +1097,12 @@ class Api
         $request->setMethod(Request::METHOD_POST);
         $request->setHeaders($headers);
         $request->setContent($body);
-        $response = $client->send($request);
-        if ($response->getStatusCode() != 200) {
+        try{
+            $response = $client->send($request);
+            if ($response->getStatusCode() != 200) {
+                $this->log->log(100, 'Failed to send message to the following Webhook: ' . $url);
+            }
+        }catch (\Exception $e){
             $this->log->log(100, 'Failed to send message to the following Webhook: ' . $url);
         }
     }

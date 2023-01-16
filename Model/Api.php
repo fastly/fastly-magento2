@@ -335,6 +335,7 @@ class Api
 
             $client->setOptions([
                 'timeout'      => self::PURGE_TIMEOUT,
+                'httpversion' => '1.1'
             ]);
 
             $request->setUri($uri);
@@ -1087,9 +1088,8 @@ class Api
 
         $text =  $messagePrefix.' user='.$currentUsername.' '.$message.' on <'.$storeUrl.'|Store> | '.$storeName;
 
-        $headers = [
-            'Content-type: application/json'
-        ];
+        $headers = $this->headersFactory->create();
+        $headers->addHeaderLine('Content-type: application/json');
 
         $body = json_encode([
             "text"  =>  $text,
@@ -1097,18 +1097,20 @@ class Api
             "icon_emoji"=> ":airplane:"
         ]);
 
-        $client = $this->curlFactory->create();
-        $client->addOption(CURLOPT_CONNECTTIMEOUT, 2);
-        $client->addOption(CURLOPT_TIMEOUT, 3);
-        $client->write(Request::METHOD_POST, $url, '1.1', $headers, $body);
-        $response = $client->read();
-        $responseCode = $this->extractCodeFromResponse($response);
-
-        if ($responseCode != 200) {
+        $client = $this->clientFactory->create();
+        $request = $this->requestFactory->create();
+        $client->setOptions([
+            'timeout'      => 2,
+            'httpversion' => '1.1'
+        ]);
+        $request->setUri($url);
+        $request->setMethod(Request::METHOD_POST);
+        $request->setHeaders($headers);
+        $request->setContent($body);
+        $response = $client->send($request);
+        if ($response->getStatusCode() != 200) {
             $this->log->log(100, 'Failed to send message to the following Webhook: '.$url);
         }
-
-        $client->close();
     }
 
     /**
@@ -1664,23 +1666,5 @@ class Api
             }
         }
         return $responseMessage;
-    }
-
-    /**
-     * Extract the response code from a response string
-     *
-     * @param string $responseString
-     *
-     * @return false|int
-     */
-    private function extractCodeFromResponse(string $responseString)
-    {
-        try {
-            $responseCode = Response::fromString($responseString)->getStatusCode();
-        } catch (Throwable $e) {
-            $responseCode = false;
-        }
-
-        return $responseCode;
     }
 }

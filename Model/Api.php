@@ -339,6 +339,9 @@ class Api
 
             $request->setUri($uri);
             $request->setMethod($method);
+            if($payload){
+                $request->setContent($payload);
+            }
             $request->setHeaders($headers);
             $response = $client->send($request);
             $responseCode = $response->getStatusCode();

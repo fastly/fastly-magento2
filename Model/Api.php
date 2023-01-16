@@ -1683,21 +1683,4 @@ class Api
 
         return $responseCode;
     }
-
-    /**
-     * Extract the response message from a response string
-     *
-     * @param string $responseString
-     *
-     * @return false|int
-     */
-    private function extractMessageFromResponse(string $responseString)
-    {
-        preg_match("|^HTTP/[\d\.x]+ \d+ ([^\r\n]+)|", $responseString, $matches);
-        if (isset($matches[1])) {
-            return $matches[1];
-        }
-
-        return false;
-    }
 }

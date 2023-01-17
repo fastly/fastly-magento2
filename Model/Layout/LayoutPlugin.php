@@ -20,12 +20,11 @@
  */
 namespace Fastly\Cdn\Model\Layout;
 
-use \Fastly\Cdn\Model\Config;
+use Fastly\Cdn\Model\Config;
+use Laminas\Http\Header\HeaderInterface;
 
 /**
- * Class LayoutPlugin
- *
- * @package Fastly\Cdn\Model\Layout
+ * Class LayoutPlugin for setting fastly cache-control header
  */
 class LayoutPlugin
 {
@@ -61,19 +60,18 @@ class LayoutPlugin
 
     /**
      * Set appropriate Cache-Control headers
-     * Set Fastly stale headers if configured
      *
      * @param \Magento\Framework\View\Layout $subject
      * @return void
      */
-    public function afterGenerateElements(\Magento\Framework\View\Layout $subject)
+    public function afterGenerateElements(\Magento\Framework\View\Layout $subject): void
     {
         // if subject is cacheable, FPC cache is enabled, Fastly module is chosen and general TTL is > 0
         if ($subject->isCacheable() && $this->config->isEnabled()
             && $this->config->getType() === Config::FASTLY && $this->config->getTtl()) {
             // get cache control header
             $header = $this->response->getHeader('cache-control');
-            if (($header instanceof \Laminas\Http\Header\HeaderInterface) && ($value = $header->getFieldValue())) {
+            if (($header instanceof HeaderInterface) && ($value = $header->getFieldValue())) {
                 // append stale values
                 if ($ttl = $this->config->getStaleTtl()) {
                     $value .= ', stale-while-revalidate=' . $ttl;
@@ -99,7 +97,6 @@ class LayoutPlugin
 
     /**
      * Add a debug header to indicate this request has passed through the Fastly Module.
-     * This is for ease of debugging
      *
      * @param \Magento\Framework\View\Layout $subject
      * @param mixed $result

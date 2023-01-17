@@ -22,9 +22,7 @@ namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Purge;
 
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\PurgeCache;
-use Laminas\Uri\Exception\ExceptionInterface as UriException;
 use Laminas\Uri\UriFactory;
-use Laminas\Uri\Uri;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Exception\LocalizedException;
@@ -32,9 +30,7 @@ use Magento\Framework\UrlInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
- * Class Quick
- *
- * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Purge
+ * Class Quick purge
  */
 class Quick extends Action
 {
@@ -123,11 +119,10 @@ class Quick extends Action
     /**
      * Checks if host is one of Magento's configured domains.
      *
-     * @param $host
+     * @param string $host
      * @return bool
-     * @throws UriException
      */
-    private function isHostInDomainList($host)
+    private function isHostInDomainList($host): bool
     {
         $urlTypes = [
             UrlInterface::URL_TYPE_LINK,

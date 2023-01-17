@@ -1,6 +1,6 @@
 {
     "name": "fastly/magento2",
-    "description": "Fastly CDN Module for Magento 2.3.x | 2.4.x",
+    "description": "Fastly CDN Module for Magento 2.4.x",
     "require": {
         "php": "~7.3.0|~7.4.0|~8.0.0|~8.1.0|~8.2.0",
         "magento/module-config": ">=101.1.6",

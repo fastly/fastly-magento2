@@ -23,13 +23,11 @@ namespace Fastly\Cdn\Observer;
 use Fastly\Cdn\Helper\CacheTags;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\PurgeCache;
-use Laminas\Uri\Exception\ExceptionInterface as UriException;
 use Magento\Framework\Event\ObserverInterface;
 
 /**
- * Class InvalidateVarnishObserver
- *
- * @package Fastly\Cdn\Observer
+ * Class InvalidateVarnishObserver for invalidating fastly cache
+ * sending purge request
  */
 class InvalidateVarnishObserver implements ObserverInterface
 {
@@ -69,9 +67,9 @@ class InvalidateVarnishObserver implements ObserverInterface
      * If Fastly CDN is enabled it sends one purge request per tag
      *
      * @param \Magento\Framework\Event\Observer $observer
-     * @throws UriException
+     * @return void
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function execute(\Magento\Framework\Event\Observer $observer): void
     {
         if ($this->config->getType() === Config::FASTLY && $this->config->isEnabled()) {
             $object = $observer->getEvent()->getObject();

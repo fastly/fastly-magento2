@@ -20,12 +20,9 @@
  */
 namespace Fastly\Cdn\Model;
 
-use Laminas\Uri\Exception\ExceptionInterface as UriException;
-
 /**
- * Class PurgeCache
+ * Class PurgeCache by pattern
  *
- * @package Fastly\Cdn\Model
  */
 class PurgeCache
 {
@@ -54,8 +51,7 @@ class PurgeCache
      * Send API purge request to invalidate cache by pattern
      *
      * @param string $pattern
-     * @return bool
-     * @throws UriException
+     * @return array|bool|\Magento\Framework\Controller\Result\Json
      */
     public function sendPurgeRequest($pattern = '')
     {

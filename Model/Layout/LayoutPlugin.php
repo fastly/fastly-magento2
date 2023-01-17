@@ -36,26 +36,19 @@ class LayoutPlugin
      * @var \Magento\Framework\App\ResponseInterface
      */
     private $response;
-    /**
-     * @var \Fastly\Cdn\Helper\CacheTags
-     */
-    private $cacheTags;
 
     /**
      * Constructor
      *
      * @param \Magento\Framework\App\ResponseInterface $response
      * @param \Fastly\Cdn\Model\Config $config
-     * @param \Fastly\Cdn\Helper\CacheTags $cacheTags
      */
     public function __construct(
         \Magento\Framework\App\ResponseInterface $response,
-        Config $config,
-        \Fastly\Cdn\Helper\CacheTags $cacheTags
+        Config $config
     ) {
         $this->response = $response;
         $this->config = $config;
-        $this->cacheTags = $cacheTags;
     }
 
     /**

@@ -21,16 +21,16 @@
 namespace Fastly\Cdn\Model\Config;
 
 use Fastly\Cdn\Model\Api;
-use Laminas\Uri\Exception\ExceptionInterface as UriException;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 
 /**
  * Used for sending purge after disabling Fastly as caching service
- *
- * @author Inchoo
  */
 class ConfigRewrite
 {
+    /**
+     * @var bool
+     */
     private $purge = false;
     /**
      * @var ScopeConfigInterface
@@ -59,9 +59,9 @@ class ConfigRewrite
      * Trigger purge if set
      *
      * @param \Magento\Config\Model\Config $subject
-     * @throws UriException
+     * @return void
      */
-    public function afterSave(\Magento\Config\Model\Config $subject) // @codingStandardsIgnoreLine - unused parameter
+    public function afterSave(\Magento\Config\Model\Config $subject): void // @codingStandardsIgnoreLine - unused parameter
     {
         if ($this->purge) {
             $this->api->cleanBySurrogateKey(['text']);
@@ -70,9 +70,11 @@ class ConfigRewrite
 
     /**
      * Set flag for purging if Fastly is switched off
+     *
      * @param \Magento\Config\Model\Config $subject
+     * @return void
      */
-    public function beforeSave(\Magento\Config\Model\Config $subject)
+    public function beforeSave(\Magento\Config\Model\Config $subject): void
     {
         $data = $subject->getData();
         if (!empty($data['groups']['full_page_cache']['fields']['caching_application']['value'])) {

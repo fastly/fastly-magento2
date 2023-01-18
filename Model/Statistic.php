@@ -582,14 +582,15 @@ class Statistic extends AbstractModel implements IdentityInterface
     }
 
     /**
-     * Sends CURL request to GA
+     * Sends request to GA
      *
-     * @param string $body
-     * @param string $method
-     * @param string $uri
+     * @param $body
+     * @param $method
+     * @param $uri
      * @return bool
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    private function sendReqToGA($body = '', $method = Request::METHOD_POST, $uri = self::GA_API_ENDPOINT)
+    private function sendReqToGA($body = '', $method = Request::METHOD_POST, $uri = self::GA_API_ENDPOINT): bool
     {
         $reqGAData = (array)$this->getGAReqData();
 

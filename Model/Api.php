@@ -1583,15 +1583,9 @@ class Api
             case Request::METHOD_PUT:
 
                 $headers->addHeaderLine('Content-Type: application/x-www-form-urlencoded');
-                if ($body != '') {
-                    $request->setContent($body);
-                }
                 break;
             case Request::METHOD_PATCH:
                 $headers->addHeaderLine('Content-Type: text/json');
-                if ($body != '') {
-                    $request->setContent($body);
-                }
                 break;
         }
 
@@ -1600,6 +1594,9 @@ class Api
         $request->setMethod($method);
         $request->setUri($uri);
         $request->setHeaders($headers);
+        if($body){
+            $request->setContent($body);
+        }
         $response = $client->send($request);
         // Parse response
         $responseBody = $response->getBody();

@@ -21,8 +21,9 @@
 namespace Fastly\Cdn\Model;
 
 use Fastly\Cdn\Helper\Data;
+use Laminas\Http\ClientFactory;
 use Laminas\Http\Request;
-use Laminas\Http\Response;
+use Laminas\Http\RequestFactory;
 use Magento\Directory\Api\CountryInformationAcquirerInterface;
 use Magento\Directory\Model\CountryFactory;
 use Magento\Directory\Model\RegionFactory;
@@ -42,8 +43,6 @@ use Magento\Framework\App\Request\Http;
 
 /**
  * Class Statistic
- *
- * @package Fastly\Cdn\Model
  */
 class Statistic extends AbstractModel implements IdentityInterface
 {
@@ -116,9 +115,13 @@ class Statistic extends AbstractModel implements IdentityInterface
      */
     private $api;
     /**
-     * @var CurlFactory
+     * @var ClientFactory
      */
-    private $curlFactory;
+    private $clientFactory;
+    /**
+     * @var RequestFactory
+     */
+    private $requestFactory;
     /**
      * @var StatisticRepository
      */
@@ -141,18 +144,20 @@ class Statistic extends AbstractModel implements IdentityInterface
     private $helper;
 
     /**
-     * Statistic constructor.
      * @param Context $context
      * @param Registry $registry
-     * @param \Fastly\Cdn\Model\Config $config
+     * @param Config $config
      * @param StoreManagerInterface $storeManager
      * @param ScopeConfigInterface $scopeConfig
      * @param CountryInformationAcquirerInterface $countryInformation
      * @param RegionFactory $regionFactory
      * @param Api $api
-     * @param CurlFactory $curlFactory
+     * @param ClientFactory $clientFactory
+     * @param RequestFactory $requestFactory
+     * @param CountryFactory $countryFactory
      * @param StatisticRepository $statisticRepository
      * @param DateTime $dateTime
+     * @param Data $helper
      * @param ProductMetadataInterface $productMetadata
      * @param Http $request
      * @param AbstractResource|null $resource
@@ -168,7 +173,8 @@ class Statistic extends AbstractModel implements IdentityInterface
         CountryInformationAcquirerInterface $countryInformation,
         RegionFactory $regionFactory,
         Api $api,
-        CurlFactory $curlFactory,
+        ClientFactory $clientFactory,
+        RequestFactory $requestFactory,
         CountryFactory $countryFactory,
         StatisticRepository $statisticRepository,
         DateTime $dateTime,
@@ -186,7 +192,8 @@ class Statistic extends AbstractModel implements IdentityInterface
         $this->countryInformation = $countryInformation;
         $this->regionFactory = $regionFactory;
         $this->api = $api;
-        $this->curlFactory = $curlFactory;
+        $this->clientFactory = $clientFactory;
+        $this->requestFactory = $requestFactory;
         $this->statisticRepository = $statisticRepository;
         $this->dateTime = $dateTime;
         $this->countryFactory = $countryFactory;
@@ -198,7 +205,7 @@ class Statistic extends AbstractModel implements IdentityInterface
 
     protected function _construct() // @codingStandardsIgnoreLine - required by parent class
     {
-        $this->_init('Fastly\Cdn\Model\ResourceModel\Statistic');
+        $this->_init(\Fastly\Cdn\Model\ResourceModel\Statistic::class);
     }
 
     public function getIdentities()
@@ -591,14 +598,19 @@ class Statistic extends AbstractModel implements IdentityInterface
         }
 
         try {
-            $client = $this->curlFactory->create();
-            $client->addOption(CURLOPT_TIMEOUT, 10);
-            $client->write($method, $uri, '1.1', null, http_build_query($body));
-            $response = $client->read();
-            $responseCode = $this->extractCodeFromResponse($response);
-            $client->close();
+            $client = $this->clientFactory->create();
+            $client->setOptions([
+                'timeout'      => 10,
+                'httpversion' => '1.1'
+            ]);
+            $request = $this->requestFactory->create();
+            $request->setMethod($method);
+            $request->setUri($uri);
+            $request->setContent(http_build_query($body));
+            $response = $client->send($request);
+            $responseCode = $response->getStatusCode();
 
-            if ($responseCode != '200') {
+            if ($responseCode !== 200) {
                 throw new LocalizedException(__('Return status ' . $responseCode));
             }
 
@@ -606,23 +618,5 @@ class Statistic extends AbstractModel implements IdentityInterface
         } catch (\Exception $e) {
             return false;
         }
-    }
-
-    /**
-     * Extract the response code from a response string
-     *
-     * @param string $responseString
-     *
-     * @return false|int
-     */
-    private function extractCodeFromResponse(string $responseString)
-    {
-        try {
-            $responseCode = Response::fromString($responseString)->getStatusCode();
-        } catch (Throwable $e) {
-            $responseCode = false;
-        }
-
-        return $responseCode;
     }
 }

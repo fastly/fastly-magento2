@@ -56,6 +56,11 @@ class LayoutPluginTest extends TestCase
       */
      protected $configMock;
 
+    /**
+     * @var string
+     */
+     protected $moduleVersion;
+
     public function setUp(): void
      {
          $this->layoutMock = $this->getMockForAbstractClass(
@@ -86,6 +91,11 @@ class LayoutPluginTest extends TestCase
              $this->configMock,
              $cacheTagsMock
          );
+
+         $this->moduleVersion = json_decode(
+             file_get_contents(__DIR__ . '/../../../../composer.json'),
+             true
+         )['version'];
      }
 
      /**
@@ -210,7 +220,6 @@ class LayoutPluginTest extends TestCase
      public function testAfterGetOutput($configCacheType, $cntGetHeader, $headerName, $cacheControlHeader, $cntSetHeader)
      {
          $html = 'html';
-         $modifiedTags = '1.2.194';
 
          $this->configMock->expects($this->once()
          )->method('getType'
@@ -218,7 +227,7 @@ class LayoutPluginTest extends TestCase
 
          $this->responseMock->expects($cntSetHeader
          )->method('setHeader'
-         )->with($headerName, $modifiedTags, true);
+         )->with($headerName, $this->moduleVersion, true);
 
          $output = $this->model->afterGetOutput($this->layoutMock, $html);
          $this->assertSame($output, $html);
@@ -230,9 +239,8 @@ class LayoutPluginTest extends TestCase
      public function afterGetOutputDataProvider(): array
      {
          $headerName = 'Fastly-Module-Enabled';
-         $tags = '1.2.194';
 
-         $cacheControlHeader = new GenericHeader($headerName, $tags);
+         $cacheControlHeader = new GenericHeader($headerName, $this->moduleVersion);
 
          return [
              'Fastly, getHeader: Yes, setHeader: Yes' =>

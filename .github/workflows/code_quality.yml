@@ -1,0 +1,167 @@
+name: "Code quality"
+
+on:
+  pull_request:
+    branches: [master]
+
+env:
+  MAGENTO_CODING_STANDARD: "v25"
+
+jobs:
+  static_code_check:
+    name: "Static code check"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: phpcs, cs2pr
+
+      - name: Install and setup Magento 2 coding standard
+        run: |
+          vendor_path=$(composer global config vendor-dir --absolute) && \
+          composer global require magento/magento-coding-standard:${{ env.MAGENTO_CODING_STANDARD }} && \
+          phpcs --config-set installed_paths "$vendor_path/magento/magento-coding-standard/,$vendor_path/phpcompatibility/php-compatibility/"
+
+      - name: Run phpcs
+        run: phpcs -n -q --report=checkstyle --standard=Magento2 . | cs2pr
+
+  tests:
+    name: "Tests"
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: mariadb:10.4
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: magento
+          MYSQL_USER: magento
+          MYSQL_PASSWORD: magento
+        ports:
+          - 33060:3306
+        options: >-
+          --health-cmd="mysqladmin -proot ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+      es:
+        image: docker.elastic.co/elasticsearch/elasticsearch:${{ matrix.elasticsearch }}
+        env:
+          ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+
+        ports:
+          - 9200:9200
+        options: >-
+          -e "discovery.type=single-node"
+          -e "xpack.security.enabled=false"
+          --health-cmd="curl --silent --fail localhost:9200/_cluster/health || exit 1"
+          --health-interval=30s
+          --health-timeout=30s
+          --health-retries=8
+
+    strategy:
+      matrix:
+        # https://experienceleague.adobe.com/docs/commerce-operations/installation-guide/system-requirements.html
+        include:
+          - magento: "2.4.0"
+            php: "7.3"
+            composer: "v1"
+            elasticsearch: "7.6.2"
+
+          - magento: "2.4.0"
+            php: "7.4"
+            composer: "v1"
+            elasticsearch: "7.6.2"
+
+          - magento: "2.4.1"
+            php: "7.4"
+            composer: "v1"
+            elasticsearch: "7.7.1"
+
+          - magento: "2.4.2"
+            php: "7.4"
+            composer: "v1"
+            elasticsearch: "7.9.3"
+
+          - magento: "2.4.3"
+            php: "7.4"
+            composer: "v1"
+            elasticsearch: "7.10.2"
+
+          - magento: "2.4.4"
+            php: "8.1"
+            composer: "v2"
+            elasticsearch: "7.16.3"
+
+          - magento: "2.4.5"
+            php: "8.1"
+            composer: "v2"
+            elasticsearch: "7.17.5"
+
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:${{ matrix.composer }}
+
+      - name: Create Magento 2 project
+        run: |
+          composer create-project --repository-url="https://mirror.mage-os.org/" \
+          "magento/project-community-edition=${{ matrix.magento }}" . --no-install
+
+      - run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+        id: composer-cache
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Magento 2
+        run: composer install && mkdir -p app/code/Fastly/Cdn/
+
+      - name: Setup Fastly CDN module
+        uses: actions/checkout@v3
+        with:
+          path: "app/code/Fastly/Cdn/"
+
+      - name: Setup Magento 2
+        run: |
+          echo "127.0.0.1 magento2.test" | sudo tee -a /etc/hosts && \
+          bin/magento setup:install \
+          --base-url=http://magento2.test/ \
+          --db-host=127.0.0.1:33060 \
+          --db-name=magento \
+          --db-user=magento \
+          --db-password=magento \
+          --admin-firstname=admin \
+          --admin-lastname=admin \
+          --admin-email=admin@admin.com \
+          --admin-user=admin \
+          --admin-password=admin123 \
+          --language=en_US \
+          --currency=USD \
+          --timezone=America/Los_Angeles \
+          --use-rewrites=1 \
+          --search-engine=elasticsearch7 \
+          --elasticsearch-host=localhost \
+          --elasticsearch-port=9200 \
+          --elasticsearch-index-prefix=magento2 \
+          --elasticsearch-timeout=15
+
+      - name: Verify Fastly is installed in Magento
+        run: bin/magento module:status --enabled | grep -q Fastly_Cdn
+
+      - name: Compile DI
+        run: bin/magento setup:di:compile
+
+      - name: Setup Problem Matcher for PHPUnit
+        run: echo "::add-matcher::${{ github.workspace }}/app/code/Fastly/Cdn/.github/tests/phpunit_matcher.json"
+
+      - name: Run tests
+        run: vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist --teamcity app/code/Fastly/Cdn/

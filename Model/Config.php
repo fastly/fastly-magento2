@@ -340,6 +340,12 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * XML path to image verify flag
      */
+    const XML_FASTLY_IMAGE_SERVE_PLACEHOLDER
+        = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_serve_placeholder';
+
+    /**
+     * XML path to image verify flag
+     */
     const XML_FASTLY_IMAGE_VERIFY
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_verify';
 
@@ -867,6 +873,16 @@ class Config extends \Magento\PageCache\Model\Config
     }
 
     /**
+     * Determines should placeholders be used in response to nonexistent images
+     *
+     * @return bool
+     */
+    public function isImageOptimizationServePlaceholdersEnabled()
+    {
+        return $this->_scopeConfig->isSetFlag(self::XML_FASTLY_IMAGE_SERVE_PLACEHOLDER);
+    }
+
+    /**
      * Return blocked countries
      *
      * @return mixed
@@ -886,6 +902,11 @@ class Config extends \Magento\PageCache\Model\Config
         return $this->_scopeConfig->getValue(self::XML_FASTLY_BLOCK_BY_ACL);
     }
 
+    /**
+     * Get Waf allow by acl
+     *
+     * @return mixed
+     */
     public function getWafAllowByAcl()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_WAF_ALLOW_BY_ACL);
@@ -903,6 +924,7 @@ class Config extends \Magento\PageCache\Model\Config
 
     /**
      * Get Webhooks Endpoint URL
+     *
      * @return mixed
      */
     public function getIncomingWebhookURL()

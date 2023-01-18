@@ -1,5 +1,22 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.195
+
+- Change srcset on swatch change https://github.com/fastly/fastly-magento2/pull/603
+- Datadome module update 2.17.2 https://github.com/fastly/fastly-magento2/pull/602
+- WAF 2020 URL https://github.com/fastly/fastly-magento2/pull/600
+
+## 1.2.194
+
+- Allow URL encoded params to be filtered out by configuration from admin https://github.com/fastly/fastly-magento2/pull/594
+- Fix blocking issues on php 8.0 and up. https://github.com/fastly/fastly-magento2/pull/582
+- Add option to serve 404s on nonexistent images instead of placeholders https://github.com/fastly/fastly-magento2/pull/597
+
+## 1.2.193
+
+- Update to the Netacea integration module https://github.com/fastly/fastly-magento2/pull/593
+- Add ability to remove the custom 5xx page https://github.com/fastly/fastly-magento2/pull/592
+
 ## 1.2.192
 
 - Add check for identities type https://github.com/fastly/fastly-magento2/pull/587

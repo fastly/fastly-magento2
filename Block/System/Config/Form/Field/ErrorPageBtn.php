@@ -87,4 +87,22 @@ class ErrorPageBtn extends Field
 
         return $button->toHtml();
     }
+
+    /**
+     * Generate upload button html
+     *
+     * @return mixed
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function getRemoveButtonHtml()
+    {
+        $button = $this->getLayout()->createBlock(
+            'Magento\Backend\Block\Widget\Button'
+        )->setData([
+            'id'    => 'fastly_error_page_remove_button',
+            'label' => __('Remove HTML')
+        ]);
+
+        return $button->toHtml();
+    }
 }

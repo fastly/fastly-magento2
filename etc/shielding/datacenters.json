@@ -380,8 +380,7 @@
       "y": 0,
       "latitude": 50.11975,
       "longitude": 8.738472
-    },
-    "shield": "hhn-frankfurt-de"
+    }
   },
   {
     "code": "FJR",
@@ -910,6 +909,17 @@
       "longitude": -121.929022
     },
     "shield": "sjc-ca-us"
+  },
+  {
+    "code": "WVI",
+    "name": "San Jose",
+    "group": "United States",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 37.242,
+      "longitude": -121.782
+    }
   },
   {
     "code": "SCL",

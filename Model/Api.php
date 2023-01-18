@@ -143,7 +143,7 @@ class Api
 
     private function _getWafEndpoint()
     {
-        $uri = $this->config->getApiEndpoint() . 'wafs/';
+        $uri = $this->config->getApiEndpoint() . 'waf/firewalls/';
 
         return $uri;
     }
@@ -653,6 +653,20 @@ class Api
     }
 
     /**
+     * Creates a new condition
+     * @param $version
+     * @param array $condition
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function removeCondition($version, string $conditionName)
+    {
+        $url = $this->_getApiServiceUri(). 'version/' .rawurlencode($version). '/condition/' . $conditionName;
+
+        return $this->_fetch($url, \Zend_Http_Client::DELETE);
+    }
+
+    /**
      * Gets the specified condition.
      *
      * @param $version
@@ -731,6 +745,21 @@ class Api
         $result = $this->_fetch($url, $verb, $response);
 
         return $result;
+    }
+
+    /**
+     * Remove response object
+     *
+     * @param $version
+     * @param string $responseName
+     * @return bool|mixed
+     * @throws LocalizedException
+     */
+    public function removeResponse($version, string $responseName)
+    {
+        $url = $this->_getApiServiceUri(). 'version/' .rawurlencode($version). '/response_object/' . $responseName;
+
+        return $this->_fetch($url, \Zend_Http_Client::DELETE);
     }
 
     /**

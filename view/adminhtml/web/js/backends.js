@@ -161,8 +161,8 @@ define([
                         <input data-backendId='${index}' id='backend_${index}' value='${backend.name}' disabled='disabled' class='input-text' type='text'/>
                     </td>
                     <td class='col-actions'>
-                        <button class='action-delete fastly-edit-backend-icon' data-backend-id='${index}' id='fastly-edit-backend_${index}' title='Edit backend' type='button'/>
-                        <button class='action-delete fastly-remove-backend-icon' data-backend-id='${index}' data-backend-name='${backend.name}' id='fastly-remove-backend_${index}' title='Remove backend' type='button'/>
+                        <button class='action-delete fastly-edit-backend-icon' data-backend-id='${index}' id='fastly-edit-backend_${index}' title='Edit backend' type='button'></button>
+                        <button class='action-delete fastly-remove-backend-icon' data-backend-id='${index}' data-backend-name='${backend.name}' id='fastly-remove-backend_${index}' title='Remove backend' type='button'></button>
                     </td>
                 </tr>`;
                 $('#fastly-backends-list').append(html);
@@ -665,7 +665,7 @@ define([
                         $('.modal-title').text($.mage.__('Backend "%1" configuration').replace('%1', backend_name));
 
                         if (typeof response.data_centers === "undefined")
-                            return;   
+                            return;
                     }
                 });
             });

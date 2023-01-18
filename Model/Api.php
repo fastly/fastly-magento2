@@ -26,7 +26,6 @@ use Laminas\Http\ClientFactory;
 use Laminas\Http\HeadersFactory;
 use Laminas\Http\Request;
 use Laminas\Http\RequestFactory;
-use Laminas\Uri\Exception\ExceptionInterface as UriException;
 use Laminas\Uri\UriFactory;
 use Magento\Backend\Model\Auth\Session;
 use Magento\Framework\App\State;
@@ -35,8 +34,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class Api
- *
+ * Class Api for sending request to fastly
  */
 class Api
 {
@@ -170,8 +168,7 @@ class Api
      * Purge a single URL
      *
      * @param $url
-     * @return \Magento\Framework\Controller\Result\Json
-     * @throws UriException
+     * @return array|\Magento\Framework\Controller\Result\Json
      */
     public function cleanUrl($url)
     {
@@ -192,8 +189,7 @@ class Api
      * Purge Fastly by a given surrogate key
      *
      * @param $keys
-     * @return bool|\Magento\Framework\Controller\Result\Json
-     * @throws UriException
+     * @return bool|mixed
      */
     public function cleanBySurrogateKey($keys)
     {
@@ -249,8 +245,7 @@ class Api
     /**
      * Purge all of Fastly's CDN content. Can be called only once per request
      *
-     * @return bool|\Magento\Framework\Controller\Result\Json
-     * @throws UriException
+     * @return bool|mixed
      */
     public function cleanAll()
     {
@@ -291,10 +286,9 @@ class Api
      *
      * @param $uri
      * @param $type
-     * @param string $method
-     * @param null $payload
-     * @return \Magento\Framework\Controller\Result\Json
-     * @throws UriException
+     * @param $method
+     * @param $payload
+     * @return array
      */
     private function _purge($uri, $type, $method = Request::METHOD_POST, $payload = null)
     {

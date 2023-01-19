@@ -1091,12 +1091,12 @@ class Api
         $request->setMethod(Request::METHOD_POST);
         $request->setHeaders($headers);
         $request->setContent($body);
-        try{
+        try {
             $response = $client->send($request);
             if ($response->getStatusCode() != 200) {
                 $this->log->log(100, 'Failed to send message to the following Webhook: ' . $url);
             }
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->log->log(100, 'Failed to send message to the following Webhook: ' . $url);
         }
     }
@@ -1581,7 +1581,6 @@ class Api
         // Request method specific header & option changes
         switch ($method) {
             case Request::METHOD_PUT:
-
                 $headers->addHeaderLine('Content-Type: application/x-www-form-urlencoded');
                 break;
             case Request::METHOD_PATCH:
@@ -1597,7 +1596,7 @@ class Api
         $request->setMethod($method);
         $request->setUri($uri);
         $request->setHeaders($headers);
-        if($body){
+        if ($body) {
             $request->setContent($body);
         }
         $response = $client->send($request);

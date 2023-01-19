@@ -21,6 +21,9 @@
 namespace Fastly\Cdn\Model;
 
 use Fastly\Cdn\Helper\Data;
+use Laminas\Http\ClientFactory;
+use Laminas\Http\Request;
+use Laminas\Http\RequestFactory;
 use Magento\Directory\Api\CountryInformationAcquirerInterface;
 use Magento\Directory\Model\CountryFactory;
 use Magento\Directory\Model\RegionFactory;
@@ -40,43 +43,41 @@ use Magento\Framework\App\Request\Http;
 
 /**
  * Class Statistic
- *
- * @package Fastly\Cdn\Model
  */
 class Statistic extends AbstractModel implements IdentityInterface
 {
     /**
      * Fastly INSTALLED Flag
      */
-    const FASTLY_INSTALLED_FLAG = 'installed';
+    public const FASTLY_INSTALLED_FLAG = 'installed';
     /**
      * Fastly CONFIGURED Flag
      */
-    const FASTLY_CONFIGURED_FLAG = 'configured';
+    public const FASTLY_CONFIGURED_FLAG = 'configured';
     /**
      * Fastly NOT_CONFIGURED Flag
      */
-    const FASTLY_NOT_CONFIGURED_FLAG = 'not_configured';
-    const FASTLY_VALIDATED_FLAG = 'validated';
-    const FASTLY_NON_VALIDATED_FLAG = 'non_validated';
+    public const FASTLY_NOT_CONFIGURED_FLAG = 'not_configured';
+    public const FASTLY_VALIDATED_FLAG = 'validated';
+    public const FASTLY_NON_VALIDATED_FLAG = 'non_validated';
 
-    const FASTLY_CONFIGURATION_FLAG = 'configuration';
-    const FASTLY_VALIDATION_FLAG = 'validation';
+    public const FASTLY_CONFIGURATION_FLAG = 'configuration';
+    public const FASTLY_VALIDATION_FLAG = 'validation';
 
     /**
      * Fastly upgrade flag
      */
-    const FASTLY_UPGRADE_FLAG = 'upgrade';
-    const FASTLY_UPGRADED_FLAG = 'upgraded';
+    public const FASTLY_UPGRADE_FLAG = 'upgrade';
+    public const FASTLY_UPGRADED_FLAG = 'upgraded';
 
-    const FASTLY_MODULE_NAME = 'Fastly_Cdn';
-    const CACHE_TAG = 'fastly_cdn_statistic';
-    const FASTLY_GA_TRACKING_ID = 'UA-89025888-1';
-    const GA_API_ENDPOINT = 'https://www.google-analytics.com/collect';
-    const GA_HITTYPE_PAGEVIEW = 'pageview';
-    const GA_HITTYPE_EVENT = 'event';
-    const GA_PAGEVIEW_URL = 'http://fastly.com/';
-    const GA_FASTLY_SETUP = 'Fastly Setup';
+    public const FASTLY_MODULE_NAME = 'Fastly_Cdn';
+    public const CACHE_TAG = 'fastly_cdn_statistic';
+    public const FASTLY_GA_TRACKING_ID = 'UA-89025888-1';
+    public const GA_API_ENDPOINT = 'https://www.google-analytics.com/collect';
+    public const GA_HITTYPE_PAGEVIEW = 'pageview';
+    public const GA_HITTYPE_EVENT = 'event';
+    public const GA_PAGEVIEW_URL = 'http://fastly.com/';
+    public const GA_FASTLY_SETUP = 'Fastly Setup';
     /**
      * @var array
      */
@@ -114,9 +115,13 @@ class Statistic extends AbstractModel implements IdentityInterface
      */
     private $api;
     /**
-     * @var CurlFactory
+     * @var ClientFactory
      */
-    private $curlFactory;
+    private $clientFactory;
+    /**
+     * @var RequestFactory
+     */
+    private $requestFactory;
     /**
      * @var StatisticRepository
      */
@@ -139,18 +144,20 @@ class Statistic extends AbstractModel implements IdentityInterface
     private $helper;
 
     /**
-     * Statistic constructor.
      * @param Context $context
      * @param Registry $registry
-     * @param \Fastly\Cdn\Model\Config $config
+     * @param Config $config
      * @param StoreManagerInterface $storeManager
      * @param ScopeConfigInterface $scopeConfig
      * @param CountryInformationAcquirerInterface $countryInformation
      * @param RegionFactory $regionFactory
      * @param Api $api
-     * @param CurlFactory $curlFactory
+     * @param ClientFactory $clientFactory
+     * @param RequestFactory $requestFactory
+     * @param CountryFactory $countryFactory
      * @param StatisticRepository $statisticRepository
      * @param DateTime $dateTime
+     * @param Data $helper
      * @param ProductMetadataInterface $productMetadata
      * @param Http $request
      * @param AbstractResource|null $resource
@@ -166,7 +173,8 @@ class Statistic extends AbstractModel implements IdentityInterface
         CountryInformationAcquirerInterface $countryInformation,
         RegionFactory $regionFactory,
         Api $api,
-        CurlFactory $curlFactory,
+        ClientFactory $clientFactory,
+        RequestFactory $requestFactory,
         CountryFactory $countryFactory,
         StatisticRepository $statisticRepository,
         DateTime $dateTime,
@@ -184,7 +192,8 @@ class Statistic extends AbstractModel implements IdentityInterface
         $this->countryInformation = $countryInformation;
         $this->regionFactory = $regionFactory;
         $this->api = $api;
-        $this->curlFactory = $curlFactory;
+        $this->clientFactory = $clientFactory;
+        $this->requestFactory = $requestFactory;
         $this->statisticRepository = $statisticRepository;
         $this->dateTime = $dateTime;
         $this->countryFactory = $countryFactory;
@@ -196,7 +205,7 @@ class Statistic extends AbstractModel implements IdentityInterface
 
     protected function _construct() // @codingStandardsIgnoreLine - required by parent class
     {
-        $this->_init('Fastly\Cdn\Model\ResourceModel\Statistic');
+        $this->_init(\Fastly\Cdn\Model\ResourceModel\Statistic::class);
     }
 
     public function getIdentities()
@@ -573,14 +582,15 @@ class Statistic extends AbstractModel implements IdentityInterface
     }
 
     /**
-     * Sends CURL request to GA
+     * Sends request to GA
      *
-     * @param string $body
-     * @param string $method
-     * @param string $uri
+     * @param $body
+     * @param $method
+     * @param $uri
      * @return bool
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    private function sendReqToGA($body = '', $method = \Zend_Http_Client::POST, $uri = self::GA_API_ENDPOINT)
+    private function sendReqToGA($body = '', $method = Request::METHOD_POST, $uri = self::GA_API_ENDPOINT): bool
     {
         $reqGAData = (array)$this->getGAReqData();
 
@@ -589,14 +599,19 @@ class Statistic extends AbstractModel implements IdentityInterface
         }
 
         try {
-            $client = $this->curlFactory->create();
-            $client->addOption(CURLOPT_TIMEOUT, 10);
-            $client->write($method, $uri, '1.1', null, http_build_query($body));
-            $response = $client->read();
-            $responseCode = \Zend_Http_Response::extractCode($response);
-            $client->close();
+            $client = $this->clientFactory->create();
+            $client->setOptions([
+                'timeout'      => 10,
+                'httpversion' => '1.1'
+            ]);
+            $request = $this->requestFactory->create();
+            $request->setMethod($method);
+            $request->setUri($uri);
+            $request->setContent(http_build_query($body));
+            $response = $client->send($request);
+            $responseCode = $response->getStatusCode();
 
-            if ($responseCode != '200') {
+            if ($responseCode !== 200) {
                 throw new LocalizedException(__('Return status ' . $responseCode));
             }
 

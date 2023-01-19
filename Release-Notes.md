@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.195
+
+- Change srcset on swatch change https://github.com/fastly/fastly-magento2/pull/603
+- Datadome module update 2.17.2 https://github.com/fastly/fastly-magento2/pull/602
+- WAF 2020 URL https://github.com/fastly/fastly-magento2/pull/600
+
 ## 1.2.194
 
 - Allow URL encoded params to be filtered out by configuration from admin https://github.com/fastly/fastly-magento2/pull/594

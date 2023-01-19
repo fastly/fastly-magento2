@@ -1591,6 +1591,9 @@ class Api
 
         /** @var \Laminas\Http\Client $client */
         $client = $this->clientFactory->create();
+        $client->setOptions([
+            'httpversion' => '1.1'
+        ]);
         $request->setMethod($method);
         $request->setUri($uri);
         $request->setHeaders($headers);

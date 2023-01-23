@@ -770,6 +770,17 @@
     "shield": "lga-ny-us"
   },
   {
+    "code": "NYC",
+    "name": "New York City (Metro)",
+    "group": "United States",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 40.778,
+      "longitude": -74.073
+    }
+  },
+  {
     "code": "EWR",
     "name": "Newark",
     "group": "United States",

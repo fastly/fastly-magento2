@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.196
+
+- Update Netacea Edge Module https://github.com/fastly/fastly-magento2/pull/607
+- Migration to Laminas due to Zend_Http library being upgraded to Laminas in Magento 2.4.6 https://github.com/fastly/fastly-magento2/pull/606
+- Change srcset on swatch changes https://github.com/fastly/fastly-magento2/pull/603
+
 ## 1.2.195
 
 - Change srcset on swatch change https://github.com/fastly/fastly-magento2/pull/603

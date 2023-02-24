@@ -142,6 +142,14 @@ option to switch to the suggested store based in the GeoIP lookup and the
 "GeoIP Country Mapping" (see below) or stay on the current frontend. Choose
 "Redirect" to perform redirect the visitor to an appropriate store view.
 
+The "Dialog" option will display a prompt similar to this upon first visit to
+the store:
+
+![GeoIP Dialog Example](./images/guides/geoip/geoip-prompt.png "GeoIP Dialog Example")
+
+The default styling and wording may be modified through standard Magento
+development practices.
+
 ##### GeoIP Country Mapping
 
 For every country you want to map to a specific store you have to enter a

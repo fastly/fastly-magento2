@@ -158,7 +158,7 @@ country code and select a target store. All country codes use ISO
 You may also scope a given rule to only apply for users visiting a specific
 website. You can leave the "Origin Website" option on "Any" to redirect users
 visiting any website or choose a specific website from the dropdown to apply
-the rule for users only visting that specific website.
+the rule for users only visiting that specific website.
 
 ![GeoIP Country Mapping](./images/guides/geoip/geoip-settings.png "GeoIP Country Mapping")
 

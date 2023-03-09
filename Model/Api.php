@@ -44,6 +44,7 @@ class Api
     public const PURGE_TIMEOUT        = 10;
     public const PURGE_TOKEN_LIFETIME = 30;
     public const FASTLY_MAX_HEADER_KEY_SIZE = 256;
+    public const UPSERT_ITEMS_MAX_COUNT = 200;
 
     /**
      * @var Config
@@ -1263,6 +1264,55 @@ class Api
 
         if (!$result) {
             throw new LocalizedException(__('Failed to create Dictionary item.'));
+        }
+    }
+
+    /**
+     * Upsert multiple Dictionary items. Do not try to send more than 100 items at a time.
+     *
+     * @param $dictionaryId
+     * @param array|object $items
+     * @throws LocalizedException
+     */
+    public function upsertDictionaryItems($dictionaryId, $items)
+    {
+        foreach (array_chunk($items, self::UPSERT_ITEMS_MAX_COUNT) as $chunk) {
+            $apiItems = [];
+            foreach ($chunk as $item) {
+                if (is_object($item)) {
+                    $itemKey = $item->item_key;
+                    $itemValue = $item->item_value;
+                } else if (is_array($item) && isset($item['item_key'], $item['item_value'])) {
+                    $itemKey = $item['item_key'];
+                    $itemValue = $item['item_value'];
+                } else {
+                    continue;
+                }
+
+                $apiItems[] = [
+                    'op' => 'upsert',
+                    'item_key' => $itemKey,
+                    'item_value' => $itemValue,
+                ];
+            }
+
+            $url = $this->_getApiServiceUri() . 'dictionary/' . rawurlencode($dictionaryId) . '/items';
+            $body = [
+                'items' => $apiItems
+            ];
+
+            $result = $this->_fetch($url, Request::METHOD_PATCH, \json_encode($body));
+
+            if (!$result) {
+                if ($this->errorMessage) {
+                    throw new LocalizedException(
+                        __('Failed to upsert Dictionary items: %1', $this->errorMessage)
+                    );
+                }
+                throw new LocalizedException(
+                    __('Failed to upsert Dictionary items')
+                );
+            }
         }
     }
 

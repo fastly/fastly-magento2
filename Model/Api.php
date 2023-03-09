@@ -44,7 +44,7 @@ class Api
     public const PURGE_TIMEOUT        = 10;
     public const PURGE_TOKEN_LIFETIME = 30;
     public const FASTLY_MAX_HEADER_KEY_SIZE = 256;
-    public const UPSERT_ITEMS_MAX_COUNT = 100;
+    public const UPSERT_ITEMS_MAX_COUNT = 200;
 
     /**
      * @var Config

@@ -1071,6 +1071,21 @@
     "shield": "cdg-par-fr"
   },
   {
+    "code": "PAR",
+    "name": "Paris (Metro)",
+    "group": "Europe",
+    "region": "EU-West",
+    "stats_region": "europe",
+    "billing_region": "Europe",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 48.856654,
+      "longitude": 2.38532
+    },
+    "shield": "paris-fr"
+  },
+  {
     "code": "PER",
     "name": "Perth",
     "group": "Asia/Pacific",

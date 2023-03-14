@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.197
+
+- Switch Edge Dictionary import to batches in order not to hit the API limits https://github.com/fastly/fastly-magento2/pull/618
+- DataDome Edge module update to 2.18.1 https://github.com/fastly/fastly-magento2/pull/613
+
 ## 1.2.196
 
 - Update Netacea Edge Module https://github.com/fastly/fastly-magento2/pull/607

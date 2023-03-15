@@ -647,7 +647,7 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Return Fastly service IP
      *
-     * @return int
+     * @return string
      */
     public function getServiceId()
     {

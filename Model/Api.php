@@ -388,6 +388,10 @@ class Api
      */
     public function checkServiceDetails($test = false, $serviceId = null, $apiKey = null)
     {
+        if (!$this->config->isServiceConfigured()) {
+            throw new LocalizedException(__('Fastly service is not configured.'));
+        }
+
         if (!$test) {
             $uri = rtrim($this->_getApiServiceUri(), '/');
             $result = $this->_fetch($uri);
@@ -1565,6 +1569,10 @@ class Api
      */
     public function getServiceDetails()
     {
+        if (!$this->config->isServiceConfigured()) {
+            throw new LocalizedException(__('Fastly service is not configured.'));
+        }
+
         $url = $this->_getApiServiceUri() . 'details';
         $result = $this->_fetch($url, Request::METHOD_GET);
 

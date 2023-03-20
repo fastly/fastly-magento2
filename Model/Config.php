@@ -647,7 +647,7 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Return Fastly service IP
      *
-     * @return int
+     * @return string|null
      */
     public function getServiceId()
     {
@@ -657,11 +657,23 @@ class Config extends \Magento\PageCache\Model\Config
     /**
      * Return Fastly API token
      *
-     * @return int
+     * @return string|null
      */
     public function getApiKey()
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_API_KEY);
+    }
+
+    /**
+     * Returns true if both Service ID and API key are configured.
+     *
+     * @return bool
+     */
+    public function isServiceConfigured(): bool
+    {
+        return !(
+            empty($this->getServiceId()) || empty($this->getApiKey())
+        );
     }
 
     /**

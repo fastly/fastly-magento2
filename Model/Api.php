@@ -140,7 +140,7 @@ class Api
     {
         $uri = $this->config->getApiEndpoint()
             . 'service/'
-            . rawurlencode($this->config->getServiceId())
+            . rawurlencode($this->config->getServiceId() ?? '')
             . '/';
 
         return $uri;
@@ -153,7 +153,8 @@ class Api
      */
     private function _getHistoricalEndpoint()
     {
-        $uri = $this->config->getApiEndpoint() . 'stats/service/' . rawurlencode($this->config->getServiceId());
+        $uri = $this->config->getApiEndpoint() . 'stats/service/' .
+            rawurlencode($this->config->getServiceId() ?? '');
 
         return $uri;
     }
@@ -387,11 +388,15 @@ class Api
      */
     public function checkServiceDetails($test = false, $serviceId = null, $apiKey = null)
     {
+        if (!$this->config->isServiceConfigured()) {
+            throw new LocalizedException(__('Fastly service is not configured.'));
+        }
+
         if (!$test) {
             $uri = rtrim($this->_getApiServiceUri(), '/');
             $result = $this->_fetch($uri);
         } else {
-            $uri = $this->config->getApiEndpoint() . 'service/' . rawurlencode($serviceId);
+            $uri = $this->config->getApiEndpoint() . 'service/' . rawurlencode($serviceId ?? '');
             $result = $this->_fetch($uri, Request::METHOD_GET, null, true, $apiKey);
         }
 
@@ -411,7 +416,7 @@ class Api
      */
     public function cloneVersion($curVersion)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($curVersion) . '/clone';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($curVersion ?? '') . '/clone';
         $result = $this->_fetch($url, Request::METHOD_PUT);
 
         if (!$result) {
@@ -431,7 +436,7 @@ class Api
      */
     public function addComment($version, $comment)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '');
         $result = $this->_fetch($url, Request::METHOD_PUT, $comment);
 
         return $result;
@@ -447,7 +452,7 @@ class Api
      */
     public function uploadVcl($version, $vcl)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/vcl';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/vcl';
         $result = $this->_fetch($url, 'POST', $vcl);
 
         return $result;
@@ -463,7 +468,7 @@ class Api
      */
     public function setVclAsMain($version, $name)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/vcl/' . rawurlencode($name) . '/main';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/vcl/' . rawurlencode($name ?? '') . '/main';
         $result = $this->_fetch($url, 'PUT');
 
         return $result;
@@ -477,7 +482,7 @@ class Api
      */
     public function validateServiceVersion($version)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/validate';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/validate';
         $result = $this->_fetch($url, 'GET');
 
         if ($result->status == 'error') {
@@ -492,7 +497,7 @@ class Api
      */
     public function containerValidateServiceVersion($version)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/validate';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/validate';
         $result = $this->_fetch($url, 'GET');
 
         return $result;
@@ -507,7 +512,7 @@ class Api
      */
     public function activateVersion($version)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/activate';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/activate';
         $result = $this->_fetch($url, 'PUT');
 
         return $result;
@@ -545,18 +550,18 @@ class Api
 
         $snippetName = $snippet['name'];
         $checkIfExists = $this->hasSnippet($version, $snippetName);
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/snippet';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/snippet';
 
         if (!$checkIfExists) {
             $verb = Request::METHOD_POST;
         } else {
             $verb = Request::METHOD_PUT;
             if (!isset($snippet['dynamic']) || $snippet['dynamic'] != 1) {
-                $url .= '/' . rawurlencode($snippetName);
+                $url .= '/' . rawurlencode($snippetName ?? '');
                 unset($snippet['name'], $snippet['type'], $snippet['dynamic']);
             } else {
                 $snippet['name'] = $this->getSnippet($version, $snippetName)->id;
-                $url = $this->_getApiServiceUri() . 'snippet' . '/' . rawurlencode($snippet['name']);
+                $url = $this->_getApiServiceUri() . 'snippet' . '/' . rawurlencode($snippet['name'] ?? '');
             }
         }
 
@@ -577,7 +582,7 @@ class Api
      */
     public function getSnippet($version, $name)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/snippet/' . rawurlencode($name);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/snippet/' . rawurlencode($name ?? '');
         $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
@@ -592,7 +597,7 @@ class Api
      */
     public function updateSnippet(array $snippet)
     {
-        $url = $this->_getApiServiceUri() . 'snippet' . '/' . rawurlencode($snippet['name']);
+        $url = $this->_getApiServiceUri() . 'snippet' . '/' . rawurlencode($snippet['name'] ?? '');
         $result = $this->_fetch($url, Request::METHOD_PUT, $snippet);
 
         if (!$result) {
@@ -613,7 +618,7 @@ class Api
      */
     public function hasSnippet($version, $name)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/snippet/' . rawurlencode($name);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/snippet/' . rawurlencode($name ?? '');
         $result = $this->_fetch($url, Request::METHOD_GET, '', false, null, false);
 
         if ($result == false) {
@@ -632,7 +637,7 @@ class Api
      */
     public function removeSnippet($version, $name)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/snippet/' . rawurlencode($name);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/snippet/' . rawurlencode($name ?? '');
         $result = $this->_fetch($url, Request::METHOD_DELETE);
 
         return $result;
@@ -648,12 +653,12 @@ class Api
     public function createCondition($version, array $condition)
     {
         $checkIfExists = $this->getCondition($version, $condition['name']);
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/condition';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/condition';
         if (!$checkIfExists) {
             $verb = Request::METHOD_POST;
         } else {
             $verb = Request::METHOD_PUT;
-            $url .= '/' . rawurlencode($condition['name']);
+            $url .= '/' . rawurlencode($condition['name'] ?? '');
         }
 
         $result = $this->_fetch($url, $verb, $condition);
@@ -674,7 +679,7 @@ class Api
      */
     public function removeCondition($version, string $conditionName)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/condition/' . $conditionName;
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/condition/' . $conditionName;
 
         return $this->_fetch($url, Request::METHOD_DELETE);
     }
@@ -689,7 +694,7 @@ class Api
      */
     public function getCondition($version, $name)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/condition/' . rawurlencode($name);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/condition/' . rawurlencode($name ?? '');
         $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
@@ -706,13 +711,13 @@ class Api
     public function createHeader($version, array $condition)
     {
         $checkIfExists = $this->getHeader($version, $condition['name']);
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/header';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/header';
 
         if ($checkIfExists === false) {
             $verb = Request::METHOD_POST;
         } else {
             $verb = Request::METHOD_PUT;
-            $url .= '/' . rawurlencode($condition['name']);
+            $url .= '/' . rawurlencode($condition['name'] ?? '');
         }
 
         $result = $this->_fetch($url, $verb, $condition);
@@ -730,7 +735,7 @@ class Api
      */
     public function getHeader($version, $name)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/header/' . rawurlencode($name);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/header/' . rawurlencode($name ?? '');
         $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
@@ -747,12 +752,12 @@ class Api
     public function createResponse($version, array $response)
     {
         $checkIfExists = $this->getResponse($version, $response['name']);
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/response_object';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/response_object';
         if (!$checkIfExists) {
             $verb = Request::METHOD_POST;
         } else {
             $verb = Request::METHOD_PUT;
-            $url .= '/' . rawurlencode($response['name']);
+            $url .= '/' . rawurlencode($response['name'] ?? '');
         }
 
         $result = $this->_fetch($url, $verb, $response);
@@ -770,7 +775,7 @@ class Api
      */
     public function removeResponse($version, string $responseName)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/response_object/' . $responseName;
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/response_object/' . $responseName;
 
         return $this->_fetch($url, Request::METHOD_DELETE);
     }
@@ -785,7 +790,7 @@ class Api
      */
     public function getResponse($version, $name)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/response_object/' . rawurlencode($name);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/response_object/' . rawurlencode($name);
         $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
@@ -800,12 +805,12 @@ class Api
     public function createRequest($version, $request)
     {
         $checkIfExists = $this->getRequest($version, $request['name']);
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/request_settings';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/request_settings';
         if (!$checkIfExists) {
             $verb = Request::METHOD_POST;
         } else {
             $verb = Request::METHOD_PUT;
-            $url .= '/' . rawurlencode($request['name']);
+            $url .= '/' . rawurlencode($request['name'] ?? '');
         }
 
         $result = $this->_fetch($url, $verb, $request);
@@ -826,7 +831,7 @@ class Api
      */
     public function getRequest($version, $name)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/request_settings/' . rawurlencode($name);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/request_settings/' . rawurlencode($name);
         $result = $this->_fetch($url, Request::METHOD_GET, '', false, null, false);
 
         return $result;
@@ -839,7 +844,7 @@ class Api
      */
     public function getAllConditions($version)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/condition';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/condition';
         $result = $this->_fetch($url, Request::METHOD_GET, '', false, null, false);
 
         return $result;
@@ -852,7 +857,7 @@ class Api
      */
     public function getAllDomains($version)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/domain';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/domain';
         $result = $this->_fetch($url, Request::METHOD_GET, '', false, null, false);
 
         return $result;
@@ -866,7 +871,7 @@ class Api
      */
     public function deleteDomain($version, $name)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/domain/' . rawurlencode($name);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/domain/' . rawurlencode($name ?? '');
         $result = $this->_fetch($url, Request::METHOD_DELETE);
 
         return $result;
@@ -880,7 +885,7 @@ class Api
      */
     public function createDomain($version, $data)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/domain';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/domain';
         $result = $this->_fetch($url, Request::METHOD_POST, $data);
 
         return $result;
@@ -894,7 +899,7 @@ class Api
      */
     public function deleteRequest($version, $name)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/request_settings/' . rawurlencode($name);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/request_settings/' . rawurlencode($name ?? '');
         $result = $this->_fetch($url, Request::METHOD_DELETE);
 
         if (!$result) {
@@ -911,7 +916,7 @@ class Api
      */
     public function getBackends($version)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/backend';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/backend';
         $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
@@ -928,7 +933,7 @@ class Api
      */
     public function configureBackend($params, $version, $old_name)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/backend/' . rawurlencode($old_name);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/backend/' . rawurlencode($old_name);
         $result = $this->_fetch($url, Request::METHOD_PUT, $params);
 
         return $result;
@@ -942,7 +947,7 @@ class Api
      */
     public function createBackend($params, $version)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/backend';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/backend';
         $result = $this->_fetch($url, Request::METHOD_POST, $params);
 
         return $result;
@@ -956,7 +961,7 @@ class Api
      */
     public function deleteBackend($name, $version)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/backend/' . rawurlencode($name);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/backend/' . rawurlencode($name ?? '');
         $result = $this->_fetch($url, Request::METHOD_DELETE);
 
         return $result;
@@ -972,7 +977,7 @@ class Api
         $providers = $this->helper->getAvailableLogEndpointProviders();
         $results = [];
         foreach ($providers as $type => $providerName) {
-            $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/logging/' . rawurlencode($type);
+            $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/logging/' . rawurlencode($type);
             $endpoints = $this->_fetch($url, Request::METHOD_GET);
             foreach ($endpoints as $endpoint) {
                 $results[] = [
@@ -995,7 +1000,7 @@ class Api
     {
         $results = [];
         $providers = $this->helper->getAvailableLogEndpointProviders();
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/logging/' . rawurlencode($type);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/logging/' . rawurlencode($type);
         $endpoints = $this->_fetch($url, Request::METHOD_GET);
         foreach ($endpoints as $endpoint) {
             $results[] = [
@@ -1016,7 +1021,7 @@ class Api
      */
     public function getLogEndpoint($version, $type, $name)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/logging/' . rawurlencode($type) . '/' . rawurlencode($name);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/logging/' . rawurlencode($type ?? '') . '/' . rawurlencode($name ?? '');
         return $this->_fetch($url, Request::METHOD_GET);
     }
 
@@ -1029,7 +1034,7 @@ class Api
      */
     public function createLogEndpoint($version, $type, $params)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/logging/' . rawurlencode($type);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/logging/' . rawurlencode($type ?? '');
         return $this->_fetch($url, Request::METHOD_POST, $params);
     }
 
@@ -1043,7 +1048,7 @@ class Api
      */
     public function updateLogEndpoint($version, $type, $params, $oldName)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/logging/' . rawurlencode($type) . '/' . rawurlencode($oldName);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/logging/' . rawurlencode($type ?? '') . '/' . rawurlencode($oldName ?? '');
         return $this->_fetch($url, Request::METHOD_PUT, $params);
     }
 
@@ -1112,7 +1117,7 @@ class Api
      */
     public function createDictionary($version, $params)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/dictionary';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/dictionary';
         $result = $this->_fetch($url, Request::METHOD_POST, $params);
 
         return $result;
@@ -1128,7 +1133,7 @@ class Api
      */
     public function deleteDictionary($version, $name)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/dictionary/' . rawurlencode($name);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/dictionary/' . rawurlencode($name ?? '');
         $result = $this->_fetch($url, Request::METHOD_DELETE);
 
         return $result;
@@ -1143,7 +1148,7 @@ class Api
      */
     public function dictionaryItemsList($dictionaryId)
     {
-        $url = $this->_getApiServiceUri() . 'dictionary/' . rawurlencode($dictionaryId) . '/items';
+        $url = $this->_getApiServiceUri() . 'dictionary/' . rawurlencode($dictionaryId ?? '') . '/items';
         $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
@@ -1159,7 +1164,7 @@ class Api
      */
     public function getSingleDictionary($version, $dictionaryName)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/dictionary/' . rawurlencode($dictionaryName);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/dictionary/' . rawurlencode($dictionaryName ?? '');
         $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
@@ -1211,7 +1216,7 @@ class Api
      */
     public function createDictionaryItems($dictionaryId, $params)
     {
-        $url = $this->_getApiServiceUri() . 'dictionary/' . rawurlencode($dictionaryId) . '/items';
+        $url = $this->_getApiServiceUri() . 'dictionary/' . rawurlencode($dictionaryId ?? '') . '/items';
         $result = $this->_fetch($url, Request::METHOD_PATCH, $params);
 
         return $result;
@@ -1226,7 +1231,7 @@ class Api
      */
     public function getDictionaries($version)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/dictionary';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/dictionary';
         $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
@@ -1242,7 +1247,7 @@ class Api
      */
     public function deleteDictionaryItem($dictionaryId, $itemKey)
     {
-        $url = $this->_getApiServiceUri() . 'dictionary/' . rawurlencode($dictionaryId) . '/item/' . rawurlencode($itemKey);
+        $url = $this->_getApiServiceUri() . 'dictionary/' . rawurlencode($dictionaryId ?? '') . '/item/' . rawurlencode($itemKey ?? '');
         $result = $this->_fetch($url, Request::METHOD_DELETE);
 
         return $result;
@@ -1259,7 +1264,7 @@ class Api
     public function upsertDictionaryItem($dictionaryId, $itemKey, $itemValue)
     {
         $body = ['item_value' => $itemValue];
-        $url = $this->_getApiServiceUri() . 'dictionary/' . rawurlencode($dictionaryId) . '/item/' . rawurlencode($itemKey);
+        $url = $this->_getApiServiceUri() . 'dictionary/' . rawurlencode($dictionaryId ?? '') . '/item/' . rawurlencode($itemKey ?? '');
         $result = $this->_fetch($url, Request::METHOD_PUT, $body);
 
         if (!$result) {
@@ -1296,7 +1301,7 @@ class Api
                 ];
             }
 
-            $url = $this->_getApiServiceUri() . 'dictionary/' . rawurlencode($dictionaryId) . '/items';
+            $url = $this->_getApiServiceUri() . 'dictionary/' . rawurlencode($dictionaryId ?? '') . '/items';
             $body = [
                 'items' => $apiItems
             ];
@@ -1341,7 +1346,7 @@ class Api
      */
     public function createAcl($version, $params)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/acl';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/acl';
         $result = $this->_fetch($url, Request::METHOD_POST, $params);
 
         return $result;
@@ -1356,7 +1361,7 @@ class Api
      */
     public function getAcls($version)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/acl';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/acl';
         $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
@@ -1372,7 +1377,7 @@ class Api
      */
     public function deleteAcl($version, $name)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/acl/' . rawurlencode($name);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/acl/' . rawurlencode($name);
         $result = $this->_fetch($url, Request::METHOD_DELETE);
 
         return $result;
@@ -1387,7 +1392,7 @@ class Api
      */
     public function aclItemsList($aclId)
     {
-        $url = $this->_getApiServiceUri() . 'acl/' . rawurlencode($aclId) . '/entries';
+        $url = $this->_getApiServiceUri() . 'acl/' . rawurlencode($aclId ?? '') . '/entries';
         $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
@@ -1416,7 +1421,7 @@ class Api
             $body['subnet'] = $subnet;
         }
 
-        $url = $this->_getApiServiceUri() . 'acl/' . rawurlencode($aclId) . '/entry';
+        $url = $this->_getApiServiceUri() . 'acl/' . rawurlencode($aclId ?? '') . '/entry';
         $result = $this->_fetch($url, Request::METHOD_POST, $body);
 
         return $result;
@@ -1432,7 +1437,7 @@ class Api
      */
     public function deleteAclItem($aclId, $aclItemId)
     {
-        $url = $this->_getApiServiceUri() . 'acl/' . rawurlencode($aclId) . '/entry/' . rawurlencode($aclItemId);
+        $url = $this->_getApiServiceUri() . 'acl/' . rawurlencode($aclId ?? '') . '/entry/' . rawurlencode($aclItemId ?? '');
         $result = $this->_fetch($url, Request::METHOD_DELETE);
 
         return $result;
@@ -1462,7 +1467,7 @@ class Api
             $body['subnet'] = $subnet;
         }
 
-        $url = $this->_getApiServiceUri() . 'acl/' . rawurlencode($aclId) . '/entry/' . rawurlencode($aclItemId);
+        $url = $this->_getApiServiceUri() . 'acl/' . rawurlencode($aclId ?? '') . '/entry/' . rawurlencode($aclItemId ?? '');
         $result = $this->_fetch($url, Request::METHOD_PATCH, json_encode($body));
 
         return $result;
@@ -1478,10 +1483,10 @@ class Api
     public function queryHistoricStats(array $parameters)
     {
         $uri = $this->_getHistoricalEndpoint()
-            . '?region=' . rawurlencode($parameters['region'])
-            . '&from=' . rawurlencode($parameters['from'])
-            . '&to=' . rawurlencode($parameters['to'])
-            . '&by=' . rawurlencode($parameters['sample_rate']);
+            . '?region=' . rawurlencode($parameters['region'] ?? '')
+            . '&from=' . rawurlencode($parameters['from'] ?? '')
+            . '&to=' . rawurlencode($parameters['to'] ?? '')
+            . '&by=' . rawurlencode($parameters['sample_rate'] ?? '');
 
         $result = $this->_fetch($uri);
 
@@ -1497,7 +1502,7 @@ class Api
      */
     public function getGeneratedVcl($version)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/generated_vcl';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/generated_vcl';
         $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
@@ -1505,7 +1510,7 @@ class Api
 
     public function getParticularVersion($version)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version);
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '');
         $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
@@ -1534,7 +1539,7 @@ class Api
      */
     public function getImageOptimizationDefaultConfigOptions($version)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/io_settings';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/io_settings';
         $result = $this->_fetch($url, Request::METHOD_GET);
 
         return $result;
@@ -1550,7 +1555,7 @@ class Api
      */
     public function configureImageOptimizationDefaultConfigOptions($params, $version)
     {
-        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version) . '/io_settings';
+        $url = $this->_getApiServiceUri() . 'version/' . rawurlencode($version ?? '') . '/io_settings';
         $result = $this->_fetch($url, Request::METHOD_PATCH, $params);
 
         return $result;
@@ -1564,6 +1569,10 @@ class Api
      */
     public function getServiceDetails()
     {
+        if (!$this->config->isServiceConfigured()) {
+            throw new LocalizedException(__('Fastly service is not configured.'));
+        }
+
         $url = $this->_getApiServiceUri() . 'details';
         $result = $this->_fetch($url, Request::METHOD_GET);
 
@@ -1580,7 +1589,7 @@ class Api
      */
     public function getWafSettings(string $id, bool $includeWafFirewallVersions = false)
     {
-        $url = $this->_getWafEndpoint() . rawurlencode($id);
+        $url = $this->_getWafEndpoint() . rawurlencode($id ?? '');
         if ($includeWafFirewallVersions) {
             $url .= '?include=waf_firewall_versions';
         }

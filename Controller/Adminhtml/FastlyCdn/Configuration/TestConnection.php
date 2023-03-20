@@ -102,6 +102,13 @@ class TestConnection extends Action
         $serviceId = $this->getRequest()->getParam('service_id');
         $apiKey = $this->getRequest()->getParam('api_key');
 
+        if (empty($serviceId) || empty($apiKey)) {
+            return $result->setData([
+                'status' => false,
+                'msg' => __('You must provide Service ID and API key.')
+            ]);
+        }
+
         try {
             if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
                 $this->api->sendWebHook('*initiated test connection action*');

@@ -43,6 +43,20 @@
     }
   },
   {
+    "code": "DCA",
+    "name": "Ashburn (Metro)",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 38.944533,
+      "longitude": -77.455811
+    }
+  },
+  {
     "code": "IAD",
     "name": "Ashburn (Metro)",
     "group": "United States",
@@ -351,6 +365,20 @@
     "shield": "dal-tx-us"
   },
   {
+    "code": "ADS",
+    "name": "Dallas (Metro)",
+    "group": "United States",
+    "region": "US-Central",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 32.896828,
+      "longitude": -97.037997
+    }
+  },
+  {
     "code": "DFW",
     "name": "Dallas (Metro)",
     "group": "United States",
@@ -469,6 +497,20 @@
   },
   {
     "code": "HHN",
+    "name": "Frankfurt - Interxion",
+    "group": "Europe",
+    "region": "EU-East",
+    "stats_region": "europe",
+    "billing_region": "Europe",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 50.11975,
+      "longitude": 8.738472
+    }
+  },
+  {
+    "code": "WIE",
     "name": "Frankfurt - Interxion",
     "group": "Europe",
     "region": "EU-East",

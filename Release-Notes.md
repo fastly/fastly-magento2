@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.198
+
+- PHP 8.0 compatibility fixes https://github.com/fastly/fastly-magento2/pull/619
+- Edge dictionary batch import https://github.com/fastly/fastly-magento2/pull/619
+- DataDome Edge module update to 2.18.2 https://github.com/fastly/fastly-magento2/pull/620
+
 ## 1.2.197
 
 - Switch Edge Dictionary import to batches in order not to hit the API limits https://github.com/fastly/fastly-magento2/pull/618

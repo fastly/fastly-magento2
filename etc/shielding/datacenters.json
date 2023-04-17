@@ -361,8 +361,7 @@
       "y": 0,
       "latitude": 32.787,
       "longitude": -96.794
-    },
-    "shield": "dal-tx-us"
+    }
   },
   {
     "code": "ADS",
@@ -1096,21 +1095,6 @@
       "longitude": -122.110783
     },
     "shield": "pao-ca-us"
-  },
-  {
-    "code": "CDG",
-    "name": "Paris",
-    "group": "Europe",
-    "region": "EU-West",
-    "stats_region": "europe",
-    "billing_region": "Europe",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 48.928051,
-      "longitude": 2.35189
-    },
-    "shield": "cdg-par-fr"
   },
   {
     "code": "PAR",

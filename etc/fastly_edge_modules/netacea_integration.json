@@ -18,7 +18,7 @@
           "type": "string"
       },
       {
-          "description": "Up to 5 comma separated URL paths that API Protector will ignore. Please start URL paths with a forQward slash. Example: /test, /allowed/, /path/to/something",
+          "description": "Up to 5 comma separated URL paths that API Protector will ignore. Please start URL paths with a forward slash. Example: /test, /allowed/, /path/to/something",
           "label": "Netacea ignore list - URL Paths",
           "name": "netacea_ignore_list",
           "required": false,

@@ -26,6 +26,9 @@
  * @var $block \Magento\Framework\View\Element\Template
  */
 ?>
+<script type="text/javascript">
+    document.cookie = "fastly_geo_store=<?= /* @noEscape */ $block->getRedirectedToStore() ?>";
+</script>
 <script type="text/x-magento-init">
    {
        "*": {

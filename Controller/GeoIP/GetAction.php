@@ -146,8 +146,6 @@ class GetAction extends Action
             $targetUrl = $this->getRequest()->getParam('uenc');
 
             if ($storeId !== null) {
-                // get redirect URL
-                $redirectUrl = null;
                 $targetStore = $this->storeRepository->getActiveStoreById($storeId);
                 // only generate a redirect URL if current and new store are different
                 if ($currentStore->getId() !== $targetStore->getId()) {
@@ -164,23 +162,25 @@ class GetAction extends Action
                     }
                     $this->url->addQueryParams($queryParams);
                     $redirectUrl = $this->url->getUrl('stores/store/switch');
-                }
 
-                // generate output only if redirect should be performed
-                if ($redirectUrl) {
-                    switch ($this->config->getGeoIpAction()) {
-                        case Config::GEOIP_ACTION_DIALOG:
-                            $resultLayout->getLayout()->getUpdate()->load(['geoip_getaction_dialog']);
-                            $resultLayout->getLayout()->getBlock('geoip_getaction')->setMessage(
-                                $this->storeMessage->getMessageInStoreLocale($targetStore)
-                            );
-                            break;
-                        case Config::GEOIP_ACTION_REDIRECT:
-                            $resultLayout->getLayout()->getUpdate()->load(['geoip_getaction_redirect']);
-                            break;
+                    // generate output only if redirect should be performed
+                    if ($redirectUrl) {
+                        switch ($this->config->getGeoIpAction()) {
+                            case Config::GEOIP_ACTION_DIALOG:
+                                $resultLayout->getLayout()->getUpdate()->load(['geoip_getaction_dialog']);
+                                $resultLayout->getLayout()->getBlock('geoip_getaction')->setMessage(
+                                    $this->storeMessage->getMessageInStoreLocale($targetStore)
+                                );
+                                break;
+                            case Config::GEOIP_ACTION_REDIRECT:
+                                $resultLayout->getLayout()->getUpdate()->load(['geoip_getaction_redirect']);
+                                break;
+                        }
+
+                        $geoIPActionBlock = $resultLayout->getLayout()->getBlock('geoip_getaction');
+                        $geoIPActionBlock->setRedirectUrl($redirectUrl);
+                        $geoIPActionBlock->setRedirectedToStore($targetStoreCode);
                     }
-
-                    $resultLayout->getLayout()->getBlock('geoip_getaction')->setRedirectUrl($redirectUrl);
                 }
             }
         } catch (\Exception $e) {

@@ -23,7 +23,7 @@ This is the Secret provided to you by Netacea.
 ### Netacea Ignore List
 
 This is the list of URL paths which integration will skip and won't apply any action to requests. <br />
-Please note that integration will check if requests's URL path is starting with the value from the list and decide if it should be skipped. <br />
+Please note that integration will check if a request's URL path starts with a value from the list and will decide if it should be skipped. <br />
 Example:
   - Path `/skipthis` is added to the ignore list
   - Integration will skip requests which paths are starting from the `/skipthis`

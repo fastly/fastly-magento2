@@ -20,6 +20,17 @@ This is the API key provided to you by Netacea.
 
 This is the Secret provided to you by Netacea.
 
+### Netacea Ignore List
+
+This is the list of URL paths which integration will skip and won't apply any action to requests. <br />
+Please note that the integration will check if a request's URL path starts with a value from the list and will decide if it should be skipped. <br />
+Example:
+  - Path `/skipthis` is added to the ignore list
+  - Integration will skip requests which paths are starting from the `/skipthis`
+  - This means that requests for such websites would be skipped by the integration:
+    - `www.domain.com/skipthis`
+    - `www.domain.com/skipthisalso`
+    - `www.domain.com/skipthis/andthistoo`
 
 ## Enabling
 

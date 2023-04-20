@@ -64,6 +64,13 @@
         unset req.http.X-Magento-Vary;
     }
 
+    # User's store cookie also needs to be varied upon
+    if (req.http.cookie:store) {
+        set req.http.X-Store-Cookie = req.http.cookie:store;
+    } else {
+        unset req.http.X-Store-Cookie;
+    }
+
     ############################################################################################################
     # Following code block controls purge by URL. By default we want to protect all URL purges. In general this
     # is addressed by adding Fastly-Purge-Requires-Auth request header in vcl_recv however this runs the risk of

@@ -26,8 +26,8 @@
                 set resp.http.Vary = resp.http.Vary ",X-Magento-Cache-Id";
             }
         } else {
-            # Remove X-Magento-Vary and HTTPs Vary served to the user
-            set resp.http.Vary = regsub(resp.http.Vary, "(?i)X-Magento-Vary,Https", "Cookie");
+            # Remove X-Magento-Vary, X-Store-Cookie and HTTPs Vary served to the user
+            set resp.http.Vary = regsub(resp.http.Vary, "(?i)X-Magento-Vary,X-Store-Cookie,Https", "Cookie");
         }
         # Since varnish doesn't compress ESIs we need to hint to the HTTP/2 terminators to
         # compress it and we only want to do this on the edge nodes

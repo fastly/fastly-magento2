@@ -64,6 +64,7 @@
         set beresp.http.Vary:Content-Currency = "";
     } else if (beresp.http.Content-Type ~ "text/(html|xml)") {
         set beresp.http.Vary:X-Magento-Vary = "";
+        set beresp.http.Vary:X-Store-Cookie = "";
         set beresp.http.Vary:Https = "";
     }
 

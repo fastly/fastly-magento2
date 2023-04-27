@@ -1,5 +1,12 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.199
+
+- Introduce a new cookie for handling Geo redirects https://github.com/fastly/fastly-magento2/pull/628
+- Netacea Plugin update https://github.com/fastly/fastly-magento2/pull/629
+- Datadome plugin update 2.18.3 https://github.com/fastly/fastly-magento2/pull/632
+- Add Vary on Store cookie https://github.com/fastly/fastly-magento2/pull/630
+
 ## 1.2.198
 
 - PHP 8.0 compatibility fixes https://github.com/fastly/fastly-magento2/pull/619

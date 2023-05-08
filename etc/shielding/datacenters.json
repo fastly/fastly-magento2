@@ -495,20 +495,6 @@
     "shield": "frankfurt-de"
   },
   {
-    "code": "HHN",
-    "name": "Frankfurt - Interxion",
-    "group": "Europe",
-    "region": "EU-East",
-    "stats_region": "europe",
-    "billing_region": "Europe",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 50.11975,
-      "longitude": 8.738472
-    }
-  },
-  {
     "code": "WIE",
     "name": "Frankfurt - Interxion",
     "group": "Europe",
@@ -1092,8 +1078,7 @@
       "y": 0,
       "latitude": 37.454965,
       "longitude": -122.110783
-    },
-    "shield": "pao-ca-us"
+    }
   },
   {
     "code": "PAR",

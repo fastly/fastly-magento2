@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.200
+
+- Datadome plugin update 2.19.0 https://github.com/fastly/fastly-magento2/pull/638
+- Netacea Plugin 4.3.0 update https://github.com/fastly/fastly-magento2/pull/636
+
 ## 1.2.199
 
 - Introduce a new cookie for handling Geo redirects https://github.com/fastly/fastly-magento2/pull/628

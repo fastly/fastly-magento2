@@ -1227,6 +1227,20 @@
     "shield": "cgh-saopaulo-br"
   },
   {
+    "code": "GRU",
+    "name": "Sao Paulo",
+    "group": "South America",
+    "region": "SA-East",
+    "stats_region": "southamerica_std",
+    "billing_region": "South America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": -23.432075,
+      "longitude": -46.469511
+    }
+  },
+  {
     "code": "BFI",
     "name": "Seattle (Metro)",
     "group": "United States",

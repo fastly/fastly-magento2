@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.201
+
+- Fix XSS issues with import/export functionality https://github.com/fastly/fastly-magento2/pull/640
+
 ## 1.2.200
 
 - Datadome plugin update 2.19.0 https://github.com/fastly/fastly-magento2/pull/638

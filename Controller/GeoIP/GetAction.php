@@ -140,6 +140,10 @@ class GetAction extends Action
 
             // get target store from country code
             $countryCode = $this->countryCodeProvider->getCountryCode();
+            if(!$countryCode){
+                $resultLayout->setHeader("x-esi", "1");
+                return $resultLayout;
+            }
             $currentStore = $this->storeManager->getStore();
             $currentWebsiteId = $currentStore->getWebsiteId();
             $storeId = $this->config->getGeoIpMappingForCountryAndWebsite($countryCode, $currentWebsiteId);

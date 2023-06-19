@@ -27,6 +27,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Magento\Framework\Console\Cli;
 
 /**
  * Class ConfigGetCommand
@@ -189,7 +190,7 @@ class ConfigGetCommand extends Command
 
         if (count(array_unique($options)) === 1) {
             $this->output->writeln('<comment>' . $this->getSynopsis() . '</comment>', OutputInterface::OUTPUT_NORMAL);
-            return;
+            return Cli::RETURN_FAILURE;
         }
 
         // Get Service ID
@@ -261,6 +262,8 @@ class ConfigGetCommand extends Command
         if ($input->getOption('fastly-status')) {
             $this->getFastlyStatus($this->config->isFastlyEnabled());
         }
+
+        return Cli::RETURN_SUCCESS;
     }
 
     /**

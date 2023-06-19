@@ -23,6 +23,7 @@ namespace Fastly\Cdn\Console\Command;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
+use Magento\Framework\Console\Cli;
 use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Symfony\Component\Console\Command\Command;
@@ -119,7 +120,7 @@ class SuperUserCommand extends Command
 
         if (count(array_unique($options)) === 1) {
             $this->output->writeln('<comment>' . $this->getSynopsis() . '</comment>', OutputInterface::OUTPUT_NORMAL);
-            return;
+            return Cli::RETURN_FAILURE;
         }
 
         if ($input->getOption('enable')) {
@@ -133,6 +134,8 @@ class SuperUserCommand extends Command
         if ($input->getOption('update')) {
             $this->updateSuIps();
         }
+
+        return Cli::RETURN_SUCCESS;
     }
 
     /**

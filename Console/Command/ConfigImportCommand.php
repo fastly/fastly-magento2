@@ -25,6 +25,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Magento\Framework\Console\Cli;
 
 /**
  * Class ConfigImportCommand
@@ -93,7 +94,8 @@ class ConfigImportCommand extends Command
             $data = json_decode(file_get_contents($file));
             if (!$data) {
                 $output->writeln("<error>Invalid file structure</error>");
-                return;
+
+                return Cli::RETURN_FAILURE;
             }
 
             $clone = $this->getClonedVersion();
@@ -117,7 +119,10 @@ class ConfigImportCommand extends Command
 
         } catch (\Exception $e) {
             $output->writeln("<error>{$e->getMessage()}</error>");
+            return Cli::RETURN_FAILURE;
         }
+
+        return Cli::RETURN_SUCCESS;
     }
 
     /**

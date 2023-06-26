@@ -66,26 +66,6 @@ jobs:
       matrix:
         # https://experienceleague.adobe.com/docs/commerce-operations/installation-guide/system-requirements.html
         include:
-          - magento: "2.4.0"
-            php: "7.3"
-            composer: "v1"
-            elasticsearch: "7.6.2"
-
-          - magento: "2.4.0"
-            php: "7.4"
-            composer: "v1"
-            elasticsearch: "7.6.2"
-
-          - magento: "2.4.1"
-            php: "7.4"
-            composer: "v1"
-            elasticsearch: "7.7.1"
-
-          - magento: "2.4.2"
-            php: "7.4"
-            composer: "v1"
-            elasticsearch: "7.9.3"
-
           - magento: "2.4.3"
             php: "7.4"
             composer: "v1"

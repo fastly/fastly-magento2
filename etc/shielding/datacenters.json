@@ -1228,7 +1228,7 @@
   },
   {
     "code": "GRU",
-    "name": "Sao Paulo",
+    "name": "Sao Paulo (Metro)",
     "group": "South America",
     "region": "SA-East",
     "stats_region": "southamerica_std",
@@ -1238,7 +1238,8 @@
       "y": 0,
       "latitude": -23.432075,
       "longitude": -46.469511
-    }
+    },
+    "shield": "gru-saopaulo-br"
   },
   {
     "code": "BFI",

@@ -23,6 +23,7 @@ namespace Fastly\Cdn\Console\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Magento\Framework\Console\Cli;
 
 /**
  * Class GenerateVclCommand
@@ -51,5 +52,7 @@ class GenerateVclCommand extends Command
             "Fastly custom VCL use been deprecated."
                 . "Please upload VCL snippets from the Magento admin UI or using the CLI commands."
         );
+
+        return Cli::RETURN_SUCCESS;
     }
 }

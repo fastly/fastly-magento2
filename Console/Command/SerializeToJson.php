@@ -24,6 +24,7 @@ use Magento\Framework\App\Cache\Manager;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\ProductMetadataInterface;
+use Magento\Framework\Console\Cli;
 use Magento\Framework\Serialize\Serializer\Serialize;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -130,7 +131,7 @@ class SerializeToJson extends Command
                     'Invalid serialization format, unable to unserialize config data : ' . $path
                 );
 
-                return;
+                return Cli::RETURN_FAILURE;
             }
             $oldData = (is_array($oldData)) ? $oldData : [];
 
@@ -143,6 +144,7 @@ class SerializeToJson extends Command
             $this->cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
 
             $output->writeln('Config Cache Flushed');
+            return Cli::RETURN_SUCCESS;
         }
     }
 }

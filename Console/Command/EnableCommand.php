@@ -30,6 +30,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Cache\Manager;
+use Magento\Framework\Console\Cli;
 use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;
 
@@ -284,7 +285,7 @@ class EnableCommand extends Command
 
         if (count(array_unique($options)) === 1) {
             $this->output->writeln('<comment>' . $this->getSynopsis() . '</comment>', OutputInterface::OUTPUT_NORMAL);
-            return;
+            return Cli::RETURN_FAILURE;
         }
 
         // Set Service ID
@@ -389,6 +390,8 @@ class EnableCommand extends Command
 
         $arguments = new ArrayInput(['command' => 'cache:flush', 'types' => ['config']]);
         $this->getApplication()->find('cache:flush')->run($arguments, $output);
+
+        return Cli::RETURN_SUCCESS;
     }
 
     /**

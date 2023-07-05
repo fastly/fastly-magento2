@@ -1,5 +1,12 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.202
+
+- Handle NULL Image URLs in Pixel Ratio Plugin https://github.com/fastly/fastly-magento2/pull/646
+- Netacea module updates https://github.com/fastly/fastly-magento2/pull/645
+- cli command return success/failure added https://github.com/fastly/fastly-magento2/pull/643
+- GeoAPI endpoint TypeError fix https://github.com/fastly/fastly-magento2/pull/641
+
 ## 1.2.201
 
 - Fix XSS issues with import/export functionality https://github.com/fastly/fastly-magento2/pull/640

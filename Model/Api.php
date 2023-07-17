@@ -389,7 +389,7 @@ class Api
      */
     public function checkServiceDetails($test = false, $serviceId = null, $apiKey = null, $isInitialCheck = false)
     {
-        if (!$this->config->isServiceConfigured() && !$isInitialCheck) {
+        if (!$isInitialCheck && !$this->config->isServiceConfigured()) {
             throw new LocalizedException(__('Fastly service is not configured.'));
         }
 

@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.203
+
+- Allow credentials to be tested without saving the config (fix) https://github.com/fastly/fastly-magento2/pull/649
+- Allow removal of the GraphQL module https://github.com/fastly/fastly-magento2/pull/650
+
 ## 1.2.202
 
 - Handle NULL Image URLs in Pixel Ratio Plugin https://github.com/fastly/fastly-magento2/pull/646

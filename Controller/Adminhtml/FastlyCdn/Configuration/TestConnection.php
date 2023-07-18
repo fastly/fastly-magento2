@@ -114,7 +114,8 @@ class TestConnection extends Action
                 $this->api->sendWebHook('*initiated test connection action*');
             }
 
-            $service = $this->api->checkServiceDetails(true, $serviceId, $apiKey);
+            // Set isInitialCheck flag to true - we can test credentials even if they are not saved in database
+            $service = $this->api->checkServiceDetails(true, $serviceId, $apiKey, true);
             $sendValidationReq = $this->statistic->sendValidationRequest(true, $serviceId);
             $this->saveValidationState(true, $sendValidationReq);
         } catch (\Exception $e) {

@@ -383,12 +383,13 @@ class Api
      * @param bool $test
      * @param null $serviceId
      * @param null $apiKey
+     * @param bool $isInitialCheck - flag for testing credentials before Service ID and token are saved to config
      * @return bool|mixed
      * @throws LocalizedException
      */
-    public function checkServiceDetails($test = false, $serviceId = null, $apiKey = null)
+    public function checkServiceDetails($test = false, $serviceId = null, $apiKey = null, $isInitialCheck = false)
     {
-        if (!$this->config->isServiceConfigured()) {
+        if (!$isInitialCheck && !$this->config->isServiceConfigured()) {
             throw new LocalizedException(__('Fastly service is not configured.'));
         }
 

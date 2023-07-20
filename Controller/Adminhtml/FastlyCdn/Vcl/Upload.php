@@ -24,6 +24,8 @@ use Fastly\Cdn\Helper\Vcl;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Config\Backend\CustomSnippetUpload;
+use Fastly\Cdn\Model\Upload\Acl;
+use Fastly\Cdn\Model\Upload\Dictionary;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -91,6 +93,16 @@ class Upload extends Action
     private $typeList;
 
     /**
+     * @var Dictionary
+     */
+    private $dictionary;
+
+    /**
+     * @var Acl
+     */
+    private $acl;
+
+    /**
      * Upload constructor.
      *
      * @param Context $context
@@ -105,6 +117,8 @@ class Upload extends Action
      * @param Filesystem $filesystem
      * @param CoreConfig $coreConfig
      * @param TypeListInterface $typeList
+     * @param Dictionary $dictionary
+     * @param Acl $acl
      */
     public function __construct(
         Context $context,
@@ -118,7 +132,9 @@ class Upload extends Action
         TimezoneInterface $timezone,
         Filesystem $filesystem,
         CoreConfig $coreConfig,
-        TypeListInterface $typeList
+        TypeListInterface $typeList,
+        Dictionary $dictionary,
+        Acl $acl
     ) {
         $this->request = $request;
         $this->resultJson = $resultJsonFactory;
@@ -132,7 +148,8 @@ class Upload extends Action
         parent::__construct($context);
         $this->coreConfig = $coreConfig;
         $this->typeList = $typeList;
-
+        $this->dictionary = $dictionary;
+        $this->acl = $acl;
     }
 
     /**
@@ -205,8 +222,8 @@ class Upload extends Action
             ];
 
             $this->api->createRequest($clone->number, $request);
-            $dictionary = $this->setupDictionary($clone->number, $currActiveVersion);
-            $acl = $this->setupAcl($clone->number, $currActiveVersion);
+            $dictionary = $this->dictionary->setupDictionary($clone->number, $currActiveVersion);
+            $acl = $this->acl->setupAcl($clone->number, $currActiveVersion);
 
             if (!$dictionary || !$acl) {
                 throw new LocalizedException(__('Failed to create Containers'));
@@ -270,42 +287,6 @@ class Upload extends Action
             throw new LocalizedException(__($exception));
         }
         return $snippetNameData;
-    }
-
-    /**
-     * @param $cloneNumber
-     * @param $currActiveVersion
-     * @return bool|mixed
-     * @throws LocalizedException
-     */
-    private function setupDictionary($cloneNumber, $currActiveVersion)
-    {
-        $dictionaryName = Config::CONFIG_DICTIONARY_NAME;
-        $dictionary = $this->api->getSingleDictionary($currActiveVersion, $dictionaryName);
-
-        if (!$dictionary) {
-            $params = ['name' => $dictionaryName];
-            $dictionary = $this->api->createDictionary($cloneNumber, $params);
-        }
-        return $dictionary;
-    }
-
-    /**
-     * @param $cloneNumber
-     * @param $currActiveVersion
-     * @return bool|mixed
-     * @throws LocalizedException
-     */
-    private function setupAcl($cloneNumber, $currActiveVersion)
-    {
-        $aclName = Config::MAINT_ACL_NAME;
-        $acl = $this->api->getSingleAcl($currActiveVersion, $aclName);
-
-        if (!$acl) {
-            $params = ['name' => $aclName];
-            $acl = $this->api->createAcl($cloneNumber, $params);
-        }
-        return $acl;
     }
 
     /**

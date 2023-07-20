@@ -23,6 +23,8 @@ namespace Fastly\Cdn\Console\Command;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
+use Fastly\Cdn\Model\Upload\Acl;
+use Fastly\Cdn\Model\Upload\Dictionary;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -75,6 +77,16 @@ class EnableCommand extends Command
      * @var Filesystem
      */
     private $filesystem;
+
+    /**
+     * @var Acl
+     */
+    private $acl;
+
+    /**
+     * @var Dictionary
+     */
+    private $dictionary;
 
     /**
      * @inheritdoc
@@ -257,6 +269,8 @@ class EnableCommand extends Command
      * @param WriterInterface $configWriter
      * @param Manager $cacheManager
      * @param Filesystem $filesystem
+     * @param Acl $acl
+     * @param Dictionary $dictionary
      */
     public function __construct(
         Config $config,
@@ -264,7 +278,9 @@ class EnableCommand extends Command
         Vcl $vcl,
         WriterInterface $configWriter,
         Manager $cacheManager,
-        Filesystem $filesystem
+        Filesystem $filesystem,
+        Acl $acl,
+        Dictionary $dictionary
     ) {
         parent::__construct();
         $this->config = $config;
@@ -273,6 +289,8 @@ class EnableCommand extends Command
         $this->configWriter = $configWriter;
         $this->cacheManager = $cacheManager;
         $this->filesystem = $filesystem;
+        $this->acl = $acl;
+        $this->dictionary = $dictionary;
     }
 
     /**
@@ -733,6 +751,10 @@ class EnableCommand extends Command
             ];
 
             $this->api->createRequest($clone->number, $request);
+
+            $dictionary = $this->dictionary->setupDictionary($clone->number, $currActiveVersion);
+            $acl = $this->acl->setupAcl($clone->number, $currActiveVersion);
+
             $this->api->validateServiceVersion($clone->number);
             $msg = 'Successfully uploaded VCL. ';
 
@@ -893,7 +915,7 @@ class EnableCommand extends Command
         $snippetNameData = explode('_', $snippetName, 3);
         $containsEmpty = in_array("", $snippetNameData, true);
         $types = ['init', 'recv', 'hit', 'miss', 'pass', 'fetch', 'error', 'log', 'deliver', 'hash', 'none'];
-        $exception = 'Failed to upload VCL snippets. Please make sure the custom VCL snippets 
+        $exception = 'Failed to upload VCL snippets. Please make sure the custom VCL snippets
             follow this naming convention: [vcl_snippet_type]_[priority]_[short_name_description].vcl';
 
         if (count($snippetNameData) < 3) {

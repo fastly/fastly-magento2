@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.204
+
+- CLI fix when upload VCL https://github.com/fastly/fastly-magento2/pull/652
+
 ## 1.2.203
 
 - Allow credentials to be tested without saving the config (fix) https://github.com/fastly/fastly-magento2/pull/649

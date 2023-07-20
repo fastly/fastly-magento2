@@ -752,8 +752,8 @@ class EnableCommand extends Command
 
             $this->api->createRequest($clone->number, $request);
 
-            $dictionary = $this->dictionary->setupDictionary($clone->number, $currActiveVersion);
-            $acl = $this->acl->setupAcl($clone->number, $currActiveVersion);
+            $this->dictionary->setupDictionary($clone->number, $currActiveVersion);
+            $this->acl->setupAcl($clone->number, $currActiveVersion);
 
             $this->api->validateServiceVersion($clone->number);
             $msg = 'Successfully uploaded VCL. ';

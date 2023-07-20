@@ -2,7 +2,6 @@
 
 namespace Fastly\Cdn\Model\Upload;
 
-use Exception;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Model\Config;
 
@@ -39,7 +38,7 @@ class Acl
                 $acl = $this->api->createAcl($cloneNumber, $params);
             }
             return $acl;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
             return false;
         }

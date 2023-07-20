@@ -2,7 +2,6 @@
 
 namespace Fastly\Cdn\Model\Upload;
 
-use Exception;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Model\Config;
 
@@ -39,7 +38,7 @@ class Dictionary
                 $dictionary = $this->api->createDictionary($cloneNumber, $params);
             }
             return $dictionary;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
             return false;
         }

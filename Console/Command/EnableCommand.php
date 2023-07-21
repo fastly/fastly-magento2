@@ -372,18 +372,29 @@ class EnableCommand extends Command
         }
 
         // Upload VCL
+        $activateFlag = false;
         if ($input->getOption('upload-vcl')) {
+            $activateFlag = true;
             $this->uploadVcl($input->getOption('activate'));
         }
 
         // Enable Force TLS snippet
         if ($input->getOption('enable-force-tls')) {
+            $activateFlag = true;
             $this->enableforceTls($input->getOption('activate'));
         }
 
         // Enable Force TLS snippet
         if ($input->getOption('disable-force-tls')) {
+            $activateFlag = true;
             $this->disableforceTls($input->getOption('activate'));
+        }
+        if ($activateFlag === false && ($input->getOption('activate'))
+        ) {
+            $this->output->writeln(
+                '<error>Activate flag can\'t be used alone. It should be used in combination with --upload-vcl, --enable-force-tls or --disable-force-tls</error>',
+                OutputInterface::OUTPUT_NORMAL
+            );
         }
 
         // Enable

@@ -375,7 +375,7 @@ class EnableCommand extends Command
         }
 
         // Upload VCL
-        $activate = (bool)$input->getArgument('activate');
+        $activate = filter_var($input->getArgument('activate'), FILTER_VALIDATE_BOOLEAN);
         if ($input->getOption('upload-vcl')) {
             $this->uploadVcl($activate);
         }

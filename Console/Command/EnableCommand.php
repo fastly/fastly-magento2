@@ -18,6 +18,7 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
+
 namespace Fastly\Cdn\Console\Command;
 
 use Fastly\Cdn\Model\Config;
@@ -30,6 +31,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Cache\Manager;
 use Magento\Framework\Console\Cli;
@@ -115,15 +117,22 @@ class EnableCommand extends Command
             'u',
             InputOption::VALUE_NONE,
             'Uploads default VCL files, Test connection must pass to proceed with VCL uploading.'
-                . ' Add --activate argument to activate new version.'
-        );
+            . ' Add activate argument to activate new version of vcl.'
+        )
+            ->addArgument(
+                'activate',
+                InputArgument::OPTIONAL,
+                'Argument to activate new version of vcl (Possible values: true / false).'
+                . PHP_EOL . 'This argument can be used with next options:'
+                . PHP_EOL . ' upload-vcl, enable-force-tls and disable-force-tls.',
+                false);
 
         $this->addOption(
             'enable-force-tls',
             'f',
             InputOption::VALUE_NONE,
             'Uploads Force TLS snippets, Test connection must pass to proceed with VCL uploading.'
-                . ' Add --activate argument to activate new version.'
+            . ' Add activate argument to activate new version of vcl.'
         );
 
         $this->addOption(
@@ -131,14 +140,7 @@ class EnableCommand extends Command
             'l',
             InputOption::VALUE_NONE,
             'Removes Force TLS snippets, Test connection must pass to proceed with VCL snippet removal.'
-                . ' Add --activate argument to activate new version.'
-        );
-
-        $this->addOption(
-            'activate',
-            'a',
-            InputOption::VALUE_NONE,
-            'Activate newly cloned version. Used with VCL upload.'
+            . ' Add activate argument to activate new version of vcl.'
         );
 
         $this->addOption(
@@ -273,15 +275,16 @@ class EnableCommand extends Command
      * @param Dictionary $dictionary
      */
     public function __construct(
-        Config $config,
-        Api $api,
-        Vcl $vcl,
+        Config          $config,
+        Api             $api,
+        Vcl             $vcl,
         WriterInterface $configWriter,
-        Manager $cacheManager,
-        Filesystem $filesystem,
-        Acl $acl,
-        Dictionary $dictionary
-    ) {
+        Manager         $cacheManager,
+        Filesystem      $filesystem,
+        Acl             $acl,
+        Dictionary      $dictionary
+    )
+    {
         parent::__construct();
         $this->config = $config;
         $this->api = $api;
@@ -372,18 +375,19 @@ class EnableCommand extends Command
         }
 
         // Upload VCL
+        $activate = filter_var($input->getArgument('activate'), FILTER_VALIDATE_BOOLEAN);
         if ($input->getOption('upload-vcl')) {
-            $this->uploadVcl($input->getOption('activate'));
+            $this->uploadVcl($activate);
         }
 
         // Enable Force TLS snippet
         if ($input->getOption('enable-force-tls')) {
-            $this->enableforceTls($input->getOption('activate'));
+            $this->enableforceTls($activate);
         }
 
         // Enable Force TLS snippet
         if ($input->getOption('disable-force-tls')) {
-            $this->disableforceTls($input->getOption('activate'));
+            $this->disableforceTls($activate);
         }
 
         // Enable
@@ -707,11 +711,11 @@ class EnableCommand extends Command
 
             foreach ($snippets as $key => $value) {
                 $snippetData = [
-                    'name'      => Config::FASTLY_MAGENTO_MODULE . '_' . $key,
-                    'type'      => $key,
-                    'dynamic'   => "0",
-                    'priority'  => 50,
-                    'content'   => $value
+                    'name' => Config::FASTLY_MAGENTO_MODULE . '_' . $key,
+                    'type' => $key,
+                    'dynamic' => "0",
+                    'priority' => 50,
+                    'content' => $value
                 ];
                 $this->api->uploadSnippet($clone->number, $snippetData);
             }
@@ -723,11 +727,11 @@ class EnableCommand extends Command
                 $snippetShortName = $snippetNameData[2];
 
                 $customSnippetData = [
-                    'name'      => Config::FASTLY_MAGENTO_MODULE . '_' . $snippetShortName,
-                    'type'      => $snippetType,
-                    'priority'  => $snippetPriority,
-                    'content'   => $value,
-                    'dynamic'   => '0'
+                    'name' => Config::FASTLY_MAGENTO_MODULE . '_' . $snippetShortName,
+                    'type' => $snippetType,
+                    'priority' => $snippetPriority,
+                    'content' => $value,
+                    'dynamic' => '0'
                 ];
                 $this->api->uploadSnippet($clone->number, $customSnippetData);
             }
@@ -735,19 +739,19 @@ class EnableCommand extends Command
             $this->createGzipHeader($clone);
 
             $condition = [
-                'name'      => Config::FASTLY_MAGENTO_MODULE . '_pass',
+                'name' => Config::FASTLY_MAGENTO_MODULE . '_pass',
                 'statement' => 'req.http.x-pass',
-                'type'      => 'REQUEST',
-                'priority'  => 90
+                'type' => 'REQUEST',
+                'priority' => 90
             ];
             $createCondition = $this->api->createCondition($clone->number, $condition);
             $request = [
-                'action'            => 'pass',
-                'max_stale_age'     => 3600,
-                'name'              => Config::FASTLY_MAGENTO_MODULE.'_request',
+                'action' => 'pass',
+                'max_stale_age' => 3600,
+                'name' => Config::FASTLY_MAGENTO_MODULE . '_request',
                 'request_condition' => $createCondition->name,
-                'service_id'        => $service->id,
-                'version'           => $currActiveVersion
+                'service_id' => $service->id,
+                'version' => $currActiveVersion
             ];
 
             $this->api->createRequest($clone->number, $request);
@@ -760,7 +764,7 @@ class EnableCommand extends Command
 
             if ($activate) {
                 $this->api->activateVersion($clone->number);
-                $msg .= 'Activated Version '. $clone->number;
+                $msg .= 'Activated Version ' . $clone->number;
             }
 
             if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
@@ -788,14 +792,14 @@ class EnableCommand extends Command
             $service = $this->api->checkServiceDetails();
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
-            $reqName = Config::FASTLY_MAGENTO_MODULE.'_force_tls';
+            $reqName = Config::FASTLY_MAGENTO_MODULE . '_force_tls';
             $snippets = $this->config->getVclSnippets(Config::FORCE_TLS_PATH);
 
             $request = [
-                'name'          => $reqName,
-                'service_id'    => $service->id,
-                'version'       => $currActiveVersion,
-                'force_ssl'     => true
+                'name' => $reqName,
+                'service_id' => $service->id,
+                'version' => $currActiveVersion,
+                'force_ssl' => true
             ];
 
             $this->api->createRequest($clone->number, $request);
@@ -803,11 +807,11 @@ class EnableCommand extends Command
             // Add force TLS snippet
             foreach ($snippets as $key => $value) {
                 $snippetData = [
-                    'name'      => Config::FASTLY_MAGENTO_MODULE.'_force_tls_'.$key,
-                    'type'      => $key,
-                    'dynamic'   => "0",
-                    'priority'  => 10,
-                    'content'   => $value
+                    'name' => Config::FASTLY_MAGENTO_MODULE . '_force_tls_' . $key,
+                    'type' => $key,
+                    'dynamic' => "0",
+                    'priority' => 10,
+                    'content' => $value
                 ];
                 $this->api->uploadSnippet($clone->number, $snippetData);
             }
@@ -817,11 +821,11 @@ class EnableCommand extends Command
 
             if ($activate) {
                 $this->api->activateVersion($clone->number);
-                $msg .= 'Activated Version '. $clone->number;
+                $msg .= 'Activated Version ' . $clone->number;
             }
 
             if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-                $this->api->sendWebHook('*Force TLS has been turned ON in Fastly version '. $clone->number . '*');
+                $this->api->sendWebHook('*Force TLS has been turned ON in Fastly version ' . $clone->number . '*');
             }
 
             $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
@@ -843,21 +847,21 @@ class EnableCommand extends Command
             $service = $this->api->checkServiceDetails();
             $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
             $clone = $this->api->cloneVersion($currActiveVersion);
-            $reqName = Config::FASTLY_MAGENTO_MODULE.'_force_tls';
+            $reqName = Config::FASTLY_MAGENTO_MODULE . '_force_tls';
             $snippets = $this->config->getVclSnippets(Config::FORCE_TLS_PATH);
 
             $request = [
-                'name'          => $reqName,
-                'service_id'    => $service->id,
-                'version'       => $currActiveVersion,
-                'force_ssl'     => false
+                'name' => $reqName,
+                'service_id' => $service->id,
+                'version' => $currActiveVersion,
+                'force_ssl' => false
             ];
 
             $this->api->createRequest($clone->number, $request);
 
             // Remove Force TLS snippet
             foreach ($snippets as $key => $value) {
-                $name = Config::FASTLY_MAGENTO_MODULE.'_force_tls_'.$key;
+                $name = Config::FASTLY_MAGENTO_MODULE . '_force_tls_' . $key;
 
                 if ($this->api->hasSnippet($clone->number, $name)) {
                     $this->api->removeSnippet($clone->number, $name);
@@ -869,11 +873,11 @@ class EnableCommand extends Command
 
             if ($activate) {
                 $this->api->activateVersion($clone->number);
-                $msg .= 'Activated Version '. $clone->number;
+                $msg .= 'Activated Version ' . $clone->number;
             }
 
             if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-                $this->api->sendWebHook('*Force TLS has been turned OFF in Fastly version '. $clone->number . '*');
+                $this->api->sendWebHook('*Force TLS has been turned OFF in Fastly version ' . $clone->number . '*');
             }
 
             $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
@@ -939,21 +943,21 @@ class EnableCommand extends Command
     private function createGzipHeader($clone)
     {
         $condition = [
-            'name'      => Config::FASTLY_MAGENTO_MODULE.'_gzip_safety',
+            'name' => Config::FASTLY_MAGENTO_MODULE . '_gzip_safety',
             'statement' => 'beresp.http.x-esi',
-            'type'      => 'CACHE',
-            'priority'  => 100
+            'type' => 'CACHE',
+            'priority' => 100
         ];
         $createCondition = $this->api->createCondition($clone->number, $condition);
 
         $headerData = [
-            'name'              => Config::FASTLY_MAGENTO_MODULE . '_gzip_safety',
-            'type'              => 'cache',
-            'dst'               => 'gzip',
-            'action'            => 'set',
-            'priority'          => 1000,
-            'src'               => 'false',
-            'cache_condition'   => $createCondition->name,
+            'name' => Config::FASTLY_MAGENTO_MODULE . '_gzip_safety',
+            'type' => 'cache',
+            'dst' => 'gzip',
+            'action' => 'set',
+            'priority' => 1000,
+            'src' => 'false',
+            'cache_condition' => $createCondition->name,
         ];
 
         $this->api->createHeader($clone->number, $headerData);

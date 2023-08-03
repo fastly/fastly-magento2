@@ -14,6 +14,10 @@ define([
             let isAlreadyConfigured = true;
             let serviceStatus = false;
 
+            if (fastlyFieldset.is(':visible')) {
+                init();
+            }
+
             /**
              * Fastly Configuration head on click event
              */

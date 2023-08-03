@@ -18,6 +18,7 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
+
 namespace Fastly\Cdn\Console\Command;
 
 use Fastly\Cdn\Model\Config;
@@ -111,7 +112,7 @@ class SuperUserCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|void|null
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output) // @codingStandardsIgnoreLine - required by parent class
     {
@@ -123,144 +124,143 @@ class SuperUserCommand extends Command
             return Cli::RETURN_FAILURE;
         }
 
-        if ($input->getOption('enable')) {
-            $this->toggleSuperUsers('enable');
+        try {
+            if ($input->getOption('enable')) {
+                $this->toggleSuperUsers('enable');
+            }
+
+            if ($input->getOption('disable')) {
+                $this->toggleSuperUsers('disable');
+            }
+
+            if ($input->getOption('update')) {
+                $this->updateSuIps();
+            }
+        } catch (\Exception $e) {
+
+            $output->writeln("<error>{$e->getMessage()}</error>");
+            return Cli::RETURN_FAILURE;
         }
 
-        if ($input->getOption('disable')) {
-            $this->toggleSuperUsers('disable');
-        }
-
-        if ($input->getOption('update')) {
-            $this->updateSuIps();
-        }
 
         return Cli::RETURN_SUCCESS;
     }
 
     /**
      * @param $action
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Exception
      */
     private function toggleSuperUsers($action)
     {
-        try {
-            $service = $this->api->checkServiceDetails();
-            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
 
-            $dictionaryName = Config::CONFIG_DICTIONARY_NAME;
-            $dictionary = $this->api->getSingleDictionary($currActiveVersion, $dictionaryName);
-            $msg = 'Maintenance Mode has been enabled';
+        $service = $this->api->checkServiceDetails();
+        $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
 
-            if (!$dictionary) {
-                $msg = 'The required dictionary container does not exist.';
-                $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
-                return;
-            }
+        $dictionaryName = Config::CONFIG_DICTIONARY_NAME;
+        $dictionary = $this->api->getSingleDictionary($currActiveVersion, $dictionaryName);
+        $msg = 'Maintenance Mode has been enabled';
 
-            if ($action == 'enable') {
-                $aclName = Config::MAINT_ACL_NAME;
-                $acl = $this->api->getSingleAcl($currActiveVersion, $aclName);
-
-                if (!$acl) {
-                    $msg = 'The required ACL container does not exist. Please re-upload VCL.';
-                    $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
-                    return;
-                }
-
-                $hasIps = $this->hasIps($acl);
-
-                if (!$hasIps) {
-                    $msg = 'Please update Admin IPs list with at least one IP address before enabling Maintenance Mode';
-                    $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
-                    return;
-                }
-
-                $this->api->upsertDictionaryItem(
-                    $dictionary->id,
-                    Config::CONFIG_DICTIONARY_KEY,
-                    1
-                );
-                $this->sendWebHook('*Maintenance Mode has been enabled*');
-            } elseif ($action == 'disable') {
-                $this->api->upsertDictionaryItem(
-                    $dictionary->id,
-                    Config::CONFIG_DICTIONARY_KEY,
-                    0
-                );
-                $msg = 'Maintenance Mode has been disabled';
-                $this->sendWebHook('*Maintenance Mode has been disabled*');
-            }
-
-            $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
-        } catch (\Exception $e) {
-            $msg = $e->getMessage();
-            $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
-            return;
+        if (!$dictionary) {
+            $msg = 'The required dictionary container does not exist.';
+            throw new \Exception(__($msg));
         }
-    }
 
-    private function updateSuIps()
-    {
-        try {
-            $service = $this->api->checkServiceDetails();
-            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
-
+        if ($action == 'enable') {
             $aclName = Config::MAINT_ACL_NAME;
             $acl = $this->api->getSingleAcl($currActiveVersion, $aclName);
 
             if (!$acl) {
                 $msg = 'The required ACL container does not exist. Please re-upload VCL.';
-                $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
-                return;
+                throw new \Exception(__($msg));
             }
 
-            $ipList = $this->readMaintenanceIp();
-            if (!$ipList) {
-                $msg = 'Please make sure that the maintenance.ip file contains at least one IP address.';
-                $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
-                return;
-            }
-            $aclId = $acl->id;
-            $aclItems = $this->api->aclItemsList($aclId);
-            $comment = 'Added for Maintenance Mode';
+            $hasIps = $this->hasIps($acl);
 
-            $this->deleteIps($aclItems, $aclId);
-
-            foreach ($ipList as $ip) {
-                if ($ip[0] == '!') {
-                    $ip = ltrim($ip, '!');
-                }
-
-                // Handle subnet
-                $ipParts = explode('/', $ip);
-                $subnet = false;
-                if (!empty($ipParts[1])) {
-                    if (is_numeric($ipParts[1]) && (int)$ipParts[1] < 129) {
-                        $subnet = $ipParts[1];
-                    } else {
-                        continue;
-                    }
-                }
-
-                if (!filter_var($ipParts[0], FILTER_VALIDATE_IP)) {
-                    $msg = 'IP validation failed, please make sure that the provided ';
-                    $msg = $msg . 'IP values are comma-separated and valid.';
-                    $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
-                    return;
-                }
-
-                $this->api->upsertAclItem($aclId, $ipParts[0], 0, $comment, $subnet);
+            if (!$hasIps) {
+                $msg = 'Please update Admin IPs list with at least one IP address before enabling Maintenance Mode';
+                throw new \Exception(__($msg));
             }
 
-            $this->sendWebHook('*Admin IPs list has been updated*');
-
-            $msg = 'Admin IPs list has been updated';
-            $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
-        } catch (\Exception $e) {
-            $msg = $e->getMessage();
-            $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
-            return;
+            $this->api->upsertDictionaryItem(
+                $dictionary->id,
+                Config::CONFIG_DICTIONARY_KEY,
+                1
+            );
+            $this->sendWebHook('*Maintenance Mode has been enabled*');
+        } elseif ($action == 'disable') {
+            $this->api->upsertDictionaryItem(
+                $dictionary->id,
+                Config::CONFIG_DICTIONARY_KEY,
+                0
+            );
+            $msg = 'Maintenance Mode has been disabled';
+            $this->sendWebHook('*Maintenance Mode has been disabled*');
         }
+
+        $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
+
+    }
+
+    /**
+     * @return void
+     * @throws \Magento\Framework\Exception\FileSystemException
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Exception
+     */
+    private function updateSuIps()
+    {
+        $service = $this->api->checkServiceDetails();
+        $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
+
+        $aclName = Config::MAINT_ACL_NAME;
+        $acl = $this->api->getSingleAcl($currActiveVersion, $aclName);
+
+        if (!$acl) {
+            $msg = 'The required ACL container does not exist. Please re-upload VCL.';
+            throw new \Exception(__($msg));
+        }
+
+        $ipList = $this->readMaintenanceIp();
+        if (!$ipList) {
+            $msg = 'Please make sure that the maintenance.ip file contains at least one IP address.';
+            throw new \Exception(__($msg));
+        }
+        $aclId = $acl->id;
+        $aclItems = $this->api->aclItemsList($aclId);
+        $comment = 'Added for Maintenance Mode';
+
+        $this->deleteIps($aclItems, $aclId);
+
+        foreach ($ipList as $ip) {
+            if ($ip[0] == '!') {
+                $ip = ltrim($ip, '!');
+            }
+
+            // Handle subnet
+            $ipParts = explode('/', $ip);
+            $subnet = false;
+            if (!empty($ipParts[1])) {
+                if (is_numeric($ipParts[1]) && (int)$ipParts[1] < 129) {
+                    $subnet = $ipParts[1];
+                } else {
+                    continue;
+                }
+            }
+
+            if (!filter_var($ipParts[0], FILTER_VALIDATE_IP)) {
+                $msg = 'IP validation failed, please make sure that the provided ';
+                $msg = $msg . 'IP values are comma-separated and valid.';
+                throw new \Exception(__($msg));
+            }
+
+            $this->api->upsertAclItem($aclId, $ipParts[0], 0, $comment, $subnet);
+        }
+
+        $this->sendWebHook('*Admin IPs list has been updated*');
+
+        $msg = 'Admin IPs list has been updated';
+        $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
     }
 
     /**

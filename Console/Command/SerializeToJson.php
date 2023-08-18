@@ -137,7 +137,8 @@ class SerializeToJson extends Command
 
             $newData = json_encode($oldData);
             if (false === $newData) {
-                throw new \InvalidArgumentException('Unable to encode data.');
+                $output->writeln('Unable to encode data.');
+                return Cli::RETURN_FAILURE;
             }
 
             $this->configWriter->save($path, $newData); // @codingStandardsIgnoreLine - currently best way to resolve this

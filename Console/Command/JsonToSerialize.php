@@ -99,7 +99,7 @@ class JsonToSerialize extends Command
      *
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|null|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output) // @codingStandardsIgnoreLine - required by parent class
     {
@@ -128,7 +128,8 @@ class JsonToSerialize extends Command
             $newData = $this->serializer->serialize($oldData);
 
             if (false === $newData) {
-                throw new \InvalidArgumentException('Unable to serialize data.');
+                $output->writeln('Unable to serialize data.');
+                return Cli::RETURN_FAILURE;
             }
 
             $this->configWriter->save($path, $newData); // @codingStandardsIgnoreLine - currently best way to resolve this

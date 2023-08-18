@@ -1,5 +1,12 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.205
+
+- Update Netcea module to 4.3.2 https://github.com/fastly/fastly-magento2/pull/657
+- Refactored CLI commands to return CLI success or failure flags https://github.com/fastly/fastly-magento2/pull/662
+- Run fastly configuration tab is already open https://github.com/fastly/fastly-magento2/pull/660
+- Run init method if Fastly configuration tab is already open https://github.com/fastly/fastly-magento2/pull/661
+
 ## 1.2.204
 
 - CLI fix when upload VCL https://github.com/fastly/fastly-magento2/pull/652

@@ -350,20 +350,6 @@
     }
   },
   {
-    "code": "DAL",
-    "name": "Dallas",
-    "group": "United States",
-    "region": "US-Central",
-    "stats_region": "usa",
-    "billing_region": "North America",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 32.787,
-      "longitude": -96.794
-    }
-  },
-  {
     "code": "ADS",
     "name": "Dallas (Metro)",
     "group": "United States",
@@ -1223,8 +1209,7 @@
       "y": 0,
       "latitude": -23.498,
       "longitude": -46.815
-    },
-    "shield": "cgh-saopaulo-br"
+    }
   },
   {
     "code": "GRU",

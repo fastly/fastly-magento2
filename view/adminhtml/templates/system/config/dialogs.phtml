@@ -2040,6 +2040,14 @@
                 </label>
             </div>
             <div class="admin__field field">
+                <label for="log_endpoint[path]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Path") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <input name="log_endpoint[path]" id="log_endpoint[path]" class="admin__control-text">
+                </div>
+            </div>
+            <div class="admin__field field">
                 <label for="log_endpoint[message_type]" class="admin__field-label">
                     <span><?php /* @noEscape */ echo __("Select a log line format") ?></span>
                 </label>
@@ -2070,6 +2078,37 @@
                     </div>
                 </div>
             </div>
+            <div class="admin__field field __required">
+                <label for="log_endpoint[public_key]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("PGP public key") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <textarea rows="6" name="log_endpoint[public_key]" id="log_endpoint[public_key]" class="admin__control-text masked"></textarea>
+                    <div class="admin__field-note">
+                        A PGP Public Key that Fastly will use to encrypt your log files before writing them to disk. You will only be able to read the contents by decrypting them with your private key. The PGP key should be in <a target="_blank" href="https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail" rel="noopener noreferrer" class="external-link">PEM (Privacy Enhanced Mail) format</a>.
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin__field field">
+                <label for="log_endpoint[compression_codec]" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __("Compression") ?></span>
+                </label>
+                <div class="admin__field-control">
+                    <select name="log_endpoint[compression_codec]" id="log_endpoint[compression_codec]" class="admin__control-text">
+                        <option value="" selected>None</option>
+                        <option value="zstd">Zstandard</option>
+                        <option value="snappy">Snappy</option>
+                        <option value="gzip">Gzip</option>
+                    </select>
+                    <div class="admin__field-note">
+                        <a href="https://docs.fastly.com/en/guides/changing-log-compression-options" target="_blank">
+                            Learn more about changing compression formats
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <div class="admin__field field">
                 <label for="log_endpoint[gzip_level]" class="admin__field-label">
                     <span><?php /* @noEscape */ echo __("Gzip level") ?></span>

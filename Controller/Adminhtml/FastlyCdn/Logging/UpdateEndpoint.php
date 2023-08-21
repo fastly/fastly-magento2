@@ -118,6 +118,11 @@ class UpdateEndpoint extends Action
                 ['response_condition' => $condition]
             );
 
+            $params = array_filter($params);
+            //Array filter removes empty strings, but empty compression_codec param turns off compression formats
+            if (!isset($params['compression_codec'])){
+                $params['compression_codec'] = "";
+            }
             $endpoint = $this->api->updateLogEndpoint($clone->number, $endpointType, array_filter($params), $oldName);
 
             if (!$endpoint) {

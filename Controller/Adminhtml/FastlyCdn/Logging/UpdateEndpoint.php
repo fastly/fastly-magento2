@@ -123,7 +123,7 @@ class UpdateEndpoint extends Action
             if (!isset($params['compression_codec'])){
                 $params['compression_codec'] = "";
             }
-            $endpoint = $this->api->updateLogEndpoint($clone->number, $endpointType, array_filter($params), $oldName);
+            $endpoint = $this->api->updateLogEndpoint($clone->number, $endpointType, $params, $oldName);
 
             if (!$endpoint) {
                 return $result->setData([

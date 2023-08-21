@@ -30,18 +30,6 @@ use \Magento\Backend\Block\Template;
 class UploadVcl extends Template
 {
     /**
-     * Prepare layout
-     *
-     * @return $this|void
-     */
-    protected function _prepareLayout() // @codingStandardsIgnoreLine - required by parent class
-    {
-        parent::_prepareLayout();
-
-        $this->addChild('dialogs', 'Fastly\Cdn\Block\System\Config\Form\Dialogs');
-    }
-
-    /**
      * Get dialogs
      *
      * @return string

@@ -108,7 +108,9 @@ class GetAction extends AbstractBlock
         if (empty($header)) {
             $this->response->setHeader("x-esi", "1");
         }
-        // HTTPS ESIs are not supported so we need to turn them into HTTP
+        // Due to Varnish parser limitations HTTPS ESIs are not supported so we need to turn them into HTTP URLs
+        // This does not mean that request will go over HTTP. ESI subrequest will go out to the backend that is 
+        // currently specified so if it's HTTPS it will go over HTTPS
         return sprintf(
             '<esi:include src=\'%s\' />',
             preg_replace(

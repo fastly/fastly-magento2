@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.206
+
+- Per user request Add Azure Blob Storage as log target https://github.com/fastly/fastly-magento2/pull/663
+
 ## 1.2.205
 
 - Update Netcea module to 4.3.2 https://github.com/fastly/fastly-magento2/pull/657

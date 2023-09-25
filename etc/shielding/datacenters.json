@@ -113,7 +113,8 @@
       "y": 0,
       "latitude": 33.876819,
       "longitude": -84.302921
-    }
+    },
+    "shield": "atlanta-ga-us"
   },
   {
     "code": "AKL",
@@ -296,7 +297,7 @@
     "code": "CMH",
     "name": "Columbus",
     "group": "United States",
-    "region": "US-Central",
+    "region": "US-East",
     "stats_region": "usa",
     "billing_region": "North America",
     "coordinates": {
@@ -310,7 +311,7 @@
     "code": "LCK",
     "name": "Columbus",
     "group": "United States",
-    "region": "US-Central",
+    "region": "US-East",
     "stats_region": "usa",
     "billing_region": "North America",
     "coordinates": {
@@ -954,7 +955,7 @@
     "code": "MUC",
     "name": "Munich",
     "group": "Europe",
-    "region": "EU-West",
+    "region": "EU-East",
     "stats_region": "europe",
     "billing_region": "Europe",
     "coordinates": {

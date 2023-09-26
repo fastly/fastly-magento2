@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.207
+
+- Update Netcea module to 5.6.1 https://github.com/fastly/fastly-magento2/pull/664
+- Add a custom response header during maintenance https://github.com/fastly/fastly-magento2/issues/637
+
 ## 1.2.206
 
 - Per user request Add Azure Blob Storage as log target https://github.com/fastly/fastly-magento2/pull/663

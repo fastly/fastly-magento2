@@ -146,7 +146,7 @@ class CreateCustomSnippet extends Action
             $priority = $this->getRequest()->getParam('priority');
             $vcl = $this->getRequest()->getParam('vcl');
             $edit = $this->getRequest()->getParam('edit');
-            $original = $this->getRequest()->getParam('original');
+            $original = basename($this->getRequest()->getParam('original') ?? "");
             $validation = $this->config->validateCustomSnippet($name, $type, $priority);
             $error = $validation['error'];
             if ($error != null) {

@@ -83,8 +83,7 @@
       "y": 0,
       "latitude": 33.636719,
       "longitude": -84.428067
-    },
-    "shield": "atl-ga-us"
+    }
   },
   {
     "code": "FTY",
@@ -98,8 +97,7 @@
       "y": 0,
       "latitude": 33.636719,
       "longitude": -84.428067
-    },
-    "shield": "fty-ga-us"
+    }
   },
   {
     "code": "PDK",
@@ -759,6 +757,20 @@
       "longitude": -118.357404
     },
     "shield": "bur-ca-us"
+  },
+  {
+    "code": "LAX",
+    "name": "Los Angeles (Metro)",
+    "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 33.942536,
+      "longitude": -118.408075
+    }
   },
   {
     "code": "LGB",

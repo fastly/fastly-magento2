@@ -17,6 +17,8 @@ use Fastly\Cdn\Model\Modly\Manifest;
  */
 class GetActiveModules extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */

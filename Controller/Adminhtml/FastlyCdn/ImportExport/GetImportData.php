@@ -20,6 +20,8 @@ use Magento\Framework\Filesystem;
  */
 class GetImportData extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */

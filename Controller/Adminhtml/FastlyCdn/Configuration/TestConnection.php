@@ -36,6 +36,8 @@ use Magento\Framework\Controller\Result\JsonFactory;
  */
 class TestConnection extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Api
      */

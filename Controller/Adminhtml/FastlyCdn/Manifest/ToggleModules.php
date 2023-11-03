@@ -23,6 +23,8 @@ use Magento\Framework\Exception\LocalizedException;
  */
 class ToggleModules extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var ManifestFactory
      */

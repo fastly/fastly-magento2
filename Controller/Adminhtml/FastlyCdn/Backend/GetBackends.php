@@ -37,6 +37,8 @@ use Magento\Framework\Controller\ResultInterface;
  */
 class GetBackends extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */

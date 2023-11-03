@@ -37,6 +37,8 @@ use Fastly\Cdn\Helper\Vcl;
  */
 class PushDomains extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */

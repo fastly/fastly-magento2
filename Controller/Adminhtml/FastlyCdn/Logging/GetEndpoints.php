@@ -34,6 +34,8 @@ use Magento\Framework\Controller\ResultInterface;
  */
 class GetEndpoints extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */

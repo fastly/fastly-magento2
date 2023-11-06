@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.209
+
+- Improve admin acl privileges https://github.com/fastly/fastly-magento2/pull/673
+
 ## 1.2.208
 
 - Update Datadome module to 2.19.1 https://github.com/fastly/fastly-magento2/pull/669

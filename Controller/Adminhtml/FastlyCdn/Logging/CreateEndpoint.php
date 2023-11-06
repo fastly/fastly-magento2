@@ -34,6 +34,8 @@ use Magento\Framework\Controller\Result\JsonFactory;
  */
 class CreateEndpoint extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+    
     /**
      * @var Http
      */

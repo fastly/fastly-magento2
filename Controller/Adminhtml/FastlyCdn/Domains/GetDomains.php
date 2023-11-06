@@ -36,6 +36,8 @@ use Magento\Store\Model\StoreManagerInterface;
  */
 class GetDomains extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */

@@ -38,6 +38,8 @@ use Magento\Framework\Exception\LocalizedException;
  */
 class DisableRateLimiting extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */

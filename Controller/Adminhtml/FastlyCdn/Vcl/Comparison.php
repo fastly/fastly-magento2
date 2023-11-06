@@ -16,6 +16,8 @@ use Magento\Framework\Serialize\Serializer\Json;
 
 class Comparison extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var JsonFactory
      */

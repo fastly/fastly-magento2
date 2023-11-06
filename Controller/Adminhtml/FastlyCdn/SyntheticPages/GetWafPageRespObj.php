@@ -34,6 +34,8 @@ use Fastly\Cdn\Model\Api;
  */
 class GetWafPageRespObj extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */

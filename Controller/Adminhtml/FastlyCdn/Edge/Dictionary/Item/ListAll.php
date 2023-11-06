@@ -33,6 +33,8 @@ use Magento\Framework\Controller\Result\JsonFactory;
  */
 class ListAll extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */

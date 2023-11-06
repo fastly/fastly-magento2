@@ -14,6 +14,8 @@ use Fastly\Cdn\Model\Config;
  */
 class DownloadExportData extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var FileFactory
      */

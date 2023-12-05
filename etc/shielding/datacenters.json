@@ -72,20 +72,6 @@
     "shield": "iad-va-us"
   },
   {
-    "code": "ATL",
-    "name": "Atlanta",
-    "group": "United States",
-    "region": "US-East",
-    "stats_region": "usa",
-    "billing_region": "North America",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 33.636719,
-      "longitude": -84.428067
-    }
-  },
-  {
     "code": "FTY",
     "name": "Atlanta",
     "group": "United States",
@@ -1194,20 +1180,6 @@
       "y": 0,
       "latitude": -33.3936,
       "longitude": -70.7935
-    }
-  },
-  {
-    "code": "CGH",
-    "name": "Sao Paulo",
-    "group": "South America",
-    "region": "SA-East",
-    "stats_region": "southamerica_std",
-    "billing_region": "South America",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": -23.498,
-      "longitude": -46.815
     }
   },
   {

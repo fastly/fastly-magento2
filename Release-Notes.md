@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.210
+
+- Update to Netacea module to 5.7.0 https://github.com/fastly/fastly-magento2/pull/675
+
 ## 1.2.209
 
 - Improve admin acl privileges https://github.com/fastly/fastly-magento2/pull/673

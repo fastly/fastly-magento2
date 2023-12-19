@@ -5,7 +5,7 @@ on:
     branches: [master]
 
 env:
-  MAGENTO_CODING_STANDARD: "v25"
+  MAGENTO_CODING_STANDARD: "v30"
 
 jobs:
   static_code_check:
@@ -66,10 +66,13 @@ jobs:
       matrix:
         # https://experienceleague.adobe.com/docs/commerce-operations/installation-guide/system-requirements.html
         include:
-          - magento: "2.4.3"
-            php: "7.4"
-            composer: "v1"
-            elasticsearch: "7.10.2"
+          # Higher matching version 4.6.1 of magento/magento2-functional-testing-framework was found in public repository packagist.org
+          # than 4.4.2 in private https://mirror.mage-os.org. Public package might've been taken over by a malicious entity,
+          # please investigate and update package requirement to match the version from the private repository
+          #- magento: "2.4.3-p3"
+          #  php: "7.4"
+          #  composer: "v1"
+          #  elasticsearch: "7.10.2"
 
           - magento: "2.4.4"
             php: "8.1"
@@ -78,6 +81,11 @@ jobs:
 
           - magento: "2.4.5"
             php: "8.1"
+            composer: "v2"
+            elasticsearch: "7.17.5"
+
+          - magento: "2.4.6"
+            php: "8.2"
             composer: "v2"
             elasticsearch: "7.17.5"
 
@@ -144,4 +152,5 @@ jobs:
         run: echo "::add-matcher::${{ github.workspace }}/app/code/Fastly/Cdn/.github/tests/phpunit_matcher.json"
 
       - name: Run tests
-        run: vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist --teamcity app/code/Fastly/Cdn/
+        run: ../../../vendor/bin/phpunit -c ../unit/phpunit.xml.dist --teamcity ../../../app/code/Fastly/Cdn/
+        working-directory: dev/tests/integration

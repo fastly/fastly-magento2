@@ -47,16 +47,17 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
-      es:
-        image: docker.elastic.co/elasticsearch/elasticsearch:${{ matrix.elasticsearch }}
+      os:
+        image: opensearchproject/opensearch:${{ matrix.opensearch }}
         env:
-          ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+          OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
 
         ports:
           - 9200:9200
         options: >-
           -e "discovery.type=single-node"
-          -e "xpack.security.enabled=false"
+          -e "plugins.security.disabled=true"
+          --name "opensearch-node"
           --health-cmd="curl --silent --fail localhost:9200/_cluster/health || exit 1"
           --health-interval=30s
           --health-timeout=30s
@@ -77,17 +78,17 @@ jobs:
           - magento: "2.4.4"
             php: "8.1"
             composer: "v2"
-            elasticsearch: "7.16.3"
+            opensearch: "1.2.0"
 
           - magento: "2.4.5"
             php: "8.1"
             composer: "v2"
-            elasticsearch: "7.17.5"
+            opensearch: "1.2.0"
 
           - magento: "2.4.6"
             php: "8.2"
             composer: "v2"
-            elasticsearch: "7.17.5"
+            opensearch: "2.5.0"
 
     steps:
       - name: Setup PHP

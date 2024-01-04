@@ -156,8 +156,7 @@ class CreateEndpoint extends Action
      * @param $conditionName
      * @param $applyIf
      * @param $conditionPriority
-     * @param $selCondition
-     * @return mixed
+     * @return string|null
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     private function createCondition($clone, $conditionName, $applyIf, $conditionPriority)

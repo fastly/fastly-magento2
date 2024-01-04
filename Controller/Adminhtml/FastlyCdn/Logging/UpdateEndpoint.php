@@ -161,7 +161,7 @@ class UpdateEndpoint extends Action
      * @param $conditionName
      * @param $applyIf
      * @param $conditionPriority
-     * @return mixed
+     * @return string|null
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     private function createCondition($clone, $conditionName, $applyIf, $conditionPriority)

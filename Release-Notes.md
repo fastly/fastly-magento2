@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.211
+
+- Fix for not being able to add log shipping jobs due to bug in Fastly Magento UI https://github.com/fastly/fastly-magento2/pull/683
+
 ## 1.2.210
 
 - Update to Netacea module to 5.7.0 https://github.com/fastly/fastly-magento2/pull/675

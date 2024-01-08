@@ -111,8 +111,7 @@ class UpdateEndpoint extends Action
                 $clone,
                 $this->getRequest()->getParam('condition_name'),
                 $this->getRequest()->getParam('apply_if'),
-                $this->getRequest()->getParam('condition_priority'),
-                $this->getRequest()->getParam('response_condition')
+                $this->getRequest()->getParam('condition_priority')
             );
 
             $params = array_merge(
@@ -162,23 +161,21 @@ class UpdateEndpoint extends Action
      * @param $conditionName
      * @param $applyIf
      * @param $conditionPriority
-     * @param $selCondition
-     * @return mixed
+     * @return string|null
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function createCondition($clone, $conditionName, $applyIf, $conditionPriority, $selCondition)
+    private function createCondition($clone, $conditionName, $applyIf, $conditionPriority)
     {
-        if ($conditionName == $selCondition && !empty($selCondition) &&
-            !$this->api->getCondition($clone->number, $conditionName)) {
-            $condition = [
-                'name'      => $conditionName,
-                'statement' => $applyIf,
-                'type'      => 'RESPONSE',
-                'priority'  => $conditionPriority
-            ];
-            $createCondition = $this->api->createCondition($clone->number, $condition);
-            return $createCondition->name;
+        if (!$conditionName || !$applyIf || !$conditionPriority) {
+            return null;
         }
-        return $selCondition;
+        $condition = [
+            'name'      => $conditionName,
+            'statement' => $applyIf,
+            'type'      => 'RESPONSE',
+            'priority'  => $conditionPriority
+        ];
+        $createCondition = $this->api->createCondition($clone->number, $condition);
+        return $createCondition->name;
     }
 }

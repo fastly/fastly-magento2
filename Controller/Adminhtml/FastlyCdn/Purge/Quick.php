@@ -34,6 +34,8 @@ use Magento\Store\Model\StoreManagerInterface;
  */
 class Quick extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Backend::cache';
+
     /**
      * @var PurgeCache
      */

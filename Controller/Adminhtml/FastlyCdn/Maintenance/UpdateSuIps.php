@@ -37,6 +37,8 @@ use Magento\Framework\App\Filesystem\DirectoryList;
  */
 class UpdateSuIps extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */
@@ -140,7 +142,7 @@ class UpdateSuIps extends Action
 
                     if (!filter_var($ipParts[0], FILTER_VALIDATE_IP)) {
                         throw new LocalizedException(__(
-                            'IP validation failed, please make sure that the provided IP values are comma-separated 
+                            'IP validation failed, please make sure that the provided IP values are comma-separated
                             and valid'
                         ));
                     }

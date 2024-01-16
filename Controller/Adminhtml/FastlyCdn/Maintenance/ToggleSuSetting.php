@@ -34,6 +34,7 @@ use Fastly\Cdn\Helper\Vcl;
  */
 class ToggleSuSetting extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
     /**
      * @var Http
      */
@@ -117,7 +118,7 @@ class ToggleSuSetting extends Action
                 if (!$hasIps) {
                     return $result->setData([
                         'status'    => false,
-                        'msg'       => 'Please update Admin IPs list with at least one IP address before enabling 
+                        'msg'       => 'Please update Admin IPs list with at least one IP address before enabling
                         Maintenance Mode.'
                     ]);
                 }
@@ -189,7 +190,7 @@ class ToggleSuSetting extends Action
                 if (!$hasIps) {
                     return [
                         'status'    => false,
-                        'msg'       => 'Please update Admin IPs list with at least one IP address before enabling 
+                        'msg'       => 'Please update Admin IPs list with at least one IP address before enabling
                         Maintenance Mode.'
                     ];
                 }

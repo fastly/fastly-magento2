@@ -5,7 +5,7 @@ on:
     branches: [master]
 
 env:
-  MAGENTO_CODING_STANDARD: "v25"
+  MAGENTO_CODING_STANDARD: "v30"
 
 jobs:
   static_code_check:
@@ -47,16 +47,17 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
-      es:
-        image: docker.elastic.co/elasticsearch/elasticsearch:${{ matrix.elasticsearch }}
+      os:
+        image: opensearchproject/opensearch:${{ matrix.opensearch }}
         env:
-          ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+          OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
 
         ports:
           - 9200:9200
         options: >-
           -e "discovery.type=single-node"
-          -e "xpack.security.enabled=false"
+          -e "plugins.security.disabled=true"
+          --name "opensearch-node"
           --health-cmd="curl --silent --fail localhost:9200/_cluster/health || exit 1"
           --health-interval=30s
           --health-timeout=30s
@@ -66,20 +67,28 @@ jobs:
       matrix:
         # https://experienceleague.adobe.com/docs/commerce-operations/installation-guide/system-requirements.html
         include:
-          - magento: "2.4.3"
-            php: "7.4"
-            composer: "v1"
-            elasticsearch: "7.10.2"
+          # Higher matching version 4.6.1 of magento/magento2-functional-testing-framework was found in public repository packagist.org
+          # than 4.4.2 in private https://mirror.mage-os.org. Public package might've been taken over by a malicious entity,
+          # please investigate and update package requirement to match the version from the private repository
+          #- magento: "2.4.3-p3"
+          #  php: "7.4"
+          #  composer: "v1"
+          #  elasticsearch: "7.10.2"
 
           - magento: "2.4.4"
             php: "8.1"
             composer: "v2"
-            elasticsearch: "7.16.3"
+            opensearch: "1.2.0"
 
           - magento: "2.4.5"
             php: "8.1"
             composer: "v2"
-            elasticsearch: "7.17.5"
+            opensearch: "1.2.0"
+
+          - magento: "2.4.6"
+            php: "8.2"
+            composer: "v2"
+            opensearch: "2.5.0"
 
     steps:
       - name: Setup PHP
@@ -144,4 +153,5 @@ jobs:
         run: echo "::add-matcher::${{ github.workspace }}/app/code/Fastly/Cdn/.github/tests/phpunit_matcher.json"
 
       - name: Run tests
-        run: vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist --teamcity app/code/Fastly/Cdn/
+        run: ../../../vendor/bin/phpunit -c ../unit/phpunit.xml.dist --teamcity ../../../app/code/Fastly/Cdn/
+        working-directory: dev/tests/integration

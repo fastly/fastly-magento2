@@ -29,20 +29,6 @@
     "shield": "amsterdam-nl"
   },
   {
-    "code": "WDC",
-    "name": "Ashburn",
-    "group": "United States",
-    "region": "US-East",
-    "stats_region": "usa",
-    "billing_region": "North America",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 39.022,
-      "longitude": -77.451
-    }
-  },
-  {
     "code": "DCA",
     "name": "Ashburn (Metro)",
     "group": "United States",
@@ -72,38 +58,8 @@
     "shield": "iad-va-us"
   },
   {
-    "code": "ATL",
-    "name": "Atlanta",
-    "group": "United States",
-    "region": "US-East",
-    "stats_region": "usa",
-    "billing_region": "North America",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 33.636719,
-      "longitude": -84.428067
-    },
-    "shield": "atl-ga-us"
-  },
-  {
-    "code": "FTY",
-    "name": "Atlanta",
-    "group": "United States",
-    "region": "US-East",
-    "stats_region": "usa",
-    "billing_region": "North America",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 33.636719,
-      "longitude": -84.428067
-    },
-    "shield": "fty-ga-us"
-  },
-  {
     "code": "PDK",
-    "name": "Atlanta",
+    "name": "Atlanta (Metro)",
     "group": "United States",
     "region": "US-East",
     "stats_region": "usa",
@@ -761,7 +717,7 @@
     "shield": "bur-ca-us"
   },
   {
-    "code": "LGB",
+    "code": "LAX",
     "name": "Los Angeles (Metro)",
     "group": "United States",
     "region": "US-West",
@@ -1055,7 +1011,7 @@
   },
   {
     "code": "PAO",
-    "name": "Palo Alto",
+    "name": "Palo Alto (Metro)",
     "group": "United States",
     "region": "US-West",
     "stats_region": "usa",
@@ -1196,20 +1152,6 @@
       "y": 0,
       "latitude": -33.3936,
       "longitude": -70.7935
-    }
-  },
-  {
-    "code": "CGH",
-    "name": "Sao Paulo",
-    "group": "South America",
-    "region": "SA-East",
-    "stats_region": "southamerica_std",
-    "billing_region": "South America",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": -23.498,
-      "longitude": -46.815
     }
   },
   {

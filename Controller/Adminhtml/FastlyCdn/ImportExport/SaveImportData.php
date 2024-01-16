@@ -24,6 +24,8 @@ use Magento\Framework\Filesystem;
  */
 class SaveImportData extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */

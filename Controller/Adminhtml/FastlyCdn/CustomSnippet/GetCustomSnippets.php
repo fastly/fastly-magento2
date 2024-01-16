@@ -20,8 +20,8 @@
  */
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\CustomSnippet;
 
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\App\Response\Http\FileFactory;
 use Magento\Framework\App\Filesystem\DirectoryList;
@@ -36,6 +36,8 @@ use Magento\Framework\Filesystem;
  */
 class GetCustomSnippets extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var RawFactory
      */

@@ -33,6 +33,8 @@ use Magento\Config\App\Config\Type\System as SystemConfig;
 
 class UpdatePaths extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */

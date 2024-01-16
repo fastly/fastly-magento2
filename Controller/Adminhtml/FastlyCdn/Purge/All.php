@@ -31,6 +31,8 @@ use Magento\Framework\App\Cache\Manager;
  */
 class All extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Backend::cache';
+
     /**
      * @var Api
      */

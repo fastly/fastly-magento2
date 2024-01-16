@@ -34,6 +34,8 @@ use Magento\Framework\Controller\Result\JsonFactory;
  */
 class GetWafSettings extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Api
      */

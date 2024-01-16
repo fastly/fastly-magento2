@@ -46,6 +46,8 @@ use Magento\Framework\App\Cache\TypeListInterface;
  */
 class Upload extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */

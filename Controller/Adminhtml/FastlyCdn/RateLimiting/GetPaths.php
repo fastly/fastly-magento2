@@ -16,6 +16,8 @@ use Fastly\Cdn\Model\Config;
  */
 class GetPaths extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */

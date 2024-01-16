@@ -1,5 +1,22 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.211
+
+- Fix for not being able to add log shipping jobs due to bug in Fastly Magento UI https://github.com/fastly/fastly-magento2/pull/683
+
+## 1.2.210
+
+- Update to Netacea module to 5.7.0 https://github.com/fastly/fastly-magento2/pull/675
+
+## 1.2.209
+
+- Improve admin acl privileges https://github.com/fastly/fastly-magento2/pull/673
+
+## 1.2.208
+
+- Update Datadome module to 2.19.1 https://github.com/fastly/fastly-magento2/pull/669
+- Snippet path traversal fix https://github.com/fastly/fastly-magento2/pull/671
+
 ## 1.2.207
 
 - Update Netcea module to 5.6.1 https://github.com/fastly/fastly-magento2/pull/664

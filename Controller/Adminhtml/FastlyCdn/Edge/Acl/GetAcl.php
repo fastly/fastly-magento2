@@ -33,6 +33,8 @@ use Fastly\Cdn\Helper\Acl;
  */
 class GetAcl extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var JsonFactory
      */

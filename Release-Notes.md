@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.212
+
+- Additional fixes to log shipping menu https://github.com/fastly/fastly-magento2/pull/684
+- Updating to DataDome Fastly Module 2.19.4 https://github.com/fastly/fastly-magento2/pull/685
+
 ## 1.2.211
 
 - Fix for not being able to add log shipping jobs due to bug in Fastly Magento UI https://github.com/fastly/fastly-magento2/pull/683

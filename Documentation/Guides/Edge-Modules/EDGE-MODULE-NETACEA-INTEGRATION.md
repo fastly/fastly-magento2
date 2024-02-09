@@ -12,7 +12,7 @@ After you have enabled the module it's time to configure. You will be prompted w
 
 ## Configurable options
 
-In order to configure Netacea module properly please get acquainted with the content of following documenation. <br />
+In order to configure Netacea module please see the following documenation.<br />
 [Netacea - Fastly/Magento](https://docs.netacea.com/netacea-plugin-information/fastly-magento/installation-and-configuration)
 
 ## Enabling

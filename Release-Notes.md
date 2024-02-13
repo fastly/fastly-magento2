@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.213
+
+- Update Netacea Edge Module to 5.9.0 https://github.com/fastly/fastly-magento2/pull/687
+- Add support for Brotli static compression https://github.com/fastly/fastly-magento2/pull/688
+
 ## 1.2.212
 
 - Additional fixes to log shipping menu https://github.com/fastly/fastly-magento2/pull/684

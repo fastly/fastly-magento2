@@ -52,7 +52,9 @@
             if (!beresp.http.Vary ~ "Accept-Encoding") {
                 set beresp.http.Vary:Accept-Encoding = "";
             }
-            if (req.http.Accept-Encoding == "gzip") {
+            if (req.http.Accept-Encoding == "br") {
+                set beresp.brotli = true;
+            } else if (req.http.Accept-Encoding == "gzip") {
                 set beresp.gzip = true;
             }
         }

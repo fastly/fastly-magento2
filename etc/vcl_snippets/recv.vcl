@@ -106,6 +106,13 @@
         set req.http.Https = "on";
     }
 
+    # Add support for Brotli static compression
+    if (req.http.Fastly-Orig-Accept-Encoding) {
+        if (req.http.Fastly-Orig-Accept-Encoding ~ "\bbr\b") {
+            set req.http.Accept-Encoding = "br";
+        }
+    }
+
     if (fastly.ff.visits_this_service > 0) {
         # disable ESI processing on Origin Shield
         set req.esi = false;

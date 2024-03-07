@@ -135,7 +135,7 @@ class FrontControllerPlugin
             return $proceed(...$args);
         }
 
-        $path = strtolower($this->request->getPathInfo());
+        $path = strtolower($this->request->getRequestUri());
 
         if ($isRateLimitingEnabled && $this->sensitivePathProtection($path)) {
             return $this->response;
@@ -167,7 +167,8 @@ class FrontControllerPlugin
 
         $limit = false;
         foreach ($limitedPaths as $key => $value) {
-            if (preg_match('{' . $value->path . '}i', $path) == 1) {
+            $value->path = str_replace("#", "\#", $value->path);
+            if (preg_match('#' . $value->path . '#i', $path)) {
                 $limit = true;
                 break;
             }

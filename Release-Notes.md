@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.214
+
+- Rate limiting doesn't work correctly when store codes are involved https://github.com/fastly/fastly-magento2/pull/689
+
 ## 1.2.213
 
 - Update Netacea Edge Module to 5.9.0 https://github.com/fastly/fastly-magento2/pull/687

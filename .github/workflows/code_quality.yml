@@ -89,12 +89,6 @@ jobs:
             php: "8.2"
             composer: "v2"
             opensearch: "2.5.0"
-
-          - magento: "2.4.6"
-            php: "8.3"
-            composer: "v2"
-            opensearch: "2.5.0"
-
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2

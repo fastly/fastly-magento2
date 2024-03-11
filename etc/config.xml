@@ -34,9 +34,9 @@
                         <preserve_static>1</preserve_static>
                         <soft_purge>1</soft_purge>
                         <x_magento_tags_size>16383</x_magento_tags_size>
-                        <purge_catalog_category>0</purge_catalog_category>
+                        <purge_catalog_category>1</purge_catalog_category>
                         <purge_catalog_product>1</purge_catalog_product>
-                        <purge_cms_page>0</purge_cms_page>
+                        <purge_cms_page>1</purge_cms_page>
                         <enable_geoip>0</enable_geoip>
                         <enable_fastly_edge_modules>1</enable_fastly_edge_modules>
                     </fastly_advanced_configuration>

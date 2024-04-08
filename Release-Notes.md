@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.216
+
+- Fix for GEOIP redirection causes 404 in specific cases https://github.com/fastly/fastly-magento2/pull/694
+
 ## 1.2.215
 
 - Fix for checking if current IP is in maintenance IP list https://github.com/fastly/fastly-magento2/pull/692

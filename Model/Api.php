@@ -534,7 +534,7 @@ class Api
         if (isset($snippet['content'])) {
             $adminUrl = $this->vcl->getAdminFrontName();
             $adminPathTimeout = $this->config->getAdminPathTimeout();
-            $ignoredUrlParameters = $this->config->getIgnoredUrlParameters();
+            $ignoredUrlParameters = (string)$this->config->getIgnoredUrlParameters();
 
             if ($ignoredUrlParameters === "") {
                 $queryParameters = '&';

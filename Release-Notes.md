@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.217
+
+- Update to Netacea module https://github.com/fastly/fastly-magento2/pull/690
+
 ## 1.2.216
 
 - Fix for GEOIP redirection causes 404 in specific cases https://github.com/fastly/fastly-magento2/pull/694

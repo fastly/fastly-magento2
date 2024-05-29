@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.218
+
+- Update to Netacea module https://github.com/fastly/fastly-magento2/pull/696
+- Fixing deprecated usage https://github.com/fastly/fastly-magento2/pull/697
+
 ## 1.2.217
 
 - Update to Netacea module https://github.com/fastly/fastly-magento2/pull/690

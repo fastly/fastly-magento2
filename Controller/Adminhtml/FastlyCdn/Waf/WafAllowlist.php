@@ -78,7 +78,7 @@ class WafAllowlist extends AbstractWafUpdate
         $this->config = $config;
         $this->api = $api;
         $this->vcl = $vcl;
-        parent::__construct($context, );
+        parent::__construct($context);
     }
 
     /**

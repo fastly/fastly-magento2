@@ -341,10 +341,16 @@ define([
             }
 
             const formElements = document.forms['create-log-endpoint-form'].elements;
+            // Inputs which should be available only on endpoint creation and shouldn't be used on update, such as API keys
+            const createLogInputs = ['access_key', 'secret_key', 'token', 'sas_token'];
             for (const prop in endpoint) {
                 let element = formElements.namedItem(`log_endpoint[${prop}]`);
                 if (element) {
-                    $(element).val(endpoint[prop]);
+                    if (createLogInputs.includes(prop) && endpoint[prop]) {
+                        $(element).remove()
+                    } else {
+                        $(element).val(endpoint[prop]);
+                    }
                 }
             }
         }

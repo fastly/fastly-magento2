@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.220
+
+- Logging endpoints changes https://github.com/fastly/fastly-magento2/pull/701
+
 ## 1.2.219
 
 - Removing trailing comma in WAF constructor to be compatible with PHP 7.2 https://github.com/fastly/fastly-magento2/pull/698

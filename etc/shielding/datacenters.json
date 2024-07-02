@@ -1024,6 +1024,20 @@
     }
   },
   {
+    "code": "CDG",
+    "name": "Paris (Metro)",
+    "group": "Europe",
+    "region": "EU-West",
+    "stats_region": "europe",
+    "billing_region": "Europe",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 48.928,
+      "longitude": 2.352
+    }
+  },
+  {
     "code": "PAR",
     "name": "Paris (Metro)",
     "group": "Europe",

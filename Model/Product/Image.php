@@ -78,6 +78,10 @@ class Image extends ImageModel
             $this->isFastlyEnabled = false;
         }
 
+        if ($this->_scopeConfig->isSetFlag(Config::XML_FASTLY_IMAGE_OPTIMIZATIONS_FORCED)) {
+            $this->isFastlyEnabled = true;
+        }
+
         return $this->isFastlyEnabled;
     }
 
@@ -98,6 +102,10 @@ class Image extends ImageModel
 
         if ((int)$this->_scopeConfig->getValue(PageCacheConfig::XML_PAGECACHE_TYPE) !== Config::FASTLY) {
             $this->isForceLossyEnabled = false;
+        }
+
+        if ($this->_scopeConfig->isSetFlag(Config::XML_FASTLY_IMAGE_OPTIMIZATIONS_FORCED)) {
+            $this->isFastlyEnabled = true;
         }
 
         return $this->isForceLossyEnabled;

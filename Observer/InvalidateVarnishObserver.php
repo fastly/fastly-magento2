@@ -81,6 +81,11 @@ class InvalidateVarnishObserver implements ObserverInterface
                         continue;
                     }
                     $tag = $this->cacheTags->convertCacheTags($tag);
+
+                    if (!$this->isTagAllowed($tag)) {
+                        continue;
+                    }
+
                     if (!in_array($tag, $this->alreadyPurged)) {
                         $tags[] = $tag;
                         $this->alreadyPurged[] = $tag;
@@ -111,6 +116,26 @@ class InvalidateVarnishObserver implements ObserverInterface
         if ($object instanceof \Magento\Cms\Model\Page && !$this->config->canPurgeCmsPage()) {
             return false;
         }
+        return true;
+    }
+
+    /**
+     * Additional validation since IdentityInterface can pass canPurgeObject check (e.g. ProductRuleIndexer), but still
+     * hold tags of products or categories
+     *
+     * @param string $tag
+     * @return bool
+     */
+    private function isTagAllowed(string $tag)
+    {
+        if ($tag === \Magento\Catalog\Model\Category::CACHE_TAG && !$this->config->canPurgeCatalogCategory()) {
+            return false;
+        }
+
+        if ($tag === \Magento\Catalog\Model\Product::CACHE_TAG && !$this->config->canPurgeCatalogProduct()) {
+            return false;
+        }
+
         return true;
     }
 }

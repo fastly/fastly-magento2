@@ -39,6 +39,8 @@ use Magento\Framework\Controller\ResultInterface;
  */
 class CreateBackend extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     use ValidationTrait;
 
     /**

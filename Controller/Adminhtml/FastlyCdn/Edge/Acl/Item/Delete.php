@@ -35,6 +35,8 @@ use Fastly\Cdn\Helper\Vcl;
  */
 class Delete extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */

@@ -13,6 +13,8 @@ use Magento\Framework\Exception\LocalizedException;
 
 class GetResponseConditions extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */

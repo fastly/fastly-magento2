@@ -33,6 +33,8 @@ use Magento\Framework\Exception\LocalizedException;
  */
 class ContentType extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Backend::cache';
+
     /**
      * @var PurgeCache
      */

@@ -7,8 +7,8 @@ use Fastly\Cdn\Model\ResourceModel\Manifest as ManifestResource;
 use Fastly\Cdn\Model\Manifest;
 use Fastly\Cdn\Model\Modly\Manifest as Modly;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
 
 /**
  * Class Create
@@ -17,6 +17,8 @@ use Magento\Framework\App\Action\Context;
  */
 class Create extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var ManifestFactory
      */

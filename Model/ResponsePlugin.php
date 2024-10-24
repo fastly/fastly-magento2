@@ -79,7 +79,10 @@ class ResponsePlugin
         // Make the necessary adjustment
         $value = $this->cacheTags->convertCacheTags(str_replace(',', ' ', $value));
         $tagsSize = $this->config->getXMagentoTagsSize();
-        if (strlen($value) > $tagsSize) {
+
+        if ($tagsSize === 0) {
+            $value = "";
+        } else if (strlen($value) > $tagsSize) {
             $trimmedArgs = substr($value, 0, $tagsSize);
             $value = substr($trimmedArgs, 0, strrpos($trimmedArgs, ' ', -1));
         }

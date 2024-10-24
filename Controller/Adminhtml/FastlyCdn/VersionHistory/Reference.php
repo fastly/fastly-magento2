@@ -13,6 +13,8 @@ use Magento\Framework\Controller\Result\JsonFactory;
  */
 class Reference extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Api
      */

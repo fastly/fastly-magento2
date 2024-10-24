@@ -96,14 +96,20 @@ define([
             $('#condition_priority').val('');
             return getResponseConditions(active_version, loaderVisibility)
                 .done(function (response) {
-                    let html = '';
                     $('#attach_span').hide();
                     if (response !== false) {
+                        let conditionElement = document.getElementById('conditions');
                         conditions = response.conditions;
-                        html += '<option value="">no condition</option>';
+                        let option = document.createElement("option");
+                        option.text = 'no condition';
+                        option.value = '';
+                        conditionElement.add(option);
                         $.each(conditions, function (index, condition) {
-                            if (condition.type === "REQUEST") {
-                                html += '<option value="'+_.escape(condition.name)+'">'+_.escape(condition.name)+' ('+condition.type+') '+_.escape(condition.statement)+'</option>';
+                            if (condition.type === "RESPONSE") {
+                                let option = document.createElement("option");
+                                option.text = _.escape(condition.name) +' ('+condition.type+') ' + _.escape(condition.statement);
+                                option.value = _.escape(condition.name);
+                                conditionElement.add(option);
                             }
                         });
                     }
@@ -112,7 +118,6 @@ define([
                     $('#detach').show();
                     $('#create-response-condition').show();
                     $('#sep').show();
-                    $('#conditions').html(html);
                 })
         }
 
@@ -336,10 +341,16 @@ define([
             }
 
             const formElements = document.forms['create-log-endpoint-form'].elements;
+            // Inputs which should be available only on endpoint creation and shouldn't be used on update, such as API keys
+            const createLogInputs = ['access_key', 'secret_key', 'token', 'sas_token'];
             for (const prop in endpoint) {
                 let element = formElements.namedItem(`log_endpoint[${prop}]`);
                 if (element) {
-                    $(element).val(endpoint[prop]);
+                    if (createLogInputs.includes(prop) && endpoint[prop]) {
+                        $(element).remove()
+                    } else {
+                        $(element).val(endpoint[prop]);
+                    }
                 }
             }
         }

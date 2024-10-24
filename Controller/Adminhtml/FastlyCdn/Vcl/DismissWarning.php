@@ -13,6 +13,8 @@ use Magento\Framework\App\Cache\TypeListInterface as CacheTypeList;
 
 class DismissWarning extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var ScopeConfigInterface
      */

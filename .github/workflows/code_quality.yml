@@ -75,7 +75,7 @@ jobs:
           #  composer: "v1"
           #  elasticsearch: "7.10.2"
 
-          - magento: "2.4.4"
+          - magento: "2.4.4-p11"
             php: "8.1"
             composer: "v2"
             opensearch: "1.2.0"

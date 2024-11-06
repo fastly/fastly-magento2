@@ -35,6 +35,8 @@ class ListAll extends Action
 {
     const ADMIN_RESOURCE = 'Magento_Config::config';
 
+    const NGWAF_DICTIONARY_NAME = "Edge_Security";
+
     /**
      * @var Http
      */
@@ -94,6 +96,14 @@ class ListAll extends Action
                     'status'    => false,
                     'msg'       => 'Failed to fetch dictionaries.'
                 ]);
+            }
+
+            // This dictionary represents NGWAF, used while migrating customers from WAF. Adobe is requesting that
+            // their customers shouldn't be able to disable it, so we remove it from Admin listing.
+            foreach ($dictionaries as $key => $dictionary) {
+                if (isset($dictionary->name) && $dictionary->name === self::NGWAF_DICTIONARY_NAME) {
+                    array_splice($dictionaries, $key, 1);
+                }
             }
 
             return $result->setData([

@@ -1,5 +1,12 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.221
+
+- Catch Throwable instead of Exception in Blocking controller https://github.com/fastly/fastly-magento2/pull/704
+- Perform additional validation during tag purge https://github.com/fastly/fastly-magento2/pull/705
+- Trigger init of edge modules if tab is open by default https://github.com/fastly/fastly-magento2/pull/707 
+- Don't display NGWAF dictionary in admin screen https://github.com/fastly/fastly-magento2/pull/710
+
 ## 1.2.220
 
 - Logging endpoints changes https://github.com/fastly/fastly-magento2/pull/701

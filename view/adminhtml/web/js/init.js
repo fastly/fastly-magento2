@@ -11,6 +11,7 @@ define([
             let active_version = '';
             let next_version = '';
             let fastlyFieldset = $('#system_full_page_cache_fastly');
+            let fastlyEdgeModulesTab = $('#system_full_page_cache_fastly_edge_modules');
             let isAlreadyConfigured = true;
             let serviceStatus = false;
 
@@ -34,6 +35,10 @@ define([
                     allActive.find(".active").removeClass("active");
                 }
             });
+
+            if (fastlyEdgeModulesTab.is(':visible')) {
+                modlyInit();
+            }
 
             $('#system_full_page_cache_fastly_edge_modules-head').one('click', function () {
                 modlyInit();

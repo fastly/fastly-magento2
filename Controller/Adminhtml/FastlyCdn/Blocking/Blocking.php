@@ -174,7 +174,7 @@ class Blocking extends AbstractBlocking
             return $result->setData([
                 'status' => true
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $result->setData([
                 'status'    => false,
                 'msg'       => $e->getMessage()

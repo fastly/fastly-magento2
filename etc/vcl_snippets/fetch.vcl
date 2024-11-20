@@ -108,14 +108,14 @@
 
         # init surrogate keys
         if (beresp.http.X-Magento-Tags) {
-            set beresp.http.Surrogate-Key = beresp.http.X-Magento-Tags " text";
+            set beresp.http.Surrogate-Key = beresp.http.Surrogate-Key " " beresp.http.X-Magento-Tags " text";
         } else {
-            set beresp.http.Surrogate-Key = "text";
+            set beresp.http.Surrogate-Key = beresp.http.Surrogate-Key " text";
         }
 
         # set surrogate keys by content type if they are image/script or CSS
         if (beresp.http.Content-Type ~ "(image|script|css)") {
-            set beresp.http.Surrogate-Key = re.group.1;
+            set beresp.http.Surrogate-Key = beresp.http.Surrogate-Key " " re.group.1;
         }
     }
 

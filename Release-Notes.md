@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.222
+
+- Update to DataDome Fastly Module 2.23.0 https://github.com/fastly/fastly-magento2/pull/715
+
 ## 1.2.221
 
 - Catch Throwable instead of Exception in Blocking controller https://github.com/fastly/fastly-magento2/pull/704

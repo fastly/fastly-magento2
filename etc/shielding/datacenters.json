@@ -717,6 +717,20 @@
     "shield": "bur-ca-us"
   },
   {
+    "code": "HHR",
+    "name": "Los Angeles (Metro)",
+    "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 33.942536,
+      "longitude": -118.408075
+    }
+  },
+  {
     "code": "LAX",
     "name": "Los Angeles (Metro)",
     "group": "United States",
@@ -1229,6 +1243,20 @@
     "shield": "qpg-singapore-sg"
   },
   {
+    "code": "SIN",
+    "name": "Singapore",
+    "group": "Asia/Pacific",
+    "region": "Asia",
+    "stats_region": "asia",
+    "billing_region": "Asia",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 1.350189,
+      "longitude": 103.994433
+    }
+  },
+  {
     "code": "SOF",
     "name": "Sofia",
     "group": "Europe",
@@ -1299,8 +1327,7 @@
       "y": 0,
       "latitude": 35.622281,
       "longitude": 139.748426
-    },
-    "shield": "hnd-tokyo-jp"
+    }
   },
   {
     "code": "TYO",

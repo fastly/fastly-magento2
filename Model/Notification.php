@@ -98,8 +98,8 @@ class Notification extends AbstractModel
         ClientFactory        $clientFactory,
         RequestFactory       $requestFactory,
         InboxFactory         $inboxFactory,
-        AbstractResource     $resource = null,
-        AbstractDb           $resourceCollection = null,
+        ?AbstractResource    $resource = null,
+        ?AbstractDb          $resourceCollection = null,
         array                $data = []
     ) {
         $this->scopeConfig = $scopeConfig;

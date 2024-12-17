@@ -28,6 +28,7 @@ use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
 
 /**
+ * @deprecad
  * Class WafAllowlist
  *
  * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Waf

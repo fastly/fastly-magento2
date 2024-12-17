@@ -22,8 +22,6 @@ let config = {
             imageOptimization: 'Fastly_Cdn/js/image-optimization',
             basicAuthentication: 'Fastly_Cdn/js/basic-authentication',
             modly: 'Fastly_Cdn/js/modly',
-            waf: 'Fastly_Cdn/js/waf',
-            wafBypass: 'Fastly_Cdn/js/wafBypass',
             domains: 'Fastly_Cdn/js/domains',
             rateLimiting: 'Fastly_Cdn/js/rate-limiting',
             maintenance: 'Fastly_Cdn/js/maintenance',

@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.223
+
+- Update available Fastly Shielding POP list
+
 ## 1.2.222
 
 - Update to DataDome Fastly Module 2.23.0 https://github.com/fastly/fastly-magento2/pull/715

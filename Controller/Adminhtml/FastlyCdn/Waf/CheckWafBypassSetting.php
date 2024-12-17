@@ -78,6 +78,10 @@ class CheckWafBypassSetting extends Action
     public function execute()
     {
         $result = $this->resultJsonFactory->create();
+        return $result->setData([
+            'status'    => false,
+            'msg'       => 'Deprecated functionality',
+        ]);
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
             $req = $this->api->hasSnippet($activeVersion, Config::WAF_SETTING_NAME);

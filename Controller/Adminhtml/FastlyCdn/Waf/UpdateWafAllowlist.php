@@ -114,6 +114,10 @@ class UpdateWafAllowlist extends AbstractWafUpdate
     public function execute()
     {
         $result = $this->resultJson->create();
+        return $result->setData([
+            'status'    => false,
+            'msg'       => 'Deprecated functionality',
+        ]);
         try {
             $service = $this->api->checkServiceDetails();
             $currActiveVersion = $this->vcl->determineVersions($service->versions);

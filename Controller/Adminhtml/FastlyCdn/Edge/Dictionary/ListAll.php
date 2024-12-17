@@ -79,6 +79,10 @@ class ListAll extends Action
     public function execute()
     {
         $result = $this->resultJson->create();
+        return $result->setData([
+            'status'    => false,
+            'msg'       => 'Deprecated functionality',
+        ]);
 
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');

@@ -77,6 +77,10 @@ class GetWafPageRespObj extends Action
     public function execute()
     {
         $result = $this->resultJson->create();
+        return $result->setData([
+            'status'    => false,
+            'msg'       => 'Deprecated functionality',
+        ]);
         try {
             $activeVersion = $this->getRequest()->getParam('active_version');
             $response = $this->api->getResponse($activeVersion, Config::WAF_PAGE_RESPONSE_OBJECT);

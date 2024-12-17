@@ -76,6 +76,10 @@ class GetWafSettings extends Action
     public function execute()
     {
         $result = $this->resultJsonFactory->create();
+        return $result->setData([
+            'status'    => false,
+            'msg'       => 'Deprecated functionality',
+        ]);
         try {
             $id = (string)$this->getRequest()->getParam('id');
             $includeWafFirewallVersion = (bool)$this->getRequest()

@@ -107,7 +107,7 @@
         unset beresp.http.set-cookie;
 
         # init surrogate keys if on outermost node
-        if (fastly.ff.visits_this_service == 0) {
+        if (fastly.ff.visits_this_service == 0 && req.restarts == 0) {
             if (beresp.http.X-Magento-Tags) {
                 if (beresp.http.Surrogate-Key) {
                     set beresp.http.Surrogate-Key = beresp.http.Surrogate-Key " " beresp.http.X-Magento-Tags " text";

@@ -1316,6 +1316,21 @@
     "shield": "sydney-au"
   },
   {
+    "code": "WSI",
+    "name": "Sydney",
+    "group": "Asia/Pacific",
+    "region": "APAC",
+    "stats_region": "anzac",
+    "billing_region": "Australia",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": -33.919,
+      "longitude": 151.189
+    },
+    "shield": "sydney-au"
+  },
+  {
     "code": "TYO",
     "name": "Tokyo",
     "group": "Asia/Pacific",

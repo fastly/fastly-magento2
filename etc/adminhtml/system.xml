@@ -608,14 +608,6 @@
                         <comment>
                             <![CDATA[]]>
                         </comment>
-                        <!-- ====================
-                             WAF status field
-                        ===================== -->
-                        <field id="toggle_waf" translate="label comment" type="select" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
-                            <label>Web Application Firewall</label>
-                            <comment><![CDATA[]]></comment>
-                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\WafBtn</frontend_model>
-                        </field>
                         <!-- ===============================
                              OWASP Allowed Methods field
                         ================================ -->

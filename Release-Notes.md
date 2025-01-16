@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.224
+
+- Update available Fastly Shielding POP list
+- Update to DataDome Fastly Module 2.24.1 https://github.com/fastly/fastly-magento2/pull/728
+- Remove legacy WAF button https://github.com/fastly/fastly-magento2/pull/735
+
 ## 1.2.223
 
 - Update available Fastly Shielding POP list

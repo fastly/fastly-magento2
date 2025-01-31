@@ -41,7 +41,7 @@
     if (table.lookup(magentomodule_config, "allow_super_users_during_maint", "0") == "1" &&
         !req.http.Fastly-Client-Ip ~ maint_allowlist &&
         !req.url ~ "^/(index\.php/)?####ADMIN_PATH####/" &&
-        !req.url ~ "^/pub/(static|error)/") {
+        !req.url ~ "^/pub/(static|errors?)/") {
 
         # If we end up here after a restart and there is a ResponseObject it means we got here after error
         # page VCL restart. We shouldn't touch it. Otherwise return a plain 503 error page
@@ -104,6 +104,13 @@
     # set HTTPS header for offloaded TLS
     if (req.http.Fastly-SSL) {
         set req.http.Https = "on";
+    }
+
+    # Add support for Brotli static compression
+    if (req.http.Fastly-Orig-Accept-Encoding) {
+        if (req.http.Fastly-Orig-Accept-Encoding ~ "\bbr\b") {
+            set req.http.Accept-Encoding = "br";
+        }
     }
 
     if (fastly.ff.visits_this_service > 0) {

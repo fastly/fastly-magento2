@@ -29,12 +29,11 @@ use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
 
 /**
- * Class CreateEndpoint
- * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Logging
+ * Class CreateEndpoint for Logging
  */
 class CreateEndpoint extends Action
 {
-    const ADMIN_RESOURCE = 'Magento_Config::config';
+    public const ADMIN_RESOURCE = 'Magento_Config::config';
 
     /**
      * @var Http
@@ -113,6 +112,11 @@ class CreateEndpoint extends Action
                 $this->getRequest()->getParam('condition_priority')
             );
 
+            $selectedConditions = $this->getRequest()->getParam('conditions', '');
+            if (!$condition) {
+                $condition = $selectedConditions;
+            }
+
             $params = array_merge(
                 $this->getRequest()->getParam('log_endpoint'),
                 ['response_condition' => $condition]
@@ -152,17 +156,18 @@ class CreateEndpoint extends Action
     }
 
     /**
+     *
      * @param $clone
      * @param $conditionName
      * @param $applyIf
      * @param $conditionPriority
-     * @return string|null
+     * @return string
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     private function createCondition($clone, $conditionName, $applyIf, $conditionPriority)
     {
         if (!$conditionName || !$applyIf || !$conditionPriority) {
-            return null;
+            return '';
         }
         $condition = [
             'name'      => $conditionName,

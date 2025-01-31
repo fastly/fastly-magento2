@@ -20,10 +20,10 @@ jobs:
       run: |
         cat ./temp.json | jq . > etc/shielding/datacenters.json
         rm -f ./temp.json
-        echo "::set-output name=diff-count::$(git diff --name-only | wc -l)"
+        echo "diff-count=$(git diff --name-only | wc -l)" >> "$GITHUB_OUTPUT"
         SHA1=`sha1sum etc/shielding/datacenters.json | awk '{print $1}'`
-        echo "::set-output name=sha1::$SHA1"
-        echo "::set-output name=pr-count::$(gh pr list --search "${SHA1} in:title is:open" --json title -q '.[] | .title' | wc -l)"
+        echo "sha1=$SHA1" >> "$GITHUB_OUTPUT"
+        echo "pr-count=$(gh pr list --search "${SHA1} in:title is:open" --json title -q '.[] | .title' | wc -l)" >> "$GITHUB_OUTPUT"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Check diff and create PR

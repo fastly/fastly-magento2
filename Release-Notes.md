@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.225
+
+- PHP 8.4 suport https://github.com/fastly/fastly-magento2/pull/724
+- Update Netacea integration to 5.10.6 https://github.com/fastly/fastly-magento2/pull/736
+
 ## 1.2.224
 
 - Update available Fastly Shielding POP list

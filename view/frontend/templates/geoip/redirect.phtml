@@ -27,5 +27,6 @@
  */
 ?>
 <script type="text/javascript">
+    document.cookie = "fastly_geo_store=<?= /* @noEscape */ $block->getRedirectedToStore() ?>";
     document.location.href = "<?= /* @noEscape */ $block->getRedirectUrl() ?>";
 </script>

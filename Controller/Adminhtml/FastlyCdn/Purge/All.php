@@ -18,6 +18,7 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
+
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Purge;
 
 use Fastly\Cdn\Model\Api;
@@ -26,12 +27,12 @@ use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Cache\Manager;
 
 /**
- * Class All
- *
- * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Purge
+ * Class Purge All objects
  */
 class All extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Backend::cache';
+
     /**
      * @var Api
      */
@@ -50,7 +51,7 @@ class All extends Action
      */
     public function __construct(
         Context $context,
-        Api $api,
+        Api     $api,
         Manager $cacheManager
     ) {
         $this->api = $api;
@@ -61,10 +62,10 @@ class All extends Action
 
     /**
      * Performs cache cleanup and purge all on Fastly service.
+     *
      * Should be used when "Preserve static assets on purge" is enabled.
      *
      * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
-     * @throws \Zend_Uri_Exception
      */
     public function execute()
     {

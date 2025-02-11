@@ -4,9 +4,10 @@ declare(strict_types=1);
 namespace Fastly\Cdn\Plugin\GraphQl;
 
 use Fastly\Cdn\Model\Config;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
-use Magento\GraphQlCache\Model\CacheableQuery;
+use Magento\Framework\Module\Manager;
 
 class AfterRenderResult
 {
@@ -16,22 +17,22 @@ class AfterRenderResult
     private $config;
 
     /**
-     * @var CacheableQuery
+     * @var Manager
      */
-    private $cacheableQuery;
+    private $moduleManager;
 
     /**
      * AfterRenderResult constructor.
      *
      * @param Config $config
-     * @param CacheableQuery $cacheableQuery
+     * @param Manager $moduleManager
      */
     public function __construct(
         Config $config,
-        CacheableQuery $cacheableQuery
+        Manager $moduleManager
     ) {
         $this->config = $config;
-        $this->cacheableQuery = $cacheableQuery;
+        $this->moduleManager = $moduleManager;
     }
 
     /**
@@ -47,21 +48,29 @@ class AfterRenderResult
         ResultInterface $result,
         ResponseInterface $response
     ): ResultInterface {
-        if ($this->config->isEnabled()
-            && $this->config->getType() === Config::FASTLY
-            && $this->cacheableQuery->isCacheable()) {
-            $header = $response->getHeader('cache-control');
 
-            if ($header) {
-                if ($ttl = $this->config->getStaleTtl()) {
-                    $header->addDirective('stale-while-revalidate', $ttl);
-                }
+        if (!$this->config->isEnabled() || !($this->config->getType() === Config::FASTLY)) {
+            return $result;
+        }
 
-                if ($ttl = $this->config->getStaleErrorTtl()) {
-                    $header->addDirective('stale-if-error', $ttl);
-                }
+        if (!$this->moduleManager->isEnabled('Magento_GraphQlCache') ||
+            !ObjectManager::getInstance()->get(\Magento\GraphQlCache\Model\CacheableQuery::class)->isCacheable()
+        ) {
+            return $result;
+        }
+
+        $header = $response->getHeader('cache-control');
+
+        if ($header) {
+            if ($ttl = $this->config->getStaleTtl()) {
+                $header->addDirective('stale-while-revalidate', $ttl);
+            }
+
+            if ($ttl = $this->config->getStaleErrorTtl()) {
+                $header->addDirective('stale-if-error', $ttl);
             }
         }
+
         return $result;
     }
 }

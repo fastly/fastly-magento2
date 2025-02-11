@@ -16,6 +16,8 @@ use Magento\Config\Model\ResourceModel\Config as CoreConfig;
  */
 class ChangeUpdateFlag extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var JsonFactory
      */

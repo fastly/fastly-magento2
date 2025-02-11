@@ -18,6 +18,7 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
+
 namespace Fastly\Cdn\Block\GeoIp;
 
 use Fastly\Cdn\Model\Config;
@@ -60,13 +61,14 @@ class GetAction extends AbstractBlock
      * @param EncoderInterface $urlEncoder
      */
     public function __construct(
-        Config $config,
-        Context $context,
-        Response $response,
-        Url $url,
+        Config           $config,
+        Context          $context,
+        Response         $response,
+        Url              $url,
         EncoderInterface $urlEncoder,
-        array $data = []
-    ) {
+        array            $data = []
+    )
+    {
         $this->config = $config;
         $this->response = $response;
         $this->url = $url;
@@ -92,8 +94,8 @@ class GetAction extends AbstractBlock
         $currentUrl = $this->url->getCurrentUrl();
         $baseUrl = $this->url->getBaseUrl();
         $webTypeUrl = $this->url->getBaseUrl(['_type' => Url::URL_TYPE_WEB]);
-        
-        if (strpos($currentUrl, $baseUrl) !== false) {
+
+        if (strpos($currentUrl, rtrim($baseUrl, "/")) !== false) {
             $targetUrl = $currentUrl;
         } else {
             $targetUrl = str_replace($webTypeUrl, $baseUrl, $currentUrl);
@@ -108,7 +110,9 @@ class GetAction extends AbstractBlock
         if (empty($header)) {
             $this->response->setHeader("x-esi", "1");
         }
-        // HTTPS ESIs are not supported so we need to turn them into HTTP
+        // Due to Varnish parser limitations HTTPS ESIs are not supported so we need to turn them into HTTP URLs
+        // This does not mean that request will go over HTTP. ESI subrequest will go out to the backend that is
+        // currently specified so if it's HTTPS it will go over HTTPS
         return sprintf(
             '<esi:include src=\'%s\' />',
             preg_replace(

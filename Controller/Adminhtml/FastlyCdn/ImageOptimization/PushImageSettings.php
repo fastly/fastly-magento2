@@ -37,6 +37,8 @@ use Magento\Framework\Exception\LocalizedException;
  */
 class PushImageSettings extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */

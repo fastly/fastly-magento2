@@ -20,64 +20,58 @@
  */
 namespace Fastly\Cdn\Test\Unit\Model\PageCache;
 
-use \Fastly\Cdn\Model\Config;
+use Fastly\Cdn\Model\Config;
+use Fastly\Cdn\Model\Layout\LayoutPlugin;
+use Fastly\Cdn\Model\PageCache\ConfigPlugin;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class ConfigPluginTest
  *
  * @package Fastly\Cdn\Test\Unit\Model\PageCache
  */
-class ConfigPluginTest extends \PHPUnit_Framework_TestCase
+class ConfigPluginTest extends TestCase
 {
-    /**
-     * @var \Fastly\Cdn\Model\Layout\LayoutPlugin
-     */
-    protected $model;
+     /**
+      * @var LayoutPlugin
+      */
+     protected $model;
+
+    public function setUp(): void
+     {
+         $scopeConfigMock = $this->getMockBuilder('\Magento\Framework\App\Config\ScopeConfigInterface')->getMock();
+         $this->model = new ConfigPlugin(
+             $scopeConfigMock
+         );
+     }
 
     /**
-     * @var \Magento\Framework\App\ResponseInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $responseMock;
-
-    /**
-     * @var \Magento\Framework\View\Layout|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $layoutMock;
-
-    /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $configMock;
-
-    public function setUp()
-    {
-        $this->model = new \Fastly\Cdn\Model\PageCache\ConfigPlugin;
-    }
-
-    /**
-     * @param object $config
-     * @param string $result
-     * @param string $expectedOuput
+     * @param \Magento\PageCache\Model\Config $config
+     * @param $result
+     * @param $expectedOutput
      * @dataProvider afterGetTypeDataProvider
      */
-    public function testAfterGetType($config, $result, $expectedOutput)
-    {
-        $output = $this->model->afterGetType($config, $result);
-        $this->assertSame($expectedOutput, $output);
-    }
+     public function testAfterGetType(\Magento\PageCache\Model\Config $config, $result, $expectedOutput)
+     {
+         $output = $this->model->afterGetType($config, $result);
+         $this->assertSame($expectedOutput, $output);
+     }
 
-    public function afterGetTypeDataProvider()
-    {
-        $pageCacheConfigMock = $this->getMock('Magento\PageCache\Model\Config', [], [], '', false);
-        $fastlyConfigMock = $this->getMock('Fastly\Cdn\Model\Config', [], [], '', false);
+    /**
+     * @return array[]
+     */
+     public function afterGetTypeDataProvider(): array
+     {
+         $pageCacheConfigMock = $this->getMockBuilder('Magento\PageCache\Model\Config')->disableOriginalConstructor()->getMock();
+         $fastlyConfigMock = $this->getMockBuilder('Fastly\Cdn\Model\Config')->disableOriginalConstructor()->getMock();
 
-        return [
-            'Config: Fastly, Cache Type: Fastly, Expected: Fastly' => [$fastlyConfigMock, Config::FASTLY, Config::FASTLY],
-            'Config: Fastly, Cache Type: Varnish, Expected: Varnish' => [$fastlyConfigMock, Config::VARNISH, Config::VARNISH],
-            'Config: Fastly, Cache Type: Builtin, Expected: Builtin' => [$fastlyConfigMock, Config::BUILT_IN, Config::BUILT_IN],
-            'Config: PageCache, Cache Type: Fastly, Expected: Varnish' => [$pageCacheConfigMock, Config::FASTLY, Config::VARNISH],
-            'Config: PageCache, Cache Type: Varnish, Expected: Varnish' => [$pageCacheConfigMock, Config::VARNISH, Config::VARNISH],
-            'Config: PageCache, Cache Type: Builtin, Expected: Builtin' => [$pageCacheConfigMock, Config::BUILT_IN, Config::BUILT_IN],
-        ];
-    }
+         return [
+             'Config: Fastly, Cache Type: Fastly, Expected: Fastly' => [$fastlyConfigMock, Config::FASTLY, Config::FASTLY],
+             'Config: Fastly, Cache Type: Varnish, Expected: Varnish' => [$fastlyConfigMock, Config::VARNISH, Config::VARNISH],
+             'Config: Fastly, Cache Type: Builtin, Expected: Builtin' => [$fastlyConfigMock, Config::BUILT_IN, Config::BUILT_IN],
+             'Config: PageCache, Cache Type: Fastly, Expected: Varnish' => [$pageCacheConfigMock, Config::FASTLY, Config::VARNISH],
+             'Config: PageCache, Cache Type: Varnish, Expected: Varnish' => [$pageCacheConfigMock, Config::VARNISH, Config::VARNISH],
+             'Config: PageCache, Cache Type: Builtin, Expected: Builtin' => [$pageCacheConfigMock, Config::BUILT_IN, Config::BUILT_IN],
+         ];
+     }
 }

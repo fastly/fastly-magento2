@@ -24,6 +24,7 @@ use Magento\Framework\App\Cache\Manager;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\ProductMetadataInterface;
+use Magento\Framework\Console\Cli;
 use Magento\Framework\Serialize\SerializerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -98,7 +99,7 @@ class JsonToSerialize extends Command
      *
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|null|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output) // @codingStandardsIgnoreLine - required by parent class
     {
@@ -120,20 +121,22 @@ class JsonToSerialize extends Command
 
             if ($oldData === false || $oldData === null) {
                 $output->writeln('Invalid JSON format, unable to decode config data : ' . $path);
-                return;
+                return Cli::RETURN_FAILURE;
             }
 
             $oldData = (is_array($oldData)) ? $oldData : [];
             $newData = $this->serializer->serialize($oldData);
 
             if (false === $newData) {
-                throw new \InvalidArgumentException('Unable to serialize data.');
+                $output->writeln('Unable to serialize data.');
+                return Cli::RETURN_FAILURE;
             }
 
             $this->configWriter->save($path, $newData); // @codingStandardsIgnoreLine - currently best way to resolve this
             $this->cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
 
             $output->writeln('Config Cache Flushed');
+            return Cli::RETURN_SUCCESS;
         }
     }
 }

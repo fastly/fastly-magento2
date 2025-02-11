@@ -14,6 +14,7 @@ use Magento\Framework\Exception\LocalizedException;
  */
 class ListVersions extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
 
     /**
      * @var JsonFactory

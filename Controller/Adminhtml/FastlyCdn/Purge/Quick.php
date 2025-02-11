@@ -22,6 +22,7 @@ namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Purge;
 
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\PurgeCache;
+use Laminas\Uri\UriFactory;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Exception\LocalizedException;
@@ -29,12 +30,12 @@ use Magento\Framework\UrlInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
- * Class Quick
- *
- * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Purge
+ * Class Quick purge
  */
 class Quick extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Backend::cache';
+
     /**
      * @var PurgeCache
      */
@@ -82,10 +83,10 @@ class Quick extends Action
                 // check if url is given
                 $url = $this->getRequest()->getParam('quick_purge_url', false);
 
-                $zendUri = \Zend_Uri::factory($url);
-                $host = $zendUri->getHost();
-                $scheme = $zendUri->getScheme();
-                $path = $zendUri->getPath();
+                $laminasUri = UriFactory::factory($url);
+                $host = $laminasUri->getHost();
+                $scheme = $laminasUri->getScheme();
+                $path = $laminasUri->getPath();
 
                 // check if host is one of magento's
                 if (!$this->isHostInDomainList($host)) {
@@ -120,11 +121,10 @@ class Quick extends Action
     /**
      * Checks if host is one of Magento's configured domains.
      *
-     * @param $host
+     * @param string $host
      * @return bool
-     * @throws \Zend_Uri_Exception
      */
-    private function isHostInDomainList($host)
+    private function isHostInDomainList($host): bool
     {
         $urlTypes = [
             UrlInterface::URL_TYPE_LINK,
@@ -139,7 +139,7 @@ class Quick extends Action
             /** @var \Magento\Store\Model\Store $store */
             foreach ($urlTypes as $urlType) {
                 foreach ($secureScheme as $scheme) {
-                    $shopHost = \Zend_Uri::factory($store->getBaseUrl($urlType, $scheme))->getHost();
+                    $shopHost = UriFactory::factory($store->getBaseUrl($urlType, $scheme))->getHost();
                     if ($host === $shopHost) {
                         return true;
                     }

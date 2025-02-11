@@ -20,6 +20,8 @@ use Magento\Framework\Filesystem;
  */
 class GetImportData extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */
@@ -88,17 +90,17 @@ class GetImportData extends Action
         $result = $this->resultJson->create();
         try {
             $file = $this->getRequest()->getFiles()->get('file');
-            $data = \json_decode((string)file_get_contents($file['tmp_name']));
+            $data = \json_decode((string)file_get_contents($file['tmp_name']), true);
             if (!$data) {
                 throw new LocalizedException(__('Invalid file structure'));
             }
 
             return $result->setData([
                 'status'            => true,
-                'custom_snippets'   => $data->custom_snippets,
-                'dictionaries'      => $data->edge_dictionaries,
-                'acls'              => $data->edge_acls,
-                'active_modules'    => $data->active_modules,
+                'custom_snippets'   => $data['custom_snippets'] ?? [],
+                'dictionaries'      => $data['edge_dictionaries'] ?? [],
+                'acls'              => $data['edge_acls'] ?? [],
+                'active_modules'    => $data['active_modules'] ?? [],
             ]);
         } catch (\Exception $e) {
             return $result->setData([

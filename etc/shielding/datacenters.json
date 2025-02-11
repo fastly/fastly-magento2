@@ -3,6 +3,9 @@
     "code": "ADL",
     "name": "Adelaide",
     "group": "Asia/Pacific",
+    "region": "APAC",
+    "stats_region": "anzac",
+    "billing_region": "Australia",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -14,6 +17,9 @@
     "code": "AMS",
     "name": "Amsterdam",
     "group": "Europe",
+    "region": "EU-Central",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -23,20 +29,40 @@
     "shield": "amsterdam-nl"
   },
   {
-    "code": "WDC",
-    "name": "Ashburn",
-    "group": "United States",
+    "code": "RTM",
+    "name": "Amsterdam",
+    "group": "Europe",
+    "region": "EU-Central",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
-      "latitude": 39.022,
-      "longitude": -77.451
+      "latitude": 52.357,
+      "longitude": 4.951
+    }
+  },
+  {
+    "code": "DCA",
+    "name": "Ashburn (Metro)",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 38.944533,
+      "longitude": -77.455811
     }
   },
   {
     "code": "IAD",
     "name": "Ashburn (Metro)",
     "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -46,44 +72,27 @@
     "shield": "iad-va-us"
   },
   {
-    "code": "ATL",
-    "name": "Atlanta",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 33.636719,
-      "longitude": -84.428067
-    },
-    "shield": "atl-ga-us"
-  },
-  {
-    "code": "FTY",
-    "name": "Atlanta",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 33.636719,
-      "longitude": -84.428067
-    },
-    "shield": "fty-ga-us"
-  },
-  {
     "code": "PDK",
-    "name": "Atlanta",
+    "name": "Atlanta (Metro)",
     "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
       "latitude": 33.876819,
       "longitude": -84.302921
-    }
+    },
+    "shield": "atlanta-ga-us"
   },
   {
     "code": "AKL",
     "name": "Auckland",
     "group": "Asia/Pacific",
+    "region": "APAC",
+    "stats_region": "anzac",
+    "billing_region": "Australia",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -96,6 +105,9 @@
     "code": "BKK",
     "name": "Bangkok",
     "group": "Asia/Pacific",
+    "region": "Asia",
+    "stats_region": "asia",
+    "billing_region": "Asia",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -107,6 +119,9 @@
     "code": "BOG",
     "name": "Bogota",
     "group": "South America",
+    "region": "SA-North",
+    "stats_region": "southamerica_std",
+    "billing_region": "South America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -119,6 +134,9 @@
     "code": "BOS",
     "name": "Boston",
     "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -131,6 +149,9 @@
     "code": "BNE",
     "name": "Brisbane",
     "group": "Asia/Pacific",
+    "region": "APAC",
+    "stats_region": "anzac",
+    "billing_region": "Australia",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -143,6 +164,9 @@
     "code": "BRU",
     "name": "Brussels",
     "group": "Europe",
+    "region": "EU-Central",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -155,6 +179,9 @@
     "code": "EZE",
     "name": "Buenos Aires",
     "group": "South America",
+    "region": "SA-South",
+    "stats_region": "southamerica_std",
+    "billing_region": "South America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -166,6 +193,9 @@
     "code": "YYC",
     "name": "Calgary",
     "group": "United States",
+    "region": "North-America",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -177,6 +207,9 @@
     "code": "CPT",
     "name": "Cape Town",
     "group": "Africa",
+    "region": "South-Africa",
+    "stats_region": "africa_std",
+    "billing_region": "Africa",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -189,6 +222,9 @@
     "code": "MAA",
     "name": "Chennai",
     "group": "Asia/Pacific",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -201,6 +237,9 @@
     "code": "CHI",
     "name": "Chicago (Metro)",
     "group": "United States",
+    "region": "US-Central",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -213,6 +252,9 @@
     "code": "CHC",
     "name": "Christchurch",
     "group": "Asia/Pacific",
+    "region": "APAC",
+    "stats_region": "anzac",
+    "billing_region": "Australia",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -225,6 +267,9 @@
     "code": "CMH",
     "name": "Columbus",
     "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -236,6 +281,9 @@
     "code": "LCK",
     "name": "Columbus",
     "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -247,6 +295,9 @@
     "code": "CPH",
     "name": "Copenhagen",
     "group": "Europe",
+    "region": "EU-East",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -259,6 +310,9 @@
     "code": "CWB",
     "name": "Curitiba",
     "group": "South America",
+    "region": "SA-East",
+    "stats_region": "southamerica_std",
+    "billing_region": "South America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -267,21 +321,26 @@
     }
   },
   {
-    "code": "DAL",
-    "name": "Dallas",
+    "code": "ADS",
+    "name": "Dallas (Metro)",
     "group": "United States",
+    "region": "US-Central",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
-      "latitude": 32.787,
-      "longitude": -96.794
-    },
-    "shield": "dal-tx-us"
+      "latitude": 32.896828,
+      "longitude": -97.037997
+    }
   },
   {
     "code": "DFW",
-    "name": "Dallas",
+    "name": "Dallas (Metro)",
     "group": "United States",
+    "region": "US-Central",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -294,6 +353,9 @@
     "code": "DEL",
     "name": "Delhi",
     "group": "Asia/Pacific",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -306,6 +368,9 @@
     "code": "DEN",
     "name": "Denver",
     "group": "United States",
+    "region": "US-Central",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -318,6 +383,9 @@
     "code": "DTW",
     "name": "Detroit",
     "group": "United States",
+    "region": "US-Central",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -329,6 +397,9 @@
     "code": "DXB",
     "name": "Dubai",
     "group": "Asia/Pacific",
+    "region": "Asia",
+    "stats_region": "asia",
+    "billing_region": "Asia",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -340,6 +411,9 @@
     "code": "DUB",
     "name": "Dublin",
     "group": "Europe",
+    "region": "EU-West",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -352,6 +426,9 @@
     "code": "FOR",
     "name": "Fortaleza",
     "group": "South America",
+    "region": "SA-East",
+    "stats_region": "southamerica_std",
+    "billing_region": "South America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -363,6 +440,9 @@
     "code": "FRA",
     "name": "Frankfurt (Metro)",
     "group": "Europe",
+    "region": "EU-East",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -372,9 +452,12 @@
     "shield": "frankfurt-de"
   },
   {
-    "code": "HHN",
+    "code": "WIE",
     "name": "Frankfurt - Interxion",
     "group": "Europe",
+    "region": "EU-East",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -386,6 +469,9 @@
     "code": "FJR",
     "name": "Fujairah Al Mahta",
     "group": "Asia/Pacific",
+    "region": "Asia",
+    "stats_region": "asia",
+    "billing_region": "Asia",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -398,6 +484,9 @@
     "code": "GNV",
     "name": "Gainesville",
     "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -410,6 +499,9 @@
     "code": "ACC",
     "name": "Ghana",
     "group": "Africa",
+    "region": "AF-West",
+    "stats_region": "africa_std",
+    "billing_region": "Africa",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -421,6 +513,9 @@
     "code": "HEL",
     "name": "Helsinki",
     "group": "Europe",
+    "region": "EU-East",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -433,6 +528,9 @@
     "code": "HKG",
     "name": "Hong Kong",
     "group": "Asia/Pacific",
+    "region": "Asia",
+    "stats_region": "asia",
+    "billing_region": "Asia",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -445,6 +543,9 @@
     "code": "HNL",
     "name": "Honolulu",
     "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -456,6 +557,9 @@
     "code": "IAH",
     "name": "Houston",
     "group": "United States",
+    "region": "US-Central",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -468,6 +572,9 @@
     "code": "HYD",
     "name": "Hyderabad",
     "group": "Asia/Pacific",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -480,6 +587,9 @@
     "code": "JNB",
     "name": "Johannesburg",
     "group": "Africa",
+    "region": "South-Africa",
+    "stats_region": "africa_std",
+    "billing_region": "Africa",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -492,6 +602,9 @@
     "code": "MCI",
     "name": "Kansas City",
     "group": "United States",
+    "region": "US-Central",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -503,6 +616,9 @@
     "code": "CCU",
     "name": "Kolkata",
     "group": "Asia/Pacific",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -515,6 +631,9 @@
     "code": "KUL",
     "name": "Kuala Lumpur",
     "group": "Asia/Pacific",
+    "region": "Asia",
+    "stats_region": "asia",
+    "billing_region": "Asia",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -526,6 +645,9 @@
     "code": "LIM",
     "name": "Lima",
     "group": "South America",
+    "region": "SA-West",
+    "stats_region": "southamerica_std",
+    "billing_region": "South America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -537,6 +659,9 @@
     "code": "LIS",
     "name": "Lisbon",
     "group": "Europe",
+    "region": "EU-West",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -549,6 +674,9 @@
     "code": "LCY",
     "name": "London",
     "group": "Europe",
+    "region": "EU-West",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -561,6 +689,9 @@
     "code": "LHR",
     "name": "London",
     "group": "Europe",
+    "region": "EU-West",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -573,6 +704,9 @@
     "code": "LON",
     "name": "London",
     "group": "Europe",
+    "region": "EU-West",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -585,6 +719,9 @@
     "code": "BUR",
     "name": "Los Angeles (Metro)",
     "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -594,21 +731,40 @@
     "shield": "bur-ca-us"
   },
   {
-    "code": "LGB",
+    "code": "HHR",
     "name": "Los Angeles (Metro)",
     "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
       "latitude": 33.942536,
       "longitude": -118.408075
-    },
-    "shield": "lgb-ca-us"
+    }
+  },
+  {
+    "code": "LAX",
+    "name": "Los Angeles (Metro)",
+    "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 33.942536,
+      "longitude": -118.408075
+    }
   },
   {
     "code": "MAD",
     "name": "Madrid",
     "group": "Europe",
+    "region": "EU-West",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -621,6 +777,9 @@
     "code": "MAN",
     "name": "Manchester",
     "group": "Europe",
+    "region": "EU-West",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -633,6 +792,9 @@
     "code": "MNL",
     "name": "Manila",
     "group": "Asia/Pacific",
+    "region": "Asia",
+    "stats_region": "asia",
+    "billing_region": "Asia",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -644,6 +806,9 @@
     "code": "MRS",
     "name": "Marseille",
     "group": "Europe",
+    "region": "EU-West",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -656,6 +821,9 @@
     "code": "MEL",
     "name": "Melbourne",
     "group": "Asia/Pacific",
+    "region": "APAC",
+    "stats_region": "anzac",
+    "billing_region": "Australia",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -668,6 +836,9 @@
     "code": "MIA",
     "name": "Miami",
     "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -680,6 +851,9 @@
     "code": "LIN",
     "name": "Milan",
     "group": "Europe",
+    "region": "EU-East",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -691,6 +865,9 @@
     "code": "MXP",
     "name": "Milan",
     "group": "Europe",
+    "region": "EU-East",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -703,6 +880,9 @@
     "code": "MSP",
     "name": "Minneapolis",
     "group": "United States",
+    "region": "US-Central",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -715,6 +895,9 @@
     "code": "STP",
     "name": "Minneapolis",
     "group": "United States",
+    "region": "US-Central",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -726,6 +909,9 @@
     "code": "YUL",
     "name": "Montreal",
     "group": "United States",
+    "region": "North-America",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -738,6 +924,9 @@
     "code": "BOM",
     "name": "Mumbai",
     "group": "Asia/Pacific",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -750,6 +939,9 @@
     "code": "MUC",
     "name": "Munich",
     "group": "Europe",
+    "region": "EU-East",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -761,6 +953,9 @@
     "code": "LGA",
     "name": "New York City",
     "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -770,9 +965,26 @@
     "shield": "lga-ny-us"
   },
   {
+    "code": "NYC",
+    "name": "New York City (Metro)",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 40.778,
+      "longitude": -74.073
+    }
+  },
+  {
     "code": "EWR",
     "name": "Newark",
     "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -785,6 +997,9 @@
     "code": "ITM",
     "name": "Osaka",
     "group": "Asia/Pacific",
+    "region": "Asia",
+    "stats_region": "asia",
+    "billing_region": "Asia",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -797,6 +1012,9 @@
     "code": "OSL",
     "name": "Oslo",
     "group": "Europe",
+    "region": "EU-East",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -806,44 +1024,55 @@
     "shield": "osl-oslo-no"
   },
   {
-    "code": "PMO",
-    "name": "Palermo",
-    "group": "Europe",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 38.1607109,
-      "longitude": 13.3157489
-    }
-  },
-  {
     "code": "PAO",
-    "name": "Palo Alto",
+    "name": "Palo Alto (Metro)",
     "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
       "latitude": 37.454965,
       "longitude": -122.110783
-    },
-    "shield": "pao-ca-us"
+    }
   },
   {
     "code": "CDG",
-    "name": "Paris",
+    "name": "Paris (Metro)",
     "group": "Europe",
+    "region": "EU-West",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
-      "latitude": 48.928051,
-      "longitude": 2.35189
+      "latitude": 48.928,
+      "longitude": 2.352
+    }
+  },
+  {
+    "code": "PAR",
+    "name": "Paris (Metro)",
+    "group": "Europe",
+    "region": "EU-West",
+    "stats_region": "europe",
+    "billing_region": "Europe",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 48.856654,
+      "longitude": 2.38532
     },
-    "shield": "cdg-par-fr"
+    "shield": "paris-fr"
   },
   {
     "code": "PER",
     "name": "Perth",
     "group": "Asia/Pacific",
+    "region": "APAC",
+    "stats_region": "anzac",
+    "billing_region": "Australia",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -856,6 +1085,9 @@
     "code": "PHX",
     "name": "Phoenix",
     "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -867,6 +1099,9 @@
     "code": "PDX",
     "name": "Portland",
     "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -879,6 +1114,9 @@
     "code": "GIG",
     "name": "Rio de Janeiro",
     "group": "South America",
+    "region": "SA-East",
+    "stats_region": "southamerica_std",
+    "billing_region": "South America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -891,6 +1129,9 @@
     "code": "FCO",
     "name": "Rome",
     "group": "Europe",
+    "region": "EU-East",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -902,6 +1143,9 @@
     "code": "SJC",
     "name": "San Jose",
     "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -911,9 +1155,26 @@
     "shield": "sjc-ca-us"
   },
   {
+    "code": "WVI",
+    "name": "San Jose",
+    "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 37.242,
+      "longitude": -121.782
+    }
+  },
+  {
     "code": "SCL",
     "name": "Santiago",
     "group": "South America",
+    "region": "SA-South",
+    "stats_region": "southamerica_std",
+    "billing_region": "South America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -922,21 +1183,27 @@
     }
   },
   {
-    "code": "CGH",
-    "name": "Sao Paulo",
+    "code": "GRU",
+    "name": "Sao Paulo (Metro)",
     "group": "South America",
+    "region": "SA-East",
+    "stats_region": "southamerica_std",
+    "billing_region": "South America",
     "coordinates": {
       "x": 0,
       "y": 0,
-      "latitude": -23.498,
-      "longitude": -46.815
+      "latitude": -23.432075,
+      "longitude": -46.469511
     },
-    "shield": "cgh-saopaulo-br"
+    "shield": "gru-saopaulo-br"
   },
   {
     "code": "BFI",
     "name": "Seattle (Metro)",
     "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -949,6 +1216,9 @@
     "code": "ICN",
     "name": "Seoul",
     "group": "Asia/Pacific",
+    "region": "Asia",
+    "stats_region": "asia_southkorea",
+    "billing_region": "South Korea",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -961,6 +1231,9 @@
     "code": "QPG",
     "name": "Singapore",
     "group": "Asia/Pacific",
+    "region": "Asia",
+    "stats_region": "asia",
+    "billing_region": "Asia",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -970,9 +1243,26 @@
     "shield": "qpg-singapore-sg"
   },
   {
+    "code": "SIN",
+    "name": "Singapore",
+    "group": "Asia/Pacific",
+    "region": "Asia",
+    "stats_region": "asia",
+    "billing_region": "Asia",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 1.350189,
+      "longitude": 103.994433
+    }
+  },
+  {
     "code": "SOF",
     "name": "Sofia",
     "group": "Europe",
+    "region": "EU-East",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -985,6 +1275,9 @@
     "code": "STL",
     "name": "St.Louis",
     "group": "United States",
+    "region": "US-Central",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -996,6 +1289,9 @@
     "code": "BMA",
     "name": "Stockholm",
     "group": "Europe",
+    "region": "EU-East",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -1008,6 +1304,9 @@
     "code": "SYD",
     "name": "Sydney",
     "group": "Asia/Pacific",
+    "region": "APAC",
+    "stats_region": "anzac",
+    "billing_region": "Australia",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -1017,21 +1316,27 @@
     "shield": "sydney-au"
   },
   {
-    "code": "HND",
-    "name": "Tokyo",
+    "code": "WSI",
+    "name": "Sydney",
     "group": "Asia/Pacific",
+    "region": "APAC",
+    "stats_region": "anzac",
+    "billing_region": "Australia",
     "coordinates": {
       "x": 0,
       "y": 0,
-      "latitude": 35.622281,
-      "longitude": 139.748426
+      "latitude": -33.919,
+      "longitude": 151.189
     },
-    "shield": "hnd-tokyo-jp"
+    "shield": "sydney-au"
   },
   {
     "code": "TYO",
     "name": "Tokyo",
     "group": "Asia/Pacific",
+    "region": "Asia",
+    "stats_region": "asia",
+    "billing_region": "Asia",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -1044,6 +1349,9 @@
     "code": "NRT",
     "name": "Tokyo (Metro)",
     "group": "Asia/Pacific",
+    "region": "Asia",
+    "stats_region": "asia",
+    "billing_region": "Asia",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -1056,6 +1364,9 @@
     "code": "YYZ",
     "name": "Toronto",
     "group": "United States",
+    "region": "North-America",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -1068,6 +1379,9 @@
     "code": "YVR",
     "name": "Vancouver",
     "group": "United States",
+    "region": "North-America",
+    "stats_region": "usa",
+    "billing_region": "North America",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -1079,6 +1393,9 @@
     "code": "VIE",
     "name": "Vienna",
     "group": "Europe",
+    "region": "EU-East",
+    "stats_region": "europe",
+    "billing_region": "Europe",
     "coordinates": {
       "x": 0,
       "y": 0,
@@ -1091,6 +1408,9 @@
     "code": "WLG",
     "name": "Wellington",
     "group": "Asia/Pacific",
+    "region": "APAC",
+    "stats_region": "anzac",
+    "billing_region": "Australia",
     "coordinates": {
       "x": 0,
       "y": 0,

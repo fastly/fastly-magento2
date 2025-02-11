@@ -35,6 +35,8 @@ use Magento\Framework\Controller\ResultInterface;
  */
 class IsAlreadyConfigured extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Api
      */

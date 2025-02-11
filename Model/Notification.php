@@ -18,9 +18,12 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
+
 namespace Fastly\Cdn\Model;
 
-use Magento\AdminNotification\Model\Feed;
+use Laminas\Http\ClientFactory;
+use Laminas\Http\Request;
+use Laminas\Http\RequestFactory;
 use Magento\AdminNotification\Model\InboxFactory;
 use Magento\Backend\App\ConfigInterface;
 use Magento\Framework\App\Cache\Manager;
@@ -29,7 +32,7 @@ use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\DeploymentConfig;
 use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\Data\Collection\AbstractDb;
-use Magento\Framework\HTTP\Adapter\CurlFactory;
+use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\Model\Context;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Registry;
@@ -39,14 +42,13 @@ use Magento\Framework\UrlInterface;
  * Class Notification
  *
  * Fastly CDN admin notification for latest version
- * @package Fastly\Cdn\Model
  */
-class Notification extends Feed
+class Notification extends AbstractModel
 {
     /**
      * Github latest composer data url
      */
-    const CHECK_VERSION_URL = 'https://raw.githubusercontent.com/fastly/fastly-magento2/master/composer.json';
+    public const CHECK_VERSION_URL = 'https://raw.githubusercontent.com/fastly/fastly-magento2/master/composer.json';
     /**
      * @var ScopeConfigInterface
      */
@@ -59,55 +61,57 @@ class Notification extends Feed
      * @var Manager
      */
     private $cacheManager;
+    /**
+     * @var ClientFactory
+     */
+    private $clientFactory;
 
     /**
-     * Notification constructor.
-     *
+     * @var RequestFactory
+     */
+    private $requestFactory;
+
+    /**
+     * @var InboxFactory
+     */
+    private $inboxFactory;
+
+    /**
      * @param Context $context
      * @param Registry $registry
-     * @param ConfigInterface $backendConfig
-     * @param InboxFactory $inboxFactory
-     * @param CurlFactory $curlFactory
-     * @param DeploymentConfig $deploymentConfig
-     * @param ProductMetadataInterface $productMetadata
-     * @param UrlInterface $urlBuilder
      * @param ScopeConfigInterface $scopeConfig
      * @param WriterInterface $configWriter
      * @param Manager $cacheManager
+     * @param ClientFactory $clientFactory
+     * @param RequestFactory $requestFactory
+     * @param InboxFactory $inboxFactory
      * @param AbstractResource|null $resource
      * @param AbstractDb|null $resourceCollection
      * @param array $data
      */
     public function __construct(
-        Context $context,
-        Registry $registry,
-        ConfigInterface $backendConfig,
-        InboxFactory $inboxFactory,
-        CurlFactory $curlFactory,
-        DeploymentConfig $deploymentConfig,
-        ProductMetadataInterface $productMetadata,
-        UrlInterface $urlBuilder,
+        Context              $context,
+        Registry             $registry,
         ScopeConfigInterface $scopeConfig,
-        WriterInterface $configWriter,
-        Manager $cacheManager,
-        AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
-        array $data = []
+        WriterInterface      $configWriter,
+        Manager              $cacheManager,
+        ClientFactory        $clientFactory,
+        RequestFactory       $requestFactory,
+        InboxFactory         $inboxFactory,
+        ?AbstractResource    $resource = null,
+        ?AbstractDb          $resourceCollection = null,
+        array                $data = []
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->configWriter = $configWriter;
         $this->cacheManager = $cacheManager;
         $this->_logger = $context->getLogger();
-
+        $this->clientFactory = $clientFactory;
+        $this->requestFactory = $requestFactory;
+        $this->inboxFactory = $inboxFactory;
         parent::__construct(
             $context,
             $registry,
-            $backendConfig,
-            $inboxFactory,
-            $curlFactory,
-            $deploymentConfig,
-            $productMetadata,
-            $urlBuilder,
             $resource,
             $resourceCollection,
             $data
@@ -115,13 +119,14 @@ class Notification extends Feed
     }
 
     /**
-     * Check feed for modification
+     * Check latest version and set inbox notice
      *
-     * @param null $currentVersion
+     * @param string $currentVersion
+     * @return void
      */
-    public function checkUpdate($currentVersion = null)
+    public function checkUpdate(string $currentVersion): void
     {
-        $lastVersion = (string)$this->getLastVersion();
+        $lastVersion = $this->getLastVersion();
 
         if (!$lastVersion || version_compare($lastVersion, $currentVersion, '<=')) {
             return;
@@ -132,14 +137,11 @@ class Notification extends Feed
 
         if (version_compare($oldValue, $lastVersion, '<')) {
             $this->configWriter->save($versionPath, $lastVersion);
-
-            // save last version in db, and notify only if newly fetched last version is greater than stored version
-            $inboxFactory = $this->_inboxFactory;
-            $inbox = $inboxFactory->create();
+            $inbox = $this->inboxFactory->create();
             $inbox->addNotice(
                 'Fastly CDN',
                 "Version $lastVersion is available. You are currently running $currentVersion."
-                    . ' Please consider upgrading at your earliest convenience.'
+                . ' Please consider upgrading at your earliest convenience.'
             );
             $this->cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
         }
@@ -148,30 +150,28 @@ class Notification extends Feed
     /**
      * Fetches last github version
      *
-     * @return bool|float
+     * @return string
      */
-    public function getLastVersion()
+    public function getLastVersion(): string
     {
         try {
             $url = self::CHECK_VERSION_URL;
-            $client = $this->curlFactory->create();
+            $client = $this->clientFactory->create();
+            $request = $this->requestFactory->create();
+            $request->setMethod(Request::METHOD_GET);
+            $request->setUri($url);
+            $response = $client->send($request);
 
-            $client->write(\Zend_Http_Client::GET, $url, '1.1');
-            $responseBody = $client->read();
-            $client->close();
-
-            $responseCode = \Zend_Http_Response::extractCode($responseBody);
+            $responseCode = $response->getStatusCode();
             if ($responseCode !== 200) {
-                return false;
+                return '';
             }
-            $body = \Zend_Http_Response::extractBody($responseBody);
+            $body = $response->getBody();
             $json = json_decode($body);
-            $version = !empty($json->version) ? $json->version : false;
-
-            return $version;
+            return !empty($json->version) ? $json->version : '';
         } catch (\Exception $e) {
-            $this->_logger->log(100, $e->getMessage().$url);
-            return false;
+            $this->_logger->log(100, $e->getMessage() . $url);
+            return '';
         }
     }
 }

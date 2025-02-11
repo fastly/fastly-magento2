@@ -35,6 +35,8 @@ use Magento\Framework\Controller\Result\JsonFactory;
  */
 class ConfigureBackend extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     use ValidationTrait;
 
     /**

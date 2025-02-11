@@ -26,8 +26,8 @@
                 set resp.http.Vary = resp.http.Vary ",X-Magento-Cache-Id";
             }
         } else {
-            # Remove X-Magento-Vary and HTTPs Vary served to the user
-            set resp.http.Vary = regsub(resp.http.Vary, "(?i)X-Magento-Vary,Https", "Cookie");
+            # Remove X-Magento-Vary, X-Store-Cookie and HTTPs Vary served to the user
+            set resp.http.Vary = regsub(resp.http.Vary, "(?i)X-Magento-Vary,X-Store-Cookie,Https", "Cookie");
         }
         # Since varnish doesn't compress ESIs we need to hint to the HTTP/2 terminators to
         # compress it and we only want to do this on the edge nodes
@@ -39,7 +39,10 @@
 
     # Add an easy way to see whether custom Fastly VCL has been uploaded
     if ( req.http.Fastly-Debug ) {
-        set resp.http.Fastly-Magento-VCL-Uploaded = "1.2.194";
+        set resp.http.Fastly-Magento-VCL-Uploaded = "1.2.225";
+        if (table.lookup(magentomodule_config, "allow_super_users_during_maint", "0") == "1") {
+            set resp.http.Fastly-Magento-Maintenance-Mode = "on";
+        }
     } else {
         remove resp.http.Fastly-Module-Enabled;
         remove resp.http.fastly-page-cacheable;

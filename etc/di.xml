@@ -94,4 +94,9 @@
     <type name="Magento\MediaStorage\App\Media">
         <plugin name="fastly_disable_image_generation" type="Fastly\Cdn\Plugin\MediaStorage\App\AroundMedia" />
     </type>
+
+    <type name="Magento\Swatches\Helper\Data">
+        <plugin name="fastly_swatch_ajax_append_srcset"
+                type="Fastly\Cdn\Plugin\Swatches\Helper\Data\AppendSrcsetInformationPlugin" />
+    </type>
 </config>

@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class GeolocationRedirectMatcherTest extends TestCase
 {
-    private GeolocationRedirectMatcher $matcher;
+    private $matcher;
 
     public function setUp(): void
     {

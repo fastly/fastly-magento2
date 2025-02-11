@@ -36,6 +36,8 @@ use Magento\Framework\Controller\Result\JsonFactory;
  */
 class TestConnection extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Api
      */
@@ -102,12 +104,20 @@ class TestConnection extends Action
         $serviceId = $this->getRequest()->getParam('service_id');
         $apiKey = $this->getRequest()->getParam('api_key');
 
+        if (empty($serviceId) || empty($apiKey)) {
+            return $result->setData([
+                'status' => false,
+                'msg' => __('You must provide Service ID and API key.')
+            ]);
+        }
+
         try {
             if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
                 $this->api->sendWebHook('*initiated test connection action*');
             }
 
-            $service = $this->api->checkServiceDetails(true, $serviceId, $apiKey);
+            // Set isInitialCheck flag to true - we can test credentials even if they are not saved in database
+            $service = $this->api->checkServiceDetails(true, $serviceId, $apiKey, true);
             $sendValidationReq = $this->statistic->sendValidationRequest(true, $serviceId);
             $this->saveValidationState(true, $sendValidationReq);
         } catch (\Exception $e) {

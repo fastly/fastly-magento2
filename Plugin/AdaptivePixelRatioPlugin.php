@@ -68,7 +68,7 @@ class AdaptivePixelRatioPlugin
         $srcSet = [];
         $imageUrl = $subject->getData('image_url');
         $pixelRatiosArray = $this->config->getImageOptimizationRatios();
-        $glue = (strpos($imageUrl, '?') !== false) ? '&' : '?';
+        $glue = (strpos($imageUrl ?? '', '?') !== false) ? '&' : '?';
 
         # Pixel ratios defaults are based on the table from https://mydevice.io/devices/
         # Bulk of devices are 2x however many new devices like Samsung S8, iPhone X etc are 3x and 4x

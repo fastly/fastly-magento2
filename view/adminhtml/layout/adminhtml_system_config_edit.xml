@@ -1,9 +1,16 @@
 <?xml version="1.0"?>
-
 <page>
     <body>
         <referenceContainer name="content">
-            <block class="Fastly\Cdn\Block\System\Config\Form\Modal\UploadVcl" name="adminhtml.system.backup.container"/>
+            <block class="Fastly\Cdn\Block\System\Config\Form\Modal\UploadVcl" name="adminhtml.system.backup.container">
+                <block class="Fastly\Cdn\Block\System\Config\Form\Dialogs"
+                       name="adminhtml.system.backup.container.dialogs" as="dialogs">
+                    <block class="Magento\Framework\View\Element\Text\ListText" name="admin.fastly.tools.log">
+                        <block name="admin.fastly.log.azure-blob"
+                               template="Fastly_Cdn::system/config/form/log/azure.phtml"/>
+                    </block>
+                </block>
+            </block>
         </referenceContainer>
     </body>
 </page>

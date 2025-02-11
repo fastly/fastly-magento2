@@ -29,11 +29,12 @@ use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
 
 /**
- * Class UpdateEndpoint
- * @package Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Logging
+ * Class UpdateEndpoint for Logging
  */
 class UpdateEndpoint extends Action
 {
+    public const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */
@@ -82,6 +83,7 @@ class UpdateEndpoint extends Action
     }
 
     /**
+     *
      * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Json|\Magento\Framework\Controller\ResultInterface
      */
     public function execute()
@@ -109,16 +111,21 @@ class UpdateEndpoint extends Action
                 $clone,
                 $this->getRequest()->getParam('condition_name'),
                 $this->getRequest()->getParam('apply_if'),
-                $this->getRequest()->getParam('condition_priority'),
-                $this->getRequest()->getParam('response_condition')
+                $this->getRequest()->getParam('condition_priority')
             );
 
-            $params = array_merge(
-                $this->getRequest()->getParam('log_endpoint'),
-                ['response_condition' => $condition]
-            );
+            $selectedConditions = $this->getRequest()->getParam('conditions', '');
+            if (!$condition) {
+                $condition = $selectedConditions;
+            }
+            $params = $this->getRequest()->getParam('log_endpoint');
+            $params = array_filter($params);
+            $params['response_condition'] = $condition;
 
-            $endpoint = $this->api->updateLogEndpoint($clone->number, $endpointType, array_filter($params), $oldName);
+            if (!isset($params['compression_codec'])) {
+                $params['compression_codec'] = "";
+            }
+            $endpoint = $this->api->updateLogEndpoint($clone->number, $endpointType, $params, $oldName);
 
             if (!$endpoint) {
                 return $result->setData([
@@ -151,27 +158,26 @@ class UpdateEndpoint extends Action
     }
 
     /**
+     *
      * @param $clone
      * @param $conditionName
      * @param $applyIf
      * @param $conditionPriority
-     * @param $selCondition
-     * @return mixed
+     * @return string
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function createCondition($clone, $conditionName, $applyIf, $conditionPriority, $selCondition)
+    private function createCondition($clone, $conditionName, $applyIf, $conditionPriority)
     {
-        if ($conditionName == $selCondition && !empty($selCondition) &&
-            !$this->api->getCondition($clone->number, $conditionName)) {
-            $condition = [
-                'name'      => $conditionName,
-                'statement' => $applyIf,
-                'type'      => 'RESPONSE',
-                'priority'  => $conditionPriority
-            ];
-            $createCondition = $this->api->createCondition($clone->number, $condition);
-            return $createCondition->name;
+        if (!$conditionName || !$applyIf || !$conditionPriority) {
+            return '';
         }
-        return $selCondition;
+        $condition = [
+            'name'      => $conditionName,
+            'statement' => $applyIf,
+            'type'      => 'RESPONSE',
+            'priority'  => $conditionPriority
+        ];
+        $createCondition = $this->api->createCondition($clone->number, $condition);
+        return $createCondition->name;
     }
 }

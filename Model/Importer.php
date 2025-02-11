@@ -98,9 +98,7 @@ class Importer
 
         foreach ($dictionaries as $dictionary) {
             if (isset($data->{$dictionary->name}->items)) {
-                foreach ($data->{$dictionary->name}->items as $i) {
-                    $this->api->upsertDictionaryItem($dictionary->id, $i->item_key, $i->item_value);
-                }
+                $this->api->upsertDictionaryItems($dictionary->id, $data->{$dictionary->name}->items);
             }
         }
     }

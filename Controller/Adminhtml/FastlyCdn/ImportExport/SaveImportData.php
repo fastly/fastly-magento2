@@ -24,6 +24,8 @@ use Magento\Framework\Filesystem;
  */
 class SaveImportData extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */
@@ -92,7 +94,11 @@ class SaveImportData extends Action
         $result = $this->resultJson->create();
         try {
             $file = $this->getRequest()->getFiles()->get('file');
-            $data = json_decode(file_get_contents($file['tmp_name']));
+            if (!$file) {
+                throw new LocalizedException(__('No file uploaded.'));
+            }
+
+            $data = json_decode(file_get_contents($file['tmp_name'] ?? ''));
             if (!$data) {
                 throw new LocalizedException(__('Invalid file structure'));
             }

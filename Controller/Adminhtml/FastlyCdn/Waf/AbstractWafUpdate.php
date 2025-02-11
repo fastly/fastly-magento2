@@ -6,6 +6,8 @@ use Magento\Backend\App\Action;
 
 abstract class AbstractWafUpdate extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @param string[] $acls
      * @return string

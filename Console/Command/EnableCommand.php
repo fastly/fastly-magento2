@@ -18,18 +18,24 @@
  * @copyright   Copyright (c) 2016 Fastly, Inc. (http://www.fastly.com)
  * @license     BSD, see LICENSE_FASTLY_CDN.txt
  */
+
 namespace Fastly\Cdn\Console\Command;
 
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Fastly\Cdn\Helper\Vcl;
+use Fastly\Cdn\Model\Upload\Acl;
+use Fastly\Cdn\Model\Upload\Dictionary;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\ExceptionInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Cache\Manager;
+use Magento\Framework\Console\Cli;
 use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;
 
@@ -76,6 +82,16 @@ class EnableCommand extends Command
     private $filesystem;
 
     /**
+     * @var Acl
+     */
+    private $acl;
+
+    /**
+     * @var Dictionary
+     */
+    private $dictionary;
+
+    /**
      * @inheritdoc
      */
     protected function configure() // @codingStandardsIgnoreLine - required by parent class
@@ -102,15 +118,22 @@ class EnableCommand extends Command
             'u',
             InputOption::VALUE_NONE,
             'Uploads default VCL files, Test connection must pass to proceed with VCL uploading.'
-                . ' Add --activate argument to activate new version.'
-        );
+            . ' Add activate argument to activate new version of vcl.'
+        )
+            ->addArgument(
+                'activate',
+                InputArgument::OPTIONAL,
+                'Argument to activate new version of vcl (Possible values: true / false).'
+                . PHP_EOL . 'This argument can be used with next options:'
+                . PHP_EOL . ' upload-vcl, enable-force-tls and disable-force-tls.',
+                false);
 
         $this->addOption(
             'enable-force-tls',
             'f',
             InputOption::VALUE_NONE,
             'Uploads Force TLS snippets, Test connection must pass to proceed with VCL uploading.'
-                . ' Add --activate argument to activate new version.'
+            . ' Add activate argument to activate new version of vcl.'
         );
 
         $this->addOption(
@@ -118,14 +141,7 @@ class EnableCommand extends Command
             'l',
             InputOption::VALUE_NONE,
             'Removes Force TLS snippets, Test connection must pass to proceed with VCL snippet removal.'
-                . ' Add --activate argument to activate new version.'
-        );
-
-        $this->addOption(
-            'activate',
-            'a',
-            InputOption::VALUE_NONE,
-            'Activate newly cloned version. Used with VCL upload.'
+            . ' Add activate argument to activate new version of vcl.'
         );
 
         $this->addOption(
@@ -256,15 +272,20 @@ class EnableCommand extends Command
      * @param WriterInterface $configWriter
      * @param Manager $cacheManager
      * @param Filesystem $filesystem
+     * @param Acl $acl
+     * @param Dictionary $dictionary
      */
     public function __construct(
-        Config $config,
-        Api $api,
-        Vcl $vcl,
+        Config          $config,
+        Api             $api,
+        Vcl             $vcl,
         WriterInterface $configWriter,
-        Manager $cacheManager,
-        Filesystem $filesystem
-    ) {
+        Manager         $cacheManager,
+        Filesystem      $filesystem,
+        Acl             $acl,
+        Dictionary      $dictionary
+    )
+    {
         parent::__construct();
         $this->config = $config;
         $this->api = $api;
@@ -272,6 +293,8 @@ class EnableCommand extends Command
         $this->configWriter = $configWriter;
         $this->cacheManager = $cacheManager;
         $this->filesystem = $filesystem;
+        $this->acl = $acl;
+        $this->dictionary = $dictionary;
     }
 
     /**
@@ -284,111 +307,121 @@ class EnableCommand extends Command
 
         if (count(array_unique($options)) === 1) {
             $this->output->writeln('<comment>' . $this->getSynopsis() . '</comment>', OutputInterface::OUTPUT_NORMAL);
-            return;
+            return Cli::RETURN_FAILURE;
         }
 
-        // Set Service ID
-        if ($input->getOption('service-id')) {
-            $this->setServiceID($input->getOption('service-id'));
+        try {
+            // Set Service ID
+            if ($input->getOption('service-id')) {
+                $this->setServiceID($input->getOption('service-id'));
+            }
+
+            // Set Token
+            if ($input->getOption('token')) {
+                $this->setToken($input->getOption('token'));
+            }
+
+            // Set Admin Path Timeout
+            if ($input->getOption('admin-path-timeout')) {
+                $this->setAdminPathTimeout($input->getOption('admin-path-timeout'));
+            }
+
+            // Set Stale Content Delivery Time
+            if ($input->getOption('stale-content-delivery-time')) {
+                $this->setStaleContentDeliveryTime($input->getOption('stale-content-delivery-time'));
+            }
+
+            // Set Stale content delivery time in case of backend error
+            if ($input->getOption('stale-content-delivery-time-error')) {
+                $this->setStaleContentDeliveryTimeError($input->getOption('stale-content-delivery-time-error'));
+            }
+
+            // Set ignored url parameters
+            if ($input->getOption('ignored-url-parameters')) {
+                $this->setIgnoredUrlParameters($input->getOption('ignored-url-parameters'));
+            }
+
+            // Enable/disable purge category
+            if ($input->getOption('purge-category')) {
+                $this->setPurgeCategory($input->getOption('no'));
+            }
+
+            // Enable/disable purge product
+            if ($input->getOption('purge-product')) {
+                $this->setPurgeProduct($input->getOption('no'));
+            }
+
+            // Enable/disable purge CMS page
+            if ($input->getOption('purge-cms')) {
+                $this->setPurgeCms($input->getOption('no'));
+            }
+
+            // Enable/disable preserve static assets on purge
+            if ($input->getOption('preserve-static')) {
+                $this->setPreserveStatic($input->getOption('no'));
+            }
+
+            // Enable/disable use soft purge
+            if ($input->getOption('use-soft-purge')) {
+                $this->setUseSoftPurge($input->getOption('no'));
+            }
+
+            // Enable/disable enable geoip
+            if ($input->getOption('enable-geoip')) {
+                $this->setEnableGeoip($input->getOption('no'));
+            }
+
+            // Set geoip action
+            if ($input->getOption('geoip-action')) {
+                $this->setGeoipAction($input->getOption('geoip-action'));
+            }
+
+            // Upload VCL
+            $activate = filter_var($input->getArgument('activate'), FILTER_VALIDATE_BOOLEAN);
+            if ($input->getOption('upload-vcl')) {
+                $this->uploadVcl($activate);
+            }
+
+            // Enable Force TLS snippet
+            if ($input->getOption('enable-force-tls')) {
+                $this->enableforceTls($activate);
+            }
+
+            // Enable Force TLS snippet
+            if ($input->getOption('disable-force-tls')) {
+                $this->disableforceTls($activate);
+            }
+
+            // Enable
+            if ($input->getOption('enable')) {
+                $this->enableFastly();
+            }
+
+            // Disable
+            if ($input->getOption('disable')) {
+                $this->disableFastly();
+            }
+
+            // Test Connection
+            if ($input->getOption('test-connection')) {
+                $this->testConnection();
+            }
+
+            // Clean Configuration Cache
+            if ($input->getOption('cache')) {
+                $this->cleanCache();
+            }
+
+            $arguments = new ArrayInput(['command' => 'cache:flush', 'types' => ['config']]);
+            $this->getApplication()->find('cache:flush')->run($arguments, $output);
+
+        } catch (\Exception|ExceptionInterface $e) {
+
+            $output->writeln("<error>{$e->getMessage()}</error>");
+            return Cli::RETURN_FAILURE;
         }
 
-        // Set Token
-        if ($input->getOption('token')) {
-            $this->setToken($input->getOption('token'));
-        }
-
-        // Set Admin Path Timeout
-        if ($input->getOption('admin-path-timeout')) {
-            $this->setAdminPathTimeout($input->getOption('admin-path-timeout'));
-        }
-
-        // Set Stale Content Delivery Time
-        if ($input->getOption('stale-content-delivery-time')) {
-            $this->setStaleContentDeliveryTime($input->getOption('stale-content-delivery-time'));
-        }
-
-        // Set Stale content delivery time in case of backend error
-        if ($input->getOption('stale-content-delivery-time-error')) {
-            $this->setStaleContentDeliveryTimeError($input->getOption('stale-content-delivery-time-error'));
-        }
-
-        // Set ignored url parameters
-        if ($input->getOption('ignored-url-parameters')) {
-            $this->setIgnoredUrlParameters($input->getOption('ignored-url-parameters'));
-        }
-
-        // Enable/disable purge category
-        if ($input->getOption('purge-category')) {
-            $this->setPurgeCategory($input->getOption('no'));
-        }
-
-        // Enable/disable purge product
-        if ($input->getOption('purge-product')) {
-            $this->setPurgeProduct($input->getOption('no'));
-        }
-
-        // Enable/disable purge CMS page
-        if ($input->getOption('purge-cms')) {
-            $this->setPurgeCms($input->getOption('no'));
-        }
-
-        // Enable/disable preserve static assets on purge
-        if ($input->getOption('preserve-static')) {
-            $this->setPreserveStatic($input->getOption('no'));
-        }
-
-        // Enable/disable use soft purge
-        if ($input->getOption('use-soft-purge')) {
-            $this->setUseSoftPurge($input->getOption('no'));
-        }
-
-        // Enable/disable enable geoip
-        if ($input->getOption('enable-geoip')) {
-            $this->setEnableGeoip($input->getOption('no'));
-        }
-
-        // Set geoip action
-        if ($input->getOption('geoip-action')) {
-            $this->setGeoipAction($input->getOption('geoip-action'));
-        }
-
-        // Upload VCL
-        if ($input->getOption('upload-vcl')) {
-            $this->uploadVcl($input->getOption('activate'));
-        }
-
-        // Enable Force TLS snippet
-        if ($input->getOption('enable-force-tls')) {
-            $this->enableforceTls($input->getOption('activate'));
-        }
-
-        // Enable Force TLS snippet
-        if ($input->getOption('disable-force-tls')) {
-            $this->disableforceTls($input->getOption('activate'));
-        }
-
-        // Enable
-        if ($input->getOption('enable')) {
-            $this->enableFastly();
-        }
-
-        // Disable
-        if ($input->getOption('disable')) {
-            $this->disableFastly();
-        }
-
-        // Test Connection
-        if ($input->getOption('test-connection')) {
-            $this->testConnection();
-        }
-
-        // Clean Configuration Cache
-        if ($input->getOption('cache')) {
-            $this->cleanCache();
-        }
-
-        $arguments = new ArrayInput(['command' => 'cache:flush', 'types' => ['config']]);
-        $this->getApplication()->find('cache:flush')->run($arguments, $output);
+        return Cli::RETURN_SUCCESS;
     }
 
     /**
@@ -446,15 +479,12 @@ class EnableCommand extends Command
 
     /**
      * @param $adminPathTimeout
+     * @throws \InvalidArgumentException
      */
     private function setAdminPathTimeout($adminPathTimeout)
     {
         if (!ctype_digit($adminPathTimeout)) {
-            $this->output->writeln(
-                '<error>The value must be an integer.</error>',
-                OutputInterface::OUTPUT_NORMAL
-            );
-            return;
+            throw new \InvalidArgumentException(__('The value must be an integer.'));
         }
         $this->configWriter->save(Config::XML_FASTLY_ADMIN_PATH_TIMEOUT, $adminPathTimeout);
         $this->output->writeln(
@@ -465,15 +495,12 @@ class EnableCommand extends Command
 
     /**
      * @param $staleContentDeliveryTime
+     * @throws \InvalidArgumentException
      */
     private function setStaleContentDeliveryTime($staleContentDeliveryTime)
     {
         if (!ctype_digit($staleContentDeliveryTime)) {
-            $this->output->writeln(
-                '<error>The value must be an integer.</error>',
-                OutputInterface::OUTPUT_NORMAL
-            );
-            return;
+            throw new \InvalidArgumentException(__('The value must be an integer.'));
         }
         $this->configWriter->save(Config::XML_FASTLY_STALE_TTL, $staleContentDeliveryTime);
         $this->output->writeln(
@@ -484,15 +511,12 @@ class EnableCommand extends Command
 
     /**
      * @param $staleContentDeliveryTimeError
+     * @throws \InvalidArgumentException
      */
     private function setStaleContentDeliveryTimeError($staleContentDeliveryTimeError)
     {
         if (!ctype_digit($staleContentDeliveryTimeError)) {
-            $this->output->writeln(
-                '<error>The value must be an integer.</error>',
-                OutputInterface::OUTPUT_NORMAL
-            );
-            return;
+            throw new \InvalidArgumentException(__('The value must be an integer.'));
         }
         $this->configWriter->save(Config::XML_FASTLY_STALE_ERROR_TTL, $staleContentDeliveryTimeError);
         $this->output->writeln(
@@ -635,6 +659,7 @@ class EnableCommand extends Command
 
     /**
      * @param $geoipAction
+     * @throws \InvalidArgumentException
      */
     private function setGeoipAction($geoipAction)
     {
@@ -651,10 +676,7 @@ class EnableCommand extends Command
                 OutputInterface::OUTPUT_NORMAL
             );
         } else {
-            $this->output->writeln(
-                '<error>This option requires "dialog" or "redirect" as a value.</error>',
-                OutputInterface::OUTPUT_NORMAL
-            );
+            throw new \InvalidArgumentException(__('This option requires "dialog" or "redirect" as a value.'));
         }
     }
 
@@ -671,210 +693,203 @@ class EnableCommand extends Command
      * Upload default VCL, conditions and requests
      *
      * @param $activate
+     * @throws \Magento\Framework\Exception\LocalizedException
      * @throws \Exception
      */
     private function uploadVcl($activate)
     {
-        try {
-            $service = $this->api->checkServiceDetails();
-            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
-            $clone = $this->api->cloneVersion($currActiveVersion);
-            $snippets = $this->config->getVclSnippets();
-            $read = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR);
-            $customSnippetPath = $read->getAbsolutePath(Config::CUSTOM_SNIPPET_PATH);
-            $customSnippets = $this->config->getCustomSnippets($customSnippetPath);
+        $service = $this->api->checkServiceDetails();
+        $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
+        $clone = $this->api->cloneVersion($currActiveVersion);
+        $snippets = $this->config->getVclSnippets();
+        $read = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR);
+        $customSnippetPath = $read->getAbsolutePath(Config::CUSTOM_SNIPPET_PATH);
+        $customSnippets = $this->config->getCustomSnippets($customSnippetPath);
 
-            foreach ($snippets as $key => $value) {
-                $snippetData = [
-                    'name'      => Config::FASTLY_MAGENTO_MODULE . '_' . $key,
-                    'type'      => $key,
-                    'dynamic'   => "0",
-                    'priority'  => 50,
-                    'content'   => $value
-                ];
-                $this->api->uploadSnippet($clone->number, $snippetData);
-            }
-
-            foreach ($customSnippets as $key => $value) {
-                $snippetNameData = $this->validateCustomSnippet($key);
-                $snippetType = $snippetNameData[0];
-                $snippetPriority = $snippetNameData[1];
-                $snippetShortName = $snippetNameData[2];
-
-                $customSnippetData = [
-                    'name'      => Config::FASTLY_MAGENTO_MODULE . '_' . $snippetShortName,
-                    'type'      => $snippetType,
-                    'priority'  => $snippetPriority,
-                    'content'   => $value,
-                    'dynamic'   => '0'
-                ];
-                $this->api->uploadSnippet($clone->number, $customSnippetData);
-            }
-
-            $this->createGzipHeader($clone);
-
-            $condition = [
-                'name'      => Config::FASTLY_MAGENTO_MODULE . '_pass',
-                'statement' => 'req.http.x-pass',
-                'type'      => 'REQUEST',
-                'priority'  => 90
+        foreach ($snippets as $key => $value) {
+            $snippetData = [
+                'name' => Config::FASTLY_MAGENTO_MODULE . '_' . $key,
+                'type' => $key,
+                'dynamic' => "0",
+                'priority' => 50,
+                'content' => $value
             ];
-            $createCondition = $this->api->createCondition($clone->number, $condition);
-            $request = [
-                'action'            => 'pass',
-                'max_stale_age'     => 3600,
-                'name'              => Config::FASTLY_MAGENTO_MODULE.'_request',
-                'request_condition' => $createCondition->name,
-                'service_id'        => $service->id,
-                'version'           => $currActiveVersion
-            ];
-
-            $this->api->createRequest($clone->number, $request);
-            $this->api->validateServiceVersion($clone->number);
-            $msg = 'Successfully uploaded VCL. ';
-
-            if ($activate) {
-                $this->api->activateVersion($clone->number);
-                $msg .= 'Activated Version '. $clone->number;
-            }
-
-            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-                $this->api->sendWebHook(
-                    '*Upload VCL has been initiated and activated in version ' . $clone->number . '*'
-                );
-            }
-
-            $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
-        } catch (\Exception $e) {
-            $msg = $e->getMessage();
-            $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
-            return;
+            $this->api->uploadSnippet($clone->number, $snippetData);
         }
+
+        foreach ($customSnippets as $key => $value) {
+            $snippetNameData = $this->validateCustomSnippet($key);
+            $snippetType = $snippetNameData[0];
+            $snippetPriority = $snippetNameData[1];
+            $snippetShortName = $snippetNameData[2];
+
+            $customSnippetData = [
+                'name' => Config::FASTLY_MAGENTO_MODULE . '_' . $snippetShortName,
+                'type' => $snippetType,
+                'priority' => $snippetPriority,
+                'content' => $value,
+                'dynamic' => '0'
+            ];
+            $this->api->uploadSnippet($clone->number, $customSnippetData);
+        }
+
+        $this->createGzipHeader($clone);
+
+        $condition = [
+            'name' => Config::FASTLY_MAGENTO_MODULE . '_pass',
+            'statement' => 'req.http.x-pass',
+            'type' => 'REQUEST',
+            'priority' => 90
+        ];
+        $createCondition = $this->api->createCondition($clone->number, $condition);
+        $request = [
+            'action' => 'pass',
+            'max_stale_age' => 3600,
+            'name' => Config::FASTLY_MAGENTO_MODULE . '_request',
+            'request_condition' => $createCondition->name,
+            'service_id' => $service->id,
+            'version' => $currActiveVersion
+        ];
+
+        $this->api->createRequest($clone->number, $request);
+
+        $this->dictionary->setupDictionary($clone->number, $currActiveVersion);
+        $this->acl->setupAcl($clone->number, $currActiveVersion);
+
+        $this->api->validateServiceVersion($clone->number);
+        $msg = 'Successfully uploaded VCL. ';
+
+        if ($activate) {
+            $this->api->activateVersion($clone->number);
+            $msg .= 'Activated Version ' . $clone->number;
+        }
+
+        if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+            $this->api->sendWebHook(
+                '*Upload VCL has been initiated and activated in version ' . $clone->number . '*'
+            );
+        }
+
+        $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
+
     }
 
     /**
      * Uploads the Force TLS VCL snippet
      *
      * @param $activate
+     * @throws \Magento\Framework\Exception\FileSystemException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     private function enableForceTls($activate)
     {
-        try {
-            $service = $this->api->checkServiceDetails();
-            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
-            $clone = $this->api->cloneVersion($currActiveVersion);
-            $reqName = Config::FASTLY_MAGENTO_MODULE.'_force_tls';
-            $snippets = $this->config->getVclSnippets(Config::FORCE_TLS_PATH);
 
-            $request = [
-                'name'          => $reqName,
-                'service_id'    => $service->id,
-                'version'       => $currActiveVersion,
-                'force_ssl'     => true
+        $service = $this->api->checkServiceDetails();
+        $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
+        $clone = $this->api->cloneVersion($currActiveVersion);
+        $reqName = Config::FASTLY_MAGENTO_MODULE . '_force_tls';
+        $snippets = $this->config->getVclSnippets(Config::FORCE_TLS_PATH);
+
+        $request = [
+            'name' => $reqName,
+            'service_id' => $service->id,
+            'version' => $currActiveVersion,
+            'force_ssl' => true
+        ];
+
+        $this->api->createRequest($clone->number, $request);
+
+        // Add force TLS snippet
+        foreach ($snippets as $key => $value) {
+            $snippetData = [
+                'name' => Config::FASTLY_MAGENTO_MODULE . '_force_tls_' . $key,
+                'type' => $key,
+                'dynamic' => "0",
+                'priority' => 10,
+                'content' => $value
             ];
-
-            $this->api->createRequest($clone->number, $request);
-
-            // Add force TLS snippet
-            foreach ($snippets as $key => $value) {
-                $snippetData = [
-                    'name'      => Config::FASTLY_MAGENTO_MODULE.'_force_tls_'.$key,
-                    'type'      => $key,
-                    'dynamic'   => "0",
-                    'priority'  => 10,
-                    'content'   => $value
-                ];
-                $this->api->uploadSnippet($clone->number, $snippetData);
-            }
-
-            $this->api->validateServiceVersion($clone->number);
-            $msg = 'Successfully enabled Force TLS. ';
-
-            if ($activate) {
-                $this->api->activateVersion($clone->number);
-                $msg .= 'Activated Version '. $clone->number;
-            }
-
-            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-                $this->api->sendWebHook('*Force TLS has been turned ON in Fastly version '. $clone->number . '*');
-            }
-
-            $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
-        } catch (\Exception $e) {
-            $msg = $e->getMessage();
-            $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
-            return;
+            $this->api->uploadSnippet($clone->number, $snippetData);
         }
+
+        $this->api->validateServiceVersion($clone->number);
+        $msg = 'Successfully enabled Force TLS. ';
+
+        if ($activate) {
+            $this->api->activateVersion($clone->number);
+            $msg .= 'Activated Version ' . $clone->number;
+        }
+
+        if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+            $this->api->sendWebHook('*Force TLS has been turned ON in Fastly version ' . $clone->number . '*');
+        }
+
+        $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
     }
 
     /**
      * Removes the Force TLS VCL snippet from the current active version
      *
      * @param $activate
+     * @throws \Magento\Framework\Exception\FileSystemException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     private function disableForceTls($activate)
     {
-        try {
-            $service = $this->api->checkServiceDetails();
-            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
-            $clone = $this->api->cloneVersion($currActiveVersion);
-            $reqName = Config::FASTLY_MAGENTO_MODULE.'_force_tls';
-            $snippets = $this->config->getVclSnippets(Config::FORCE_TLS_PATH);
 
-            $request = [
-                'name'          => $reqName,
-                'service_id'    => $service->id,
-                'version'       => $currActiveVersion,
-                'force_ssl'     => false
-            ];
+        $service = $this->api->checkServiceDetails();
+        $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
+        $clone = $this->api->cloneVersion($currActiveVersion);
+        $reqName = Config::FASTLY_MAGENTO_MODULE . '_force_tls';
+        $snippets = $this->config->getVclSnippets(Config::FORCE_TLS_PATH);
 
-            $this->api->createRequest($clone->number, $request);
+        $request = [
+            'name' => $reqName,
+            'service_id' => $service->id,
+            'version' => $currActiveVersion,
+            'force_ssl' => false
+        ];
 
-            // Remove Force TLS snippet
-            foreach ($snippets as $key => $value) {
-                $name = Config::FASTLY_MAGENTO_MODULE.'_force_tls_'.$key;
+        $this->api->createRequest($clone->number, $request);
 
-                if ($this->api->hasSnippet($clone->number, $name)) {
-                    $this->api->removeSnippet($clone->number, $name);
-                }
+        // Remove Force TLS snippet
+        foreach ($snippets as $key => $value) {
+            $name = Config::FASTLY_MAGENTO_MODULE . '_force_tls_' . $key;
+
+            if ($this->api->hasSnippet($clone->number, $name)) {
+                $this->api->removeSnippet($clone->number, $name);
             }
-
-            $this->api->validateServiceVersion($clone->number);
-            $msg = 'Successfully disabled Force TLS. ';
-
-            if ($activate) {
-                $this->api->activateVersion($clone->number);
-                $msg .= 'Activated Version '. $clone->number;
-            }
-
-            if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
-                $this->api->sendWebHook('*Force TLS has been turned OFF in Fastly version '. $clone->number . '*');
-            }
-
-            $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
-        } catch (\Exception $e) {
-            $msg = $e->getMessage();
-            $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
-            return;
         }
+
+        $this->api->validateServiceVersion($clone->number);
+        $msg = 'Successfully disabled Force TLS. ';
+
+        if ($activate) {
+            $this->api->activateVersion($clone->number);
+            $msg .= 'Activated Version ' . $clone->number;
+        }
+
+        if ($this->config->areWebHooksEnabled() && $this->config->canPublishConfigChanges()) {
+            $this->api->sendWebHook('*Force TLS has been turned OFF in Fastly version ' . $clone->number . '*');
+        }
+
+        $this->output->writeln('<info>' . $msg . '</info>', OutputInterface::OUTPUT_NORMAL);
     }
 
+    /**
+     * @return void
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
     private function testConnection()
     {
-        try {
-            $service = $this->api->checkServiceDetails();
-            $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
-            $this->output->writeln(
-                '<info>Status: Connection Successful, current active version: '
-                . $currActiveVersion
-                . '</info>',
-                OutputInterface::OUTPUT_NORMAL
-            );
-        } catch (\Exception $e) {
-            $msg = $e->getMessage();
-            $this->output->writeln("<error>$msg</error>", OutputInterface::OUTPUT_NORMAL);
-            return;
-        }
+
+        $service = $this->api->checkServiceDetails();
+        $currActiveVersion = $this->vcl->getCurrentVersion($service->versions);
+        $this->output->writeln(
+            '<info>Status: Connection Successful, current active version: '
+            . $currActiveVersion
+            . '</info>',
+            OutputInterface::OUTPUT_NORMAL
+        );
     }
 
     /**
@@ -883,6 +898,7 @@ class EnableCommand extends Command
      *
      * @param $customSnippet
      * @return array
+     * @throws \Exception
      */
     private function validateCustomSnippet($customSnippet)
     {
@@ -890,11 +906,11 @@ class EnableCommand extends Command
         $snippetNameData = explode('_', $snippetName, 3);
         $containsEmpty = in_array("", $snippetNameData, true);
         $types = ['init', 'recv', 'hit', 'miss', 'pass', 'fetch', 'error', 'log', 'deliver', 'hash', 'none'];
-        $exception = 'Failed to upload VCL snippets. Please make sure the custom VCL snippets 
+        $exception = 'Failed to upload VCL snippets. Please make sure the custom VCL snippets
             follow this naming convention: [vcl_snippet_type]_[priority]_[short_name_description].vcl';
 
         if (count($snippetNameData) < 3) {
-            $this->output->writeln("<error>$exception</error>", OutputInterface::OUTPUT_NORMAL);
+            throw new \Exception(__($exception));
         }
 
         $inArray = in_array($snippetNameData[0], $types);
@@ -902,7 +918,7 @@ class EnableCommand extends Command
         $isAlphanumeric = preg_match('/^[\w]+$/', $snippetNameData[2]);
 
         if ($containsEmpty || !$inArray || !$isNumeric || !$isAlphanumeric) {
-            $this->output->writeln("<error>$exception</error>", OutputInterface::OUTPUT_NORMAL);
+            throw new \Exception(__($exception));
         }
         return $snippetNameData;
     }
@@ -914,21 +930,21 @@ class EnableCommand extends Command
     private function createGzipHeader($clone)
     {
         $condition = [
-            'name'      => Config::FASTLY_MAGENTO_MODULE.'_gzip_safety',
+            'name' => Config::FASTLY_MAGENTO_MODULE . '_gzip_safety',
             'statement' => 'beresp.http.x-esi',
-            'type'      => 'CACHE',
-            'priority'  => 100
+            'type' => 'CACHE',
+            'priority' => 100
         ];
         $createCondition = $this->api->createCondition($clone->number, $condition);
 
         $headerData = [
-            'name'              => Config::FASTLY_MAGENTO_MODULE . '_gzip_safety',
-            'type'              => 'cache',
-            'dst'               => 'gzip',
-            'action'            => 'set',
-            'priority'          => 1000,
-            'src'               => 'false',
-            'cache_condition'   => $createCondition->name,
+            'name' => Config::FASTLY_MAGENTO_MODULE . '_gzip_safety',
+            'type' => 'cache',
+            'dst' => 'gzip',
+            'action' => 'set',
+            'priority' => 1000,
+            'src' => 'false',
+            'cache_condition' => $createCondition->name,
         ];
 
         $this->api->createHeader($clone->number, $headerData);

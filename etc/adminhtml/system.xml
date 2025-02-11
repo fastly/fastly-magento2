@@ -49,7 +49,8 @@
                     <field id="fastly_api_key" type="text" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Fastly API Token</label>
                         <comment>
-                            <![CDATA[Please create a <a href="https://manage.fastly.com/account/personal/tokens" target="_blank">Fastly API token</a> with a global scope.<br /><br />
+                            <![CDATA[Please create a <a href="https://manage.fastly.com/account/personal/tokens" target="_blank">Fastly API token</a> with a global scope.<br />
+                            NOTE: Adobe Commerce Cloud customers should refer to <a href="https://experienceleague.adobe.com/en/docs/commerce-cloud-service/user-guide/cdn/fastly#fastly-service-account-and-credentials" target="_blank">their documentation</a> on how to obtain their Fastly API Token. If your token has expired, refer to <a href="https://experienceleague.adobe.com/en/docs/commerce-knowledge-base/kb/troubleshooting/miscellaneous/error-when-validating-fastly-credentials" target="_blank">this KB article.</a><br /><br />
                             After making any changes to Fastly Service ID or API token, please Save Config first before uploading VCL.]]>
                         </comment>
                         <frontend_class>masked</frontend_class>
@@ -607,14 +608,6 @@
                         <comment>
                             <![CDATA[]]>
                         </comment>
-                        <!-- ====================
-                             WAF status field
-                        ===================== -->
-                        <field id="toggle_waf" translate="label comment" type="select" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
-                            <label>Web Application Firewall</label>
-                            <comment><![CDATA[]]></comment>
-                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\WafBtn</frontend_model>
-                        </field>
                         <!-- ===============================
                              OWASP Allowed Methods field
                         ================================ -->

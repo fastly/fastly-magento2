@@ -2,14 +2,15 @@
 
 namespace Fastly\Cdn\Controller\Adminhtml\FastlyCdn\Blocking;
 
-use Fastly\Cdn\Model\Config;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Config\Storage\WriterInterface as ConfigWriter;
 
 abstract class AbstractBlocking extends Action
 {
-    protected ConfigWriter $configWriter;
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
+    protected $configWriter;
 
     public function __construct(
         Context $context,

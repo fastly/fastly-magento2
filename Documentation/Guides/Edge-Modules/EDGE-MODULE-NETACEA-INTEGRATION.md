@@ -12,14 +12,8 @@ After you have enabled the module it's time to configure. You will be prompted w
 
 ## Configurable options
 
-### Netacea API Key
-
-This is the API key provided to you by Netacea.
-
-### Netacea Secret
-
-This is the Secret provided to you by Netacea.
-
+In order to configure Netacea module please see the following documentation.<br />
+[Netacea - Fastly/Magento](https://docs.netacea.com/netacea-plugin-information/fastly-magento/installation-and-configuration)
 
 ## Enabling
 

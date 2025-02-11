@@ -26,9 +26,8 @@ use Fastly\Cdn\Model\PurgeCache;
 use Magento\Framework\Event\ObserverInterface;
 
 /**
- * Class InvalidateVarnishObserver
- *
- * @package Fastly\Cdn\Observer
+ * Class InvalidateVarnishObserver for invalidating fastly cache
+ * sending purge request
  */
 class InvalidateVarnishObserver implements ObserverInterface
 {
@@ -68,9 +67,9 @@ class InvalidateVarnishObserver implements ObserverInterface
      * If Fastly CDN is enabled it sends one purge request per tag
      *
      * @param \Magento\Framework\Event\Observer $observer
-     * @throws \Zend_Uri_Exception
+     * @return void
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function execute(\Magento\Framework\Event\Observer $observer): void
     {
         if ($this->config->getType() === Config::FASTLY && $this->config->isEnabled()) {
             $object = $observer->getEvent()->getObject();
@@ -82,6 +81,11 @@ class InvalidateVarnishObserver implements ObserverInterface
                         continue;
                     }
                     $tag = $this->cacheTags->convertCacheTags($tag);
+
+                    if (!$this->isTagAllowed($tag)) {
+                        continue;
+                    }
+
                     if (!in_array($tag, $this->alreadyPurged)) {
                         $tags[] = $tag;
                         $this->alreadyPurged[] = $tag;
@@ -112,6 +116,26 @@ class InvalidateVarnishObserver implements ObserverInterface
         if ($object instanceof \Magento\Cms\Model\Page && !$this->config->canPurgeCmsPage()) {
             return false;
         }
+        return true;
+    }
+
+    /**
+     * Additional validation since IdentityInterface can pass canPurgeObject check (e.g. ProductRuleIndexer), but still
+     * hold tags of products or categories
+     *
+     * @param string $tag
+     * @return bool
+     */
+    private function isTagAllowed(string $tag)
+    {
+        if ($tag === \Magento\Catalog\Model\Category::CACHE_TAG && !$this->config->canPurgeCatalogCategory()) {
+            return false;
+        }
+
+        if ($tag === \Magento\Catalog\Model\Product::CACHE_TAG && !$this->config->canPurgeCatalogProduct()) {
+            return false;
+        }
+
         return true;
     }
 }

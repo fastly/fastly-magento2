@@ -19,6 +19,8 @@ use Fastly\Cdn\Model\Modly\Manifest;
  */
 class GetCountries extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Http
      */

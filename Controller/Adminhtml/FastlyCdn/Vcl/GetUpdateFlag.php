@@ -14,6 +14,8 @@ use Magento\Framework\Controller\Result\JsonFactory;
  */
 class GetUpdateFlag extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var ScopeConfigInterface
      */

@@ -29,6 +29,8 @@ use Magento\Framework\Controller\Result\JsonFactory;
 
 class CheckRateLimitingSetting extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Config::config';
+
     /**
      * @var Api
      */

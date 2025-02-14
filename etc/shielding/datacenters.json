@@ -774,6 +774,20 @@
     "shield": "mad-madrid-es"
   },
   {
+    "code": "TOJ",
+    "name": "Madrid",
+    "group": "Europe",
+    "region": "EU-West",
+    "stats_region": "europe",
+    "billing_region": "Europe",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 40.433899,
+      "longitude": -3.62408
+    }
+  },
+  {
     "code": "MAN",
     "name": "Manchester",
     "group": "Europe",
@@ -1035,20 +1049,6 @@
       "y": 0,
       "latitude": 37.454965,
       "longitude": -122.110783
-    }
-  },
-  {
-    "code": "CDG",
-    "name": "Paris (Metro)",
-    "group": "Europe",
-    "region": "EU-West",
-    "stats_region": "europe",
-    "billing_region": "Europe",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 48.928,
-      "longitude": 2.352
     }
   },
   {

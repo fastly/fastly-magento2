@@ -1444,6 +1444,20 @@ class Api
         return $result;
     }
 
+    public function bulkAclItems($aclId, $aclItems)
+    {
+        $url = $this->_getApiServiceUri() . 'acl/' . rawurlencode($aclId ?? '') . '/entries' ;
+
+        // per documentation, maximum payload for bulk API is 1000
+        $chunkedItems = array_chunk($aclItems, 1000);
+
+        foreach ($chunkedItems as $items) {
+            $payload['entries'] = $items;
+
+            $this->_fetch($url, Request::METHOD_PATCH, json_encode($payload));
+        }
+    }
+
     /**
      * Update single ACL entry
      *

@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.227
+
+- Use bulk update API for ACLs for IP list update in fastly:maintenance command https://github.com/fastly/fastly-magento2/pull/741
+
 ## 1.2.226
 
 - Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/738

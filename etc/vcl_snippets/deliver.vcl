@@ -39,7 +39,7 @@
 
     # Add an easy way to see whether custom Fastly VCL has been uploaded
     if ( req.http.Fastly-Debug ) {
-        set resp.http.Fastly-Magento-VCL-Uploaded = "1.2.223";
+        set resp.http.Fastly-Magento-VCL-Uploaded = "1.2.227";
         if (table.lookup(magentomodule_config, "allow_super_users_during_maint", "0") == "1") {
             set resp.http.Fastly-Magento-Maintenance-Mode = "on";
         }

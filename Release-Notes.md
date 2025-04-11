@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.228
+
+- Extend surrogate keys instead of replacing them https://github.com/fastly/fastly-magento2/pull/719
+
 ## 1.2.227
 
 - Use bulk update API for ACLs for IP list update in fastly:maintenance command https://github.com/fastly/fastly-magento2/pull/741

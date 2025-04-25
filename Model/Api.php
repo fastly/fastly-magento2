@@ -1448,13 +1448,19 @@ class Api
     {
         $url = $this->_getApiServiceUri() . 'acl/' . rawurlencode($aclId ?? '') . '/entries' ;
 
-        // per documentation, maximum payload for bulk API is 1000
-        $chunkedItems = array_chunk($aclItems, 1000);
+        // per documentation, the maximum payload for bulk API is 1000, but it can cause connection timeout
+        $chunkedItems = array_chunk($aclItems, 200);
 
         foreach ($chunkedItems as $items) {
             $payload['entries'] = $items;
 
-            $this->_fetch($url, Request::METHOD_PATCH, json_encode($payload));
+            $isSuccess = $this->_fetch($url, Request::METHOD_PATCH, json_encode($payload));
+
+            if (!$isSuccess) {
+                $errorMessage = $this->errorMessage ?? '';
+
+                throw new \Exception('Error while doing bulk ACL items update: ' . $errorMessage);
+            }
         }
     }
 

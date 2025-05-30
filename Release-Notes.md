@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.229
+
+- Correct Surrogate Key behavior under shielding https://github.com/fastly/fastly-magento2/pull/746 
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/743
+
 ## 1.2.228
 
 - Extend surrogate keys instead of replacing them https://github.com/fastly/fastly-magento2/pull/719

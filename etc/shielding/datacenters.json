@@ -1111,6 +1111,20 @@
     "shield": "pdx-or-us"
   },
   {
+    "code": "QRO",
+    "name": "Queretaro",
+    "group": "Mexico",
+    "region": "MX-Central",
+    "stats_region": "mexico",
+    "billing_region": "Mexico",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 20.566,
+      "longitude": -100.258
+    }
+  },
+  {
     "code": "GIG",
     "name": "Rio de Janeiro",
     "group": "South America",

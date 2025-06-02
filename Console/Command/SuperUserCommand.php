@@ -232,6 +232,7 @@ class SuperUserCommand extends Command
 
         $this->deleteIps($aclItems, $aclId);
 
+        $updatedIpList = [];
         foreach ($ipList as $ip) {
             if ($ip[0] == '!') {
                 $ip = ltrim($ip, '!');
@@ -254,8 +255,21 @@ class SuperUserCommand extends Command
                 throw new \Exception(__($msg));
             }
 
-            $this->api->upsertAclItem($aclId, $ipParts[0], 0, $comment, $subnet);
+            $ipInformation = [
+                'op' => 'create',
+                'ip' => $ipParts[0],
+                'negated' => 0,
+                'comment' => $comment
+            ];
+
+            if ($subnet) {
+                $ipInformation['subnet'] = $subnet;
+            }
+
+            $updatedIpList[] = $ipInformation;
         }
+
+        $this->api->bulkAclItems($aclId, $updatedIpList);
 
         $this->sendWebHook('*Admin IPs list has been updated*');
 
@@ -307,9 +321,14 @@ class SuperUserCommand extends Command
      */
     private function deleteIps($aclItems, $aclId)
     {
-        foreach ($aclItems as $key => $value) {
-            $this->api->deleteAclItem($aclId, $value->id);
+        $items = [];
+        foreach ($aclItems as $item) {
+            $items[] = [
+                'op' => 'delete',
+                'id' => $item->id
+            ];
         }
+        $this->api->bulkAclItems($aclId, $items);
     }
 
     /**

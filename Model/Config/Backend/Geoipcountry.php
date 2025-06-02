@@ -60,10 +60,10 @@ class Geoipcountry extends ArraySerialized
         ScopeConfigInterface $config,
         TypeListInterface $cacheTypeList,
         SerializerInterface $serializerInterface,
-        AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
+        ?AbstractResource $resource = null,
+        ?AbstractDb $resourceCollection = null,
         array $data = [],
-        Json $serializer = null
+        ?Json $serializer = null
     ) {
         $this->serializerInterface = $serializerInterface;
         parent::__construct(

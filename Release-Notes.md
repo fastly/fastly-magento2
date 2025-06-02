@@ -1,5 +1,74 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.229
+
+- Correct Surrogate Key behavior under shielding https://github.com/fastly/fastly-magento2/pull/746 
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/743
+
+## 1.2.228
+
+- Extend surrogate keys instead of replacing them https://github.com/fastly/fastly-magento2/pull/719
+
+## 1.2.227
+
+- Use bulk update API for ACLs for IP list update in fastly:maintenance command https://github.com/fastly/fastly-magento2/pull/741
+
+## 1.2.226
+
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/738
+- Update Netacea integration to 5.10.7 https://github.com/fastly/fastly-magento2/pull/737
+
+## 1.2.225
+
+- PHP 8.4 suport https://github.com/fastly/fastly-magento2/pull/724
+- Update Netacea integration to 5.10.6 https://github.com/fastly/fastly-magento2/pull/736
+
+## 1.2.224
+
+- Update available Fastly Shielding POP list
+- Update to DataDome Fastly Module 2.24.1 https://github.com/fastly/fastly-magento2/pull/728
+- Remove legacy WAF button https://github.com/fastly/fastly-magento2/pull/735
+
+## 1.2.223
+
+- Update available Fastly Shielding POP list
+
+## 1.2.222
+
+- Update to DataDome Fastly Module 2.23.0 https://github.com/fastly/fastly-magento2/pull/715
+
+## 1.2.221
+
+- Catch Throwable instead of Exception in Blocking controller https://github.com/fastly/fastly-magento2/pull/704
+- Perform additional validation during tag purge https://github.com/fastly/fastly-magento2/pull/705
+- Trigger init of edge modules if tab is open by default https://github.com/fastly/fastly-magento2/pull/707 
+- Don't display NGWAF dictionary in admin screen https://github.com/fastly/fastly-magento2/pull/710
+
+## 1.2.220
+
+- Logging endpoints changes https://github.com/fastly/fastly-magento2/pull/701
+
+## 1.2.219
+
+- Removing trailing comma in WAF constructor to be compatible with PHP 7.2 https://github.com/fastly/fastly-magento2/pull/698
+
+## 1.2.218
+
+- Update to Netacea module https://github.com/fastly/fastly-magento2/pull/696
+- Fixing deprecated usage https://github.com/fastly/fastly-magento2/pull/697
+
+## 1.2.217
+
+- Update to Netacea module https://github.com/fastly/fastly-magento2/pull/690
+
+## 1.2.216
+
+- Fix for GEOIP redirection causes 404 in specific cases https://github.com/fastly/fastly-magento2/pull/694
+
+## 1.2.215
+
+- Fix for checking if current IP is in maintenance IP list https://github.com/fastly/fastly-magento2/pull/692
+
 ## 1.2.214
 
 - Rate limiting doesn't work correctly when store codes are involved https://github.com/fastly/fastly-magento2/pull/689

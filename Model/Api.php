@@ -534,7 +534,7 @@ class Api
         if (isset($snippet['content'])) {
             $adminUrl = $this->vcl->getAdminFrontName();
             $adminPathTimeout = $this->config->getAdminPathTimeout();
-            $ignoredUrlParameters = $this->config->getIgnoredUrlParameters();
+            $ignoredUrlParameters = (string)$this->config->getIgnoredUrlParameters();
 
             if ($ignoredUrlParameters === "") {
                 $queryParameters = '&';
@@ -1442,6 +1442,20 @@ class Api
         $result = $this->_fetch($url, Request::METHOD_DELETE);
 
         return $result;
+    }
+
+    public function bulkAclItems($aclId, $aclItems)
+    {
+        $url = $this->_getApiServiceUri() . 'acl/' . rawurlencode($aclId ?? '') . '/entries' ;
+
+        // per documentation, maximum payload for bulk API is 1000
+        $chunkedItems = array_chunk($aclItems, 1000);
+
+        foreach ($chunkedItems as $items) {
+            $payload['entries'] = $items;
+
+            $this->_fetch($url, Request::METHOD_PATCH, json_encode($payload));
+        }
     }
 
     /**

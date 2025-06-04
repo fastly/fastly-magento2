@@ -72,13 +72,11 @@ define([
         listDictionaries(active_version, false).done(function (response) {
             $('.loading-dictionaries').hide();
             if (response.status !== false) {
-                if (response.status !== false) {
-                    if (response.dictionaries.length > 0) {
-                        dictionaries = response.dictionaries;
-                        processDictionaries(response.dictionaries);
-                    } else {
-                        $('.no-dictionaries').show();
-                    }
+                if (response.dictionaries.length > 0) {
+                    dictionaries = response.dictionaries;
+                    processDictionaries(response.dictionaries);
+                } else {
+                    $('.no-dictionaries').show();
                 }
             }
         }).fail(function () {

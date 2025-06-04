@@ -334,26 +334,24 @@ class FrontControllerPlugin
         return false;
     }
 
-    private function readMaintenanceIp($ip)
+    private function readMaintenanceIp($clientIps)
     {
         $tag = self::FASTLY_CACHE_MAINTENANCE_IP_FILE_TAG;
-        $data = json_decode($this->cache->load($tag));
-        if (empty($data)) {
-            $data = [];
+        $allowedIps = json_decode($this->cache->load($tag));
+        if (empty($allowedIps)) {
+            $allowedIps = [];
             $flagDir = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
             if ($flagDir->isExist('.maintenance.ip')) {
                 $temp = $flagDir->readFile('.maintenance.ip');
-                $data = explode(',', trim($temp));
-                $this->cache->save(json_encode($data), $tag, []);
+                $allowedIps = explode(',', trim($temp));
+                $this->cache->save(json_encode($allowedIps), $tag, []);
             }
         }
 
-        foreach ($data as $key => $value) {
-            if (!empty($value) && trim($value) == $ip) {
-                return true;
-            }
-        }
-        return false;
+        $ips = array_map("trim", explode(",", $clientIps));
+        $isAllowed = array_intersect($allowedIps, $ips);
+
+        return !empty($isAllowed);
     }
 
     private function log($message)

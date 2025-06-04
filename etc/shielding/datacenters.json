@@ -29,6 +29,20 @@
     "shield": "amsterdam-nl"
   },
   {
+    "code": "RTM",
+    "name": "Amsterdam",
+    "group": "Europe",
+    "region": "EU-Central",
+    "stats_region": "europe",
+    "billing_region": "Europe",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 52.357,
+      "longitude": 4.951
+    }
+  },
+  {
     "code": "DCA",
     "name": "Ashburn (Metro)",
     "group": "United States",
@@ -717,6 +731,20 @@
     "shield": "bur-ca-us"
   },
   {
+    "code": "HHR",
+    "name": "Los Angeles (Metro)",
+    "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 33.942536,
+      "longitude": -118.408075
+    }
+  },
+  {
     "code": "LAX",
     "name": "Los Angeles (Metro)",
     "group": "United States",
@@ -744,6 +772,20 @@
       "longitude": -3.621211
     },
     "shield": "mad-madrid-es"
+  },
+  {
+    "code": "TOJ",
+    "name": "Madrid",
+    "group": "Europe",
+    "region": "EU-West",
+    "stats_region": "europe",
+    "billing_region": "Europe",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 40.433899,
+      "longitude": -3.62408
+    }
   },
   {
     "code": "MAN",
@@ -996,20 +1038,6 @@
     "shield": "osl-oslo-no"
   },
   {
-    "code": "PMO",
-    "name": "Palermo",
-    "group": "Europe",
-    "region": "EU-East",
-    "stats_region": "europe",
-    "billing_region": "Europe",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 38.1607109,
-      "longitude": 13.3157489
-    }
-  },
-  {
     "code": "PAO",
     "name": "Palo Alto (Metro)",
     "group": "United States",
@@ -1081,6 +1109,20 @@
       "longitude": -122.914
     },
     "shield": "pdx-or-us"
+  },
+  {
+    "code": "QRO",
+    "name": "Queretaro",
+    "group": "Mexico",
+    "region": "MX-Central",
+    "stats_region": "mexico",
+    "billing_region": "Mexico",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 20.566,
+      "longitude": -100.258
+    }
   },
   {
     "code": "GIG",
@@ -1215,6 +1257,20 @@
     "shield": "qpg-singapore-sg"
   },
   {
+    "code": "SIN",
+    "name": "Singapore",
+    "group": "Asia/Pacific",
+    "region": "Asia",
+    "stats_region": "asia",
+    "billing_region": "Asia",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 1.350189,
+      "longitude": 103.994433
+    }
+  },
+  {
     "code": "SOF",
     "name": "Sofia",
     "group": "Europe",
@@ -1274,19 +1330,19 @@
     "shield": "sydney-au"
   },
   {
-    "code": "HND",
-    "name": "Tokyo",
+    "code": "WSI",
+    "name": "Sydney",
     "group": "Asia/Pacific",
-    "region": "Asia",
-    "stats_region": "asia",
-    "billing_region": "Asia",
+    "region": "APAC",
+    "stats_region": "anzac",
+    "billing_region": "Australia",
     "coordinates": {
       "x": 0,
       "y": 0,
-      "latitude": 35.622281,
-      "longitude": 139.748426
+      "latitude": -33.919,
+      "longitude": 151.189
     },
-    "shield": "hnd-tokyo-jp"
+    "shield": "sydney-au"
   },
   {
     "code": "TYO",

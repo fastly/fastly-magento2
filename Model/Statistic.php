@@ -181,8 +181,8 @@ class Statistic extends AbstractModel implements IdentityInterface
         Data $helper,
         ProductMetadataInterface $productMetadata,
         Http $request,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
+        ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        ?AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->config = $config;

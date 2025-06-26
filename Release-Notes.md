@@ -1,5 +1,34 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.229
+
+- Correct Surrogate Key behavior under shielding https://github.com/fastly/fastly-magento2/pull/746 
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/743
+
+## 1.2.228
+
+- Extend surrogate keys instead of replacing them https://github.com/fastly/fastly-magento2/pull/719
+
+## 1.2.227
+
+- Use bulk update API for ACLs for IP list update in fastly:maintenance command https://github.com/fastly/fastly-magento2/pull/741
+
+## 1.2.226
+
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/738
+- Update Netacea integration to 5.10.7 https://github.com/fastly/fastly-magento2/pull/737
+
+## 1.2.225
+
+- PHP 8.4 suport https://github.com/fastly/fastly-magento2/pull/724
+- Update Netacea integration to 5.10.6 https://github.com/fastly/fastly-magento2/pull/736
+
+## 1.2.224
+
+- Update available Fastly Shielding POP list
+- Update to DataDome Fastly Module 2.24.1 https://github.com/fastly/fastly-magento2/pull/728
+- Remove legacy WAF button https://github.com/fastly/fastly-magento2/pull/735
+
 ## 1.2.223
 
 - Update available Fastly Shielding POP list

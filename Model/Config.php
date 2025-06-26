@@ -587,9 +587,9 @@ class Config extends \Magento\PageCache\Model\Config
         StateInterface $cacheState,
         Dir\Reader $reader,
         VclGeneratorFactory $vclGeneratorFactory,
-        Json $serializer = null,
-        StoreManagerInterface $storeManager = null,
-        GeolocationRedirectMatcher $geolocationRedirectMatcher = null
+        ?Json $serializer = null,
+        ?StoreManagerInterface $storeManager = null,
+        ?GeolocationRedirectMatcher $geolocationRedirectMatcher = null
     ) {
         $this->serializer = $serializer ?: ObjectManager::getInstance()->get(Json::class);
         $this->geolocationRedirectMatcher = $geolocationRedirectMatcher ?:

@@ -3583,7 +3583,7 @@ $isFastlyEnabled =              $block->getConfig()->isFastlyEnabled();
                     "fetchLogEndpointUrl": "<?php echo $block->escapeJsQuote($fetchLogEndpointUrl);?>",
                     "fetchAllLogEndpointsUrl": "<?php echo $block->escapeJsQuote($fetchAllLogEndpointsUrl);?>",
                     "fetchLogEndpointsUrl": "<?php echo $block->escapeJsQuote($fetchLogEndpointsUrl);?>",
-                    "availableLogProviders": <?php echo json_encode($availableLogProviders);?>
+                    "availableLogProviders": <?php /* @noEscape */ echo json_encode($availableLogProviders);?>
                 }
             }
         }

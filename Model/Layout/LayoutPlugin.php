@@ -77,7 +77,7 @@ class LayoutPlugin
             }
         }
 
-        if (empty($this->response->getHeader('fastly-page-cacheable'))) {
+        if (!empty($this->response->getHeaders()) && !$this->response->getHeaders()->has('fastly-page-cacheable')) {
             /*
              * Surface the cacheability of a page. This may expose things like page blocks being set to
              * cacheable = false which makes the whole page uncacheable

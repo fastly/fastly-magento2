@@ -12,7 +12,7 @@
         "zordius/lightncandy": "^1.2"
     },
     "type": "magento2-module",
-    "version": "1.2.230",
+    "version": "1.2.231",
     "license": "BSD-3-Clause",
     "autoload": {
         "files": [ "registration.php" ],

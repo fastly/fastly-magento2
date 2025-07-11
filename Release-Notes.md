@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.231
+
+- Add @noEscape notation to JSON output in config
+
 ## 1.2.230
 
 - Update to DataDome Fastly Module 2.25.0 https://github.com/fastly/fastly-magento2/pull/750

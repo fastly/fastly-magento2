@@ -116,6 +116,20 @@
     }
   },
   {
+    "code": "QAB",
+    "name": "Bhubaneswar",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 20.296,
+      "longitude": 85.825
+    }
+  },
+  {
     "code": "BOG",
     "name": "Bogota",
     "group": "South America",
@@ -567,6 +581,20 @@
       "longitude": -95.336783
     },
     "shield": "iah-tx-us"
+  },
+  {
+    "code": "QAC",
+    "name": "Howrah",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 22.58,
+      "longitude": 88.297
+    }
   },
   {
     "code": "HYD",
@@ -1111,6 +1139,20 @@
     "shield": "pdx-or-us"
   },
   {
+    "code": "PNQ",
+    "name": "Pune",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 18.596,
+      "longitude": 73.727
+    }
+  },
+  {
     "code": "QRO",
     "name": "Queretaro",
     "group": "Mexico",
@@ -1268,7 +1310,8 @@
       "y": 0,
       "latitude": 1.350189,
       "longitude": 103.994433
-    }
+    },
+    "shield": "sin-singapore-sg"
   },
   {
     "code": "SOF",
@@ -1331,7 +1374,7 @@
   },
   {
     "code": "WSI",
-    "name": "Sydney",
+    "name": "Sydney (Metro)",
     "group": "Asia/Pacific",
     "region": "APAC",
     "stats_region": "anzac",
@@ -1342,7 +1385,7 @@
       "latitude": -33.919,
       "longitude": 151.189
     },
-    "shield": "sydney-au"
+    "shield": "wsi-australia-au"
   },
   {
     "code": "TYO",
@@ -1401,6 +1444,20 @@
       "y": 0,
       "latitude": 49.1967,
       "longitude": -123.1815
+    }
+  },
+  {
+    "code": "VNS",
+    "name": "Varanasi",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 24.652,
+      "longitude": 84.32
     }
   },
   {

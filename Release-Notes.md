@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.232
+
+- Update Netacea integration to 5.13.0 https://github.com/fastly/fastly-magento2/pull/748
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/754
+
 ## 1.2.231
 
 - Add @noEscape notation to JSON output in config

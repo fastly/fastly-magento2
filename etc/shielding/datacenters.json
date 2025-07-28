@@ -116,6 +116,20 @@
     }
   },
   {
+    "code": "JGA",
+    "name": "Bhopal",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 22.355,
+      "longitude": 69.845
+    }
+  },
+  {
     "code": "QAB",
     "name": "Bhubaneswar",
     "group": "India",
@@ -612,6 +626,20 @@
     "shield": "hyd-hyderabad-in"
   },
   {
+    "code": "QAE",
+    "name": "Hyderabad",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 17.351,
+      "longitude": 78.548
+    }
+  },
+  {
     "code": "JNB",
     "name": "Johannesburg",
     "group": "Africa",
@@ -813,6 +841,20 @@
       "y": 0,
       "latitude": 40.433899,
       "longitude": -3.62408
+    }
+  },
+  {
+    "code": "QAD",
+    "name": "Madurai",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 28.984,
+      "longitude": 77.706
     }
   },
   {

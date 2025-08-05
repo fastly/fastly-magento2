@@ -116,20 +116,6 @@
     }
   },
   {
-    "code": "JGA",
-    "name": "Bhopal",
-    "group": "India",
-    "region": "Asia-South",
-    "stats_region": "asia_india",
-    "billing_region": "India",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 22.355,
-      "longitude": 69.845
-    }
-  },
-  {
     "code": "QAB",
     "name": "Bhubaneswar",
     "group": "India",
@@ -640,6 +626,20 @@
     }
   },
   {
+    "code": "JGA",
+    "name": "Jamnagar",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 22.355,
+      "longitude": 69.845
+    }
+  },
+  {
     "code": "JNB",
     "name": "Johannesburg",
     "group": "Africa",
@@ -844,20 +844,6 @@
     }
   },
   {
-    "code": "QAD",
-    "name": "Madurai",
-    "group": "India",
-    "region": "Asia-South",
-    "stats_region": "asia_india",
-    "billing_region": "India",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 28.984,
-      "longitude": 77.706
-    }
-  },
-  {
     "code": "MAN",
     "name": "Manchester",
     "group": "Europe",
@@ -900,6 +886,20 @@
       "longitude": 5.373
     },
     "shield": "mrs-marseille-fr"
+  },
+  {
+    "code": "QAD",
+    "name": "Meerut",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 28.984,
+      "longitude": 77.706
+    }
   },
   {
     "code": "MEL",

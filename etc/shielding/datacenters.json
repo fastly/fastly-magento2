@@ -116,6 +116,20 @@
     }
   },
   {
+    "code": "QAF",
+    "name": "Bhopal",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 23.296,
+      "longitude": 77.354
+    }
+  },
+  {
     "code": "QAB",
     "name": "Bhubaneswar",
     "group": "India",
@@ -377,6 +391,20 @@
       "longitude": 77.378557
     },
     "shield": "del-delhi-in"
+  },
+  {
+    "code": "QAG",
+    "name": "Delhi Lawrence Road",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 28.684,
+      "longitude": 77.155
+    }
   },
   {
     "code": "DEN",
@@ -669,6 +697,20 @@
     }
   },
   {
+    "code": "QAA",
+    "name": "Karnal",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 29.685,
+      "longitude": 76.99
+    }
+  },
+  {
     "code": "CCU",
     "name": "Kolkata",
     "group": "Asia/Pacific",
@@ -841,6 +883,20 @@
       "y": 0,
       "latitude": 40.433899,
       "longitude": -3.62408
+    }
+  },
+  {
+    "code": "IXM",
+    "name": "Madurai",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 9.922,
+      "longitude": 78.094
     }
   },
   {

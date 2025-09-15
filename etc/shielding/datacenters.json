@@ -1119,6 +1119,20 @@
     }
   },
   {
+    "code": "TSS",
+    "name": "New York City (Metro)",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 39.584,
+      "longitude": -104.857
+    }
+  },
+  {
     "code": "EWR",
     "name": "Newark",
     "group": "United States",

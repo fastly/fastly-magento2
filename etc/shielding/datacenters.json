@@ -102,6 +102,20 @@
     "shield": "auckland-akl"
   },
   {
+    "code": "QAH",
+    "name": "Bangalore Peenya",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 13.033,
+      "longitude": 77.559
+    }
+  },
+  {
     "code": "BKK",
     "name": "Bangkok",
     "group": "Asia/Pacific",
@@ -683,6 +697,20 @@
     "shield": "jnb-johannesburg-za"
   },
   {
+    "code": "KNU",
+    "name": "Kanpur",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 26.401,
+      "longitude": 80.413
+    }
+  },
+  {
     "code": "MCI",
     "name": "Kansas City",
     "group": "United States",
@@ -1119,6 +1147,20 @@
     }
   },
   {
+    "code": "TSS",
+    "name": "New York City (Metro)",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 40.707,
+      "longitude": -74.029
+    }
+  },
+  {
     "code": "EWR",
     "name": "Newark",
     "group": "United States",
@@ -1262,6 +1304,20 @@
       "y": 0,
       "latitude": 20.566,
       "longitude": -100.258
+    }
+  },
+  {
+    "code": "IXR",
+    "name": "Ranchi",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 23.812,
+      "longitude": 86.464
     }
   },
   {

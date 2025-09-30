@@ -55,6 +55,11 @@ class PurgeCache
      */
     public function sendPurgeRequest($pattern = '')
     {
+        \Magento\Framework\Debugger::getInstance('ACSD-68044')->log(__METHOD__, [
+            'operation' => 'sendPurgeRequest',
+            'pattern' => $pattern
+        ], false);
+
         if (empty($pattern)) {
             if ($this->config->canPreserveStatic()) {
                 $result = $this->api->cleanBySurrogateKey(['text']);

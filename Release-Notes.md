@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.235
+
+- Update Netacea integration to 5.15.0 https://github.com/fastly/fastly-magento2/pull/766
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/765
+
 ## 1.2.234
 
 - Purge tags on Admin config save https://github.com/fastly/fastly-magento2/pull/762

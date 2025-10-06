@@ -1104,6 +1104,20 @@
     "shield": "bom-mumbai-in"
   },
   {
+    "code": "QAI",
+    "name": "Mumbai DAICEC",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 19.062,
+      "longitude": 72.866
+    }
+  },
+  {
     "code": "MUC",
     "name": "Munich",
     "group": "Europe",
@@ -1510,6 +1524,20 @@
       "longitude": 17.94165
     },
     "shield": "stockholm-bma"
+  },
+  {
+    "code": "STV",
+    "name": "Surat",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 21.266,
+      "longitude": 72.952
+    }
   },
   {
     "code": "SYD",

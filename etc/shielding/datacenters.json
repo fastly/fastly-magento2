@@ -130,6 +130,20 @@
     }
   },
   {
+    "code": "QAJ",
+    "name": "Berhampur",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 24.078,
+      "longitude": 88.265
+    }
+  },
+  {
     "code": "QAF",
     "name": "Bhopal",
     "group": "India",
@@ -347,20 +361,6 @@
       "longitude": 12.37752
     },
     "shield": "cph-copenhagen-dk"
-  },
-  {
-    "code": "CWB",
-    "name": "Curitiba",
-    "group": "South America",
-    "region": "SA-East",
-    "stats_region": "southamerica_std",
-    "billing_region": "South America",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": -25.4809,
-      "longitude": -49.3044
-    }
   },
   {
     "code": "ADS",
@@ -1104,6 +1104,20 @@
     "shield": "bom-mumbai-in"
   },
   {
+    "code": "QAI",
+    "name": "Mumbai DAICEC",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 19.062,
+      "longitude": 72.866
+    }
+  },
+  {
     "code": "MUC",
     "name": "Munich",
     "group": "Europe",
@@ -1279,6 +1293,20 @@
     "shield": "pdx-or-us"
   },
   {
+    "code": "IXD",
+    "name": "Prayagraj",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 25.453,
+      "longitude": 81.835
+    }
+  },
+  {
     "code": "PNQ",
     "name": "Pune",
     "group": "India",
@@ -1347,6 +1375,20 @@
       "y": 0,
       "latitude": 41.89891,
       "longitude": 12.51206
+    }
+  },
+  {
+    "code": "QAK",
+    "name": "Sambalpur",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 21.078,
+      "longitude": 79.152
     }
   },
   {
@@ -1510,6 +1552,20 @@
       "longitude": 17.94165
     },
     "shield": "stockholm-bma"
+  },
+  {
+    "code": "STV",
+    "name": "Surat",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 21.266,
+      "longitude": 72.952
+    }
   },
   {
     "code": "SYD",

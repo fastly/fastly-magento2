@@ -91,6 +91,15 @@
                                 <![CDATA[Return a <strong>301 Moved Permanently</strong> redirect to any unencrypted request, and redirect to the TLS equivalent. Also sets <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security" target="_blank">HSTS headers</a>.]]></comment>
                             <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\TlsBtn</frontend_model>
                         </field>
+                        <!-- ====================
+                             Enable HTTP3 button
+                        ===================== -->
+                        <field id="enable_http_3" translate="label comment" sortOrder="10" showInDefault="1" showInStore="0" showInWebsite="0">
+                            <label>Enable HTTP/3</label>
+                            <comment>Requests made to the domains on this Fastly services should be capable of supporting HTTP/3 if
+                                they are being made from a client that supports these protocols.</comment>
+                            <frontend_model>Fastly\Cdn\Block\System\Config\Form\Field\Http3Btn</frontend_model>
+                        </field>
                         <!-- ==================================
                              Admin Path Timeout input field
                         =================================== -->

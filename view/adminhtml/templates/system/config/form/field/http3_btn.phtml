@@ -1,0 +1,105 @@
+<?php
+/** @var $escaper \Magento\Framework\Escaper */
+
+
+$serviceInfoUrl = $block->getUrl('adminhtml/fastlyCdn_Configuration/serviceInfo');
+$toggleHttp3Url = $block->getUrl('adminhtml/fastlyCdn_Advanced/toggleHttp3');
+$checkHttp3StatusUrl = $block->getUrl('adminhtml/fastlyCdn_Advanced/checkHttp3Status');
+
+?>
+
+
+<?= $block->getButtonHtml() ?>
+
+<span class="collect-indicator" id="http3-request_state_span">
+    <span id="fastly_http_3_status_message_span"><b>Current state:</b>
+        <img
+             class="processing"
+             alt="Collecting"
+             style="margin:0 5px;"
+             src="<?php /* @noEscape */ echo $block->getViewFileUrl('Fastly_Cdn::images/fastly16.gif') ?>" />
+        <span style="display:none;" class="request_http3_state_span state_enabled"
+              id="http3_state_enabled"> enabled</span>
+        <span style="display:none;" class="request_http3_state_span state_disabled"
+              id="http3_state_disabled"> disabled</span>
+        <span style="display:none;" class="request_http3_state_span state_unknown"
+              id="http3_state_unknown"> unknown</span>
+    </span>
+</span>
+
+<div class="message message-error fastly-button-messages" id="fastly-error-http3-button-msg" style="display: none">
+</div>
+
+<div class="message message-success fastly-button-messages" id="fastly-success-http3-button-msg" style="display: none">
+</div>
+
+
+
+<style type="text/css">
+    .fastly-button-messages {
+        font-size: 1.2rem;
+        margin-top: 5px;
+        padding: 1.4rem 4rem 1.4rem 5.5rem;
+    }
+
+    #http3_state_enabled {
+        color: #008000;
+    }
+
+    #http3_state_disabled {
+        color: #808080;
+    }
+
+    #http3_state_unknown {
+        color: #ff0000;
+    }
+</style>
+
+<!-- HTTP/3 toggle overlay template -->
+<script type="text/x-magento-template" id="fastly-http3-template">
+    <div class="messages">
+        <div class="message message-warning fastly-message-warning" style="display: none">
+            <?php /* @noEscape */ echo __("You are about to clone your active version #x.")?>
+            <?php /* @noEscape */ echo __("We'll make the changes to version #y.")?>
+        </div>
+        <div class="message message-error fastly-message-error" style="display: none">
+        </div>
+    </div>
+    <form action="<?php /* @noEscape */ echo $block->getUrl('adminhtml/fastlyCdn_Vcl/upload'); ?>"
+          method="POST"
+          id="vcl-upload-form"
+          class="form-inline"
+          enctype="multipart/form-data">
+        <fieldset class="admin__fieldset form-list question">
+            <div class="admin__field field maintenance-checkbox-container">
+                <label for="fastly_activate_vcl" class="admin__field-label">
+                    <span><?php /* @noEscape */ echo __('Activate after the change')?></span>
+                </label>
+                <div class="admin__field-control">
+                    <div class="admin__field-option">
+                        <input class="admin__control-checkbox"
+                               type="checkbox"
+                               name="fastly_activate_http3"
+                               id="fastly_activate_http3"
+                               checked/>
+                        <label class="admin__field-label" for="fastly_activate_http3"></label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</script>
+
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "http3": {
+                "serviceInfoUrl": "<?= $escaper->escapeJs($serviceInfoUrl);?>",
+                "toggleHttp3Url": "<?= $escaper->escapeJs($toggleHttp3Url);?>",
+                "checkHttp3StatusUrl": "<?= $escaper->escapeJs($checkHttp3StatusUrl);?>"
+            }
+        }
+    }
+</script>
+
+

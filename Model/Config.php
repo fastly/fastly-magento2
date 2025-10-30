@@ -155,10 +155,14 @@ class Config extends \Magento\PageCache\Model\Config
      */
     const FORCE_TLS_PATH = '/vcl_snippets_force_tls';
 
+    const HTTP3_PATH = '/vcl_snippets_http_3';
+
     /**
      * Force TLS setting name
      */
     const FORCE_TLS_SETTING_NAME = self::FASTLY_MAGENTO_MODULE . '_force_tls_recv';
+
+    const ENABLE_HTTP3_SETTING_NAME = self::FASTLY_MAGENTO_MODULE . '_enable_http3_recv';
 
     /**
      * Configure Dictionary name

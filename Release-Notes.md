@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.236
+
+- Implement logic which adds snippet to recv based on HTTP3 config https://github.com/fastly/fastly-magento2/pull/772
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/771
+
 ## 1.2.235
 
 - Update Netacea integration to 5.15.0 https://github.com/fastly/fastly-magento2/pull/766

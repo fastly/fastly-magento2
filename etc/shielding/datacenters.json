@@ -464,6 +464,20 @@
     }
   },
   {
+    "code": "QAM",
+    "name": "Dhanbad",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 25.52,
+      "longitude": 85.27
+    }
+  },
+  {
     "code": "DXB",
     "name": "Dubai",
     "group": "Asia/Pacific",

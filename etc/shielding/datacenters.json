@@ -43,6 +43,20 @@
     }
   },
   {
+    "code": "PUT",
+    "name": "Anantapur",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 14.637,
+      "longitude": 77.565
+    }
+  },
+  {
     "code": "DCA",
     "name": "Ashburn (Metro)",
     "group": "United States",
@@ -304,6 +318,20 @@
     "shield": "maa-chennai-in"
   },
   {
+    "code": "ORD",
+    "name": "Chicago",
+    "group": "United States",
+    "region": "US-Central",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 41.863,
+      "longitude": -87.641
+    }
+  },
+  {
     "code": "CHI",
     "name": "Chicago (Metro)",
     "group": "United States",
@@ -461,6 +489,20 @@
       "y": 0,
       "latitude": 42.448,
       "longitude": -83.263
+    }
+  },
+  {
+    "code": "QAM",
+    "name": "Dhanbad",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 25.52,
+      "longitude": 85.27
     }
   },
   {
@@ -750,6 +792,20 @@
       "y": 0,
       "latitude": 29.685,
       "longitude": 76.99
+    }
+  },
+  {
+    "code": "QAN",
+    "name": "Kochi",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 9.931,
+      "longitude": 76.267
     }
   },
   {
@@ -1146,6 +1202,20 @@
     }
   },
   {
+    "code": "QAO",
+    "name": "Mumbai RCP",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 19.076,
+      "longitude": 72.878
+    }
+  },
+  {
     "code": "MUC",
     "name": "Munich",
     "group": "Europe",
@@ -1360,6 +1430,20 @@
       "y": 0,
       "latitude": 20.566,
       "longitude": -100.258
+    }
+  },
+  {
+    "code": "RPR",
+    "name": "Raipur",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 21.228,
+      "longitude": 81.598
     }
   },
   {

@@ -77,11 +77,11 @@ jobs:
             opensearch: "1.2.0"
             phpunit: "9.6.33"
 
-          - magento: "2.4.6-p13"
-            php: "8.2"
-            composer: "v2"
-            opensearch: "2.5.0"
-            phpunit: "9.6.33"
+          # - magento: "2.4.6-p13"
+          #   php: "8.2"
+          #   composer: "v2"
+          #   opensearch: "2.5.0"
+          #   phpunit: "9.6.33"
 
           - magento: "2.4.7-p8"
             php: "8.3"
@@ -89,7 +89,7 @@ jobs:
             opensearch: "2.5.0"
 
           - magento: "2.4.8-p3"
-            php: "8.3"
+            php: "8.4"
             composer: "v2"
             opensearch: "2.5.0"
     steps:

@@ -75,18 +75,30 @@ jobs:
           #  composer: "v1"
           #  elasticsearch: "7.10.2"
 
-          - magento: "2.4.4-p11"
+          - magento: "2.4.4-p13"
             php: "8.1"
             composer: "v2"
             opensearch: "1.2.0"
+            phpunit: ""
 
-          - magento: "2.4.5"
+          - magento: "2.4.5-p14"
             php: "8.1"
             composer: "v2"
             opensearch: "1.2.0"
+            phpunit: "9.6.33"
 
-          - magento: "2.4.6"
+          - magento: "2.4.6-p13"
             php: "8.2"
+            composer: "v2"
+            opensearch: "2.5.0"
+
+          - magento: "2.4.7-p8"
+            php: "8.3"
+            composer: "v2"
+            opensearch: "2.5.0"
+
+          - magento: "2.4.8-p3"
+            php: "8.3"
             composer: "v2"
             opensearch: "2.5.0"
     steps:
@@ -100,6 +112,10 @@ jobs:
         run: |
           composer create-project --repository-url="https://mirror.mage-os.org/" \
           "magento/project-community-edition=${{ matrix.magento }}" . --no-install
+
+      - name: Force PHPUnit version
+        if: matrix.phpunit != ''
+        run: composer require --no-install --dev "phpunit/phpunit:${{ matrix.phpunit }}"
 
       - run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
         id: composer-cache

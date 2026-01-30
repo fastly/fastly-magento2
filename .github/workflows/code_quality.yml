@@ -67,31 +67,31 @@ jobs:
       matrix:
         # https://experienceleague.adobe.com/docs/commerce-operations/installation-guide/system-requirements.html
         include:
-          # Higher matching version 4.6.1 of magento/magento2-functional-testing-framework was found in public repository packagist.org
-          # than 4.4.2 in private https://mirror.mage-os.org. Public package might've been taken over by a malicious entity,
-          # please investigate and update package requirement to match the version from the private repository
-
           - magento: "2.4.5-p14"
             php: "8.1"
             composer: "v2"
             opensearch: "1.2.0"
             phpunit: "9.6.33"
+            search_engine: "elasticsearch7"
 
           # - magento: "2.4.6-p13"
           #   php: "8.2"
           #   composer: "v2"
           #   opensearch: "2.5.0"
           #   phpunit: "9.6.33"
+          #   search_engine: "elasticsearch7"
 
           - magento: "2.4.7-p8"
             php: "8.3"
             composer: "v2"
             opensearch: "2.5.0"
+            search_engine: "elasticsearch7"
 
           - magento: "2.4.8-p3"
             php: "8.4"
             composer: "v2"
             opensearch: "2.5.0"
+            search_engine: "opensearch"
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -125,9 +125,36 @@ jobs:
         with:
           path: "app/code/Fastly/Cdn/"
 
-      - name: Setup Magento 2
+      - name: Configure localhost
+        run: echo "127.0.0.1 magento2.test" | sudo tee -a /etc/hosts
+
+      - name: Setup Magento 2 with OpenSearch
+        if: matrix.search_engine == 'opensearch'
         run: |
-          echo "127.0.0.1 magento2.test" | sudo tee -a /etc/hosts && \
+          bin/magento setup:install \
+          --base-url=http://magento2.test/ \
+          --db-host=127.0.0.1:33060 \
+          --db-name=magento \
+          --db-user=magento \
+          --db-password=magento \
+          --admin-firstname=admin \
+          --admin-lastname=admin \
+          --admin-email=admin@admin.com \
+          --admin-user=admin \
+          --admin-password=admin123 \
+          --language=en_US \
+          --currency=USD \
+          --timezone=America/Los_Angeles \
+          --use-rewrites=1 \
+          --search-engine=opensearch \
+          --opensearch-host=localhost \
+          --opensearch-port=9200 \
+          --opensearch-index-prefix=magento2 \
+          --opensearch-timeout=15
+
+      - name: Setup Magento 2 with Elasticsearch
+        if: matrix.search_engine == 'elasticsearch7'
+        run: |
           bin/magento setup:install \
           --base-url=http://magento2.test/ \
           --db-host=127.0.0.1:33060 \

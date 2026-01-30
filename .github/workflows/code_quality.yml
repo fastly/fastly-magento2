@@ -70,16 +70,6 @@ jobs:
           # Higher matching version 4.6.1 of magento/magento2-functional-testing-framework was found in public repository packagist.org
           # than 4.4.2 in private https://mirror.mage-os.org. Public package might've been taken over by a malicious entity,
           # please investigate and update package requirement to match the version from the private repository
-          #- magento: "2.4.3-p3"
-          #  php: "7.4"
-          #  composer: "v1"
-          #  elasticsearch: "7.10.2"
-
-          - magento: "2.4.4-p13"
-            php: "8.1"
-            composer: "v2"
-            opensearch: "1.2.0"
-            phpunit: ""
 
           - magento: "2.4.5-p14"
             php: "8.1"

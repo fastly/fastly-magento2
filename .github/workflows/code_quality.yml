@@ -81,6 +81,7 @@ jobs:
             php: "8.2"
             composer: "v2"
             opensearch: "2.5.0"
+            phpunit: "9.6.33"
 
           - magento: "2.4.7-p8"
             php: "8.3"

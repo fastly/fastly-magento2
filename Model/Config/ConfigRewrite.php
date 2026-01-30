@@ -24,7 +24,6 @@ use Fastly\Cdn\Model\Api;
 use Magento\AsyncConfig\Setup\ConfigOptionsList;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\DeploymentConfig;
-use Magento\StoreGraphQl\Model\Resolver\Store\ConfigIdentity;
 use Magento\StoreGraphQl\Model\Resolver\Store\StoreConfigDataProvider;
 use Magento\Store\Model\StoreManagerInterface;
 use Fastly\Cdn\Model\PurgeCache;

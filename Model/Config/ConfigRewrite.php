@@ -21,7 +21,13 @@
 namespace Fastly\Cdn\Model\Config;
 
 use Fastly\Cdn\Model\Api;
+use Magento\AsyncConfig\Setup\ConfigOptionsList;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\DeploymentConfig;
+use Magento\StoreGraphQl\Model\Resolver\Store\ConfigIdentity;
+use Magento\StoreGraphQl\Model\Resolver\Store\StoreConfigDataProvider;
+use Magento\Store\Model\StoreManagerInterface;
+use Fastly\Cdn\Model\PurgeCache;
 
 /**
  * Used for sending purge after disabling Fastly as caching service
@@ -42,17 +48,55 @@ class ConfigRewrite
     private $api;
 
     /**
-     * ConfigRewrite constructor.
-     *
+     * @var ConfigIdentity
+     */
+    private $configIdentity;
+
+    /**
+     * @var StoreConfigDataProvider
+     */
+    private $storeConfigDataProvider;
+
+    /**
+     * @var StoreManagerInterface
+     */
+    private $storeManager;
+
+    /**
+     * @var PurgeCache
+     */
+    private $purgeCache;
+
+    /**
+     * @var DeploymentConfig
+     */
+    private $deploymentConfig;
+
+    /**
      * @param ScopeConfigInterface $scopeConfig
      * @param Api $api
+     * @param ConfigIdentity $configIdentity
+     * @param StoreConfigDataProvider $storeConfigDataProvider
+     * @param StoreManagerInterface $storeManager
+     * @param PurgeCache $purgeCache
+     * @param DeploymentConfig $deploymentConfig
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
-        Api $api
+        Api $api,
+        ConfigIdentity $configIdentity,
+        StoreConfigDataProvider $storeConfigDataProvider,
+        StoreManagerInterface $storeManager,
+        PurgeCache $purgeCache,
+        DeploymentConfig $deploymentConfig,
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->api = $api;
+        $this->configIdentity = $configIdentity;
+        $this->storeConfigDataProvider = $storeConfigDataProvider;
+        $this->storeManager = $storeManager;
+        $this->purgeCache = $purgeCache;
+        $this->deploymentConfig = $deploymentConfig;
     }
 
     /**
@@ -65,6 +109,18 @@ class ConfigRewrite
     {
         if ($this->purge) {
             $this->api->cleanBySurrogateKey(['text']);
+        }
+
+        if (!$this->deploymentConfig->get(ConfigOptionsList::CONFIG_PATH_ASYNC_CONFIG_SAVE)) {
+            return;
+        }
+
+        $store = $subject->getStore();
+
+        $resolvedData = $this->storeConfigDataProvider->getStoreConfigData($this->storeManager->getStore($store));
+        $tags = $this->configIdentity->getIdentities($resolvedData);
+        if (!empty($tags)) {
+            $this->purgeCache->sendPurgeRequest(array_unique($tags));
         }
     }
 

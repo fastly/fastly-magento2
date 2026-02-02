@@ -24,8 +24,11 @@ use Fastly\Cdn\Model\Config;
 use Magento\Framework\App\Cache\StateInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Module\Dir\Reader;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\StoreManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -61,6 +64,34 @@ class ConfigTest extends TestCase
      */
     public function setUp(): void
     {
+        $serializerMock = $this->createPartialMock(
+            Json::class,
+            ['serialize', 'unserialize']
+        );
+
+        $serializerMock->expects($this->any())
+            ->method('serialize')
+            ->willReturnCallback(
+                function ($value) {
+                    return json_encode($value);
+                }
+            );
+
+        $serializerMock->expects($this->any())
+            ->method('unserialize')
+            ->willReturnCallback(
+                function ($value) {
+                    return json_decode($value, true);
+                }
+            );
+
+        $storeManager = $this->getMockBuilder(
+            StoreManagerInterface::class
+        )->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+
+        $geolocationRedirectMatcher = new Config\GeolocationRedirectMatcher();
+
          $readFactoryMock = $this->getMockBuilder('Magento\Framework\Filesystem\Directory\ReadFactory')
              ->disableOriginalConstructor()
              ->getMock();
@@ -133,7 +164,10 @@ class ConfigTest extends TestCase
              $this->_coreConfigMock,
              $this->_cacheState,
              $this->moduleReader,
-             $vclGeneratorFactoryMock
+             $vclGeneratorFactoryMock,
+             $serializerMock,
+             $storeManager,
+             $geolocationRedirectMatcher
          );
      }
 

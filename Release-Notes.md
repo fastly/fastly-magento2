@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.237
+
+- Invalidate GraphQL cache for asynchronously saved config cache https://github.com/fastly/fastly-magento2/pull/785
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/786
+
 ## 1.2.236
 
 - Implement logic which adds snippet to recv based on HTTP3 config https://github.com/fastly/fastly-magento2/pull/772

@@ -530,6 +530,8 @@ class Config extends \Magento\PageCache\Model\Config
     const XML_FASTLY_EXEMPT_GOOD_BOTS
         = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/crawler_protection/exempt_good_bots';
 
+    const XML_FASTLY_EXCLUDED_COUNTRIES
+        = 'system/full_page_cache/fastly/fastly_rate_limiting_settings/crawler_protection/excluded_countries';
     /**
      * Request Header for VCL comparison
      */
@@ -1137,7 +1139,27 @@ class Config extends \Magento\PageCache\Model\Config
     {
         return $this->_scopeConfig->getValue(self::XML_FASTLY_EXEMPT_GOOD_BOTS);
     }
-
+    
+    /**
+     * Get the list of countries to be excluded from the rate limiting
+     *
+     * @return array
+     */
+    public function getExcludedCountries()
+    {
+        $excludedCountries = $this->_scopeConfig->getValue(self::XML_FASTLY_EXCLUDED_COUNTRIES);
+        if (!empty($excludedCountries)) {
+            try {
+                $excludedCountries = json_decode($excludedCountries, true);
+            } catch (\Exception $e) {
+                $excludedCountries = []; // Return empty array on failure
+            }
+        } else {
+            $excludedCountries = [];
+        }
+        return $excludedCountries;
+    }
+    
     /**
      * Get store ID for country.
      *

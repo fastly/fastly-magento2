@@ -77,14 +77,16 @@ class LayoutPlugin
             }
         }
 
-        /*
-         * Surface the cacheability of a page. This may expose things like page blocks being set to
-         * cacheable = false which makes the whole page uncacheable
-         */
-        if ($subject->isCacheable()) {
-            $this->response->setHeader("fastly-page-cacheable", "YES");
-        } else {
-            $this->response->setHeader("fastly-page-cacheable", "NO");
+        if (empty($this->response->getHeader('fastly-page-cacheable'))) {
+            /*
+             * Surface the cacheability of a page. This may expose things like page blocks being set to
+             * cacheable = false which makes the whole page uncacheable
+             */
+            if ($subject->isCacheable()) {
+                $this->response->setHeader("fastly-page-cacheable", "YES");
+            } else {
+                $this->response->setHeader("fastly-page-cacheable", "NO");
+            }
         }
     }
 

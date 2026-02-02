@@ -14,6 +14,34 @@
     }
   },
   {
+    "code": "QAS",
+    "name": "Agra",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 25.578,
+      "longitude": 91.876
+    }
+  },
+  {
+    "code": "QAU",
+    "name": "Ahmedabad",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 23.092,
+      "longitude": 72.673
+    }
+  },
+  {
     "code": "AMS",
     "name": "Amsterdam",
     "group": "Europe",
@@ -40,6 +68,34 @@
       "y": 0,
       "latitude": 52.357,
       "longitude": 4.951
+    }
+  },
+  {
+    "code": "PUT",
+    "name": "Anantapur",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 14.637,
+      "longitude": 77.565
+    }
+  },
+  {
+    "code": "QAW",
+    "name": "Asansol",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 21.393,
+      "longitude": 79.327
     }
   },
   {
@@ -102,6 +158,20 @@
     "shield": "auckland-akl"
   },
   {
+    "code": "QBK",
+    "name": "Bangalore",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 12.983,
+      "longitude": 77.751
+    }
+  },
+  {
     "code": "QAH",
     "name": "Bangalore Peenya",
     "group": "India",
@@ -155,6 +225,34 @@
       "y": 0,
       "latitude": 23.296,
       "longitude": 77.354
+    }
+  },
+  {
+    "code": "QBL",
+    "name": "Bhopal",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 23.18,
+      "longitude": 77.46
+    }
+  },
+  {
+    "code": "QBM",
+    "name": "Bhubaneshwar",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 21.393,
+      "longitude": 79.327
     }
   },
   {
@@ -304,6 +402,20 @@
     "shield": "maa-chennai-in"
   },
   {
+    "code": "ORD",
+    "name": "Chicago",
+    "group": "United States",
+    "region": "US-Central",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 41.863,
+      "longitude": -87.641
+    }
+  },
+  {
     "code": "CHI",
     "name": "Chicago (Metro)",
     "group": "United States",
@@ -375,6 +487,20 @@
       "longitude": 12.37752
     },
     "shield": "cph-copenhagen-dk"
+  },
+  {
+    "code": "CWB",
+    "name": "Curitiba",
+    "group": "South America",
+    "region": "SA-East",
+    "stats_region": "southamerica_std",
+    "billing_region": "South America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": -25.459,
+      "longitude": -49.26
+    }
   },
   {
     "code": "ADS",
@@ -461,6 +587,20 @@
       "y": 0,
       "latitude": 42.448,
       "longitude": -83.263
+    }
+  },
+  {
+    "code": "QAM",
+    "name": "Dhanbad",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 25.52,
+      "longitude": 85.27
     }
   },
   {
@@ -580,6 +720,20 @@
     }
   },
   {
+    "code": "QAX",
+    "name": "Guwahati",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 26.11,
+      "longitude": 91.71
+    }
+  },
+  {
     "code": "HEL",
     "name": "Helsinki",
     "group": "Europe",
@@ -682,6 +836,34 @@
     }
   },
   {
+    "code": "JAX",
+    "name": "Jacksonville",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 30.3322,
+      "longitude": -81.6557
+    }
+  },
+  {
+    "code": "QAY",
+    "name": "Jaipur",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 26.997,
+      "longitude": 75.785
+    }
+  },
+  {
     "code": "JGA",
     "name": "Jamnagar",
     "group": "India",
@@ -753,6 +935,20 @@
     }
   },
   {
+    "code": "QAN",
+    "name": "Kochi",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 9.931,
+      "longitude": 76.267
+    }
+  },
+  {
     "code": "CCU",
     "name": "Kolkata",
     "group": "Asia/Pacific",
@@ -766,6 +962,20 @@
       "longitude": 88.393
     },
     "shield": "ccu-kolkata-in"
+  },
+  {
+    "code": "QAR",
+    "name": "Kolkata",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 22.573,
+      "longitude": 88.433
+    }
   },
   {
     "code": "KTU",
@@ -868,6 +1078,20 @@
       "longitude": -0.011
     },
     "shield": "lon-london-uk"
+  },
+  {
+    "code": "LTN",
+    "name": "London",
+    "group": "Europe",
+    "region": "EU-West",
+    "stats_region": "europe",
+    "billing_region": "Europe",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 51.581,
+      "longitude": -0.243
+    }
   },
   {
     "code": "BUR",
@@ -1132,6 +1356,20 @@
     "shield": "bom-mumbai-in"
   },
   {
+    "code": "NMI",
+    "name": "Mumbai",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 19.124,
+      "longitude": 73.005
+    }
+  },
+  {
     "code": "QAI",
     "name": "Mumbai DAICEC",
     "group": "India",
@@ -1146,6 +1384,20 @@
     }
   },
   {
+    "code": "QAO",
+    "name": "Mumbai RCP",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 19.076,
+      "longitude": 72.878
+    }
+  },
+  {
     "code": "MUC",
     "name": "Munich",
     "group": "Europe",
@@ -1157,6 +1409,20 @@
       "y": 0,
       "latitude": 48.143,
       "longitude": 11.555
+    }
+  },
+  {
+    "code": "QBB",
+    "name": "Nagpur",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 21.393,
+      "longitude": 79.327
     }
   },
   {
@@ -1218,6 +1484,20 @@
     "shield": "ewr-nj-us"
   },
   {
+    "code": "QBD",
+    "name": "Noida",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 28.615,
+      "longitude": 77.385
+    }
+  },
+  {
     "code": "ITM",
     "name": "Osaka",
     "group": "Asia/Pacific",
@@ -1275,6 +1555,20 @@
       "longitude": 2.38532
     },
     "shield": "paris-fr"
+  },
+  {
+    "code": "QBE",
+    "name": "Patna",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 25.578,
+      "longitude": 91.876
+    }
   },
   {
     "code": "PER",
@@ -1360,6 +1654,20 @@
       "y": 0,
       "latitude": 20.566,
       "longitude": -100.258
+    }
+  },
+  {
+    "code": "RPR",
+    "name": "Raipur",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 21.228,
+      "longitude": 81.598
     }
   },
   {
@@ -1740,6 +2048,20 @@
       "longitude": 16.41
     },
     "shield": "vie-vienna-at"
+  },
+  {
+    "code": "VTZ",
+    "name": "Visakhapatnam",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 17.749,
+      "longitude": 83.267
+    }
   },
   {
     "code": "WLG",

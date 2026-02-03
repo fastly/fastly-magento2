@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.238
+
+- Add gstatic.com to CSP allowlist https://github.com/fastly/fastly-magento2/pull/787
+
 ## 1.2.237
 
 - Invalidate GraphQL cache for asynchronously saved config cache https://github.com/fastly/fastly-magento2/pull/785

@@ -42,6 +42,20 @@
     }
   },
   {
+    "code": "QAV",
+    "name": "Ambala",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 30.364,
+      "longitude": 76.177
+    }
+  },
+  {
     "code": "AMS",
     "name": "Amsterdam",
     "group": "Europe",
@@ -402,6 +416,20 @@
     "shield": "maa-chennai-in"
   },
   {
+    "code": "QAP",
+    "name": "Chennai",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 13.022,
+      "longitude": 80.203
+    }
+  },
+  {
     "code": "ORD",
     "name": "Chicago",
     "group": "United States",
@@ -558,6 +586,20 @@
       "y": 0,
       "latitude": 28.684,
       "longitude": 77.155
+    }
+  },
+  {
+    "code": "HDO",
+    "name": "Delhi-Vikaspuri",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 28.631,
+      "longitude": 77.069
     }
   },
   {
@@ -1137,6 +1179,20 @@
     }
   },
   {
+    "code": "QAZ",
+    "name": "Lucknow",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 26.919,
+      "longitude": 80.964
+    }
+  },
+  {
     "code": "MAD",
     "name": "Madrid",
     "group": "Europe",
@@ -1266,6 +1322,20 @@
       "longitude": -80.290556
     },
     "shield": "miami-fl-us"
+  },
+  {
+    "code": "BGY",
+    "name": "Milan",
+    "group": "Europe",
+    "region": "EU-East",
+    "stats_region": "europe",
+    "billing_region": "Europe",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 45.477,
+      "longitude": 9.102
+    }
   },
   {
     "code": "LIN",
@@ -2050,6 +2120,20 @@
     "shield": "vie-vienna-at"
   },
   {
+    "code": "QBI",
+    "name": "Vijaywada",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 16.506,
+      "longitude": 80.648
+    }
+  },
+  {
     "code": "VTZ",
     "name": "Visakhapatnam",
     "group": "India",
@@ -2061,6 +2145,20 @@
       "y": 0,
       "latitude": 17.749,
       "longitude": 83.267
+    }
+  },
+  {
+    "code": "QBJ",
+    "name": "Warrangal",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 17.969,
+      "longitude": 79.593
     }
   },
   {

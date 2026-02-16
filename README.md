@@ -1,3 +1,4 @@
+TEST
 # FASTLY CDN FOR MAGENTO2 DOCUMENTATION
 
 Thank you for using the "Fastly CDN module for Magento2" (Fastly_Cdn).

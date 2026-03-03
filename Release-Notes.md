@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.239
+
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/792
+
 ## 1.2.238
 
 - Add gstatic.com to CSP allowlist https://github.com/fastly/fastly-magento2/pull/787

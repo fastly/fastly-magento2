@@ -1768,6 +1768,20 @@
     }
   },
   {
+    "code": "IXZ",
+    "name": "Port Blair",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 11.608,
+      "longitude": 92.705
+    }
+  },
+  {
     "code": "PDX",
     "name": "Portland",
     "group": "United States",

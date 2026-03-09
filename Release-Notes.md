@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.240
+
+- feat: php 8.5 compatibility https://github.com/fastly/fastly-magento2/pull/793
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/795
+
 ## 1.2.239
 
 - Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/792

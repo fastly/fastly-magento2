@@ -227,10 +227,20 @@ class SuperUserCommand extends Command
             throw new \Exception(__($msg));
         }
         $aclId = $acl->id;
-        $aclItems = $this->api->aclItemsList($aclId);
         $comment = 'Added for Maintenance Mode';
 
-        $this->deleteIps($aclItems, $aclId);
+        do {
+
+            // Per default, Fastly returns 100 IP addresses in one call - we fetch until we clear all of them
+            $aclItems = $this->api->aclItemsList($aclId);
+            if (!$aclItems) {
+                break;
+            }
+            $numberOfItems = count($aclItems);
+            $this->output->writeln('<info>' . "Deleting $numberOfItems IP addresses" . '</info>');
+            $this->deleteIps($aclItems, $aclId);
+
+        } while (true);
 
         $updatedIpList = [];
         foreach ($ipList as $ip) {
@@ -269,6 +279,8 @@ class SuperUserCommand extends Command
             $updatedIpList[] = $ipInformation;
         }
 
+        $numberOfUpdatedIp = count($updatedIpList);
+        $this->output->writeln('<info>' . "Updating list with $numberOfUpdatedIp IP addresses" . '</info>');
         $this->api->bulkAclItems($aclId, $updatedIpList);
 
         $this->sendWebHook('*Admin IPs list has been updated*');

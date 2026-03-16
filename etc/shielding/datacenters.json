@@ -2085,6 +2085,20 @@
     }
   },
   {
+    "code": "QBG",
+    "name": "Srinagar-Nahota",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 34.071,
+      "longitude": 74.846
+    }
+  },
+  {
     "code": "STL",
     "name": "St.Louis",
     "group": "United States",

@@ -228,6 +228,20 @@
     }
   },
   {
+    "code": "BER",
+    "name": "Berlin",
+    "group": "Europe",
+    "region": "EU-East",
+    "stats_region": "europe",
+    "billing_region": "Europe",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 52.502,
+      "longitude": 13.369
+    }
+  },
+  {
     "code": "QAF",
     "name": "Bhopal",
     "group": "India",
@@ -2082,6 +2096,20 @@
       "y": 0,
       "latitude": 17.66,
       "longitude": 75.906
+    }
+  },
+  {
+    "code": "QBG",
+    "name": "Srinagar-Nahota",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 34.071,
+      "longitude": 74.846
     }
   },
   {

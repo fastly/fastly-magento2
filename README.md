@@ -6,7 +6,7 @@ This package contains everything you need to connect fastly.com (Fastly) with
 your Magento commerce shop and to get the most out of Fastly's powerful caching
 capabilities for a blazing fast e-commerce site.
 
-## Contents
+## Contents test
 
 - [Description](#description)
 - [Documentation](#documentation)

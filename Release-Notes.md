@@ -1,5 +1,20 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.241
+
+- feat: Improve bulk operations and output https://github.com/fastly/fastly-magento2/pull/742
+- Update Netacea integration to 5.17.0 https://github.com/fastly/fastly-magento2/pull/802
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/803
+
+## 1.2.240
+
+- feat: php 8.5 compatibility https://github.com/fastly/fastly-magento2/pull/793
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/795
+
+## 1.2.239
+
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/792
+
 ## 1.2.238
 
 - Add gstatic.com to CSP allowlist https://github.com/fastly/fastly-magento2/pull/787

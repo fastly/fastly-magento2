@@ -102,7 +102,8 @@ class Data extends AbstractHelper
             'honeycomb' => 'Honeycomb',
             'newrelic' => 'New Relic Logs',
             'sumologic' => 'Sumologic',
-            'azureblob' => 'Azure Blob Storage'
+            'azureblob' => 'Azure Blob Storage',
+            'https' => 'General HTTPS',
         ];
     }
 }

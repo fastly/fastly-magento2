@@ -2040,6 +2040,20 @@
     "shield": "icn-seoul-kr"
   },
   {
+    "code": "SHL",
+    "name": "Shillong",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 25.578,
+      "longitude": 91.876
+    }
+  },
+  {
     "code": "QBF",
     "name": "Shimla",
     "group": "India",
@@ -2051,6 +2065,20 @@
       "y": 0,
       "latitude": 31.098,
       "longitude": 77.151
+    }
+  },
+  {
+    "code": "IXB",
+    "name": "Siliguri",
+    "group": "India",
+    "region": "Asia-South",
+    "stats_region": "asia_india",
+    "billing_region": "India",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 26.727,
+      "longitude": 88.395
     }
   },
   {
@@ -2243,6 +2271,20 @@
       "longitude": -79.630556
     },
     "shield": "yyz-on-ca"
+  },
+  {
+    "code": "PAE",
+    "name": "Tukwila",
+    "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 47.498,
+      "longitude": -122.29
+    }
   },
   {
     "code": "YVR",

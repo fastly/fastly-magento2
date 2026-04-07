@@ -4,6 +4,6 @@
       table.lookup(magentomodule_basic_auth, regsub(req.http.Authorization, "^Basic ", ""), "NOTFOUND") == "NOTFOUND" &&
       !req.url ~ "^/(index\.php/)?####ADMIN_PATH####/" &&
       !req.url ~ "^/(index\.php/)?(rest|oauth|graphql)($|[\/?])" &&
-      !req.url ~ "^/pub/static/" ) {
+      !req.url ~ "^/(pub/)?static/" ) {
       error 771;
   }

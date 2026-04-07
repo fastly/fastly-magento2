@@ -21,7 +21,6 @@
 namespace Fastly\Cdn\Model\Config;
 
 use Fastly\Cdn\Model\Api;
-use Magento\AsyncConfig\Setup\ConfigOptionsList;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\DeploymentConfig;
 use Magento\StoreGraphQl\Model\Resolver\Store\StoreConfigDataProvider;
@@ -107,7 +106,11 @@ class ConfigRewrite
             return;
         }
 
-        if (!$this->deploymentConfig->get(ConfigOptionsList::CONFIG_PATH_ASYNC_CONFIG_SAVE)) {
+        if (!class_exists('\Magento\AsyncConfig\Setup\ConfigOptionsList')) {
+            return;
+        }
+
+        if (!$this->deploymentConfig->get(\Magento\AsyncConfig\Setup\ConfigOptionsList::CONFIG_PATH_ASYNC_CONFIG_SAVE)) {
             return;
         }
 

@@ -1,5 +1,12 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.242
+
+- Add static URL check to basic auth VCL https://github.com/fastly/fastly-magento2/pull/791
+- fix: Additional check for AsyncConfig class - check if exists before usage https://github.com/fastly/fastly-magento2/pull/804
+- feat: Support for https logging https://github.com/fastly/fastly-magento2/pull/806
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/807
+
 ## 1.2.241
 
 - feat: Improve bulk operations and output https://github.com/fastly/fastly-magento2/pull/742

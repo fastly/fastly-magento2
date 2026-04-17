@@ -335,7 +335,7 @@
                             <comment>
                                 <![CDATA[List of countries that can be selected. Multiple selections allowed.]]>
                             </comment>
-                            <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                            <source_model>Fastly\Cdn\Model\Config\Country</source_model>
                             <can_be_empty>1</can_be_empty>
                         </field>
                         <!-- ==========================

@@ -1,5 +1,69 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.242
+
+- Add static URL check to basic auth VCL https://github.com/fastly/fastly-magento2/pull/791
+- fix: Additional check for AsyncConfig class - check if exists before usage https://github.com/fastly/fastly-magento2/pull/804
+- feat: Support for https logging https://github.com/fastly/fastly-magento2/pull/806
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/807
+
+## 1.2.241
+
+- feat: Improve bulk operations and output https://github.com/fastly/fastly-magento2/pull/742
+- Update Netacea integration to 5.17.0 https://github.com/fastly/fastly-magento2/pull/802
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/803
+
+## 1.2.240
+
+- feat: php 8.5 compatibility https://github.com/fastly/fastly-magento2/pull/793
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/795
+
+## 1.2.239
+
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/792
+
+## 1.2.238
+
+- Add gstatic.com to CSP allowlist https://github.com/fastly/fastly-magento2/pull/787
+
+## 1.2.237
+
+- Invalidate GraphQL cache for asynchronously saved config cache https://github.com/fastly/fastly-magento2/pull/785
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/786
+
+## 1.2.236
+
+- Implement logic which adds snippet to recv based on HTTP3 config https://github.com/fastly/fastly-magento2/pull/772
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/771
+
+## 1.2.235
+
+- Update Netacea integration to 5.15.0 https://github.com/fastly/fastly-magento2/pull/766
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/765
+
+## 1.2.234
+
+- Purge tags on Admin config save https://github.com/fastly/fastly-magento2/pull/762
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/761
+
+## 1.2.233
+
+- Update Netacea integration to 5.14.0 https://github.com/fastly/fastly-magento2/pull/755
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/756
+
+## 1.2.232
+
+- Update Netacea integration to 5.13.0 https://github.com/fastly/fastly-magento2/pull/748
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/754
+
+## 1.2.231
+
+- Add @noEscape notation to JSON output in config
+
+## 1.2.230
+
+- Update to DataDome Fastly Module 2.25.0 https://github.com/fastly/fastly-magento2/pull/750
+
 ## 1.2.229
 
 - Correct Surrogate Key behavior under shielding https://github.com/fastly/fastly-magento2/pull/746 

@@ -104,6 +104,10 @@ jobs:
           composer create-project --repository-url="https://mirror.mage-os.org/" \
           "magento/project-community-edition=${{ matrix.magento }}" . --no-install
 
+      - name: Ignore specific security advisories
+        run: |
+          composer config --json audit.ignore '{"PKSA-7h5p-prw9-w5nr": "advisory is time complexity related, low impact for our scenario"}'
+
       - name: Force PHPUnit version
         if: matrix.phpunit != ''
         run: composer require --no-install --dev "phpunit/phpunit:${{ matrix.phpunit }}"

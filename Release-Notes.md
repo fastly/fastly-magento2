@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.243
+
+- fix: Correct display for "fastly-page-cacheable" debug header https://github.com/fastly/fastly-magento2/pull/752
+- feat: Add custom class for Country options https://github.com/fastly/fastly-magento2/pull/810
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/811
+
 ## 1.2.242
 
 - Add static URL check to basic auth VCL https://github.com/fastly/fastly-magento2/pull/791

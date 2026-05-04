@@ -1882,6 +1882,20 @@
     "shield": "gig-riodejaneiro-br"
   },
   {
+    "code": "RUH",
+    "name": "Riyadh",
+    "group": "Asia/Pacific",
+    "region": "Saudi-Arabia",
+    "stats_region": "saudi_arabia",
+    "billing_region": "Saudi Arabia",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 24.717,
+      "longitude": 46.643
+    }
+  },
+  {
     "code": "FCO",
     "name": "Rome",
     "group": "Europe",

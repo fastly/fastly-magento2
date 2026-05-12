@@ -102,7 +102,7 @@ class SerializeToJson extends Command
      * @param OutputInterface $output
      * @return int|null|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output) // @codingStandardsIgnoreLine - required by parent class
+    protected function execute(InputInterface $input, OutputInterface $output): int // @codingStandardsIgnoreLine - required by parent class
     {
 
         $configPaths = [

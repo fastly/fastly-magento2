@@ -30,7 +30,8 @@ let config = {
             fastlyImport: 'Fastly_Cdn/js/import',
             fastlyExport: 'Fastly_Cdn/js/export',
             versionHistory: 'Fastly_Cdn/js/version-history',
-            importExportRenderer: 'Fastly_Cdn/js/import-export-renderer'
+            importExportRenderer: 'Fastly_Cdn/js/import-export-renderer',
+            http3: 'Fastly_Cdn/js/http3'
         }
     }
 };

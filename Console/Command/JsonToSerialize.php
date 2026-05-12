@@ -101,7 +101,7 @@ class JsonToSerialize extends Command
      * @param OutputInterface $output
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output) // @codingStandardsIgnoreLine - required by parent class
+    protected function execute(InputInterface $input, OutputInterface $output): int // @codingStandardsIgnoreLine - required by parent class
     {
 
         $configPaths = [

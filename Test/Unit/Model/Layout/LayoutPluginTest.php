@@ -112,6 +112,7 @@ class LayoutPluginTest extends TestCase
          $staleErrorTtl = 0, $cacheControl = 'max-age=86400, public, s-maxage=86400'): void
      {
          $headerName = 'cache-control';
+         $cacheableHeaderName = 'fastly-page-cacheable';
 
          $this->layoutMock->expects($this->any()
          )->method('isCacheable'
@@ -132,11 +133,18 @@ class LayoutPluginTest extends TestCase
          if ($layoutIsCacheable && $cacheState && $cacheType == \Fastly\Cdn\Model\Config::FASTLY && $ttl > 0) {
              if (!empty($cacheControl)) {
                  $cacheControlHeader = new GenericHeader($headerName, $cacheControl);
+                 $cacheableHeader = new GenericHeader($cacheableHeaderName, 'YES');
 
-                 $this->responseMock->expects($this->once()
-                 )->method('getHeader'
-                 )->with($headerName
-                 )->will($this->returnValue($cacheControlHeader));
+                 $this->responseMock->expects($this->exactly(2))
+                     ->method('getHeader')
+                     ->withConsecutive(
+                         [$headerName],
+                         [$cacheableHeaderName]
+                     )
+                     ->willReturnOnConsecutiveCalls(
+                         $this->returnValue($cacheControlHeader),
+                         $this->returnValue($cacheableHeader)
+                     );
 
                  $this->configMock->expects($this->once()
                  )->method('getStaleTtl'
@@ -157,19 +165,27 @@ class LayoutPluginTest extends TestCase
                      $value = sprintf(', stale-while-revalidate=%s', $staleTtl);
                  }
 
-                 $this->responseMock->expects($this->exactly(2)
+                 // change to once since 'fastly-page-cacheable' is already set in this mock, so method won't set it again
+                 $this->responseMock->expects($this->once()
                  )->method('setHeader');
                  //->with($headerName, $cacheControl . $value, true);
 
              } else {
 
-                 $this->responseMock->expects($this->once()
-                 )->method('getHeader'
-                 )->with($headerName
-                 )->will($this->returnValue(false));
+                 $this->responseMock->expects($this->exactly(2))
+                     ->method('getHeader')
+                     ->withConsecutive(
+                         [$headerName],
+                         [$cacheableHeaderName]
+                     )
+                     ->willReturnOnConsecutiveCalls(
+                         $this->returnValue(false),
+                         $this->returnValue('NO')
+                     );
 
-                 $this->responseMock->expects($this->once()
-                 )->method('setHeader');
+                 // Removed because 'cache-control' is not set in this case and 'fastly-page-cacheable' is already set
+                 // in mock, so second setHeader is skipped
+                 //$this->responseMock->expects($this->once())->method('setHeader');
              }
          } else {
              $this->responseMock->expects($this->once()

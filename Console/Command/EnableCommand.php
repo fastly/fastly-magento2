@@ -300,7 +300,7 @@ class EnableCommand extends Command
     /**
      * @inheritdoc
      */
-    protected function execute(InputInterface $input, OutputInterface $output) // @codingStandardsIgnoreLine - required by parent class
+    protected function execute(InputInterface $input, OutputInterface $output): int // @codingStandardsIgnoreLine - required by parent class
     {
         $this->output = $output;
         $options = $input->getOptions();

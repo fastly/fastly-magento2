@@ -38,6 +38,13 @@ define([
                 }
             }]
         });
+
+        if ($('.loading-mask') && $('.modal-slide') && $('.modal-slide').css('z-index')) {
+            // modal has bigger z-index value than the loader, resulting in customer not knowing action is being executed
+            let modalIndexValue = $('.modal-slide').css('z-index');
+            $('.loading-mask').css('z-index', modalIndexValue + 10);
+        }
+
         this.modal.modal('openModal');
     }
 });

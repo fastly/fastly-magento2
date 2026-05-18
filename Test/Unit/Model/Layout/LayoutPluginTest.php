@@ -137,14 +137,17 @@ class LayoutPluginTest extends TestCase
 
                  $this->responseMock->expects($this->exactly(2))
                      ->method('getHeader')
-                     ->withConsecutive(
-                         [$headerName],
-                         [$cacheableHeaderName]
-                     )
-                     ->willReturnOnConsecutiveCalls(
-                         $this->returnValue($cacheControlHeader),
-                         $this->returnValue($cacheableHeader)
-                     );
+                     ->willReturnCallback(function ($name) use (&$callCount, $headerName, $cacheableHeaderName, $cacheControlHeader, $cacheableHeader) {
+                         $callCount++;
+                         if ($callCount === 1) {
+                             $this->assertEquals($headerName, $name);
+                             return $cacheControlHeader;
+                         }
+                         else {
+                             $this->assertEquals($cacheableHeaderName, $name);
+                             return $cacheableHeader;
+                         }
+                     });
 
                  $this->configMock->expects($this->once()
                  )->method('getStaleTtl'
@@ -174,14 +177,17 @@ class LayoutPluginTest extends TestCase
 
                  $this->responseMock->expects($this->exactly(2))
                      ->method('getHeader')
-                     ->withConsecutive(
-                         [$headerName],
-                         [$cacheableHeaderName]
-                     )
-                     ->willReturnOnConsecutiveCalls(
-                         $this->returnValue(false),
-                         $this->returnValue('NO')
-                     );
+                     ->willReturnCallback(function ($name) use (&$callCount, $headerName, $cacheableHeaderName) {
+                         $callCount++;
+                         if ($callCount === 1) {
+                             $this->assertEquals($headerName, $name);
+                             return false;
+                         }
+                         else {
+                             $this->assertEquals($cacheableHeaderName, $name);
+                             return 'NO';
+                         }
+                     });
 
                  // Removed because 'cache-control' is not set in this case and 'fastly-page-cacheable' is already set
                  // in mock, so second setHeader is skipped

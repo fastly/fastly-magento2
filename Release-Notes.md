@@ -1,5 +1,11 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.244
+
+- Update to DataDome Fastly Module 2.31.0 https://github.com/fastly/fastly-magento2/pull/813
+- Update Netacea integration.json to v5.17.2 https://github.com/fastly/fastly-magento2/pull/815
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/818
+
 ## 1.2.243
 
 - fix: Correct display for "fastly-page-cacheable" debug header https://github.com/fastly/fastly-magento2/pull/752

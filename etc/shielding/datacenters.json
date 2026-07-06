@@ -1966,6 +1966,20 @@
     }
   },
   {
+    "code": "RHV",
+    "name": "Santa Clara",
+    "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 37.383,
+      "longitude": -121.986
+    }
+  },
+  {
     "code": "SCL",
     "name": "Santiago",
     "group": "South America",

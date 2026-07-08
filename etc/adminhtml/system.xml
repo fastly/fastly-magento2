@@ -782,6 +782,15 @@
                             <depends>
                                 <field id="enable_rate_limiting_master">1</field>
                             </depends>
+                            <!-- =================================
+                                Exclude countries from rate limiting
+                            ================================== -->                            
+                            <field id="excluded_countries" translate="label comment" type="multiselect" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="0">
+                                <label>Excluded Countries for Rate Limiting</label>
+                                <comment>Select countries to exclude from rate limiting.</comment>
+                                <source_model>Magento\Config\Model\Config\Source\Locale\Country</source_model>
+                                <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                            </field>
                         </group>
                     </group>
                     <!-- ========================

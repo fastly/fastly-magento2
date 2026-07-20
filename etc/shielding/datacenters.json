@@ -42,6 +42,20 @@
     }
   },
   {
+    "code": "ABQ",
+    "name": "Albuquerque",
+    "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 35.11,
+      "longitude": -106.558
+    }
+  },
+  {
     "code": "QAV",
     "name": "Ambala",
     "group": "India",
@@ -628,6 +642,20 @@
       "y": 0,
       "latitude": 28.631,
       "longitude": 77.069
+    }
+  },
+  {
+    "code": "APA",
+    "name": "Denver",
+    "group": "United States",
+    "region": "US-Central",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 39.742,
+      "longitude": -105.018
     }
   },
   {
@@ -1767,6 +1795,20 @@
     }
   },
   {
+    "code": "PPM",
+    "name": "Pompano",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 25.945,
+      "longitude": -80.205
+    }
+  },
+  {
     "code": "IXZ",
     "name": "Port Blair",
     "group": "India",
@@ -1866,6 +1908,20 @@
     }
   },
   {
+    "code": "RIC",
+    "name": "Richmond",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 37.602,
+      "longitude": -77.49
+    }
+  },
+  {
     "code": "GIG",
     "name": "Rio de Janeiro",
     "group": "South America",
@@ -1909,6 +1965,20 @@
     }
   },
   {
+    "code": "SMF",
+    "name": "Sacramento",
+    "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 38.693,
+      "longitude": -121.345
+    }
+  },
+  {
     "code": "SXV",
     "name": "Salem",
     "group": "India",
@@ -1920,6 +1990,20 @@
       "y": 0,
       "latitude": 11.642,
       "longitude": 78.132
+    }
+  },
+  {
+    "code": "BTF",
+    "name": "Salt Lake City",
+    "group": "United States",
+    "region": "US-Central",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 40.724,
+      "longitude": -111.855
     }
   },
   {
@@ -2366,6 +2450,20 @@
       "y": 0,
       "latitude": -41.327221,
       "longitude": 174.805278
+    }
+  },
+  {
+    "code": "VNC",
+    "name": "West Florida",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 27.1,
+      "longitude": -82.371
     }
   }
 ]

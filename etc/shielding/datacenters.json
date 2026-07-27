@@ -1132,20 +1132,6 @@
     "shield": "lis-lisbon-pt"
   },
   {
-    "code": "BQH",
-    "name": "London",
-    "group": "Europe",
-    "region": "EU-West",
-    "stats_region": "europe",
-    "billing_region": "Europe",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 51.238,
-      "longitude": -0.575
-    }
-  },
-  {
     "code": "LCY",
     "name": "London",
     "group": "Europe",
@@ -1159,20 +1145,6 @@
       "longitude": 0.055278
     },
     "shield": "london_city-uk"
-  },
-  {
-    "code": "LGW",
-    "name": "London",
-    "group": "Europe",
-    "region": "EU-West",
-    "stats_region": "europe",
-    "billing_region": "Europe",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 51.238,
-      "longitude": -0.575
-    }
   },
   {
     "code": "LHR",
@@ -1203,34 +1175,6 @@
       "longitude": -0.011
     },
     "shield": "lon-london-uk"
-  },
-  {
-    "code": "LTN",
-    "name": "London",
-    "group": "Europe",
-    "region": "EU-West",
-    "stats_region": "europe",
-    "billing_region": "Europe",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 51.581,
-      "longitude": -0.243
-    }
-  },
-  {
-    "code": "QQP",
-    "name": "London",
-    "group": "Europe",
-    "region": "EU-West",
-    "stats_region": "europe",
-    "billing_region": "Europe",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 51.513,
-      "longitude": -0.099
-    }
   },
   {
     "code": "BUR",
@@ -1963,20 +1907,6 @@
       "y": 0,
       "latitude": 37.242,
       "longitude": -121.782
-    }
-  },
-  {
-    "code": "RHV",
-    "name": "Santa Clara",
-    "group": "United States",
-    "region": "US-West",
-    "stats_region": "usa",
-    "billing_region": "North America",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 37.383,
-      "longitude": -121.986
     }
   },
   {

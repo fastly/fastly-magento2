@@ -50,6 +50,7 @@ class ConfigPluginTest extends TestCase
      * @param $isFastlyConfig
      * @param $result
      * @param $expectedOutput
+     * @dataProvider afterGetTypeDataProvider
      */
      #[DataProvider('afterGetTypeDataProvider')]
      public function testAfterGetType($isFastlyConfig, $result, $expectedOutput)

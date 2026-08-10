@@ -102,6 +102,7 @@ class LayoutPluginTest extends TestCase
       * @param $staleTtl
       * @param $staleErrorTtl
       * @param $cacheControl
+      * @dataProvider afterGenerateElementsDataProvider
       */
      #[DataProvider('afterGenerateElementsDataProvider')]
      public function testAfterGenerateElements($cacheState, $layoutIsCacheable, $cacheType, $ttl, $staleTtl = 0,
@@ -231,6 +232,7 @@ class LayoutPluginTest extends TestCase
       * @param $configCacheType
       * @param $headerName
       * @param $cntSetHeader
+      * @dataProvider afterGetOutputDataProvider
       */
      #[DataProvider('afterGetOutputDataProvider')]
      public function testAfterGetOutput($configCacheType, $headerName, $cntSetHeader)

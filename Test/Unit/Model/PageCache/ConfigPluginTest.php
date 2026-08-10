@@ -23,6 +23,7 @@ namespace Fastly\Cdn\Test\Unit\Model\PageCache;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Layout\LayoutPlugin;
 use Fastly\Cdn\Model\PageCache\ConfigPlugin;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -49,8 +50,8 @@ class ConfigPluginTest extends TestCase
      * @param $isFastlyConfig
      * @param $result
      * @param $expectedOutput
-     * @dataProvider afterGetTypeDataProvider
      */
+     #[DataProvider('afterGetTypeDataProvider')]
      public function testAfterGetType($isFastlyConfig, $result, $expectedOutput)
      {
          if ($isFastlyConfig) {

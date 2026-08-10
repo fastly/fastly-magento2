@@ -26,6 +26,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\View\Layout;
 use Magento\PageCache\Model\Config;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -101,8 +102,8 @@ class LayoutPluginTest extends TestCase
       * @param $staleTtl
       * @param $staleErrorTtl
       * @param $cacheControl
-      * @dataProvider afterGenerateElementsDataProvider
       */
+     #[DataProvider('afterGenerateElementsDataProvider')]
      public function testAfterGenerateElements($cacheState, $layoutIsCacheable, $cacheType, $ttl, $staleTtl = 0,
          $staleErrorTtl = 0, $cacheControl = 'max-age=86400, public, s-maxage=86400'): void
      {
@@ -230,8 +231,8 @@ class LayoutPluginTest extends TestCase
       * @param $configCacheType
       * @param $headerName
       * @param $cntSetHeader
-      * @dataProvider afterGetOutputDataProvider
       */
+     #[DataProvider('afterGetOutputDataProvider')]
      public function testAfterGetOutput($configCacheType, $headerName, $cntSetHeader)
      {
          $html = 'html';

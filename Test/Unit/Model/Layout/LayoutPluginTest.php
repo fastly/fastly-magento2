@@ -63,13 +63,8 @@ class LayoutPluginTest extends TestCase
 
     public function setUp(): void
      {
-         $this->layoutMock = $this->getMockForAbstractClass(
+         $this->layoutMock = $this->createPartialMock(
              'Magento\Framework\View\Layout',
-             [],
-             '',
-             false,
-             true,
-             true,
              ['isCacheable', 'getAllBlocks']
          );
 

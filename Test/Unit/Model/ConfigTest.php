@@ -108,23 +108,22 @@ class ConfigTest extends TestCase
              $this->any()
          )->method(
              'create'
-         )->will(
-             $this->returnValue($modulesDirectoryMock)
+         )->willReturn(
+             $modulesDirectoryMock
          );
 
          $modulesDirectoryMock->expects(
              $this->any()
          )->method(
              'readFile'
-         )->will(
-             $this->returnValue(file_get_contents(__DIR__ . '/_files/test.vcl'))
+         )->willReturn(
+             file_get_contents(__DIR__ . '/_files/test.vcl')
          );
          $this->_coreConfigMock->expects(
              $this->any()
          )->method(
              'getValue'
-         )->will(
-             $this->returnValueMap(
+         )->willReturnMap(
                  [
                      [
                          \Magento\PageCache\Model\Config::XML_VARNISH_PAGECACHE_BACKEND_HOST,
@@ -151,7 +150,6 @@ class ConfigTest extends TestCase
                          $serializer->serialize([['regexp' => '(?i)pattern', 'value' => 'value_for_pattern']])
                      ],
                  ]
-             )
          );
 
          $this->moduleReader = $this->getMockBuilder('Magento\Framework\Module\Dir\Reader')

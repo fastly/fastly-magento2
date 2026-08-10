@@ -111,19 +111,19 @@ class LayoutPluginTest extends TestCase
 
          $this->layoutMock->expects($this->any()
          )->method('isCacheable'
-         )->will($this->returnValue($layoutIsCacheable));
+         )->willReturn($layoutIsCacheable);
 
          $this->configMock->expects($this->any()
          )->method('isEnabled'
-         )->will($this->returnValue($cacheState));
+         )->willReturn($cacheState);
 
          $this->configMock->expects($this->any()
          )->method('getType'
-         )->will($this->returnValue($cacheType));
+         )->willReturn($cacheType);
 
          $this->configMock->expects($this->any()
          )->method('getTtl'
-         )->will($this->returnValue($ttl));
+         )->willReturn($ttl);
 
          if ($layoutIsCacheable && $cacheState && $cacheType == \Fastly\Cdn\Model\Config::FASTLY && $ttl > 0) {
              if (!empty($cacheControl)) {
@@ -146,11 +146,11 @@ class LayoutPluginTest extends TestCase
 
                  $this->configMock->expects($this->once()
                  )->method('getStaleTtl'
-                 )->will($this->returnValue($staleTtl));
+                 )->willReturn($staleTtl);
 
                  $this->configMock->expects($this->once()
                  )->method('getStaleErrorTtl'
-                 )->will($this->returnValue($staleErrorTtl));
+                 )->willReturn($staleErrorTtl);
 
                  $value = '';
                  if ($staleTtl && $staleErrorTtl) {
@@ -240,7 +240,7 @@ class LayoutPluginTest extends TestCase
 
          $this->configMock->expects($this->once()
          )->method('getType'
-         )->will($this->returnValue($configCacheType));
+         )->willReturn($configCacheType);
 
          $this->responseMock->expects($cntSetHeader
          )->method('setHeader'

@@ -23,6 +23,7 @@ namespace Fastly\Cdn\Test\Unit\Model\PageCache;
 use Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Layout\LayoutPlugin;
 use Fastly\Cdn\Model\PageCache\ConfigPlugin;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -46,13 +47,19 @@ class ConfigPluginTest extends TestCase
      }
 
     /**
-     * @param \Magento\PageCache\Model\Config $config
+     * @param $isFastlyConfig
      * @param $result
      * @param $expectedOutput
      * @dataProvider afterGetTypeDataProvider
      */
-     public function testAfterGetType(\Magento\PageCache\Model\Config $config, $result, $expectedOutput)
+     #[DataProvider('afterGetTypeDataProvider')]
+     public function testAfterGetType($isFastlyConfig, $result, $expectedOutput)
      {
+         if ($isFastlyConfig) {
+             $config = $this->getMockBuilder('Fastly\Cdn\Model\Config')->disableOriginalConstructor()->getMock();
+         } else {
+             $config = $this->getMockBuilder('Magento\PageCache\Model\Config')->disableOriginalConstructor()->getMock();
+         }
          $output = $this->model->afterGetType($config, $result);
          $this->assertSame($expectedOutput, $output);
      }
@@ -60,18 +67,16 @@ class ConfigPluginTest extends TestCase
     /**
      * @return array[]
      */
-     public function afterGetTypeDataProvider(): array
-     {
-         $pageCacheConfigMock = $this->getMockBuilder('Magento\PageCache\Model\Config')->disableOriginalConstructor()->getMock();
-         $fastlyConfigMock = $this->getMockBuilder('Fastly\Cdn\Model\Config')->disableOriginalConstructor()->getMock();
+    public static function afterGetTypeDataProvider(): array
+    {
 
-         return [
-             'Config: Fastly, Cache Type: Fastly, Expected: Fastly' => [$fastlyConfigMock, Config::FASTLY, Config::FASTLY],
-             'Config: Fastly, Cache Type: Varnish, Expected: Varnish' => [$fastlyConfigMock, Config::VARNISH, Config::VARNISH],
-             'Config: Fastly, Cache Type: Builtin, Expected: Builtin' => [$fastlyConfigMock, Config::BUILT_IN, Config::BUILT_IN],
-             'Config: PageCache, Cache Type: Fastly, Expected: Varnish' => [$pageCacheConfigMock, Config::FASTLY, Config::VARNISH],
-             'Config: PageCache, Cache Type: Varnish, Expected: Varnish' => [$pageCacheConfigMock, Config::VARNISH, Config::VARNISH],
-             'Config: PageCache, Cache Type: Builtin, Expected: Builtin' => [$pageCacheConfigMock, Config::BUILT_IN, Config::BUILT_IN],
-         ];
-     }
+        return [
+            'Config: Fastly, Cache Type: Fastly, Expected: Fastly' => [true, Config::FASTLY, Config::FASTLY],
+            'Config: Fastly, Cache Type: Varnish, Expected: Varnish' => [true, Config::VARNISH, Config::VARNISH],
+            'Config: Fastly, Cache Type: Builtin, Expected: Builtin' => [true, Config::BUILT_IN, Config::BUILT_IN],
+            'Config: PageCache, Cache Type: Fastly, Expected: Varnish' => [false, Config::FASTLY, Config::VARNISH],
+            'Config: PageCache, Cache Type: Varnish, Expected: Varnish' => [false, Config::VARNISH, Config::VARNISH],
+            'Config: PageCache, Cache Type: Builtin, Expected: Builtin' => [false, Config::BUILT_IN, Config::BUILT_IN],
+        ];
+    }
 }

@@ -67,12 +67,12 @@ jobs:
       matrix:
         # https://experienceleague.adobe.com/docs/commerce-operations/installation-guide/system-requirements.html
         include:
-          - magento: "2.4.5-p14"
-            php: "8.1"
+          - magento: "2.4.9"
+            php: "8.4"
             composer: "v2"
-            opensearch: "1.2.0"
             phpunit: "9.6.33"
-            search_engine: "elasticsearch7"
+            opensearch: "2.5.0"
+            search_engine: "opensearch"
 
           # - magento: "2.4.6-p13"
           #   php: "8.2"

@@ -1,5 +1,10 @@
 # Fastly_Cdn Release Notes
 
+## Unreleased
+
+- Test strategy update https://github.com/fastly/fastly-magento2/pull/825
+- Update to DataDome Fastly Module 2.31.1 https://github.com/fastly/fastly-magento2/pull/824
+
 ## 1.2.246
 
 - Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/823

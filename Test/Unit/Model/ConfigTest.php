@@ -85,10 +85,9 @@ class ConfigTest extends TestCase
                 }
             );
 
-        $storeManager = $this->getMockBuilder(
+        $storeManager = $this->createMock(
             StoreManagerInterface::class
-        )->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+        );
 
         $geolocationRedirectMatcher = new Config\GeolocationRedirectMatcher();
 
@@ -96,7 +95,7 @@ class ConfigTest extends TestCase
              ->disableOriginalConstructor()
              ->getMock();
          $this->_coreConfigMock = $this->getMockBuilder('Magento\Framework\App\Config\ScopeConfigInterface')->getMock();
-         $this->_cacheState = $this->getMockForAbstractClass('Magento\Framework\App\Cache\StateInterface');
+         $this->_cacheState = $this->createMock('Magento\Framework\App\Cache\StateInterface');
          $serializer = new Json();
          $modulesDirectoryMock = $this->getMockBuilder('Magento\Framework\Filesystem\Directory\Write')
              ->disableOriginalConstructor()
@@ -109,23 +108,22 @@ class ConfigTest extends TestCase
              $this->any()
          )->method(
              'create'
-         )->will(
-             $this->returnValue($modulesDirectoryMock)
+         )->willReturn(
+             $modulesDirectoryMock
          );
 
          $modulesDirectoryMock->expects(
              $this->any()
          )->method(
              'readFile'
-         )->will(
-             $this->returnValue(file_get_contents(__DIR__ . '/_files/test.vcl'))
+         )->willReturn(
+             file_get_contents(__DIR__ . '/_files/test.vcl')
          );
          $this->_coreConfigMock->expects(
              $this->any()
          )->method(
              'getValue'
-         )->will(
-             $this->returnValueMap(
+         )->willReturnMap(
                  [
                      [
                          \Magento\PageCache\Model\Config::XML_VARNISH_PAGECACHE_BACKEND_HOST,
@@ -152,7 +150,6 @@ class ConfigTest extends TestCase
                          $serializer->serialize([['regexp' => '(?i)pattern', 'value' => 'value_for_pattern']])
                      ],
                  ]
-             )
          );
 
          $this->moduleReader = $this->getMockBuilder('Magento\Framework\Module\Dir\Reader')

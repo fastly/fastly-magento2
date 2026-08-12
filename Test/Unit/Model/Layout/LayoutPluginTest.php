@@ -26,6 +26,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\View\Layout;
 use Magento\PageCache\Model\Config;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -63,13 +64,8 @@ class LayoutPluginTest extends TestCase
 
     public function setUp(): void
      {
-         $this->layoutMock = $this->getMockForAbstractClass(
+         $this->layoutMock = $this->createPartialMock(
              'Magento\Framework\View\Layout',
-             [],
-             '',
-             false,
-             true,
-             true,
              ['isCacheable', 'getAllBlocks']
          );
 
@@ -108,6 +104,7 @@ class LayoutPluginTest extends TestCase
       * @param $cacheControl
       * @dataProvider afterGenerateElementsDataProvider
       */
+     #[DataProvider('afterGenerateElementsDataProvider')]
      public function testAfterGenerateElements($cacheState, $layoutIsCacheable, $cacheType, $ttl, $staleTtl = 0,
          $staleErrorTtl = 0, $cacheControl = 'max-age=86400, public, s-maxage=86400'): void
      {
@@ -116,19 +113,19 @@ class LayoutPluginTest extends TestCase
 
          $this->layoutMock->expects($this->any()
          )->method('isCacheable'
-         )->will($this->returnValue($layoutIsCacheable));
+         )->willReturn($layoutIsCacheable);
 
          $this->configMock->expects($this->any()
          )->method('isEnabled'
-         )->will($this->returnValue($cacheState));
+         )->willReturn($cacheState);
 
          $this->configMock->expects($this->any()
          )->method('getType'
-         )->will($this->returnValue($cacheType));
+         )->willReturn($cacheType);
 
          $this->configMock->expects($this->any()
          )->method('getTtl'
-         )->will($this->returnValue($ttl));
+         )->willReturn($ttl);
 
          if ($layoutIsCacheable && $cacheState && $cacheType == \Fastly\Cdn\Model\Config::FASTLY && $ttl > 0) {
              if (!empty($cacheControl)) {
@@ -151,11 +148,11 @@ class LayoutPluginTest extends TestCase
 
                  $this->configMock->expects($this->once()
                  )->method('getStaleTtl'
-                 )->will($this->returnValue($staleTtl));
+                 )->willReturn($staleTtl);
 
                  $this->configMock->expects($this->once()
                  )->method('getStaleErrorTtl'
-                 )->will($this->returnValue($staleErrorTtl));
+                 )->willReturn($staleErrorTtl);
 
                  $value = '';
                  if ($staleTtl && $staleErrorTtl) {
@@ -203,49 +200,54 @@ class LayoutPluginTest extends TestCase
     /**
      * @return array[]
      */
-     public function afterGenerateElementsDataProvider(): array
-     {
-         return [
-             'Full_cache state is true, Layout is cache-able, Fastly, TTL > 0, StaleTTL > 0, StaleErrorTTL > 0' =>
-                 [true, true, \Fastly\Cdn\Model\Config::FASTLY, 1, 1, 1],
-             'Full_cache state is true, Layout is cache-able, Fastly, TTL > 0, StaleTTL > 0, StaleErrorTTL = 0' =>
-                 [true, true, \Fastly\Cdn\Model\Config::FASTLY, 1, 1, 0],
-             'Full_cache state is true, Layout is cache-able, Fastly, TTL > 0, StaleTTL = 0, StaleErrorTTL > 0' =>
-                 [true, true, \Fastly\Cdn\Model\Config::FASTLY, 1, 0, 1],
-             'Full_cache state is true, Layout is cache-able, Fastly, TTL > 0, StaleTTL = 0, StaleErrorTTL = 0' =>
-                 [true, true, \Fastly\Cdn\Model\Config::FASTLY, 1, 0, 0],
-             'Full_cache state is true, Layout is cache-able, Fastly, TTL = 0' =>
-                 [true, true,  \Fastly\Cdn\Model\Config::FASTLY, 0],
-             'Full_cache state is true, Layout is cache-able, Varnish, TTL > 0' =>
-                 [true, true, \Fastly\Cdn\Model\Config::VARNISH, 1],
-             'Full_cache state is true, Layout is cache-able, Varnish, TTL = 0' =>
-                 [true, true, \Fastly\Cdn\Model\Config::VARNISH, 0],
-             'Full_cache state is true, Layout is not cache-able, Fastly, TTL > 0' =>
-                 [true, false, \Fastly\Cdn\Model\Config::FASTLY, 1],
-             'Full_cache state is false, Layout is not cache-able, Fastly, TTL > 0' =>
-                 [false, false, \Fastly\Cdn\Model\Config::FASTLY, 1],
-             'Full_cache state is false, Layout is cache-able, Fastly, TTL > 0' =>
-                 [false, true, \Fastly\Cdn\Model\Config::FASTLY, 1],
-             'Full_cache state is true, Layout is cache-able, Fastly, TTL > 0, cache-control empty' =>
-                 [true, true, \Fastly\Cdn\Model\Config::FASTLY, 1, 1, 1, ''],
-         ];
-     }
+    public static function afterGenerateElementsDataProvider(): array
+    {
+        return [
+            'Full_cache state is true, Layout is cache-able, Fastly, TTL > 0, StaleTTL > 0, StaleErrorTTL > 0' =>
+                [true, true, \Fastly\Cdn\Model\Config::FASTLY, 1, 1, 1],
+            'Full_cache state is true, Layout is cache-able, Fastly, TTL > 0, StaleTTL > 0, StaleErrorTTL = 0' =>
+                [true, true, \Fastly\Cdn\Model\Config::FASTLY, 1, 1, 0],
+            'Full_cache state is true, Layout is cache-able, Fastly, TTL > 0, StaleTTL = 0, StaleErrorTTL > 0' =>
+                [true, true, \Fastly\Cdn\Model\Config::FASTLY, 1, 0, 1],
+            'Full_cache state is true, Layout is cache-able, Fastly, TTL > 0, StaleTTL = 0, StaleErrorTTL = 0' =>
+                [true, true, \Fastly\Cdn\Model\Config::FASTLY, 1, 0, 0],
+            'Full_cache state is true, Layout is cache-able, Fastly, TTL = 0' =>
+                [true, true,  \Fastly\Cdn\Model\Config::FASTLY, 0],
+            'Full_cache state is true, Layout is cache-able, Varnish, TTL > 0' =>
+                [true, true, \Fastly\Cdn\Model\Config::VARNISH, 1],
+            'Full_cache state is true, Layout is cache-able, Varnish, TTL = 0' =>
+                [true, true, \Fastly\Cdn\Model\Config::VARNISH, 0],
+            'Full_cache state is true, Layout is not cache-able, Fastly, TTL > 0' =>
+                [true, false, \Fastly\Cdn\Model\Config::FASTLY, 1],
+            'Full_cache state is false, Layout is not cache-able, Fastly, TTL > 0' =>
+                [false, false, \Fastly\Cdn\Model\Config::FASTLY, 1],
+            'Full_cache state is false, Layout is cache-able, Fastly, TTL > 0' =>
+                [false, true, \Fastly\Cdn\Model\Config::FASTLY, 1],
+            'Full_cache state is true, Layout is cache-able, Fastly, TTL > 0, cache-control empty' =>
+                [true, true, \Fastly\Cdn\Model\Config::FASTLY, 1, 1, 1, ''],
+        ];
+    }
 
      /**
       * @param $configCacheType
-      * @param $cntGetHeader
       * @param $headerName
-      * @param $cacheControlHeader
       * @param $cntSetHeader
       * @dataProvider afterGetOutputDataProvider
       */
-     public function testAfterGetOutput($configCacheType, $cntGetHeader, $headerName, $cacheControlHeader, $cntSetHeader)
+     #[DataProvider('afterGetOutputDataProvider')]
+     public function testAfterGetOutput($configCacheType, $headerName, $cntSetHeader)
      {
          $html = 'html';
 
+         if ($cntSetHeader === 1) {
+             $cntSetHeader = $this->once();
+         } else {
+             $cntSetHeader = $this->never();
+         }
+
          $this->configMock->expects($this->once()
          )->method('getType'
-         )->will($this->returnValue($configCacheType));
+         )->willReturn($configCacheType);
 
          $this->responseMock->expects($cntSetHeader
          )->method('setHeader'
@@ -258,19 +260,17 @@ class LayoutPluginTest extends TestCase
     /**
      * @return array[]
      */
-     public function afterGetOutputDataProvider(): array
-     {
-         $headerName = 'Fastly-Module-Enabled';
+    public static function afterGetOutputDataProvider(): array
+    {
+        $headerName = 'Fastly-Module-Enabled';
 
-         $cacheControlHeader = new GenericHeader($headerName, $this->moduleVersion);
-
-         return [
-             'Fastly, getHeader: Yes, setHeader: Yes' =>
-                 [\Fastly\Cdn\Model\Config::FASTLY, $this->once(), $headerName,$cacheControlHeader, $this->once()],
-             'Fastly, getHeader: Yes, setHeader: Yes (updated)' =>
-                 [\Fastly\Cdn\Model\Config::FASTLY, $this->once(), $headerName,false, $this->once()],
-             'Varnish, getHeader: No, setHeader: No' =>
-                 [Config::VARNISH, $this->never(), $headerName, false, $this->never()]
-         ];
-     }
+        return [
+            'Fastly, getHeader: Yes, setHeader: Yes' =>
+                [\Fastly\Cdn\Model\Config::FASTLY, $headerName, 1],
+            'Fastly, getHeader: Yes, setHeader: Yes (updated)' =>
+                [\Fastly\Cdn\Model\Config::FASTLY, $headerName, 1],
+            'Varnish, getHeader: No, setHeader: No' =>
+                [Config::VARNISH, $headerName, 0]
+        ];
+    }
 }

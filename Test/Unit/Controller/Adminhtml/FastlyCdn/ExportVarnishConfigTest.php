@@ -99,15 +99,15 @@ class ExportVarnishConfigTest extends TestCase
 
          $contextMock->expects($this->any()
          )->method('getRequest'
-         )->will($this->returnValue($this->requestMock));
+         )->willReturn($this->requestMock);
 
          $contextMock->expects($this->any()
          )->method('getResponse'
-         )->will($this->returnValue($this->responseMock));
+         )->willReturn($this->responseMock);
 
          $contextMock->expects($this->any()
          )->method('getView'
-         )->will($this->returnValue($this->viewMock));
+         )->willReturn($this->viewMock);
 
          $this->action = new ExportVarnishConfig(
              $contextMock,
@@ -127,7 +127,7 @@ class ExportVarnishConfigTest extends TestCase
          $this->configMock->expects(
              $this->once()
          )->method('getVclFile'
-         )->will($this->returnValue($fileContent));
+         )->willReturn($fileContent);
 
          $this->fileFactoryMock->expects(
              $this->once()
@@ -137,8 +137,8 @@ class ExportVarnishConfigTest extends TestCase
              $this->equalTo($filename),
              $this->equalTo($fileContent),
              $this->equalTo(DirectoryList::VAR_DIR)
-         )->will(
-             $this->returnValue($responseMock)
+         )->willReturn(
+             $responseMock
          );
 
          if (method_exists($this->action, 'execute')) {

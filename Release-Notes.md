@@ -1,6 +1,6 @@
 # Fastly_Cdn Release Notes
 
-## Unreleased
+## 1.2.247
 
 - Test strategy update https://github.com/fastly/fastly-magento2/pull/825
 - Update to DataDome Fastly Module 2.31.1 https://github.com/fastly/fastly-magento2/pull/824

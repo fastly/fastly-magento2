@@ -506,6 +506,14 @@
                             target="_blank">image optimization guide</a> for caveats and details.]]></comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
+                        <!-- ===============================================
+                                Force Enable Deep Image Optimization select field
+                           ================================================ -->
+                        <field id="image_optimizations_forced" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                            <label>Force Enable Deep Image Optimization</label>
+                            <comment><![CDATA[Use this to forcefully enable deep image optimisation on instances that are not connected to fastly, for use on test environments]]></comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
                         <!-- ====================================================
                              JPEG image quality input field
                         ===================================================== -->

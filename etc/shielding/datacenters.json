@@ -66,7 +66,7 @@
       "x": 0,
       "y": 0,
       "latitude": 35.11034,
-      "longitude": 106.55762
+      "longitude": -106.55762
     }
   },
   {
@@ -170,6 +170,20 @@
     "shield": "iad-va-us"
   },
   {
+    "code": "HMP",
+    "name": "Atlanta",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 33.749,
+      "longitude": -84.388
+    }
+  },
+  {
     "code": "PDK",
     "name": "Atlanta (Metro)",
     "group": "United States",
@@ -198,6 +212,20 @@
       "longitude": 174.791667
     },
     "shield": "auckland-akl"
+  },
+  {
+    "code": "BWI",
+    "name": "Baltimore",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 39.29,
+      "longitude": -76.612
+    }
   },
   {
     "code": "QBK",
@@ -239,6 +267,20 @@
       "y": 0,
       "latitude": 13.756,
       "longitude": 100.501
+    }
+  },
+  {
+    "code": "TTD",
+    "name": "Beaverton",
+    "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 45.487,
+      "longitude": -122.804
     }
   },
   {
@@ -528,6 +570,20 @@
     }
   },
   {
+    "code": "UGN",
+    "name": "Chicago",
+    "group": "United States",
+    "region": "US-Central",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 41.878,
+      "longitude": -87.629
+    }
+  },
+  {
     "code": "CHI",
     "name": "Chicago (Metro)",
     "group": "United States",
@@ -687,6 +743,20 @@
     }
   },
   {
+    "code": "BJC",
+    "name": "Denver",
+    "group": "United States",
+    "region": "US-Central",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 39.742,
+      "longitude": -105.018
+    }
+  },
+  {
     "code": "DEN",
     "name": "Denver",
     "group": "United States",
@@ -713,6 +783,20 @@
       "y": 0,
       "latitude": 42.448,
       "longitude": -83.263
+    }
+  },
+  {
+    "code": "YIP",
+    "name": "Detroit",
+    "group": "United States",
+    "region": "US-Central",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 42.331,
+      "longitude": -83.045
     }
   },
   {
@@ -986,6 +1070,20 @@
       "y": 0,
       "latitude": 17.437,
       "longitude": 78.376
+    }
+  },
+  {
+    "code": "CRG",
+    "name": "Jacksonville",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 30.332,
+      "longitude": -81.656
     }
   },
   {
@@ -1504,6 +1602,20 @@
     }
   },
   {
+    "code": "OLV",
+    "name": "Memphis",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 35.051,
+      "longitude": -89.882
+    }
+  },
+  {
     "code": "MIA",
     "name": "Miami",
     "group": "United States",
@@ -1560,6 +1672,20 @@
       "longitude": 9.19
     },
     "shield": "mxp-milan-it"
+  },
+  {
+    "code": "MIC",
+    "name": "Minneapolis",
+    "group": "United States",
+    "region": "US-Central",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 44.978,
+      "longitude": -93.265
+    }
   },
   {
     "code": "MSP",
@@ -1677,7 +1803,35 @@
     }
   },
   {
+    "code": "SRQ",
+    "name": "Naples",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 26.142,
+      "longitude": -81.795
+    }
+  },
+  {
     "code": "BNA",
+    "name": "Nashville",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 36.196,
+      "longitude": -86.817
+    }
+  },
+  {
+    "code": "MQY",
     "name": "Nashville",
     "group": "United States",
     "region": "US-East",
@@ -1851,6 +2005,20 @@
     "shield": "perth-au"
   },
   {
+    "code": "TTN",
+    "name": "Philadelphia",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 39.953,
+      "longitude": -75.165
+    }
+  },
+  {
     "code": "PHX",
     "name": "Phoenix",
     "group": "United States",
@@ -1865,6 +2033,20 @@
     }
   },
   {
+    "code": "AGC",
+    "name": "Pittsburgh",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 40.453,
+      "longitude": -80.192
+    }
+  },
+  {
     "code": "PIT",
     "name": "Pittsburgh",
     "group": "United States",
@@ -1876,6 +2058,20 @@
       "y": 0,
       "latitude": 40.453,
       "longitude": -80.192
+    }
+  },
+  {
+    "code": "FXE",
+    "name": "Pompano",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 25.945,
+      "longitude": -80.205
     }
   },
   {
@@ -1992,6 +2188,20 @@
     }
   },
   {
+    "code": "FLE",
+    "name": "Richmond",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 37.602,
+      "longitude": -77.49
+    }
+  },
+  {
     "code": "RIC",
     "name": "Richmond",
     "group": "United States",
@@ -2063,6 +2273,20 @@
     }
   },
   {
+    "code": "MCC",
+    "name": "Sacramento",
+    "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 38.693,
+      "longitude": -121.345
+    }
+  },
+  {
     "code": "SMF",
     "name": "Sacramento",
     "group": "United States",
@@ -2116,6 +2340,20 @@
       "y": 0,
       "latitude": 21.078,
       "longitude": 79.152
+    }
+  },
+  {
+    "code": "JCE",
+    "name": "San Francisco",
+    "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 37.775,
+      "longitude": -122.419
     }
   },
   {
@@ -2189,6 +2427,20 @@
       "longitude": -46.469511
     },
     "shield": "gru-saopaulo-br"
+  },
+  {
+    "code": "PWT",
+    "name": "Seattle",
+    "group": "United States",
+    "region": "US-West",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 47.606,
+      "longitude": -122.332
+    }
   },
   {
     "code": "BFI",
@@ -2406,6 +2658,20 @@
       "longitude": 151.189
     },
     "shield": "wsi-australia-au"
+  },
+  {
+    "code": "TLH",
+    "name": "Tallahassee",
+    "group": "United States",
+    "region": "US-East",
+    "stats_region": "usa",
+    "billing_region": "North America",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 30.438,
+      "longitude": -84.281
+    }
   },
   {
     "code": "NRT",

@@ -997,7 +997,7 @@
       "x": 0,
       "y": 0,
       "latitude": 30.144,
-      "longitude": 95.4732
+      "longitude": -95.4732
     }
   },
   {
@@ -2157,6 +2157,20 @@
       "y": 0,
       "latitude": 18.59,
       "longitude": 73.727
+    }
+  },
+  {
+    "code": "CYW",
+    "name": "Queretaro",
+    "group": "Mexico",
+    "region": "MX-Central",
+    "stats_region": "mexico",
+    "billing_region": "Mexico",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 20.613,
+      "longitude": -100.396
     }
   },
   {

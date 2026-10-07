@@ -35,7 +35,10 @@ define([
                         if (!_.has(imageObject.fastly_srcset, wdpr))
                             return;
 
-                        imageObject.img = imageObject.fastly_srcset[wdpr];
+                        let imgSrc = imageObject.fastly_srcset[wdpr] || '',
+                        imgSrcDprRegx = new RegExp("\\s" + wdpr + "x$");
+
+                        imageObject.img = imgSrc.replace(imgSrcDprRegx, '');
                     });
                 });
 

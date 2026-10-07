@@ -336,6 +336,12 @@ class Config extends \Magento\PageCache\Model\Config
         = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimizations';
 
     /**
+     * XML path to image optimizations flag forced
+     */
+    const XML_FASTLY_IMAGE_OPTIMIZATIONS_FORCED
+        = 'system/full_page_cache/fastly/fastly_image_optimization_configuration/image_optimizations_forced';
+
+    /**
      * XML path to automatic compression flag
      */
     const XML_FASTLY_IMAGE_OPTIMIZATION_AUTOMATIC_COMPRESSION
@@ -832,6 +838,10 @@ class Config extends \Magento\PageCache\Model\Config
      */
     public function isImageOptimizationEnabled()
     {
+        if ($this->_scopeConfig->isSetFlag(self::XML_FASTLY_IMAGE_OPTIMIZATIONS_FORCED)) {
+            return true;
+        }
+
         if ($this->isFastlyEnabled() !== true) {
             return false;
         }

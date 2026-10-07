@@ -79,5 +79,5 @@ Block any URLs starting with `/index.php/rest/V1/` or `/rest/V1/`.
 
 ## Abusive Crawler Protection
 
-Unlike path protection Abusive Crawler protection guards against a single user making excessive number of requests that hit your
-Magento backend. By default we set the threshold to 100. After 100 requests in an hour we'll start returning a block to the user.
+Unlike path protection, Abusive Crawler protection guards against a single user making excessive number of requests that hit your
+Magento application. By default, we set the threshold to 100. After 100 requests in an hour we'll start returning a block to the user.

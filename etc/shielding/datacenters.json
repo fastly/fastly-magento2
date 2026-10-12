@@ -1630,6 +1630,20 @@
     }
   },
   {
+    "code": "AZP",
+    "name": "Mexico City",
+    "group": "Mexico",
+    "region": "MX-Central",
+    "stats_region": "mexico",
+    "billing_region": "Mexico",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 19.475,
+      "longitude": -99.194
+    }
+  },
+  {
     "code": "MIA",
     "name": "Miami",
     "group": "United States",
@@ -1656,7 +1670,8 @@
       "y": 0,
       "latitude": 45.477,
       "longitude": 9.102
-    }
+    },
+    "shield": "bgy-milan-it"
   },
   {
     "code": "LIN",

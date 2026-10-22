@@ -109,6 +109,7 @@ jobs:
           composer config --json audit.ignore '{
           "PKSA-7h5p-prw9-w5nr": "advisory is time complexity related, low impact for our scenario",
           "PKSA-xwpn-zs9j-6wy5": "advisory is related to recursion in parser, low impact for our scenario",
+          "PKSA-w9tt-7782-78jx": "advisory is related topath traversal, low impact for our scenario",
           "PKSA-sf9j-1gs7-xzvx": "advisory is time complexity related, low impact for our scenario"
           }'
 

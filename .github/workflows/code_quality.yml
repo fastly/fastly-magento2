@@ -81,13 +81,13 @@ jobs:
           #   phpunit: "9.6.33"
           #   search_engine: "elasticsearch7"
 
-          - magento: "2.4.7-p8"
+          - magento: "2.4.7-p10"
             php: "8.3"
             composer: "v2"
             opensearch: "2.5.0"
             search_engine: "elasticsearch7"
 
-          - magento: "2.4.8-p3"
+          - magento: "2.4.8-p5"
             php: "8.4"
             composer: "v2"
             opensearch: "2.5.0"

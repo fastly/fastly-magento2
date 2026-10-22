@@ -343,7 +343,7 @@ class FrontControllerPlugin
             $flagDir = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
             if ($flagDir->isExist('.maintenance.ip')) {
                 $temp = $flagDir->readFile('.maintenance.ip');
-                $allowedIps = explode(',', trim($temp));
+                $allowedIps = array_map("trim", explode(',', $temp));
                 $this->cache->save(json_encode($allowedIps), $tag, []);
             }
         }

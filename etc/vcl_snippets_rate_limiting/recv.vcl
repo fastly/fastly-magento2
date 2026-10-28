@@ -8,3 +8,7 @@ if (####RATE_LIMITED_PATHS####) {
       }
   }
 }
+if (client.geo.country_code) {
+    set req.http.client-geo-country = client.geo.country_code;
+}
+

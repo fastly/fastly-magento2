@@ -86,7 +86,8 @@ class Quick extends Action
                 $laminasUri = UriFactory::factory($url);
                 $host = $laminasUri->getHost();
                 $scheme = $laminasUri->getScheme();
-                $path = $laminasUri->getPath();
+                $path = $laminasUri->getPath() ?: '/';
+                $query = $laminasUri->getQuery();
 
                 // check if host is one of magento's
                 if (!$this->isHostInDomainList($host)) {
@@ -98,6 +99,10 @@ class Quick extends Action
 
                 if (isset($path)) {
                     $uri .= $path;
+                }
+
+                if ($query !== null && $query !== '') {
+                    $uri .= '?' . $query;
                 }
 
                 // purge uri

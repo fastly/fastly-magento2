@@ -1630,6 +1630,20 @@
     }
   },
   {
+    "code": "AZP",
+    "name": "Mexico City",
+    "group": "Mexico",
+    "region": "MX-Central",
+    "stats_region": "mexico",
+    "billing_region": "Mexico",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 19.475,
+      "longitude": -99.194
+    }
+  },
+  {
     "code": "MIA",
     "name": "Miami",
     "group": "United States",
@@ -1656,7 +1670,8 @@
       "y": 0,
       "latitude": 45.477,
       "longitude": 9.102
-    }
+    },
+    "shield": "bgy-milan-it"
   },
   {
     "code": "LIN",
@@ -1684,8 +1699,7 @@
       "y": 0,
       "latitude": 45.4642,
       "longitude": 9.19
-    },
-    "shield": "mxp-milan-it"
+    }
   },
   {
     "code": "MIC",
@@ -1815,6 +1829,21 @@
       "latitude": 21.393,
       "longitude": 79.327
     }
+  },
+  {
+    "code": "NBO",
+    "name": "Nairobi",
+    "group": "Africa",
+    "region": "AF-East",
+    "stats_region": "africa_std",
+    "billing_region": "Africa",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": -1.331,
+      "longitude": 36.856
+    },
+    "shield": "nbo-nairobi-ke"
   },
   {
     "code": "SRQ",

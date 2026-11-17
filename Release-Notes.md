@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.250
+
+- Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/834
+
 ## 1.2.249
 
 - Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/830

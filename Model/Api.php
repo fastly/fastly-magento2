@@ -1610,7 +1610,7 @@ class Api
      */
     public function getWafSettings(string $id, bool $includeWafFirewallVersions = false)
     {
-        $url = $this->_getWafEndpoint() . rawurlencode($id ?? '');
+        $url = $this->_getWafEndpoint() . rawurlencode($id);
         if ($includeWafFirewallVersions) {
             $url .= '?include=waf_firewall_versions';
         }

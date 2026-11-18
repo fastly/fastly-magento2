@@ -83,30 +83,21 @@ class ExportVarnishConfigTest extends TestCase
              'Fastly\Cdn\Model\Config'
          )->disableOriginalConstructor()->getMock();
 
-         $contextMock = $this->getMockBuilder(
-             'Magento\Backend\App\Action\Context'
-         )->disableOriginalConstructor()->getMock();
+         $contextMock = $this->createStub(\Magento\Backend\App\Action\Context::class);
 
-         $this->requestMock = $this->getMockBuilder(
-             'Magento\Framework\App\Request\Http'
-         )->disableOriginalConstructor()->getMock();
+         $this->requestMock = $this->createStub(\Magento\Framework\App\Request\Http::class);
 
-         $this->responseMock = $this->getMockBuilder(
-             'Magento\Framework\App\Response\Http'
-         )->disableOriginalConstructor()->getMock();
+         $this->responseMock = $this->createStub(\Magento\Framework\App\Response\Http::class);
 
-         $this->viewMock = $this->getMockBuilder('Magento\Framework\App\View')->disableOriginalConstructor()->getMock();
+         $this->viewMock = $this->createStub(View::class);
 
-         $contextMock->expects($this->any()
-         )->method('getRequest'
+         $contextMock->method('getRequest'
          )->willReturn($this->requestMock);
 
-         $contextMock->expects($this->any()
-         )->method('getResponse'
+         $contextMock->method('getResponse'
          )->willReturn($this->responseMock);
 
-         $contextMock->expects($this->any()
-         )->method('getView'
+         $contextMock->method('getView'
          )->willReturn($this->viewMock);
 
          $this->action = new ExportVarnishConfig(
@@ -120,9 +111,7 @@ class ExportVarnishConfigTest extends TestCase
      {
          $fileContent = 'some content';
          $filename = 'varnish.vcl';
-         $responseMock = $this->getMockBuilder(
-             'Magento\Framework\App\ResponseInterface'
-         )->disableOriginalConstructor()->getMock();
+         $responseMock = $this->createStub(\Magento\Framework\App\ResponseInterface::class);
 
          $this->configMock->expects(
              $this->once()

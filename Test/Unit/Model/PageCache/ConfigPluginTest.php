@@ -40,7 +40,7 @@ class ConfigPluginTest extends TestCase
 
     public function setUp(): void
      {
-         $scopeConfigMock = $this->getMockBuilder('\Magento\Framework\App\Config\ScopeConfigInterface')->getMock();
+         $scopeConfigMock = $this->createStub(\Magento\Framework\App\Config\ScopeConfigInterface::class);
          $this->model = new ConfigPlugin(
              $scopeConfigMock
          );
@@ -56,9 +56,9 @@ class ConfigPluginTest extends TestCase
      public function testAfterGetType($isFastlyConfig, $result, $expectedOutput)
      {
          if ($isFastlyConfig) {
-             $config = $this->getMockBuilder('Fastly\Cdn\Model\Config')->disableOriginalConstructor()->getMock();
+             $config = $this->createStub(Config::class);
          } else {
-             $config = $this->getMockBuilder('Magento\PageCache\Model\Config')->disableOriginalConstructor()->getMock();
+             $config = $this->createStub(\Magento\PageCache\Model\Config::class);
          }
          $output = $this->model->afterGetType($config, $result);
          $this->assertSame($expectedOutput, $output);

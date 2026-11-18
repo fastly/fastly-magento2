@@ -99,7 +99,7 @@ class ListAll extends Action
             $dictionary = $this->api->getSingleDictionary($activeVersion, 'magentomodule_basic_auth');
 
             // Fetch Authentication items
-            if (!$dictionary || (is_array($dictionary) && empty($dictionary))) {
+            if (!$dictionary) {
                 return $result->setData([
                     'status'    => 'none',
                     'msg'       => 'Authentication dictionary does not exist.'

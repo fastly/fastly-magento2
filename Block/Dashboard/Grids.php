@@ -40,5 +40,7 @@ class Grids extends \Magento\Backend\Block\Dashboard\Grids
                 'active'    => false
             ]
         );
+
+        return $this;
     }
 }

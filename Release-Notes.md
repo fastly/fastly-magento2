@@ -1,5 +1,9 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.251
+
+- Prevent cache header override introduced by "around" plugin https://github.com/fastly/fastly-magento2/pull/835
+
 ## 1.2.250
 
 - Update available Fastly Shielding POP list https://github.com/fastly/fastly-magento2/pull/834

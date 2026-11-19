@@ -64,63 +64,31 @@ class ConfigTest extends TestCase
      */
     public function setUp(): void
     {
-        $serializerMock = $this->createPartialMock(
-            Json::class,
-            ['serialize', 'unserialize']
-        );
-
-        $serializerMock->expects($this->any())
-            ->method('serialize')
-            ->willReturnCallback(
-                function ($value) {
-                    return json_encode($value);
-                }
-            );
-
-        $serializerMock->expects($this->any())
-            ->method('unserialize')
-            ->willReturnCallback(
-                function ($value) {
-                    return json_decode($value, true);
-                }
-            );
-
-        $storeManager = $this->createMock(
-            StoreManagerInterface::class
-        );
+        $serializerMock = new Json();
+        $storeManager = $this->createStub(StoreManagerInterface::class);
 
         $geolocationRedirectMatcher = new Config\GeolocationRedirectMatcher();
 
-         $readFactoryMock = $this->getMockBuilder('Magento\Framework\Filesystem\Directory\ReadFactory')
-             ->disableOriginalConstructor()
-             ->getMock();
+         $readFactoryMock = $this->createStub(\Magento\Framework\Filesystem\Directory\ReadFactory::class);
          $this->_coreConfigMock = $this->getMockBuilder('Magento\Framework\App\Config\ScopeConfigInterface')->getMock();
-         $this->_cacheState = $this->createMock('Magento\Framework\App\Cache\StateInterface');
+         $this->_cacheState = $this->createStub(StateInterface::class);
          $serializer = new Json();
-         $modulesDirectoryMock = $this->getMockBuilder('Magento\Framework\Filesystem\Directory\Write')
-             ->disableOriginalConstructor()
-             ->getMock();
-         $vclGeneratorFactoryMock = $this->getMockBuilder('Magento\PageCache\Model\Varnish\VclGeneratorFactory')
-             ->disableOriginalConstructor()
-             ->getMock();
+         $modulesDirectoryMock = $this->createStub(\Magento\Framework\Filesystem\Directory\Write::class);
+         $vclGeneratorFactoryMock = $this->createStub(\Magento\PageCache\Model\Varnish\VclGeneratorFactory::class);
 
-         $readFactoryMock->expects(
-             $this->any()
-         )->method(
+         $readFactoryMock->method(
              'create'
          )->willReturn(
              $modulesDirectoryMock
          );
 
-         $modulesDirectoryMock->expects(
-             $this->any()
-         )->method(
+         $modulesDirectoryMock->method(
              'readFile'
          )->willReturn(
              file_get_contents(__DIR__ . '/_files/test.vcl')
          );
          $this->_coreConfigMock->expects(
-             $this->any()
+             $this->atLeastOnce()
          )->method(
              'getValue'
          )->willReturnMap(
@@ -152,9 +120,7 @@ class ConfigTest extends TestCase
                  ]
          );
 
-         $this->moduleReader = $this->getMockBuilder('Magento\Framework\Module\Dir\Reader')
-             ->disableOriginalConstructor()
-             ->getMock();
+         $this->moduleReader = $this->createStub(Reader::class);
 
          $this->_model = new Config(
              $readFactoryMock,
@@ -173,8 +139,7 @@ class ConfigTest extends TestCase
       */
      public function testGetVclFile()
      {
-         $this->moduleReader->expects($this->once())
-             ->method('getModuleDir')
+         $this->moduleReader->method('getModuleDir')
              ->willReturn('/magento/app/code/Fastly/CDN');
          $test = $this->_model->getVclFile(Config::VARNISH_4_CONFIGURATION_PATH);
          $this->assertEquals(file_get_contents(__DIR__ . '/_files/result.vcl'), $test);

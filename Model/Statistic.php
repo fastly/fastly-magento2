@@ -27,6 +27,7 @@ use Laminas\Http\RequestFactory;
 use Magento\Directory\Api\CountryInformationAcquirerInterface;
 use Magento\Directory\Model\CountryFactory;
 use Magento\Directory\Model\RegionFactory;
+use Magento\Directory\Model\ResourceModel\Region as RegionResource;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\Data\Collection\AbstractDb;
@@ -111,6 +112,10 @@ class Statistic extends AbstractModel implements IdentityInterface
      */
     private $regionFactory;
     /**
+     * @var RegionResource
+     */
+    private $regionResource;
+    /**
      * @var Api
      */
     private $api;
@@ -160,6 +165,7 @@ class Statistic extends AbstractModel implements IdentityInterface
      * @param Data $helper
      * @param ProductMetadataInterface $productMetadata
      * @param Http $request
+     * @param RegionResource $regionResource
      * @param AbstractResource|null $resource
      * @param AbstractDb|null $resourceCollection
      * @param array $data
@@ -181,6 +187,7 @@ class Statistic extends AbstractModel implements IdentityInterface
         Data $helper,
         ProductMetadataInterface $productMetadata,
         Http $request,
+        RegionResource $regionResource,
         ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         ?AbstractDb $resourceCollection = null,
         array $data = []
@@ -191,6 +198,7 @@ class Statistic extends AbstractModel implements IdentityInterface
         $this->scopeConfig = $scopeConfig;
         $this->countryInformation = $countryInformation;
         $this->regionFactory = $regionFactory;
+        $this->regionResource = $regionResource;
         $this->api = $api;
         $this->clientFactory = $clientFactory;
         $this->requestFactory = $requestFactory;
@@ -374,7 +382,7 @@ class Statistic extends AbstractModel implements IdentityInterface
         $regionName = 'Unknown region';
         if ($regionId) {
             $region = $this->regionFactory->create();
-            $region = $region->load($regionId);
+            $this->regionResource->load($region, $regionId);
             if ($region->getId()) {
                 $regionName = $region->getName();
             }

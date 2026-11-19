@@ -64,29 +64,10 @@ class LayoutPluginTest extends TestCase
 
     public function setUp(): void
      {
-         $this->layoutMock = $this->createPartialMock(
-             'Magento\Framework\View\Layout',
-             ['isCacheable', 'getAllBlocks']
-         );
-
-
-         $this->responseMock = $this->getMockBuilder('\Magento\Framework\App\Response\Http')
-             ->disableOriginalConstructor()
-             ->getMock();
-
-         $this->configMock = $this->getMockBuilder('Fastly\Cdn\Model\Config')
-             ->disableOriginalConstructor()
-             ->getMock();
-
-         $cacheTagsMock = $this->getMockBuilder('Fastly\Cdn\Helper\CacheTags')
-             ->disableOriginalConstructor()
-             ->getMock();
-
-         $this->model = new LayoutPlugin(
-             $this->responseMock,
-             $this->configMock,
-             $cacheTagsMock
-         );
+         $this->layoutMock = $this->createStub(Layout::class);
+         $this->responseMock = $this->createMock(\Magento\Framework\App\Response\Http::class);
+         $this->configMock = $this->createStub(\Fastly\Cdn\Model\Config::class);
+         $this->model = new LayoutPlugin($this->responseMock, $this->configMock);
 
          $this->moduleVersion = json_decode(
              file_get_contents(__DIR__ . '/../../../../composer.json'),
@@ -105,94 +86,53 @@ class LayoutPluginTest extends TestCase
       * @dataProvider afterGenerateElementsDataProvider
       */
      #[DataProvider('afterGenerateElementsDataProvider')]
-     public function testAfterGenerateElements($cacheState, $layoutIsCacheable, $cacheType, $ttl, $staleTtl = 0,
-         $staleErrorTtl = 0, $cacheControl = 'max-age=86400, public, s-maxage=86400'): void
-     {
-         $headerName = 'cache-control';
-         $cacheableHeaderName = 'fastly-page-cacheable';
-
-         $this->layoutMock->expects($this->any()
-         )->method('isCacheable'
-         )->willReturn($layoutIsCacheable);
-
-         $this->configMock->expects($this->any()
-         )->method('isEnabled'
-         )->willReturn($cacheState);
-
-         $this->configMock->expects($this->any()
-         )->method('getType'
-         )->willReturn($cacheType);
-
-         $this->configMock->expects($this->any()
-         )->method('getTtl'
-         )->willReturn($ttl);
+     public function testAfterGenerateElements(
+         $cacheState,
+         $layoutIsCacheable,
+         $cacheType,
+         $ttl,
+         $staleTtl = 0,
+         $staleErrorTtl = 0,
+         $cacheControl = 'max-age=86400, public, s-maxage=86400'
+     ): void {
+         $this->layoutMock->method('isCacheable')->willReturn($layoutIsCacheable);
+         $this->configMock->method('isEnabled')->willReturn($cacheState);
+         $this->configMock->method('getType')->willReturn($cacheType);
+         $this->configMock->method('getTtl')->willReturn($ttl);
+         $this->configMock->method('getStaleTtl')->willReturn($staleTtl);
+         $this->configMock->method('getStaleErrorTtl')->willReturn($staleErrorTtl);
 
          if ($layoutIsCacheable && $cacheState && $cacheType == \Fastly\Cdn\Model\Config::FASTLY && $ttl > 0) {
-             if (!empty($cacheControl)) {
-                 $cacheControlHeader = new GenericHeader($headerName, $cacheControl);
-                 $cacheableHeader = new GenericHeader($cacheableHeaderName, 'YES');
+             $cacheControlHeader = $cacheControl ? new GenericHeader('cache-control', $cacheControl) : false;
+             $cacheableHeader = new GenericHeader('fastly-page-cacheable', 'YES');
+             $this->responseMock->expects($this->exactly(2))
+                 ->method('getHeader')
+                 ->willReturnMap([
+                     ['cache-control', $cacheControlHeader],
+                     ['fastly-page-cacheable', $cacheableHeader]
+                 ]);
 
-                 $this->responseMock->expects($this->exactly(2))
-                     ->method('getHeader')
-                     ->willReturnCallback(function ($name) use (&$callCount, $headerName, $cacheableHeaderName, $cacheControlHeader, $cacheableHeader) {
-                         $callCount++;
-                         if ($callCount === 1) {
-                             $this->assertEquals($headerName, $name);
-                             return $cacheControlHeader;
-                         }
-                         else {
-                             $this->assertEquals($cacheableHeaderName, $name);
-                             return $cacheableHeader;
-                         }
-                     });
-
-                 $this->configMock->expects($this->once()
-                 )->method('getStaleTtl'
-                 )->willReturn($staleTtl);
-
-                 $this->configMock->expects($this->once()
-                 )->method('getStaleErrorTtl'
-                 )->willReturn($staleErrorTtl);
-
-                 $value = '';
-                 if ($staleTtl && $staleErrorTtl) {
-                     $value = sprintf(', stale-while-revalidate=%s, stale-if-error=%s', $staleTtl, $staleErrorTtl);
+             if ($cacheControl) {
+                 if ($staleTtl) {
+                     $cacheControl .= ', stale-while-revalidate=' . $staleTtl;
                  }
-                 if ($staleTtl == 0 && $staleErrorTtl) {
-                     $value = sprintf(', stale-if-error=%s', $staleErrorTtl);
+                 if ($staleErrorTtl) {
+                     $cacheControl .= ', stale-if-error=' . $staleErrorTtl;
                  }
-                 if ($staleTtl && $staleErrorTtl == 0) {
-                     $value = sprintf(', stale-while-revalidate=%s', $staleTtl);
-                 }
-
-                 // change to once since 'fastly-page-cacheable' is already set in this mock, so method won't set it again
-                 $this->responseMock->expects($this->once()
-                 )->method('setHeader');
-                 //->with($headerName, $cacheControl . $value, true);
-
+                 $this->responseMock->expects($this->once())
+                     ->method('setHeader')
+                     ->with('cache-control', $cacheControl, true);
              } else {
-
-                 $this->responseMock->expects($this->exactly(2))
-                     ->method('getHeader')
-                     ->willReturnCallback(function ($name) use (&$callCount, $headerName, $cacheableHeaderName) {
-                         $callCount++;
-                         if ($callCount === 1) {
-                             $this->assertEquals($headerName, $name);
-                             return false;
-                         }
-                         else {
-                             $this->assertEquals($cacheableHeaderName, $name);
-                             return 'NO';
-                         }
-                     });
-
-                 // Removed because 'cache-control' is not set in this case and 'fastly-page-cacheable' is already set
-                 // in mock, so second setHeader is skipped
-                 //$this->responseMock->expects($this->once())->method('setHeader');
+                 $this->responseMock->expects($this->never())->method('setHeader');
              }
          } else {
-             $this->responseMock->expects($this->once()
-             )->method('setHeader');
+             $this->responseMock->expects($this->once())
+                 ->method('getHeader')
+                 ->with('fastly-page-cacheable')
+                 ->willReturn(false);
+             $this->responseMock->expects($this->once())
+                 ->method('setHeader')
+                 ->with('fastly-page-cacheable', $layoutIsCacheable ? 'YES' : 'NO');
          }
          $this->model->afterGenerateElements($this->layoutMock);
      }
@@ -245,9 +185,7 @@ class LayoutPluginTest extends TestCase
              $cntSetHeader = $this->never();
          }
 
-         $this->configMock->expects($this->once()
-         )->method('getType'
-         )->willReturn($configCacheType);
+         $this->configMock->method('getType')->willReturn($configCacheType);
 
          $this->responseMock->expects($cntSetHeader
          )->method('setHeader'

@@ -85,6 +85,11 @@ class FrontControllerPlugin
     private $logger;
 
     /**
+     * @var ExcludeCountries
+    */
+    private $excludedCountries;
+
+    /**
      * FrontControllerPlugin constructor.
      * @param Request $request
      * @param Config $config
@@ -113,6 +118,7 @@ class FrontControllerPlugin
         $this->coreDate = $coreDate;
         $this->filesystem = $filesystem;
         $this->logger = $logger;
+        $this->excludedCountries = $this->config->getExcludedCountries();
     }
 
     /**
@@ -156,6 +162,13 @@ class FrontControllerPlugin
     {
         $ip = $this->request->getServerValue('HTTP_FASTLY_CLIENT_IP') ?? $this->request->getClientIp();
 
+        $countryCode = $this->request->getServerValue('HTTP_CLIENT_GEO_COUNTRY');
+
+        if (in_array($countryCode, $this->excludedCountries)) {
+            $this->log('Request from ' . $countryCode . ' bypassed crawler protection for IP: ' . $ip);
+            return false;
+        }
+
         if ($this->readMaintenanceIp($ip)) {
             return false;
         }
@@ -193,6 +206,13 @@ class FrontControllerPlugin
     private function crawlerProtection($path)
     {
         $ip = $this->request->getServerValue('HTTP_FASTLY_CLIENT_IP') ?? $this->request->getClientIp();
+
+        $countryCode = $this->request->getServerValue('HTTP_CLIENT_GEO_COUNTRY');
+
+        if (in_array($countryCode, $this->excludedCountries)) {
+            $this->log('Request from ' . $countryCode . ' bypassed crawler protection for IP: ' . $ip);
+            return false;
+        }
 
         if ($this->config->isExemptGoodBotsEnabled()) {
             if ($this->verifyBots($ip)) {

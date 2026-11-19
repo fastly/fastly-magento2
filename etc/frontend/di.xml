@@ -23,7 +23,8 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\Framework\View\Layout">
-        <plugin name="fastly_adjust_headers" type="Fastly\Cdn\Model\Layout\LayoutPlugin" sortOrder="99"/>
+        <!-- negative sort order to ensure this plugin runs before others without sortOrder defined -->
+        <plugin name="fastly_adjust_headers" type="Fastly\Cdn\Model\Layout\LayoutPlugin" sortOrder="-1"/>
     </type>
 
     <type name="Magento\Framework\App\Response\Http">

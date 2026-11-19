@@ -90,6 +90,18 @@ class LayoutPlugin
         }
     }
 
+    public function aroundGenerateElements(\Magento\Framework\View\Layout $subject, callable $proceed)
+    {
+        /*
+            Do nothing, just call original method. This code was added because module Magento_Persistent introduces
+            around plugin as well. However, Magento runs interceptors in different levels/layers.
+            Magento_Persistent loads "afterGenerateElements" plugin of Magento_PageCache, which then runs once Fastly
+            plugin is executed (which shouldn't happen since we declare higher sortOrder). That plugin overrides headers set by Fastly.
+            We introduce around plugin so we can "move" to different level and ensure we run last and prevent override.
+        */
+        $proceed();
+    }
+
     /**
      * Add a debug header to indicate this request has passed through the Fastly Module.
      *

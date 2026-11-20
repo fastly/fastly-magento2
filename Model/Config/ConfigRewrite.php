@@ -23,6 +23,7 @@ namespace Fastly\Cdn\Model\Config;
 use Fastly\Cdn\Model\Api;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\DeploymentConfig;
+use Magento\StoreGraphQl\Model\Resolver\Store\ConfigIdentity;
 use Magento\StoreGraphQl\Model\Resolver\Store\StoreConfigDataProvider;
 use Magento\Store\Model\StoreManagerInterface;
 use Fastly\Cdn\Model\PurgeCache;
@@ -47,11 +48,6 @@ class ConfigRewrite
     private $api;
 
     /**
-     * @var StoreConfigDataProvider
-     */
-    private $storeConfigDataProvider;
-
-    /**
      * @var StoreManagerInterface
      */
     private $storeManager;
@@ -69,7 +65,6 @@ class ConfigRewrite
     /**
      * @param ScopeConfigInterface $scopeConfig
      * @param Api $api
-     * @param StoreConfigDataProvider $storeConfigDataProvider
      * @param StoreManagerInterface $storeManager
      * @param PurgeCache $purgeCache
      * @param DeploymentConfig $deploymentConfig
@@ -77,14 +72,12 @@ class ConfigRewrite
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         Api $api,
-        StoreConfigDataProvider $storeConfigDataProvider,
         StoreManagerInterface $storeManager,
         PurgeCache $purgeCache,
         DeploymentConfig $deploymentConfig,
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->api = $api;
-        $this->storeConfigDataProvider = $storeConfigDataProvider;
         $this->storeManager = $storeManager;
         $this->purgeCache = $purgeCache;
         $this->deploymentConfig = $deploymentConfig;
@@ -114,11 +107,12 @@ class ConfigRewrite
             return;
         }
 
-        $configIdentity = ObjectManager::getInstance()
-            ->create('\Magento\StoreGraphQl\Model\Resolver\Store\ConfigIdentity');
+        $objectManager = ObjectManager::getInstance();
+        $configIdentity = $objectManager->create(ConfigIdentity::class);
+        $storeConfigDataProvider = $objectManager->get(StoreConfigDataProvider::class);
         $store = $subject->getStore();
 
-        $resolvedData = $this->storeConfigDataProvider->getStoreConfigData($this->storeManager->getStore($store));
+        $resolvedData = $storeConfigDataProvider->getStoreConfigData($this->storeManager->getStore($store));
         $tags = $configIdentity->getIdentities($resolvedData);
         if (!empty($tags)) {
             $this->purgeCache->sendPurgeRequest(array_unique($tags));
